@@ -1,20 +1,20 @@
 {
-  "name": "@coreui/coreui-free-react-admin-template",
+  "name": "React DahBoard",
   "version": "4.0.0",
-  "description": "CoreUI Free React Admin Template",
+  "description": "SunnoSoft",
   "homepage": ".",
   "bugs": {
-    "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
+    "url": ""
   },
   "repository": {
-    "type": "git",
-    "url": "git@github.com:coreui/coreui-free-react-admin-template.git"
+    "type": "",
+    "url": ""
   },
-  "license": "MIT",
-  "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
+  "license": "",
+  "author": "",
   "scripts": {
     "build": "react-scripts build",
-    "changelog": "auto-changelog --starting-version 3.0.0 --commit-limit false --hide-credit",
+    "changelog": "auto-changelog --starting-version 1.0.0 --commit-limit false --hide-credit",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.js\"",
     "start": "react-scripts start",
