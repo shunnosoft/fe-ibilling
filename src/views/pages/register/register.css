@@ -1,0 +1,28 @@
+.inputClass {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.inputClass > input {
+  padding: 7px 10px;
+  border: 1px solid #ddd;
+  /* box-shadow: inset 0px 1px 6px #dcdcdc; */
+  border-left: 3px solid var(--secondery-color);
+}
+.inputClass > input:focus {
+  outline: none;
+}
+label {
+  padding: 5px 0;
+  font-weight: 600;
+  color: #818181;
+}
+.submitBtn {
+  margin-top: 10px;
+  background: var(--primary-color);
+  border: none;
+  padding: 10px 20px !important;
+  border-radius: 5px;
+  font-weight: 600;
+  color: white;
+}

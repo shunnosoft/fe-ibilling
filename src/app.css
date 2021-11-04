@@ -2,7 +2,10 @@
 
 /* font-family: 'Baloo Da 2', cursive;
 font-family: 'Hind Siliguri', sans-serif; */
-
+:root {
+  --primary-color: #321fdb;
+  --secondery-color: lightgreen;
+}
 * {
   font-family: 'Hind Siliguri', sans-serif;
 }

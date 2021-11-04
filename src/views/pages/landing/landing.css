@@ -9,9 +9,10 @@
 .logiginWrapper::before {
   content: '';
   position: absolute;
-  width: 30%;
+  width: 40%;
   height: 80%;
-  background: url('./img/subs.svg') right no-repeat;
+  background: url('./img/background.svg') right no-repeat;
+  filter: drop-shadow(2px 6px 10px gray);
   background-size: 100%;
   right: 15%;
   top: 60px;
@@ -38,10 +39,11 @@
   width: fit-content;
   padding: 7px 34px;
   border-radius: 30px;
-  background: linear-gradient(45deg, #2f2f2f, #7972f1);
+  background: linear-gradient(45deg, #4ea1fc, #7972f1);
   color: #d5d5d5;
   box-shadow: 0px 4px 10px rgb(0 0 0 / 41%);
   transition: 0.3s;
+  border: 2px ​solid #343d534d;
 }
 .custom-btn:hover {
   color: white;
