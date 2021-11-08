@@ -4,3 +4,8 @@
   font-family: 'Baloo Da 2', cursive;
   /* font-family: 'Noto Serif Bengali', serif; */
 }
+
+.loginErrorMessage {
+  color: red;
+  font-size: 14px;
+}

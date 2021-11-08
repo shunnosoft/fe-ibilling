@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './login.css'
 import { Link } from 'react-router-dom'
 import {
@@ -18,6 +18,35 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
 const Login = () => {
+  const [mobile, setMobile] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleLogin = async () => {
+    const loginData = JSON.stringify({
+      mobile: mobile,
+      password: password,
+    })
+    const loginErrorMessage = document.querySelector('.loginErrorMessage')
+    try {
+      const response = await fetch('http://137.184.69.182/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: loginData,
+      })
+      const data = await response.json()
+      if (data.code === 401 || data.code === 400) {
+        loginErrorMessage.textContent = data.message
+      }
+      if ((data.user.role = 'ispOwner')) {
+        window.location.href = '/dashboard'
+      }
+    } catch (err) {
+      console.log('I am here: ', err)
+    }
+  }
+
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -33,7 +62,11 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="মোবাইল" autoComplete="username" />
+                      <CFormInput
+                        placeholder="মোবাইল"
+                        autoComplete="username"
+                        onChange={(e) => setMobile(e.target.value)}
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -43,11 +76,13 @@ const Login = () => {
                         type="password"
                         placeholder="পাসওয়ার্ড"
                         autoComplete="current-password"
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </CInputGroup>
+                    <p className="loginErrorMessage"></p>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" onClick={handleLogin}>
                           লগইন
                         </CButton>
                       </CCol>

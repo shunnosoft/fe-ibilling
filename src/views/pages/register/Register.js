@@ -4,6 +4,25 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import './register.css'
 
+/*
+reference: {
+  name: {
+    type: String,
+  },
+  mobile: {
+    type: String,
+  },
+  type: {
+    type: String,
+    enum: ['staff', 'distributor', 'other', 'client'],
+    default: 'other',
+  },
+  objId: {
+    type: String,
+  },
+},
+*/
+
 const Register = () => {
   const [company, setcompany] = useState('')
   const [name, setname] = useState('')
@@ -11,11 +30,6 @@ const Register = () => {
   const [email, setemail] = useState('')
   const [reference, setreference] = useState('')
   const [pack, setpack] = useState('')
-
-  const successPopup = () => {
-    const successPopUpdiv = document.querySelector('.successPopUp')
-    successPopUpdiv.classList.add('showmessage')
-  }
 
   const handleForm = async (e) => {
     e.preventDefault()
@@ -29,10 +43,9 @@ const Register = () => {
       pack: pack,
     })
     try {
-      const response = await fetch('http://137.184.69.182/v1/auth/register', {
+      const response = await fetch(`http://137.184.69.182/v1/auth/register`, {
         method: 'POST',
         headers: {
-          // Overwrite Axios's automatically set Content-Type
           'Content-Type': 'application/json',
         },
         body: sendObjData,
@@ -48,13 +61,10 @@ const Register = () => {
       }
       if (data.paymentUrl) {
         // link open in same tab
-        // window.location.href = data.paymentUrl
+        window.location.href = data.paymentUrl
 
         // if want to open in new tab
-        window.open(data.paymentUrl, '_blank')
-
-        // call success popup message
-        successPopup()
+        // window.open(data.paymentUrl, '_blank')
       }
     } catch (err) {
       console.log('There is an error: ', err)
@@ -63,18 +73,6 @@ const Register = () => {
 
   return (
     <>
-      <div className="successPopUp">
-        <div className="successTextDiv">
-          <h2 className="successTitle">আপনার রেজিস্ট্রেশন সফল হয়েছে </h2>
-          <p className="successText">
-            আপনার ফোন নম্বর ও পাসওয়ার্ড দিয়ে লগইন করুন ( পেমেন্ট ক্লিয়ার করলে, আপনার ইমেইলে
-            পাসওয়ার্ড পাঠানো হবে )
-          </p>
-          <Link to="/" className="successPopBtn">
-            আচ্ছা ঠিক আছে
-          </Link>
-        </div>
-      </div>
       <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
         <CContainer>
           <CRow className="justify-content-center">

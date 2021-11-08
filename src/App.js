@@ -19,6 +19,7 @@ const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
+const Success = React.lazy(() => import('./views/pages/success/Success'))
 
 class App extends Component {
   render() {
@@ -33,6 +34,13 @@ class App extends Component {
               path="/register"
               name="Register Page"
               render={(props) => <Register {...props} />}
+            />
+
+            <Route
+              exact
+              path="/register/success"
+              name="SuccessPage"
+              render={(props) => <Success {...props} />}
             />
 
             <Route exact path="/500" name="Page 500" render={(props) => <Page500 {...props} />} />
