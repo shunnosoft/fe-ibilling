@@ -1,5 +1,4 @@
-import React, { lazy } from 'react'
-
+import React, { lazy, useEffect } from 'react'
 import {
   CAvatar,
   CButton,
@@ -50,6 +49,7 @@ import avatar3 from 'src/assets/images/avatars/3.jpg'
 import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
+import { useSelector } from 'react-redux'
 
 const WidgetsDropdown = lazy(() => import('../widgets/WidgetsDropdown.js'))
 const WidgetsBrand = lazy(() => import('../widgets/WidgetsBrand.js'))
@@ -58,6 +58,12 @@ const Dashboard = () => {
   const random = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
+
+  const user = useSelector((state) => state.users)
+
+  useEffect(() => {
+    console.log(user)
+  }, [user])
 
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },

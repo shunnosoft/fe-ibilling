@@ -1,8 +1,10 @@
 import React from 'react'
 import './landing.css'
 import { Link } from 'react-router-dom'
+// import { IsAuth } from 'src/ProtectedRoute'
 
 const Landing = () => {
+  // console.log(IsAuth)
   return (
     <div className="logiginWrapper">
       <div className="container">

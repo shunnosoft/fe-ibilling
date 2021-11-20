@@ -1,0 +1,43 @@
+.Loader {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  background: url('https://thumbs.gfycat.com/SpryNegligibleLeafcutterant-size_restricted.gif')
+    center no-repeat;
+  background-size: 60px;
+  background-color: rgb(221 221 221 / 36%);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  display: none;
+}
+.inputClass {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+label {
+  padding: 5px 0;
+  font-weight: 400;
+  color: #3c3c3c;
+  font-size: 14px;
+}
+
+.submitBtn {
+  margin-top: 10px;
+  background: var(--primary-color);
+  border: none;
+  padding: 10px 20px !important;
+  border-radius: 5px;
+  font-weight: 600;
+  color: white;
+}
+
+a.RegisterToHomeButton {
+  padding: 9px 28px;
+  background: #727171;
+  border-radius: 6px;
+  color: white;
+  margin-left: 5px;
+  font-weight: bold;
+}

@@ -43,15 +43,17 @@
   width: fit-content;
   padding: 7px 34px;
   border-radius: 30px;
-  background: linear-gradient(1deg, #201f1f, #7e79f5);
+  background: linear-gradient(5deg, #201f1f, #7e79f5);
   color: #ffffff;
-  box-shadow: 0px 4px 10px rgb(0 0 0 / 41%);
-  transition: 0.3s;
+  /* box-shadow: 0px 4px 10px rgb(0 0 0 / 41%); */
+  transition: 0.2s;
   border: 2px ​solid #343d534d;
 }
 .custom-btn:hover {
+  transition: 0.2s;
   color: white;
   box-shadow: none;
+  background: linear-gradient(23deg, #353434, #7996f5);
 }
 a {
   text-decoration: none;
