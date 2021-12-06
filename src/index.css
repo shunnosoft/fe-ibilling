@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap");
+
+:root {
+  --primaryColor: rgb(148, 73, 245);
+  --seconderyColor: #f07f1f;
+  /* --lightFront: white;
+  --darkFront: rgb(38, 46, 39);
+  -titlecolor: rgb(243, 243, 243); */
+}
+
+* {
+  font-family: "Hind Siliguri", sans-serif;
+  /* font-family: "Roboto", sans-serif; */
+  margin: 0;
+  padding: 0;
+}
+body {
+  color: #77828d;
+}
+a {
+  text-decoration: none;
+}
+.table {
+  --bs-table-striped-color: inherit !important;
+  color: inherit !important;
+}

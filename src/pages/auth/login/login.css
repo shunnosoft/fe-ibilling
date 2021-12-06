@@ -1,0 +1,50 @@
+.Loader {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  background: url("https://thumbs.gfycat.com/SpryNegligibleLeafcutterant-size_restricted.gif")
+    center no-repeat;
+  background-size: 60px;
+  background-color: rgb(221 221 221 / 36%);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  display: none;
+}
+.loginWeapper {
+  width: 100%;
+  height: 93.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-floating > label {
+  padding: 0.3rem 0.75rem !important;
+  color: #686868 !important;
+}
+.login-Logo {
+  border-radius: 20px;
+}
+.form-signin {
+  width: 300px;
+  margin: 0 auto;
+}
+.cstm-login-btn {
+  width: 150px;
+  font-weight: 600;
+  background: var(--primaryColor) !important;
+  border: none !important;
+  padding: 10px !important;
+}
+.cstm-login-cancle {
+  margin-left: 10px;
+  padding: 9px 19px;
+}
+.FotGetPassword {
+  text-decoration: none;
+}
+.errorMessage {
+  color: rgb(255, 81, 0);
+  padding-top: 3px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}

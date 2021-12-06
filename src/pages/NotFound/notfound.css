@@ -1,0 +1,34 @@
+.Notfound {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.NotfoundEmoji {
+  font-size: 100px;
+  margin-bottom: 10px;
+  color: #ffa8a8;
+}
+.Notfound > h2 {
+  color: #838383;
+}
+.goBackIcon {
+  cursor: pointer;
+  font-size: 30px;
+  color: rgb(0 167 0);
+  transition: 0.3s;
+  background: #b6d9b25c;
+  width: 100px;
+  height: 30px;
+  margin-top: 40px;
+  padding: 3px;
+  border-radius: 25px;
+}
+.goBackIcon:hover {
+  color: rgb(4, 82, 4);
+}

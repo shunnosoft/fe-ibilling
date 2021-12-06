@@ -1,0 +1,81 @@
+.collectorTitle {
+  font-size: 24px;
+  padding: 20px 0;
+  font-weight: 600;
+}
+.collectorWrapper {
+  padding: 20px;
+}
+.addNewCollector {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+.addNewCollector > p {
+  font-size: 20px;
+  font-weight: 700;
+}
+.addcutmButton {
+  width: 50px;
+  height: 35px;
+  padding: 7px;
+  font-size: 16px;
+  color: white;
+  background: #38a3ff;
+  border-radius: 7px;
+  box-shadow: 2px 2px 2px #38a2ff50;
+  margin-right: 10px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.addcutmButton:hover {
+  box-shadow: none;
+}
+
+.searchCollector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  margin: 20px 0px !important;
+  box-shadow: 3px 3px 3px #46464629;
+  background: var(--primaryColor);
+  border-radius: 7px;
+  color: white;
+}
+.allCollector {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 7px;
+}
+.allCollector > span {
+  padding: 0px 14px;
+  background: rgb(0 0 0 / 13%);
+  border-radius: 21px;
+  margin-left: 6px;
+}
+
+.collectorSearch {
+  /* border: 2px solid #fff; */
+  border-radius: 5px;
+  padding: 0px;
+  background: none;
+  text-align: right;
+}
+
+.search {
+  width: 85%;
+  border: none;
+  padding: 5px 9px;
+  background: white;
+  border-radius: 5px 0 0 5px;
+}
+.search:focus {
+  outline: none;
+}
+.searchButton {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+}
