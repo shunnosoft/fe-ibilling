@@ -8,3 +8,6 @@ export default axios.create({
 
 // http://137.184.69.182
 // http://localhost:3080
+
+// /ispOwner/manager
+// /ispOwner/reseller
