@@ -1,6 +1,6 @@
 import React from "react";
 import "./header.css";
-import { Background, TitleColor } from "../../../assets/js/theme";
+import { FourGround, TitleColor } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -33,8 +33,8 @@ export default function Header(props) {
     );
 
   return (
-    <Background>
-      <div className="header">
+    <div className="header">
+      <FourGround>
         <div className="container-fluied">
           <header className="headerBar">
             <div className="logoSide">
@@ -59,6 +59,7 @@ export default function Header(props) {
                       className="profileDropdownImg"
                     />
                   </button>
+
                   <ul className="dropdown-menu">
                     {HeaderData.map((val, key) => {
                       return (
@@ -90,7 +91,7 @@ export default function Header(props) {
             </div>
           </header>
         </div>
-      </div>
-    </Background>
+      </FourGround>
+    </div>
   );
 }

@@ -24,7 +24,7 @@
   color: white;
   background: #38a3ff;
   border-radius: 7px;
-  box-shadow: 2px 2px 2px #38a2ff50;
+  /* box-shadow: 2px 2px 2px #383c3f50; */
   margin-right: 10px;
   transition: 0.3s;
   cursor: pointer;
@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 7px 20px;
   margin: 20px 0px !important;
   box-shadow: 3px 3px 3px #46464629;
   background: var(--primaryColor);
@@ -45,8 +45,8 @@
   color: white;
 }
 .allCollector {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 400;
   margin-top: 7px;
 }
 .allCollector > span {
@@ -68,8 +68,8 @@
   width: 85%;
   border: none;
   padding: 5px 9px;
-  background: white;
-  border-radius: 5px 0 0 5px;
+  background: #7037b9;
+  border-radius: 5px;
 }
 .search:focus {
   outline: none;
@@ -77,5 +77,6 @@
 .searchButton {
   padding: 5px 10px;
   border: none;
-  border-radius: 0 5px 5px 0;
+  background: none;
+  color: #4c2d74;
 }

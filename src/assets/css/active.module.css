@@ -1,3 +1,4 @@
 .active {
   color: white;
+  background: var(--primaryColor);
 }

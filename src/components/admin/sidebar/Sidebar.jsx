@@ -1,6 +1,6 @@
 import React from "react";
 import "./sidebar.css";
-import { TitleColor } from "../../../assets/js/theme";
+import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
 import { List, XCircleFill } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import { AllRoutes } from "../../../routes/router";
@@ -23,34 +23,39 @@ export default function Sidebar() {
         <div className="container menuIcon">
           <List onClick={addSidebar} className="ListIcon" />
         </div>
-
         <div className="sidebar">
-          <h2 className="adminDashboardTitle">
-            Admin Dashboard
-            <XCircleFill className="removeSidebar" onClick={removeSidebar} />
-          </h2>
+          <FourGround>
+            <h2 className="adminDashboardTitle">
+              Admin Dashboard
+              <XCircleFill className="removeSidebar" onClick={removeSidebar} />
+            </h2>
 
-          <ul className="sidebarUl">
-            {AllRoutes.map((val, key) => {
-              return (
-                <NavLink
-                  key={key}
-                  to={val.link}
-                  className={(navInfo) =>
-                    navInfo.isActive ? activeClass.active : ""
-                  }
-                >
-                  <li
-                    className="sidebarItems"
-                    id={window.location.pathname === val.link ? "active" : ""}
+            <ul className="sidebarUl">
+              {AllRoutes.map((val, key) => {
+                return (
+                  <NavLink
+                    key={key}
+                    to={val.link}
+                    className={(navInfo) =>
+                      navInfo.isActive ? activeClass.active : ""
+                    }
                   >
-                    <div className="sidebarIcon">{val.icon}</div>
-                    <span>{val.title}</span>
-                  </li>
-                </NavLink>
-              );
-            })}
-          </ul>
+                    <FontColor>
+                      <li
+                        className="sidebarItems"
+                        id={
+                          window.location.pathname === val.link ? "active" : ""
+                        }
+                      >
+                        <div className="sidebarIcon">{val.icon}</div>
+                        <span>{val.title}</span>
+                      </li>
+                    </FontColor>
+                  </NavLink>
+                );
+              })}
+            </ul>
+          </FourGround>
         </div>
         {/* <span className="unblock"></span> */}
       </div>

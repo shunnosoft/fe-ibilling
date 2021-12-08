@@ -3,13 +3,13 @@ const lightTheme = {
   body: "#f1f0f0",
   furGround: "#fff",
   titleColor: "#fff",
-  fontColor: "rgb(58, 63, 59)",
+  fontColor: "rgb(84 84 84)",
 };
 const darkTheme = {
-  body: "#323032",
-  furGround: "#3a3a3a",
+  body: "#121317",
+  furGround: "#1A1C23",
   titleColor: "#000",
-  fontColor: "#cdcdcd",
+  fontColor: "#938f8f",
 };
 
 export const themes = {

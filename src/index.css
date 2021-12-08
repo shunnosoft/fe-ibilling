@@ -20,6 +20,7 @@ body {
 a {
   text-decoration: none;
 }
+
 .table {
   --bs-table-striped-color: inherit !important;
   color: inherit !important;
