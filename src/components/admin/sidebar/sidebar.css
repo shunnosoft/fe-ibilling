@@ -32,6 +32,7 @@ a {
   font-weight: bold;
   /* border-bottom: 1px dotted; */
   padding: 20px 0 15px 40px;
+  color: var(--primaryColor);
 }
 .sidebarUl {
   padding: 0px;
