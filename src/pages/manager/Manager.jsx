@@ -2,15 +2,12 @@ import React from "react";
 import { PersonPlusFill, GearFill, Search } from "react-bootstrap-icons";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-// import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 // internal imports
 import "./manager.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
-// import { ManagerTextField } from "./ManagerTextField";
 import { FtextField } from "../../components/common/FtextField";
 
 export default function Manager() {

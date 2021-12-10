@@ -21,7 +21,7 @@ export default function Collector() {
               <div
                 className="modal fade modal-dialog-scrollable "
                 id="exampleModal"
-                tabindex="-1"
+                tabIndex="-1"
                 aria-labelledby="exampleModalLabel"
                 aria-hidden="true"
               >
@@ -125,7 +125,7 @@ export default function Collector() {
                   </div>
                   {/* table */}
                   <div className="table-responsive-lg">
-                    <table class="table table-striped ">
+                    <table className="table table-striped ">
                       <thead>
                         <tr>
                           <th scope="col">First</th>
