@@ -1,6 +1,6 @@
 import React from "react";
 import "./header.css";
-import { FourGround, TitleColor } from "../../../assets/js/theme";
+import { FourGround } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -43,7 +43,7 @@ export default function Header(props) {
             </div>
             <div className="headerLinks">
               <div className="darkLight" onClick={changeTHeme}>
-                <TitleColor>{icon}</TitleColor>
+                {icon}
               </div>
               {isAuth ? (
                 <div className="dropdown">
@@ -83,9 +83,7 @@ export default function Header(props) {
                 </div>
               ) : (
                 <NavLink to="/login">
-                  <TitleColor>
-                    <p className="goToLoginPage">Login</p>
-                  </TitleColor>
+                  <p className="goToLoginPage">Login</p>
                 </NavLink>
               )}
             </div>
