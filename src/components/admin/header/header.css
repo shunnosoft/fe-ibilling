@@ -114,3 +114,9 @@
 .logOutTxt {
   color: rgb(251 173 143) !important;
 }
+
+@media only screen and (max-width: 720px) {
+  .headerLinks {
+    margin-right: 20px;
+  }
+}
