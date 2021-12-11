@@ -7,7 +7,7 @@ a {
   height: 100vh;
   position: fixed;
   /* background: linear-gradient(90deg, #9449f5, rgb(148 73 245 / 0%)); */
-  backdrop-filter: blur(50px);
+  padding: 10px 0;
   z-index: 100;
 }
 #active {
@@ -32,11 +32,20 @@ a {
   font-weight: bold;
   /* border-bottom: 1px dotted; */
   padding: 20px 0 15px 40px;
-  color: var(--primaryColor);
+  color: var(--primaryColor) !important;
+  cursor: pointer;
+}
+.GotoHomeFromDashboard {
+  font-size: 20px;
+  margin: -4px 10px 0px -3px;
+}
+.sidebarLinksName {
+  padding-top: 5px;
 }
 .sidebarUl {
   padding: 0px;
   height: 100vh;
+  padding-top: 10px;
 }
 .sidebarItems {
   list-style: none;

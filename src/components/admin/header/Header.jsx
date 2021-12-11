@@ -37,10 +37,7 @@ export default function Header(props) {
       <FourGround>
         <div className="container-fluied">
           <header className="headerBar">
-            <div className="logoSide">
-              {/* <h2></h2>
-              <BarChart className="activity" /> */}
-            </div>
+            <div className="logoSide">{/* <h2>Bayanno pay</h2> */}</div>
             <div className="headerLinks">
               <div className="darkLight" onClick={changeTHeme}>
                 {icon}
