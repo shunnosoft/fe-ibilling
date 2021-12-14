@@ -17,15 +17,15 @@
   font-weight: 700;
 }
 .addcutmButton {
-  width: 50px;
-  height: 35px;
-  padding: 7px;
+  width: 55px;
+  height: 40px;
+  padding: 10px;
   font-size: 16px;
-  color: white;
-  background: #38a3ff;
+  color: #fff;
+  background: #0ba36a;
   border-radius: 7px;
-  /* box-shadow: 2px 2px 2px #383c3f50; */
-  margin-right: 10px;
+  box-shadow: 0px 3px 10px #1ab53d87;
+  margin-right: 12px;
   transition: 0.3s;
   cursor: pointer;
 }

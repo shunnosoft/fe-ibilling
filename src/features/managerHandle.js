@@ -9,7 +9,6 @@ const hideModal = () => {
 
   // close modal
   document.querySelector(".btn-close").click();
-
   alertData.classList.add("alertShow");
 
   setTimeout(() => {
