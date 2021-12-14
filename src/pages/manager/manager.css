@@ -1,6 +1,28 @@
 .submitSection {
   margin-top: 20px;
 }
+.alert {
+  display: none;
+}
+.alertShow {
+  display: block;
+}
+.alert-success {
+  color: #06a75a !important;
+  background-color: #82ffc640 !important;
+  border-color: #4effaf52 !important;
+}
 .marginLeft {
   margin-left: 10px;
+}
+
+@media only screen and (max-width: 900px) {
+  .searchCollector {
+    padding: 15px 0;
+  }
+  .collectorSearch {
+    text-align: left;
+    border: 1px solid;
+    margin-top: 10px;
+  }
 }

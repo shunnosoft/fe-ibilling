@@ -17,7 +17,9 @@ export const asyncRegister = async (userData) => {
     })
     .catch((err) => {
       document.querySelector(".Loader").style.display = "none";
-      toast(err.response.data.message);
+      if (err.response) {
+        toast(err.response.data.message);
+      }
     });
 };
 
@@ -42,7 +44,8 @@ export const asyncLogin = async (loginData) => {
         const ispWoner = res.data.ispOwner;
         localStorage.setItem("token", JSON.stringify(bayannoAccess));
         localStorage.setItem("ispWoner", JSON.stringify(ispWoner));
-        window.location.href = "/home";
+        window.location.href = "/";
+        // window.location.reload();
       } else {
         // show toast
         toast("Something went wrong here !");

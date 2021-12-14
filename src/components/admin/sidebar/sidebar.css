@@ -76,12 +76,22 @@ a {
   .toggleSidebar {
     display: block;
   }
+  .adminDashboardTitle {
+    padding-left: 30px;
+  }
   .removeSidebar {
     display: initial;
-    margin-left: 15px;
-    font-size: 18px;
+    font-size: 40px;
     cursor: pointer;
-    color: rgb(209 102 112);
+    color: rgb(26 28 35);
+    position: absolute;
+    margin-left: 39px;
+    background: #d3d3d3;
+    border-radius: 50%;
+    box-shadow: 0px 0px 15px;
+    top: 45%;
+    border: 2px solid;
+    padding: 1px;
   }
   .menuIcon {
     width: 100px !important;
@@ -93,5 +103,6 @@ a {
     position: absolute;
     z-index: 1000;
     margin-top: 6px;
+    margin-left: 20px;
   }
 }

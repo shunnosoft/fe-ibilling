@@ -1,14 +1,18 @@
 import React from "react";
 import { PersonPlusFill, GearFill, Search } from "react-bootstrap-icons";
 import { Formik, Form } from "formik";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import * as Yup from "yup";
 
 // internal imports
 import "./manager.css";
+import "../collector/collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { FtextField } from "../../components/common/FtextField";
+import { addNewManager } from "../../features/managerHandle";
 
 export default function Manager() {
   const managerValidate = Yup.object({
@@ -28,15 +32,22 @@ export default function Manager() {
   });
 
   const addManagerHandle = (data) => {
-    console.log("Handle Manager: ", data);
+    addNewManager(data);
   };
 
   return (
     <>
       <Sidebar />
+      <ToastContainer
+        toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
+      />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
+            <div className="alert alert-success mt-3" id="successAlert">
+              <strong>ম্যানেজার অ্যাড সফল হয়েছে!</strong> এখন সে ম্যানেজার এর
+              অ্যাকশন গুলা পারফর্ম করতে পারে ।
+            </div>
             <FontColor>
               {/* Model */}
               <div

@@ -97,9 +97,7 @@ export default function Register() {
     <FontColor>
       <div className="register">
         <div className="Loader"></div>
-        <ToastContainer
-          toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
-        />
+        <ToastContainer />
         <div className="container">
           <FourGround>
             <Formik
