@@ -10,7 +10,7 @@ import { FontColor, FourGround } from "../../../assets/js/theme";
 import { NavLink } from "react-router-dom";
 import "./register.css";
 import { initialValues, TextField } from "./TextField";
-import { asyncRegister } from "../../../features/authAsyncAction";
+import { asyncRegister } from "../../../features/actions/authAsyncAction";
 
 export default function Register() {
   const [packValue, setPackValue] = useState("");

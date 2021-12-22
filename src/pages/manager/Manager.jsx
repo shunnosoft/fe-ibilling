@@ -1,9 +1,18 @@
 import React from "react";
-import { PersonPlusFill, GearFill, Search } from "react-bootstrap-icons";
+import {
+  PersonPlusFill,
+  GearFill,
+  Search,
+  ThreeDots,
+  ArchiveFill,
+  PenFill,
+  PersonFill,
+} from "react-bootstrap-icons";
 import { Formik, Form } from "formik";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as Yup from "yup";
+import { useSelector } from "react-redux";
 
 // internal imports
 import "./manager.css";
@@ -12,9 +21,15 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { FtextField } from "../../components/common/FtextField";
-import { addNewManager } from "../../features/managerHandle";
+import { addNewManager } from "../../features/actions/managerHandle";
+import { getManager } from "../../features/authSlice";
+import { NavLink } from "react-router-dom";
 
 export default function Manager() {
+  const manager = useSelector(getManager);
+
+  console.log("From manager js: ", manager);
+
   const managerValidate = Yup.object({
     name: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
@@ -78,7 +93,7 @@ export default function Manager() {
                           address: "",
                           email: "",
                           nid: "",
-                          photo: "",
+                          // photo: "",
                         }}
                         validationSchema={managerValidate}
                         onSubmit={(values) => {
@@ -164,7 +179,7 @@ export default function Manager() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট ম্যানেজার : <span>34</span>
+                          মোট ম্যানেজার : <span>1</span>
                         </h4>
                       </div>
 
@@ -188,54 +203,62 @@ export default function Manager() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
-                          <th scope="col">First</th>
-                          <th scope="col">Second</th>
-                          <th scope="col">Last</th>
-                          <th scope="col">Handle</th>
-                          <th scope="col">bundle</th>
-                          <th scope="col">Thandle</th>
+                          <th scope="col">নাম</th>
+                          <th scope="col">এড্রেস</th>
+                          <th scope="col">ইমেইল</th>
+                          <th scope="col">মোবাইল</th>
+                          <th scope="col">অ্যাকশন</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                          <td>@mdo</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                          <td>@fat</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                          <td>@fat</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                          <td>@fat</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                          <td>@mdo</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
+                          <td>{manager.name}</td>
+                          <td>{manager.address}</td>
+                          <td>{manager.email}</td>
+                          <td>{manager.mobile}</td>
+                          <td>
+                            <div className="dropdown">
+                              <ThreeDots
+                                className="dropdown-toggle"
+                                id="ManagerDropdownMenu"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                              />
+                              <ul
+                                className="dropdown-menu"
+                                aria-labelledby="ManagerDropdownMenu"
+                              >
+                                <li>
+                                  <NavLink
+                                    className="dropdown-item actionManager"
+                                    to="#"
+                                  >
+                                    <div className="ManagerAactionLi">
+                                      <ArchiveFill />
+                                      <p className="actionP">ডিলিট</p>
+                                    </div>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink className="dropdown-item" to="#">
+                                    <div className="ManagerAactionLi">
+                                      <PenFill />
+                                      <p className="actionP">এডিট</p>
+                                    </div>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink className="dropdown-item" to="#">
+                                    <div className="ManagerAactionLi">
+                                      <PersonFill />
+                                      <p className="actionP">বিস্তারিত</p>
+                                    </div>
+                                  </NavLink>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
                         </tr>
                       </tbody>
                     </table>

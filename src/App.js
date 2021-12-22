@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import "./App.css";
 
 // external imports
 import { ThemeProvider } from "styled-components";
@@ -9,7 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import jwtDecode from "jwt-decode";
 
 // internal imports
-import { setAuth } from "./features/authSlice";
+import { setAuth, setIspOwner } from "./features/authSlice";
+import { fetchAsyncManager } from "./features/authSlice";
 // import apiLink from "./api/apiLink";
 
 // internal pages
@@ -28,23 +28,32 @@ import Manager from "./pages/manager/Manager";
 function App() {
   const [theme, setTheme] = useState("light");
   const { isAuth } = useSelector((state) => state.auth);
+
   // const [pageLoading, setpageLoading] = useState(true);
   const dispatch = useDispatch();
-  // const naviagate = useNavigate();
+
+  // get data from localstroge
   const token = JSON.parse(localStorage.getItem("token"));
+  const ispWoner = JSON.parse(localStorage.getItem("ispWoner"));
 
   useEffect(() => {
     if (token) {
       const decodeed = jwtDecode(token.token);
       if (decodeed.type === "access") {
         dispatch(setAuth(true));
-        // window.location.href = "/home";
       }
     } else {
-      console.log("Token Nai");
+      console.log("There is no token");
       dispatch(setAuth(false));
     }
   }, [dispatch, token]);
+
+  useEffect(() => {
+    if (ispWoner) {
+      dispatch(setIspOwner(ispWoner));
+    }
+    dispatch(fetchAsyncManager(ispWoner.id));
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={themes[theme]}>
@@ -72,9 +81,6 @@ function App() {
           />
 
           <Route path="/register/success" element={<Success />} />
-
-          {/* <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} /> */}
 
           <Route
             path="/customer"

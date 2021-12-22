@@ -1,4 +1,4 @@
-import apiLink from "../api/apiLink";
+import apiLink from "../../api/apiLink";
 import { toast } from "react-toastify";
 
 const hideModal = () => {
@@ -21,13 +21,18 @@ export const addNewManager = async (managerData) => {
 
   button.style.display = "none";
 
+  // get ISP owner
+  const ispOwner = JSON.parse(localStorage.getItem("ispWoner"));
+
+  const mainData = { ...managerData, ispOwner: ispOwner.id };
+
   await apiLink({
     url: "/v1/ispOwner/manager",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    data: managerData,
+    data: mainData,
   })
     .then((res) => {
       console.log(res.data);

@@ -1,4 +1,4 @@
-import apiLink from "../api/apiLink";
+import apiLink from "../../api/apiLink";
 import { toast } from "react-toastify";
 
 // registration handle

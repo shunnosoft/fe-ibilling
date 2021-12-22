@@ -5,11 +5,12 @@ import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { BoxArrowLeft } from "react-bootstrap-icons";
+// import apiLink from "../../../api/apiLink";
 
 export default function Header(props) {
-  const { isAuth } = useSelector((state) => state.auth);
+  const { isAuth, ispOwner } = useSelector((state) => state.auth);
 
-  console.log("From home Header: ", isAuth);
+  // console.log("From home Header: ", isAuth);
 
   const changeTHeme = () => {
     if (props.theme === "light") {
@@ -19,7 +20,17 @@ export default function Header(props) {
     }
   };
 
-  const handleLogOut = () => {
+  // logout
+  const handleLogOut = async () => {
+    // await apiLink({
+    //   url: "/v1/auth/logout",
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   data: "",
+    // });
+
     localStorage.removeItem("token");
     localStorage.removeItem("ispWoner");
     window.location.reload();
@@ -49,7 +60,7 @@ export default function Header(props) {
                     className="dropdown-toggle profileDropdownBtn"
                     data-bs-toggle="dropdown"
                   >
-                    রাকিবুজ্জামান
+                    {ispOwner ? ispOwner.name : "Owner"}
                     <img
                       src="https://us.123rf.com/450wm/luismolinero/luismolinero1909/luismolinero190917934/130592146-handsome-young-man-in-pink-shirt-over-isolated-blue-background-keeping-the-arms-crossed-in-frontal-p.jpg?ver=6"
                       alt=""
