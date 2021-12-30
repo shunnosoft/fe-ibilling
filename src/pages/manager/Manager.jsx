@@ -3,7 +3,7 @@ import {
   PersonPlusFill,
   GearFill,
   Search,
-  ThreeDots,
+  ThreeDotsVertical,
   ArchiveFill,
   PenFill,
   PersonFill,
@@ -27,8 +27,6 @@ import { NavLink } from "react-router-dom";
 
 export default function Manager() {
   const manager = useSelector(getManager);
-
-  console.log("From manager js: ", manager);
 
   const managerValidate = Yup.object({
     name: Yup.string()
@@ -218,7 +216,7 @@ export default function Manager() {
                           <td>{manager.mobile}</td>
                           <td>
                             <div className="dropdown">
-                              <ThreeDots
+                              <ThreeDotsVertical
                                 className="dropdown-toggle"
                                 id="ManagerDropdownMenu"
                                 type="button"

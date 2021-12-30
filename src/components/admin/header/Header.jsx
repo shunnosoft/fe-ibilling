@@ -5,7 +5,7 @@ import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { BoxArrowLeft } from "react-bootstrap-icons";
-// import apiLink from "../../../api/apiLink";
+import apiLink from "../../../api/apiLink";
 
 export default function Header(props) {
   const { isAuth, ispOwner } = useSelector((state) => state.auth);
@@ -22,14 +22,16 @@ export default function Header(props) {
 
   // logout
   const handleLogOut = async () => {
-    // await apiLink({
-    //   url: "/v1/auth/logout",
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   data: "",
-    // });
+    await apiLink({
+      url: "/v1/auth/logout",
+      method: "POST",
+      // headers: {
+      //   "Content-Type": "application/json",
+      // // },
+      // data: "",
+    })
+      .then((res) => console.log("Your are logged Out!"))
+      .catch((err) => console.log("There is an error"));
 
     localStorage.removeItem("token");
     localStorage.removeItem("ispWoner");

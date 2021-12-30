@@ -34,7 +34,6 @@ function App() {
 
   // get data from localstroge
   const token = JSON.parse(localStorage.getItem("token"));
-  const ispWoner = JSON.parse(localStorage.getItem("ispWoner"));
 
   useEffect(() => {
     if (token) {
@@ -43,16 +42,20 @@ function App() {
         dispatch(setAuth(true));
       }
     } else {
-      console.log("There is no token");
+      console.log("There is no valid token");
       dispatch(setAuth(false));
     }
   }, [dispatch, token]);
 
   useEffect(() => {
-    if (ispWoner) {
-      dispatch(setIspOwner(ispWoner));
+    function managerHandle() {
+      const ispWoner = JSON.parse(localStorage.getItem("ispWoner"));
+      if (ispWoner) {
+        dispatch(setIspOwner(ispWoner));
+        dispatch(fetchAsyncManager(ispWoner.id));
+      }
     }
-    dispatch(fetchAsyncManager(ispWoner.id));
+    managerHandle();
   }, [dispatch]);
 
   return (
