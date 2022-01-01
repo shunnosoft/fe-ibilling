@@ -25,17 +25,13 @@ export default function Header(props) {
     await apiLink({
       url: "/v1/auth/logout",
       method: "POST",
-      // headers: {
-      //   "Content-Type": "application/json",
-      // // },
-      // data: "",
     })
       .then((res) => console.log("Your are logged Out!"))
       .catch((err) => console.log("There is an error"));
 
     localStorage.removeItem("token");
     localStorage.removeItem("ispWoner");
-    window.location.reload();
+    // window.location.reload();
   };
 
   const icon =

@@ -24,6 +24,7 @@ import { FtextField } from "../../components/common/FtextField";
 import { addNewManager } from "../../features/actions/managerHandle";
 import { getManager } from "../../features/authSlice";
 import { NavLink } from "react-router-dom";
+import ReadModals from "../../components/modals/ReadModals";
 
 export default function Manager() {
   const manager = useSelector(getManager);
@@ -57,6 +58,9 @@ export default function Manager() {
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
+            {/* manager modal */}
+            <ReadModals managerDetails={manager} />
+
             <div className="alert alert-success mt-3" id="successAlert">
               <strong>ম্যানেজার অ্যাড সফল হয়েছে!</strong> এখন সে ম্যানেজার এর
               অ্যাকশন গুলা পারফর্ম করতে পারে ।
@@ -246,7 +250,10 @@ export default function Manager() {
                                     </div>
                                   </NavLink>
                                 </li>
-                                <li>
+                                <li
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#exampleModal"
+                                >
                                   <NavLink className="dropdown-item" to="#">
                                     <div className="ManagerAactionLi">
                                       <PersonFill />
