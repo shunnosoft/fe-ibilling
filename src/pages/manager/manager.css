@@ -18,6 +18,7 @@
 .ManagerAactionLi {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 .actionP {
   margin: 10px;

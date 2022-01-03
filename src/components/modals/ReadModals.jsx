@@ -7,8 +7,8 @@ export default function ReadModals(props) {
       {/* <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"></div> */}
       <div
         className="modal fade"
-        id="exampleModal"
-        tabindex="-1"
+        id="showDwtailsModel"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -51,15 +51,6 @@ export default function ReadModals(props) {
                 </thead>
               </table>
             </div>
-            {/* <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div> */}
           </div>
         </div>
       </div>

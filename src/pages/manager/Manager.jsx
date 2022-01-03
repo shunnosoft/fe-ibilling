@@ -21,10 +21,13 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { FtextField } from "../../components/common/FtextField";
-import { addNewManager } from "../../features/actions/managerHandle";
+import {
+  addNewManager,
+  deleteManager,
+} from "../../features/actions/managerHandle";
 import { getManager } from "../../features/authSlice";
-import { NavLink } from "react-router-dom";
 import ReadModals from "../../components/modals/ReadModals";
+import WriteModals from "../../components/modals/WriteModals";
 
 export default function Manager() {
   const manager = useSelector(getManager);
@@ -49,6 +52,10 @@ export default function Manager() {
     addNewManager(data);
   };
 
+  const deleteManagerHandler = () => {
+    deleteManager();
+  };
+
   return (
     <>
       <Sidebar />
@@ -66,6 +73,9 @@ export default function Manager() {
               অ্যাকশন গুলা পারফর্ম করতে পারে ।
             </div>
             <FontColor>
+              {/* edit manager */}
+              <WriteModals manager={manager} />
+
               {/* Model */}
               <div
                 className="modal fade modal-dialog-scrollable "
@@ -83,6 +93,7 @@ export default function Manager() {
                       <button
                         type="button"
                         className="btn-close"
+                        id="closeAddManagerBtn"
                         data-bs-dismiss="modal"
                         aria-label="Close"
                       ></button>
@@ -213,58 +224,64 @@ export default function Manager() {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>{manager.name}</td>
-                          <td>{manager.address}</td>
-                          <td>{manager.email}</td>
-                          <td>{manager.mobile}</td>
-                          <td>
-                            <div className="dropdown">
-                              <ThreeDotsVertical
-                                className="dropdown-toggle"
-                                id="ManagerDropdownMenu"
-                                type="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                              />
-                              <ul
-                                className="dropdown-menu"
-                                aria-labelledby="ManagerDropdownMenu"
-                              >
-                                <li>
-                                  <NavLink
-                                    className="dropdown-item actionManager"
-                                    to="#"
-                                  >
-                                    <div className="ManagerAactionLi">
-                                      <ArchiveFill />
-                                      <p className="actionP">ডিলিট</p>
-                                    </div>
-                                  </NavLink>
-                                </li>
-                                <li>
-                                  <NavLink className="dropdown-item" to="#">
-                                    <div className="ManagerAactionLi">
-                                      <PenFill />
-                                      <p className="actionP">এডিট</p>
-                                    </div>
-                                  </NavLink>
-                                </li>
-                                <li
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#exampleModal"
+                        {manager.name ? (
+                          <tr>
+                            <td>{manager.name}</td>
+                            <td>{manager.address}</td>
+                            <td>{manager.email}</td>
+                            <td>{manager.mobile}</td>
+                            <td>
+                              <div className="dropdown">
+                                <ThreeDotsVertical
+                                  className="dropdown-toggle"
+                                  id="ManagerDropdownMenu"
+                                  type="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                />
+                                <ul
+                                  className="dropdown-menu"
+                                  aria-labelledby="ManagerDropdownMenu"
                                 >
-                                  <NavLink className="dropdown-item" to="#">
-                                    <div className="ManagerAactionLi">
-                                      <PersonFill />
-                                      <p className="actionP">বিস্তারিত</p>
+                                  <li onClick={deleteManagerHandler}>
+                                    <div className="dropdown-item actionManager">
+                                      <div className="ManagerAactionLi">
+                                        <ArchiveFill />
+                                        <p className="actionP">ডিলিট</p>
+                                      </div>
                                     </div>
-                                  </NavLink>
-                                </li>
-                              </ul>
-                            </div>
-                          </td>
-                        </tr>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#writeModal"
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="ManagerAactionLi">
+                                        <PenFill />
+                                        <p className="actionP">এডিট</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showDwtailsModel"
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="ManagerAactionLi">
+                                        <PersonFill />
+                                        <p className="actionP">বিস্তারিত</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
+                          <tr>
+                            <td>কোনো ম্যানেজার পাওয়া যায়নি </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
