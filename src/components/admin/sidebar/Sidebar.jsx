@@ -28,7 +28,7 @@ export default function Sidebar() {
             <h2>
               <NavLink to="/" className="adminDashboardTitle">
                 <ArrowLeft className="GotoHomeFromDashboard" />
-                Admin Dashboard
+                ড্যাশবোর্ড
               </NavLink>
               <XCircleFill className="removeSidebar" onClick={removeSidebar} />
             </h2>

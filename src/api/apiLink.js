@@ -12,11 +12,3 @@ export default axios.create({
 // /ispOwner/reseller
 // post /api/v1/auth/logout
 // GET /api/v1/ispOwner/manager/:ispOwnerId
-
-// {
-//   "name": "Tomal",
-//   "mobile": "01705472993",
-//   "address": "Santhia",
-//   "email": "tomal@gmail.com",
-//   "nid": "23434234234"
-// }

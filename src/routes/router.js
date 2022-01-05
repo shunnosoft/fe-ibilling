@@ -10,43 +10,28 @@ import {
 } from "react-bootstrap-icons";
 export const AllRoutes = [
   {
-    title: "Home",
+    title: "হোম",
     icon: <HouseDoorFill />,
     link: "/home",
   },
   {
-    title: "Manager",
+    title: "ম্যানেজার",
     icon: <PersonPlus />,
     link: "/manager",
   },
   {
-    title: "Collector",
+    title: "কালেক্টর",
     icon: <CurrencyEuro />,
     link: "/collector",
   },
   {
-    title: "Customer",
+    title: "কাস্টমার",
     icon: <PeopleFill />,
     link: "/customer",
   },
   {
-    title: "Customer Bill",
+    title: "কাস্টমার বিল",
     icon: <Cash />,
     link: "/customer-bill",
-  },
-  {
-    title: "Graph",
-    icon: <GraphUp />,
-    link: "#",
-  },
-  {
-    title: "Apple",
-    icon: <Apple />,
-    link: "#",
-  },
-  {
-    title: "PaintBucket",
-    icon: <PaintBucket />,
-    link: "#",
   },
 ];
