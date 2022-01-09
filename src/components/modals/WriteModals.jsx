@@ -1,10 +1,10 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { FtextField } from "../common/FtextField";
 import * as Yup from "yup";
 
 // internal imports
 import { editManager } from "../../features/actions/managerHandle";
+import { FtextField } from "../common/FtextField";
 
 export default function WriteModals(props) {
   const { manager } = props;

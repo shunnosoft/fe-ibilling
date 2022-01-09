@@ -1,7 +1,19 @@
 .collectorTitle {
-  font-size: 24px;
   padding: 20px 0;
-  font-weight: 600;
+  font-weight: 500;
+  /* background: linear-gradient(45deg, #0ba372, #9449f5); */
+  text-align: center;
+  font-size: 2.4rem;
+  color: white;
+  animation: bgChange 5s ease-in infinite alternate;
+}
+@keyframes bgChange {
+  0% {
+    background: #0ba372;
+  }
+  100% {
+    background: #9449f5;
+  }
 }
 .collectorWrapper {
   padding: 20px;
@@ -32,12 +44,26 @@
 .addcutmButton:hover {
   box-shadow: none;
 }
+.serchingIcon {
+  margin-top: 10px;
+  margin-left: -25px;
+  position: absolute;
+}
 
+.ActionDots {
+  font-size: 24px;
+  color: var(--primaryColor);
+  cursor: pointer;
+}
+.centeringTD {
+  text-align: center;
+  font-weight: 600;
+}
 .searchCollector {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 20px;
+  padding: 7px 0 7px 20px;
   margin: 20px 0px !important;
   box-shadow: 3px 3px 3px #46464629;
   background: var(--primaryColor);
@@ -57,7 +83,6 @@
 }
 
 .collectorSearch {
-  /* border: 2px solid #fff; */
   border-radius: 5px;
   padding: 0px;
   background: none;
@@ -65,7 +90,7 @@
 }
 
 .search {
-  width: 85%;
+  width: 100%;
   border: none;
   padding: 5px 9px;
   background: #7037b9;

@@ -1,0 +1,10 @@
+.customerFormCheck {
+  padding: 0;
+  margin-left: -22px !important;
+}
+
+.customerFormCheck > p {
+  font-weight: 500;
+  color: black;
+  margin-bottom: 7px;
+}

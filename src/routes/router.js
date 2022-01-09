@@ -4,9 +4,6 @@ import {
   PeopleFill,
   PersonPlus,
   Cash,
-  GraphUp,
-  PaintBucket,
-  Apple,
 } from "react-bootstrap-icons";
 export const AllRoutes = [
   {

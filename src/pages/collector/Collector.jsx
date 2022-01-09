@@ -1,11 +1,12 @@
 import React from "react";
-import { PersonPlusFill, GearFill, Search } from "react-bootstrap-icons";
+import { PersonPlusFill, GearFill } from "react-bootstrap-icons";
 
 // internal imports
 import "./collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
+import Footer from "../../components/admin/footer/Footer";
 
 export default function Collector() {
   return (
@@ -116,9 +117,6 @@ export default function Collector() {
                             className="search"
                             placeholder="Search"
                           />
-                          <button type="button" className="searchButton">
-                            <Search />
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -182,6 +180,7 @@ export default function Collector() {
                   </div>
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

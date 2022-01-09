@@ -2,8 +2,7 @@ import React from "react";
 import {
   PersonPlusFill,
   GearFill,
-  Search,
-  ThreeDotsVertical,
+  ThreeDots,
   ArchiveFill,
   PenFill,
   PersonFill,
@@ -28,6 +27,7 @@ import {
 import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
+import Footer from "../../components/admin/footer/Footer";
 
 export default function Manager() {
   const manager = useSelector(getManager);
@@ -73,6 +73,9 @@ export default function Manager() {
               অ্যাকশন গুলা পারফর্ম করতে পারে ।
             </div>
             <FontColor>
+              <FourGround>
+                <h2 className="collectorTitle">ম্যানেজার</h2>
+              </FourGround>
               {/* edit manager */}
               <WriteModals manager={manager} />
 
@@ -172,7 +175,7 @@ export default function Manager() {
               {/* Model */}
 
               <FourGround>
-                <div className="collectorWrapper mt-4">
+                <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
                       <p>অ্যাড ম্যানেজার</p>
@@ -203,9 +206,6 @@ export default function Manager() {
                             className="search"
                             placeholder="Search"
                           />
-                          <button type="button" className="searchButton">
-                            <Search />
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -232,8 +232,8 @@ export default function Manager() {
                             <td>{manager.mobile}</td>
                             <td>
                               <div className="dropdown">
-                                <ThreeDotsVertical
-                                  className="dropdown-toggle"
+                                <ThreeDots
+                                  className="dropdown-toggle ActionDots"
                                   id="ManagerDropdownMenu"
                                   type="button"
                                   data-bs-toggle="dropdown"
@@ -287,6 +287,7 @@ export default function Manager() {
                   </div>
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>
