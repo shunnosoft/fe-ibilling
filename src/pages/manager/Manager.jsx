@@ -220,7 +220,9 @@ export default function Manager() {
                           <th scope="col">এড্রেস</th>
                           <th scope="col">ইমেইল</th>
                           <th scope="col">মোবাইল</th>
-                          <th scope="col">অ্যাকশন</th>
+                          <th scope="col" style={{ textAlign: "center" }}>
+                            অ্যাকশন
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -230,7 +232,7 @@ export default function Manager() {
                             <td>{manager.address}</td>
                             <td>{manager.email}</td>
                             <td>{manager.mobile}</td>
-                            <td>
+                            <td style={{ textAlign: "center" }}>
                               <div className="dropdown">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"

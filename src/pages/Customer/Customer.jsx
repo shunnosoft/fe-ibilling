@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { PersonPlusFill, GearFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  PersonPlusFill,
+  GearFill,
+  ThreeDots,
+  ArchiveFill,
+  PenFill,
+  PersonFill,
+} from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,7 +18,14 @@ import "react-toastify/dist/ReactToastify.css";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerModal from "./CustomerModal";
-import { fetchCustomer, getCustomer } from "../../features/customerSlice";
+import {
+  fetchCustomer,
+  getCustomer,
+  setSingleCustomer,
+  deleteSingleCustomer,
+} from "../../features/customerSlice";
+import CustomerDetails from "./customerCRUD/CustomerDetails";
+import CustomerEdit from "./customerCRUD/CustomerEdit";
 
 export default function Customer() {
   const dispatch = useDispatch();
@@ -21,6 +35,26 @@ export default function Customer() {
 
   let Customers = [];
   Customers = useSelector(getCustomer);
+
+  // get specific customer
+  const getSpecificCustomer = (ID) => {
+    if (Customers !== undefined) {
+      const SingleCustomer = Customers.find((val) => {
+        return val.mobile === ID;
+      });
+      dispatch(setSingleCustomer(SingleCustomer));
+    }
+  };
+
+  // DELETE handler
+  const deleteCustomer = (ID) => {
+    const { ispOwner } = auth;
+    const IDs = {
+      ispID: ispOwner.id,
+      customerID: ID,
+    };
+    deleteSingleCustomer(IDs);
+  };
 
   useEffect(() => {
     const { ispOwner } = auth;
@@ -33,6 +67,7 @@ export default function Customer() {
       <ToastContainer
         toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
       />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -43,6 +78,7 @@ export default function Customer() {
 
               {/* Model start */}
               <CustomerModal />
+              <CustomerEdit />
               {/* Model finish */}
 
               <FourGround>
@@ -118,13 +154,70 @@ export default function Customer() {
                               <td>{val.address}</td>
                               <td>{val.status}</td>
                               <td className="centeringTD">
-                                <ThreeDots className="ActionDots" />
+                                <ThreeDots
+                                  className="dropdown-toggle ActionDots"
+                                  id="customerDrop"
+                                  type="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                />
+
+                                {/* modal */}
+                                <ul
+                                  className="dropdown-menu"
+                                  aria-labelledby="customerDrop"
+                                >
+                                  <li
+                                    onClick={() => {
+                                      deleteCustomer(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item actionManager">
+                                      <div className="customerAction">
+                                        <ArchiveFill />
+                                        <p className="actionP">ডিলিট</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#customerEditModal"
+                                    onClick={() => {
+                                      getSpecificCustomer(val.mobile);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <PenFill />
+                                        <p className="actionP">এডিট</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showCustomerDetails"
+                                    onClick={() => {
+                                      getSpecificCustomer(val.mobile);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <PersonFill />
+                                        <p className="actionP">বিস্তারিত</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+
+                                {/* end */}
                               </td>
                             </tr>
                           ))
                         )}
                       </tbody>
                     </table>
+
+                    <CustomerDetails />
                   </div>
                 </div>
               </FourGround>

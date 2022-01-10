@@ -1,6 +1,6 @@
 .customerFormCheck {
   padding: 0;
-  margin-left: -22px !important;
+  /* margin-left: -22px !important; */
 }
 
 .customerFormCheck > p {
@@ -8,3 +8,22 @@
   color: black;
   margin-bottom: 7px;
 }
+.customerAction {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+}
+.dropdown-menu > li {
+  cursor: pointer;
+  display: block;
+}
+.thSt {
+  color: #2485aa;
+  font-size: 17px;
+}
+/* .dropdown-item {
+  padding: 0px !important;
+}
+.customerAction {
+  padding: 5px 25px;
+} */

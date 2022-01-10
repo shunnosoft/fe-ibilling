@@ -17,14 +17,14 @@ export const AllRoutes = [
     link: "/manager",
   },
   {
-    title: "কালেক্টর",
-    icon: <CurrencyEuro />,
-    link: "/collector",
-  },
-  {
     title: "কাস্টমার",
     icon: <PeopleFill />,
     link: "/customer",
+  },
+  {
+    title: "কালেক্টর",
+    icon: <CurrencyEuro />,
+    link: "/collector",
   },
   {
     title: "কাস্টমার বিল",

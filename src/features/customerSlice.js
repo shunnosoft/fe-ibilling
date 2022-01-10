@@ -20,15 +20,15 @@ export const fetchCustomer = createAsyncThunk(
 // redux
 const initialState = {
   customer: {},
-  isUpdate: false,
+  singleCustomer: {},
 };
 
 const customerSliec = createSlice({
   name: "customer",
   initialState,
   reducers: {
-    setIsUpdate: (state, { payload }) => {
-      state.isUpdate = payload;
+    setSingleCustomer: (state, { payload }) => {
+      state.singleCustomer = payload;
     },
   },
   extraReducers: {
@@ -47,11 +47,12 @@ const customerSliec = createSlice({
   },
 });
 
-export const { setCustomer, setIsUpdate } = customerSliec.actions;
+export const { setCustomer, setSingleCustomer } = customerSliec.actions;
 export const getCustomer = (state) => state.customer.customer;
 export default customerSliec.reducer;
 
 // customer actions
+
 // POST
 export const postCustomer = async (data) => {
   console.log("Customer data form: ", data);
@@ -75,4 +76,39 @@ export const postCustomer = async (data) => {
         toast(err.response.data.message);
       }
     });
+};
+
+// EDIT patch
+export const editCustomer = async (data) => {
+  const { singleCustomerID, ispID, ...sendingData } = data;
+  await apiLink({
+    url: `/v1/ispOwner/customer/${ispID}/${singleCustomerID}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: sendingData,
+  })
+    .then((res) => {
+      if (res.status === 200) {
+        document.querySelector("#customerEditModal").click();
+        alert("কাস্টমার এডিট সফল হয়েছে! ");
+        window.location.reload();
+      }
+    })
+    .catch((err) => {
+      if (err.response) {
+        toast(err.response.data.message);
+      }
+    });
+};
+
+// DELETE
+export const deleteSingleCustomer = async (IDs) => {
+  await apiLink({
+    url: `/v1/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`,
+    method: "DELETE",
+  })
+    .then(() => window.location.reload())
+    .catch((err) => alert("Cannot Delete Customer."));
 };
