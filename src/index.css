@@ -28,6 +28,9 @@ label {
   --bs-table-striped-color: inherit !important;
   color: inherit !important;
 }
+td {
+  font-size: 1.1rem !important;
+}
 
 ::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */

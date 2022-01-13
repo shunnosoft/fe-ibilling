@@ -24,6 +24,7 @@ import Customer from "./pages/Customer/Customer";
 import NotFound from "./pages/NotFound/NotFound";
 import Success from "./pages/success/Success";
 import Manager from "./pages/manager/Manager";
+import Lineman from "./pages/lineman/Lineman";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -90,6 +91,15 @@ function App() {
             element={
               <PrivateRoute auth={isAuth}>
                 <Customer />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/lineman"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <Lineman />
               </PrivateRoute>
             }
           />

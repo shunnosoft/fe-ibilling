@@ -3,6 +3,7 @@ import {
   CurrencyEuro,
   PeopleFill,
   PersonPlus,
+  PersonLinesFill,
   Cash,
 } from "react-bootstrap-icons";
 export const AllRoutes = [
@@ -20,6 +21,11 @@ export const AllRoutes = [
     title: "কাস্টমার",
     icon: <PeopleFill />,
     link: "/customer",
+  },
+  {
+    title: "লাইন-ম্যান",
+    icon: <PersonLinesFill />,
+    link: "/lineman",
   },
   {
     title: "কালেক্টর",

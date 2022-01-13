@@ -1,11 +1,12 @@
 .collectorTitle {
   padding: 20px 0;
   font-weight: 500;
-  /* background: linear-gradient(45deg, #0ba372, #9449f5); */
+  background: linear-gradient(45deg, #0ba372, #9449f5);
   text-align: center;
   font-size: 2.4rem;
   color: white;
-  animation: bgChange 5s ease-in infinite alternate;
+  border-radius: 5px;
+  /* animation: bgChange 5s ease-in infinite alternate; */
 }
 @keyframes bgChange {
   0% {

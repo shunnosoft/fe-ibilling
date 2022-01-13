@@ -1,3 +1,4 @@
+// extarnal imports
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import useDash from "../../assets/css/dash.module.css";
@@ -15,54 +16,58 @@ import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 
 // internal imports
+import "./lineman.css";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import CustomerModal from "./CustomerModal";
+import LinemanPOST from "./linemanCRUD/LinemanPOST";
 import {
-  fetchCustomer,
-  getCustomer,
-  setSingleCustomer,
-  deleteSingleCustomer,
-} from "../../features/customerSlice";
-import CustomerDetails from "./customerCRUD/CustomerDetails";
-import CustomerEdit from "./customerCRUD/CustomerEdit";
+  fetchLineman,
+  setSingleLineman,
+  deleteSingleLineman,
+} from "../../features/linemanSlice";
+import LinemanDetails from "./linemanCRUD/LinemanDetails";
+import LinemanEdit from "./linemanCRUD/LinemanEdit";
 
-export default function Customer() {
-  const dispatch = useDispatch();
+export default function Lineman() {
   const auth = useSelector((state) => state.auth);
-  const [cusSearch, setCusSearch] = useState("");
+  const Linemans = useSelector((state) => state.lineman.lineman);
+  const dispatch = useDispatch();
   let serial = 0;
+  const [lineSearch, setLineSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  let Customers = [];
-  Customers = useSelector(getCustomer);
+  useEffect(() => {
+    (() => {
+      const { ispOwner } = auth;
+      if (isLoading) {
+        dispatch(fetchLineman(ispOwner.id));
+        setIsLoading(false);
+      }
+    })();
+  }, [isLoading, auth, dispatch]);
 
-  // get specific customer
-  const getSpecificCustomer = (ID) => {
-    if (Customers !== undefined) {
-      const SingleCustomer = Customers.find((val) => {
-        return val.mobile === ID;
+  // getsingle lineman
+  const getSpecificLineman = (mobile) => {
+    if (Linemans.length !== undefined) {
+      const oneLineman = Linemans.find((val) => {
+        return val.mobile === mobile;
       });
-      dispatch(setSingleCustomer(SingleCustomer));
+      dispatch(setSingleLineman(oneLineman));
     }
   };
 
-  // DELETE handler
-  const deleteCustomer = (ID) => {
+  // delete lineman
+  const deleteLineman = (ID) => {
     const { ispOwner } = auth;
     const IDs = {
       ispID: ispOwner.id,
-      customerID: ID,
+      linemanID: ID,
     };
-    deleteSingleCustomer(IDs);
+    deleteSingleLineman(IDs);
   };
 
-  useEffect(() => {
-    const { ispOwner } = auth;
-    dispatch(fetchCustomer(ispOwner.id));
-  }, [auth, dispatch]);
-
   return (
-    <>
+    <div>
       <Sidebar />
       <ToastContainer
         toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
@@ -73,25 +78,24 @@ export default function Customer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">কাস্টমার</h2>
+                <h2 className="collectorTitle">লাইন-ম্যান</h2>
               </FourGround>
 
-              {/* Model start */}
-              <CustomerModal />
-              <CustomerEdit />
-              <CustomerDetails />
-              {/* Model finish */}
-
+              {/* modal start */}
+              <LinemanPOST />
+              <LinemanDetails />
+              <LinemanEdit />
+              {/* modal finish */}
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>নতুন কাস্টমার অ্যাড করুন </p>
+                      <p>নতুন লাইন-ম্যান অ্যাড করুন </p>
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
                           className="addcutmButton"
                           data-bs-toggle="modal"
-                          data-bs-target="#customerModal"
+                          data-bs-target="#linemanModal"
                         />
                         <GearFill
                           className="addcutmButton"
@@ -104,7 +108,12 @@ export default function Customer() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট কাস্টমার : <span>{Customers.length}</span>
+                          মোট লাইন-ম্যান:{" "}
+                          <span>
+                            {Linemans.length === undefined
+                              ? "NULL"
+                              : Linemans.length}
+                          </span>
                         </h4>
                       </div>
 
@@ -115,13 +124,15 @@ export default function Customer() {
                             type="text"
                             className="search"
                             placeholder="সার্চ এর জন্য নাম লিখুন"
-                            onChange={(e) => setCusSearch(e.target.value)}
+                            onChange={(e) => setLineSearch(e.target.value)}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* table */}
+                  {/* end add collector */}
+
+                  {/* table start */}
                   <div className="table-responsive-lg">
                     <table className="table table-striped ">
                       <thead>
@@ -137,15 +148,15 @@ export default function Customer() {
                         </tr>
                       </thead>
                       <tbody>
-                        {Customers.length === undefined ? (
+                        {Linemans.length === undefined ? (
                           <tr>
                             <td>Loading...</td>
                           </tr>
                         ) : (
-                          Customers.filter((val) => {
+                          Linemans.filter((val) => {
                             return val.name
                               .toLowerCase()
-                              .includes(cusSearch.toLowerCase());
+                              .includes(lineSearch.toLowerCase());
                           }).map((val, key) => (
                             <tr key={key} id={val.id}>
                               <td style={{ paddingLeft: "30px" }}>
@@ -158,7 +169,7 @@ export default function Customer() {
                               <td className="centeringTD">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"
-                                  id="customerDrop"
+                                  id="linemanDropdown"
                                   type="button"
                                   data-bs-toggle="dropdown"
                                   aria-expanded="false"
@@ -167,11 +178,11 @@ export default function Customer() {
                                 {/* modal */}
                                 <ul
                                   className="dropdown-menu"
-                                  aria-labelledby="customerDrop"
+                                  aria-labelledby="linemanDropdown"
                                 >
                                   <li
                                     onClick={() => {
-                                      deleteCustomer(val.id);
+                                      deleteLineman(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item actionManager">
@@ -183,9 +194,9 @@ export default function Customer() {
                                   </li>
                                   <li
                                     data-bs-toggle="modal"
-                                    data-bs-target="#customerEditModal"
+                                    data-bs-target="#linemanEditModal"
                                     onClick={() => {
-                                      getSpecificCustomer(val.mobile);
+                                      getSpecificLineman(val.mobile);
                                     }}
                                   >
                                     <div className="dropdown-item">
@@ -197,9 +208,9 @@ export default function Customer() {
                                   </li>
                                   <li
                                     data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerDetails"
+                                    data-bs-target="#linemanDetails"
                                     onClick={() => {
-                                      getSpecificCustomer(val.mobile);
+                                      getSpecificLineman(val.mobile);
                                     }}
                                   >
                                     <div className="dropdown-item">
@@ -226,6 +237,6 @@ export default function Customer() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

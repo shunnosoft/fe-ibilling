@@ -5,13 +5,13 @@ import { useSelector } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
-import "../customer.css";
+import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { editCustomer } from "../../../features/customerSlice";
+import { editLineman } from "../../../features/linemanSlice";
 
-export default function CustomerEdit() {
+export default function LinemanEdit() {
   const auth = useSelector((state) => state.auth);
-  const CUSTOMER = useSelector((state) => state.customer.singleCustomer);
+  const LINEMAN = useSelector((state) => state.lineman.singleLineman);
   // customer validator
   const customerEditValidator = Yup.object({
     name: Yup.string().required("নাম দিন"),
@@ -20,32 +20,29 @@ export default function CustomerEdit() {
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
       .required("মোবাইল নম্বর দিন "),
     address: Yup.string().required("নাম দিন"),
-    email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
+    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল দিতে হবে"),
     nid: Yup.string().required("NID দিন"),
     status: Yup.string().required("Choose one"),
-    balance: Yup.string().required("Balance দিন"),
-    monthlyFee: Yup.string().required("Montly Fee দিন"),
   });
 
-  const customerEditHandler = (data) => {
+  const linemanEditHandler = (data) => {
     const { ispOwner } = auth;
     const mainData = {
-      customerId: "randon123",
-      singleCustomerID: CUSTOMER.id,
+      linemanID: LINEMAN.id,
       ispID: ispOwner.id,
       ispOwner: ispOwner.id,
       ...data,
     };
-    editCustomer(mainData);
+
+    console.log(mainData);
+    editLineman(mainData);
   };
 
   return (
     <div>
       <div
         className="modal fade modal-dialog-scrollable "
-        id="customerEditModal"
+        id="linemanEditModal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -54,7 +51,7 @@ export default function CustomerEdit() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {`${CUSTOMER.name}`} এর তথ্য এডিট করুন
+                {`${LINEMAN.name}`} এর তথ্য এডিট করুন
               </h5>
               <button
                 type="button"
@@ -67,98 +64,55 @@ export default function CustomerEdit() {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  // customerid: "random123",
-                  name: CUSTOMER.name,
-                  mobile: CUSTOMER.mobile,
-                  address: CUSTOMER.address,
-                  email: CUSTOMER.email,
-                  nid: CUSTOMER.nid,
-                  status: CUSTOMER.status,
-                  balance: CUSTOMER.balance,
-                  monthlyFee: CUSTOMER.monthlyFee,
-                  billPayType: CUSTOMER.billPayType,
-                  // ispOwner:
+                  name: LINEMAN.name,
+                  mobile: LINEMAN.mobile,
+                  address: LINEMAN.address,
+                  email: LINEMAN.email,
+                  nid: LINEMAN.nid,
+                  status: LINEMAN.status,
                 }}
                 validationSchema={customerEditValidator}
                 onSubmit={(values) => {
-                  customerEditHandler(values);
+                  linemanEditHandler(values);
                 }}
                 enableReinitialize
               >
-                {(formik) => (
+                {(lm) => (
                   <Form>
-                    <FtextField type="text" label={`নাম`} name="name" />
+                    <FtextField
+                      type="text"
+                      label={`নাম`}
+                      name="name"
+                      //   value={LINEMAN.name}
+                    />
                     <FtextField type="text" label={`মোবাইল`} name="mobile" />
                     <FtextField type="text" label={`এড্রেস`} name="address" />
                     <FtextField type="text" label={`ইমেইল`} name="email" />
                     <FtextField type="text" label={`NID নম্বর`} name="nid" />
                     <div className="form-check customerFormCheck">
-                      <p>স্টেটাস </p>
+                      <p>স্টেটাস</p>
                       <div className="form-check form-check-inline">
                         <FtextField
-                          label="Paid"
+                          label="Active"
                           className="form-check-input"
                           type="radio"
                           name="status"
                           id="status1"
-                          value="paid"
+                          value="active"
                         />
                       </div>
                       <div className="form-check form-check-inline">
                         <FtextField
-                          label="Unpaid"
+                          label="Inactive"
                           className="form-check-input"
                           type="radio"
                           name="status"
                           id="status2"
-                          value="unpaid"
-                        />
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Overdue"
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          id="status3"
-                          value="overdue"
+                          value="inactive"
                         />
                       </div>
                     </div>
 
-                    <div className="form-check customerFormCheck">
-                      <p>বিল পরিশোধের ধরণ</p>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Prepaid"
-                          className="form-check-input"
-                          type="radio"
-                          name="billPayType"
-                          id="billPayType1"
-                          value="prepaid"
-                        />
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Postpaid"
-                          className="form-check-input"
-                          type="radio"
-                          name="billPayType"
-                          id="billPayType2"
-                          value="postpaid"
-                        />
-                      </div>
-                    </div>
-                    <FtextField
-                      type="text"
-                      label={`ব্যালান্স`}
-                      name="balance"
-                    />
-                    <FtextField
-                      type="text"
-                      label={`মাসিক ফি`}
-                      name="monthlyFee"
-                    />
                     <div className="modal-footer">
                       <button
                         type="button"
