@@ -150,7 +150,7 @@ export default function Lineman() {
                       <tbody>
                         {Linemans.length === undefined ? (
                           <tr>
-                            <td>Loading...</td>
+                            <td>কোনো লাইন-ম্যান পাওয়া যায়নি </td>
                           </tr>
                         ) : (
                           Linemans.filter((val) => {

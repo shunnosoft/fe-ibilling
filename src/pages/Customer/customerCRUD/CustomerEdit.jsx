@@ -67,7 +67,6 @@ export default function CustomerEdit() {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  // customerid: "random123",
                   name: CUSTOMER.name,
                   mobile: CUSTOMER.mobile,
                   address: CUSTOMER.address,
@@ -77,7 +76,6 @@ export default function CustomerEdit() {
                   balance: CUSTOMER.balance,
                   monthlyFee: CUSTOMER.monthlyFee,
                   billPayType: CUSTOMER.billPayType,
-                  // ispOwner:
                 }}
                 validationSchema={customerEditValidator}
                 onSubmit={(values) => {

@@ -139,7 +139,7 @@ export default function Customer() {
                       <tbody>
                         {Customers.length === undefined ? (
                           <tr>
-                            <td>Loading...</td>
+                            <td>কোনো কাস্টমার পাওয়া যায়নি</td>
                           </tr>
                         ) : (
                           Customers.filter((val) => {

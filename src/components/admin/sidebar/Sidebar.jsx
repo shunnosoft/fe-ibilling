@@ -1,7 +1,7 @@
 import React from "react";
 import "./sidebar.css";
 import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
-import { List, XCircleFill, ArrowLeft } from "react-bootstrap-icons";
+import { List, ArrowLeft } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import { AllRoutes } from "../../../routes/router";
 import activeClass from "../../../assets/css/active.module.css";
@@ -30,7 +30,7 @@ export default function Sidebar() {
                 <ArrowLeft className="GotoHomeFromDashboard" />
                 ড্যাশবোর্ড
               </NavLink>
-              <XCircleFill className="removeSidebar" onClick={removeSidebar} />
+              <span className="HideSidebar" onClick={removeSidebar}></span>
             </h2>
 
             <ul className="sidebarUl">

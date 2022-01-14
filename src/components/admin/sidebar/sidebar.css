@@ -79,19 +79,13 @@ a {
   .adminDashboardTitle {
     padding-left: 30px;
   }
-  .removeSidebar {
-    display: initial;
-    font-size: 40px;
-    cursor: pointer;
-    color: rgb(26 28 35);
+  .HideSidebar {
+    width: calc(100vw - 249px);
+    height: 100vh;
+    background: rgb(120 175 152 / 60%);
     position: absolute;
-    margin-left: 39px;
-    background: #d3d3d3;
-    border-radius: 50%;
-    box-shadow: 0px 0px 15px;
-    top: 45%;
-    border: 2px solid;
-    padding: 1px;
+    top: 0;
+    margin-left: 118px;
   }
   .menuIcon {
     width: 100px !important;

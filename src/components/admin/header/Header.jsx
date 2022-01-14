@@ -31,7 +31,7 @@ export default function Header(props) {
 
     localStorage.removeItem("token");
     localStorage.removeItem("ispWoner");
-    // window.location.reload();
+    window.location.reload();
   };
 
   const icon =

@@ -38,17 +38,21 @@ export const asyncLogin = async (loginData) => {
     data: loginData,
   })
     .then((res) => {
+      console.log("Login Response: ", res);
       document.querySelector(".Loader").style.display = "none";
       if (res.status === 200) {
-        const bayannoAccess = res.data.access;
-        const ispWoner = res.data.ispOwner;
-        localStorage.setItem("token", JSON.stringify(bayannoAccess));
-        localStorage.setItem("ispWoner", JSON.stringify(ispWoner));
-        window.location.href = "/";
-        // window.location.reload();
+        if (res.data.ispOwner === null) {
+          toast("সার্ভারে সমস্যা হয়েছে !");
+        } else {
+          const bayannoAccess = res.data.access;
+          const ispWoner = res.data.ispOwner;
+          localStorage.setItem("token", JSON.stringify(bayannoAccess));
+          localStorage.setItem("ispWoner", JSON.stringify(ispWoner));
+          window.location.href = "/";
+        }
       } else {
         // show toast
-        toast("Something went wrong here !");
+        toast("সার্ভারে সমস্যা হয়েছে !");
       }
     })
     .catch((err) => {

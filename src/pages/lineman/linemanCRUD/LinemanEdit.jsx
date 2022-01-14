@@ -79,12 +79,7 @@ export default function LinemanEdit() {
               >
                 {(lm) => (
                   <Form>
-                    <FtextField
-                      type="text"
-                      label={`নাম`}
-                      name="name"
-                      //   value={LINEMAN.name}
-                    />
+                    <FtextField type="text" label={`নাম`} name="name" />
                     <FtextField type="text" label={`মোবাইল`} name="mobile" />
                     <FtextField type="text" label={`এড্রেস`} name="address" />
                     <FtextField type="text" label={`ইমেইল`} name="email" />
