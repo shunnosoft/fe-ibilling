@@ -86,6 +86,7 @@ export default function Lineman() {
               <LinemanDetails />
               <LinemanEdit />
               {/* modal finish */}
+
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">

@@ -55,45 +55,26 @@ export default function WriteModals(props) {
           <div className="modal-body">
             <Formik
               initialValues={{
-                name: "",
-                mobile: "",
-                address: "",
-                email: "",
-                nid: "",
-                // photo: "",
+                name: manager.name,
+                mobile: manager.mobile,
+                address: manager.address,
+                email: manager.email,
+                nid: manager.nid,
+                // photo: ,
               }}
               validationSchema={managerValidate}
               onSubmit={(values) => {
                 editManagerHandler(values);
               }}
+              enableReinitialize
             >
               {(formik) => (
                 <Form>
-                  <FtextField
-                    type="text"
-                    label={`ম্যানেজার এর বর্তমান নাম = ${manager.name}`}
-                    name="name"
-                  />
-                  <FtextField
-                    type="text"
-                    label={`ম্যানেজার এর বর্তমান মোবাইল নম্বর  = ${manager.mobile}`}
-                    name="mobile"
-                  />
-                  <FtextField
-                    type="text"
-                    label={`ম্যানেজার এর বর্তমান এড্রেস = ${manager.address}`}
-                    name="address"
-                  />
-                  <FtextField
-                    type="email"
-                    label={`ম্যানেজার এর বর্তমান ইমেইল = ${manager.email}`}
-                    name="email"
-                  />
-                  <FtextField
-                    type="text"
-                    label={`ম্যানেজার এর বর্তমান NID নম্বর = ${manager.nid}`}
-                    name="nid"
-                  />
+                  <FtextField type="text" label="নাম" name="name" />
+                  <FtextField type="text" label="মোবাইল নম্বর" name="mobile" />
+                  <FtextField type="text" label="এড্রেস" name="address" />
+                  <FtextField type="email" label="ইমেইল" name="email" />
+                  <FtextField type="text" label="NID নম্বর" name="nid" />
                   {/* <FtextField
                     type="file"
                     label="ম্যানেজার এর ছবি "

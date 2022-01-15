@@ -109,7 +109,7 @@ export default function Register() {
             >
               {(formik) => (
                 <div className="formStyle">
-                  <h2>Registration</h2>
+                  <h2>রেজিস্ট্রেশন করুন </h2>
                   <Form>
                     <TextField
                       label="কোম্পানির  নাম"
@@ -178,7 +178,7 @@ export default function Register() {
                         className="w-45 btn  btn-secondary registerCacleBtn"
                         type="button"
                       >
-                        Cancel
+                        বাতিল
                       </button>
                     </NavLink>
                   </Form>

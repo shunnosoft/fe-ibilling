@@ -71,21 +71,21 @@ export default function Login() {
                       className="btn  btn-primary mt-4 cstm-login-btn"
                       type="submit"
                     >
-                      Sign in
+                      লগইন
                     </button>
                     <NavLink to="/">
                       <button
                         className="w-45 btn  btn-secondary mt-4 cstm-login-cancle"
                         type="button"
                       >
-                        Cancel
+                        বাতিল
                       </button>
                     </NavLink>
                     <br />
                     <br />
 
                     <NavLink to="/" className="FotGetPassword">
-                      Forget Password?
+                      পাসওয়ার্ড ভুলে গেছেন?
                     </NavLink>
                     <p className="mt-5 mb-3 text-muted">&copy;2021</p>
                   </Form>
