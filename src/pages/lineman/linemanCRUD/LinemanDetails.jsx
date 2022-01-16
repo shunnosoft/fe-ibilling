@@ -19,7 +19,7 @@ export default function LinemanDetails() {
                 className="modal-title"
                 id="linemanDetailsModal"
               >
-                কাস্টমার বিস্তারিত
+                কাস্টমার প্রোফাইল
               </h5>
               <button
                 type="button"
@@ -29,14 +29,15 @@ export default function LinemanDetails() {
               ></button>
             </div>
             <div className="modal-body">
+              <h2 className="ProfileName">{lineSingle.name}</h2>
               <table className="table">
                 <thead>
-                  <tr>
+                  {/* <tr>
                     <th scope="col" className="thSt">
                       নাম:
                     </th>
-                    <th scope="col">{lineSingle.name}</th>
-                  </tr>
+                    <th scope="col"></th>
+                  </tr> */}
                   <tr>
                     <th scope="col" className="thSt">
                       মোবাইল:

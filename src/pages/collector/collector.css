@@ -8,6 +8,15 @@
   border-radius: 5px;
   /* animation: bgChange 5s ease-in infinite alternate; */
 }
+.ProfileName {
+  color: white;
+  padding: 10px;
+  font-size: 24px;
+  text-align: center;
+  background: linear-gradient(45deg, #0abb7a, #2485aa);
+  border-radius: 5px;
+  margin: 0px 0px 20px;
+}
 @keyframes bgChange {
   0% {
     background: #0ba372;

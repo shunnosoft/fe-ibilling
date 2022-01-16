@@ -25,6 +25,9 @@ import NotFound from "./pages/NotFound/NotFound";
 import Success from "./pages/success/Success";
 import Manager from "./pages/manager/Manager";
 import Lineman from "./pages/lineman/Lineman";
+import Reseller from "./pages/reseller/Reseller";
+import Area from "./pages/area/Area";
+import Mikrotik from "./pages/mikrotik/Mikrotik";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -123,6 +126,24 @@ function App() {
           />
 
           <Route
+            path="/reseller"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <Reseller />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/area"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <Area />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="/collector"
             element={
               <PrivateRoute auth={isAuth}>
@@ -130,6 +151,15 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/mikrotik"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <Mikrotik />
+              </PrivateRoute>
+            }
+          />
+
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </div>

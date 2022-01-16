@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // internal imports
 import "./lineman.css";
+import "../collector/collector.css";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import LinemanPOST from "./linemanCRUD/LinemanPOST";
@@ -98,11 +99,7 @@ export default function Lineman() {
                           data-bs-toggle="modal"
                           data-bs-target="#linemanModal"
                         />
-                        <GearFill
-                          className="addcutmButton"
-                          // data-bs-toggle="modal"
-                          // data-bs-target=""
-                        />
+                        <GearFill className="addcutmButton" />
                       </div>
                     </div>
 
@@ -182,17 +179,20 @@ export default function Lineman() {
                                   aria-labelledby="linemanDropdown"
                                 >
                                   <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#linemanDetails"
                                     onClick={() => {
-                                      deleteLineman(val.id);
+                                      getSpecificLineman(val.mobile);
                                     }}
                                   >
-                                    <div className="dropdown-item actionManager">
+                                    <div className="dropdown-item">
                                       <div className="customerAction">
-                                        <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
+                                        <PersonFill />
+                                        <p className="actionP">প্রোফাইল</p>
                                       </div>
                                     </div>
                                   </li>
+
                                   <li
                                     data-bs-toggle="modal"
                                     data-bs-target="#linemanEditModal"
@@ -207,17 +207,16 @@ export default function Lineman() {
                                       </div>
                                     </div>
                                   </li>
+
                                   <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#linemanDetails"
                                     onClick={() => {
-                                      getSpecificLineman(val.mobile);
+                                      deleteLineman(val.id);
                                     }}
                                   >
-                                    <div className="dropdown-item">
+                                    <div className="dropdown-item actionManager">
                                       <div className="customerAction">
-                                        <PersonFill />
-                                        <p className="actionP">বিস্তারিত</p>
+                                        <ArchiveFill />
+                                        <p className="actionP">ডিলিট</p>
                                       </div>
                                     </div>
                                   </li>

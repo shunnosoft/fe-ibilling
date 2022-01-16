@@ -4,7 +4,10 @@ import {
   PeopleFill,
   PersonPlus,
   PersonLinesFill,
-  Cash,
+  Bullseye,
+  BucketFill,
+  Wifi,
+  // Cash,
 } from "react-bootstrap-icons";
 export const AllRoutes = [
   {
@@ -18,6 +21,11 @@ export const AllRoutes = [
     link: "/manager",
   },
   {
+    title: "রি-সেলার",
+    icon: <BucketFill />,
+    link: "/reseller",
+  },
+  {
     title: "কাস্টমার",
     icon: <PeopleFill />,
     link: "/customer",
@@ -28,13 +36,23 @@ export const AllRoutes = [
     link: "/lineman",
   },
   {
+    title: "এরিয়া ",
+    icon: <Bullseye />,
+    link: "/area",
+  },
+  {
     title: "কালেক্টর",
     icon: <CurrencyEuro />,
     link: "/collector",
   },
+  // {
+  //   title: "কাস্টমার বিল",
+  //   icon: <Cash />,
+  //   link: "/customer-bill",
+  // },
   {
-    title: "কাস্টমার বিল",
-    icon: <Cash />,
-    link: "/customer-bill",
+    title: "মাইক্রোটিক",
+    icon: <Wifi />,
+    link: "/mikrotik",
   },
 ];
