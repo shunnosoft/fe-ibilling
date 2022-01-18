@@ -1,0 +1,11 @@
+.customBtn {
+  width: 120px;
+  text-align: center;
+}
+.customBtn > img {
+  width: 22px;
+}
+.deletingAction {
+  padding: 15px;
+  color: tomato;
+}

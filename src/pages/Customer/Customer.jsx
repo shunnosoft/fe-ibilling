@@ -170,14 +170,16 @@ export default function Customer() {
                                   aria-labelledby="customerDrop"
                                 >
                                   <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showCustomerDetails"
                                     onClick={() => {
-                                      deleteCustomer(val.id);
+                                      getSpecificCustomer(val.mobile);
                                     }}
                                   >
-                                    <div className="dropdown-item actionManager">
+                                    <div className="dropdown-item">
                                       <div className="customerAction">
-                                        <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
+                                        <PersonFill />
+                                        <p className="actionP">প্রোফাইল</p>
                                       </div>
                                     </div>
                                   </li>
@@ -196,16 +198,14 @@ export default function Customer() {
                                     </div>
                                   </li>
                                   <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerDetails"
                                     onClick={() => {
-                                      getSpecificCustomer(val.mobile);
+                                      deleteCustomer(val.id);
                                     }}
                                   >
-                                    <div className="dropdown-item">
+                                    <div className="dropdown-item actionManager">
                                       <div className="customerAction">
-                                        <PersonFill />
-                                        <p className="actionP">বিস্তারিত</p>
+                                        <ArchiveFill />
+                                        <p className="actionP">ডিলিট</p>
                                       </div>
                                     </div>
                                   </li>

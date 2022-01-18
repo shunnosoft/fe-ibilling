@@ -1,26 +1,42 @@
-import React from "react";
+import { useState } from "react";
 import { Form, Formik } from "formik";
-// import * as Yup from "yup";
+import * as Yup from "yup";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
+import { postArea } from "../../../features/areaSlice";
+import Loader from "../../../components/common/Loader";
+import { fetchArea } from "../../../features/areaSlice";
 
 export default function AreaPost() {
+  const auth = useSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+
   //validator
-  //   const linemanValidator = Yup.object({
-  //     name: Yup.string().required("নাম দিন"),
-  //     mobile: Yup.string()
-  //       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-  //       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-  //       .required("মোবাইল নম্বর দিন "),
-  //     address: Yup.string().required("নাম দিন"),
-  //     email: Yup.string()
-  //       .email("ইমেইল সঠিক নয় ")
-  //       .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-  //     nid: Yup.string().required("NID দিন"),
-  //     status: Yup.string().required("Choose one"),
-  //   });
+  const linemanValidator = Yup.object({
+    name: Yup.string().required("নাম দিন"),
+  });
+
+  const linemanHandler = async (data) => {
+    setIsLoading(true);
+    if (auth.ispOwner) {
+      const sendingData = {
+        name: data.name,
+        ispOwner: auth.ispOwner.id,
+      };
+      const response = await dispatch(postArea(sendingData));
+      if (response) {
+        dispatch(fetchArea(auth.ispOwner.id));
+        document.querySelector("#areaModal").click();
+        toast("এরিয়া অ্যাড সফল হয়েছে ");
+        setIsLoading(false);
+      }
+    }
+  };
 
   return (
     <div>
@@ -45,53 +61,19 @@ export default function AreaPost() {
               ></button>
             </div>
             <div className="modal-body">
-              {/* model body here */}
               <Formik
                 initialValues={{
-                  // customerid: "random123",
                   name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  status: "",
                   // ispOwner:
                 }}
-                // validationSchema={linemanValidator}
-                // onSubmit={(values) => {
-                //   linemanHandler(values);
-                // }}
+                validationSchema={linemanValidator}
+                onSubmit={(values) => {
+                  linemanHandler(values);
+                }}
               >
                 {(formik) => (
                   <Form>
-                    <FtextField type="text" label="নাম" name="name" />
-                    <FtextField type="text" label="মোবাইল" name="mobile" />
-                    <FtextField type="text" label="এড্রেস" name="address" />
-                    <FtextField type="text" label="ইমেইল" name="email" />
-                    <FtextField type="text" label="NID নম্বর" name="nid" />
-                    <div className="form-check customerFormCheck">
-                      <p>স্টেটাস</p>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Active"
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          id="status2"
-                          value="active"
-                        />
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Inactive"
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          id="status3"
-                          value="inactive"
-                        />
-                      </div>
-                    </div>
+                    <FtextField type="text" label="এরিয়া নাম" name="name" />
 
                     <div className="modal-footer">
                       <button
@@ -101,8 +83,11 @@ export default function AreaPost() {
                       >
                         বাতিল করুন
                       </button>
-                      <button type="submit" className="btn btn-success">
-                        সেভ করুন
+                      <button
+                        type="submit"
+                        className="btn btn-success customBtn"
+                      >
+                        {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>
                     </div>
                   </Form>

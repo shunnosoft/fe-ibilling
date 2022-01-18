@@ -25,7 +25,7 @@ export default function CustomerDetails(props) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                কাস্টমার বিস্তারিত
+                কাস্টমার প্রোফাইল
               </h5>
               <button
                 type="button"
@@ -35,14 +35,9 @@ export default function CustomerDetails(props) {
               ></button>
             </div>
             <div className="modal-body">
+              <h2 className="ProfileName">{single.name}</h2>
               <table className="table">
                 <thead>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      নাম:
-                    </th>
-                    <th scope="col">{single.name}</th>
-                  </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       মোবাইল:
