@@ -22,6 +22,23 @@ export const postArea = createAsyncThunk("area/postArea", async (data) => {
   });
 });
 
+// PATCH area
+export const editArea = createAsyncThunk("area/postArea", async (data) => {
+  const { id } = data;
+  await apiLink({
+    url: `/v1/ispOwner/area/${data.ispOwner}/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  }).catch((err) => {
+    if (err.response) {
+      toast(err.response.data.message);
+    }
+  });
+});
+
 // GET area
 export const fetchArea = createAsyncThunk(
   "area/fetchArea",
@@ -36,7 +53,7 @@ export const fetchArea = createAsyncThunk(
   }
 );
 
-// delete area
+// DELETE area
 export const deleteArea = createAsyncThunk("area/deleteArea", async (IDs) => {
   await apiLink({
     method: "DELETE",

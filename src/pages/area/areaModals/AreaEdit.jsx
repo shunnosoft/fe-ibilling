@@ -7,32 +7,34 @@ import { toast } from "react-toastify";
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { postArea } from "../../../features/areaSlice";
+import { editArea } from "../../../features/areaSlice";
 import Loader from "../../../components/common/Loader";
 import { fetchArea } from "../../../features/areaSlice";
 
-export default function AreaPost() {
+export default function AreaEdit({ oneArea }) {
   const auth = useSelector((state) => state.auth);
+  // const area = useSelector((state) => state.area.area);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   //validator
-  const linemanValidator = Yup.object({
+  const areaEditValidator = Yup.object({
     name: Yup.string().required("নাম দিন"),
   });
 
-  const areaHandler = async (data) => {
+  const areaEditHandler = async (data) => {
     setIsLoading(true);
     if (auth.ispOwner) {
       const sendingData = {
         name: data.name,
         ispOwner: auth.ispOwner.id,
+        id: oneArea ? oneArea.id : "",
       };
-      const response = await dispatch(postArea(sendingData));
+      const response = await dispatch(editArea(sendingData));
       if (response) {
         dispatch(fetchArea(auth.ispOwner.id));
-        document.querySelector("#areaModal").click();
-        toast("এরিয়া অ্যাড সফল হয়েছে ");
+        document.querySelector("#areaEditModal").click();
+        toast("এরিয়া এডিট সফল হয়েছে ");
         setIsLoading(false);
       }
     }
@@ -42,7 +44,7 @@ export default function AreaPost() {
     <div>
       <div
         className="modal fade modal-dialog-scrollable "
-        id="areaModal"
+        id="areaEditModal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -51,7 +53,7 @@ export default function AreaPost() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন এরিয়া অ্যাড করুন
+                এরিয়া এডিট করুন
               </h5>
               <button
                 type="button"
@@ -63,17 +65,21 @@ export default function AreaPost() {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: "",
-                  // ispOwner:
+                  name: oneArea ? oneArea.name : "",
                 }}
-                validationSchema={linemanValidator}
+                validationSchema={areaEditValidator}
                 onSubmit={(values) => {
-                  areaHandler(values);
+                  areaEditHandler(values);
                 }}
+                enableReinitialize
               >
-                {(formik) => (
+                {() => (
                   <Form>
-                    <FtextField type="text" label="এরিয়া নাম" name="name" />
+                    <FtextField
+                      type="text"
+                      label="এরিয়া নাম এডিট করুন"
+                      name="name"
+                    />
 
                     <div className="modal-footer">
                       <button
@@ -81,7 +87,7 @@ export default function AreaPost() {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল করুন
+                        বাতিল
                       </button>
                       <button
                         type="submit"

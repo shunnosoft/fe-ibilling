@@ -16,12 +16,15 @@ import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./areaModals/AreaPost";
 import { fetchArea } from "../../features/areaSlice";
 import { deleteArea } from "../../features/areaSlice";
+import AreaEdit from "./areaModals/AreaEdit";
 
 export default function Area() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const area = useSelector((state) => state.area.area);
+  const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [EditAarea, setEditAarea] = useState("");
   let serial = 0;
 
   const dispatchArea = () => {
@@ -50,13 +53,22 @@ export default function Area() {
     }
   };
 
+  const getSpecificArea = (id) => {
+    if (area.length !== undefined) {
+      const oneArea = area.find((val) => {
+        return val.id === id;
+      });
+      setEditAarea(oneArea);
+    }
+  };
+
   return (
     <>
       <Sidebar />
       <ToastContainer
         className="bg-green"
         toastStyle={{
-          backgroundColor: "#495057",
+          backgroundColor: "#677078",
           color: "white",
           fontWeight: "500",
         }}
@@ -67,6 +79,8 @@ export default function Area() {
             <FontColor>
               {/* modals */}
               <ResellerPost />
+              {/* area edit modal */}
+              <AreaEdit oneArea={EditAarea} />
 
               <FourGround>
                 <h2 className="collectorTitle">এরিয়া</h2>
@@ -106,7 +120,8 @@ export default function Area() {
                           <input
                             type="text"
                             className="search"
-                            placeholder="Search"
+                            placeholder="সার্চ এর জন্য এরিয়া নাম টাইপ করুন "
+                            onChange={(e) => setSearch(e.target.value)}
                           />
                         </div>
                       </div>
@@ -128,63 +143,69 @@ export default function Area() {
                       <tbody>
                         {area.length === undefined ? (
                           <tr>
-                            <td>পাওয়া যায়নি</td>
+                            <td>এরিয়া পাওয়া যায়নি</td>
                           </tr>
                         ) : (
-                          area.map((val, key) => (
-                            <tr key={key}>
-                              <td style={{ paddingLeft: "30px" }}>
-                                {++serial}
-                              </td>
-                              <td>{val.name}</td>
-                              <td style={{ textAlign: "center" }}>
-                                {/* dropdown */}
+                          area
+                            .filter((val) => {
+                              return val.name
+                                .toLowerCase()
+                                .includes(search.toLowerCase());
+                            })
+                            .map((val, key) => (
+                              <tr key={key}>
+                                <td style={{ paddingLeft: "30px" }}>
+                                  {++serial}
+                                </td>
+                                <td>{val.name}</td>
+                                <td style={{ textAlign: "center" }}>
+                                  {/* dropdown */}
 
-                                <ThreeDots
-                                  className="dropdown-toggle ActionDots"
-                                  id="areaDropdown"
-                                  type="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                />
+                                  <ThreeDots
+                                    className="dropdown-toggle ActionDots"
+                                    id="areaDropdown"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  />
 
-                                {/* modal */}
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="areaDropdown"
-                                >
-                                  <li
-                                  // data-bs-toggle="modal"
-                                  // data-bs-target="#linemanEditModal"
-                                  // onClick={() => {
-                                  //   getSpecificLineman(val.mobile);
-                                  // }}
+                                  {/* modal */}
+                                  <ul
+                                    className="dropdown-menu"
+                                    aria-labelledby="areaDropdown"
                                   >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PenFill />
-                                        <p className="actionP">এডিট</p>
+                                    <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#areaEditModal"
+                                      onClick={() => {
+                                        getSpecificArea(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <PenFill />
+                                          <p className="actionP">এডিট</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>
+                                    </li>
 
-                                  <li
-                                    onClick={() => {
-                                      deleteSingleArea(val.id, val.ispOwner);
-                                    }}
-                                  >
-                                    <div className="dropdown-item actionManager">
-                                      <div className="customerAction">
-                                        <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
+                                    <li
+                                      onClick={() => {
+                                        deleteSingleArea(val.id, val.ispOwner);
+                                      }}
+                                    >
+                                      <div className="dropdown-item actionManager">
+                                        <div className="customerAction">
+                                          <ArchiveFill />
+                                          <p className="actionP">ডিলিট</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                                {/* dropdown */}
-                              </td>
-                            </tr>
-                          ))
+                                    </li>
+                                  </ul>
+                                  {/* dropdown */}
+                                </td>
+                              </tr>
+                            ))
                         )}
                       </tbody>
                     </table>
