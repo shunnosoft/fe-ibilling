@@ -6,6 +6,7 @@ const initialState = {
   area: {},
 };
 
+// POST area
 export const postArea = createAsyncThunk("area/postArea", async (data) => {
   await apiLink({
     url: "/v1/ispOwner/area",
@@ -21,6 +22,7 @@ export const postArea = createAsyncThunk("area/postArea", async (data) => {
   });
 });
 
+// GET area
 export const fetchArea = createAsyncThunk(
   "area/fetchArea",
   async (ispOwnerId) => {
@@ -34,6 +36,7 @@ export const fetchArea = createAsyncThunk(
   }
 );
 
+// delete area
 export const deleteArea = createAsyncThunk("area/deleteArea", async (IDs) => {
   await apiLink({
     method: "DELETE",
