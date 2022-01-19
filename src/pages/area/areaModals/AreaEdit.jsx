@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 
 // internal imports
 import "../../collector/collector.css";
@@ -33,8 +32,6 @@ export default function AreaEdit({ oneArea }) {
       const response = await dispatch(editArea(sendingData));
       if (response) {
         dispatch(fetchArea(auth.ispOwner.id));
-        document.querySelector("#areaEditModal").click();
-        toast("এরিয়া এডিট সফল হয়েছে ");
         setIsLoading(false);
       }
     }

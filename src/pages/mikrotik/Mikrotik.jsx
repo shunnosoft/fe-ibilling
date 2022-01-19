@@ -1,6 +1,6 @@
 import React from "react";
 import "./mikrotik.css";
-import { PersonPlusFill, GearFill } from "react-bootstrap-icons";
+import { GearFill, PlugFill } from "react-bootstrap-icons";
 
 // internal imports
 import { ToastContainer } from "react-toastify";
@@ -34,12 +34,12 @@ export default function Mikrotik() {
                     <div className="addNewCollector">
                       <p>মাইক্রোটিক কনফিগারেশন</p>
                       <div className="addAndSettingIcon">
-                        <PersonPlusFill
+                        <GearFill
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#MikrotikModal"
                         />
-                        <GearFill
+                        <PlugFill
                           className="addcutmButton"
                           //   data-bs-toggle="modal"
                           //   data-bs-target="#exampleModal"

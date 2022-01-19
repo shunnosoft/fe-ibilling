@@ -2,7 +2,10 @@
   padding: 0;
   /* margin-left: -22px !important; */
 }
-
+.deletingAction {
+  padding: 20px 5px;
+  color: tomato;
+}
 .customerFormCheck > p {
   font-weight: 500;
   color: black;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,9 +8,11 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { postLineman } from "../../../features/linemanSlice";
 import { fetchLineman } from "../../../features/linemanSlice";
+import Loader from "../../../components/common/Loader";
 
 export default function LinemanPOST() {
   const auth = useSelector((state) => state.auth);
+  const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
 
   // customer validator
@@ -28,14 +30,18 @@ export default function LinemanPOST() {
     status: Yup.string().required("Choose one"),
   });
 
-  const linemanHandler = (data) => {
+  const linemanHandler = async (data) => {
+    setIsloading(true);
     const { ispOwner } = auth;
     const mainData = {
       ispOwner: ispOwner.id,
       ...data,
     };
-    postLineman(mainData);
-    dispatch(fetchLineman(ispOwner.id));
+    const response = await dispatch(postLineman(mainData));
+    if (response) {
+      setIsloading(false);
+      dispatch(fetchLineman(ispOwner.id));
+    }
   };
 
   return (
@@ -78,7 +84,7 @@ export default function LinemanPOST() {
                   linemanHandler(values);
                 }}
               >
-                {(formik) => (
+                {() => (
                   <Form>
                     <FtextField type="text" label="নাম" name="name" />
                     <FtextField type="text" label="মোবাইল" name="mobile" />
@@ -118,7 +124,7 @@ export default function LinemanPOST() {
                         বাতিল করুন
                       </button>
                       <button type="submit" className="btn btn-success">
-                        সেভ করুন
+                        {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>
                     </div>
                   </Form>

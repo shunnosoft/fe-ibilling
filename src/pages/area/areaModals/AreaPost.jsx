@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 
 // internal imports
 import "../../collector/collector.css";
@@ -31,8 +30,6 @@ export default function AreaPost() {
       const response = await dispatch(postArea(sendingData));
       if (response) {
         dispatch(fetchArea(auth.ispOwner.id));
-        document.querySelector("#areaModal").click();
-        toast("এরিয়া অ্যাড সফল হয়েছে ");
         setIsLoading(false);
       }
     }

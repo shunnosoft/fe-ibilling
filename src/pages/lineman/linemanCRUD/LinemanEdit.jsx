@@ -1,17 +1,20 @@
-import React from "react";
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
 import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { editLineman } from "../../../features/linemanSlice";
+import { editLineman, fetchLineman } from "../../../features/linemanSlice";
+import Loader from "../../../components/common/Loader";
 
 export default function LinemanEdit() {
   const auth = useSelector((state) => state.auth);
   const LINEMAN = useSelector((state) => state.lineman.singleLineman);
+  const dispatch = useDispatch();
+  const [isLoading, setIsloading] = useState(false);
   // customer validator
   const customerEditValidator = Yup.object({
     name: Yup.string().required("নাম দিন"),
@@ -25,7 +28,8 @@ export default function LinemanEdit() {
     status: Yup.string().required("Choose one"),
   });
 
-  const linemanEditHandler = (data) => {
+  const linemanEditHandler = async (data) => {
+    setIsloading(true);
     const { ispOwner } = auth;
     const mainData = {
       linemanID: LINEMAN.id,
@@ -33,9 +37,11 @@ export default function LinemanEdit() {
       ispOwner: ispOwner.id,
       ...data,
     };
-
-    console.log(mainData);
-    editLineman(mainData);
+    const response = await dispatch(editLineman(mainData));
+    if (response) {
+      setIsloading(false);
+      dispatch(fetchLineman(ispOwner.id));
+    }
   };
 
   return (
@@ -70,6 +76,12 @@ export default function LinemanEdit() {
                   email: LINEMAN.email,
                   nid: LINEMAN.nid,
                   status: LINEMAN.status,
+                  // name: "",
+                  // mobile: "",
+                  // address: "",
+                  // email: "",
+                  // nid: "",
+                  // status: "",
                 }}
                 validationSchema={customerEditValidator}
                 onSubmit={(values) => {
@@ -117,7 +129,7 @@ export default function LinemanEdit() {
                         বাতিল করুন
                       </button>
                       <button type="submit" className="btn btn-success">
-                        সেভ করুন
+                        {isLoading ? <Loader /> : "আপডেট করুন"}
                       </button>
                     </div>
                   </Form>

@@ -20,6 +20,9 @@ body {
 a {
   text-decoration: none;
 }
+.btn-success {
+  width: 150px;
+}
 label {
   font-weight: 500;
   color: rgb(29, 28, 28);

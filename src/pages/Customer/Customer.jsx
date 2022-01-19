@@ -17,19 +17,22 @@ import "react-toastify/dist/ReactToastify.css";
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import CustomerModal from "./CustomerModal";
 import {
   fetchCustomer,
   getCustomer,
   setSingleCustomer,
   deleteSingleCustomer,
 } from "../../features/customerSlice";
+import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
+import Loader from "../../components/common/Loader";
+// import Alert from "../../components/common/Alert";
 
 export default function Customer() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+  const [isLoading, setIsloading] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
 
@@ -47,13 +50,18 @@ export default function Customer() {
   };
 
   // DELETE handler
-  const deleteCustomer = (ID) => {
+  const deleteCustomer = async (ID) => {
+    setIsloading(true);
     const { ispOwner } = auth;
     const IDs = {
       ispID: ispOwner.id,
       customerID: ID,
     };
-    deleteSingleCustomer(IDs);
+    const response = await dispatch(deleteSingleCustomer(IDs));
+    if (response) {
+      setIsloading(false);
+      dispatch(fetchCustomer(ispOwner.id));
+    }
   };
 
   useEffect(() => {
@@ -65,19 +73,25 @@ export default function Customer() {
     <>
       <Sidebar />
       <ToastContainer
-        toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
+        toastStyle={{
+          backgroundColor: "#677078",
+          fontWeight: "500",
+          color: "white",
+        }}
       />
 
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
+              {/* <Alert message={"কাস্টমার অ্যাড"} /> */}
+
               <FourGround>
                 <h2 className="collectorTitle">কাস্টমার</h2>
               </FourGround>
 
               {/* Model start */}
-              <CustomerModal />
+              <CustomerPost />
               <CustomerEdit />
               <CustomerDetails />
               {/* Model finish */}
@@ -87,6 +101,7 @@ export default function Customer() {
                   <div className="addCollector">
                     <div className="addNewCollector">
                       <p>নতুন কাস্টমার অ্যাড করুন </p>
+
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
                           className="addcutmButton"
@@ -120,6 +135,13 @@ export default function Customer() {
                         </div>
                       </div>
                     </div>
+                    {isLoading ? (
+                      <div className="deletingAction">
+                        <Loader /> <b>Deleting...</b>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   {/* table */}
                   <div className="table-responsive-lg">

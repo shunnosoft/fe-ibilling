@@ -4,8 +4,15 @@ import { toast } from "react-toastify";
 // internal imports
 import apiLink from "../api/apiLink";
 
+// redux
+const initialState = {
+  customer: {},
+  singleCustomer: {},
+};
+
+// GET customer
 export const fetchCustomer = createAsyncThunk(
-  "ispOwner/fetchCustomer",
+  "customer/fetchCustomer",
   async (ispOwnerId) => {
     const response = await apiLink({
       method: "GET",
@@ -17,11 +24,72 @@ export const fetchCustomer = createAsyncThunk(
   }
 );
 
-// redux
-const initialState = {
-  customer: {},
-  singleCustomer: {},
-};
+// POST
+export const postCustomer = createAsyncThunk(
+  "customer/postCustomer",
+  async (data) => {
+    await apiLink({
+      url: "/v1/ispOwner/customer",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          toast("কাস্টমার অ্যাড সফল হয়েছে! ");
+          document.querySelector("#customerModal").click();
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast(err.response.data.message);
+        }
+      });
+  }
+);
+
+// EDIT patch
+export const editCustomer = createAsyncThunk(
+  "customer/editCustomer",
+  async (data) => {
+    const { singleCustomerID, ispID, ...sendingData } = data;
+    await apiLink({
+      url: `/v1/ispOwner/customer/${ispID}/${singleCustomerID}`,
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: sendingData,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          toast("কাস্টমার এডিট সফল হয়েছে! ");
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast(err.response.data.message);
+        }
+      });
+  }
+);
+
+// DELETE
+export const deleteSingleCustomer = createAsyncThunk(
+  "customer/deleteSingleCustomer",
+  async (IDs) => {
+    await apiLink({
+      url: `/v1/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`,
+      method: "DELETE",
+    })
+      .then(() => {
+        toast("কাস্টমার ডিলিট সফল হয়েছে! ");
+      })
+      .catch(() => toast("Server error!"));
+  }
+);
 
 const customerSliec = createSlice({
   name: "customer",
@@ -50,65 +118,3 @@ const customerSliec = createSlice({
 export const { setCustomer, setSingleCustomer } = customerSliec.actions;
 export const getCustomer = (state) => state.customer.customer;
 export default customerSliec.reducer;
-
-// customer actions
-
-// POST
-export const postCustomer = async (data) => {
-  console.log("Customer data form: ", data);
-  await apiLink({
-    url: "/v1/ispOwner/customer",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: data,
-  })
-    .then((res) => {
-      if (res.status === 200) {
-        document.querySelector("#customerModal").click();
-        alert("কাস্টমার অ্যাড সফল হয়েছে! ");
-        window.location.reload();
-      }
-    })
-    .catch((err) => {
-      if (err.response) {
-        toast(err.response.data.message);
-      }
-    });
-};
-
-// EDIT patch
-export const editCustomer = async (data) => {
-  const { singleCustomerID, ispID, ...sendingData } = data;
-  await apiLink({
-    url: `/v1/ispOwner/customer/${ispID}/${singleCustomerID}`,
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: sendingData,
-  })
-    .then((res) => {
-      if (res.status === 200) {
-        document.querySelector("#customerEditModal").click();
-        alert("কাস্টমার এডিট সফল হয়েছে! ");
-        window.location.reload();
-      }
-    })
-    .catch((err) => {
-      if (err.response) {
-        toast(err.response.data.message);
-      }
-    });
-};
-
-// DELETE
-export const deleteSingleCustomer = async (IDs) => {
-  await apiLink({
-    url: `/v1/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`,
-    method: "DELETE",
-  })
-    .then(() => window.location.reload())
-    .catch((err) => alert("Cannot Delete Customer."));
-};

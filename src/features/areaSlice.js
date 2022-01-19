@@ -15,11 +15,16 @@ export const postArea = createAsyncThunk("area/postArea", async (data) => {
       "Content-Type": "application/json",
     },
     data: data,
-  }).catch((err) => {
-    if (err.response) {
-      toast(err.response.data.message);
-    }
-  });
+  })
+    .then(() => {
+      document.querySelector("#areaModal").click();
+      toast("এরিয়া অ্যাড সফল হয়েছে ");
+    })
+    .catch((err) => {
+      if (err.response) {
+        toast(err.response.data.message);
+      }
+    });
 });
 
 // PATCH area
@@ -32,11 +37,16 @@ export const editArea = createAsyncThunk("area/postArea", async (data) => {
       "Content-Type": "application/json",
     },
     data: data,
-  }).catch((err) => {
-    if (err.response) {
-      toast(err.response.data.message);
-    }
-  });
+  })
+    .then(() => {
+      document.querySelector("#areaEditModal").click();
+      toast("এরিয়া এডিট সফল হয়েছে ");
+    })
+    .catch((err) => {
+      if (err.response) {
+        toast(err.response.data.message);
+      }
+    });
 });
 
 // GET area
@@ -58,11 +68,15 @@ export const deleteArea = createAsyncThunk("area/deleteArea", async (IDs) => {
   await apiLink({
     method: "DELETE",
     url: `/v1/ispOwner/area/${IDs.ispOwner}/${IDs.id}`,
-  }).catch((err) => {
-    if (err.response) {
-      toast(err.response.data.message);
-    }
-  });
+  })
+    .then(() => {
+      toast("এরিয়া ডিলিট হয়েছে");
+    })
+    .catch((err) => {
+      if (err.response) {
+        toast(err.response.data.message);
+      }
+    });
 });
 
 export const areaSlice = createSlice({

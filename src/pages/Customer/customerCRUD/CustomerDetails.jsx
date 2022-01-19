@@ -2,12 +2,9 @@ import React from "react";
 import "../customer.css";
 import { useSelector } from "react-redux";
 
-export default function CustomerDetails(props) {
+export default function CustomerDetails() {
   const single = useSelector((state) => state.customer.singleCustomer);
-  const { oneCustomer } = props;
-  if (oneCustomer) {
-    console.log("From Details: ", oneCustomer);
-  }
+
   return (
     <div>
       <div

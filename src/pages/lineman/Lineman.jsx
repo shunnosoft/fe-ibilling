@@ -25,27 +25,26 @@ import {
   fetchLineman,
   setSingleLineman,
   deleteSingleLineman,
+  getLineman,
 } from "../../features/linemanSlice";
 import LinemanDetails from "./linemanCRUD/LinemanDetails";
 import LinemanEdit from "./linemanCRUD/LinemanEdit";
+import Loader from "../../components/common/Loader";
 
 export default function Lineman() {
   const auth = useSelector((state) => state.auth);
-  const Linemans = useSelector((state) => state.lineman.lineman);
+  const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   let serial = 0;
   const [lineSearch, setLineSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+
+  let Linemans = [];
+  Linemans = useSelector(getLineman);
 
   useEffect(() => {
-    (() => {
-      const { ispOwner } = auth;
-      if (isLoading) {
-        dispatch(fetchLineman(ispOwner.id));
-        setIsLoading(false);
-      }
-    })();
-  }, [isLoading, auth, dispatch]);
+    const { ispOwner } = auth;
+    dispatch(fetchLineman(ispOwner.id));
+  }, [auth, dispatch]);
 
   // getsingle lineman
   const getSpecificLineman = (mobile) => {
@@ -58,20 +57,29 @@ export default function Lineman() {
   };
 
   // delete lineman
-  const deleteLineman = (ID) => {
+  const deleteLineman = async (ID) => {
+    setIsloading(true);
     const { ispOwner } = auth;
     const IDs = {
       ispID: ispOwner.id,
       linemanID: ID,
     };
-    deleteSingleLineman(IDs);
+    const response = await dispatch(deleteSingleLineman(IDs));
+    if (response) {
+      setIsloading(false);
+      dispatch(fetchLineman(ispOwner.id));
+    }
   };
 
   return (
     <div>
       <Sidebar />
       <ToastContainer
-        toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
+        toastStyle={{
+          backgroundColor: "#677078",
+          fontWeight: "500",
+          color: "white",
+        }}
       />
 
       <div className={useDash.dashboardWrapper}>
@@ -106,12 +114,7 @@ export default function Lineman() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট লাইন-ম্যান:{" "}
-                          <span>
-                            {Linemans.length === undefined
-                              ? "NULL"
-                              : Linemans.length}
-                          </span>
+                          মোট লাইন-ম্যান: <span>{Linemans.length}</span>
                         </h4>
                       </div>
 
@@ -127,6 +130,13 @@ export default function Lineman() {
                         </div>
                       </div>
                     </div>
+                    {isLoading ? (
+                      <div className="deletingAction">
+                        <Loader /> <b>Deleting...</b>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   {/* end add collector */}
 

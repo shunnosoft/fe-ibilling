@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
-import "../collector/collector.css";
-import "./customer.css";
-import { FtextField } from "../../components/common/FtextField";
-import { postCustomer } from "../../features/customerSlice";
+import "../../collector/collector.css";
+import "../customer.css";
+import { FtextField } from "../../../components/common/FtextField";
+import { postCustomer } from "../../../features/customerSlice";
+import Loader from "../../../components/common/Loader";
+import { fetchCustomer } from "../../../features/customerSlice";
 
 export default function CustomerModal() {
   const auth = useSelector((state) => state.auth);
+  const [isLoading, setIsloading] = useState(false);
+  const dispatch = useDispatch();
+
   // customer validator
   const customerValidator = Yup.object({
     name: Yup.string().required("নাম দিন"),
@@ -28,14 +33,19 @@ export default function CustomerModal() {
     monthlyFee: Yup.string().required("Montly Fee দিন"),
   });
 
-  const customerHandler = (data) => {
+  const customerHandler = async (data) => {
+    setIsloading(true);
     const { ispOwner } = auth;
     const mainData = {
       customerId: "randon123",
       ispOwner: ispOwner.id,
       ...data,
     };
-    postCustomer(mainData);
+    const response = await dispatch(postCustomer(mainData));
+    if (response) {
+      setIsloading(false);
+      dispatch(fetchCustomer(ispOwner.id));
+    }
   };
 
   return (
@@ -160,7 +170,7 @@ export default function CustomerModal() {
                         বাতিল করুন
                       </button>
                       <button type="submit" className="btn btn-success">
-                        সেভ করুন
+                        {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>
                     </div>
                   </Form>

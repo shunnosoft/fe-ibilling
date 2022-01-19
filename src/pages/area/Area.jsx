@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { PersonPlusFill } from "react-bootstrap-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { ThreeDots, PenFill, ArchiveFill } from "react-bootstrap-icons";
-import { toast } from "react-toastify";
 import Loader from "../../components/common/Loader";
 
 // internal imports
@@ -49,7 +48,6 @@ export default function Area() {
     if (reaponse) {
       setIsLoading(false);
       dispatchArea();
-      toast("এরিয়া ডিলিট হয়েছে");
     }
   };
 
@@ -84,15 +82,6 @@ export default function Area() {
 
               <FourGround>
                 <h2 className="collectorTitle">এরিয়া</h2>
-                <div>
-                  {isLoading ? (
-                    <div className="deletingAction">
-                      <Loader /> <b>Deleting...</b>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
               </FourGround>
 
               <FourGround>
@@ -125,6 +114,15 @@ export default function Area() {
                           />
                         </div>
                       </div>
+                    </div>
+                    <div>
+                      {isLoading ? (
+                        <div className="deletingAction">
+                          <Loader /> <b>Deleting...</b>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
 
