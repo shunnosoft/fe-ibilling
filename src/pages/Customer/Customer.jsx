@@ -27,7 +27,7 @@ import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
-// import Alert from "../../components/common/Alert";
+import TdLoader from "../../components/common/TdLoader";
 
 export default function Customer() {
   const dispatch = useDispatch();
@@ -119,7 +119,8 @@ export default function Customer() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট কাস্টমার : <span>{Customers.length}</span>
+                          মোট কাস্টমার :{" "}
+                          <span>{Customers.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -161,7 +162,7 @@ export default function Customer() {
                       <tbody>
                         {Customers.length === undefined ? (
                           <tr>
-                            <td>কোনো কাস্টমার পাওয়া যায়নি</td>
+                            <TdLoader colspan={6} />
                           </tr>
                         ) : (
                           Customers.filter((val) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 // external imports
 import { ThemeProvider } from "styled-components";
@@ -10,7 +10,7 @@ import jwtDecode from "jwt-decode";
 // internal imports
 import { setAuth, setIspOwner } from "./features/authSlice";
 import { fetchAsyncManager } from "./features/authSlice";
-// import apiLink from "./api/apiLink";
+import apiLink from "./api/apiLink";
 
 // internal pages
 import Header from "./components/admin/header/Header";
@@ -31,6 +31,7 @@ import Mikrotik from "./pages/mikrotik/Mikrotik";
 
 function App() {
   const [theme, setTheme] = useState("light");
+  const [loading, setLoading] = useState(true);
   const { isAuth } = useSelector((state) => state.auth);
 
   // const [pageLoading, setpageLoading] = useState(true);
@@ -38,6 +39,43 @@ function App() {
 
   // get data from localstroge
   const token = JSON.parse(localStorage.getItem("token"));
+
+  // update token
+  const updateToken = useCallback(async () => {
+    try {
+      const response = await apiLink("v1/auth/refresh-tokens", {
+        method: "POST",
+      });
+      if (response.status === 200) {
+        console.log("We got the Token: ", response);
+        // set new token to localstorage
+      } else {
+        console.log("Should Logout!");
+        // call logout method here
+      }
+    } catch (err) {
+      console.log("Should Logout!");
+      // call logout method here
+    }
+    if (loading) {
+      setLoading(false);
+    }
+  }, [loading]);
+
+  // called Update Token
+  useEffect(() => {
+    if (loading) {
+      updateToken();
+    }
+    const token = JSON.parse(localStorage.getItem("token"));
+    const timeToUpdate = 1000 * 60 * 9;
+    const interval = setInterval(() => {
+      if (token) {
+        updateToken();
+      }
+    }, timeToUpdate);
+    return () => clearInterval(interval);
+  }, [loading, updateToken]);
 
   useEffect(() => {
     if (token) {

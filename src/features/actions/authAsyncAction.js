@@ -42,7 +42,7 @@ export const asyncLogin = async (loginData) => {
       document.querySelector(".Loader").style.display = "none";
       if (res.status === 200) {
         if (res.data.ispOwner === null) {
-          toast("সার্ভারে সমস্যা হয়েছে !");
+          toast("সার্ভার Error!");
         } else {
           const bayannoAccess = res.data.access;
           const ispWoner = res.data.ispOwner;
@@ -52,7 +52,7 @@ export const asyncLogin = async (loginData) => {
         }
       } else {
         // show toast
-        toast("সার্ভারে সমস্যা হয়েছে !");
+        toast("সার্ভার Error!");
       }
     })
     .catch((err) => {
@@ -68,4 +68,18 @@ export const asyncLogin = async (loginData) => {
     });
 
   setTimeout(() => {}, 1000);
+};
+
+// LOGOUT
+export const userLogout = async () => {
+  await apiLink({
+    url: "/v1/auth/logout",
+    method: "POST",
+  })
+    .then(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("ispWoner");
+      window.location.reload();
+    })
+    .catch(() => toast("There is an error"));
 };

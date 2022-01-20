@@ -70,18 +70,12 @@ export default function LinemanEdit() {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: LINEMAN.name,
-                  mobile: LINEMAN.mobile,
-                  address: LINEMAN.address,
-                  email: LINEMAN.email,
-                  nid: LINEMAN.nid,
-                  status: LINEMAN.status,
-                  // name: "",
-                  // mobile: "",
-                  // address: "",
-                  // email: "",
-                  // nid: "",
-                  // status: "",
+                  name: LINEMAN.name || "",
+                  mobile: LINEMAN.mobile || "",
+                  address: LINEMAN.address || "",
+                  email: LINEMAN.email || "",
+                  nid: LINEMAN.nid || "",
+                  status: LINEMAN.status || "",
                 }}
                 validationSchema={customerEditValidator}
                 onSubmit={(values) => {

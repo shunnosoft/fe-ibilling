@@ -8,9 +8,8 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { postMikrotik } from "../../../features/mikrotikSlice";
-import { fetchMikrotik } from "../../../features/mikrotikSlice";
 
-export default function MikrotikPost() {
+export default function MikrotikEdit() {
   const auth = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -35,7 +34,6 @@ export default function MikrotikPost() {
       const res = await dispatch(postMikrotik(sendingData));
       if (res) {
         setIsLoading(false);
-        dispatch(fetchMikrotik(auth.ispOwner.id));
       }
     }
   };
@@ -44,7 +42,7 @@ export default function MikrotikPost() {
     <div>
       <div
         className="modal fade modal-dialog-scrollable "
-        id="MikrotikModal"
+        id="MikrotikEditModal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"

@@ -30,6 +30,7 @@ import {
 import LinemanDetails from "./linemanCRUD/LinemanDetails";
 import LinemanEdit from "./linemanCRUD/LinemanEdit";
 import Loader from "../../components/common/Loader";
+import TdLoader from "../../components/common/TdLoader";
 
 export default function Lineman() {
   const auth = useSelector((state) => state.auth);
@@ -114,7 +115,8 @@ export default function Lineman() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট লাইন-ম্যান: <span>{Linemans.length}</span>
+                          মোট লাইন-ম্যান:{" "}
+                          <span>{Linemans.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -158,7 +160,7 @@ export default function Lineman() {
                       <tbody>
                         {Linemans.length === undefined ? (
                           <tr>
-                            <td>কোনো লাইন-ম্যান পাওয়া যায়নি </td>
+                            <TdLoader colspan={6} />
                           </tr>
                         ) : (
                           Linemans.filter((val) => {

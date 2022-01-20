@@ -1,16 +1,16 @@
 import React from "react";
-import "./header.css";
 import { FourGround } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { BoxArrowLeft } from "react-bootstrap-icons";
-import apiLink from "../../../api/apiLink";
+
+// internal imports
+import "./header.css";
+import { userLogout } from "../../../features/actions/authAsyncAction";
 
 export default function Header(props) {
   const { isAuth, ispOwner } = useSelector((state) => state.auth);
-
-  // console.log("From home Header: ", isAuth);
 
   const changeTHeme = () => {
     if (props.theme === "light") {
@@ -22,16 +22,7 @@ export default function Header(props) {
 
   // logout
   const handleLogOut = async () => {
-    await apiLink({
-      url: "/v1/auth/logout",
-      method: "POST",
-    })
-      .then((res) => console.log("Your are logged Out!"))
-      .catch((err) => console.log("There is an error"));
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("ispWoner");
-    window.location.reload();
+    userLogout();
   };
 
   const icon =

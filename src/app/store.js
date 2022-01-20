@@ -3,6 +3,7 @@ import authSlice from "../features/authSlice";
 import customerSlice from "../features/customerSlice";
 import linemanSlice from "../features/linemanSlice";
 import areaSlice from "../features/areaSlice";
+import mikrotikSlice from "../features/mikrotikSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     customer: customerSlice,
     lineman: linemanSlice,
     area: areaSlice,
+    mikrotik: mikrotikSlice,
   },
 });

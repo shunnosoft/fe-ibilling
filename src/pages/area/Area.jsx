@@ -16,6 +16,7 @@ import ResellerPost from "./areaModals/AreaPost";
 import { fetchArea } from "../../features/areaSlice";
 import { deleteArea } from "../../features/areaSlice";
 import AreaEdit from "./areaModals/AreaEdit";
+import TdLoader from "../../components/common/TdLoader";
 
 export default function Area() {
   const dispatch = useDispatch();
@@ -141,7 +142,7 @@ export default function Area() {
                       <tbody>
                         {area.length === undefined ? (
                           <tr>
-                            <td>এরিয়া পাওয়া যায়নি</td>
+                            <TdLoader colspan={3} />
                           </tr>
                         ) : (
                           area

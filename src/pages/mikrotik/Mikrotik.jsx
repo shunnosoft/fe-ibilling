@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./mikrotik.css";
-import { GearFill, PlugFill } from "react-bootstrap-icons";
+import { GearFill, PlugFill, ArrowRightShort } from "react-bootstrap-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 // internal imports
 import { ToastContainer } from "react-toastify";
@@ -9,13 +11,32 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import MikrotikPost from "./mikrotikModals/MikrotikPost";
+import { fetchMikrotik } from "../../features/mikrotikSlice";
+import { getMikrotik } from "../../features/mikrotikSlice";
+import TdLoader from "../../components/common/TdLoader";
 
 export default function Mikrotik() {
+  let serial = 0;
+  const auth = useSelector((state) => state.auth);
+  const [msearch, setMsearch] = useState("");
+  const dispatch = useDispatch();
+  let allmikrotiks = [];
+  allmikrotiks = useSelector(getMikrotik);
+
+  useEffect(() => {
+    const { ispOwner } = auth;
+    dispatch(fetchMikrotik(ispOwner.id));
+  }, [auth, dispatch]);
+
   return (
     <>
       <Sidebar />
       <ToastContainer
-        toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
+        toastStyle={{
+          backgroundColor: "#677078",
+          color: "white",
+          fontWeight: "500",
+        }}
       />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
@@ -60,7 +81,8 @@ export default function Mikrotik() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          PPPoE প্যাকেজ: <span>1</span>
+                          PPPoE প্যাকেজ:{" "}
+                          <span>{allmikrotiks.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -69,7 +91,8 @@ export default function Mikrotik() {
                           <input
                             type="text"
                             className="search"
-                            placeholder="Search"
+                            placeholder="সার্চ এর জন্য নাম টাইপ করুন"
+                            onChange={(e) => setMsearch(e.target.value)}
                           />
                         </div>
                       </div>
@@ -81,23 +104,46 @@ export default function Mikrotik() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
+                          <th scope="col">সিরিয়াল</th>
                           <th scope="col">নাম</th>
-                          <th scope="col">এড্রেস</th>
-                          <th scope="col">ইমেইল</th>
-                          <th scope="col">মোবাইল</th>
+                          <th scope="col">হোস্ট</th>
+                          <th scope="col">পোর্ট</th>
                           <th scope="col" style={{ textAlign: "center" }}>
                             অ্যাকশন
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>Data 1</td>
-                          <td>Data 2</td>
-                          <td>Data 3</td>
-                          <td>Data 4</td>
-                          <td style={{ textAlign: "center" }}>Data 5</td>
-                        </tr>
+                        {allmikrotiks.length === undefined ? (
+                          <tr>
+                            <TdLoader colspan={5} />
+                          </tr>
+                        ) : (
+                          allmikrotiks
+                            .filter((val) => {
+                              return val.name
+                                .toLowerCase()
+                                .includes(msearch.toLowerCase());
+                            })
+                            .map((val, key) => (
+                              <tr key={key}>
+                                <td style={{ paddingLeft: "30px" }}>
+                                  {++serial}
+                                </td>
+                                <td>{val.name}</td>
+                                <td>{val.host}</td>
+                                <td>{val.port}</td>
+                                <td className="mikrotikConfigure">
+                                  <Link
+                                    to="#"
+                                    className="mikrotikConfigureButtom"
+                                  >
+                                    কনফিগার <ArrowRightShort />
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))
+                        )}
                       </tbody>
                     </table>
                   </div>

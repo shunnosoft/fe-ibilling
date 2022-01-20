@@ -62,7 +62,7 @@ export default function AreaEdit({ oneArea }) {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: oneArea ? oneArea.name : "",
+                  name: oneArea.name || "",
                 }}
                 validationSchema={areaEditValidator}
                 onSubmit={(values) => {

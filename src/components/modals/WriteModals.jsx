@@ -55,11 +55,11 @@ export default function WriteModals(props) {
           <div className="modal-body">
             <Formik
               initialValues={{
-                name: manager.name,
-                mobile: manager.mobile,
-                address: manager.address,
-                email: manager.email,
-                nid: manager.nid,
+                name: manager.name || "",
+                mobile: manager.mobile || "",
+                address: manager.address || "",
+                email: manager.email || "",
+                nid: manager.nid || "",
                 // photo: ,
               }}
               validationSchema={managerValidate}
