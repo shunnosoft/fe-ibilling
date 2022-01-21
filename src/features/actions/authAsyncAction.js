@@ -77,9 +77,11 @@ export const userLogout = async () => {
     method: "POST",
   })
     .then(() => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("ispWoner");
-      window.location.reload();
+      window.localStorage.clear();
+      window.location.href = "/";
     })
-    .catch(() => toast("There is an error"));
+    .catch(() => {
+      window.localStorage.clear();
+      window.location.href = "/";
+    });
 };

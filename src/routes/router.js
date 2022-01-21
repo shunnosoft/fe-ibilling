@@ -4,7 +4,7 @@ import {
   PeopleFill,
   PersonPlus,
   PersonLinesFill,
-  Bullseye,
+  GeoAlt,
   BucketFill,
   Wifi,
   // Cash,
@@ -37,7 +37,7 @@ export const AllRoutes = [
   },
   {
     title: "এরিয়া ",
-    icon: <Bullseye />,
+    icon: <GeoAlt />,
     link: "/area",
   },
   {

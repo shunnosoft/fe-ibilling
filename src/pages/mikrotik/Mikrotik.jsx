@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import "../collector/collector.css";
 import "./mikrotik.css";
-import { GearFill, PlugFill, ArrowRightShort } from "react-bootstrap-icons";
+import { PlugFill, ArrowRightShort } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -53,35 +54,19 @@ export default function Mikrotik() {
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>মাইক্রোটিক কনফিগারেশন</p>
+                      <p>মাইক্রোটিক অ্যাড</p>
                       <div className="addAndSettingIcon">
-                        <GearFill
+                        <PlugFill
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#MikrotikModal"
                         />
-                        <PlugFill
-                          className="addcutmButton"
-                          //   data-bs-toggle="modal"
-                          //   data-bs-target="#exampleModal"
-                        />
-                      </div>
-                      <div className="mikrotikDetails mt-5">
-                        <p>
-                          আইপিঃ <b>103.121.61.228</b>
-                        </p>
-                        <p>
-                          ইউজারনেমঃ <b>admin</b>
-                        </p>
-                        <p>
-                          পোর্টঃ <b>8728</b>
-                        </p>
                       </div>
                     </div>
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          PPPoE প্যাকেজ:{" "}
+                          মোট মাইক্রোটিক:{" "}
                           <span>{allmikrotiks.length || "NULL"}</span>
                         </h4>
                       </div>
@@ -135,10 +120,13 @@ export default function Mikrotik() {
                                 <td>{val.port}</td>
                                 <td className="mikrotikConfigure">
                                   <Link
-                                    to="#"
+                                    to={`/mikrotik/${val.ispOwner}/${val.id}`}
                                     className="mikrotikConfigureButtom"
                                   >
-                                    কনফিগার <ArrowRightShort />
+                                    কনফিগার{" "}
+                                    <ArrowRightShort
+                                      style={{ fontSize: "19px" }}
+                                    />
                                   </Link>
                                 </td>
                               </tr>

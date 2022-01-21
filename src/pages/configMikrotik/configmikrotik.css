@@ -1,0 +1,26 @@
+.mikrotikDetails p {
+  font-weight: 500;
+  font-size: 17px;
+}
+.deleteColorBtn {
+  background: tomato;
+  box-shadow: 0 3px 10px #ff63477d;
+}
+.AllMikrotik {
+  background: #0ba36a;
+  cursor: pointer;
+  width: 135px;
+  font-size: 14px;
+  color: white;
+  display: flex;
+  height: 29px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+.arrowLeftSize {
+  font-size: 20px;
+}
+.AllMikrotik:hover {
+  background: #0a8a5b;
+}

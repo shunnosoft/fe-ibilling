@@ -69,12 +69,12 @@ export default function Header(props) {
                       );
                     })}
                     <li className="profileList logOutLi" onClick={handleLogOut}>
-                      <NavLink to="" className="dropdown-item logOutTxt">
+                      <div className="dropdown-item logOutTxt">
                         <span className="dropdownIcon">
                           <BoxArrowLeft />
                         </span>
                         Logout
-                      </NavLink>
+                      </div>
                     </li>
                   </ul>
                 </div>

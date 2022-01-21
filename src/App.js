@@ -11,6 +11,7 @@ import jwtDecode from "jwt-decode";
 import { setAuth, setIspOwner } from "./features/authSlice";
 import { fetchAsyncManager } from "./features/authSlice";
 import apiLink from "./api/apiLink";
+// import { userLogout } from "./features/actions/authAsyncAction";
 
 // internal pages
 import Header from "./components/admin/header/Header";
@@ -28,6 +29,7 @@ import Lineman from "./pages/lineman/Lineman";
 import Reseller from "./pages/reseller/Reseller";
 import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
+import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -49,13 +51,15 @@ function App() {
       if (response.status === 200) {
         console.log("We got the Token: ", response);
         // set new token to localstorage
+        // localStorage.setItem("token", JSON.stringify(response.data));
       } else {
-        console.log("Should Logout!");
         // call logout method here
+        // userLogout()
       }
     } catch (err) {
       console.log("Should Logout!");
       // call logout method here
+      // userLogout();
     }
     if (loading) {
       setLoading(false);
@@ -189,11 +193,21 @@ function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/mikrotik"
             element={
               <PrivateRoute auth={isAuth}>
                 <Mikrotik />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/mikrotik/:ispOwner/:mikrotikId"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <ConfigMikrotik />
               </PrivateRoute>
             }
           />

@@ -1,13 +1,10 @@
-.mikrotikDetails p {
-  font-weight: 500;
-  font-size: 17px;
-}
 .mikrotikConfigure {
   font-size: 15px;
   text-align: center;
 }
 .mikrotikConfigureButtom {
-  background: linear-gradient(45deg, #9449f5, #681ec9);
+  /* background: linear-gradient(45deg, #9449f5, #681ec9); */
+  background: #04a753;
   color: white !important;
   padding: 3px 12px;
   font-size: 13px;
@@ -15,5 +12,5 @@
   border-radius: 4px;
 }
 .mikrotikConfigureButtom:hover {
-  background: linear-gradient(45deg, #7633ce, #4b1099);
+  background: #048b46;
 }

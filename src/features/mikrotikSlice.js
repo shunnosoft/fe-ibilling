@@ -4,13 +4,13 @@ import { toast } from "react-toastify";
 
 const initialState = {
   mikrotik: {},
+  singleMikrotik: {},
 };
 
 // POST mikrotik
 export const postMikrotik = createAsyncThunk(
   "mikrotik/postMikrotik",
   async (data) => {
-    console.log("MI data: ", data);
     await apiLink({
       url: "/v1/mikrotik",
       method: "POST",
@@ -22,7 +22,7 @@ export const postMikrotik = createAsyncThunk(
       .then((res) => {
         console.log("Mikrotik res: ", res);
         document.querySelector("#MikrotikModal").click();
-        toast("মাইক্রোটিক কনফিগারেশন সফল হয়েছে ");
+        toast("মাইক্রোটিক অ্যাড সফল হয়েছে ");
       })
       .catch((err) => {
         if (err.response) {
@@ -32,27 +32,31 @@ export const postMikrotik = createAsyncThunk(
   }
 );
 
-// // PATCH area
-// export const editArea = createAsyncThunk("area/postArea", async (data) => {
-//   const { id } = data;
-//   await apiLink({
-//     url: `/v1/ispOwner/area/${data.ispOwner}/${id}`,
-//     method: "PATCH",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     data: data,
-//   })
-//     .then(() => {
-//       document.querySelector("#areaEditModal").click();
-//       toast("এরিয়া এডিট সফল হয়েছে ");
-//     })
-//     .catch((err) => {
-//       if (err.response) {
-//         toast(err.response.data.message);
-//       }
-//     });
-// });
+// PATCH mikrotik
+export const editSingleMikrotik = createAsyncThunk(
+  "mikrotik/editSingleMikrotik",
+  async (data) => {
+    const { ispId, id, ...rest } = data;
+
+    await apiLink({
+      url: `/v1/mikrotik/${ispId}/${id}`,
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: rest,
+    })
+      .then((res) => {
+        document.querySelector("#configMikrotikModal").click();
+        toast("মাইক্রোটিক এডিট সফল হয়েছে ");
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast(err.response.data.message);
+        }
+      });
+  }
+);
 
 // GET mikrotik
 export const fetchMikrotik = createAsyncThunk(
@@ -64,6 +68,36 @@ export const fetchMikrotik = createAsyncThunk(
     });
     const data = await response.data;
     return data;
+  }
+);
+
+// GET single mikrotik
+export const fetchSingleMikrotik = createAsyncThunk(
+  "mikrotik/fetchSingleMikrotik",
+  async (IDs) => {
+    const response = await apiLink({
+      method: "GET",
+      url: `/v1/mikrotik/${IDs.ispOwner}/${IDs.id}`,
+    });
+    const data = await response.data;
+    return data;
+  }
+);
+
+// DELETE single mikrotik
+export const deleteSingleMikrotik = createAsyncThunk(
+  "mikrotik/deleteSingleMikrotik",
+  async (IDs) => {
+    await apiLink({
+      method: "DELETE",
+      url: `/v1/mikrotik/${IDs.ispOwner}/${IDs.id}`,
+    })
+      .then(() => {
+        // toast("মাইক্রোটিক ডিলিট সফল হয়েছে");
+      })
+      .catch(() => {
+        toast("Server Error!");
+      });
   }
 );
 
@@ -83,9 +117,24 @@ export const areaSlice = createSlice({
     [fetchMikrotik.rejected]: () => {
       console.log("Mikrotik Rejected");
     },
+
+    // single mikrotik
+    [fetchSingleMikrotik.pending]: () => {
+      console.log("Single mikrotik Pending");
+    },
+
+    [fetchSingleMikrotik.fulfilled]: (state, { payload }) => {
+      console.log("Single mikrotik Fetched Successfully!");
+      return { ...state, singleMikrotik: payload };
+    },
+
+    [fetchSingleMikrotik.rejected]: () => {
+      console.log("Single mikrotik Rejected");
+    },
   },
 });
 
 export const getMikrotik = (state) => state.mikrotik.mikrotik;
+export const getSingleMikrotik = (state) => state.mikrotik.singleMikrotik;
 
 export default areaSlice.reducer;

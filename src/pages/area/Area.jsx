@@ -1,9 +1,8 @@
 import "./area.css";
 import React from "react";
 import { useEffect, useState } from "react";
-import { PersonPlusFill } from "react-bootstrap-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { ThreeDots, PenFill, ArchiveFill } from "react-bootstrap-icons";
+import { ThreeDots, PenFill, ArchiveFill, GeoAlt } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
 // internal imports
@@ -91,7 +90,7 @@ export default function Area() {
                     <div className="addNewCollector">
                       <p>অ্যাড এরিয়া</p>
                       <div className="addAndSettingIcon">
-                        <PersonPlusFill
+                        <GeoAlt
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#areaModal"

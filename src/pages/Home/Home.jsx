@@ -55,7 +55,7 @@ export default function Home() {
           <h2 className="dashboardTitle mt-2">Collector</h2>
           <FourGround>
             <div className="table-responsive-lg tableWrapper">
-              <table class="table table-striped">
+              <table className="table table-striped">
                 <thead>
                   <tr>
                     <th scope="col">First</th>
