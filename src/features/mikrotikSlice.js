@@ -78,6 +78,8 @@ export const fetchSingleMikrotik = createAsyncThunk(
     const response = await apiLink({
       method: "GET",
       url: `/v1/mikrotik/${IDs.ispOwner}/${IDs.id}`,
+    }).catch(() => {
+      window.location.href = "/mikrotik";
     });
     const data = await response.data;
     return data;

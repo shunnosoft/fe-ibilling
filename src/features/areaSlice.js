@@ -98,4 +98,5 @@ export const areaSlice = createSlice({
   },
 });
 
+export const getArea = (state) => state.area.area;
 export default areaSlice.reducer;

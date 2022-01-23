@@ -48,7 +48,7 @@ export default function ConfigMikrotik() {
   }, [ispOwner, mikrotikId, dispatch]);
 
   const gotoAllMiktorik = () => {
-    navigate(-1);
+    navigate("/mikrotik");
   };
 
   const deleteSingleMKHandler = async () => {

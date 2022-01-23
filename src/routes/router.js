@@ -16,6 +16,11 @@ export const AllRoutes = [
     link: "/home",
   },
   {
+    title: "এরিয়া ",
+    icon: <GeoAlt />,
+    link: "/area",
+  },
+  {
     title: "ম্যানেজার",
     icon: <PersonPlus />,
     link: "/manager",
@@ -35,11 +40,7 @@ export const AllRoutes = [
     icon: <PersonLinesFill />,
     link: "/lineman",
   },
-  {
-    title: "এরিয়া ",
-    icon: <GeoAlt />,
-    link: "/area",
-  },
+
   {
     title: "কালেক্টর",
     icon: <CurrencyEuro />,

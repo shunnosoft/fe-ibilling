@@ -16,6 +16,7 @@ import apiLink from "./api/apiLink";
 // internal pages
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
+import PrivateOutlet from "./PrivateOutlet";
 import Landing from "./pages/landing/Landing";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
@@ -30,6 +31,7 @@ import Reseller from "./pages/reseller/Reseller";
 import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
+import SubArea from "./pages/subArea/SubArea";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -72,7 +74,7 @@ function App() {
       updateToken();
     }
     const token = JSON.parse(localStorage.getItem("token"));
-    const timeToUpdate = 1000 * 60 * 9;
+    const timeToUpdate = 1000 * 60 * 12;
     const interval = setInterval(() => {
       if (token) {
         updateToken();
@@ -131,7 +133,38 @@ function App() {
 
           <Route path="/register/success" element={<Success />} />
 
+          {/* dashboard */}
+          <Route path="/*" element={<PrivateOutlet />}>
+            <Route path="home" element={<Dashboard />} />
+            <Route path="area" element={<Area />} />
+            <Route path="manager" element={<Manager />} />
+            <Route path="reseller" element={<Reseller />} />
+            <Route path="customer" element={<Customer />} />
+            <Route path="lineman" element={<Lineman />} />
+            <Route path="collector" element={<Collector />} />
+            <Route path="mikrotik" element={<Mikrotik />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+
           <Route
+            path="/subArea/:areaId"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <SubArea />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/mikrotik/:ispOwner/:mikrotikId"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <ConfigMikrotik />
+              </PrivateRoute>
+            }
+          />
+
+          {/* <Route
             path="/customer"
             element={
               <PrivateRoute auth={isAuth}>
@@ -159,6 +192,24 @@ function App() {
           />
 
           <Route
+            path="/area"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <Area />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/subarea"
+            element={
+              <PrivateRoute auth={isAuth}>
+                <Area />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="/manager"
             element={
               <PrivateRoute auth={isAuth}>
@@ -172,15 +223,6 @@ function App() {
             element={
               <PrivateRoute auth={isAuth}>
                 <Reseller />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/area"
-            element={
-              <PrivateRoute auth={isAuth}>
-                <Area />
               </PrivateRoute>
             }
           />
@@ -210,9 +252,9 @@ function App() {
                 <ConfigMikrotik />
               </PrivateRoute>
             }
-          />
 
-          <Route path="/*" element={<NotFound />} />
+            <Route path="/*" element={<NotFound />} />
+          /> */}
         </Routes>
       </div>
     </ThemeProvider>
