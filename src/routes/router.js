@@ -31,7 +31,7 @@ export const AllRoutes = [
     link: "/reseller",
   },
   {
-    title: "কাস্টমার",
+    title: "গ্রাহক",
     icon: <PeopleFill />,
     link: "/customer",
   },

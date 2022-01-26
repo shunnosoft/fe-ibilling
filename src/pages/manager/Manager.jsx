@@ -28,6 +28,7 @@ import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
 import Footer from "../../components/admin/footer/Footer";
+import TdLoader from "../../components/common/TdLoader";
 
 export default function Manager() {
   const manager = useSelector(getManager);
@@ -67,11 +68,6 @@ export default function Manager() {
           <div className="container">
             {/* manager modal */}
             <ReadModals managerDetails={manager} />
-
-            <div className="alert alert-success mt-3" id="successAlert">
-              <strong>ম্যানেজার অ্যাড সফল হয়েছে!</strong> এখন সে ম্যানেজার এর
-              অ্যাকশন গুলা পারফর্ম করতে পারে ।
-            </div>
             <FontColor>
               <FourGround>
                 <h2 className="collectorTitle">ম্যানেজার</h2>
@@ -281,7 +277,7 @@ export default function Manager() {
                           </tr>
                         ) : (
                           <tr>
-                            <td>কোনো ম্যানেজার পাওয়া যায়নি </td>
+                            <TdLoader colspan={5} />
                           </tr>
                         )}
                       </tbody>
