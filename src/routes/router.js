@@ -5,7 +5,7 @@ import {
   PersonPlus,
   PersonLinesFill,
   GeoAlt,
-  BucketFill,
+  LayersFill,
   Wifi,
   // Cash,
 } from "react-bootstrap-icons";
@@ -27,7 +27,7 @@ export const AllRoutes = [
   },
   {
     title: "রি-সেলার",
-    icon: <BucketFill />,
+    icon: <LayersFill />,
     link: "/reseller",
   },
   {

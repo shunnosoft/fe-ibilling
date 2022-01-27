@@ -89,6 +89,7 @@ export default function AreaEdit({ oneArea }) {
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
+                        disabled={isLoading}
                       >
                         {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>

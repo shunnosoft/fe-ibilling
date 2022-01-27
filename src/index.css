@@ -30,6 +30,7 @@ a {
 label {
   font-weight: 500;
   color: rgb(29, 28, 28);
+  padding-right: 10px;
 }
 .table {
   --bs-table-striped-color: inherit !important;

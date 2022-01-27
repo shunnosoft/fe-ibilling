@@ -84,6 +84,7 @@ export default function SubAreaPost({ name, id }) {
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
+                        disabled={isLoading}
                       >
                         {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>

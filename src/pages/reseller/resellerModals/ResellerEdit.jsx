@@ -9,10 +9,9 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
-import { postReseller, fetchReseller } from "../../../features/resellerSlice";
+import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
-export default function ResellerPost() {
-  // const [Check, setCheck] = useState(RBD);
+export default function ResellerEdit({ reseller }) {
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -48,18 +47,20 @@ export default function ResellerPost() {
   //   }
   // };
 
+  // edit Reseller
   const resellerHandler = async (data) => {
     setIsLoading(true);
 
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
-        ispOwner: auth.ispOwner.id,
+        ispOwner: reseller.ispOwner,
+        ispId: reseller.ispOwner,
+        resellerId: reseller.id,
       };
-      const res = await dispatch(postReseller(sendingData));
+      const res = await dispatch(editReseller(sendingData));
       if (res) {
-        // should dispatch later
-        dispatch(fetchReseller(auth.ispOwner.id));
+        dispatch(fetchReseller(reseller.ispOwner));
         setIsLoading(false);
       }
     }
@@ -69,7 +70,7 @@ export default function ResellerPost() {
     <div>
       <div
         className="modal fade modal-dialog-scrollable "
-        id="resellerModal"
+        id="resellerModalEdit"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -78,7 +79,7 @@ export default function ResellerPost() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন রি-সেলার অ্যাড করুন
+                রি-সেলার এডিট করুন
               </h5>
               <button
                 type="button"
@@ -92,14 +93,14 @@ export default function ResellerPost() {
               <Formik
                 initialValues={{
                   // ispOwner:
-                  name: "", //*
-                  mobile: "", //*
-                  email: "", //*
-                  nid: "", //*
-                  website: "N/A",
-                  address: "N/A",
-                  billCollectionType: "", // ['prepaid', 'postpaid', 'both'], /*
-                  status: "", //['new', 'active', 'inactive', 'banned', 'deleted'],
+                  name: reseller.name || "", //*
+                  mobile: reseller.mobile || "", //*
+                  email: reseller.email || "", //*
+                  nid: reseller.nid || "", //*
+                  website: reseller.website || "N/A",
+                  address: reseller.address || "N/A",
+                  billCollectionType: reseller.billCollectionType || "", // ['prepaid', 'postpaid', 'both'], /*
+                  status: reseller.status || "", //['new', 'active', 'inactive', 'banned', 'deleted'],
                   // rechargeBalance: "", //number
                   // smsRate: "", //number
                   // commissionRate: "", //number

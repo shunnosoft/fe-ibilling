@@ -20,6 +20,7 @@ export default function AreaPost() {
     name: Yup.string().required("নাম দিন"),
   });
 
+  // POST
   const areaHandler = async (data) => {
     setIsLoading(true);
     if (auth.ispOwner) {
@@ -83,6 +84,7 @@ export default function AreaPost() {
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
+                        disabled={isLoading}
                       >
                         {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>

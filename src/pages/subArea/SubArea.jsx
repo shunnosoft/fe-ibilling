@@ -172,6 +172,7 @@ export default function SubArea() {
                               <button
                                 type="submit"
                                 className="btn btn-success customBtn"
+                                disabled={isLoading}
                               >
                                 {isLoading ? <Loader /> : "সেভ করুন"}
                               </button>

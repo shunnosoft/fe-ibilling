@@ -1,20 +1,77 @@
-import React from "react";
-import { PersonPlusFill, GearFill } from "react-bootstrap-icons";
+import React, { useState, useEffect } from "react";
+import {
+  PersonPlusFill,
+  GearFill,
+  ThreeDots,
+  PenFill,
+  ArchiveFill,
+  PersonFill,
+} from "react-bootstrap-icons";
+import { useDispatch, useSelector } from "react-redux";
 
 // internal imports
+import "./reseller.css";
 import { ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./resellerModals/ResellerPost";
+import ResellerEdit from "./resellerModals/ResellerEdit";
+import Loader from "../../components/common/Loader";
+import {
+  fetchReseller,
+  getReseller,
+  deleteReseller,
+} from "../../features/resellerSlice";
+import TdLoader from "../../components/common/TdLoader";
+import ResellerDetails from "./resellerModals/ResellerDetails";
 
 export default function Reseller() {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const [singleUser, setSingleUser] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const reseller = useSelector(getReseller);
+  let serial = 0;
+
+  useEffect(() => {
+    if (auth.ispOwner) {
+      dispatch(fetchReseller(auth.ispOwner.id));
+    }
+  }, [dispatch, auth.ispOwner]);
+
+  // get Single reseller
+  const getSpecificReseller = (rid) => {
+    if (reseller.length !== undefined) {
+      const singleReseller = reseller.find((val) => {
+        return val.id === rid;
+      });
+      setSingleUser(singleReseller);
+    }
+  };
+
+  // delete reseller
+  const deleteSingleReseller = async (ispId, resellerId) => {
+    console.log(ispId, resellerId);
+    setIsLoading(true);
+    const IDs = { ispId: ispId, resellerId: resellerId };
+    const res = await dispatch(deleteReseller(IDs));
+    if (res) {
+      dispatch(fetchReseller(ispId));
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <Sidebar />
       <ToastContainer
-        toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
+        toastStyle={{
+          backgroundColor: "#677078",
+          color: "white",
+          fontWeight: "500",
+        }}
       />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
@@ -22,6 +79,8 @@ export default function Reseller() {
             <FontColor>
               {/* modals */}
               <ResellerPost />
+              <ResellerEdit reseller={singleUser} />
+              <ResellerDetails reseller={singleUser} />
               {/* modals */}
               <FourGround>
                 <h2 className="collectorTitle">রি-সেলার</h2>
@@ -48,7 +107,8 @@ export default function Reseller() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট রি-সেলার : <span>1</span>
+                          মোট রি-সেলার :{" "}
+                          <span>{reseller.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -62,6 +122,16 @@ export default function Reseller() {
                         </div>
                       </div>
                     </div>
+
+                    {isLoading ? (
+                      <div className="deleteReseller">
+                        <h6>
+                          <Loader /> Deleting...
+                        </h6>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
 
                   {/* table */}
@@ -69,6 +139,7 @@ export default function Reseller() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
+                          <th scope="col">Serial</th>
                           <th scope="col">নাম</th>
                           <th scope="col">এড্রেস</th>
                           <th scope="col">ইমেইল</th>
@@ -79,13 +150,84 @@ export default function Reseller() {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>Data 1</td>
-                          <td>Data 2</td>
-                          <td>Data 3</td>
-                          <td>Data 4</td>
-                          <td style={{ textAlign: "center" }}>Data 5</td>
-                        </tr>
+                        {reseller.length === undefined ? (
+                          <tr>
+                            <TdLoader colspan={6} />
+                          </tr>
+                        ) : (
+                          reseller.map((val, key) => (
+                            <tr key={key}>
+                              <td>{++serial}</td>
+                              <td>{val.name}</td>
+                              <td>{val.address}</td>
+                              <td>{val.mobile}</td>
+                              <td>{val.email}</td>
+                              <td style={{ textAlign: "center" }}>
+                                {/* dropdown */}
+
+                                <ThreeDots
+                                  className="dropdown-toggle ActionDots"
+                                  id="resellerDropdown"
+                                  type="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                />
+
+                                {/* modal */}
+                                <ul
+                                  className="dropdown-menu"
+                                  aria-labelledby="resellerDropdown"
+                                >
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#resellerDetailsModal"
+                                    onClick={() => {
+                                      getSpecificReseller(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <PersonFill />
+                                        <p className="actionP">প্রোফাইল</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#resellerModalEdit"
+                                    onClick={() => {
+                                      getSpecificReseller(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <PenFill />
+                                        <p className="actionP">এডিট</p>
+                                      </div>
+                                    </div>
+                                  </li>
+
+                                  <li
+                                    onClick={() => {
+                                      deleteSingleReseller(
+                                        val.ispOwner,
+                                        val.id
+                                      );
+                                    }}
+                                  >
+                                    <div className="dropdown-item actionManager">
+                                      <div className="customerAction">
+                                        <ArchiveFill />
+                                        <p className="actionP">ডিলিট</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                                {/* dropdown */}
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
