@@ -1,13 +1,13 @@
 .collectorTitle {
   padding: 20px 0;
   font-weight: 500;
-  background: linear-gradient(45deg, #0ba372, #9449f5);
+  background: rgb(77 26 143);
   text-align: center;
   font-size: 2.4rem;
   color: white;
   border-radius: 5px;
-  /* animation: bgChange 5s ease-in infinite alternate; */
 }
+
 .ProfileName {
   color: white;
   padding: 10px;
@@ -17,14 +17,7 @@
   border-radius: 5px;
   margin: 0px 0px 20px;
 }
-@keyframes bgChange {
-  0% {
-    background: #0ba372;
-  }
-  100% {
-    background: #9449f5;
-  }
-}
+
 .collectorWrapper {
   padding: 20px;
 }
@@ -39,19 +32,21 @@
   font-weight: 700;
 }
 .addcutmButton {
-  width: 45px;
-  height: 45px;
-  padding: 12px;
+  width: 50px;
+  height: 38px;
+  padding: 9px;
   color: #fff;
-  background: #0ba36a;
-  border-radius: 50%;
-  box-shadow: 0px 3px 10px #1ab53d87;
+  background: #12cf6f;
+  /* border: 1px solid #06bf79; */
+  border-radius: 7px;
+  /* box-shadow: 0px 3px 10px #1ab53d87; */
   margin-right: 12px;
   transition: 0.3s;
   cursor: pointer;
 }
 .addcutmButton:hover {
-  box-shadow: none;
+  /* box-shadow: none; */
+  background: #0ea158;
 }
 .serchingIcon {
   margin-top: 10px;

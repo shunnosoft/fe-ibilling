@@ -47,7 +47,6 @@ export const fetchReseller = createAsyncThunk(
 export const editReseller = createAsyncThunk(
   "reseller/editReseller",
   async (data) => {
-    console.log("Edit slice: ", data);
     const { ispId, resellerId, ...rest } = data;
     await apiLink({
       url: `/v1/ispOwner/reseller/${ispId}/${resellerId}`,
@@ -58,7 +57,7 @@ export const editReseller = createAsyncThunk(
       data: rest,
     })
       .then(() => {
-        document.querySelector("#resellerModal").click();
+        document.querySelector("#resellerModalEdit").click();
         toast("রি-সেলার Edit সফল হয়েছে !");
       })
       .catch((err) => {
@@ -74,7 +73,6 @@ export const deleteReseller = createAsyncThunk(
   "reseller/deleteReseller",
   async (IDs) => {
     const { ispId, resellerId } = IDs;
-    console.log(ispId, resellerId);
     await apiLink({
       url: `/v1/ispOwner/reseller/${ispId}/${resellerId}`,
       method: "DELETE",

@@ -53,13 +53,12 @@
 }
 
 .pppoeRefresh svg {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
   background: #601eb5;
   color: #ffffff;
   border: 5px solid #9449f5;
   box-shadow: none;
   padding: 7px;
-  transition: 1s;
-}
-.pppoeRefresh svg:hover {
-  transform: rotate(360deg);
 }

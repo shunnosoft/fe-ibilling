@@ -20,13 +20,20 @@
   cursor: pointer;
   display: block;
 }
+
 .thSt {
   color: #2485aa;
   font-size: 17px;
 }
-/* .dropdown-item {
-  padding: 0px !important;
+
+.customerGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
 }
-.customerAction {
-  padding: 5px 25px;
-} */
+
+@media only screen and (max-width: 980px) {
+  .customerGrid {
+    display: initial;
+  }
+}

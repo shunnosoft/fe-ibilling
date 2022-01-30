@@ -129,11 +129,8 @@ export const fetchpppoeUser = createAsyncThunk(
     const response = await apiLink({
       method: "GET",
       url: `/v1/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.id}`,
-      // url: `/v1/mikrotik/PPPsecretUsers//61bda8f10b21707f77b5dfc9/61eef8da42fa31326f02283b`,
-    }).catch((err) => {
-      if (err.response) {
-        toast("PPPoE গ্রাহক পাওয়া যায়নি!");
-      }
+    }).catch(() => {
+      toast("PPPoE গ্রাহক পাওয়া যায়নি!");
     });
     const data = await response.data;
     return data;
@@ -147,11 +144,8 @@ export const fetchActivepppoeUser = createAsyncThunk(
     const response = await apiLink({
       method: "GET",
       url: `/v1/mikrotik/PPPactiveUsers/${IDs.ispOwner}/${IDs.id}`,
-      // url: `/v1/mikrotik/PPPsecretUsers//61bda8f10b21707f77b5dfc9/61eef8da42fa31326f02283b`,
-    }).catch((err) => {
-      if (err.response) {
-        toast("এক্টিভ গ্রাহক পাওয়া যায়নি!");
-      }
+    }).catch(() => {
+      toast("এক্টিভ গ্রাহক পাওয়া যায়নি!");
     });
     const data = await response.data;
     return data;

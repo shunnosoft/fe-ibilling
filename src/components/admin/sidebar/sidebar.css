@@ -82,10 +82,11 @@ a {
   .HideSidebar {
     width: calc(100vw - 249px);
     height: 100vh;
-    background: rgb(120 175 152 / 60%);
+    background: rgb(187 213 203 / 16%);
     position: absolute;
     top: 0;
     margin-left: 118px;
+    backdrop-filter: blur(20px);
   }
   .menuIcon {
     width: 100px !important;

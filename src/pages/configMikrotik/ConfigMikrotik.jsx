@@ -191,7 +191,7 @@ export default function ConfigMikrotik() {
                     </div>
 
                     {/* PPPoE Package */}
-                    {/* <h2 className="secondaryTitle">PPPoE প্যাকেজ</h2>
+                    <h2 className="secondaryTitle">PPPoE প্যাকেজ</h2>
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
@@ -235,7 +235,7 @@ export default function ConfigMikrotik() {
                         </tr>
                       </tbody>
                     </table>
-                  <br /> */}
+                    <br />
 
                     {/* PPPoE users */}
                     <h2 className="secondaryTitle">PPPoE গ্রাহক</h2>

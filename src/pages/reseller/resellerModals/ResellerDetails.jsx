@@ -32,14 +32,24 @@ export default function ResellerDetails({ reseller }) {
                     alt=""
                   />
                   <h5>{reseller.name || "N/A"}</h5>
-                  <p>Website: {reseller.website || "N/A"}</p>
+                  <p>ওয়েবসাইট: {reseller.website || "N/A"}</p>
                 </div>
                 <div className="ResellerDetails">
-                  <h4>Status: {reseller.status || "N/A"}</h4>
-                  <h4>Email: {reseller.email || "N/A"}</h4>
-                  <h4>Mobile: {reseller.mobile || "N/A"}</h4>
-                  <h4>Addres: {reseller.address || "N/A"}</h4>
-                  <h4>Nid: {reseller.nid || "N/A"}</h4>
+                  <h4>
+                    স্ট্যাটাস: <b> {reseller.status || "N/A"} </b>
+                  </h4>
+                  <h4>
+                    ইমেইল: <b> {reseller.email || "N/A"} </b>
+                  </h4>
+                  <h4>
+                    মোবাইল: <b> {reseller.mobile || "N/A"}</b>
+                  </h4>
+                  <h4>
+                    এড্রেস: <b>{reseller.address || "N/A"}</b>
+                  </h4>
+                  <h4>
+                    NID: <b>{reseller.nid || "N/A"}</b>
+                  </h4>
                 </div>
               </div>
               <div className="modal-footer">

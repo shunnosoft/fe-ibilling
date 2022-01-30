@@ -32,6 +32,7 @@ export default function Reseller() {
   const auth = useSelector((state) => state.auth);
   const [singleUser, setSingleUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [rsearch, setRsearch] = useState("");
   const reseller = useSelector(getReseller);
   let serial = 0;
 
@@ -118,6 +119,7 @@ export default function Reseller() {
                             type="text"
                             className="search"
                             placeholder="Search"
+                            onChange={(e) => setRsearch(e.target.value)}
                           />
                         </div>
                       </div>
@@ -155,78 +157,84 @@ export default function Reseller() {
                             <TdLoader colspan={6} />
                           </tr>
                         ) : (
-                          reseller.map((val, key) => (
-                            <tr key={key}>
-                              <td>{++serial}</td>
-                              <td>{val.name}</td>
-                              <td>{val.address}</td>
-                              <td>{val.mobile}</td>
-                              <td>{val.email}</td>
-                              <td style={{ textAlign: "center" }}>
-                                {/* dropdown */}
+                          reseller
+                            .filter((val) => {
+                              return val.name
+                                .toLowerCase()
+                                .includes(rsearch.toLowerCase());
+                            })
+                            .map((val, key) => (
+                              <tr key={key}>
+                                <td>{++serial}</td>
+                                <td>{val.name}</td>
+                                <td>{val.address}</td>
+                                <td>{val.mobile}</td>
+                                <td>{val.email}</td>
+                                <td style={{ textAlign: "center" }}>
+                                  {/* dropdown */}
 
-                                <ThreeDots
-                                  className="dropdown-toggle ActionDots"
-                                  id="resellerDropdown"
-                                  type="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                />
+                                  <ThreeDots
+                                    className="dropdown-toggle ActionDots"
+                                    id="resellerDropdown"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  />
 
-                                {/* modal */}
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="resellerDropdown"
-                                >
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#resellerDetailsModal"
-                                    onClick={() => {
-                                      getSpecificReseller(val.id);
-                                    }}
+                                  {/* modal */}
+                                  <ul
+                                    className="dropdown-menu"
+                                    aria-labelledby="resellerDropdown"
                                   >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PersonFill />
-                                        <p className="actionP">প্রোফাইল</p>
+                                    <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#resellerDetailsModal"
+                                      onClick={() => {
+                                        getSpecificReseller(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <PersonFill />
+                                          <p className="actionP">প্রোফাইল</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#resellerModalEdit"
-                                    onClick={() => {
-                                      getSpecificReseller(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PenFill />
-                                        <p className="actionP">এডিট</p>
+                                    </li>
+                                    <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#resellerModalEdit"
+                                      onClick={() => {
+                                        getSpecificReseller(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <PenFill />
+                                          <p className="actionP">এডিট</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>
+                                    </li>
 
-                                  <li
-                                    onClick={() => {
-                                      deleteSingleReseller(
-                                        val.ispOwner,
-                                        val.id
-                                      );
-                                    }}
-                                  >
-                                    <div className="dropdown-item actionManager">
-                                      <div className="customerAction">
-                                        <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
+                                    <li
+                                      onClick={() => {
+                                        deleteSingleReseller(
+                                          val.ispOwner,
+                                          val.id
+                                        );
+                                      }}
+                                    >
+                                      <div className="dropdown-item actionManager">
+                                        <div className="customerAction">
+                                          <ArchiveFill />
+                                          <p className="actionP">ডিলিট</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                                {/* dropdown */}
-                              </td>
-                            </tr>
-                          ))
+                                    </li>
+                                  </ul>
+                                  {/* dropdown */}
+                                </td>
+                              </tr>
+                            ))
                         )}
                       </tbody>
                     </table>

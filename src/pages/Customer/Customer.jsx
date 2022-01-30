@@ -4,7 +4,6 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
-  GearFill,
   ThreeDots,
   ArchiveFill,
   PenFill,
@@ -107,11 +106,6 @@ export default function Customer() {
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#customerModal"
-                        />
-                        <GearFill
-                          className="addcutmButton"
-                          // data-bs-toggle="modal"
-                          // data-bs-target=""
                         />
                       </div>
                     </div>
