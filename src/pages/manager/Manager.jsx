@@ -173,21 +173,26 @@ export default function Manager() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector">
-                      <p>অ্যাড ম্যানেজার</p>
-                      <div className="addAndSettingIcon">
-                        <PersonPlusFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
-                        />
-                        <GearFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
-                        />
+                    {manager?.name ? (
+                      ""
+                    ) : (
+                      <div className="addNewCollector">
+                        <p>অ্যাড ম্যানেজার</p>
+                        <div className="addAndSettingIcon">
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                          />
+
+                          <GearFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">

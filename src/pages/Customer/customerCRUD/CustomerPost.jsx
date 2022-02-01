@@ -7,18 +7,17 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-// import { postCustomer } from "../../../features/customerSlice";
+import { postCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
 import { getMikrotik, fetchMikrotik } from "../../../features/mikrotikSlice";
-// import { fetchCustomer } from "../../../features/customerSlice";
+import { fetchCustomer } from "../../../features/customerSlice";
 import { getArea, fetchArea } from "../../../features/areaSlice";
 
 export default function CustomerModal() {
   const auth = useSelector((state) => state.auth);
   const area = useSelector(getArea);
   const Getmikrotik = useSelector(getMikrotik);
-  const isLoading = false; // it remove
-  // const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const dispatch = useDispatch();
@@ -75,27 +74,33 @@ export default function CustomerModal() {
   };
 
   const customerHandler = async (data) => {
+    setIsloading(true);
     const subArea = document.getElementById("subAreaId").value;
     if (subArea === "") {
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
     const mikrotik = singleMikrotik?.id;
-    // setIsloading(true);
     const { ispOwner } = auth;
-
+    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       customerId: "randon123",
       subArea: subArea,
       ispOwner: ispOwner.id,
       mikrotik: mikrotik,
-      ...data,
+      pppoe: {
+        name: Pname,
+        password: Ppassword,
+        profile: Pprofile,
+        comment: Pcomment,
+      },
+      ...rest,
     };
-    console.log("Sending Data: ", mainData);
-    // const response = await dispatch(postCustomer(mainData));
-    // if (response) {
-    //   setIsloading(false);
-    //   dispatch(fetchCustomer(ispOwner.id));
-    // }
+    console.log("Seinding Data: ", mainData);
+    const response = await dispatch(postCustomer(mainData));
+    if (response) {
+      setIsloading(false);
+      dispatch(fetchCustomer(ispOwner.id));
+    }
   };
 
   return (
@@ -310,10 +315,15 @@ export default function CustomerModal() {
                         type="button"
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
+                        disabled={isLoading}
                       >
                         বাতিল করুন
                       </button>
-                      <button type="submit" className="btn btn-success">
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={isLoading}
+                      >
                         {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>
                     </div>

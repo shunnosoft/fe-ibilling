@@ -7,6 +7,7 @@ const initialState = {
   singleMikrotik: {},
   pppoeUser: {},
   pppoeActiveUser: {},
+  pppoePackage: {},
 };
 
 // POST mikrotik
@@ -137,7 +138,7 @@ export const fetchpppoeUser = createAsyncThunk(
   }
 );
 
-// get PPPoE user
+// get PPPoE Active user
 export const fetchActivepppoeUser = createAsyncThunk(
   "ppporUser/fetchActivepppoeUser",
   async (IDs) => {
@@ -152,6 +153,68 @@ export const fetchActivepppoeUser = createAsyncThunk(
   }
 );
 
+// get pppoe Package
+export const fetchpppoePackage = createAsyncThunk(
+  "pppoePackage/fetchpppoePackage",
+  async (IDs) => {
+    const response = await apiLink({
+      method: "GET",
+      url: `/v1/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
+    }).catch(() => {
+      toast("PPPoE প্যাকেজ পাওয়া যায়নি!");
+    });
+    const data = await response.data;
+    return data;
+  }
+);
+
+// Edit pppoe Package
+export const editPPPoEpackageRate = createAsyncThunk(
+  "pppoePackage/editPPPoEpackageRate",
+  async (data) => {
+    const { mikrotikId, pppPackageId, ...rest } = data;
+    await apiLink({
+      method: "PATCH",
+      url: `/v1/mikrotik/PPPpackage/${mikrotikId}/${pppPackageId}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: rest,
+    })
+      .then(() => {
+        document.querySelector("#pppoePackageEditModal").click();
+        toast("PPPoE প্যাকেজ রেট এডিট সফল হয়েছে!");
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast("Error! ", err.response.message);
+        }
+      });
+  }
+);
+
+// DELETE pppoe Package
+export const deletePPPoEpackage = createAsyncThunk(
+  "pppoePackage/deletePPPoEpackage",
+  async (IDs) => {
+    console.log("Ids: ", IDs);
+    const { mikrotikId, pppPackageId } = IDs;
+    await apiLink({
+      method: "DELETE",
+      url: `/v1/mikrotik/PPPpackage/${mikrotikId}/${pppPackageId}`,
+    })
+      .then(() => {
+        document.querySelector("#pppoePackageEditModal").click();
+        toast("PPPoE প্যাকেজ ডিলিট সফল হয়েছে!");
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast("ডিলিট Error! ", err.response.message);
+        }
+      });
+  }
+);
+
 export const areaSlice = createSlice({
   name: "mikrotik",
   initialState,
@@ -163,7 +226,8 @@ export const areaSlice = createSlice({
     [fetchSingleMikrotik.fulfilled]: (state, { payload }) => {
       return { ...state, singleMikrotik: payload };
     },
-    // get pppor users
+
+    // get pppoe users
     [fetchpppoeUser.fulfilled]: (state, { payload }) => {
       return { ...state, pppoeUser: payload };
     },
@@ -171,6 +235,19 @@ export const areaSlice = createSlice({
       return {
         ...state,
         pppoeUser: [{ name: "N/A", profile: "N/A", service: "N/A" }],
+      };
+    },
+
+    // get pppoe package
+    [fetchpppoePackage.fulfilled]: (state, { payload }) => {
+      console.log("Package Pending");
+      return { ...state, pppoePackage: payload };
+    },
+    [fetchpppoePackage.rejected]: (state) => {
+      console.log("Package fetched!");
+      return {
+        ...state,
+        pppoePackage: [{ name: "N/A", profile: "N/A", service: "N/A" }],
       };
     },
 
@@ -183,7 +260,7 @@ export const areaSlice = createSlice({
       console.log("Active User Rejected!");
       return {
         ...state,
-        pppoeActiveUser: [{ name: "N/A", callerId: "N/A", address: "N/A" }],
+        pppoeActiveUser: [{ name: "N/A", rate: "N/A" }],
       };
     },
   },
@@ -193,5 +270,6 @@ export const getMikrotik = (state) => state.mikrotik.mikrotik;
 export const getSingleMikrotik = (state) => state.mikrotik.singleMikrotik;
 export const getPPPoEuser = (state) => state.mikrotik.pppoeUser;
 export const getActiveUser = (state) => state.mikrotik.pppoeActiveUser;
+export const getPPPoEpackage = (state) => state.mikrotik.pppoePackage;
 
 export default areaSlice.reducer;

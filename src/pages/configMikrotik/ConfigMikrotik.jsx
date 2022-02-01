@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "./configmikrotik.css";
 import {
+  PlugFill,
   ArrowClockwise,
   PencilFill,
   ArrowLeftShort,
   Trash2Fill,
-  // ThreeDots
+  ThreeDots,
+  PenFill,
+  ArchiveFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -20,6 +23,7 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
 import TdLoader from "../../components/common/TdLoader";
+import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal";
 
 import {
   fetchMikrotik,
@@ -31,6 +35,9 @@ import {
   getPPPoEuser,
   fetchActivepppoeUser,
   getActiveUser,
+  fetchpppoePackage,
+  getPPPoEpackage,
+  deletePPPoEpackage,
 } from "../../features/mikrotikSlice";
 import Loader from "../../components/common/Loader";
 // import TdLoader from "../../components/common/TdLoader";
@@ -40,18 +47,23 @@ export default function ConfigMikrotik() {
 
   let serial = 0;
   let serial2 = 0;
+  let serial3 = 0;
+
   const { ispOwner, mikrotikId } = useParams();
   const singleMik = useSelector(getSingleMikrotik);
   const [search, setSearch] = useState("");
+  const [search2, setSearch2] = useState("");
+  const [search3, setSearch3] = useState("");
   const pppoeUser = useSelector(getPPPoEuser);
   const activeUser = useSelector(getActiveUser);
+  const pppoePackage = useSelector(getPPPoEpackage);
   const [isLoading, setIsloading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
+  const [singlePackage, setSinglePackage] = useState("");
   const [refresh, setRefresh] = useState(0);
   const [refresh2, setRefresh2] = useState(0);
   const dispatch = useDispatch();
-
-  console.log("active user: ", activeUser);
 
   // fetch single mikrotik
   useEffect(() => {
@@ -70,6 +82,43 @@ export default function ConfigMikrotik() {
     };
     dispatch(fetchpppoeUser(IDs));
   }, [ispOwner, mikrotikId, dispatch, refresh]);
+
+  // fetch pppoe package
+  useEffect(() => {
+    const IDs = {
+      ispOwner: ispOwner,
+      mikrotikId: mikrotikId,
+    };
+    dispatch(fetchpppoePackage(IDs));
+  }, [ispOwner, mikrotikId, dispatch, refresh]);
+
+  // get single pppoe package
+  const getSpecificPPPoEPackage = (id) => {
+    if (pppoePackage.length !== undefined) {
+      const temp = pppoePackage.find((val) => {
+        return val.id === id;
+      });
+      setSinglePackage(temp);
+    }
+  };
+
+  // delete single pppoe package
+  const deleteSinglePPPoEpackage = async (mikrotikID, Id) => {
+    setIsDeleting(true);
+    const IDs = {
+      mikrotikId: mikrotikID,
+      pppPackageId: Id,
+    };
+    const ID = {
+      ispOwner: ispOwner,
+      mikrotikId: mikrotikId,
+    };
+    const res = await dispatch(deletePPPoEpackage(IDs));
+    if (res) {
+      setIsDeleting(false);
+      dispatch(fetchpppoePackage(ID));
+    }
+  };
 
   // fetch Active user
   useEffect(() => {
@@ -137,6 +186,9 @@ export default function ConfigMikrotik() {
                     <div className="addNewCollector">
                       <p>মাইক্রোটিক কনফিগারেশন</p>
 
+                      {/* Modals */}
+                      <PPPoEpackageEditModal singlePackage={singlePackage} />
+
                       {isChecking ? (
                         <div className="CheckingClass">
                           <Loader />{" "}
@@ -148,14 +200,14 @@ export default function ConfigMikrotik() {
                         ""
                       )}
                       <div className="addAndSettingIcon">
+                        <PlugFill
+                          className="addcutmButton rotating"
+                          onClick={MikrotikConnectionTest}
+                        />
                         <PencilFill
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#configMikrotikModal"
-                        />
-                        <ArrowClockwise
-                          className="addcutmButton rotating"
-                          onClick={MikrotikConnectionTest}
                         />
                         <Trash2Fill
                           className="addcutmButton deleteColorBtn"
@@ -195,7 +247,8 @@ export default function ConfigMikrotik() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          PPPoE প্যাকেজ: <span>1</span>
+                          PPPoE প্যাকেজ:{" "}
+                          <span>{pppoePackage?.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -204,35 +257,104 @@ export default function ConfigMikrotik() {
                           <input
                             type="text"
                             className="search"
-                            placeholder="সার্চ এর জন্য নাম টাইপ করুন"
-                            // onChange={(e) => setMsearch(e.target.value)}
+                            placeholder="প্যাকেজ সার্চ করুন"
+                            onChange={(e) => setSearch3(e.target.value)}
                           />
                         </div>
                       </div>
                     </div>
+                    {isDeleting ? (
+                      <div className="deletingLoader">
+                        <Loader />
+                        <span style={{ marginLeft: "10px" }}>Deleting...</span>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
+
+                  {/* -----PPPoE Package--------- */}
 
                   <div className="table-responsive-lg">
                     <table className="table table-striped ">
                       <thead>
                         <tr>
                           <th scope="col">সিরিয়াল</th>
-                          <th scope="col">নাম</th>
-                          <th scope="col">হোস্ট</th>
-                          <th scope="col">পোর্ট</th>
+                          <th scope="col">প্যাকেজ</th>
+                          <th scope="col">রেট</th>
                           <th scope="col" style={{ textAlign: "center" }}>
                             অ্যাকশন
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td style={{ paddingLeft: "30px" }}>Td</td>
-                          <td>Td</td>
-                          <td>Td</td>
-                          <td>Td</td>
-                          <td style={{ textAlign: "center" }}>Td</td>
-                        </tr>
+                        {pppoePackage.length === undefined ? (
+                          <tr>
+                            <TdLoader colspan={4} />
+                          </tr>
+                        ) : (
+                          pppoePackage
+                            .filter((val) => {
+                              return val.name
+                                .toLowerCase()
+                                .includes(search3.toLowerCase());
+                            })
+                            .map((val, key) => (
+                              <tr key={key}>
+                                <td style={{ paddingLeft: "30px" }}>
+                                  {++serial3}
+                                </td>
+                                <td>{val.name}</td>
+                                <td>{val.rate}</td>
+                                <td style={{ textAlign: "center" }}>
+                                  <ThreeDots
+                                    className="dropdown-toggle ActionDots"
+                                    id="pppoePackageDropdown"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  />
+
+                                  {/* modal */}
+                                  <ul
+                                    className="dropdown-menu"
+                                    aria-labelledby="pppoePackageDropdown"
+                                  >
+                                    <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#pppoePackageEditModal"
+                                      onClick={() => {
+                                        getSpecificPPPoEPackage(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <PenFill />
+                                          <p className="actionP">এডিট</p>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    <li
+                                      onClick={() => {
+                                        deleteSinglePPPoEpackage(
+                                          val.mikrotik,
+                                          val.id
+                                        );
+                                      }}
+                                    >
+                                      <div className="dropdown-item actionManager">
+                                        <div className="customerAction">
+                                          <ArchiveFill />
+                                          <p className="actionP">ডিলিট</p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </td>
+                              </tr>
+                            ))
+                        )}
                       </tbody>
                     </table>
                     <br />
@@ -259,7 +381,7 @@ export default function ConfigMikrotik() {
                               type="text"
                               className="search"
                               placeholder="সার্চ এর জন্য নাম টাইপ করুন"
-                              onChange={(e) => setSearch(e.target.value)}
+                              onChange={(e) => setSearch2(e.target.value)}
                             />
                           </div>
                         </div>
@@ -289,7 +411,7 @@ export default function ConfigMikrotik() {
                               .filter((val) => {
                                 return val.name
                                   .toLowerCase()
-                                  .includes(search.toLowerCase());
+                                  .includes(search2.toLowerCase());
                               })
                               .map((val, key) => (
                                 <tr key={key}>

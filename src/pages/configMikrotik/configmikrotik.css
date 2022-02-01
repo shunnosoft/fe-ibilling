@@ -4,7 +4,13 @@
 }
 .deleteColorBtn {
   background: tomato;
-  box-shadow: 0 3px 10px #ff63477d;
+}
+.deleteColorBtn:hover {
+  background: rgb(212, 76, 51);
+}
+.deletingLoader {
+  color: tomato;
+  padding: 20px 0;
 }
 .AllMikrotik {
   background: #0ba36a;
@@ -18,12 +24,6 @@
   align-items: center;
   justify-content: center;
   border-radius: 5px;
-}
-.rotating {
-  transition: 1s;
-}
-.rotating:hover {
-  transform: rotate(360deg);
 }
 .secondaryTitle {
   width: 100%;

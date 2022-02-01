@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "./mikrotik.css";
-import { PlugFill, ArrowRightShort } from "react-bootstrap-icons";
+import { Plus, ArrowRightShort } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -56,7 +56,7 @@ export default function Mikrotik() {
                     <div className="addNewCollector">
                       <p>মাইক্রোটিক অ্যাড</p>
                       <div className="addAndSettingIcon">
-                        <PlugFill
+                        <Plus
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#MikrotikModal"

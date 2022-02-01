@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
 
+// store area
 const initialState = {
   area: {},
 };
