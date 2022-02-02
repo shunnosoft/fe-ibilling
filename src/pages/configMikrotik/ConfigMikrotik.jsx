@@ -273,8 +273,6 @@ export default function ConfigMikrotik() {
                     )}
                   </div>
 
-                  {/* -----PPPoE Package--------- */}
-
                   <div className="table-responsive-lg">
                     <table className="table table-striped ">
                       <thead>

@@ -24,6 +24,9 @@ body {
 a {
   text-decoration: none;
 }
+/* p {
+  margin-bottom: 0px;
+} */
 .btn-success {
   width: 150px;
 }

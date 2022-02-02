@@ -95,7 +95,6 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    console.log("Seinding Data: ", mainData);
     const response = await dispatch(postCustomer(mainData));
     if (response) {
       setIsloading(false);

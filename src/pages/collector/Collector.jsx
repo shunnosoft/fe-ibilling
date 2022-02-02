@@ -7,6 +7,7 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
+import CollectorPost from "./collectorCRUD/CollectorPost";
 
 export default function Collector() {
   return (
@@ -16,90 +17,26 @@ export default function Collector() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">Collector</h2>
+              <h2 className="collectorTitle">কালেক্টর</h2>
 
-              {/* Model start */}
-              <div
-                className="modal fade modal-dialog-scrollable "
-                id="exampleModal"
-                tabIndex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title" id="exampleModalLabel">
-                        Modal title
-                      </h5>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div className="modal-body">
-                      <p>
-                        Lorem e, illo consectetur suscipit dolor totam
-                        dignissimos temporibus consequuntur qui optio
-                        praesentium corrupti deserunt odio quisquam nulla
-                        dolorem quia repudiandae reiciendis! Expedita
-                        perferendis est optio asperiores maiores, blanditiis vel
-                        soluta rem, quisquam, nulla velit voluptates ducimus
-                        recusandae aperiam doloremque unde temporibus nam
-                        voluptas id consectetur natus? Soluta eius, illo tenetur
-                        minima veniam architecto tempore laborum sed similique
-                        dolorem accusamus. perferendis suscipit nobis fugiat!
-                        Magnam fuga mollitia doloribus, ipsa voluptatibus odit
-                        praesentium, quidem maxime id libero et quibusdam
-                        nesciunt deleniti ex obcaecati, placeat in. Quo
-                        repellendus nihil nemo, facere quos, cupiditate sed
-                        aspernatur ea nesciunt velit, ullam totam ad. Corporis
-                        impedit error alias cupiditate eius cumque voluptatem
-                        sunt architecto. Voluptatum amet at sequi ea ut sapiente
-                        et reprehenderit eligendi, maiores eius impedit
-                        explicabo reiciendis, similique temporibus inventore
-                        eaque quaerat dicta doloribus. Accusantium ipsa totam
-                        aliquid sapiente perspiciatis pariatur iusto distinctio
-                        cum officiis, nam debitis unde corrupti iure labore
-                        error! Eius sapiente corrupti libero itaque qui maxime.
-                      </p>
-                      {/* model body here */}
-                    </div>
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                      <button type="button" className="btn btn-success">
-                        Save changes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Model finish */}
+              {/* modals */}
+              <CollectorPost />
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>Add new collector</p>
+                      <p>নতুন কালেক্টর অ্যাড</p>
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
                           className="addcutmButton"
                           data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
+                          data-bs-target="#collectorModal"
                         />
                         <GearFill
                           className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
+                          // data-bs-toggle="modal"
+                          // data-bs-target="#exampleModal"
                         />
                       </div>
                     </div>
