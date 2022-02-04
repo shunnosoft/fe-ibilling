@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../components/common/Loader";
@@ -7,18 +7,17 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
-import { getArea, fetchArea } from "../../../features/areaSlice";
+import { getArea } from "../../../features/areaSlice";
 import {
-  postCollector,
+  editCollector,
   fetchCollector,
 } from "../../../features/collectorSlice";
 
-export default function CollectorPost() {
+export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
   const area = useSelector(getArea);
   const [subArea, setSubArea] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth);
 
   //validator
   const collectorValidator = Yup.object({
@@ -38,13 +37,6 @@ export default function CollectorPost() {
     //   .required("মোবাইল নম্বর দিন "),
   });
 
-  // fetch Area fro select option
-  useEffect(() => {
-    if (auth.ispOwner) {
-      dispatch(fetchArea(auth.ispOwner.id));
-    }
-  }, [dispatch, auth.ispOwner]);
-
   // select subArea
   const selectSubArea = (data) => {
     const areaId = data.target.value;
@@ -56,23 +48,25 @@ export default function CollectorPost() {
     }
   };
 
-  const collectorPostHandler = async (data) => {
+  const collectorEditHandler = async (data) => {
     setIsLoading(true);
-    const OneSubArea = document.getElementById("subAreaId").value;
+    const OneSubArea = document.getElementById("EditSubAreaId").value;
     if (OneSubArea === "") {
       setIsLoading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    if (auth.ispOwner) {
+    if (single.ispOwner) {
       const sendingData = {
         ...data,
         areas: OneSubArea,
-        ispOwner: auth.ispOwner.id,
+        ispOwner: single.ispOwner,
+        ispOwnerId: single.ispOwner,
+        collectorId: single.id,
       };
-      const res = await dispatch(postCollector(sendingData));
+      const res = await dispatch(editCollector(sendingData));
       if (res) {
         setIsLoading(false);
-        dispatch(fetchCollector(auth.ispOwner.id));
+        dispatch(fetchCollector(single.ispOwner));
       }
     }
   };
@@ -82,7 +76,7 @@ export default function CollectorPost() {
       {/* Model start */}
       <div
         className="modal fade modal-dialog-scrollable "
-        id="collectorModal"
+        id="collectorEditModal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -103,18 +97,18 @@ export default function CollectorPost() {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  status: "",
+                  name: single.name || "",
+                  mobile: single.mobile || "",
+                  address: single.address || "",
+                  email: single.email || "",
+                  nid: single.nid || "",
+                  status: single.status || "",
                   //   refName: "N/A" || "",
                   //   refMobile: "N/A" || "",
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
-                  collectorPostHandler(values);
+                  collectorEditHandler(values);
                 }}
                 enableReinitialize
               >
@@ -180,8 +174,8 @@ export default function CollectorPost() {
                     <select
                       className="form-select"
                       aria-label="Default select example"
-                      name="subArea"
-                      id="subAreaId"
+                      // name="subArea"
+                      id="EditSubAreaId"
                     >
                       <option value="">...</option>
                       {subArea?.subAreas

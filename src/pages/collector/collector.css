@@ -9,12 +9,11 @@
 }
 
 .ProfileName {
-  color: white;
+  color: #898383;
   padding: 10px;
   font-size: 24px;
   text-align: center;
-  background: linear-gradient(45deg, #0abb7a, #2485aa);
-  border-radius: 5px;
+  border-bottom: 2px solid;
   margin: 0px 0px 20px;
 }
 
@@ -114,5 +113,16 @@
 .collectorInputs {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px;
+  grid-gap: 0px 20px;
+}
+.profileImage {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+.profileImage > img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid;
 }
