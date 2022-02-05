@@ -7,9 +7,7 @@ const ispOwner = JSON.parse(localStorage.getItem("ispWoner"));
 const hideModal = () => {
   const alertData = document.getElementById("successAlert");
   const button = document.querySelector(".marginLeft");
-
   button.style.display = "initial";
-
   // close modal
   document.querySelector("#closeAddManagerBtn").click();
   alertData.classList.add("alertShow");
@@ -19,13 +17,11 @@ const hideModal = () => {
   }, 5000);
 };
 
+// Add manager
 export const addNewManager = async (managerData) => {
   const button = document.querySelector(".marginLeft");
-
   button.style.display = "none";
-
   const mainData = { ...managerData, ispOwner: ispOwner.id };
-
   await apiLink({
     url: "/v1/ispOwner/manager",
     method: "POST",
@@ -50,11 +46,8 @@ export const addNewManager = async (managerData) => {
 
 export const editManager = async (managerData) => {
   const button = document.querySelector(".marginLeft");
-
   button.style.display = "none";
-
   const mainData = { ...managerData, ispOwner: ispOwner.id };
-
   await apiLink({
     url: `/v1/ispOwner/manager/${ispOwner.id}`,
     method: "PATCH",

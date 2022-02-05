@@ -90,7 +90,7 @@ function App() {
         dispatch(setAuth(true));
       }
     } else {
-      console.log("There is no valid token");
+      console.log("There is no token");
       dispatch(setAuth(false));
     }
   }, [dispatch, token]);

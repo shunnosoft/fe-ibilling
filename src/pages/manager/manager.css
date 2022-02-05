@@ -23,6 +23,64 @@
 .actionP {
   margin: 10px;
 }
+.managerDetails {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+.managerProfile {
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+}
+.ManagerData {
+  font-size: 18px;
+}
+.ManagerData > p {
+  margin: 0px;
+}
+.CheckboxContainer {
+  background: rgb(147 206 229 / 15%);
+  margin: 5px 0;
+  width: 300px;
+  padding: 7px;
+  border-radius: 6px;
+}
+.managerAction {
+  width: 60px;
+  background: rgb(181 124 235 / 18%);
+  border-radius: 8px;
+  margin: 10px 0px;
+  font-size: 22px;
+}
+.managerProfilePic {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid;
+  padding: 4px;
+}
+input.CheckBox {
+  transform: scale(1.2);
+  margin-left: 5px;
+}
+.checkboxLabel {
+  margin-left: 15px;
+  color: #02b559;
+  font-size: 16px;
+}
+.managerUpdateBtn {
+  background: #04a753;
+  padding: 5px 40px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 16px;
+  margin-left: 3px;
+  margin-top: 15px;
+}
 @media only screen and (max-width: 900px) {
   .searchCollector {
     padding: 15px 0;
@@ -30,5 +88,8 @@
   .collectorSearch {
     text-align: left;
     margin-top: 10px;
+  }
+  .managerDetails {
+    display: initial;
   }
 }

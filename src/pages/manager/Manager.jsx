@@ -1,7 +1,6 @@
 import React from "react";
 import {
   PersonPlusFill,
-  GearFill,
   ThreeDots,
   ArchiveFill,
   PenFill,
@@ -28,7 +27,7 @@ import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
 import Footer from "../../components/admin/footer/Footer";
-import TdLoader from "../../components/common/TdLoader";
+import { managerPermission } from "./managerData";
 
 export default function Manager() {
   const manager = useSelector(getManager);
@@ -70,11 +69,12 @@ export default function Manager() {
             <ReadModals managerDetails={manager} />
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">ম্যানেজার</h2>
+                <h2 className="collectorTitle">
+                  {manager?.name} (ম্যানেজার) প্রোফাইল
+                </h2>
               </FourGround>
               {/* edit manager */}
               <WriteModals manager={manager} />
-
               {/* Model */}
               <div
                 className="modal fade modal-dialog-scrollable "
@@ -174,7 +174,97 @@ export default function Manager() {
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     {manager?.name ? (
-                      ""
+                      <div className="managerDetails">
+                        <div className="managerProfile">
+                          <img
+                            src="https://roottogether.net/wp-content/uploads/2020/04/img-avatar-blank.jpg"
+                            alt=""
+                            className="managerProfilePic"
+                          />
+                          <div className="actionsManager">
+                            <div className="dropdown">
+                              <ThreeDots
+                                className="dropdown-toggle ActionDots managerAction"
+                                id="ManagerDropdownMenu"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                              />
+                              <ul
+                                className="dropdown-menu"
+                                aria-labelledby="ManagerDropdownMenu"
+                              >
+                                <li onClick={deleteManagerHandler}>
+                                  <div className="dropdown-item actionManager">
+                                    <div className="ManagerAactionLi">
+                                      <ArchiveFill />
+                                      <p className="actionP">ডিলিট</p>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#writeModal"
+                                >
+                                  <div className="dropdown-item">
+                                    <div className="ManagerAactionLi">
+                                      <PenFill />
+                                      <p className="actionP">এডিট</p>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#showDwtailsModel"
+                                >
+                                  <div className="dropdown-item">
+                                    <div className="ManagerAactionLi">
+                                      <PersonFill />
+                                      <p className="actionP">বিস্তারিত</p>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div>
+                            {manager.name ? (
+                              <div className="ManagerData">
+                                <p>
+                                  <b>{manager.name} </b>,{" "}
+                                  <b> {manager.address}</b>
+                                </p>
+                                <p>
+                                  <b>{manager.mobile}</b>
+                                </p>
+                                <p>{manager.email}</p>
+                              </div>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <h4>পারমিশান পরিবর্তন করুন</h4>
+                          <hr />
+                          {console.log(manager)}
+                          {managerPermission.map((val, key) => (
+                            <div className="CheckboxContainer" key={key}>
+                              <input
+                                type="checkbox"
+                                className="CheckBox"
+                                value={val.value}
+                                checked={val.isChecked}
+                              />
+                              <label className="checkboxLabel">
+                                {val.label}
+                              </label>
+                            </div>
+                          ))}
+                          <button className="managerUpdateBtn">আপডেট</button>
+                        </div>
+                      </div>
                     ) : (
                       <div className="addNewCollector">
                         <p>অ্যাড ম্যানেজার</p>
@@ -184,109 +274,9 @@ export default function Manager() {
                             data-bs-toggle="modal"
                             data-bs-target="#exampleModal"
                           />
-
-                          <GearFill
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                          />
                         </div>
                       </div>
                     )}
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট ম্যানেজার : <span>1</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="Search"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <th scope="col">নাম</th>
-                          <th scope="col">এড্রেস</th>
-                          <th scope="col">ইমেইল</th>
-                          <th scope="col">মোবাইল</th>
-                          <th scope="col" style={{ textAlign: "center" }}>
-                            অ্যাকশন
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {manager.name ? (
-                          <tr>
-                            <td>{manager.name}</td>
-                            <td>{manager.address}</td>
-                            <td>{manager.email}</td>
-                            <td>{manager.mobile}</td>
-                            <td style={{ textAlign: "center" }}>
-                              <div className="dropdown">
-                                <ThreeDots
-                                  className="dropdown-toggle ActionDots"
-                                  id="ManagerDropdownMenu"
-                                  type="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                />
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="ManagerDropdownMenu"
-                                >
-                                  <li onClick={deleteManagerHandler}>
-                                    <div className="dropdown-item actionManager">
-                                      <div className="ManagerAactionLi">
-                                        <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#writeModal"
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="ManagerAactionLi">
-                                        <PenFill />
-                                        <p className="actionP">এডিট</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#showDwtailsModel"
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="ManagerAactionLi">
-                                        <PersonFill />
-                                        <p className="actionP">বিস্তারিত</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div>
-                            </td>
-                          </tr>
-                        ) : (
-                          <tr>
-                            <TdLoader colspan={5} />
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
                   </div>
                 </div>
               </FourGround>
