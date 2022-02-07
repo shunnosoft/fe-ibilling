@@ -1,0 +1,64 @@
+.mikrotikDetails p {
+  font-weight: 500;
+  font-size: 17px;
+}
+.deleteColorBtn {
+  background: tomato;
+}
+.deleteColorBtn:hover {
+  background: rgb(212, 76, 51);
+}
+.deletingLoader {
+  color: tomato;
+  padding: 20px 0;
+}
+.AllMikrotik {
+  background: #0ba36a;
+  border: none;
+  cursor: pointer;
+  width: 135px;
+  font-size: 14px;
+  color: white;
+  display: flex;
+  height: 29px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+.secondaryTitle {
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  color: #0ba36a;
+  padding-top: 40px;
+  font-weight: 600;
+}
+.CheckingClass {
+  display: grid;
+  grid-template-columns: 30px 190px;
+  grid-gap: 1px;
+  padding: 10px 0;
+  color: #00b9f7;
+}
+.arrowLeftSize {
+  font-size: 20px;
+}
+.AllMikrotik:hover {
+  background: #0a8a5b;
+}
+.pppoeRefresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pppoeRefresh svg {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #601eb5;
+  color: #ffffff;
+  border: 5px solid #9449f5;
+  box-shadow: none;
+  padding: 7px;
+}

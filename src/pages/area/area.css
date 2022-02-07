@@ -1,0 +1,28 @@
+.customBtn {
+  width: 120px;
+  text-align: center;
+}
+.customBtn > img {
+  width: 22px;
+}
+.deletingAction {
+  padding: 20px 5px;
+  color: tomato;
+}
+
+.goToSubArea {
+  font-size: 15px;
+  text-align: left;
+}
+.gotoSubAreaBtn {
+  /* background: linear-gradient(45deg, #9449f5, #681ec9); */
+  background: #04a753;
+  color: white !important;
+  padding: 3px 12px;
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 4px;
+}
+.gotoSubAreaBtn:hover {
+  background: #048b46;
+}

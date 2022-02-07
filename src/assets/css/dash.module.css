@@ -1,0 +1,15 @@
+/* import useDash from "../../assets/css/dash.module.css"; */
+.dashboardWrapper {
+  width: calc(100% - 250px);
+  margin-left: 250px !important;
+  min-height: 100vh;
+  position: relative;
+  padding: 70px 10px !important;
+  padding: 10px;
+}
+@media screen and (max-width: 1024px) {
+  .dashboardWrapper {
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+}

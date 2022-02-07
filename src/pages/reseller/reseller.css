@@ -1,0 +1,60 @@
+.TakesInputFields {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+}
+.radioTitle {
+  font-size: 18px;
+  color: #1ac777;
+  font-weight: 500;
+}
+.modalFooterEdit {
+  display: initial !important;
+  padding: 20px 0px;
+}
+#souceCheck {
+  margin-left: 10px;
+}
+.secondSection {
+  background: #e7f1e8;
+  text-align: right;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.Profile {
+  background: white;
+  text-align: center;
+  padding: 10px;
+}
+.Profile img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 2px solid;
+}
+.ResellerDetails {
+  background: #e7e7e7;
+  width: 400px;
+  margin: 0 auto;
+  border-radius: 10px;
+  padding: 18px;
+}
+.ResellerDetails h4 {
+  color: #5b8571;
+  font-size: 17px;
+}
+.deleteReseller {
+  color: #f30000;
+  padding: 15px 0;
+}
+
+@media only screen and (max-width: 980px) {
+  .TakesInputFields {
+    display: initial;
+  }
+}

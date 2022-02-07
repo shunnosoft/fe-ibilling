@@ -1,0 +1,103 @@
+a {
+  text-decoration: none !important;
+  color: initial !important;
+}
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  /* background: linear-gradient(90deg, #9449f5, rgb(148 73 245 / 0%)); */
+  padding: 10px 0;
+  z-index: 100;
+}
+#active {
+  box-shadow: 6px 0px 0px #8229f5 inset;
+  filter: contrast(5);
+}
+.removeSidebar {
+  display: none;
+}
+.menuIcon {
+  display: none;
+  width: 100px !important;
+  position: relative;
+  filter: invert(1);
+  z-index: 10;
+  font-size: 22px;
+  padding: 13px;
+  margin-left: 0px;
+}
+.adminDashboardTitle {
+  font-size: 20px;
+  font-weight: bold;
+  /* border-bottom: 1px dotted; */
+  padding: 20px 0 15px 40px;
+  color: var(--primaryColor) !important;
+  cursor: pointer;
+}
+.GotoHomeFromDashboard {
+  font-size: 20px;
+  margin: -4px 10px 0px -3px;
+}
+.sidebarLinksName {
+  padding-top: 5px;
+}
+.sidebarUl {
+  padding: 0px;
+  height: 100vh;
+  padding-top: 10px;
+}
+.sidebarItems {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  padding: 13px 38px;
+  font-weight: 600;
+  /* border-bottom: 1px solid #44444426; */
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebarItems:hover {
+  filter: contrast(5) !important;
+}
+.sidebarIcon {
+  font-size: 18px;
+  margin-right: 15px;
+  margin-top: -1px;
+}
+
+@media screen and (max-width: 1024px) {
+  .sidebar {
+    display: none;
+    z-index: 100;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.664);
+  }
+  .toggleSidebar {
+    display: block;
+  }
+  .adminDashboardTitle {
+    padding-left: 30px;
+  }
+  .HideSidebar {
+    width: calc(100vw - 249px);
+    height: 100vh;
+    background: rgb(187 213 203 / 16%);
+    position: absolute;
+    top: 0;
+    margin-left: 118px;
+    backdrop-filter: blur(20px);
+  }
+  .menuIcon {
+    width: 100px !important;
+    display: block;
+    position: fixed;
+  }
+  .ListIcon {
+    cursor: pointer;
+    position: absolute;
+    z-index: 1000;
+    margin-top: 6px;
+    margin-left: 20px;
+  }
+}

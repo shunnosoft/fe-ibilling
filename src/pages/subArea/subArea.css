@@ -1,0 +1,37 @@
+.customBtn {
+  width: 120px;
+  text-align: center;
+}
+.customBtn > img {
+  width: 22px;
+}
+.deletingAction {
+  padding: 20px 5px;
+  color: tomato;
+}
+.allSubArea {
+  background: #0ba36a;
+  margin-top: 20px;
+  cursor: pointer;
+  width: 135px;
+  font-size: 14px;
+  color: white;
+  display: flex;
+  height: 29px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+.arrowLeftSize {
+  font-size: 20px;
+}
+.allSubArea:hover {
+  background: #0a8a5b;
+}
+.noAraFound {
+  padding: 40px !important;
+  font-size: 22px !important;
+  font-weight: 500;
+  color: #f58800 !important;
+  text-align: center;
+}
