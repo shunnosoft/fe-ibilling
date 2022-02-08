@@ -2,7 +2,7 @@ import React from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { BoxArrowLeft } from "react-bootstrap-icons";
 
 // internal imports
@@ -15,6 +15,7 @@ export default function Header(props) {
   const  currentUser = useSelector((state) => state.auth.currentUser);
   const ispOwner = useSelector(state=>state.auth.ispOwner)
   const dispatch= useDispatch() ; 
+  const navigate = useNavigate();
 
   const changeTHeme = () => {
     if (props.theme === "light") {
@@ -27,6 +28,8 @@ export default function Header(props) {
   // logout
   const handleLogOut = async () => {
      dispatch(logOut())
+     navigate("/")
+
   };
 
   const icon =

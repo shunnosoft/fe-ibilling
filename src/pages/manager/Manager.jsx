@@ -30,19 +30,18 @@ import WriteModals from "../../components/modals/WriteModals";
 import Footer from "../../components/admin/footer/Footer";
 import { managerPermission } from "./managerData";
 import { useEffect } from "react";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { getManger } from "../../features/apiCalls";
 
 export default function Manager() {
    
-  const managerId  =useSelector(state=>state.auth.currentUser.ispOwner.manager)
+  const ispOwnerId  =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
   const dispatch =useDispatch()
-  console.log(managerId);
+   
   const manager=useSelector(state=>state.manager.manager)
   useEffect(()=>{
-    getManger(dispatch,managerId)
-  },[dispatch,managerId])
+    getManger(dispatch,ispOwnerId)
+  },[dispatch,ispOwnerId])
 
   const managerValidate = Yup.object({
     name: Yup.string()
@@ -268,6 +267,7 @@ export default function Manager() {
                                 className="CheckBox"
                                 value={val.value}
                                 checked={val.isChecked}
+                                 
                               />
                               <label className="checkboxLabel">
                                 {val.label}
