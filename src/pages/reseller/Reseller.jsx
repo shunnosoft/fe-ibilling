@@ -36,11 +36,11 @@ export default function Reseller() {
   const reseller = useSelector(getReseller);
   let serial = 0;
 
-  useEffect(() => {
-    if (auth.ispOwner) {
-      dispatch(fetchReseller(auth.ispOwner.id));
-    }
-  }, [dispatch, auth.ispOwner]);
+  // useEffect(() => {
+  //   if (auth.ispOwner) {
+  //     dispatch(fetchReseller(auth.ispOwner.id));
+  //   }
+  // }, [dispatch, auth.ispOwner]);
 
   // get Single reseller
   const getSpecificReseller = (rid) => {

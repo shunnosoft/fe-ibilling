@@ -66,31 +66,31 @@ export default function ConfigMikrotik() {
   const dispatch = useDispatch();
 
   // fetch single mikrotik
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwner,
-      id: mikrotikId,
-    };
-    dispatch(fetchSingleMikrotik(IDs));
-  }, [ispOwner, mikrotikId, dispatch]);
+  // useEffect(() => {
+  //   const IDs = {
+  //     ispOwner: ispOwner,
+  //     id: mikrotikId,
+  //   };
+  //   dispatch(fetchSingleMikrotik(IDs));
+  // }, [ispOwner, mikrotikId, dispatch]);
 
   // fetch pppoe user
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwner,
-      id: mikrotikId,
-    };
-    dispatch(fetchpppoeUser(IDs));
-  }, [ispOwner, mikrotikId, dispatch, refresh]);
+  // useEffect(() => {
+  //   const IDs = {
+  //     ispOwner: ispOwner,
+  //     id: mikrotikId,
+  //   };
+  //   dispatch(fetchpppoeUser(IDs));
+  // }, [ispOwner, mikrotikId, dispatch, refresh]);
 
   // fetch pppoe package
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwner,
-      mikrotikId: mikrotikId,
-    };
-    dispatch(fetchpppoePackage(IDs));
-  }, [ispOwner, mikrotikId, dispatch, refresh]);
+  // useEffect(() => {
+  //   const IDs = {
+  //     ispOwner: ispOwner,
+  //     mikrotikId: mikrotikId,
+  //   };
+  //   dispatch(fetchpppoePackage(IDs));
+  // }, [ispOwner, mikrotikId, dispatch, refresh]);
 
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
@@ -121,13 +121,13 @@ export default function ConfigMikrotik() {
   };
 
   // fetch Active user
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwner,
-      id: mikrotikId,
-    };
-    dispatch(fetchActivepppoeUser(IDs));
-  }, [ispOwner, mikrotikId, dispatch, refresh2]);
+  // useEffect(() => {
+  //   const IDs = {
+  //     ispOwner: ispOwner,
+  //     id: mikrotikId,
+  //   };
+  //   dispatch(fetchActivepppoeUser(IDs));
+  // }, [ispOwner, mikrotikId, dispatch, refresh2]);
 
   const gotoAllMiktorik = () => {
     navigate("/mikrotik");

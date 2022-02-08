@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 import "./landing.css";
 
 export default function Landing() {
-  const { isAuth } = useSelector((state) => state.auth);
+  const currentUser= useSelector((state) => state.auth.currentUser);
 
-  console.log("From Landing: ", isAuth);
+  console.log("From Landing: ", currentUser);
 
-  // const isAuth = false;
+  // const currentUser = false;
   return (
     <>
       <div className="landingWrapper">
@@ -24,7 +24,7 @@ export default function Landing() {
                 ডেমো টেক্সট তৈরীর চেষ্টা।
               </p>
               <br />
-              {isAuth ? (
+              {currentUser ? (
                 <NavLink to="/home" className="landingSubscribeBtn custom-btn">
                   ড্যাশবোর্ড
                 </NavLink>

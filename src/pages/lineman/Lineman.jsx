@@ -42,10 +42,10 @@ export default function Lineman() {
   let Linemans = [];
   Linemans = useSelector(getLineman);
 
-  useEffect(() => {
-    const { ispOwner } = auth;
-    dispatch(fetchLineman(ispOwner.id));
-  }, [auth, dispatch]);
+  // useEffect(() => {
+  //   const { ispOwner } = auth;
+  //   dispatch(fetchLineman(ispOwner.id));
+  // }, [auth, dispatch]);
 
   // getsingle lineman
   const getSpecificLineman = (mobile) => {

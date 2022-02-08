@@ -22,15 +22,27 @@ import { FtextField } from "../../components/common/FtextField";
 import {
   addNewManager,
   deleteManager,
+  
 } from "../../features/actions/managerHandle";
-import { getManager } from "../../features/authSlice";
+// import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
 import Footer from "../../components/admin/footer/Footer";
 import { managerPermission } from "./managerData";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { getManger } from "../../features/apiCalls";
 
 export default function Manager() {
-  const manager = useSelector(getManager);
+   
+  const managerId  =useSelector(state=>state.auth.currentUser.ispOwner.manager)
+  const dispatch =useDispatch()
+  console.log(managerId);
+  const manager=useSelector(state=>state.manager.manager)
+  useEffect(()=>{
+    getManger(dispatch,managerId)
+  },[dispatch,managerId])
 
   const managerValidate = Yup.object({
     name: Yup.string()
@@ -47,7 +59,7 @@ export default function Manager() {
     nid: Yup.string().required("ম্যানেজার এর NID দিন"),
     image: Yup.string(),
   });
-
+ 
   const addManagerHandle = (data) => {
     addNewManager(data);
   };

@@ -24,10 +24,10 @@ export default function Mikrotik() {
   let allmikrotiks = [];
   allmikrotiks = useSelector(getMikrotik);
 
-  useEffect(() => {
-    const { ispOwner } = auth;
-    dispatch(fetchMikrotik(ispOwner.id));
-  }, [auth, dispatch]);
+  // useEffect(() => {
+  //   const { ispOwner } = auth;
+  //   dispatch(fetchMikrotik(ispOwner.id));
+  // }, [auth, dispatch]);
 
   return (
     <>

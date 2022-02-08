@@ -7,10 +7,14 @@ import { BoxArrowLeft } from "react-bootstrap-icons";
 
 // internal imports
 import "./header.css";
-import { userLogout } from "../../../features/actions/authAsyncAction";
+import { logOut } from "../../../features/authSlice";
+import { useDispatch } from "react-redux";
+// import { userLogout } from "../../../features/actions/authAsyncAction";
 
 export default function Header(props) {
-  const { isAuth, ispOwner } = useSelector((state) => state.auth);
+  const  currentUser = useSelector((state) => state.auth.currentUser);
+  const ispOwner = useSelector(state=>state.auth.ispOwner)
+  const dispatch= useDispatch() ; 
 
   const changeTHeme = () => {
     if (props.theme === "light") {
@@ -22,7 +26,7 @@ export default function Header(props) {
 
   // logout
   const handleLogOut = async () => {
-    userLogout();
+     dispatch(logOut())
   };
 
   const icon =
@@ -42,7 +46,7 @@ export default function Header(props) {
               <div className="darkLight" onClick={changeTHeme}>
                 {icon}
               </div>
-              {isAuth ? (
+              {currentUser ? (
                 <div className="dropdown">
                   <button
                     type="button"

@@ -1,5 +1,6 @@
 import apiLink from "../../api/apiLink";
 import { toast } from "react-toastify";
+ 
 
 // getIspOwner
 const ispOwner = JSON.parse(localStorage.getItem("ispWoner"));
@@ -16,7 +17,23 @@ const hideModal = () => {
     alertData.classList.remove("alertShow");
   }, 5000);
 };
+//get manager 
+// export const getManager = async (managerId)=>{
+//   try {
+//     const response = await apiLink.get(`/v1/ispOwner/manager/${managerId}`);
+//     const data = await response.data;
+//     return data;
+    
+//   } catch (error) {
+//     console.log("Error to find manager")
+    
 
+    
+//   }
+  
+    
+  
+// }
 // Add manager
 export const addNewManager = async (managerData) => {
   const button = document.querySelector(".marginLeft");

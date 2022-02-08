@@ -63,10 +63,10 @@ export default function Customer() {
     }
   };
 
-  useEffect(() => {
-    const { ispOwner } = auth;
-    dispatch(fetchCustomer(ispOwner.id));
-  }, [auth, dispatch]);
+  // useEffect(() => {
+  //   const { ispOwner } = auth;
+  //   dispatch(fetchCustomer(ispOwner.id));
+  // }, [auth, dispatch]);
 
   return (
     <>

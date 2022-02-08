@@ -68,20 +68,20 @@ export default function SubArea() {
     }
   };
 
-  useEffect(() => {
-    if (area.length === undefined) {
-      navigate("/area");
-    } else {
-      const oneArea = area.find((val) => {
-        return val.id === areaId;
-      });
-      if (oneArea) {
-        setName(oneArea.name);
-        setId(oneArea.id);
-        setSubAreas(oneArea.subAreas);
-      }
-    }
-  }, [area, areaId, navigate]);
+  // useEffect(() => {
+  //   if (area.length === undefined) {
+  //     navigate("/area");
+  //   } else {
+  //     const oneArea = area.find((val) => {
+  //       return val.id === areaId;
+  //     });
+  //     if (oneArea) {
+  //       setName(oneArea.name);
+  //       setId(oneArea.id);
+  //       setSubAreas(oneArea.subAreas);
+  //     }
+  //   }
+  // }, [area, areaId, navigate]);
 
   const dispatchArea = (ispOwner) => {
     if (ispOwner) {

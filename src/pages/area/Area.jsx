@@ -39,11 +39,11 @@ export default function Area() {
     }
   };
 
-  useEffect(() => {
-    if (auth.ispOwner) {
-      dispatch(fetchArea(auth.ispOwner.id));
-    }
-  }, [dispatch, auth.ispOwner]);
+  // useEffect(() => {
+  //   if (auth.ispOwner) {
+  //     dispatch(fetchArea(auth.ispOwner.id));
+  //   }
+  // }, [dispatch, auth.ispOwner]);
 
   const deleteSingleArea = async (id, ispOwner) => {
     setIsLoading(true);

@@ -36,10 +36,10 @@ export default function Collector() {
   const [singleCollector, setSingleCollector] = useState("");
   let serial = 0;
 
-  useEffect(() => {
-    const { ispOwner } = auth;
-    dispatch(fetchCollector(ispOwner.id));
-  }, [auth, dispatch]);
+  // useEffect(() => {
+  //   const { ispOwner } = auth;
+  //   dispatch(fetchCollector(ispOwner.id));
+  // }, [auth, dispatch]);
 
   const getSpecificCollector = (id) => {
     if (collector.length !== undefined) {

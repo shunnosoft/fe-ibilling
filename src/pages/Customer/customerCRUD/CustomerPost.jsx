@@ -44,12 +44,12 @@ export default function CustomerModal() {
   });
 
   // fetch Area fro select option
-  useEffect(() => {
-    if (auth.ispOwner) {
-      dispatch(fetchArea(auth.ispOwner.id));
-      dispatch(fetchMikrotik(auth.ispOwner.id));
-    }
-  }, [dispatch, auth.ispOwner]);
+  // useEffect(() => {
+  //   if (auth.ispOwner) {
+  //     dispatch(fetchArea(auth.ispOwner.id));
+  //     dispatch(fetchMikrotik(auth.ispOwner.id));
+  //   }
+  // }, [dispatch, auth.ispOwner]);
 
   // select subArea
   const selectSubArea = (data) => {
