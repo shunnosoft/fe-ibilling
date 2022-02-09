@@ -30,7 +30,7 @@ import TdLoader from "../../components/common/TdLoader";
 
 export default function Customer() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsloading] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
@@ -63,10 +63,10 @@ export default function Customer() {
     }
   };
 
-  // useEffect(() => {
-  //   const { ispOwner } = auth;
-  //   dispatch(fetchCustomer(ispOwner.id));
-  // }, [auth, dispatch]);
+  useEffect(() => {
+    const { ispOwner } = auth;
+    dispatch(fetchCustomer(ispOwner.id));
+  }, [auth, dispatch]);
 
   return (
     <>

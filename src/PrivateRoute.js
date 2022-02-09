@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 
-function PrivateRoute({ currentUser, children }) {
-  return !currentUser  ? children : <Navigate to="/" />;
+function PrivateRoute({ user, children }) {
+  return user ? children : <Navigate to="" />;
 }
 
 export default PrivateRoute;

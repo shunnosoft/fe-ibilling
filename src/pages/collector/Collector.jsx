@@ -29,17 +29,17 @@ import CollectorEdit from "./collectorCRUD/CollectorEdit";
 
 export default function Collector() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isDeleting, setIsDeleting] = useState(false);
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector(getCollector);
   const [singleCollector, setSingleCollector] = useState("");
   let serial = 0;
 
-  // useEffect(() => {
-  //   const { ispOwner } = auth;
-  //   dispatch(fetchCollector(ispOwner.id));
-  // }, [auth, dispatch]);
+  useEffect(() => {
+    const { ispOwner } = auth;
+    dispatch(fetchCollector(ispOwner.id));
+  }, [auth, dispatch]);
 
   const getSpecificCollector = (id) => {
     if (collector.length !== undefined) {

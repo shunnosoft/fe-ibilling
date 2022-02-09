@@ -11,7 +11,7 @@ import Loader from "../../../components/common/Loader";
 import { fetchArea } from "../../../features/areaSlice";
 
 export default function AreaEdit({ oneArea }) {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   // const area = useSelector((state) => state.area.area);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();

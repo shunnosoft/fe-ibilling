@@ -11,7 +11,7 @@ import { postMikrotik } from "../../../features/mikrotikSlice";
 import { fetchMikrotik } from "../../../features/mikrotikSlice";
 
 export default function MikrotikPost() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 

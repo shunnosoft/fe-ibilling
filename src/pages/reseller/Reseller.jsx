@@ -29,18 +29,18 @@ import ResellerDetails from "./resellerModals/ResellerDetails";
 
 export default function Reseller() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [singleUser, setSingleUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
   const reseller = useSelector(getReseller);
   let serial = 0;
 
-  // useEffect(() => {
-  //   if (auth.ispOwner) {
-  //     dispatch(fetchReseller(auth.ispOwner.id));
-  //   }
-  // }, [dispatch, auth.ispOwner]);
+  useEffect(() => {
+    if (auth.ispOwner) {
+      dispatch(fetchReseller(auth.ispOwner.id));
+    }
+  }, [dispatch, auth.ispOwner]);
 
   // get Single reseller
   const getSpecificReseller = (rid) => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
@@ -13,7 +13,7 @@ import {
 } from "../../../features/mikrotikSlice";
 
 export default function ConfigMikrotikModal(props) {
-  // const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { mik } = props;

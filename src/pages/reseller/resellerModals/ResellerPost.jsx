@@ -14,7 +14,7 @@ import { postReseller, fetchReseller } from "../../../features/resellerSlice";
 export default function ResellerPost() {
   // const [Check, setCheck] = useState(RBD);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
 
   //validator

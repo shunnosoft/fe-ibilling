@@ -1,5 +1,5 @@
 import "./area.css";
-import React from "react";
+import React, { useEffect } from "react";
 import {  useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -26,7 +26,8 @@ import TdLoader from "../../components/common/TdLoader";
 
 export default function Area() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
+  const user= useSelector((state) => state.auth.currentUser);
+  console.log(user);
   const area = useSelector((state) => state.area.area);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,16 +35,16 @@ export default function Area() {
   let serial = 0;
 
   const dispatchArea = () => {
-    if (auth.ispOwner) {
-      dispatch(fetchArea(auth.ispOwner.id));
+    if (user.ispOwner) {
+      dispatch(fetchArea(user.ispOwner.id));
     }
   };
 
-  // useEffect(() => {
-  //   if (auth.ispOwner) {
-  //     dispatch(fetchArea(auth.ispOwner.id));
-  //   }
-  // }, [dispatch, auth.ispOwner]);
+  useEffect(() => {
+    if (user.ispOwner) {
+      dispatch(fetchArea(user.ispOwner.id));
+    }
+  }, [dispatch, user.ispOwner]);
 
   const deleteSingleArea = async (id, ispOwner) => {
     setIsLoading(true);

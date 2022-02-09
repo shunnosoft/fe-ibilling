@@ -11,7 +11,7 @@ import { fetchArea } from "../../../features/areaSlice";
 import { postSubarea } from "../../../features/subAreaSlice";
 
 export default function SubAreaPost({ name, id }) {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 

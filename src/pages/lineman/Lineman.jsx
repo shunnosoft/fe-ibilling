@@ -33,7 +33,7 @@ import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 
 export default function Lineman() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   let serial = 0;
@@ -42,10 +42,10 @@ export default function Lineman() {
   let Linemans = [];
   Linemans = useSelector(getLineman);
 
-  // useEffect(() => {
-  //   const { ispOwner } = auth;
-  //   dispatch(fetchLineman(ispOwner.id));
-  // }, [auth, dispatch]);
+  useEffect(() => {
+    const { ispOwner } = auth;
+    dispatch(fetchLineman(ispOwner.id));
+  }, [auth, dispatch]);
 
   // getsingle lineman
   const getSpecificLineman = (mobile) => {

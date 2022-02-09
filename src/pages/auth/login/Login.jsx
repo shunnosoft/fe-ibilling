@@ -9,14 +9,12 @@ import "react-toastify/dist/ReactToastify.css";
 // internal imports
 import { Background, FontColor, FourGround } from "../../../assets/js/theme";
 import { LoginField } from "./LoginField";
-// import { asyncLogin } from "../../../features/actions/authAsyncAction";
-
+import { asyncLogin } from "../../../features/actions/authAsyncAction";
 import "./login.css";
-import { login } from "../../../features/actions/authAsyncAction";
 import { useDispatch } from "react-redux";
 
 export default function Login() {
-  const dispatch= useDispatch()
+  const dispatch =useDispatch()
   const loginValidate = Yup.object({
     mobile: Yup.string()
       .min(11, "১১ ডিজিট এর সঠিক নম্বর দিন ")
@@ -30,7 +28,7 @@ export default function Login() {
     loader.style.display = "block";
 
     // send to login control
-    login(dispatch,loginData);
+    asyncLogin(dispatch,loginData);
   };
 
   return (

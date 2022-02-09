@@ -11,7 +11,7 @@ import { editLineman, fetchLineman } from "../../../features/linemanSlice";
 import Loader from "../../../components/common/Loader";
 
 export default function LinemanEdit() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const LINEMAN = useSelector((state) => state.lineman.singleLineman);
   const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);

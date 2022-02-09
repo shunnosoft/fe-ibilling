@@ -14,7 +14,7 @@ import { fetchCustomer } from "../../../features/customerSlice";
 import { getArea, fetchArea } from "../../../features/areaSlice";
 
 export default function CustomerModal() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const area = useSelector(getArea);
   const Getmikrotik = useSelector(getMikrotik);
   const [isLoading, setIsloading] = useState(false);
@@ -44,12 +44,12 @@ export default function CustomerModal() {
   });
 
   // fetch Area fro select option
-  // useEffect(() => {
-  //   if (auth.ispOwner) {
-  //     dispatch(fetchArea(auth.ispOwner.id));
-  //     dispatch(fetchMikrotik(auth.ispOwner.id));
-  //   }
-  // }, [dispatch, auth.ispOwner]);
+  useEffect(() => {
+    if (auth.ispOwner) {
+      dispatch(fetchArea(auth.ispOwner.id));
+      dispatch(fetchMikrotik(auth.ispOwner.id));
+    }
+  }, [dispatch, auth.ispOwner]);
 
   // select subArea
   const selectSubArea = (data) => {

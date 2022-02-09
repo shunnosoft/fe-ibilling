@@ -18,7 +18,7 @@ export default function CollectorPost() {
   const area = useSelector(getArea);
   const [subArea, setSubArea] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
 
   //validator
   const collectorValidator = Yup.object({
@@ -39,11 +39,11 @@ export default function CollectorPost() {
   });
 
   // fetch Area fro select option
-  // useEffect(() => {
-  //   if (auth.ispOwner) {
-  //     dispatch(fetchArea(auth.ispOwner.id));
-  //   }
-  // }, [dispatch, auth.ispOwner]);
+  useEffect(() => {
+    if (auth.ispOwner) {
+      dispatch(fetchArea(auth.ispOwner.id));
+    }
+  }, [dispatch, auth.ispOwner]);
 
   // select subArea
   const selectSubArea = (data) => {

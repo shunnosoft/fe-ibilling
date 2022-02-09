@@ -18,16 +18,16 @@ import TdLoader from "../../components/common/TdLoader";
 
 export default function Mikrotik() {
   let serial = 0;
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [msearch, setMsearch] = useState("");
   const dispatch = useDispatch();
   let allmikrotiks = [];
   allmikrotiks = useSelector(getMikrotik);
 
-  // useEffect(() => {
-  //   const { ispOwner } = auth;
-  //   dispatch(fetchMikrotik(ispOwner.id));
-  // }, [auth, dispatch]);
+  useEffect(() => {
+    const { ispOwner } = auth;
+    dispatch(fetchMikrotik(ispOwner.id));
+  }, [auth, dispatch]);
 
   return (
     <>

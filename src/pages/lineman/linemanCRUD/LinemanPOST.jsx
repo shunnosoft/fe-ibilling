@@ -11,7 +11,7 @@ import { fetchLineman } from "../../../features/linemanSlice";
 import Loader from "../../../components/common/Loader";
 
 export default function LinemanPOST() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
 

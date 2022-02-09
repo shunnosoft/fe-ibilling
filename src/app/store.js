@@ -15,32 +15,41 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import managerSlice from "../features/managerSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   version: 1,
   storage,
-}
-const rootReducer=  combineReducers(
-  {
-    auth: authReducer,
+};
+// const rootReducer = combineReducers({
+//   auth: authReducer,
+//   customer: customerSlice,
+//   lineman: linemanSlice,
+//   area: areaSlice,
+//   mikrotik: mikrotikSlice,
+//   reseller: resellerSlice,
+//   collector: collectorSlice,
+//   manager: managerSlice,
+//   ui: uiSlice,
+// });
+const persistedReducer = persistReducer(persistConfig, authReducer);
+
+const store = configureStore({
+  reducer: {
+    auth: persistedReducer,
     customer: customerSlice,
     lineman: linemanSlice,
     area: areaSlice,
     mikrotik: mikrotikSlice,
     reseller: resellerSlice,
     collector: collectorSlice,
-    manager:managerSlice
-  }
-)
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-
-const store = configureStore({
-  reducer: persistedReducer,
+    manager: managerSlice,
+    
+  },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -50,13 +59,10 @@ const store = configureStore({
     }),
 });
 
-export default store ; 
-export const persistor = persistStore(store)
-
-
+export default store;
+export const persistor = persistStore(store);
 
 // import { configureStore } from "@reduxjs/toolkit";
-
 
 // import authSlice from "../features/authSlice";
 // import customerSlice from "../features/customerSlice";

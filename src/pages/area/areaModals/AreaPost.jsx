@@ -11,7 +11,7 @@ import Loader from "../../../components/common/Loader";
 import { fetchArea } from "../../../features/areaSlice";
 
 export default function AreaPost() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 

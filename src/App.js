@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
 import { Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
-
+import { useSelector} from "react-redux";
  
 
-// internal pages
+ 
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
 import PrivateOutlet from "./PrivateOutlet";
@@ -31,7 +30,7 @@ import SubArea from "./pages/subArea/SubArea";
 function App() {
   const [theme, setTheme] = useState("light");
 
-  const currentUser = useSelector((state) => state.auth.currentUser);
+  const user = useSelector((state) => state.auth.currentUser);
 
   return (
     <ThemeProvider theme={themes[theme]}>
@@ -39,11 +38,11 @@ function App() {
       <div className="App">
         <Header theme={theme} setTheme={setTheme} />
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route  path="/" element={<Landing />} />
           <Route
             path="/login"
             element={
-              <PrivateRoute currentUser={currentUser}>
+              <PrivateRoute user={!user}>
                 <Login />
               </PrivateRoute>
             }
@@ -52,7 +51,7 @@ function App() {
           <Route
             path="/register"
             element={
-              <PrivateRoute currentUser={currentUser}>
+              <PrivateRoute user={!user}>
                 <Register />
               </PrivateRoute>
             }
@@ -76,7 +75,7 @@ function App() {
           <Route
             path="/subArea/:areaId"
             element={
-              <PrivateRoute currentUser={currentUser}>
+              <PrivateRoute user={user}>
                 <SubArea />
               </PrivateRoute>
             }
@@ -85,7 +84,7 @@ function App() {
           <Route
             path="/mikrotik/:ispOwner/:mikrotikId"
             element={
-              <PrivateRoute currentUser={currentUser}>
+              <PrivateRoute user={user}>
                 <ConfigMikrotik />
               </PrivateRoute>
             }

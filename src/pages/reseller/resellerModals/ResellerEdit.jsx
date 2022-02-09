@@ -13,7 +13,7 @@ import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerEdit({ reseller }) {
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
 
   //validator

@@ -12,7 +12,7 @@ import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
 
 export default function CustomerEdit() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const CUSTOMER = useSelector((state) => state.customer.singleCustomer);
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();

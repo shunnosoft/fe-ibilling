@@ -10,7 +10,7 @@ import Loader from "../../../components/common/Loader";
 import { postMikrotik } from "../../../features/mikrotikSlice";
 
 export default function MikrotikEdit() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
