@@ -32,6 +32,7 @@ import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 import SubArea from "./pages/subArea/SubArea";
+import Bill from "./pages/bill/Bill";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -142,6 +143,7 @@ function App() {
             <Route path="customer" element={<Customer />} />
             <Route path="lineman" element={<Lineman />} />
             <Route path="collector" element={<Collector />} />
+            <Route path="bill" element={<Bill />} />
             <Route path="mikrotik" element={<Mikrotik />} />
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -1,13 +1,13 @@
 import {
   HouseDoorFill,
-  CurrencyEuro,
+  Wallet2,
   PeopleFill,
   PersonPlus,
   PersonLinesFill,
   GeoAlt,
   LayersFill,
   Wifi,
-  // Cash,
+  // Coin,
 } from "react-bootstrap-icons";
 export const AllRoutes = [
   {
@@ -43,13 +43,13 @@ export const AllRoutes = [
 
   {
     title: "কালেক্টর",
-    icon: <CurrencyEuro />,
+    icon: <Wallet2 />,
     link: "/collector",
   },
   // {
-  //   title: "কাস্টমার বিল",
-  //   icon: <Cash />,
-  //   link: "/customer-bill",
+  //   title: "বিল",
+  //   icon: <Coin />,
+  //   link: "/bill",
   // },
   {
     title: "মাইক্রোটিক",

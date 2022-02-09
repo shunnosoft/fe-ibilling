@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   PersonPlusFill,
   ThreeDots,
@@ -31,6 +31,7 @@ import { managerPermission } from "./managerData";
 
 export default function Manager() {
   const manager = useSelector(getManager);
+  const [permissions, setPermissions] = useState(managerPermission);
 
   const managerValidate = Yup.object({
     name: Yup.string()
@@ -54,6 +55,22 @@ export default function Manager() {
 
   const deleteManagerHandler = () => {
     deleteManager();
+  };
+
+  const handleChange = (e) => {
+    const { name, checked } = e.target;
+    let temp = permissions.map((val) =>
+      val.value === name ? { ...val, isChecked: checked } : val
+    );
+    setPermissions(temp);
+  };
+
+  const updatePermissionsHandler = () => {
+    let temp = {};
+    permissions.forEach((val) => {
+      temp[val.value] = val.isChecked;
+    });
+    console.log(temp);
   };
 
   return (
@@ -248,21 +265,27 @@ export default function Manager() {
                         <div>
                           <h4>পারমিশান পরিবর্তন করুন</h4>
                           <hr />
-                          {console.log(manager)}
-                          {managerPermission.map((val, key) => (
+
+                          {permissions.map((val, key) => (
                             <div className="CheckboxContainer" key={key}>
                               <input
                                 type="checkbox"
                                 className="CheckBox"
-                                value={val.value}
+                                name={val.value}
                                 checked={val.isChecked}
+                                onChange={handleChange}
                               />
                               <label className="checkboxLabel">
                                 {val.label}
                               </label>
                             </div>
                           ))}
-                          <button className="managerUpdateBtn">আপডেট</button>
+                          <button
+                            className="managerUpdateBtn"
+                            onClick={updatePermissionsHandler}
+                          >
+                            আপডেট
+                          </button>
                         </div>
                       </div>
                     ) : (

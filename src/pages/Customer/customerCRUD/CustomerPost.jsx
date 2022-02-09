@@ -11,15 +11,21 @@ import { postCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
 import { getMikrotik, fetchMikrotik } from "../../../features/mikrotikSlice";
 import { fetchCustomer } from "../../../features/customerSlice";
+import {
+  fetchpppoePackage,
+  getPPPoEpackage,
+} from "../../../features/mikrotikSlice";
 import { getArea, fetchArea } from "../../../features/areaSlice";
 
 export default function CustomerModal() {
   const auth = useSelector((state) => state.auth);
   const area = useSelector(getArea);
   const Getmikrotik = useSelector(getMikrotik);
+  const ppPackage = useSelector(getPPPoEpackage);
   const [isLoading, setIsloading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const [singleMikrotik, setSingleMikrotik] = useState("");
+  const [mikrotikPackage, setMikrotikPackage] = useState("");
   const dispatch = useDispatch();
 
   // customer validator
@@ -34,8 +40,7 @@ export default function CustomerModal() {
       .email("ইমেইল সঠিক নয় ")
       .required("ম্যানেজার এর ইমেইল দিতে হবে"),
     nid: Yup.string().required("NID দিন"),
-    status: Yup.string().required("Choose one"),
-    balance: Yup.string().required("Balance দিন"),
+    status: Yup.string().required("***"),
     monthlyFee: Yup.string().required("Montly Fee দিন"),
     Pname: Yup.string().required("PPPoE নাম"),
     Ppassword: Yup.string().required("PPPoE Password"),
@@ -65,28 +70,38 @@ export default function CustomerModal() {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (Getmikrotik.length !== undefined) {
-      const temp = Getmikrotik.find((val) => {
-        return val.id === id;
-      });
-      setSingleMikrotik(temp);
+    if (id && auth.ispOwner) {
+      const IDs = {
+        ispOwner: auth.ispOwner.id,
+        mikrotikId: id,
+      };
+      dispatch(fetchpppoePackage(IDs));
     }
+    setSingleMikrotik(id);
   };
 
+  // select Mikrotik Package
+  const selectMikrotikPackage = (e) => {
+    const mikrotikPackageId = e.target.value;
+    setMikrotikPackage(mikrotikPackageId);
+  };
+
+  // sendint data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
     const subArea = document.getElementById("subAreaId").value;
     if (subArea === "") {
+      setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    const mikrotik = singleMikrotik?.id;
     const { ispOwner } = auth;
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       customerId: "randon123",
       subArea: subArea,
       ispOwner: ispOwner.id,
-      mikrotik: mikrotik,
+      mikrotik: singleMikrotik,
+      mikrotikPackage: mikrotikPackage,
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -95,6 +110,7 @@ export default function CustomerModal() {
       },
       ...rest,
     };
+    console.log("Main Data: ", mainData);
     const response = await dispatch(postCustomer(mainData));
     if (response) {
       setIsloading(false);
@@ -135,7 +151,7 @@ export default function CustomerModal() {
                   email: "",
                   nid: "",
                   status: "",
-                  balance: "",
+                  // balance: "",
                   monthlyFee: "",
                   Pname: "",
                   Ppassword: "",
@@ -195,7 +211,7 @@ export default function CustomerModal() {
                           </div>
                         </div>
 
-                        <div className="form-check customerFormCheck">
+                        {/* <div className="form-check customerFormCheck">
                           <p>বিল পরিশোধের ধরণ </p>
                           <div className="form-check form-check-inline">
                             <FtextField
@@ -217,22 +233,23 @@ export default function CustomerModal() {
                               value="postpaid"
                             />
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       {/* section two */}
                       <div className="Section2">
-                        <FtextField
+                        {/* <FtextField
                           type="text"
                           label="ব্যালান্স"
                           name="balance"
-                        />
+                        /> */}
                         <FtextField
                           type="text"
                           label="মাসিক ফি"
                           name="monthlyFee"
                         />
-                        <hr />
-                        <p>এরিয়া সিলেক্ট করুন</p>
+                        <p className="comstomerFieldsTitle">
+                          এরিয়া সিলেক্ট করুন
+                        </p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -247,8 +264,8 @@ export default function CustomerModal() {
                                 </option>
                               ))}
                         </select>
-                        <br />
-                        <p>
+
+                        <p className="comstomerFieldsTitle mt-3">
                           {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
                           সিলেক্ট করুন
                         </p>
@@ -268,9 +285,9 @@ export default function CustomerModal() {
                             : ""}
                         </select>
 
-                        <hr />
-
-                        <p>মাইক্রোটিক সিলেক্ট করুন</p>
+                        <p className="comstomerFieldsTitle mt-3">
+                          মাইক্রোটিক সিলেক্ট করুন
+                        </p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -280,6 +297,25 @@ export default function CustomerModal() {
                           {Getmikrotik.length === undefined
                             ? ""
                             : Getmikrotik.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))}
+                        </select>
+
+                        {/* pppoe package */}
+                        <p className="comstomerFieldsTitle mt-3">
+                          PPPoE প্যাকেজ সিলেক্ট করুন
+                        </p>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value="">...</option>
+                          {ppPackage.length === undefined
+                            ? ""
+                            : ppPackage.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>
