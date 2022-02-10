@@ -16,6 +16,7 @@ const managerSlice = createSlice({
     managerFetchSuccess: (state, action) => {
       state.isFetching = false;
       state.manager = action.payload;
+      
     },
     managerFetchFailure: (state) => {
       state.isFetching = false;

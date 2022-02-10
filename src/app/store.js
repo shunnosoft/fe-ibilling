@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import {   configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/authSlice";
 import customerSlice from "../features/customerSlice";
 import linemanSlice from "../features/linemanSlice";
@@ -34,7 +34,7 @@ const persistConfig = {
 //   reseller: resellerSlice,
 //   collector: collectorSlice,
 //   manager: managerSlice,
-//   ui: uiSlice,
+ 
 // });
 const persistedReducer = persistReducer(persistConfig, authReducer);
 

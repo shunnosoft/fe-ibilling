@@ -13,9 +13,11 @@ export const getManger=async(dispatch,ispWonerId)=>{
         
     } catch (error) {
         dispatch(managerFetchFailure()); 
-        toast("Manager load bertho hoyeche"); 
-
-        
+        toast("Manager load bertho hoyeche");  
     }
 
 }
+
+//add manager 
+
+//dee

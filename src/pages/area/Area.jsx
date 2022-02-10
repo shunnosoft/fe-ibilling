@@ -27,7 +27,6 @@ import TdLoader from "../../components/common/TdLoader";
 export default function Area() {
   const dispatch = useDispatch();
   const user= useSelector((state) => state.auth.currentUser);
-  console.log(user);
   const area = useSelector((state) => state.area.area);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);

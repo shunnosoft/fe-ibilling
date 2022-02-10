@@ -48,7 +48,7 @@ export const addNewManager = async (managerData) => {
     data: mainData,
   })
     .then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       button.style.display = "initial";
       hideModal();
       window.location.reload();
@@ -74,7 +74,7 @@ export const editManager = async (managerData) => {
     data: mainData,
   })
     .then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       button.style.display = "initial";
       hideModal();
       window.location.reload();

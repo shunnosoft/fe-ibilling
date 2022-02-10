@@ -3,7 +3,7 @@ import React, { useState} from "react";
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector} from "react-redux";
  
 
@@ -11,7 +11,7 @@ import { useSelector} from "react-redux";
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
 import PrivateOutlet from "./PrivateOutlet";
-import Landing from "./pages/landing/Landing";
+// import Landing from "./pages/landing/Landing";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -38,7 +38,7 @@ function App() {
       <div className="App">
         <Header theme={theme} setTheme={setTheme} />
         <Routes>
-          <Route  path="/" element={<Landing />} />
+          <Route  path="/" element={<Navigate to="/login" />}  />
           <Route
             path="/login"
             element={

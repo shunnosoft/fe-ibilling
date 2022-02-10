@@ -4,6 +4,7 @@ import {
   loginFailure,
   logInStart,
   logInSuccess,
+  logOut,
 } from "../../features/authSlice";
 // registration handle
 export const asyncRegister = async (userData) => {
@@ -56,7 +57,7 @@ export const asyncLogin = async (dispatch, loginData) => {
     data: loginData,
   })
     .then((res) => {
-      console.log("Login Response: ", res);
+      // console.log("Login Response: ", res);
       document.querySelector(".Loader").style.display = "none";
       if (res.status === 200) {
         if (res.data.ispOwner === null) {
@@ -67,7 +68,7 @@ export const asyncLogin = async (dispatch, loginData) => {
           // localStorage.setItem("currentUser", JSON.stringify(res.data));
           dispatch(logInSuccess(res.data));
           // localStorage.setItem("ispWoner", JSON.stringify(ispWoner));
-          window.location.href = "/";
+          window.location.href = "/home";
         }
       } else {
         // show toast
@@ -91,17 +92,36 @@ export const asyncLogin = async (dispatch, loginData) => {
 };
 
 // LOGOUT
-// export const userLogout = async () => {
-//   await apiLink({
-//     url: "/v1/auth/logout",
-//     method: "POST",
-//   })
-//     .then(() => {
-//       window.localStorage.clear();
-//       window.location.href = "/";
-//     })
-//     .catch(() => {
-//       window.localStorage.clear();
-//       window.location.href = "/";
-//     });
+// export const userLogout = async (dispatch) => {
+
+//   try {
+//     // await userRequest.post("/v1/auth/logout"); 
+//     dispatch(logOut())
+//     window.location.href = "/login";
+
+//   } catch (error) {
+
+//     toast("logout error")
+//   }
+   
 // };
+
+
+// LOGOUT
+export const userLogout = async (dispatch) => {
+  await apiLink({
+    url: "/v1/auth/logout",
+    method: "POST",
+  })
+    .then(() => {
+
+      dispatch(logOut())
+      window.location.href = "/";
+    })
+    .catch((error) => {
+      dispatch(logOut())
+      window.location.href = "/";
+     console.log(error)
+    });
+};
+

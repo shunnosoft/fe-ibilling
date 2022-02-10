@@ -54,7 +54,6 @@ export default function Reseller() {
 
   // delete reseller
   const deleteSingleReseller = async (ispId, resellerId) => {
-    console.log(ispId, resellerId);
     setIsLoading(true);
     const IDs = { ispId: ispId, resellerId: resellerId };
     const res = await dispatch(deleteReseller(IDs));

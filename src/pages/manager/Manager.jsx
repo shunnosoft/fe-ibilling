@@ -259,7 +259,7 @@ export default function Manager() {
                         <div>
                           <h4>পারমিশান পরিবর্তন করুন</h4>
                           <hr />
-                          {console.log(manager)}
+                          {/* {console.log(manager)} */}
                           {managerPermission.map((val, key) => (
                             <div className="CheckboxContainer" key={key}>
                               <input
