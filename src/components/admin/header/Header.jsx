@@ -10,12 +10,11 @@ import "./header.css";
 // import { logOut } from "../../../features/authSlice";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
-import ProfileModal from "../../headersOptions/ProfileModal";
 
 export default function Header(props) {
-  const  currentUser = useSelector((state) => state.auth.currentUser);
-  const ispOwner = useSelector(state=>state.auth.ispOwner)
-  const dispatch= useDispatch() ; 
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const ispOwner = useSelector((state) => state.auth.ispOwner);
+  const dispatch = useDispatch();
   // const navigate = useNavigate();
 
   const changeTHeme = () => {
@@ -28,10 +27,7 @@ export default function Header(props) {
 
   // logout
   const handleLogOut = async () => {
-    userLogout(dispatch)
-     
-     
-
+    userLogout(dispatch);
   };
 
   const icon =
@@ -43,7 +39,6 @@ export default function Header(props) {
 
   return (
     <div className="header">
-      
       <FourGround>
         <div className="container-fluied">
           <header className="headerBar">
@@ -70,11 +65,11 @@ export default function Header(props) {
                   <ul className="dropdown-menu">
                     {HeaderData.map((val, key) => {
                       return (
-                        <li  data-bs-toggle="modal" data-bs-target="#exampleModal" key={key} className="profileList">
-                          <div className="dropdown-item">
+                        <li key={key} className="profileList">
+                          <NavLink to="" className="dropdown-item">
                             <span className="dropdownIcon">{val.icon}</span>
                             {val.name}
-                          </div>
+                          </NavLink>
                         </li>
                       );
                     })}
