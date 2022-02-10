@@ -1,13 +1,11 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useSelector} from "react-redux";
- 
+import { useSelector } from "react-redux";
 
- 
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
 import PrivateOutlet from "./PrivateOutlet";
@@ -38,14 +36,10 @@ function App() {
       <div className="App">
         <Header theme={theme} setTheme={setTheme} />
         <Routes>
-          <Route  path="/" element={<Navigate to="/login" />}  />
+          <Route path="/" element={<Navigate to="/login" />} />
           <Route
             path="/login"
-            element={
-              <PrivateRoute user={!user}>
-                <Login />
-              </PrivateRoute>
-            }
+            element={!user ? <Login /> : <Navigate to="/home" />}
           />
 
           <Route

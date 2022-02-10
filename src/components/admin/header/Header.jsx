@@ -10,6 +10,7 @@ import "./header.css";
 // import { logOut } from "../../../features/authSlice";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
+import ProfileModal from "../../headersOptions/ProfileModal";
 
 export default function Header(props) {
   const  currentUser = useSelector((state) => state.auth.currentUser);
@@ -42,6 +43,7 @@ export default function Header(props) {
 
   return (
     <div className="header">
+      
       <FourGround>
         <div className="container-fluied">
           <header className="headerBar">
@@ -68,11 +70,11 @@ export default function Header(props) {
                   <ul className="dropdown-menu">
                     {HeaderData.map((val, key) => {
                       return (
-                        <li key={key} className="profileList">
-                          <NavLink to="" className="dropdown-item">
+                        <li  data-bs-toggle="modal" data-bs-target="#exampleModal" key={key} className="profileList">
+                          <div className="dropdown-item">
                             <span className="dropdownIcon">{val.icon}</span>
                             {val.name}
-                          </NavLink>
+                          </div>
                         </li>
                       );
                     })}
