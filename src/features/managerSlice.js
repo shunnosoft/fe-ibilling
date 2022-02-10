@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isFetching: false,
+  isPending: false,
   manager: {},
   error: false,
 };
@@ -10,22 +10,45 @@ const managerSlice = createSlice({
   name: "manager",
   initialState,
   reducers: {
+    //get
     managerFetchStart: (state) => {
-      state.isFetching = true;
+      state.isPending = true;
     },
     managerFetchSuccess: (state, action) => {
-      state.isFetching = false;
+      state.isPending = false;
       state.manager = action.payload;
-      
     },
     managerFetchFailure: (state) => {
-      state.isFetching = false;
+      state.isPending = false;
       state.error = true;
+    },
+
+    managerEditSuccess: (state, action) => {
+      state.isPending = false;
+
+      state.manager = action.payload;
+    },
+
+    managerAddSuccess: (state, action) => {
+      state.isPending = false;
+
+      state.manager = action.payload;
+    },
+
+    managerDeleteSuccess: (state, action) => {
+      state.isPending = false;
+      state.manager = {};
     },
   },
 });
 
-export const { managerFetchStart, managerFetchSuccess, managerFetchFailure } =
-  managerSlice.actions;
+export const {
+  managerAddSuccess,
+  managerDeleteSuccess,
+  managerEditSuccess,
+  managerFetchFailure,
+  managerFetchStart,
+  managerFetchSuccess,
+} = managerSlice.actions;
 
 export default managerSlice.reducer;

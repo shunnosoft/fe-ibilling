@@ -19,11 +19,7 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { FtextField } from "../../components/common/FtextField";
-import {
-  addNewManager,
-  deleteManager,
-  
-} from "../../features/actions/managerHandle";
+ 
 // import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
@@ -31,7 +27,7 @@ import Footer from "../../components/admin/footer/Footer";
 import { managerPermission } from "./managerData";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getManger } from "../../features/apiCalls";
+import { addManager, deleteManager, getManger } from "../../features/apiCalls";
 
 export default function Manager() {
    
@@ -39,6 +35,7 @@ export default function Manager() {
   const dispatch =useDispatch()
    
   const manager=useSelector(state=>state.manager.manager)
+  console.log(manager)
   useEffect(()=>{
     getManger(dispatch,ispOwnerId)
   },[dispatch,ispOwnerId])
@@ -60,11 +57,13 @@ export default function Manager() {
   });
  
   const addManagerHandle = (data) => {
-    addNewManager(data);
+    addManager(dispatch,{
+      ...data, ispOwnerId
+    });
   };
 
   const deleteManagerHandler = () => {
-    deleteManager();
+    deleteManager(dispatch,ispOwnerId);
   };
 
   return (

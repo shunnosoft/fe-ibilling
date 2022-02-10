@@ -1,11 +1,11 @@
 import {   configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/authSlice";
 import customerSlice from "../features/customerSlice";
-import linemanSlice from "../features/linemanSlice";
 import areaSlice from "../features/areaSlice";
 import mikrotikSlice from "../features/mikrotikSlice";
 import resellerSlice from "../features/resellerSlice";
 import collectorSlice from "../features/collectorSlice";
+import managerSlice from '../features/managerSlice'
 import {
   persistStore,
   persistReducer,
@@ -17,7 +17,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import managerSlice from "../features/managerSlice";
+ 
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 
 const persistConfig = {
@@ -42,7 +42,6 @@ const store = configureStore({
   reducer: {
     auth: persistedReducer,
     customer: customerSlice,
-    lineman: linemanSlice,
     area: areaSlice,
     mikrotik: mikrotikSlice,
     reseller: resellerSlice,
