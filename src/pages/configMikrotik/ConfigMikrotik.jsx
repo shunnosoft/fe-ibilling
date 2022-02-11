@@ -33,6 +33,8 @@ import {
   fetchpppoeUser,
   mikrotikTesting,
   getPPPoEuser,
+  fetchMikrotikSyncUser,
+  getSyncUser,
   fetchActivepppoeUser,
   getActiveUser,
   fetchpppoePackage,
@@ -55,14 +57,19 @@ export default function ConfigMikrotik() {
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
   const pppoeUser = useSelector(getPPPoEuser);
+  const mikrotikSyncUser = useSelector(getSyncUser);
   const activeUser = useSelector(getActiveUser);
   const pppoePackage = useSelector(getPPPoEpackage);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
+  const [whatYouWantToShow, setWhatYouWantToShow] = useState(
+    "showMikrotikPackage"
+  );
   const [refresh, setRefresh] = useState(0);
   const [refresh2, setRefresh2] = useState(0);
+  const [syncUserRefresh, setSyncUserRefresh] = useState(0);
   const dispatch = useDispatch();
 
   // fetch single mikrotik
@@ -81,7 +88,9 @@ export default function ConfigMikrotik() {
       id: mikrotikId,
     };
     dispatch(fetchpppoeUser(IDs));
-  }, [ispOwner, mikrotikId, dispatch, refresh]);
+    // fetch mikrotik sync user
+    dispatch(fetchMikrotikSyncUser(IDs));
+  }, [ispOwner, mikrotikId, dispatch, refresh, syncUserRefresh]);
 
   // fetch pppoe package
   useEffect(() => {
@@ -160,6 +169,12 @@ export default function ConfigMikrotik() {
       setIsChecking(false);
     }
   };
+
+  const selectMikrotikOptionsHandler = (e) => {
+    const val = e.target.value;
+    setWhatYouWantToShow(val);
+  };
+
   return (
     <>
       <Sidebar />
@@ -183,57 +198,78 @@ export default function ConfigMikrotik() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector">
-                      <p>মাইক্রোটিক কনফিগারেশন</p>
+                    <div className="addNewCollector showMikrotikUpperSection">
+                      <div className="LeftSideMikrotik">
+                        <p>মাইক্রোটিক কনফিগারেশন</p>
 
-                      {/* Modals */}
-                      <PPPoEpackageEditModal singlePackage={singlePackage} />
+                        {/* Modals */}
+                        <PPPoEpackageEditModal singlePackage={singlePackage} />
 
-                      {isChecking ? (
-                        <div className="CheckingClass">
-                          <Loader />{" "}
-                          <h6 style={{ paddingTop: "2px" }}>
-                            কানেকশন চেক করা হচ্ছে ....
-                          </h6>{" "}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      <div className="addAndSettingIcon">
-                        <PlugFill
-                          className="addcutmButton rotating"
-                          onClick={MikrotikConnectionTest}
-                        />
-                        <PencilFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#configMikrotikModal"
-                        />
-                        <Trash2Fill
-                          className="addcutmButton deleteColorBtn"
-                          onClick={deleteSingleMKHandler}
-                        />
-                        {isLoading ? (
-                          <div className="deletingAction">
-                            <Loader /> <b>Deleting...</b>
+                        {isChecking ? (
+                          <div className="CheckingClass">
+                            <Loader />{" "}
+                            <h6 style={{ paddingTop: "2px" }}>
+                              কানেকশন চেক করা হচ্ছে ....
+                            </h6>{" "}
                           </div>
                         ) : (
                           ""
                         )}
+                        <div className="addAndSettingIcon">
+                          <PlugFill
+                            className="addcutmButton rotating"
+                            onClick={MikrotikConnectionTest}
+                          />
+                          <PencilFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#configMikrotikModal"
+                          />
+                          <Trash2Fill
+                            className="addcutmButton deleteColorBtn"
+                            onClick={deleteSingleMKHandler}
+                          />
+                          {isLoading ? (
+                            <div className="deletingAction">
+                              <Loader /> <b>Deleting...</b>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        <div className="mikrotikDetails mt-5">
+                          <p>
+                            নামঃ <b>{singleMik.name || "..."}</b>
+                          </p>
+                          <p>
+                            আইপিঃ <b>{singleMik.host || "..."}</b>
+                          </p>
+                          <p>
+                            ইউজারনেমঃ <b>{singleMik.username || "..."}</b>
+                          </p>
+                          <p>
+                            পোর্টঃ <b>{singleMik.port || "..."}</b>
+                          </p>
+                        </div>
                       </div>
-                      <div className="mikrotikDetails mt-5">
-                        <p>
-                          নামঃ <b>{singleMik.name || "..."}</b>
-                        </p>
-                        <p>
-                          আইপিঃ <b>{singleMik.host || "..."}</b>
-                        </p>
-                        <p>
-                          ইউজারনেমঃ <b>{singleMik.username || "..."}</b>
-                        </p>
-                        <p>
-                          পোর্টঃ <b>{singleMik.port || "..."}</b>
-                        </p>
+                      <div className="rightSideMikrotik">
+                        <h4>সিলেক্ট করুন</h4>
+                        <select
+                          id="selectMikrotikOption"
+                          onChange={selectMikrotikOptionsHandler}
+                          className="form-select"
+                        >
+                          <option value="showMikrotikPackage">
+                            PPPoE প্যাকেজ
+                          </option>
+                          <option value="showMikrotikUser">PPPoE গ্রাহক</option>
+                          <option value="showMikrotikActiveUser">
+                            এক্টিভ গ্রাহক
+                          </option>
+                          <option value="showMikrotikSyncUser">
+                            Sync গ্রাহক
+                          </option>
+                        </select>
                       </div>
                     </div>
 
@@ -243,264 +279,359 @@ export default function ConfigMikrotik() {
                     </div>
 
                     {/* PPPoE Package */}
-                    <h2 className="secondaryTitle">PPPoE প্যাকেজ</h2>
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          PPPoE প্যাকেজ:{" "}
-                          <span>{pppoePackage?.length || "NULL"}</span>
-                        </h4>
-                      </div>
+                    {whatYouWantToShow === "showMikrotikPackage" ? (
+                      <>
+                        <h2 className="secondaryTitle">PPPoE প্যাকেজ</h2>
+                        <div className="row searchCollector">
+                          <div className="col-sm-8">
+                            <h4 className="allCollector">
+                              PPPoE প্যাকেজ:{" "}
+                              <span>{pppoePackage?.length || "NULL"}</span>
+                            </h4>
+                          </div>
 
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="প্যাকেজ সার্চ করুন"
-                            onChange={(e) => setSearch3(e.target.value)}
-                          />
+                          <div className="col-sm-4">
+                            <div className=" collectorSearch">
+                              <input
+                                type="text"
+                                className="search"
+                                placeholder="প্যাকেজ সার্চ করুন"
+                                onChange={(e) => setSearch3(e.target.value)}
+                              />
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    {isDeleting ? (
-                      <div className="deletingLoader">
-                        <Loader />
-                        <span style={{ marginLeft: "10px" }}>Deleting...</span>
-                      </div>
+                        {isDeleting ? (
+                          <div className="deletingLoader">
+                            <Loader />
+                            <span style={{ marginLeft: "10px" }}>
+                              Deleting...
+                            </span>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+
+                        <div className="table-responsive-lg">
+                          <table className="table table-striped ">
+                            <thead>
+                              <tr>
+                                <th scope="col">সিরিয়াল</th>
+                                <th scope="col">প্যাকেজ</th>
+                                <th scope="col">রেট</th>
+                                <th scope="col" style={{ textAlign: "center" }}>
+                                  অ্যাকশন
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {pppoePackage.length === undefined ? (
+                                <tr>
+                                  <TdLoader colspan={4} />
+                                </tr>
+                              ) : (
+                                pppoePackage
+                                  .filter((val) => {
+                                    return val.name
+                                      .toLowerCase()
+                                      .includes(search3.toLowerCase());
+                                  })
+                                  .map((val, key) => (
+                                    <tr key={key}>
+                                      <td style={{ paddingLeft: "30px" }}>
+                                        {++serial3}
+                                      </td>
+                                      <td>{val.name}</td>
+                                      <td>{val.rate}</td>
+                                      <td style={{ textAlign: "center" }}>
+                                        <ThreeDots
+                                          className="dropdown-toggle ActionDots"
+                                          id="pppoePackageDropdown"
+                                          type="button"
+                                          data-bs-toggle="dropdown"
+                                          aria-expanded="false"
+                                        />
+
+                                        {/* modal */}
+                                        <ul
+                                          className="dropdown-menu"
+                                          aria-labelledby="pppoePackageDropdown"
+                                        >
+                                          <li
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#pppoePackageEditModal"
+                                            onClick={() => {
+                                              getSpecificPPPoEPackage(val.id);
+                                            }}
+                                          >
+                                            <div className="dropdown-item">
+                                              <div className="customerAction">
+                                                <PenFill />
+                                                <p className="actionP">এডিট</p>
+                                              </div>
+                                            </div>
+                                          </li>
+
+                                          <li
+                                            onClick={() => {
+                                              deleteSinglePPPoEpackage(
+                                                val.mikrotik,
+                                                val.id
+                                              );
+                                            }}
+                                          >
+                                            <div className="dropdown-item actionManager">
+                                              <div className="customerAction">
+                                                <ArchiveFill />
+                                                <p className="actionP">ডিলিট</p>
+                                              </div>
+                                            </div>
+                                          </li>
+                                        </ul>
+                                      </td>
+                                    </tr>
+                                  ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </>
                     ) : (
                       ""
                     )}
-                  </div>
-
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <th scope="col">সিরিয়াল</th>
-                          <th scope="col">প্যাকেজ</th>
-                          <th scope="col">রেট</th>
-                          <th scope="col" style={{ textAlign: "center" }}>
-                            অ্যাকশন
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {pppoePackage.length === undefined ? (
-                          <tr>
-                            <TdLoader colspan={4} />
-                          </tr>
-                        ) : (
-                          pppoePackage
-                            .filter((val) => {
-                              return val.name
-                                .toLowerCase()
-                                .includes(search3.toLowerCase());
-                            })
-                            .map((val, key) => (
-                              <tr key={key}>
-                                <td style={{ paddingLeft: "30px" }}>
-                                  {++serial3}
-                                </td>
-                                <td>{val.name}</td>
-                                <td>{val.rate}</td>
-                                <td style={{ textAlign: "center" }}>
-                                  <ThreeDots
-                                    className="dropdown-toggle ActionDots"
-                                    id="pppoePackageDropdown"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  />
-
-                                  {/* modal */}
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="pppoePackageDropdown"
-                                  >
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#pppoePackageEditModal"
-                                      onClick={() => {
-                                        getSpecificPPPoEPackage(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PenFill />
-                                          <p className="actionP">এডিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-
-                                    <li
-                                      onClick={() => {
-                                        deleteSinglePPPoEpackage(
-                                          val.mikrotik,
-                                          val.id
-                                        );
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  </ul>
-                                </td>
-                              </tr>
-                            ))
-                        )}
-                      </tbody>
-                    </table>
-                    <br />
 
                     {/* PPPoE users */}
-                    <h2 className="secondaryTitle">PPPoE গ্রাহক</h2>
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          PPPoE গ্রাহক :{" "}
-                          <span>{pppoeUser.length || "NULL"}</span>
-                        </h4>
-                      </div>
+                    {whatYouWantToShow === "showMikrotikUser" ? (
+                      <>
+                        <h2 className="secondaryTitle">PPPoE গ্রাহক</h2>
+                        <div className="row searchCollector">
+                          <div className="col-sm-8">
+                            <h4 className="allCollector">
+                              PPPoE গ্রাহক :{" "}
+                              <span>{pppoeUser.length || "NULL"}</span>
+                            </h4>
+                          </div>
 
-                      <div className="col-sm-4">
-                        <div className="pppoeRefresh">
-                          {/* Refresh: {refresh} */}
-                          <ArrowClockwise
-                            className="addcutmButton"
-                            onClick={() => setRefresh(refresh + 1)}
-                          />
-                          <div className=" collectorSearch">
-                            <input
-                              type="text"
-                              className="search"
-                              placeholder="সার্চ এর জন্য নাম টাইপ করুন"
-                              onChange={(e) => setSearch2(e.target.value)}
-                            />
+                          <div className="col-sm-4">
+                            <div className="pppoeRefresh">
+                              {/* Refresh: {refresh} */}
+                              <ArrowClockwise
+                                className="addcutmButton"
+                                onClick={() => setRefresh(refresh + 1)}
+                              />
+                              <div className=" collectorSearch">
+                                <input
+                                  type="text"
+                                  className="search"
+                                  placeholder="সার্চ"
+                                  onChange={(e) => setSearch2(e.target.value)}
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                            <th scope="col">সিরিয়াল</th>
-                            <th scope="col">নাম</th>
-                            <th scope="col">প্যাকেজ</th>
-                            <th scope="col">সার্ভিস</th>
-                            {/* <th scope="col" style={{ textAlign: "center" }}>
+                        <div className="table-responsive-lg">
+                          <table className="table table-striped ">
+                            <thead>
+                              <tr>
+                                <th scope="col">সিরিয়াল</th>
+                                <th scope="col">নাম</th>
+                                <th scope="col">প্যাকেজ</th>
+                                <th scope="col">সার্ভিস</th>
+                                {/* <th scope="col" style={{ textAlign: "center" }}>
                               অ্যাকশন
                             </th> */}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {pppoeUser.length === undefined ? (
-                            <tr>
-                              <TdLoader colspan={4} />
-                            </tr>
-                          ) : (
-                            pppoeUser
-                              .filter((val) => {
-                                return val.name
-                                  .toLowerCase()
-                                  .includes(search2.toLowerCase());
-                              })
-                              .map((val, key) => (
-                                <tr key={key}>
-                                  <td style={{ paddingLeft: "30px" }}>
-                                    {++serial}
-                                  </td>
-                                  <td>{val.name}</td>
-                                  <td>{val.profile}</td>
-                                  <td>{val.service}</td>
-                                  {/* <td style={{ textAlign: "center" }}>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {pppoeUser.length === undefined ? (
+                                <tr>
+                                  <TdLoader colspan={4} />
+                                </tr>
+                              ) : (
+                                pppoeUser
+                                  .filter((val) => {
+                                    return val.name
+                                      .toLowerCase()
+                                      .includes(search2.toLowerCase());
+                                  })
+                                  .map((val, key) => (
+                                    <tr key={key}>
+                                      <td style={{ paddingLeft: "30px" }}>
+                                        {++serial}
+                                      </td>
+                                      <td>{val.name}</td>
+                                      <td>{val.profile}</td>
+                                      <td>{val.service}</td>
+                                      {/* <td style={{ textAlign: "center" }}>
                                     <ThreeDots className="dropdown-toggle ActionDots" />
                                   </td> */}
-                                </tr>
-                              ))
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                    <br />
+                                    </tr>
+                                  ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                        <br />
+                      </>
+                    ) : (
+                      ""
+                    )}
 
                     {/* Active PPPoE users */}
-                    <h2 className="secondaryTitle">এক্টিভ গ্রাহক</h2>
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          এক্টিভ গ্রাহক :{" "}
-                          <span>{activeUser.length || "NULL"}</span>
-                        </h4>
-                      </div>
+                    {whatYouWantToShow === "showMikrotikActiveUser" ? (
+                      <>
+                        <h2 className="secondaryTitle">এক্টিভ গ্রাহক</h2>
+                        <div className="row searchCollector">
+                          <div className="col-sm-8">
+                            <h4 className="allCollector">
+                              এক্টিভ গ্রাহক :{" "}
+                              <span>{activeUser.length || "NULL"}</span>
+                            </h4>
+                          </div>
 
-                      <div className="col-sm-4">
-                        <div className="pppoeRefresh">
-                          {/* Refresh: {refresh} */}
-                          <ArrowClockwise
-                            className="addcutmButton"
-                            onClick={() => setRefresh2(refresh2 + 1)}
-                          />
-                          <div className=" collectorSearch">
-                            <input
-                              type="text"
-                              className="search"
-                              placeholder="সার্চ এর জন্য নাম টাইপ করুন"
-                              onChange={(e) => setSearch(e.target.value)}
-                            />
+                          <div className="col-sm-4">
+                            <div className="pppoeRefresh">
+                              {/* Refresh: {refresh} */}
+                              <ArrowClockwise
+                                className="addcutmButton"
+                                onClick={() => setRefresh2(refresh2 + 1)}
+                              />
+                              <div className=" collectorSearch">
+                                <input
+                                  type="text"
+                                  className="search"
+                                  placeholder="সার্চ"
+                                  onChange={(e) => setSearch(e.target.value)}
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                            <th scope="col">সিরিয়াল</th>
-                            <th scope="col">নাম</th>
-                            <th scope="col">কলার ID</th>
-                            <th scope="col">এড্রেস</th>
-                            {/* <th scope="col" style={{ textAlign: "center" }}>
+                        <div className="table-responsive-lg">
+                          <table className="table table-striped ">
+                            <thead>
+                              <tr>
+                                <th scope="col">সিরিয়াল</th>
+                                <th scope="col">নাম</th>
+                                <th scope="col">কলার ID</th>
+                                <th scope="col">এড্রেস</th>
+                                {/* <th scope="col" style={{ textAlign: "center" }}>
                               অ্যাকশন
                             </th> */}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {activeUser.length === undefined ? (
-                            <tr>
-                              <TdLoader colspan={4} />
-                            </tr>
-                          ) : (
-                            activeUser
-                              .filter((val) => {
-                                return val.name
-                                  .toLowerCase()
-                                  .includes(search.toLowerCase());
-                              })
-                              .map((val, key) => (
-                                <tr key={key}>
-                                  <td style={{ paddingLeft: "30px" }}>
-                                    {++serial2}
-                                  </td>
-                                  <td>{val.name}</td>
-                                  <td>{val.callerId}</td>
-                                  <td>{val.address}</td>
-                                  {/* <td style={{ textAlign: "center" }}>
-                                    <ThreeDots className="dropdown-toggle ActionDots" />
-                                  </td> */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {activeUser.length === undefined ? (
+                                <tr>
+                                  <TdLoader colspan={4} />
                                 </tr>
-                              ))
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+                              ) : (
+                                activeUser
+                                  .filter((val) => {
+                                    return val.name
+                                      .toLowerCase()
+                                      .includes(search.toLowerCase());
+                                  })
+                                  .map((val, key) => (
+                                    <tr key={key}>
+                                      <td style={{ paddingLeft: "30px" }}>
+                                        {++serial2}
+                                      </td>
+                                      <td>{val.name}</td>
+                                      <td>{val.callerId}</td>
+                                      <td>{val.address}</td>
+                                    </tr>
+                                  ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
+
+                    {/* Active PPPoE users */}
+                    {whatYouWantToShow === "showMikrotikSyncUser" ? (
+                      <>
+                        <h2 className="secondaryTitle">Sync গ্রাহক</h2>
+                        <div className="row searchCollector">
+                          <div className="col-sm-8">
+                            <h4 className="allCollector">
+                              Sync গ্রাহক :{" "}
+                              <span>{mikrotikSyncUser?.length || "NULL"}</span>
+                            </h4>
+                          </div>
+
+                          <div className="col-sm-4">
+                            <div className="pppoeRefresh">
+                              {/* Refresh: {refresh} */}
+                              <ArrowClockwise
+                                className="addcutmButton"
+                                onClick={() =>
+                                  setSyncUserRefresh(syncUserRefresh + 1)
+                                }
+                              />
+                              <div className=" collectorSearch">
+                                <input
+                                  type="text"
+                                  className="search"
+                                  placeholder="সার্চ"
+                                  onChange={(e) => setSearch(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="table-responsive-lg">
+                          <table className="table table-striped ">
+                            <thead>
+                              <tr>
+                                <th scope="col">সিরিয়াল</th>
+                                <th scope="col">নাম</th>
+                                <th scope="col">মোবাইল</th>
+                                <th scope="col">স্টেটাস</th>
+                                <th scope="col">পেমেন্ট স্টেটাস</th>
+                                {/* <th scope="col" style={{ textAlign: "center" }}>
+                              অ্যাকশন
+                            </th> */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {mikrotikSyncUser.length === undefined ? (
+                                <tr>
+                                  <TdLoader colspan={5} />
+                                </tr>
+                              ) : (
+                                mikrotikSyncUser
+                                  .filter((val) => {
+                                    return val.name
+                                      .toLowerCase()
+                                      .includes(search.toLowerCase());
+                                  })
+                                  .map((val, key) => (
+                                    <tr key={key}>
+                                      <td style={{ paddingLeft: "30px" }}>
+                                        {++serial2}
+                                      </td>
+                                      <td>{val.name}</td>
+                                      <td>{val.mobile}</td>
+                                      <td>{val.status}</td>
+                                      <td>{val.paymentStatus}</td>
+                                    </tr>
+                                  ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
               </FourGround>

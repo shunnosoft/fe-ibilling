@@ -6,6 +6,7 @@ const initialState = {
   mikrotik: {},
   singleMikrotik: {},
   pppoeUser: {},
+  mikrotikSyncUser: {},
   pppoeActiveUser: {},
   pppoePackage: {},
 };
@@ -138,6 +139,21 @@ export const fetchpppoeUser = createAsyncThunk(
   }
 );
 
+// get Mikrotik Sync user
+export const fetchMikrotikSyncUser = createAsyncThunk(
+  "pppoeUser/fetchMikrotikSyncUser",
+  async (IDs) => {
+    const response = await apiLink({
+      method: "GET",
+      url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.id}`,
+    }).catch(() => {
+      toast("Sync গ্রাহক পাওয়া যায়নি!");
+    });
+    const data = await response.data;
+    return data;
+  }
+);
+
 // get PPPoE Active user
 export const fetchActivepppoeUser = createAsyncThunk(
   "ppporUser/fetchActivepppoeUser",
@@ -238,6 +254,17 @@ export const areaSlice = createSlice({
       };
     },
 
+    // get mikrotik sync user
+    [fetchMikrotikSyncUser.fulfilled]: (state, { payload }) => {
+      return { ...state, mikrotikSyncUser: payload };
+    },
+    [fetchMikrotikSyncUser.rejected]: (state) => {
+      return {
+        ...state,
+        pppoeUser: [{ name: "N/A", profile: "N/A", service: "N/A" }],
+      };
+    },
+
     // get pppoe package
     [fetchpppoePackage.fulfilled]: (state, { payload }) => {
       console.log("Package Pending");
@@ -269,6 +296,7 @@ export const areaSlice = createSlice({
 export const getMikrotik = (state) => state.mikrotik.mikrotik;
 export const getSingleMikrotik = (state) => state.mikrotik.singleMikrotik;
 export const getPPPoEuser = (state) => state.mikrotik.pppoeUser;
+export const getSyncUser = (state) => state.mikrotik.mikrotikSyncUser;
 export const getActiveUser = (state) => state.mikrotik.pppoeActiveUser;
 export const getPPPoEpackage = (state) => state.mikrotik.pppoePackage;
 

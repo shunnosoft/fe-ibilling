@@ -43,7 +43,12 @@ td {
   font-size: 1.1rem !important;
   padding: 15px !important;
 }
-
+.btn-success {
+  background-color: #0eb96a !important;
+}
+.btn-success:hover {
+  background-color: #0d9c5a !important;
+}
 ::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
   color: rgb(218, 218, 218);

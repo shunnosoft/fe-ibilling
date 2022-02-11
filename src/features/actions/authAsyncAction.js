@@ -48,7 +48,7 @@ export const asyncLogin = async (loginData) => {
           const ispWoner = res.data.ispOwner;
           localStorage.setItem("token", JSON.stringify(bayannoAccess));
           localStorage.setItem("ispWoner", JSON.stringify(ispWoner));
-          window.location.href = "/";
+          window.location.href = "/home";
         }
       } else {
         // show toast

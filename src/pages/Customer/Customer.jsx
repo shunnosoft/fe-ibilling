@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
+import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -235,6 +236,37 @@ export default function Customer() {
                         )}
                       </tbody>
                     </table>
+
+                    {/* pagination */}
+                    <nav aria-label="Page navigation example" className="mt-4">
+                      <ul className="pagination">
+                        <li className="page-item">
+                          <Link className="page-link" to="">
+                            Previous
+                          </Link>
+                        </li>
+                        <li className="page-item">
+                          <Link className="page-link" to="">
+                            1
+                          </Link>
+                        </li>
+                        <li className="page-item">
+                          <Link className="page-link" to="">
+                            2
+                          </Link>
+                        </li>
+                        <li className="page-item">
+                          <Link className="page-link" to="">
+                            3
+                          </Link>
+                        </li>
+                        <li className="page-item">
+                          <Link className="page-link" to="">
+                            Next
+                          </Link>
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
               </FourGround>

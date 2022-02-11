@@ -61,7 +61,7 @@ export default function Header(props) {
                     {HeaderData.map((val, key) => {
                       return (
                         <li key={key} className="profileList">
-                          <NavLink to="" className="dropdown-item">
+                          <NavLink to={val.link} className="dropdown-item">
                             <span className="dropdownIcon">{val.icon}</span>
                             {val.name}
                           </NavLink>

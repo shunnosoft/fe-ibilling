@@ -33,6 +33,7 @@ import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 import SubArea from "./pages/subArea/SubArea";
 import Bill from "./pages/bill/Bill";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -136,6 +137,7 @@ function App() {
 
           {/* dashboard */}
           <Route path="/*" element={<PrivateOutlet />}>
+            <Route path="profile" element={<Profile />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="area" element={<Area />} />
             <Route path="manager" element={<Manager />} />

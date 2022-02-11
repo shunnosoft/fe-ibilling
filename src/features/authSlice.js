@@ -49,4 +49,5 @@ const authSlice = createSlice({
 
 export const { setAuth, accessToken, setIspOwner } = authSlice.actions;
 export const getManager = (state) => state.auth.manager;
+export const ispOwner = (state) => state.auth.ispOwner;
 export default authSlice.reducer;

@@ -51,6 +51,13 @@
   align-items: center;
   justify-content: center;
 }
+.showMikrotikUpperSection {
+  width: 80%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  align-items: center;
+}
 
 .pppoeRefresh svg {
   width: 45px;
