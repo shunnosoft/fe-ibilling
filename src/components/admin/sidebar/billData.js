@@ -6,11 +6,6 @@ export const billData = [
     link: "/unpaid",
   },
   {
-    title: "আংশিক পরিশোধ",
-    icon: <ArrowRightShort />,
-    link: "/partial",
-  },
-  {
     title: "পরিশোধ",
     icon: <ArrowRightShort />,
     link: "/bill",

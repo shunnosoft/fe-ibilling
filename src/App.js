@@ -34,6 +34,8 @@ import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 import SubArea from "./pages/subArea/SubArea";
 import Bill from "./pages/bill/Bill";
 import Profile from "./pages/profile/Profile";
+import Account from "./pages/account/Account";
+import Message from "./pages/message/Message";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -138,6 +140,8 @@ function App() {
           {/* dashboard */}
           <Route path="/*" element={<PrivateOutlet />}>
             <Route path="profile" element={<Profile />} />
+            <Route path="account" element={<Account />} />
+            <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="area" element={<Area />} />
             <Route path="manager" element={<Manager />} />

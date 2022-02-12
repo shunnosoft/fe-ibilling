@@ -1,0 +1,11 @@
+.messageGuide > p {
+  font-size: 18px;
+}
+.oneElementInput {
+  display: flex;
+  padding: 10 0px;
+}
+.marginRight {
+  transform: scale(1.2);
+  margin-right: 10px;
+}

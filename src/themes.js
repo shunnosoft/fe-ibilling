@@ -9,7 +9,7 @@ const darkTheme = {
   body: "#121317",
   furGround: "#1A1C23",
   titleColor: "#000",
-  fontColor: "#96bb96",
+  fontColor: "#acb9ac",
 };
 
 export const themes = {
