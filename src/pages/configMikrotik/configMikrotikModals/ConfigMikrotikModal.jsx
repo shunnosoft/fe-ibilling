@@ -7,10 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import {
-  fetchSingleMikrotik,
-  editSingleMikrotik,
-} from "../../../features/mikrotikSlice";
+import { editSingleMikrotik } from "../../../features/apiCalls";
+// import {
+//   fetchSingleMikrotik,
+//   editSingleMikrotik,
+// } from "../../../features/mikrotikSlice";
 
 export default function ConfigMikrotikModal(props) {
   const auth = useSelector((state) => state.auth.currentUser);
@@ -37,15 +38,10 @@ export default function ConfigMikrotikModal(props) {
         ispId: mik.ispOwner,
       };
 
-      const res = await dispatch(editSingleMikrotik(sendingData));
-      if (res) {
-        setIsLoading(false);
-        const IDs = {
-          ispOwner: mik.ispOwner,
-          id: mik.id,
-        };
-        dispatch(fetchSingleMikrotik(IDs));
-      }
+       editSingleMikrotik(dispatch,sendingData)
+    setIsLoading(false);
+
+      
     }
   };
 

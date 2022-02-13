@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 // internal imports
 import "./manager.css";
@@ -31,11 +32,12 @@ import { addManager, deleteManager, getManger } from "../../features/apiCalls";
 
 export default function Manager() {
    
+  const manager=useSelector(state=>state.manager.manager)
+  console.log(manager)
+  
   const ispOwnerId  =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
   const dispatch =useDispatch()
    
-  const manager=useSelector(state=>state.manager.manager)
-  console.log(manager)
   useEffect(()=>{
     getManger(dispatch,ispOwnerId)
   },[dispatch,ispOwnerId])
@@ -57,9 +59,14 @@ export default function Manager() {
   });
  
   const addManagerHandle = (data) => {
-    addManager(dispatch,{
-      ...data, ispOwnerId
-    });
+    if (!manager){
+
+      addManager(dispatch,{
+        ...data, ispOwnerId
+      });
+    } else{
+       toast("You can't add more than one manager")
+    }
   };
 
   const deleteManagerHandler = () => {

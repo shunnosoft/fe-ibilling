@@ -1,6 +1,6 @@
 import "./area.css";
 import React, { useEffect } from "react";
-import {  useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
@@ -19,31 +19,31 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./areaModals/AreaPost";
-import { fetchArea } from "../../features/areaSlice";
-import { deleteArea } from "../../features/areaSlice";
+// import { fetchArea } from "../../features/areaSlice";
 import AreaEdit from "./areaModals/AreaEdit";
 import TdLoader from "../../components/common/TdLoader";
+import { deleteArea, getArea } from "../../features/apiCalls";
 
 export default function Area() {
-  const dispatch = useDispatch();
-  const user= useSelector((state) => state.auth.currentUser);
   const area = useSelector((state) => state.area.area);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [EditAarea, setEditAarea] = useState("");
   let serial = 0;
-
-  const dispatchArea = () => {
-    if (user.ispOwner) {
-      dispatch(fetchArea(user.ispOwner.id));
-    }
-  };
-
+console.log(area)
+  // const dispatchArea = () => {
+  //   if (user.ispOwner) {
+    //     dispatch(FetchAreaSuccess(user.ispOwner.id));
+    //   }
+    // };
+    
+    console.log(area.find(item=>item.id==="6203105324639e01df623434"))
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.currentUser);
   useEffect(() => {
-    if (user.ispOwner) {
-      dispatch(fetchArea(user.ispOwner.id));
-    }
+    getArea(dispatch, user.ispOwner.id);
   }, [dispatch, user.ispOwner]);
+  
 
   const deleteSingleArea = async (id, ispOwner) => {
     setIsLoading(true);
@@ -51,11 +51,9 @@ export default function Area() {
       ispOwner: ispOwner,
       id: id,
     };
-    const reaponse = await dispatch(deleteArea(IDs));
-    if (reaponse) {
-      setIsLoading(false);
-      dispatchArea();
-    }
+    deleteArea(dispatch,IDs)
+    setIsLoading(false);
+    
   };
 
   const getSpecificArea = (id) => {

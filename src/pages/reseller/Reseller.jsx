@@ -19,13 +19,14 @@ import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./resellerModals/ResellerPost";
 import ResellerEdit from "./resellerModals/ResellerEdit";
 import Loader from "../../components/common/Loader";
-import {
-  fetchReseller,
-  getReseller,
-  deleteReseller,
-} from "../../features/resellerSlice";
+// import {
+//   fetchReseller,
+//   getReseller,
+//   deleteReseller,
+// } from "../../features/resellerSlice";
 import TdLoader from "../../components/common/TdLoader";
 import ResellerDetails from "./resellerModals/ResellerDetails";
+import { deleteReseller, fetchReseller } from "../../features/apiCalls";
 
 export default function Reseller() {
   const dispatch = useDispatch();
@@ -33,12 +34,12 @@ export default function Reseller() {
   const [singleUser, setSingleUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
-  const reseller = useSelector(getReseller);
+  const reseller = useSelector(state=>state.reseller.reseller);
   let serial = 0;
 
   useEffect(() => {
     if (auth.ispOwner) {
-      dispatch(fetchReseller(auth.ispOwner.id));
+      fetchReseller(dispatch,auth.ispOwner.id)
     }
   }, [dispatch, auth.ispOwner]);
 
@@ -56,11 +57,10 @@ export default function Reseller() {
   const deleteSingleReseller = async (ispId, resellerId) => {
     setIsLoading(true);
     const IDs = { ispId: ispId, resellerId: resellerId };
-    const res = await dispatch(deleteReseller(IDs));
-    if (res) {
-      dispatch(fetchReseller(ispId));
-      setIsLoading(false);
-    }
+      deleteReseller(dispatch,IDs); 
+    setIsLoading(false);
+
+    
   };
 
   return (

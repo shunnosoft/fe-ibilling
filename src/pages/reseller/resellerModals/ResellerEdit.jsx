@@ -9,7 +9,8 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
-import { editReseller, fetchReseller } from "../../../features/resellerSlice";
+import { editReseller } from "../../../features/apiCalls";
+// import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerEdit({ reseller }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -58,11 +59,9 @@ export default function ResellerEdit({ reseller }) {
         ispId: reseller.ispOwner,
         resellerId: reseller.id,
       };
-      const res = await dispatch(editReseller(sendingData));
-      if (res) {
-        dispatch(fetchReseller(reseller.ispOwner));
-        setIsLoading(false);
-      }
+         editReseller(dispatch,sendingData)
+          setIsLoading(false);
+       
     }
   };
 

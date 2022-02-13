@@ -18,29 +18,27 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import CollectorPost from "./collectorCRUD/CollectorPost";
 import Loader from "../../components/common/Loader";
-import {
-  fetchCollector,
-  getCollector,
-  deleteCollector,
-} from "../../features/collectorSlice";
+ 
 import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
+import { deleteCollector, getCollector } from "../../features/apiCalls";
 
 export default function Collector() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth.currentUser);
   const [isDeleting, setIsDeleting] = useState(false);
   const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector(getCollector);
-  const [singleCollector, setSingleCollector] = useState("");
+  const collector = useSelector(state=>state.collector.collector);
+  console.log(collector)
   let serial = 0;
-
+  
   useEffect(() => {
     const { ispOwner } = auth;
-    dispatch(fetchCollector(ispOwner.id));
+    getCollector(dispatch,ispOwner.id)
   }, [auth, dispatch]);
-
+  
+  const [singleCollector, setSingleCollector] = useState("");
   const getSpecificCollector = (id) => {
     if (collector.length !== undefined) {
       const temp = collector.find((val) => {
@@ -54,11 +52,8 @@ export default function Collector() {
   const deleteCollectorHandler = async (ispId, ID) => {
     setIsDeleting(true);
     const IDs = { ispOwnerId: ispId, collectorId: ID };
-    const res = await dispatch(deleteCollector(IDs));
-    if (res) {
-      setIsDeleting(false);
-      dispatch(fetchCollector(ispId));
-    }
+   deleteCollector(dispatch,IDs);
+    
   };
 
   return (

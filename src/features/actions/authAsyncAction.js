@@ -1,4 +1,4 @@
-import apiLink from "../../api/apiLink";
+import apiLink, { publicRequest } from "../../api/apiLink";
 import { toast } from "react-toastify";
 import {
   loginFailure,
@@ -6,6 +6,11 @@ import {
   logInSuccess,
   logOut,
 } from "../../features/authSlice";
+import { clearCustomer } from "../customerSlice";
+import { clearArea } from "../areaSlice";
+import { clearManager } from "../managerSlice";
+import { clearCollector } from "../collectorSlice";
+import { clearMikrotik } from "../mikrotikSlice";
 // registration handle
 export const asyncRegister = async (userData) => {
   await apiLink({
@@ -34,7 +39,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 
   // apiCall
   dispatch(logInStart());
-  await apiLink({
+  await publicRequest({
     url: "/v1/auth/login",
     method: "POST",
     headers: {
@@ -69,18 +74,30 @@ export const asyncLogin = async (dispatch, loginData) => {
 };
 
 // LOGOUT
-export const userLogout = async (dispatch) => {
-  await apiLink({
-    url: "/v1/auth/logout",
-    method: "POST",
-  })
-    .then(() => {
-      dispatch(logOut());
-      window.location.href = "/";
-    })
-    .catch((error) => {
-      dispatch(logOut());
-      window.location.href = "/";
-      console.log(error);
-    });
-};
+// export const userLogout = async (dispatch) => {
+//   await apiLink({
+//     url: "/v1/auth/logout",
+//     method: "POST",
+//   })
+//     .then(() => {
+//       localStorage.removeItem("persist:root");
+//       dispatch(logOut());
+//       window.location.href = "/";
+//     })
+//     .catch((error) => {
+//       localStorage.removeItem("persist:root");
+//       dispatch(logOut());
+
+//       window.location.href = "/";
+//      console.log(error)
+//     });
+// };
+
+export const userLogout=async(dispatch)=>{
+  dispatch(clearCustomer())
+  dispatch(clearArea())
+  dispatch(clearManager())
+  dispatch(clearCollector())
+  dispatch(clearMikrotik())
+  dispatch(logOut())
+}

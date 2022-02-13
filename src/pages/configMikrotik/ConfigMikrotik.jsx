@@ -16,7 +16,7 @@ import { useParams, useNavigate } from "react-router";
 // import { Link } from "react-router-dom";
 
 // internal imports
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -25,21 +25,30 @@ import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
 import TdLoader from "../../components/common/TdLoader";
 import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal";
 
+// import {
+//   fetchMikrotik,
+//   fetchSingleMikrotik,
+//   getSingleMikrotik,
+//   deleteSingleMikrotik,
+//   fetchpppoeUser,
+//   mikrotikTesting,
+//   getPPPoEuser,
+//   fetchActivepppoeUser,
+//   getActiveUser,
+//   fetchpppoePackage,
+//   getPPPoEpackage,
+//   deletePPPoEpackage,
+// } from "../../features/mikrotikSlice";
+import Loader from "../../components/common/Loader";
 import {
-  fetchMikrotik,
-  fetchSingleMikrotik,
-  getSingleMikrotik,
+  deletePPPoEpackage,
   deleteSingleMikrotik,
+  fetchActivepppoeUser,
+  fetchpppoePackage,
   fetchpppoeUser,
   mikrotikTesting,
-  getPPPoEuser,
-  fetchActivepppoeUser,
-  getActiveUser,
-  fetchpppoePackage,
-  getPPPoEpackage,
-  deletePPPoEpackage,
-} from "../../features/mikrotikSlice";
-import Loader from "../../components/common/Loader";
+} from "../../features/apiCalls";
+import apiLink from "../../api/apiLink";
 // import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
@@ -48,15 +57,18 @@ export default function ConfigMikrotik() {
   let serial = 0;
   let serial2 = 0;
   let serial3 = 0;
-
   const { ispOwner, mikrotikId } = useParams();
-  const singleMik = useSelector(getSingleMikrotik);
+  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
+  const singleMik = mikrotik.find((item) => item.id === mikrotikId)
+    ? mikrotik.find((item) => item.id === mikrotikId)
+    : {};
+
   const [search, setSearch] = useState("");
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
-  const pppoeUser = useSelector(getPPPoEuser);
-  const activeUser = useSelector(getActiveUser);
-  const pppoePackage = useSelector(getPPPoEpackage);
+  const pppoeUser = useSelector((state) => state.mikrotik.pppoeUser);
+  const activeUser = useSelector((state) => state.mikrotik.pppoeActiveUser);
+  const pppoePackage = useSelector((state) => state.mikrotik.pppoePackage);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
@@ -66,32 +78,27 @@ export default function ConfigMikrotik() {
   const dispatch = useDispatch();
 
   // fetch single mikrotik
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwner,
-      id: mikrotikId,
-    };
-    dispatch(fetchSingleMikrotik(IDs));
-  }, [ispOwner, mikrotikId, dispatch]);
 
   // fetch pppoe user
 
   useEffect(() => {
     const IDs = {
       ispOwner: ispOwner,
-      id: mikrotikId,
-    };
-    dispatch(fetchpppoeUser(IDs));
-  }, [ispOwner, mikrotikId, dispatch, refresh]);
-
-  // fetch pppoe package
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwner,
       mikrotikId: mikrotikId,
     };
-    dispatch(fetchpppoePackage(IDs));
+    fetchpppoeUser(dispatch, IDs);
+    fetchpppoePackage(dispatch, IDs);
+
+    fetchActivepppoeUser(dispatch, IDs);
   }, [ispOwner, mikrotikId, dispatch, refresh]);
+
+  // useEffect(() => {
+  //   const IDs = {
+  //     ispOwner: ispOwner,
+  //     id: mikrotikId,
+  //   };
+  //   dispatch(fetchActivepppoeUser(IDs));
+  // }, [ispOwner, mikrotikId, dispatch, refresh2]);
 
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
@@ -110,26 +117,11 @@ export default function ConfigMikrotik() {
       mikrotikId: mikrotikID,
       pppPackageId: Id,
     };
-    const ID = {
-      ispOwner: ispOwner,
-      mikrotikId: mikrotikId,
-    };
-    const res = await dispatch(deletePPPoEpackage(IDs));
-    if (res) {
-      setIsDeleting(false);
-      dispatch(fetchpppoePackage(ID));
-    }
+
+    deletePPPoEpackage(dispatch, IDs);
   };
 
   // fetch Active user
-  
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwner,
-      id: mikrotikId,
-    };
-    dispatch(fetchActivepppoeUser(IDs));
-  }, [ispOwner, mikrotikId, dispatch, refresh2]);
 
   const gotoAllMiktorik = () => {
     navigate("/mikrotik");
@@ -142,25 +134,33 @@ export default function ConfigMikrotik() {
         ispOwner: ispOwner,
         id: mikrotikId,
       };
-      const res = await dispatch(deleteSingleMikrotik(IDs));
-      if (res) {
-        setIsloading(false);
-        dispatch(fetchMikrotik(ispOwner));
-        navigate("/mikrotik");
-      }
+      deleteSingleMikrotik(dispatch, IDs);
+      setIsloading(false);
     }
   };
 
+  // const MikrotikConnectionTest = async () => {
+  //   setIsChecking(true);
+  //   const IDs = {
+  //     ispOwner: ispOwner,
+  //     id: mikrotikId,
+  //   };
+  //   const response = await mikrotikTesting(IDs);
+  //   if (response) {
+  //     setIsChecking(false);
+  //   }
+  // };
   const MikrotikConnectionTest = async () => {
-    setIsChecking(true);
-    const IDs = {
-      ispOwner: ispOwner,
-      id: mikrotikId,
-    };
-    const response = await dispatch(mikrotikTesting(IDs));
-    if (response) {
-      setIsChecking(false);
-    }
+    await apiLink({
+      method: "GET",
+      url: `/v1/mikrotik/testConnection/${ispOwner}/${mikrotikId}`,
+    })
+      .then(() => {
+        toast("মাইক্রোটিক কানেকশন ঠিক আছে");
+      })
+      .catch(() => {
+        toast("Error - মাইক্রোটিক কানেকশন !");
+      });
   };
   return (
     <>

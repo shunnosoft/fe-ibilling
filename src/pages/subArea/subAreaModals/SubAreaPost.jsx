@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,18 +7,20 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { fetchArea } from "../../../features/areaSlice";
-import { postSubarea } from "../../../features/subAreaSlice";
+ 
+import { addSubArea } from "../../../features/apiCalls";
 
 export default function SubAreaPost({ name, id }) {
   const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
 
   //validator
   const linemanValidator = Yup.object({
     name: Yup.string().required("নাম দিন"),
   });
+
+  const dispatch = useDispatch();
+   
 
   const subAreaHandler = async (data) => {
     setIsLoading(true);
@@ -29,11 +31,8 @@ export default function SubAreaPost({ name, id }) {
         area: id,
         ispOwner: auth.ispOwner.id,
       };
-      const response = await dispatch(postSubarea(sendingData));
-      if (response) {
-        dispatch(fetchArea(auth.ispOwner.id));
-        setIsLoading(false);
-      }
+      addSubArea(dispatch, sendingData);
+      setIsLoading(false);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {   useState } from "react";
 
 // external imports
 import { ThemeProvider } from "styled-components";
@@ -23,8 +23,7 @@ import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 import SubArea from "./pages/subArea/SubArea";
-import { getManger } from "./features/apiCalls";
-import { useDispatch } from "react-redux";
+ 
 
 function App() {
   const [theme, setTheme] = useState("light");

@@ -7,10 +7,11 @@ import { useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import {
-  editPPPoEpackageRate,
-  fetchpppoePackage,
-} from "../../../features/mikrotikSlice";
+import { editPPPoEpackageRate } from "../../../features/apiCalls";
+// import {
+//   editPPPoEpackageRate,
+//   fetchpppoePackage,
+// } from "../../../features/mikrotikSlice";
 
 export default function PPPoEpackageEditModal({ singlePackage }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,11 +34,9 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
         mikrotikId: singlePackage.mikrotik,
         pppPackageId: singlePackage.id,
       };
-      const response = await dispatch(editPPPoEpackageRate(sendingData));
-      if (response) {
-        dispatch(fetchpppoePackage(IDs));
-        setIsLoading(false);
-      }
+       editPPPoEpackageRate(dispatch,sendingData)
+      setIsLoading(false);
+      
     }
   };
 

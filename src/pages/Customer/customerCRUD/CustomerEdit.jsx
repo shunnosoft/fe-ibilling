@@ -7,48 +7,60 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { editCustomer } from "../../../features/customerSlice";
-import { fetchCustomer } from "../../../features/customerSlice";
+// import { editCustomer } from "../../../features/customerSlice";
+// import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
+import { editCustomer } from "../../../features/apiCalls";
 
-export default function CustomerEdit() {
+export default function CustomerEdit({ single }) {
+  const CUSTOMER = single;
   const auth = useSelector((state) => state.auth.currentUser);
-  const CUSTOMER = useSelector((state) => state.customer.singleCustomer);
+  // const CUSTOMER = useSelector((state) => state.customer.singleCustomer);
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   // customer validator
   const customerEditValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string(),
     mobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
-    address: Yup.string().required("নাম দিন"),
-    email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-    nid: Yup.string().required("NID দিন"),
-    status: Yup.string().required("Choose one"),
-    balance: Yup.string().required("Balance দিন"),
-    monthlyFee: Yup.string().required("Montly Fee দিন"),
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে "),
+    address: Yup.string(),
+    email: Yup.string().email("ইমেইল সঠিক নয় "),
+    nid: Yup.string(),
+    status: Yup.string(),
+    balance: Yup.string(),
+    monthlyFee: Yup.string(),
   });
+  // const customerEditValidator = Yup.object({
+  //   name: Yup.string().required("নাম দিন"),
+  //   mobile: Yup.string()
+  //     .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
+  //     .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
+  //     .required("মোবাইল নম্বর দিন "),
+  //   address: Yup.string().required("নাম দিন"),
+  //   email: Yup.string()
+  //     .email("ইমেইল সঠিক নয় ")
+  //     .required("ম্যানেজার এর ইমেইল দিতে হবে"),
+  //   nid: Yup.string().required("NID দিন"),
+  //   status: Yup.string().required("Choose one"),
+  //   balance: Yup.string().required("Balance দিন"),
+  //   monthlyFee: Yup.string().required("Montly Fee দিন"),
+  // });
 
   const customerEditHandler = async (data) => {
+    console.log(data);
     setIsloading(true);
     const { ispOwner } = auth;
     const mainData = {
-      customerId: "randon123",
-      singleCustomerID: CUSTOMER.id,
-      ispID: ispOwner.id,
+      // customerId: "randon123",
+      customerId: single.customerId,
+      singleCustomerID: single.id,
+      // ispID: ispOwner.id,
       ispOwner: ispOwner.id,
       ...data,
     };
-    const respnse = await dispatch(editCustomer(mainData));
-    if (respnse) {
-      setIsloading(false);
-      dispatch(fetchCustomer(ispOwner.id));
-      document.querySelector("#customerEditModal").click();
-    }
+    editCustomer(dispatch, mainData);
+    setIsloading(false);
   };
 
   return (

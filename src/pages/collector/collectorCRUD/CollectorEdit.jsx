@@ -7,15 +7,16 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
-import { getArea } from "../../../features/areaSlice";
-import {
-  editCollector,
-  fetchCollector,
-} from "../../../features/collectorSlice";
+import { editCollector } from "../../../features/apiCalls";
+// import { getArea } from "../../../features/areaSlice";
+// import {
+//   editCollector,
+//   fetchCollector,
+// } from "../../../features/collectorSlice";
 
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
-  const area = useSelector(getArea);
+  const area = useSelector(state=>state.area.area);
   const [subArea, setSubArea] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,11 +64,8 @@ export default function CollectorEdit({ single }) {
         ispOwnerId: single.ispOwner,
         collectorId: single.id,
       };
-      const res = await dispatch(editCollector(sendingData));
-      if (res) {
-        setIsLoading(false);
-        dispatch(fetchCollector(single.ispOwner));
-      }
+       editCollector(dispatch,sendingData);
+       
     }
   };
 

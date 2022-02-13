@@ -1,10 +1,9 @@
 import React from "react";
 import "../customer.css";
-import { useSelector } from "react-redux";
 
-export default function CustomerDetails() {
-  const single = useSelector((state) => state.customer.singleCustomer);
-
+export default function CustomerDetails({single}) {
+  // const single = useSelector((state) => state.customer.singleCustomer);
+  
   return (
     <div>
       <div
