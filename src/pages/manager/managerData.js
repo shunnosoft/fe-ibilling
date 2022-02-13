@@ -3,19 +3,19 @@ export const managerPermission = [
     id: 1,
     value: "customerAdd",
     label: "গ্রাহক সংযোগ",
-    isChecked: true,
+    isChecked: false,
   },
   {
     id: 2,
     value: "customerEdit",
     label: "গ্রাহক আপডেট",
-    isChecked: true,
+    isChecked: false,
   },
   {
     id: 3,
     value: "customerActivate",
     label: "গ্রাহক এক্টিভেট",
-    isChecked: true,
+    isChecked: false,
   },
   {
     id: 4,
@@ -48,12 +48,6 @@ export const managerPermission = [
     isChecked: false,
   },
   {
-    id: 9,
-    value: "billEdit",
-    label: "বিল আপডেট",
-    isChecked: false,
-  },
-  {
     id: 10,
     value: "billPosting",
     label: "বিল পোস্টিং",
@@ -75,6 +69,6 @@ export const managerPermission = [
     id: 13,
     value: "viewCollectorReport",
     label: "কালেক্টর রিপোর্ট দেখবে",
-    isChecked: true,
+    isChecked: false,
   },
 ];

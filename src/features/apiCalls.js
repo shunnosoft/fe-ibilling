@@ -37,6 +37,7 @@ import {
   deletepppoePackageSuccess,
   editMikrotikSuccess,
   editpppoePackageSuccess,
+  fetchMikrotikSyncUserSuccess,
   getMikrotikSuccess,
   getpppoeActiveUserSuccess,
   getpppoePackageSuccess,
@@ -350,6 +351,24 @@ export const deleteACustomer = async (dispatch, IDs) => {
 };
 
 //Mikrotik
+
+ 
+// get Mikrotik Sync user
+export const fetchMikrotikSyncUser = 
+  async (dispatch,IDs) => {
+     await apiLink({
+      method: "GET",
+      url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+    }).then((res)=>{
+      dispatch(fetchMikrotikSyncUserSuccess(res.data))
+
+
+    }).catch(() => {
+      toast("Sync গ্রাহক পাওয়া যায়নি!");
+    });
+     
+  }
+
 
 // GET mikrotik
 export const fetchMikrotik = async (dispatch, ispOwnerId) => {
