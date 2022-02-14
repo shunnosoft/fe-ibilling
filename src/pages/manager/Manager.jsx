@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 // internal imports
 import "./manager.css";
@@ -19,18 +20,28 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { FtextField } from "../../components/common/FtextField";
-import {
-  addNewManager,
-  deleteManager,
-} from "../../features/actions/managerHandle";
-import { getManager } from "../../features/authSlice";
+ 
+// import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
 import Footer from "../../components/admin/footer/Footer";
 import { managerPermission } from "./managerData";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addManager, deleteManager, getManger } from "../../features/apiCalls";
 
 export default function Manager() {
-  const manager = useSelector(getManager);
+   
+  const manager=useSelector(state=>state.manager.manager)
+  console.log(manager)
+  
+  const ispOwnerId  =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
+  const dispatch =useDispatch()
+   
+  useEffect(()=>{
+    getManger(dispatch,ispOwnerId)
+  },[dispatch,ispOwnerId])
+   
   const [permissions, setPermissions] = useState(managerPermission);
 
   const managerValidate = Yup.object({
@@ -48,13 +59,20 @@ export default function Manager() {
     nid: Yup.string().required("ম্যানেজার এর NID দিন"),
     image: Yup.string(),
   });
-
+ 
   const addManagerHandle = (data) => {
-    addNewManager(data);
+    if (!manager){
+
+      addManager(dispatch,{
+        ...data, ispOwnerId
+      });
+    } else{
+       toast("You can't add more than one manager")
+    }
   };
 
   const deleteManagerHandler = () => {
-    deleteManager();
+    deleteManager(dispatch,ispOwnerId);
   };
 
   const handleChange = (e) => {

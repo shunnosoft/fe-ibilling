@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import {
-  fetchSingleMikrotik,
-  editSingleMikrotik,
-} from "../../../features/mikrotikSlice";
+import { editSingleMikrotik } from "../../../features/apiCalls";
+// import {
+//   fetchSingleMikrotik,
+//   editSingleMikrotik,
+// } from "../../../features/mikrotikSlice";
 
 export default function ConfigMikrotikModal(props) {
-  // const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { mik } = props;
@@ -37,15 +38,10 @@ export default function ConfigMikrotikModal(props) {
         ispId: mik.ispOwner,
       };
 
-      const res = await dispatch(editSingleMikrotik(sendingData));
-      if (res) {
-        setIsLoading(false);
-        const IDs = {
-          ispOwner: mik.ispOwner,
-          id: mik.id,
-        };
-        dispatch(fetchSingleMikrotik(IDs));
-      }
+       editSingleMikrotik(dispatch,sendingData)
+    setIsLoading(false);
+
+      
     }
   };
 

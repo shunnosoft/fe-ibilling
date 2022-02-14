@@ -22,15 +22,15 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import SubAreaPost from "./subAreaModals/SubAreaPost";
-import { fetchArea, getArea } from "../../features/areaSlice";
-import { deleteSubArea, editSubArea } from "../../features/subAreaSlice";
+// import { fetchArea, getArea } from "../../features/areaSlice";
+// import { deleteSubArea, editSubArea } from "../../features/subAreaSlice";
 import { FtextField } from "../../components/common/FtextField";
+import { deleteSubArea, getArea,editSubArea } from "../../features/apiCalls";
 
 export default function SubArea() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { areaId } = useParams();
-  const area = useSelector(getArea);
+  const area = useSelector((state) => state.area.area);
   const [search, setSearch] = useState("");
   const [subAreas, setSubAreas] = useState("");
   const [subAreaName, setSubAreaName] = useState("");
@@ -44,6 +44,13 @@ export default function SubArea() {
   const linemanValidator = Yup.object({
     name: Yup.string().required("নাম দিন"),
   });
+
+   const dispatch =useDispatch()
+
+const user = useSelector((state) => state.auth.currentUser);
+ useEffect(() => {
+   getArea(dispatch, user.ispOwner.id);
+ }, [dispatch, user.ispOwner]);
 
   // go back to area
   const gotoAllArea = () => {
@@ -59,13 +66,9 @@ export default function SubArea() {
       id: subAreaID,
       name: data.name,
     };
-    const reponse = await dispatch(editSubArea(IDs));
-    if (reponse) {
-      setIsLoading(false);
-      if (ispId) {
-        dispatch(fetchArea(ispId));
-      }
-    }
+    editSubArea(dispatch,IDs)
+    setIsLoading(false);
+    
   };
 
   useEffect(() => {
@@ -83,24 +86,25 @@ export default function SubArea() {
     }
   }, [area, areaId, navigate]);
 
-  const dispatchArea = (ispOwner) => {
-    if (ispOwner) {
-      dispatch(fetchArea(ispOwner));
-    }
-  };
+  // const dispatchArea = (ispOwner) => {
+  //   if (ispOwner) {
+  //     dispatch(FetchAreaSuccess(ispOwner));
+  //   }
+  // };
 
   // delete sub area
-  const deleteSingleSubAarea = async (id, ispOwner) => {
+  const deleteSingleSubAarea =(id, ispOwner) => {
     setIsLoading(true);
     const IDs = {
-      ispOwner: ispOwner,
-      id: id,
+      ispOwnerId: ispOwner,
+      subAreaId: id,
+      areaId
     };
-    const reaponse = await dispatch(deleteSubArea(IDs));
-    if (reaponse) {
+      deleteSubArea(dispatch,IDs)
       setIsLoading(false);
-      dispatchArea(ispOwner);
-    }
+     
+
+    
   };
 
   return (
@@ -213,7 +217,7 @@ export default function SubArea() {
                       <div className="col-sm-8">
                         <h4 className="allCollector">
                           মোট সাব-এরিয়া:{" "}
-                          <span> {subAreas.length || "NULL"}</span>
+                          <span> {subAreas?.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -252,7 +256,7 @@ export default function SubArea() {
                         </tr>
                       </thead>
                       <tbody>
-                        {subAreas.length === 0 ? (
+                        {subAreas?.length === 0 ? (
                           <tr>
                             <td colSpan="3" className="noAraFound">
                               {name || ""} এর কোনো সাব-এরিয়া পাওয়া যায়নি{"   "}
@@ -260,8 +264,7 @@ export default function SubArea() {
                             </td>
                           </tr>
                         ) : (
-                          subAreas
-                            .filter((val) => {
+                          subAreas?.filter((val) => {
                               return val.name
                                 .toLowerCase()
                                 .includes(search.toLowerCase());

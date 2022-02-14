@@ -1,6 +1,16 @@
-import apiLink from "../../api/apiLink";
+import apiLink, { publicRequest } from "../../api/apiLink";
 import { toast } from "react-toastify";
-
+import {
+  loginFailure,
+  logInStart,
+  logInSuccess,
+  logOut,
+} from "../../features/authSlice";
+import { clearCustomer } from "../customerSlice";
+import { clearArea } from "../areaSlice";
+import { clearManager } from "../managerSlice";
+import { clearCollector } from "../collectorSlice";
+import { clearMikrotik } from "../mikrotikSlice";
 // registration handle
 export const asyncRegister = async (userData) => {
   await apiLink({
@@ -23,13 +33,13 @@ export const asyncRegister = async (userData) => {
     });
 };
 
-// login handle
-export const asyncLogin = async (loginData) => {
+export const asyncLogin = async (dispatch, loginData) => {
   // display loader
   document.querySelector(".Loader").style.display = "block";
 
   // apiCall
-  await apiLink({
+  dispatch(logInStart());
+  await publicRequest({
     url: "/v1/auth/login",
     method: "POST",
     headers: {
@@ -38,27 +48,22 @@ export const asyncLogin = async (loginData) => {
     data: loginData,
   })
     .then((res) => {
-      console.log("Login Response: ", res);
       document.querySelector(".Loader").style.display = "none";
       if (res.status === 200) {
         if (res.data.ispOwner === null) {
           toast("সার্ভার Error!");
         } else {
-          const bayannoAccess = res.data.access;
-          const ispWoner = res.data.ispOwner;
-          localStorage.setItem("token", JSON.stringify(bayannoAccess));
-          localStorage.setItem("ispWoner", JSON.stringify(ispWoner));
+          dispatch(logInSuccess(res.data));
           window.location.href = "/home";
         }
       } else {
-        // show toast
         toast("সার্ভার Error!");
       }
     })
     .catch((err) => {
-      // show toast
       document.querySelector(".Loader").style.display = "none";
       console.log(err.response);
+      dispatch(loginFailure());
       if (err.response) {
         const errorMessage = err.response.data.message;
         toast(errorMessage);
@@ -66,22 +71,33 @@ export const asyncLogin = async (loginData) => {
         toast("Server Error!");
       }
     });
-
-  setTimeout(() => {}, 1000);
 };
 
 // LOGOUT
-export const userLogout = async () => {
-  await apiLink({
-    url: "/v1/auth/logout",
-    method: "POST",
-  })
-    .then(() => {
-      window.localStorage.clear();
-      window.location.href = "/";
-    })
-    .catch(() => {
-      window.localStorage.clear();
-      window.location.href = "/";
-    });
-};
+// export const userLogout = async (dispatch) => {
+//   await apiLink({
+//     url: "/v1/auth/logout",
+//     method: "POST",
+//   })
+//     .then(() => {
+//       localStorage.removeItem("persist:root");
+//       dispatch(logOut());
+//       window.location.href = "/";
+//     })
+//     .catch((error) => {
+//       localStorage.removeItem("persist:root");
+//       dispatch(logOut());
+
+//       window.location.href = "/";
+//      console.log(error)
+//     });
+// };
+
+export const userLogout=async(dispatch)=>{
+  dispatch(clearCustomer())
+  dispatch(clearArea())
+  dispatch(clearManager())
+  dispatch(clearCollector())
+  dispatch(clearMikrotik())
+  dispatch(logOut())
+}

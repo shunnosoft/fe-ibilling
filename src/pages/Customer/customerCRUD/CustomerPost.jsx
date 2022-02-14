@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,21 +7,15 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { postCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
-import { getMikrotik, fetchMikrotik } from "../../../features/mikrotikSlice";
-import { fetchCustomer } from "../../../features/customerSlice";
-import {
-  fetchpppoePackage,
-  getPPPoEpackage,
-} from "../../../features/mikrotikSlice";
-import { getArea, fetchArea } from "../../../features/areaSlice";
+import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
+ 
 
 export default function CustomerModal() {
-  const auth = useSelector((state) => state.auth);
-  const area = useSelector(getArea);
-  const Getmikrotik = useSelector(getMikrotik);
-  const ppPackage = useSelector(getPPPoEpackage);
+  const auth = useSelector((state) => state.auth.currentUser);
+  const area = useSelector(state=>state.area.area);
+  const Getmikrotik = useSelector(state=>state.mikrotik.mikrotik);
+  const ppPackage = useSelector(state=>state.mikrotik.pppoePackage);
   const [isLoading, setIsloading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -48,13 +42,13 @@ export default function CustomerModal() {
     Pcomment: Yup.string().required("Comment"),
   });
 
-  // fetch Area fro select option
-  useEffect(() => {
-    if (auth.ispOwner) {
-      dispatch(fetchArea(auth.ispOwner.id));
-      dispatch(fetchMikrotik(auth.ispOwner.id));
-    }
-  }, [dispatch, auth.ispOwner]);
+  // // fetch Area fro select option
+  // useEffect(() => {
+  //   if (auth.ispOwner) {
+  //     dispatch(fetchArea(auth.ispOwner.id));
+  //     dispatch(fetchMikrotik(auth.ispOwner.id));
+  //   }
+  // }, [dispatch, auth.ispOwner]);
 
   // select subArea
   const selectSubArea = (data) => {
@@ -75,7 +69,7 @@ export default function CustomerModal() {
         ispOwner: auth.ispOwner.id,
         mikrotikId: id,
       };
-      dispatch(fetchpppoePackage(IDs));
+      fetchpppoePackage(dispatch,IDs)
     }
     setSingleMikrotik(id);
   };
@@ -88,6 +82,7 @@ export default function CustomerModal() {
 
   // sendint data to backed
   const customerHandler = async (data) => {
+    console.log("customerHandler")
     setIsloading(true);
     const subArea = document.getElementById("subAreaId").value;
     if (subArea === "") {
@@ -98,10 +93,12 @@ export default function CustomerModal() {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       customerId: "randon123",
+      
       subArea: subArea,
       ispOwner: ispOwner.id,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
+      
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -111,11 +108,10 @@ export default function CustomerModal() {
       ...rest,
     };
     console.log("Main Data: ", mainData);
-    const response = await dispatch(postCustomer(mainData));
-    if (response) {
-      setIsloading(false);
-      dispatch(fetchCustomer(ispOwner.id));
-    }
+    addCustomer(dispatch,mainData)
+    setIsloading(false);
+
+     
   };
 
   return (
@@ -150,7 +146,7 @@ export default function CustomerModal() {
                   address: "",
                   email: "",
                   nid: "",
-                  status: "",
+                 
                   // balance: "",
                   monthlyFee: "",
                   Pname: "",
@@ -177,7 +173,7 @@ export default function CustomerModal() {
                           label="জাতীয় পরিচয়পত্র নং"
                           name="nid"
                         />
-                        <div className="form-check customerFormCheck">
+                        {/* <div className="form-check customerFormCheck">
                           <p>স্টেটাস</p>
                           <div className="form-check form-check-inline">
                             <FtextField
@@ -209,7 +205,7 @@ export default function CustomerModal() {
                               value="overdue"
                             />
                           </div>
-                        </div>
+                        </div> */}
 
                         {/* <div className="form-check customerFormCheck">
                           <p>বিল পরিশোধের ধরণ </p>

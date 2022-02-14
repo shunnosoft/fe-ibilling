@@ -1,20 +1,67 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authSlice from "../features/authSlice";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import authReducer from "../features/authSlice";
 import customerSlice from "../features/customerSlice";
-import linemanSlice from "../features/linemanSlice";
 import areaSlice from "../features/areaSlice";
 import mikrotikSlice from "../features/mikrotikSlice";
 import resellerSlice from "../features/resellerSlice";
 import collectorSlice from "../features/collectorSlice";
+import managerSlice from "../features/managerSlice";
+import {
+  persistStore,
+  persistReducer,
+  
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-export const store = configureStore({
-  reducer: {
-    auth: authSlice,
-    customer: customerSlice,
-    lineman: linemanSlice,
-    area: areaSlice,
-    mikrotik: mikrotikSlice,
-    reseller: resellerSlice,
-    collector: collectorSlice,
-  },
+// import persistCombineReducers from "redux-persist/es/persistCombineReducers";
+
+const persistConfig = {
+  key: "root",
+  version: 1,
+  storage,
+};
+const rootReducer = combineReducers({
+  auth: authReducer,
+  customer: customerSlice,
+
+  area: areaSlice,
+  mikrotik: mikrotikSlice,
+  reseller: resellerSlice,
+  collector: collectorSlice,
+  manager: managerSlice,
 });
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    immutableCheck: false,
+    serializableCheck:  false
+  })
+});
+
+export default store;
+export const persistor = persistStore(store);
+
+// import { configureStore } from "@reduxjs/toolkit";
+
+// import authSlice from "../features/authSlice";
+// import customerSlice from "../features/customerSlice";
+// import linemanSlice from "../features/linemanSlice";
+// import areaSlice from "../features/areaSlice";
+// import mikrotikSlice from "../features/mikrotikSlice";
+// import resellerSlice from "../features/resellerSlice";
+// import collectorSlice from "../features/collectorSlice";
+
+// export const store = configureStore({
+//   reducer: {
+//     auth: authSlice,
+//     customer: customerSlice,
+//     lineman: linemanSlice,
+//     area: areaSlice,
+//     mikrotik: mikrotikSlice,
+//     reseller: resellerSlice,
+//     collector: collectorSlice,
+//   },
+// });

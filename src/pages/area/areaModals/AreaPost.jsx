@@ -6,12 +6,12 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { postArea } from "../../../features/areaSlice";
 import Loader from "../../../components/common/Loader";
-import { fetchArea } from "../../../features/areaSlice";
+ 
+import { addArea } from "../../../features/apiCalls";
 
 export default function AreaPost() {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -28,11 +28,9 @@ export default function AreaPost() {
         name: data.name,
         ispOwner: auth.ispOwner.id,
       };
-      const response = await dispatch(postArea(sendingData));
-      if (response) {
-        dispatch(fetchArea(auth.ispOwner.id));
-        setIsLoading(false);
-      }
+      addArea(dispatch,sendingData)
+      setIsLoading(false);
+       
     }
   };
 

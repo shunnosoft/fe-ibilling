@@ -9,12 +9,13 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
-import { postReseller, fetchReseller } from "../../../features/resellerSlice";
+import { postReseller } from "../../../features/apiCalls";
+// import { postReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerPost() {
   // const [Check, setCheck] = useState(RBD);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
 
   //validator
@@ -56,12 +57,10 @@ export default function ResellerPost() {
         ...data,
         ispOwner: auth.ispOwner.id,
       };
-      const res = await dispatch(postReseller(sendingData));
-      if (res) {
-        // should dispatch later
-        dispatch(fetchReseller(auth.ispOwner.id));
-        setIsLoading(false);
-      }
+      postReseller(dispatch,sendingData)
+      setIsLoading(false);
+
+      
     }
   };
 

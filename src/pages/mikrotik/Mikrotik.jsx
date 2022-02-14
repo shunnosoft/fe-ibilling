@@ -12,21 +12,22 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import MikrotikPost from "./mikrotikModals/MikrotikPost";
-import { fetchMikrotik } from "../../features/mikrotikSlice";
-import { getMikrotik } from "../../features/mikrotikSlice";
+// import { fetchMikrotik } from "../../features/mikrotikSlice";
+// import { getMikrotik } from "../../features/mikrotikSlice";
 import TdLoader from "../../components/common/TdLoader";
+import { fetchMikrotik } from "../../features/apiCalls";
 
 export default function Mikrotik() {
   let serial = 0;
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [msearch, setMsearch] = useState("");
   const dispatch = useDispatch();
   let allmikrotiks = [];
-  allmikrotiks = useSelector(getMikrotik);
+  allmikrotiks = useSelector(state=>state.mikrotik.mikrotik);
 
   useEffect(() => {
     const { ispOwner } = auth;
-    dispatch(fetchMikrotik(ispOwner.id));
+    fetchMikrotik(dispatch,ispOwner.id)
   }, [auth, dispatch]);
 
   return (

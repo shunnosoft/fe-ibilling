@@ -1,13 +1,16 @@
 import { Form, Formik } from "formik";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
+import { editManager } from "../../features/apiCalls";
 
 // internal imports
-import { editManager } from "../../features/actions/managerHandle";
 import { FtextField } from "../common/FtextField";
 
 export default function WriteModals(props) {
   const { manager } = props;
+  const dispatch=useDispatch()
+  const ispOwner =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
 
   // mangager validator
   const managerValidate = Yup.object({
@@ -27,7 +30,7 @@ export default function WriteModals(props) {
   });
 
   const editManagerHandler = (data) => {
-    editManager(data);
+    editManager(dispatch,{...data,ispOwner});
   };
 
   return (

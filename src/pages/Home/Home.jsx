@@ -1,5 +1,5 @@
 // external imports
-import React from "react";
+import React, { useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
@@ -9,8 +9,24 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData } from "./homeData";
 import { chartsData } from "./homeData";
+import { fetchMikrotik, fetchReseller, getArea, getCollector, getCustomer, getManger } from "../../features/apiCalls";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Home() {
+
+  
+  const ispOwnerId  =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
+  const dispatch =useDispatch()
+   
+  useEffect(()=>{
+    getManger(dispatch,ispOwnerId);  
+    getCustomer(dispatch,ispOwnerId)
+    getCollector(dispatch,ispOwnerId)
+    getArea(dispatch,ispOwnerId);
+    fetchMikrotik(dispatch,ispOwnerId)
+    fetchReseller(dispatch,ispOwnerId)
+  },[dispatch,ispOwnerId])
+
   return (
     <div className="container homeWrapper">
       <FontColor>

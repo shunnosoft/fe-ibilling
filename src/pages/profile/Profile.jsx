@@ -11,10 +11,9 @@ import { FtextField } from "../../components/common/FtextField";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
-import { ispOwner } from "../../features/authSlice";
 
 export default function Profile() {
-  const currentUser = useSelector(ispOwner);
+  const currentUser = useSelector(state=>state.auth.currentUser);
 
   const passwordValidator = Yup.object({
     oldPassword: Yup.string().required("Old পাসওয়ার্ড ***"),

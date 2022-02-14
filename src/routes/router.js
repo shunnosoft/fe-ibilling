@@ -35,11 +35,7 @@ export const AllRoutes = [
     icon: <PeopleFill />,
     link: "/customer",
   },
-  {
-    title: "লাইন-ম্যান",
-    icon: <PersonLinesFill />,
-    link: "/lineman",
-  },
+   
 
   {
     title: "কালেক্টর",

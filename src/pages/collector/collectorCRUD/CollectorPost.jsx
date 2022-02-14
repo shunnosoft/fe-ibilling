@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../components/common/Loader";
@@ -7,18 +7,19 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
-import { getArea, fetchArea } from "../../../features/areaSlice";
-import {
-  postCollector,
-  fetchCollector,
-} from "../../../features/collectorSlice";
+import { addCollector } from "../../../features/apiCalls";
+// import { getArea, fetchArea } from "../../../features/areaSlice";
+// import {
+//   postCollector,
+//   fetchCollector,
+// } from "../../../features/collectorSlice";
 
 export default function CollectorPost() {
   const dispatch = useDispatch();
-  const area = useSelector(getArea);
+  const area = useSelector((state) => state.area.area);
   const [subArea, setSubArea] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
 
   //validator
   const collectorValidator = Yup.object({
@@ -39,11 +40,11 @@ export default function CollectorPost() {
   });
 
   // fetch Area fro select option
-  useEffect(() => {
-    if (auth.ispOwner) {
-      dispatch(fetchArea(auth.ispOwner.id));
-    }
-  }, [dispatch, auth.ispOwner]);
+  // useEffect(() => {
+  //   if (auth.ispOwner) {
+  //     dispatch(fetchArea(auth.ispOwner.id));
+  //   }
+  // }, [dispatch, auth.ispOwner]);
 
   // select subArea
   const selectSubArea = (data) => {
@@ -69,11 +70,7 @@ export default function CollectorPost() {
         areas: OneSubArea,
         ispOwner: auth.ispOwner.id,
       };
-      const res = await dispatch(postCollector(sendingData));
-      if (res) {
-        setIsLoading(false);
-        dispatch(fetchCollector(auth.ispOwner.id));
-      }
+      addCollector(dispatch, sendingData);
     }
   };
 

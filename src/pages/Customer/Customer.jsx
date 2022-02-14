@@ -17,35 +17,39 @@ import "react-toastify/dist/ReactToastify.css";
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import {
-  fetchCustomer,
-  getCustomer,
-  setSingleCustomer,
-  deleteSingleCustomer,
-} from "../../features/customerSlice";
+// import {
+//   fetchCustomer,
+//   getCustomer,
+//   setSingleCustomer,
+//   deleteSingleCustomer,
+// } from "../../features/customerSlice";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
+import { deleteACustomer, getCustomer } from "../../features/apiCalls";
 
 export default function Customer() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsloading] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
+  
 
-  let Customers = [];
-  Customers = useSelector(getCustomer);
+ 
+  const Customers = useSelector(state=>state.customer.customer);
+  console.log(Customers)
 
   // get specific customer
-  const getSpecificCustomer = (ID) => {
-    if (Customers !== undefined) {
-      const SingleCustomer = Customers.find((val) => {
-        return val.mobile === ID;
+  const [singleCustomer, setSingleCustomer] = useState("");
+  const getSpecificCustomer = (id) => {
+    if (Customers.length !== undefined) {
+      const temp = Customers.find((val) => {
+        return val.id === id;
       });
-      dispatch(setSingleCustomer(SingleCustomer));
+      setSingleCustomer(temp);
     }
   };
 
@@ -57,17 +61,15 @@ export default function Customer() {
       ispID: ispOwner.id,
       customerID: ID,
     };
-    const response = await dispatch(deleteSingleCustomer(IDs));
-    if (response) {
-      setIsloading(false);
-      dispatch(fetchCustomer(ispOwner.id));
-    }
+      deleteACustomer(dispatch,IDs);
+    setIsloading(false);
+      
+     
   };
-
-  useEffect(() => {
-    const { ispOwner } = auth;
-    dispatch(fetchCustomer(ispOwner.id));
-  }, [auth, dispatch]);
+useEffect(()=>{
+  getCustomer(dispatch,auth.ispOwner.id)
+},[dispatch,auth])
+  
 
   return (
     <>
@@ -92,8 +94,8 @@ export default function Customer() {
 
               {/* Model start */}
               <CustomerPost />
-              <CustomerEdit />
-              <CustomerDetails />
+              <CustomerEdit single={singleCustomer}  />
+              <CustomerDetails single={singleCustomer}  />
               {/* Model finish */}
 
               <FourGround>
@@ -191,7 +193,7 @@ export default function Customer() {
                                     data-bs-toggle="modal"
                                     data-bs-target="#showCustomerDetails"
                                     onClick={() => {
-                                      getSpecificCustomer(val.mobile);
+                                      getSpecificCustomer(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item">
@@ -205,7 +207,7 @@ export default function Customer() {
                                     data-bs-toggle="modal"
                                     data-bs-target="#customerEditModal"
                                     onClick={() => {
-                                      getSpecificCustomer(val.mobile);
+                                      getSpecificCustomer(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item">

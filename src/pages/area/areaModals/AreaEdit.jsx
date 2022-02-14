@@ -6,12 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { editArea } from "../../../features/areaSlice";
 import Loader from "../../../components/common/Loader";
-import { fetchArea } from "../../../features/areaSlice";
+import { editArea } from "../../../features/apiCalls";
 
 export default function AreaEdit({ oneArea }) {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.currentUser);
   // const area = useSelector((state) => state.area.area);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -29,11 +28,9 @@ export default function AreaEdit({ oneArea }) {
         ispOwner: auth.ispOwner.id,
         id: oneArea ? oneArea.id : "",
       };
-      const response = await dispatch(editArea(sendingData));
-      if (response) {
-        dispatch(fetchArea(auth.ispOwner.id));
-        setIsLoading(false);
-      }
+      editArea(dispatch,sendingData)
+      setIsLoading(false);
+      
     }
   };
 
