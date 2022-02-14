@@ -13,8 +13,11 @@ import { NavLink } from "react-router-dom";
 import { AllRoutes } from "../../../routes/router";
 import activeClass from "../../../assets/css/active.module.css";
 import { billData } from "./billData";
+import { useSelector } from "react-redux";
 
 export default function Sidebar() {
+  const userRole=useSelector(state=>state.auth.currentUser?.user.role)
+   
   const [isDown, setIsDown] = useState(false);
 
   // addSidebar
@@ -77,6 +80,8 @@ export default function Sidebar() {
               })}
 
               {/* bill */}
+              {
+                userRole==="manager" || "collector" &
               <div onClick={toggleSubBillingHandle}>
                 <FontColor>
                   <li className="sidebarItems">
@@ -90,6 +95,7 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </div>
+              }
               {/* bill sub links */}
               <div id="toggleSubBilling">
                 {billData.map((val, key) => (

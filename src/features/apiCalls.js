@@ -107,6 +107,8 @@ export const editManager = async (dispatch, managerData) => {
   const button = document.querySelector(".marginLeft");
   button.style.display = "none";
   try {
+    console.log(managerData.ispOwner)
+    console.log(managerData)
     const res = await apiLink.patch(
       `/v1/ispOwner/manager/${managerData.ispOwner}`,
       managerData
@@ -121,6 +123,7 @@ export const editManager = async (dispatch, managerData) => {
     toast("Manager edit Failed");
   }
 };
+ 
 
 //Areas
 
@@ -296,12 +299,14 @@ export const getCustomer = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwnerId}`);
     dispatch(getCustomerSuccess(res.data));
+
   } catch (error) {
     console.log(error.message);
   }
 };
 
 export const addCustomer = async (dispatch, data) => {
+  console.log(data)
   try {
     const res = await apiLink.post("/v1/ispOwner/customer", data);
     dispatch(addCustomerSuccess(res.data));
