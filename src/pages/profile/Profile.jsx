@@ -100,7 +100,9 @@ export default function Profile() {
                       </Formik>
                     </div>
                     <div className="passwordUpdate">
-                      <h5 className="mb-4">পাসওয়ার্ড পরিবর্তন করুন</h5>
+                      <h5 className="mb-4 marginTop20">
+                        পাসওয়ার্ড পরিবর্তন করুন
+                      </h5>
                       <Formik
                         initialValues={{
                           oldPassword: "",

@@ -118,6 +118,7 @@ export default function Account() {
 
                       <textarea
                         id="messageTextArea"
+                        rows="6"
                         className="form-control mt-4"
                         placeholder="মেসেজ লিখুন..."
                       ></textarea>
