@@ -33,7 +33,6 @@ import { addManager, deleteManager, getManger } from "../../features/apiCalls";
 export default function Manager() {
    
   const manager=useSelector(state=>state.manager.manager)
-  console.log(manager)
   
   const ispOwnerId  =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
   const dispatch =useDispatch()

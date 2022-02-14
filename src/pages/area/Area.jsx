@@ -30,14 +30,12 @@ export default function Area() {
   const [isLoading, setIsLoading] = useState(false);
   const [EditAarea, setEditAarea] = useState("");
   let serial = 0;
-console.log(area)
   // const dispatchArea = () => {
   //   if (user.ispOwner) {
     //     dispatch(FetchAreaSuccess(user.ispOwner.id));
     //   }
     // };
-    
-    console.log(area.find(item=>item.id==="6203105324639e01df623434"))
+      
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.currentUser);
   useEffect(() => {

@@ -179,7 +179,6 @@ export const addSubArea = async (dispatch, data) => {
   try {
     const res = await apiLink.post("/v1/ispOwner/subArea", data);
 
-    console.log(res.data);
     dispatch(AddSubAreaSuccess(res.data));
     document.querySelector("#subAreaModal").click();
     toast("Sub এরিয়া অ্যাড সফল হয়েছে ");
@@ -241,7 +240,6 @@ export const deleteSubArea = async (dispatch, data) => {
 export const getCollector = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/v1/ispOwner/collector/${ispOwnerId}`);
-    console.log(res.data);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -297,7 +295,6 @@ export const deleteCollector = async (dispatch, ids) => {
 export const getCustomer = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwnerId}`);
-    console.log(res.data);
     dispatch(getCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -325,7 +322,6 @@ export const editCustomer = async (dispatch, data) => {
       `/v1/ispOwner/customer/${ispOwner}/${singleCustomerID}`,
       sendingData
     );
-    console.log(res.data);
     dispatch(editCustomerSuccess(res.data));
     toast("কাস্টমার এডিট সফল হয়েছে! ");
     document.querySelector("#customerEditModal").click();
@@ -394,7 +390,6 @@ export const postMikrotik = async (dispatch, data) => {
     data: data,
   })
     .then((res) => {
-      console.log("Mikrotik res: ", res);
       dispatch(addMikrotikSuccess(res.data));
       document.querySelector("#MikrotikModal").click();
       toast("মাইক্রোটিক অ্যাড সফল হয়েছে ");
@@ -533,7 +528,6 @@ export const editPPPoEpackageRate = async (dispatch, data) => {
 
 // DELETE pppoe Package
 export const deletePPPoEpackage = async (dispatch, IDs) => {
-  console.log("Ids: ", IDs);
   const { mikrotikId, pppPackageId } = IDs;
   await apiLink({
     method: "DELETE",
