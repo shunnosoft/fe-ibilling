@@ -81,8 +81,9 @@ export default function Sidebar() {
 
               {/* bill */}
               {
-                userRole==="manager" || "collector" &
-              <div onClick={toggleSubBillingHandle}>
+                (userRole==="manager") || (userRole==="collector") ?(
+
+                  <div onClick={toggleSubBillingHandle}>
                 <FontColor>
                   <li className="sidebarItems">
                     <div className="sidebarIcon">
@@ -95,6 +96,7 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </div>
+                ):<></>
               }
               {/* bill sub links */}
               <div id="toggleSubBilling">

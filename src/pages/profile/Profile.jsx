@@ -11,22 +11,28 @@ import { FtextField } from "../../components/common/FtextField";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
+import { passwordUpdate , profileUpdate} from "../../features/apiCalls";
+import { useDispatch } from "react-redux";
 
 export default function Profile() {
-  const currentUser = useSelector(state=>state.auth.currentUser);
-
+  // const role = useSelector(state=>state.auth.currentUser?.user.role);
+  const currentUser = useSelector((state) => state.auth.currentUser?.ispOwner);
+   
+  
   const passwordValidator = Yup.object({
     oldPassword: Yup.string().required("Old পাসওয়ার্ড ***"),
-    newPassword: Yup.string().required("New পাসওয়ার্ড ***").min(3),
+    newPassword: Yup.string().required("New পাসওয়ার্ড ***").matches(/^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
+    "Must Contain 8 Characters,   One Alphabat, One Number"),
   });
-
+const dispatch =useDispatch()
   const progileEditHandler = (data) => {
-    console.log("Updated Data: ", data);
+    profileUpdate(dispatch,data, currentUser.id)
   };
 
   //   change password handler
   const changePasswordHandler = (data) => {
-    console.log("Password Data: ", data);
+    console.log(data)
+    passwordUpdate(data);
   };
   return (
     <>
@@ -108,6 +114,7 @@ export default function Profile() {
                         validationSchema={passwordValidator}
                         onSubmit={(values) => {
                           changePasswordHandler(values);
+                           
                         }}
                       >
                         {() => (

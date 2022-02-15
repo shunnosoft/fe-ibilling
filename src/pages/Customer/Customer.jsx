@@ -40,7 +40,7 @@ export default function Customer() {
 
  
   const Customers = useSelector(state=>state.customer.customer);
-  console.log(Customers)
+   console.log(Customers)
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -66,9 +66,9 @@ export default function Customer() {
       
      
   };
-useEffect(()=>{
-  getCustomer(dispatch,auth.ispOwner.id)
-},[dispatch,auth])
+// useEffect(()=>{
+//   getCustomer(dispatch,auth.ispOwner.id)
+// },[dispatch,auth])
   
 
   return (

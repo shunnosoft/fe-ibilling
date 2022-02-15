@@ -31,7 +31,7 @@ import Message from "./pages/message/Message";
 function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
-  const userRole = useSelector((state) => state.auth.currentUser?.user.role);
+  const userRole = useSelector((state) => state.auth.role);
   console.log(userRole);
 
   return (

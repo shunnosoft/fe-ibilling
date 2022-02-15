@@ -49,6 +49,7 @@ import {
   editResellerSuccess,
   getResellerrSuccess,
 } from "./resellerSlice";
+import { updateProfile } from "./authSlice";
 
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
@@ -107,8 +108,8 @@ export const editManager = async (dispatch, managerData) => {
   const button = document.querySelector(".marginLeft");
   button.style.display = "none";
   try {
-    console.log(managerData.ispOwner)
-    console.log(managerData)
+    console.log(managerData.ispOwner);
+    console.log(managerData);
     const res = await apiLink.patch(
       `/v1/ispOwner/manager/${managerData.ispOwner}`,
       managerData
@@ -123,7 +124,6 @@ export const editManager = async (dispatch, managerData) => {
     toast("Manager edit Failed");
   }
 };
- 
 
 //Areas
 
@@ -140,9 +140,8 @@ export const addArea = async (dispatch, data) => {
   try {
     const res = await apiLink.post("/v1/ispOwner/area", data);
     dispatch(AddAreaSuccess(res.data));
-    document.querySelector("#areaModal").click()
+    document.querySelector("#areaModal").click();
     toast("এরিয়া অ্যাড সফল হয়েছে ");
-
   } catch (error) {
     toast("Add area filed");
   }
@@ -154,11 +153,8 @@ export const editArea = async (dispatch, data) => {
       data
     );
     dispatch(EditAreaSuccess(res.data));
-    document.querySelector("#areaEditModal").click()
+    document.querySelector("#areaEditModal").click();
     toast("এরিয়া এডিট সফল হয়েছে ");
-
-
-   
   } catch (error) {
     toast("edit area filed");
   }
@@ -166,9 +162,7 @@ export const editArea = async (dispatch, data) => {
 
 export const deleteArea = async (dispatch, data) => {
   try {
-      await apiLink.delete(
-      `/v1/ispOwner/area/${data.ispOwner}/${data.id}`
-    );
+    await apiLink.delete(`/v1/ispOwner/area/${data.ispOwner}/${data.id}`);
     dispatch(DeleteAreaSuccess(data.id));
     toast("এরিয়া ডিলিট হয়েছে");
   } catch (error) {
@@ -281,10 +275,10 @@ export const editCollector = async (dispatch, data) => {
 
 export const deleteCollector = async (dispatch, ids) => {
   try {
-     await apiLink.delete(
+    await apiLink.delete(
       `v1/ispOwner/collector/${ids.ispOwnerId}/${ids.collectorId}`
     );
-     dispatch(deleteCollectorSuccess(ids.collectorId))
+    dispatch(deleteCollectorSuccess(ids.collectorId));
     toast("কালেক্টর ডিলিট সফল হয়েছে! ");
   } catch (err) {
     if (err.response) {
@@ -299,14 +293,13 @@ export const getCustomer = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwnerId}`);
     dispatch(getCustomerSuccess(res.data));
-
   } catch (error) {
     console.log(error.message);
   }
 };
 
 export const addCustomer = async (dispatch, data) => {
-  console.log(data)
+  console.log(data);
   try {
     const res = await apiLink.post("/v1/ispOwner/customer", data);
     dispatch(addCustomerSuccess(res.data));
@@ -353,23 +346,19 @@ export const deleteACustomer = async (dispatch, IDs) => {
 
 //Mikrotik
 
- 
 // get Mikrotik Sync user
-export const fetchMikrotikSyncUser = 
-  async (dispatch,IDs) => {
-     await apiLink({
-      method: "GET",
-      url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
-    }).then((res)=>{
-      dispatch(fetchMikrotikSyncUserSuccess(res.data))
-
-
-    }).catch(() => {
+export const fetchMikrotikSyncUser = async (dispatch, IDs) => {
+  await apiLink({
+    method: "GET",
+    url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+  })
+    .then((res) => {
+      dispatch(fetchMikrotikSyncUserSuccess(res.data));
+    })
+    .catch(() => {
       toast("Sync গ্রাহক পাওয়া যায়নি!");
     });
-     
-  }
-
+};
 
 // GET mikrotik
 export const fetchMikrotik = async (dispatch, ispOwnerId) => {
@@ -625,3 +614,43 @@ export const deleteReseller = async (dispatch, IDs) => {
       }
     });
 };
+
+//profile Update
+
+// const profileUpdate =async(dispatch,data)=>{
+//   try {
+//     const res = await apiLink.post()
+
+//   } catch (error) {
+//     toast("Profile Update failed")
+
+//   }
+
+// }
+
+//password update
+export const passwordUpdate = async (data) => {
+
+   
+  try {
+    await apiLink.post(`/v1/auth/update-password`, data);
+
+    toast("password update successfull");
+  } catch (error) {
+    console.log(error.message)
+    toast(error.message);
+  }
+};
+
+export const profileUpdate=async (dispatch,data, id) =>{
+
+  try {
+   const res =  await apiLink.patch(`/v1/ispOwner/${id}`,data); 
+    dispatch(updateProfile(res.data))
+    toast("Profile Update successfull")
+  } catch (error) {
+    toast(error.message)
+    
+  }
+
+}
