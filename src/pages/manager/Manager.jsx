@@ -34,11 +34,12 @@ import {
   editManager,
   getManger,
 } from "../../features/apiCalls";
+import Loader from "../../components/common/Loader";
 
 export default function Manager() {
 
   
-
+const[isLoading,setIsLoading]=useState(false)
   const manager = useSelector((state) => state.manager.manager);
 
   const ispOwnerId = useSelector(
@@ -93,6 +94,7 @@ export default function Manager() {
   };
 
   const updatePermissionsHandler = () => {
+    setIsLoading(true)
     let temp = {};
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;
@@ -112,7 +114,7 @@ export default function Manager() {
     name: manager.name, // reqired
     permissions:newP, // can't changed api problem 
      
-  });
+  },setIsLoading);
     
   };
 
@@ -326,8 +328,9 @@ export default function Manager() {
                           <button
                             className="managerUpdateBtn"
                             onClick={updatePermissionsHandler}
+                            disabled={isLoading}
                           >
-                            আপডেট
+                             {isLoading ? <Loader /> : " আপডেট"}
                           </button>
                         </div>
                       </div>

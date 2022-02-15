@@ -49,8 +49,8 @@ export default function Area() {
       ispOwner: ispOwner,
       id: id,
     };
-    deleteArea(dispatch,IDs)
-    setIsLoading(false);
+    deleteArea(dispatch,IDs,setIsLoading)
+    
     
   };
 

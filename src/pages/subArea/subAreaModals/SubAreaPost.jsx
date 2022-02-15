@@ -31,8 +31,8 @@ export default function SubAreaPost({ name, id }) {
         area: id,
         ispOwner: auth.ispOwner.id,
       };
-      addSubArea(dispatch, sendingData);
-      setIsLoading(false);
+      addSubArea(dispatch, sendingData, setIsLoading);
+     
     }
   };
 

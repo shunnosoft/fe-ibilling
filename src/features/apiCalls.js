@@ -104,22 +104,24 @@ export const deleteManager = async (dispatch, ispOwnerId) => {
     });
 };
 
-export const editManager = async (dispatch, managerData) => {
+export const editManager = async (dispatch, managerData,setIsLoading) => {
   const button = document.querySelector(".marginLeft");
   button.style.display = "none";
   try {
-    console.log(managerData.ispOwner);
-    console.log(managerData);
+     
     const res = await apiLink.patch(
       `/v1/ispOwner/manager/${managerData.ispOwner}`,
       managerData
     );
-console.log("res from mapiSlice",res.data)
+ 
     dispatch(managerEditSuccess(res.data));
+    setIsLoading(false)
     button.style.display = "initial";
     hideModal();
     toast("Manager edit successfull");
   } catch (error) {
+    setIsLoading(false)
+
     button.style.display = "initial";
     toast("Manager edit Failed");
   }
@@ -136,58 +138,71 @@ export const getArea = async (dispatch, ispOwnerId) => {
   }
 };
 
-export const addArea = async (dispatch, data) => {
+export const addArea = async (dispatch, data, setIsLoading) => {
   try {
     const res = await apiLink.post("/v1/ispOwner/area", data);
     dispatch(AddAreaSuccess(res.data));
+    setIsLoading(false);
     document.querySelector("#areaModal").click();
     toast("এরিয়া অ্যাড সফল হয়েছে ");
   } catch (error) {
+    setIsLoading(false);
+
     toast("Add area filed");
+
   }
 };
-export const editArea = async (dispatch, data) => {
+export const editArea = async (dispatch, data, setIsLoading) => {
   try {
     const res = await apiLink.patch(
       `/v1/ispOwner/area/${data.ispOwner}/${data.id}`,
       data
     );
     dispatch(EditAreaSuccess(res.data));
+    setIsLoading(false);
     document.querySelector("#areaEditModal").click();
     toast("এরিয়া এডিট সফল হয়েছে ");
   } catch (error) {
+    setIsLoading(false);
     toast("edit area filed");
+
   }
 };
 
-export const deleteArea = async (dispatch, data) => {
+export const deleteArea = async (dispatch, data,setIsLoading) => {
   try {
     await apiLink.delete(`/v1/ispOwner/area/${data.ispOwner}/${data.id}`);
     dispatch(DeleteAreaSuccess(data.id));
+    setIsLoading(false);
     toast("এরিয়া ডিলিট হয়েছে");
   } catch (error) {
+    setIsLoading(false);
     toast("এরিয়া ডিলিট failed");
+
   }
 };
 
 //subarea
 
-export const addSubArea = async (dispatch, data) => {
+export const addSubArea = async (dispatch, data, setIsLoading) => {
   try {
     const res = await apiLink.post("/v1/ispOwner/subArea", data);
 
     dispatch(AddSubAreaSuccess(res.data));
+    setIsLoading(false);
     document.querySelector("#subAreaModal").click();
     toast("Sub এরিয়া অ্যাড সফল হয়েছে ");
 
     // hideModal();
   } catch (error) {
+    setIsLoading(false);
+    document.querySelector("#subAreaModal").click();
     toast(error.message);
   }
 };
 
 // PATCH sub area
-export const editSubArea = async (dispatch, data) => {
+export const editSubArea = async (dispatch, data, setIsLoading) => {
   const { ispOwnerID, id, ...rest } = data;
   await apiLink({
     url: `/v1/ispOwner/subArea/${ispOwnerID}/${id}`,
@@ -199,18 +214,20 @@ export const editSubArea = async (dispatch, data) => {
   })
     .then((res) => {
       dispatch(EditSubAreaSuccess(res.data));
+      setIsLoading(false);
       document.querySelector("#subAreaEditModal").click();
       toast("সাব-এরিয়া Edit সফল হয়েছে ");
     })
     .catch((err) => {
       if (err.response) {
+        setIsLoading(false);
         toast(err.response.data.message);
       }
     });
 };
 
 // DELETE sub area
-export const deleteSubArea = async (dispatch, data) => {
+export const deleteSubArea = async (dispatch, data, setIsLoading) => {
   const { ispOwnerId, subAreaId, areaId } = data;
 
   await apiLink({
@@ -220,6 +237,7 @@ export const deleteSubArea = async (dispatch, data) => {
     .then((res) => {
       if (res.status === 204) {
         dispatch(DeleteSubAreaSuccess({ areaId, subAreaId }));
+        setIsLoading(false);
         document.querySelector("#subAreaModal").click();
         toast("সাব-এরিয়া Delete সফল হয়েছে ");
         // getArea(dispatch, ispOwnerId);
@@ -227,6 +245,7 @@ export const deleteSubArea = async (dispatch, data) => {
     })
     .catch((err) => {
       if (err.response) {
+        setIsLoading(false);
         toast(err.response.data.message);
       }
     });

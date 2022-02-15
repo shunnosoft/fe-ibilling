@@ -28,8 +28,8 @@ export default function AreaPost() {
         name: data.name,
         ispOwner: auth.ispOwner.id,
       };
-      addArea(dispatch,sendingData)
-      setIsLoading(false);
+      addArea(dispatch,sendingData,setIsLoading)
+     
        
     }
   };

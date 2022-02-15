@@ -66,8 +66,8 @@ const user = useSelector((state) => state.auth.currentUser);
       id: subAreaID,
       name: data.name,
     };
-    editSubArea(dispatch,IDs)
-    setIsLoading(false);
+    editSubArea(dispatch,IDs, setIsLoading)
+   
     
   };
 
@@ -100,8 +100,8 @@ const user = useSelector((state) => state.auth.currentUser);
       subAreaId: id,
       areaId
     };
-      deleteSubArea(dispatch,IDs)
-      setIsLoading(false);
+      deleteSubArea(dispatch,IDs, setIsLoading)
+      
      
 
     

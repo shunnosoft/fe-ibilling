@@ -28,15 +28,15 @@ export default function AreaEdit({ oneArea }) {
         ispOwner: auth.ispOwner.id,
         id: oneArea ? oneArea.id : "",
       };
-      editArea(dispatch,sendingData)
-      setIsLoading(false);
+      editArea(dispatch,sendingData, setIsLoading)
+     
       
     }
   };
 
   return (
     <div>
-      <div
+      <div  
         className="modal fade modal-dialog-scrollable "
         id="areaEditModal"
         tabIndex="-1"
