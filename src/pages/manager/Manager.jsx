@@ -36,6 +36,9 @@ import {
 } from "../../features/apiCalls";
 
 export default function Manager() {
+
+  
+
   const manager = useSelector((state) => state.manager.manager);
 
   const ispOwnerId = useSelector(
@@ -47,8 +50,8 @@ export default function Manager() {
     getManger(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId]);
 
-  const [permissions, setPermissions] = useState(managerPermission);
-
+  const [permissions, setPermissions] = useState(managerPermission(manager.permissions));
+   
   const managerValidate = Yup.object({
     name: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
@@ -98,17 +101,16 @@ export default function Manager() {
       ...manager.permissions,
       ...temp,
     };
-    const updatedManager = {
-      ...manager,
-      permissions: newP,
-    };
-    console.log(manager)
+    
+     
     editManager(dispatch,   { 
-    email: "ad@gmail.com", //required 
+    //manager not edited with only permission so (api problem)
+    //so we have to add those extra fields
+    email: manager.email, //required 
     ispOwner:manager.ispOwner,
-    mobile: "01841349633", // required
-    name: "Enamul Haq", // reqired
-    // permissions:newP, // can't changed api problem 
+    mobile: manager.mobile, // required
+    name: manager.name, // reqired
+    permissions:newP, // can't changed api problem 
      
   });
     

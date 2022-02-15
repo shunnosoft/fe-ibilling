@@ -114,7 +114,7 @@ export const editManager = async (dispatch, managerData) => {
       `/v1/ispOwner/manager/${managerData.ispOwner}`,
       managerData
     );
-
+console.log("res from mapiSlice",res.data)
     dispatch(managerEditSuccess(res.data));
     button.style.display = "initial";
     hideModal();
