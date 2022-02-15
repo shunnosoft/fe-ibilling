@@ -34,6 +34,12 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 }
+.ifCannotSelectBill {
+  display: none;
+  text-align: center;
+  color: rgb(250, 79, 0);
+  padding: 0px;
+}
 
 @media only screen and (max-width: 980px) {
   .customerGrid {

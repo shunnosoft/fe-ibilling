@@ -9,13 +9,12 @@ import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
- 
 
 export default function CustomerModal() {
   const auth = useSelector((state) => state.auth.currentUser);
-  const area = useSelector(state=>state.area.area);
-  const Getmikrotik = useSelector(state=>state.mikrotik.mikrotik);
-  const ppPackage = useSelector(state=>state.mikrotik.pppoePackage);
+  const area = useSelector((state) => state.area.area);
+  const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
+  const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
   const [isLoading, setIsloading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -34,7 +33,6 @@ export default function CustomerModal() {
       .email("ইমেইল সঠিক নয় ")
       .required("ম্যানেজার এর ইমেইল দিতে হবে"),
     nid: Yup.string().required("NID দিন"),
-    status: Yup.string().required("***"),
     monthlyFee: Yup.string().required("Montly Fee দিন"),
     Pname: Yup.string().required("PPPoE নাম"),
     Ppassword: Yup.string().required("PPPoE Password"),
@@ -69,7 +67,7 @@ export default function CustomerModal() {
         ispOwner: auth.ispOwner.id,
         mikrotikId: id,
       };
-      fetchpppoePackage(dispatch,IDs)
+      fetchpppoePackage(dispatch, IDs);
     }
     setSingleMikrotik(id);
   };
@@ -82,7 +80,6 @@ export default function CustomerModal() {
 
   // sendint data to backed
   const customerHandler = async (data) => {
-    console.log("customerHandler")
     setIsloading(true);
     const subArea = document.getElementById("subAreaId").value;
     if (subArea === "") {
@@ -93,25 +90,24 @@ export default function CustomerModal() {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       customerId: "randon123",
-      
+      paymentStatus: "unpaid",
       subArea: subArea,
       ispOwner: ispOwner.id,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
-      
+      billPayType: "prepaid",
       pppoe: {
         name: Pname,
         password: Ppassword,
         profile: Pprofile,
+        service: "pppoe",
         comment: Pcomment,
       },
       ...rest,
     };
     console.log("Main Data: ", mainData);
-    addCustomer(dispatch,mainData)
+    addCustomer(dispatch, mainData);
     setIsloading(false);
-
-     
   };
 
   return (
@@ -127,7 +123,7 @@ export default function CustomerModal() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন কাস্টমার অ্যাড করুন
+                নতুন গ্রাহক অ্যাড করুন
               </h5>
               <button
                 type="button"
@@ -146,8 +142,6 @@ export default function CustomerModal() {
                   address: "",
                   email: "",
                   nid: "",
-                 
-                  // balance: "",
                   monthlyFee: "",
                   Pname: "",
                   Ppassword: "",

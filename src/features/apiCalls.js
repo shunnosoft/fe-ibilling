@@ -308,10 +308,14 @@ export const deleteCollector = async (dispatch, ids) => {
 
 //Customers
 
-export const getCustomer = async (dispatch, ispOwnerId) => {
+export const getCustomer = async (dispatch, data, setIsloading) => {
   try {
-    const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwnerId}`);
+    const { ispOwnerId, limit, currentPage } = data;
+    const res = await apiLink.get(
+      `/v1/ispOwner/customer/${ispOwnerId}/?limit=${limit}&page=${currentPage}`
+    );
     dispatch(getCustomerSuccess(res.data));
+    setIsloading(false);
   } catch (error) {
     console.log(error.message);
   }

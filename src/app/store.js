@@ -6,11 +6,7 @@ import mikrotikSlice from "../features/mikrotikSlice";
 import resellerSlice from "../features/resellerSlice";
 import collectorSlice from "../features/collectorSlice";
 import managerSlice from "../features/managerSlice";
-import {
-  persistStore,
-  persistReducer,
-  
-} from "redux-persist";
+import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
@@ -23,7 +19,6 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   customer: customerSlice,
-
   area: areaSlice,
   mikrotik: mikrotikSlice,
   reseller: resellerSlice,
@@ -35,10 +30,11 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
   reducer: persistedReducer,
 
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    immutableCheck: false,
-    serializableCheck:  false
-  })
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }),
 });
 
 export default store;
