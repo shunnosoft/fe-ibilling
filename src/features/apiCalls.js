@@ -137,9 +137,8 @@ export const addArea = async (dispatch, data) => {
   try {
     const res = await apiLink.post("/v1/ispOwner/area", data);
     dispatch(AddAreaSuccess(res.data));
-    document.querySelector("#areaModal").click()
+    document.querySelector("#areaModal").click();
     toast("এরিয়া অ্যাড সফল হয়েছে ");
-
   } catch (error) {
     toast("Add area filed");
   }
@@ -151,11 +150,8 @@ export const editArea = async (dispatch, data) => {
       data
     );
     dispatch(EditAreaSuccess(res.data));
-    document.querySelector("#areaEditModal").click()
+    document.querySelector("#areaEditModal").click();
     toast("এরিয়া এডিট সফল হয়েছে ");
-
-
-   
   } catch (error) {
     toast("edit area filed");
   }
@@ -163,9 +159,7 @@ export const editArea = async (dispatch, data) => {
 
 export const deleteArea = async (dispatch, data) => {
   try {
-      await apiLink.delete(
-      `/v1/ispOwner/area/${data.ispOwner}/${data.id}`
-    );
+    await apiLink.delete(`/v1/ispOwner/area/${data.ispOwner}/${data.id}`);
     dispatch(DeleteAreaSuccess(data.id));
     toast("এরিয়া ডিলিট হয়েছে");
   } catch (error) {
@@ -280,10 +274,10 @@ export const editCollector = async (dispatch, data) => {
 
 export const deleteCollector = async (dispatch, ids) => {
   try {
-     await apiLink.delete(
+    await apiLink.delete(
       `v1/ispOwner/collector/${ids.ispOwnerId}/${ids.collectorId}`
     );
-     dispatch(deleteCollectorSuccess(ids.collectorId))
+    dispatch(deleteCollectorSuccess(ids.collectorId));
     toast("কালেক্টর ডিলিট সফল হয়েছে! ");
   } catch (err) {
     if (err.response) {
@@ -294,11 +288,14 @@ export const deleteCollector = async (dispatch, ids) => {
 
 //Customers
 
-export const getCustomer = async (dispatch, ispOwnerId) => {
+export const getCustomer = async (dispatch, data, setIsloading) => {
   try {
-    const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwnerId}`);
-    console.log(res.data);
+    const { ispOwnerId, limit, currentPage } = data;
+    const res = await apiLink.get(
+      `/v1/ispOwner/customer/${ispOwnerId}/?limit=${limit}&page=${currentPage}`
+    );
     dispatch(getCustomerSuccess(res.data));
+    setIsloading(false);
   } catch (error) {
     console.log(error.message);
   }
@@ -352,23 +349,19 @@ export const deleteACustomer = async (dispatch, IDs) => {
 
 //Mikrotik
 
- 
 // get Mikrotik Sync user
-export const fetchMikrotikSyncUser = 
-  async (dispatch,IDs) => {
-     await apiLink({
-      method: "GET",
-      url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
-    }).then((res)=>{
-      dispatch(fetchMikrotikSyncUserSuccess(res.data))
-
-
-    }).catch(() => {
+export const fetchMikrotikSyncUser = async (dispatch, IDs) => {
+  await apiLink({
+    method: "GET",
+    url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+  })
+    .then((res) => {
+      dispatch(fetchMikrotikSyncUserSuccess(res.data));
+    })
+    .catch(() => {
       toast("Sync গ্রাহক পাওয়া যায়নি!");
     });
-     
-  }
-
+};
 
 // GET mikrotik
 export const fetchMikrotik = async (dispatch, ispOwnerId) => {

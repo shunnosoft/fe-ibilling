@@ -1,9 +1,9 @@
 import React from "react";
 import "../customer.css";
 
-export default function CustomerDetails({single}) {
+export default function CustomerDetails({ single }) {
   // const single = useSelector((state) => state.customer.singleCustomer);
-  
+
   return (
     <div>
       <div
@@ -21,7 +21,7 @@ export default function CustomerDetails({single}) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                কাস্টমার প্রোফাইল
+                গ্রাহক প্রোফাইল
               </h5>
               <button
                 type="button"

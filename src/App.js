@@ -1,4 +1,4 @@
-import React, {   useState } from "react";
+import React, { useState } from "react";
 
 // external imports
 import { ThemeProvider } from "styled-components";
@@ -31,8 +31,9 @@ import Message from "./pages/message/Message";
 function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
+  const userRole = useSelector((state) => state.auth.role);
+  console.log(userRole);
 
-  
   return (
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
@@ -56,6 +57,17 @@ function App() {
 
           <Route path="/register/success" element={<Success />} />
 
+          {/* <Route
+            path="/bill"
+            element={
+              userRole === "manager" || userRole === "collector" ? (
+                <Bill />
+              ) : (
+                <Navigate to={"/"} />
+              )
+            }
+          /> */}
+
           {/* dashboard */}
           <Route path="/*" element={<PrivateOutlet />}>
             <Route path="profile" element={<Profile />} />
@@ -64,10 +76,11 @@ function App() {
             <Route path="home" element={<Dashboard />} />
             <Route path="area" element={<Area />} />
             <Route path="manager" element={<Manager />} />
+            <Route path="bill" element={<Bill />} />
             <Route path="reseller" element={<Reseller />} />
             <Route path="customer" element={<Customer />} />
             <Route path="collector" element={<Collector />} />
-            <Route path="bill" element={<Bill />} />
+
             <Route path="mikrotik" element={<Mikrotik />} />
             <Route path="*" element={<NotFound />} />
           </Route>

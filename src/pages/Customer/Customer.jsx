@@ -5,6 +5,7 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
+  Wallet,
   ThreeDots,
   ArchiveFill,
   PenFill,
@@ -13,6 +14,7 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
+import ReactPaginate from "react-paginate";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -25,6 +27,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 // } from "../../features/customerSlice";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
+import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
@@ -34,13 +37,11 @@ export default function Customer() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsloading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
-  
 
- 
-  const Customers = useSelector(state=>state.customer.customer);
-  console.log(Customers)
+  const Customers = useSelector((state) => state.customer.customer);
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -55,21 +56,48 @@ export default function Customer() {
 
   // DELETE handler
   const deleteCustomer = async (ID) => {
-    setIsloading(true);
+    setIsDeleting(true);
     const { ispOwner } = auth;
     const IDs = {
       ispID: ispOwner.id,
       customerID: ID,
     };
-      deleteACustomer(dispatch,IDs);
-    setIsloading(false);
-      
-     
+    deleteACustomer(dispatch, IDs);
+    setIsDeleting(false);
   };
-useEffect(()=>{
-  getCustomer(dispatch,auth.ispOwner.id)
-},[dispatch,auth])
-  
+
+  useEffect(() => {
+    getCustomer(dispatch, auth.ispOwner.id);
+  }, [dispatch, auth]);
+
+  const billUpdateHandler = (data) => {
+    // console.log("Bill Data:", data);
+  };
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsloading(true);
+      let limit = 10;
+      const data2 = {
+        ispOwnerId: auth?.ispOwner.id,
+        limit: limit,
+        currentPage: 1,
+      };
+      getCustomer(dispatch, data2, setIsloading);
+    };
+    getData();
+  }, []);
+
+  const handlePageClick = (data) => {
+    setIsloading(true);
+    let limit = 10;
+    const data2 = {
+      ispOwnerId: auth?.ispOwner.id,
+      limit: limit,
+      currentPage: data.selected + 1,
+    };
+    getCustomer(dispatch, data2, setIsloading);
+  };
 
   return (
     <>
@@ -86,23 +114,24 @@ useEffect(()=>{
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              {/* <Alert message={"কাস্টমার অ্যাড"} /> */}
+              {/* <Alert message={"গ্রাহক  অ্যাড"} /> */}
 
               <FourGround>
-                <h2 className="collectorTitle">কাস্টমার</h2>
+                <h2 className="collectorTitle">গ্রাহক </h2>
               </FourGround>
 
               {/* Model start */}
               <CustomerPost />
-              <CustomerEdit single={singleCustomer}  />
-              <CustomerDetails single={singleCustomer}  />
+              <CustomerEdit single={singleCustomer} />
+              <CustomerBillCollect />
+              <CustomerDetails single={singleCustomer} />
               {/* Model finish */}
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>নতুন কাস্টমার অ্যাড করুন </p>
+                      <p>নতুন গ্রাহক অ্যাড করুন </p>
 
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
@@ -116,8 +145,7 @@ useEffect(()=>{
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট কাস্টমার :{" "}
-                          <span>{Customers.length || "NULL"}</span>
+                          মোট গ্রাহক : <span>{Customers.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -127,13 +155,13 @@ useEffect(()=>{
                           <input
                             type="text"
                             className="search"
-                            placeholder="সার্চ এর জন্য নাম লিখুন"
+                            placeholder="সার্চ"
                             onChange={(e) => setCusSearch(e.target.value)}
                           />
                         </div>
                       </div>
                     </div>
-                    {isLoading ? (
+                    {isDeleting ? (
                       <div className="deletingAction">
                         <Loader /> <b>Deleting...</b>
                       </div>
@@ -157,10 +185,12 @@ useEffect(()=>{
                         </tr>
                       </thead>
                       <tbody>
-                        {Customers.length === undefined ? (
+                        {isLoading ? (
                           <tr>
                             <TdLoader colspan={6} />
                           </tr>
+                        ) : Customers.length === undefined ? (
+                          ""
                         ) : (
                           Customers.filter((val) => {
                             return val.name
@@ -205,6 +235,20 @@ useEffect(()=>{
                                   </li>
                                   <li
                                     data-bs-toggle="modal"
+                                    data-bs-target="#collectCustomerBillModal"
+                                    onClick={() => {
+                                      billUpdateHandler(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <Wallet />
+                                        <p className="actionP">বিল গ্রহণ</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
                                     data-bs-target="#customerEditModal"
                                     onClick={() => {
                                       getSpecificCustomer(val.id);
@@ -217,6 +261,7 @@ useEffect(()=>{
                                       </div>
                                     </div>
                                   </li>
+
                                   <li
                                     onClick={() => {
                                       deleteCustomer(val.id);
@@ -239,36 +284,26 @@ useEffect(()=>{
                       </tbody>
                     </table>
 
-                    {/* pagination */}
-                    <nav aria-label="Page navigation example" className="mt-4">
-                      <ul className="pagination">
-                        <li className="page-item">
-                          <Link className="page-link" to="">
-                            Previous
-                          </Link>
-                        </li>
-                        <li className="page-item">
-                          <Link className="page-link" to="">
-                            1
-                          </Link>
-                        </li>
-                        <li className="page-item">
-                          <Link className="page-link" to="">
-                            2
-                          </Link>
-                        </li>
-                        <li className="page-item">
-                          <Link className="page-link" to="">
-                            3
-                          </Link>
-                        </li>
-                        <li className="page-item">
-                          <Link className="page-link" to="">
-                            Next
-                          </Link>
-                        </li>
-                      </ul>
-                    </nav>
+                    {/* previous */}
+
+                    <ReactPaginate
+                      previousLabel={"Previous"}
+                      nextLabel={"Next"}
+                      breakLabel={"..."}
+                      pageCount={8}
+                      marginPagesDisplayed={2}
+                      onPageChange={handlePageClick}
+                      containerClassName={"pagination"}
+                      pageClassName={"page-item"}
+                      pageLinkClassName={"page-link"}
+                      previousClassName={"page-item"}
+                      previousLinkClassName={"page-link"}
+                      nextClassName={"page-item"}
+                      nextLinkClassName={"page-link"}
+                      breakClassName={"page-item"}
+                      breakLinkClassName={"page-link"}
+                      activeClassName={"active"}
+                    />
                   </div>
                 </div>
               </FourGround>

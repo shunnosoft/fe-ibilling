@@ -23,11 +23,11 @@ export default function Mikrotik() {
   const [msearch, setMsearch] = useState("");
   const dispatch = useDispatch();
   let allmikrotiks = [];
-  allmikrotiks = useSelector(state=>state.mikrotik.mikrotik);
+  allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
   useEffect(() => {
     const { ispOwner } = auth;
-    fetchMikrotik(dispatch,ispOwner.id)
+    fetchMikrotik(dispatch, ispOwner.id);
   }, [auth, dispatch]);
 
   return (
@@ -48,7 +48,7 @@ export default function Mikrotik() {
               <MikrotikPost />
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">মাইক্রোটিক</h2>
+                <h2 className="collectorTitle">মাইক্রোটিক </h2>
               </FourGround>
 
               <FourGround>

@@ -3,12 +3,13 @@ import {
   Wallet2,
   PeopleFill,
   PersonPlus,
-  PersonLinesFill,
+  Coin,
   GeoAlt,
   LayersFill,
   Wifi,
   // Coin,
 } from "react-bootstrap-icons";
+
 export const AllRoutes = [
   {
     title: "হোম",
@@ -31,22 +32,20 @@ export const AllRoutes = [
     link: "/reseller",
   },
   {
-    title: "গ্রাহক",
-    icon: <PeopleFill />,
-    link: "/customer",
-  },
-   
-
-  {
     title: "কালেক্টর",
     icon: <Wallet2 />,
     link: "/collector",
   },
-  // {
-  //   title: "বিল",
-  //   icon: <Coin />,
-  //   link: "/bill",
-  // },
+  {
+    title: "গ্রাহক",
+    icon: <PeopleFill />,
+    link: "/customer",
+  },
+  {
+    title: "বিল",
+    icon: <Coin />,
+    link: "/bill",
+  },
   {
     title: "মাইক্রোটিক",
     icon: <Wifi />,
