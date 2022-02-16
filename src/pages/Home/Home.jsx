@@ -9,7 +9,7 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData } from "./homeData";
 import { chartsData } from "./homeData";
-import { fetchMikrotik, fetchReseller, getArea, getCollector, getCustomer, getManger } from "../../features/apiCalls";
+import { fetchMikrotik, fetchReseller, getArea, getCollector, getManger } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Home() {
@@ -20,7 +20,6 @@ export default function Home() {
    
   useEffect(()=>{
     getManger(dispatch,ispOwnerId);  
-    getCustomer(dispatch,ispOwnerId)
     getCollector(dispatch,ispOwnerId)
     getArea(dispatch,ispOwnerId);
     fetchMikrotik(dispatch,ispOwnerId)

@@ -239,7 +239,7 @@ const[isLoading,setIsLoading]=useState(false)
                       <div className="managerDetails">
                         <div className="managerProfile">
                           <img
-                            src="https://roottogether.net/wp-content/uploads/2020/04/img-avatar-blank.jpg"
+                            src="/assets/img/noAvater.jpg"
                             alt=""
                             className="managerProfilePic"
                           />

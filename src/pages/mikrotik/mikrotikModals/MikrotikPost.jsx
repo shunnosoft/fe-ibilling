@@ -27,13 +27,13 @@ export default function MikrotikPost() {
 
   // mikrotik handler
   const mikrotikHandler =  (data) => {
-    setIsLoading(true);
+   
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
         ispOwner: auth.ispOwner.id,
       };
-      postMikrotik(dispatch,sendingData)
+      postMikrotik(dispatch,sendingData, setIsLoading)
        
     }
   };

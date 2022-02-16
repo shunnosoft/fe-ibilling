@@ -1,11 +1,13 @@
 import { Form, Formik } from "formik";
 import React from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { editManager } from "../../features/apiCalls";
 
 // internal imports
 import { FtextField } from "../common/FtextField";
+import Loader from "../common/Loader";
 
 export default function WriteModals(props) {
   const { manager } = props;
@@ -28,9 +30,10 @@ export default function WriteModals(props) {
     nid: Yup.string().required("ম্যানেজার এর NID দিন"),
     image: Yup.string(),
   });
-
+const [isLoading,setIsLoading] =useState(false)
   const editManagerHandler = (data) => {
-    editManager(dispatch,{...data,ispOwner});
+   
+    editManager(dispatch,{...data,ispOwner},setIsLoading);
   };
 
   return (
@@ -97,7 +100,7 @@ export default function WriteModals(props) {
                       type="submit"
                       className="btn btn-primary marginLeft"
                     >
-                      সেভ করুন
+                   {isLoading?<Loader/>:"সেভ করুন"}   
                     </button>
                   </div>
                 </Form>

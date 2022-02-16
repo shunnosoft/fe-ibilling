@@ -13,7 +13,7 @@ export default function CustomerBillCollect() {
     }
     selector.style.display = "none";
 
-    console.log("Amount: ", billAmount);
+    // console.log("Amount: ", billAmount);
   };
 
   return (

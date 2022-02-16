@@ -32,7 +32,7 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  console.log(userRole);
+ 
 
   return (
     <ThemeProvider theme={themes[theme]}>

@@ -6,7 +6,7 @@ import "./landing.css";
 export default function Landing() {
   const currentUser= useSelector((state) => state.auth.currentUser);
 
-  console.log("From Landing: ", currentUser);
+  // console.log("From Landing: ", currentUser);
 
   // const currentUser = false;
   return (

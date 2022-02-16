@@ -13,11 +13,14 @@ import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import { passwordUpdate , profileUpdate} from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
+import Loader from "../../components/common/Loader";
+import { useState } from "react";
 
 export default function Profile() {
   // const role = useSelector(state=>state.auth.currentUser?.user.role);
   const currentUser = useSelector((state) => state.auth.currentUser?.ispOwner);
-   
+   const [isLoading,setIsLoading] =useState(false)
+   const [isLoadingpass,setIsLoadingpass] =useState(false)
   
   const passwordValidator = Yup.object({
     oldPassword: Yup.string().required("Old পাসওয়ার্ড ***"),
@@ -26,13 +29,13 @@ export default function Profile() {
   });
 const dispatch =useDispatch()
   const progileEditHandler = (data) => {
-    profileUpdate(dispatch,data, currentUser.id)
+    profileUpdate(dispatch,data, currentUser.id,setIsLoading)
   };
 
   //   change password handler
   const changePasswordHandler = (data) => {
-    console.log(data)
-    passwordUpdate(data);
+    // console.log(data)
+    passwordUpdate(data,setIsLoadingpass);
   };
   return (
     <>
@@ -98,7 +101,7 @@ const dispatch =useDispatch()
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                              আপডেট
+                            {isLoading ? <Loader /> : " আপডেট"} 
                             </button>
                           </Form>
                         )}
@@ -135,7 +138,7 @@ const dispatch =useDispatch()
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                              পাসওয়ার্ড আপডেট
+                            {isLoadingpass? <Loader/>:"পাসওয়ার্ড আপডেট"}  
                             </button>
                           </Form>
                         )}

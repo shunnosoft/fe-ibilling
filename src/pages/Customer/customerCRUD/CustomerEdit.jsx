@@ -48,7 +48,7 @@ export default function CustomerEdit({ single }) {
   // });
 
   const customerEditHandler = async (data) => {
-    console.log(data);
+    // console.log(data);
     setIsloading(true);
     const { ispOwner } = auth;
     const mainData = {
@@ -59,8 +59,8 @@ export default function CustomerEdit({ single }) {
       ispOwner: ispOwner.id,
       ...data,
     };
-    editCustomer(dispatch, mainData);
-    setIsloading(false);
+    editCustomer(dispatch, mainData,setIsloading);
+     
   };
 
   return (

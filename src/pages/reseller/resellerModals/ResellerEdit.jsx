@@ -50,7 +50,7 @@ export default function ResellerEdit({ reseller }) {
 
   // edit Reseller
   const resellerHandler = async (data) => {
-    setIsLoading(true);
+   
 
     if (auth.ispOwner) {
       const sendingData = {
@@ -59,8 +59,8 @@ export default function ResellerEdit({ reseller }) {
         ispId: reseller.ispOwner,
         resellerId: reseller.id,
       };
-         editReseller(dispatch,sendingData)
-          setIsLoading(false);
+         editReseller(dispatch,sendingData,setIsLoading)
+          
        
     }
   };

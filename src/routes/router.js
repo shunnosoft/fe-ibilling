@@ -3,7 +3,7 @@ import {
   Wallet2,
   PeopleFill,
   PersonPlus,
-  Coin,
+  
   GeoAlt,
   LayersFill,
   Wifi,
@@ -41,11 +41,7 @@ export const AllRoutes = [
     icon: <PeopleFill />,
     link: "/customer",
   },
-  {
-    title: "বিল",
-    icon: <Coin />,
-    link: "/bill",
-  },
+   
   {
     title: "মাইক্রোটিক",
     icon: <Wifi />,

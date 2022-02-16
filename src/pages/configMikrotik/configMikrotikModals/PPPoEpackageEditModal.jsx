@@ -25,10 +25,10 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
   const pppoeEditHandler = async (data) => {
     setIsLoading(true);
     if (singlePackage) {
-      const IDs = {
-        ispOwner: singlePackage.ispOwner,
-        mikrotikId: singlePackage.mikrotik,
-      };
+      // const IDs = {
+      //   ispOwner: singlePackage.ispOwner,
+      //   mikrotikId: singlePackage.mikrotik,
+      // };
       const sendingData = {
         rate: data.name,
         mikrotikId: singlePackage.mikrotik,

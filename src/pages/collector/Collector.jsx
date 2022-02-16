@@ -30,7 +30,7 @@ export default function Collector() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector(state=>state.collector.collector);
-  console.log(collector)
+   
   let serial = 0;
   
   useEffect(() => {
@@ -50,9 +50,9 @@ export default function Collector() {
 
   // DELETE collector
   const deleteCollectorHandler = async (ispId, ID) => {
-    setIsDeleting(true);
+     
     const IDs = { ispOwnerId: ispId, collectorId: ID };
-   deleteCollector(dispatch,IDs);
+   deleteCollector(dispatch,IDs,setIsDeleting);
     
   };
 

@@ -64,7 +64,7 @@ export default function CollectorEdit({ single }) {
         ispOwnerId: single.ispOwner,
         collectorId: single.id,
       };
-       editCollector(dispatch,sendingData);
+       editCollector(dispatch,sendingData, setIsLoading);
        
     }
   };

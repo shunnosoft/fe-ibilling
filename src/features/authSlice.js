@@ -17,7 +17,7 @@ const authSlice = createSlice({
     logInSuccess: (state, action) => {
       state.isFetching = false;
       state.currentUser = action.payload;
-      state.role = action.payload.user.role;
+      state.role = action.payload?.user.role;
     },
     loginFailure: (state) => {
       state.isFetching = false;

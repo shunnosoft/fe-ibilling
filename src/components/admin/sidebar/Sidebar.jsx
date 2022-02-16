@@ -5,12 +5,9 @@ import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
 import {
   List,
   ArrowLeft,
-  CaretDownFill,
   Coin,
   CaretRightFill,
-  // Coin,
-  // CaretRightFill,
-  // CaretDownFill,
+  CaretDownFill,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import { AllRoutes } from "../../../routes/router";
@@ -19,7 +16,7 @@ import { billData } from "./billData";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {
-  const userRole=useSelector(state=>state.auth.currentUser?.user.role)
+  const userRole=useSelector(state=>state.auth.role)
    
   const [isDown, setIsDown] = useState(false);
 

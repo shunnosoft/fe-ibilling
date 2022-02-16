@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
-import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -62,8 +61,8 @@ export default function Customer() {
       ispID: ispOwner.id,
       customerID: ID,
     };
-    deleteACustomer(dispatch, IDs);
-    setIsDeleting(false);
+    deleteACustomer(dispatch, IDs,  setIsDeleting);
+     
   };
 
   useEffect(() => {
@@ -86,7 +85,7 @@ export default function Customer() {
       getCustomer(dispatch, data2, setIsloading);
     };
     getData();
-  }, []);
+  }, [auth,dispatch]);
 
   const handlePageClick = (data) => {
     setIsloading(true);
