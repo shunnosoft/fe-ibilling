@@ -26,7 +26,7 @@ import { deleteCollector, getCollector } from "../../features/apiCalls";
 
 export default function Collector() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const [isDeleting, setIsDeleting] = useState(false);
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector(state=>state.collector.collector);
@@ -34,9 +34,9 @@ export default function Collector() {
   let serial = 0;
   
   useEffect(() => {
-    const { ispOwner } = auth;
-    getCollector(dispatch,ispOwner.id)
-  }, [auth, dispatch]);
+   
+    getCollector(dispatch,ispOwnerId)
+  }, [ispOwnerId, dispatch]);
   
   const [singleCollector, setSingleCollector] = useState("");
   const getSpecificCollector = (id) => {
@@ -49,9 +49,9 @@ export default function Collector() {
   };
 
   // DELETE collector
-  const deleteCollectorHandler = async (ispId, ID) => {
+  const deleteCollectorHandler = async (ID) => {
      
-    const IDs = { ispOwnerId: ispId, collectorId: ID };
+    const IDs = { ispOwnerId, collectorId: ID };
    deleteCollector(dispatch,IDs,setIsDeleting);
     
   };
@@ -197,7 +197,7 @@ export default function Collector() {
                                     <li
                                       onClick={() => {
                                         deleteCollectorHandler(
-                                          val.ispOwner,
+                                           
                                           val.id
                                         );
                                       }}

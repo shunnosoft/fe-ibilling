@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   currentUser: null,
   role: null,
+  ispOwnerId: "",
+  userData: {},
   isFetching: false,
   error: false,
 };
@@ -18,6 +20,16 @@ const authSlice = createSlice({
       state.isFetching = false;
       state.currentUser = action.payload;
       state.role = action.payload?.user.role;
+      action.payload?.user.role === "ispOwner"
+        ? (state.ispOwnerId = action.payload?.ispOwner?.id) &&
+          (state.userData = action.payload?.ispOwner)
+        : action.payload?.user.role === "manager"
+        ? (state.ispOwnerId = action.payload.manager.ispOwner) &&
+          (state.userData = action.payload?.manager)
+        : action.payload?.user.role === "collector"
+        ? (state.ispOwnerId = action.payload.collector.ispOwner) &&
+          (state.userData = action.payload?.collector)
+        : (state.ispOwnerId = "");
     },
     loginFailure: (state) => {
       state.isFetching = false;

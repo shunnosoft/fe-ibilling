@@ -37,10 +37,11 @@ export default function Area() {
     // };
       
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.auth.currentUser);
+    // const user = useSelector((state) => state.auth.currentUser);
+    const ispOwnerId=useSelector((state)=>state.auth.ispOwnerId)
   useEffect(() => {
-    getArea(dispatch, user.ispOwner.id);
-  }, [dispatch, user.ispOwner]);
+    getArea(dispatch,  ispOwnerId);
+  }, [dispatch, ispOwnerId]);
   
 
   const deleteSingleArea = async (id, ispOwner) => {

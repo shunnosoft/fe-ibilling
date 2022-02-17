@@ -1,6 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import "./sidebar.css";
+
 import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
 import {
   List,
@@ -8,6 +9,13 @@ import {
   Coin,
   CaretRightFill,
   CaretDownFill,
+  HouseDoorFill,
+  Wallet2,
+  PeopleFill,
+  PersonPlus,
+  GeoAlt,
+  LayersFill,
+  Wifi,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import { AllRoutes } from "../../../routes/router";
@@ -16,8 +24,8 @@ import { billData } from "./billData";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {
-  const userRole=useSelector(state=>state.auth.role)
-   
+  const userRole = useSelector((state) => state.auth.role);
+
   const [isDown, setIsDown] = useState(false);
 
   // addSidebar
@@ -55,49 +63,146 @@ export default function Sidebar() {
             </h2>
 
             <ul className="sidebarUl">
-              {AllRoutes.map((val, key) => {
-                return (
-                  <NavLink
-                    key={key}
-                    to={val.link}
-                    className={(navInfo) =>
-                      navInfo.isActive ? activeClass.active : ""
-                    }
-                  >
-                    <FontColor>
-                      <li
-                        className="sidebarItems"
-                        id={
-                          window.location.pathname === val.link ? "active" : ""
-                        }
-                      >
-                        <div className="sidebarIcon">{val.icon}</div>
-                        <span className="sidebarLinksName">{val.title}</span>
-                      </li>
-                    </FontColor>
-                  </NavLink>
-                );
-              })}
-
-              {/* bill */}
-              {
-                (userRole==="manager") || (userRole==="collector") ?(
-
-                  <div onClick={toggleSubBillingHandle}>
+              <NavLink
+                key={1}
+                to={"/home"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
                 <FontColor>
-                  <li className="sidebarItems">
-                    <div className="sidebarIcon">
-                      <Coin />
-                    </div>
-                    <span className="sidebarLinksName">বিল</span>
-                    <span className="arrowRightFillStyle">
-                      {isDown ? <CaretDownFill /> : <CaretRightFill />}
-                    </span>
+                  <li
+                    className="sidebarItems"
+                    id={window.location.pathname === "/home" ? "active" : ""}
+                  >
+                    <div className="sidebarIcon">{<HouseDoorFill />}</div>
+                    <span className="sidebarLinksName">{"হোম"}</span>
                   </li>
                 </FontColor>
-              </div>
-                ):<></>
-              }
+              </NavLink>
+
+              <NavLink
+                key={2}
+                to={"/area"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={window.location.pathname === "/area" ? "active" : ""}
+                  >
+                    <div className="sidebarIcon">{<GeoAlt />}</div>
+                    <span className="sidebarLinksName">{"এরিয়া "}</span>
+                  </li>
+                </FontColor>
+              </NavLink>
+              {userRole === "ispOwner" ? (
+                <NavLink
+                  key={3}
+                  to={"/manager"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/manager" ? "active" : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<PersonPlus />}</div>
+                      <span className="sidebarLinksName">{"ম্যানেজার"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
+              <NavLink
+                key={4}
+                to={"/collector"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/collector" ? "active" : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<Wallet2 />}</div>
+                    <span className="sidebarLinksName">{"কালেক্টর"}</span>
+                  </li>
+                </FontColor>
+              </NavLink>
+
+              <NavLink
+                key={6}
+                to={"/customer"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/customer" ? "active" : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<PeopleFill />}</div>
+                    <span className="sidebarLinksName">{"গ্রাহক"}</span>
+                  </li>
+                </FontColor>
+              </NavLink>
+              {userRole === "ispOwner" ? (
+                <NavLink
+                  key={5}
+                  to={"/mikrotik"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/mikrotik" ? "active" : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<Wifi />}</div>
+                      <span className="sidebarLinksName">{"মাইক্রোটিক"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
+              {/* bill */}
+              {userRole === "manager" || userRole === "collector" ? (
+                <div onClick={toggleSubBillingHandle}>
+                  <FontColor>
+                    <li className="sidebarItems">
+                      <div className="sidebarIcon">
+                        <Coin />
+                      </div>
+                      <span className="sidebarLinksName">বিল</span>
+                      <span className="arrowRightFillStyle">
+                        {isDown ? <CaretDownFill /> : <CaretRightFill />}
+                      </span>
+                    </li>
+                  </FontColor>
+                </div>
+              ) : (
+                <></>
+              )}
               {/* bill sub links */}
               <div id="toggleSubBilling">
                 {billData.map((val, key) => (

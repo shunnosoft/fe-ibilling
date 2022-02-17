@@ -18,7 +18,8 @@ import { useState } from "react";
 
 export default function Profile() {
   // const role = useSelector(state=>state.auth.currentUser?.user.role);
-  const currentUser = useSelector((state) => state.auth.currentUser?.ispOwner);
+  const currentUser = useSelector((state) => state.auth.userData);
+  const ispOwnerId =useSelector(state=>state.auth.ispOwnerId)
    const [isLoading,setIsLoading] =useState(false)
    const [isLoadingpass,setIsLoadingpass] =useState(false)
   
@@ -29,7 +30,7 @@ export default function Profile() {
   });
 const dispatch =useDispatch()
   const progileEditHandler = (data) => {
-    profileUpdate(dispatch,data, currentUser.id,setIsLoading)
+    profileUpdate(dispatch,data, ispOwnerId,setIsLoading)
   };
 
   //   change password handler

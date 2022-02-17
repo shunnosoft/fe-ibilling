@@ -59,6 +59,7 @@ export const getManger = async (dispatch, ispWonerId) => {
     dispatch(managerFetchSuccess(res.data));
   } catch (error) {
     dispatch(managerFetchFailure());
+    
   }
 };
 
@@ -142,13 +143,13 @@ export const getArea = async (dispatch, ispOwnerId) => {
 export const addArea = async (dispatch, data, setIsLoading) => {
   try {
     const res = await apiLink.post("/v1/ispOwner/area", data);
+   
     dispatch(AddAreaSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#areaModal").click();
     toast("এরিয়া অ্যাড সফল হয়েছে ");
   } catch (error) {
     setIsLoading(false);
-
     toast("Add area filed");
 
   }

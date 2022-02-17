@@ -47,10 +47,11 @@ export default function SubArea() {
 
    const dispatch =useDispatch()
 
-const user = useSelector((state) => state.auth.currentUser);
+// const user = useSelector((state) => state.auth.currentUser);
+const ispOwnerId=useSelector(state=>state.auth.ispOwnerId)
  useEffect(() => {
-   getArea(dispatch, user.ispOwner.id);
- }, [dispatch, user.ispOwner]);
+   getArea(dispatch,  ispOwnerId);
+ }, [dispatch,  ispOwnerId]);
 
   // go back to area
   const gotoAllArea = () => {
@@ -96,7 +97,7 @@ const user = useSelector((state) => state.auth.currentUser);
   const deleteSingleSubAarea =(id, ispOwner) => {
     setIsLoading(true);
     const IDs = {
-      ispOwnerId: ispOwner,
+      ispOwnerId: ispOwnerId,
       subAreaId: id,
       areaId
     };

@@ -34,7 +34,7 @@ import { deleteACustomer, getCustomer } from "../../features/apiCalls";
 
 export default function Customer() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
@@ -56,9 +56,9 @@ export default function Customer() {
   // DELETE handler
   const deleteCustomer = async (ID) => {
     setIsDeleting(true);
-    const { ispOwner } = auth;
+    
     const IDs = {
-      ispID: ispOwner.id,
+      ispID: ispOwnerId,
       customerID: ID,
     };
     deleteACustomer(dispatch, IDs,  setIsDeleting);
@@ -66,8 +66,8 @@ export default function Customer() {
   };
 
   useEffect(() => {
-    getCustomer(dispatch, auth.ispOwner.id);
-  }, [dispatch, auth]);
+    getCustomer(dispatch,  ispOwnerId);
+  }, [dispatch, ispOwnerId]);
 
   const billUpdateHandler = (data) => {
     // console.log("Bill Data:", data);
@@ -78,20 +78,20 @@ export default function Customer() {
       setIsloading(true);
       let limit = 10;
       const data2 = {
-        ispOwnerId: auth?.ispOwner.id,
+        ispOwnerId: ispOwnerId,
         limit: limit,
         currentPage: 1,
       };
       getCustomer(dispatch, data2, setIsloading);
     };
     getData();
-  }, [auth,dispatch]);
+  }, [ispOwnerId,dispatch]);
 
   const handlePageClick = (data) => {
     setIsloading(true);
     let limit = 10;
     const data2 = {
-      ispOwnerId: auth?.ispOwner.id,
+      ispOwnerId:  ispOwnerId,
       limit: limit,
       currentPage: data.selected + 1,
     };

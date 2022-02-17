@@ -26,11 +26,11 @@ export const AllRoutes = [
     icon: <PersonPlus />,
     link: "/manager",
   },
-  {
-    title: "রি-সেলার",
-    icon: <LayersFill />,
-    link: "/reseller",
-  },
+  // {
+  //   title: "রি-সেলার",
+  //   icon: <LayersFill />,
+  //   link: "/reseller",
+  // },
   {
     title: "কালেক্টর",
     icon: <Wallet2 />,

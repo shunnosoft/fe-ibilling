@@ -32,7 +32,6 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
- 
 
   return (
     <ThemeProvider theme={themes[theme]}>
@@ -56,9 +55,7 @@ function App() {
           />
 
           <Route path="/register/success" element={<Success />} />
-          <Route path="/bill" element={(userRole==="manager") || (userRole==="collector") ?<Bill />:<Navigate to={"/"}/> } />
-
-          {/* <Route
+          <Route
             path="/bill"
             element={
               userRole === "manager" || userRole === "collector" ? (
@@ -67,7 +64,21 @@ function App() {
                 <Navigate to={"/"} />
               )
             }
-          /> */}
+          />
+
+          
+          <Route
+            path="manager"
+            element={
+              userRole === "ispOwner" ? <Manager /> : <Navigate to={"/home"} />
+            }
+          />
+          <Route
+            path="mikrotik"
+            element={
+              userRole === "ispOwner" ? <Mikrotik /> : <Navigate to={"/home"} />
+            }
+          />
 
           {/* dashboard */}
           <Route path="/*" element={<PrivateOutlet />}>
@@ -76,13 +87,12 @@ function App() {
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="area" element={<Area />} />
-            <Route path="manager" element={<Manager />} />
+
             <Route path="bill" element={<Bill />} />
-            <Route path="reseller" element={<Reseller />} />
+            {/* <Route path="reseller" element={<Reseller />} /> */}
             <Route path="customer" element={<Customer />} />
             <Route path="collector" element={<Collector />} />
 
-            <Route path="mikrotik" element={<Mikrotik />} />
             <Route path="*" element={<NotFound />} />
           </Route>
 
