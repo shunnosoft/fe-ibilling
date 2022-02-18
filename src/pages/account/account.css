@@ -7,7 +7,7 @@
   width: 100%;
   margin-bottom: 10px;
 }
-.AccountCusotomTable1 > tr:hover {
+.AccountCusotomTable1 > tbody > tr:hover {
   background: rgba(167, 174, 180, 0.171);
 }
 .Accounttableheader > th {

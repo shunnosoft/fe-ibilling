@@ -21,13 +21,9 @@ export default function CustomerEdit({ single }) {
   // customer validator
   const customerEditValidator = Yup.object({
     name: Yup.string(),
-    mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে "),
     address: Yup.string(),
     email: Yup.string().email("ইমেইল সঠিক নয় "),
     nid: Yup.string(),
-    status: Yup.string(),
     balance: Yup.string(),
     monthlyFee: Yup.string(),
   });
@@ -90,11 +86,9 @@ export default function CustomerEdit({ single }) {
               <Formik
                 initialValues={{
                   name: CUSTOMER.name || "",
-                  mobile: CUSTOMER.mobile || "",
                   address: CUSTOMER.address || "",
                   email: CUSTOMER.email || "",
                   nid: CUSTOMER.nid || "",
-                  status: CUSTOMER.status || "",
                   balance: CUSTOMER.balance || "",
                   monthlyFee: CUSTOMER.monthlyFee || "",
                   billPayType: CUSTOMER.billPayType || "",
@@ -105,46 +99,12 @@ export default function CustomerEdit({ single }) {
                 }}
                 enableReinitialize
               >
-                {(formik) => (
+                {() => (
                   <Form>
                     <FtextField type="text" label={`নাম`} name="name" />
-                    <FtextField type="text" label={`মোবাইল`} name="mobile" />
                     <FtextField type="text" label={`এড্রেস`} name="address" />
                     <FtextField type="text" label={`ইমেইল`} name="email" />
                     <FtextField type="text" label={`NID নম্বর`} name="nid" />
-                    <div className="form-check customerFormCheck">
-                      <p>স্টেটাস </p>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Paid"
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          id="status1"
-                          value="paid"
-                        />
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Unpaid"
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          id="status2"
-                          value="unpaid"
-                        />
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Overdue"
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          id="status3"
-                          value="overdue"
-                        />
-                      </div>
-                    </div>
 
                     <div className="form-check customerFormCheck">
                       <p>বিল পরিশোধের ধরণ</p>
