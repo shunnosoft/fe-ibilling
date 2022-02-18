@@ -62,6 +62,7 @@ export const mikroTikSlice = createSlice({
       state.pppoeActiveUser=[]
       state.pppoePackage=[]
       state.pppoeUser=[]
+      state.mikrotikSyncUser=[]
     }
   },
 });

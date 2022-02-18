@@ -9,23 +9,40 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData } from "./homeData";
 import { chartsData } from "./homeData";
-import { fetchMikrotik, fetchReseller, getArea, getCollector, getCustomer, getManger } from "../../features/apiCalls";
+import { fetchMikrotik, fetchReseller, getArea, getCollector, getManger } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Home() {
 
   
-  const ispOwnerId  =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
+  const role =useSelector(state=>state.auth.role)
+  const ispOwnerId=useSelector(state=>state.auth.ispOwnerId)
+   
+
+  // const ispOwnerId  =useSelector((state)=>{
+  //   if (role==="ispOwner") {
+  //     return state.auth.currentUser?.ispOwner?.id
+  //   } else if (role==="manager") {
+  //     return state.auth.currentUser?.manager?.ispOwner
+  //   } else if (role==="collector") {
+  //     return state.auth.currentUser?.collector?.ispOwner
+  //   }
+  // })
+
   const dispatch =useDispatch()
    
   useEffect(()=>{
-    getManger(dispatch,ispOwnerId);  
-    getCustomer(dispatch,ispOwnerId)
+     
+    if (role==="ispOwner"){
+      getManger(dispatch,ispOwnerId);  
+      fetchMikrotik(dispatch,ispOwnerId)
+      fetchReseller(dispatch,ispOwnerId)
+
+    }
     getCollector(dispatch,ispOwnerId)
     getArea(dispatch,ispOwnerId);
-    fetchMikrotik(dispatch,ispOwnerId)
-    fetchReseller(dispatch,ispOwnerId)
-  },[dispatch,ispOwnerId])
+  
+  },[dispatch,ispOwnerId,role])
 
   return (
     <div className="container homeWrapper">

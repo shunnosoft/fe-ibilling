@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
-import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -35,14 +34,14 @@ import { deleteACustomer, getCustomer } from "../../features/apiCalls";
 
 export default function Customer() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
 
   const Customers = useSelector((state) => state.customer.customer);
-
+ 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const getSpecificCustomer = (id) => {
@@ -57,18 +56,18 @@ export default function Customer() {
   // DELETE handler
   const deleteCustomer = async (ID) => {
     setIsDeleting(true);
-    const { ispOwner } = auth;
+    
     const IDs = {
-      ispID: ispOwner.id,
+      ispID: ispOwnerId,
       customerID: ID,
     };
-    deleteACustomer(dispatch, IDs);
-    setIsDeleting(false);
+    deleteACustomer(dispatch, IDs,  setIsDeleting);
+     
   };
 
   useEffect(() => {
-    getCustomer(dispatch, auth.ispOwner.id);
-  }, [dispatch, auth]);
+    getCustomer(dispatch,  ispOwnerId);
+  }, [dispatch, ispOwnerId]);
 
   const billUpdateHandler = (data) => {
     // console.log("Bill Data:", data);
@@ -79,20 +78,20 @@ export default function Customer() {
       setIsloading(true);
       let limit = 10;
       const data2 = {
-        ispOwnerId: auth?.ispOwner.id,
+        ispOwnerId: ispOwnerId,
         limit: limit,
         currentPage: 1,
       };
       getCustomer(dispatch, data2, setIsloading);
     };
     getData();
-  }, []);
+  }, [ispOwnerId,dispatch]);
 
   const handlePageClick = (data) => {
     setIsloading(true);
     let limit = 10;
     const data2 = {
-      ispOwnerId: auth?.ispOwner.id,
+      ispOwnerId:  ispOwnerId,
       limit: limit,
       currentPage: data.selected + 1,
     };

@@ -50,15 +50,15 @@ export default function ResellerPost() {
   // };
 
   const resellerHandler = async (data) => {
-    setIsLoading(true);
+    
 
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
         ispOwner: auth.ispOwner.id,
       };
-      postReseller(dispatch,sendingData)
-      setIsLoading(false);
+      postReseller(dispatch,sendingData, setIsLoading)
+     
 
       
     }

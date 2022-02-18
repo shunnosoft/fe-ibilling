@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isFetching: false,
   currentUser: null,
+  role: null,
+  ispOwnerId: "",
+  userData: {},
+  isFetching: false,
   error: false,
 };
 
@@ -16,10 +19,30 @@ const authSlice = createSlice({
     logInSuccess: (state, action) => {
       state.isFetching = false;
       state.currentUser = action.payload;
+      state.role = action.payload?.user.role;
+      action.payload?.user.role === "ispOwner"
+        ? (state.ispOwnerId = action.payload?.ispOwner?.id) &&
+          (state.userData = action.payload?.ispOwner)
+        : action.payload?.user.role === "manager"
+        ? (state.ispOwnerId = action.payload.manager.ispOwner) &&
+          (state.userData = action.payload?.manager)
+        : action.payload?.user.role === "collector"
+        ? (state.ispOwnerId = action.payload.collector.ispOwner) &&
+          (state.userData = action.payload?.collector)
+        : (state.ispOwnerId = "");
     },
     loginFailure: (state) => {
       state.isFetching = false;
       state.error = true;
+    },
+    updateProfile: (state, action) => {
+      if (state.role === "ispOwner") {
+        state.currentUser.ispOwner = action.payload;
+      } else if (state.role === "manager") {
+        state.currentUser.manager = action.payload;
+      } else if (state.role === "collector") {
+        state.currentUser.collector = action.payload;
+      }
     },
 
     logOut: (state) => {
@@ -28,48 +51,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { logInStart, logInSuccess, loginFailure, logOut } =
+export const { updateProfile, logInStart, logInSuccess, loginFailure, logOut } =
   authSlice.actions;
 
 export default authSlice.reducer;
-
-// const initialState = {
-//   isAuth: false,
-//   accessToken: "",
-//   ispOwner: {},
-//   manager: {},
-// };
-
-// const authSlice = createSlice({
-//   name: "auth",
-//   initialState,
-//   reducers: {
-//     setAuth: (state, { payload }) => {
-//       state.isAuth = payload;
-//     },
-//     setAccessToken: (state, { payload }) => {
-//       state.accessToken = payload;
-//     },
-//     setIspOwner: (state, { payload }) => {
-//       state.ispOwner = payload;
-//     },
-//   },
-//   extraReducers: {
-//     [fetchAsyncManager.pending]: () => {
-//       console.log("Pending");
-//     },
-
-//     [fetchAsyncManager.fulfilled]: (state, { payload }) => {
-//       console.log("Fetched Successfully!");
-//       return { ...state, manager: payload };
-//     },
-
-//     [fetchAsyncManager.rejected]: () => {
-//       console.log("Rejected");
-//     },
-//   },
-// });
-
-// export const { setAuth, accessToken, setIspOwner } = authSlice.actions;
-// export const getManager = (state) => state.auth.manager;
-// export default authSlice.reducer;

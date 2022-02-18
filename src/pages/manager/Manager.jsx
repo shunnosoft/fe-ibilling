@@ -20,7 +20,7 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { FtextField } from "../../components/common/FtextField";
- 
+
 // import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
@@ -28,22 +28,31 @@ import Footer from "../../components/admin/footer/Footer";
 import { managerPermission } from "./managerData";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addManager, deleteManager, getManger } from "../../features/apiCalls";
+import {
+  addManager,
+  deleteManager,
+  editManager,
+  getManger,
+} from "../../features/apiCalls";
+import Loader from "../../components/common/Loader";
 
 export default function Manager() {
-   
-  const manager=useSelector(state=>state.manager.manager)
-  console.log(manager)
-  
-  const ispOwnerId  =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
-  const dispatch =useDispatch()
-   
-  useEffect(()=>{
-    getManger(dispatch,ispOwnerId)
-  },[dispatch,ispOwnerId])
-   
-  const [permissions, setPermissions] = useState(managerPermission);
 
+  
+const[isLoading,setIsLoading]=useState(false)
+  const manager = useSelector((state) => state.manager.manager);
+
+  const ispOwnerId = useSelector(
+    (state) => state.auth.currentUser?.ispOwner?.id
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getManger(dispatch, ispOwnerId);
+  }, [dispatch, ispOwnerId]);
+
+  const [permissions, setPermissions] = useState(managerPermission(manager.permissions));
+   
   const managerValidate = Yup.object({
     name: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
@@ -59,20 +68,20 @@ export default function Manager() {
     nid: Yup.string().required("ম্যানেজার এর NID দিন"),
     image: Yup.string(),
   });
- 
-  const addManagerHandle = (data) => {
-    if (!manager){
 
-      addManager(dispatch,{
-        ...data, ispOwnerId
+  const addManagerHandle = (data) => {
+    if (!manager) {
+      addManager(dispatch, {
+        ...data,
+        ispOwnerId,
       });
-    } else{
-       toast("You can't add more than one manager")
+    } else {
+      toast("You can't add more than one manager");
     }
   };
 
   const deleteManagerHandler = () => {
-    deleteManager(dispatch,ispOwnerId);
+    deleteManager(dispatch, ispOwnerId);
   };
 
   const handleChange = (e) => {
@@ -80,15 +89,33 @@ export default function Manager() {
     let temp = permissions.map((val) =>
       val.value === name ? { ...val, isChecked: checked } : val
     );
+
     setPermissions(temp);
   };
 
   const updatePermissionsHandler = () => {
+    setIsLoading(true)
     let temp = {};
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;
     });
-    console.log(temp);
+    const newP = {
+      ...manager.permissions,
+      ...temp,
+    };
+    
+     
+    editManager(dispatch,   { 
+    //manager not edited with only permission so (api problem)
+    //so we have to add those extra fields
+    email: manager.email, //required 
+    ispOwner:manager.ispOwner,
+    mobile: manager.mobile, // required
+    name: manager.name, // reqired
+    permissions:newP, // can't changed api problem 
+     
+  },setIsLoading);
+    
   };
 
   return (
@@ -212,7 +239,7 @@ export default function Manager() {
                       <div className="managerDetails">
                         <div className="managerProfile">
                           <img
-                            src="https://roottogether.net/wp-content/uploads/2020/04/img-avatar-blank.jpg"
+                            src="/assets/img/noAvater.jpg"
                             alt=""
                             className="managerProfilePic"
                           />
@@ -301,8 +328,9 @@ export default function Manager() {
                           <button
                             className="managerUpdateBtn"
                             onClick={updatePermissionsHandler}
+                            disabled={isLoading}
                           >
-                            আপডেট
+                             {isLoading ? <Loader /> : " আপডেট"}
                           </button>
                         </div>
                       </div>

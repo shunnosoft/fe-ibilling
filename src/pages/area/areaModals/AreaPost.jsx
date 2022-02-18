@@ -11,7 +11,7 @@ import Loader from "../../../components/common/Loader";
 import { addArea } from "../../../features/apiCalls";
 
 export default function AreaPost() {
-  const auth = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId= useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -23,13 +23,13 @@ export default function AreaPost() {
   // POST
   const areaHandler = async (data) => {
     setIsLoading(true);
-    if (auth.ispOwner) {
+    if (ispOwnerId) {
       const sendingData = {
         name: data.name,
-        ispOwner: auth.ispOwner.id,
+        ispOwner: ispOwnerId,
       };
-      addArea(dispatch,sendingData)
-      setIsLoading(false);
+      addArea(dispatch,sendingData,setIsLoading)
+     
        
     }
   };

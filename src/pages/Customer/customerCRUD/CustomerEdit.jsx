@@ -14,7 +14,7 @@ import { editCustomer } from "../../../features/apiCalls";
 
 export default function CustomerEdit({ single }) {
   const CUSTOMER = single;
-  const auth = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   // const CUSTOMER = useSelector((state) => state.customer.singleCustomer);
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
@@ -44,19 +44,19 @@ export default function CustomerEdit({ single }) {
   // });
 
   const customerEditHandler = async (data) => {
-    console.log(data);
+    // console.log(data);
     setIsloading(true);
-    const { ispOwner } = auth;
+     
     const mainData = {
       // customerId: "randon123",
       customerId: single.customerId,
       singleCustomerID: single.id,
       // ispID: ispOwner.id,
-      ispOwner: ispOwner.id,
+      ispOwner: ispOwnerId,
       ...data,
     };
-    editCustomer(dispatch, mainData);
-    setIsloading(false);
+    editCustomer(dispatch, mainData,setIsloading);
+     
   };
 
   return (

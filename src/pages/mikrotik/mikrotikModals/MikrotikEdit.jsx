@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { postMikrotik } from "../../../features/mikrotikSlice";
+import { postMikrotik } from "../../../features/apiCalls";
+// import { postMikrotik } from "../../../features/mikrotikSlice";
 
 export default function MikrotikEdit() {
   const auth = useSelector((state) => state.auth.currentUser);
@@ -25,16 +26,14 @@ export default function MikrotikEdit() {
 
   // mikrotik handler
   const mikrotikHandler = async (data) => {
-    setIsLoading(true);
+     
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
         ispOwner: auth.ispOwner.id,
       };
-      const res = await dispatch(postMikrotik(sendingData));
-      if (res) {
-        setIsLoading(false);
-      }
+        postMikrotik(dispatch,sendingData, setIsLoading)
+      
     }
   };
 

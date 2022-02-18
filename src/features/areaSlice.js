@@ -8,7 +8,6 @@ export const areaSlice = createSlice({
   },
   reducers: {
     FetchAreaSuccess: (state, action) => {
-      console.log(action.payload)
       state.area = action.payload;
     },
     AddAreaSuccess: (state, action) => {

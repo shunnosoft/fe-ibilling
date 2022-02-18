@@ -10,7 +10,7 @@ import Loader from "../../../components/common/Loader";
 import { editArea } from "../../../features/apiCalls";
 
 export default function AreaEdit({ oneArea }) {
-  const auth = useSelector((state) => state.auth.currentUser);
+  const  ispOwnerId =useSelector(state=>state.auth.ispOwnerId)
   // const area = useSelector((state) => state.area.area);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -22,21 +22,21 @@ export default function AreaEdit({ oneArea }) {
 
   const areaEditHandler = async (data) => {
     setIsLoading(true);
-    if (auth.ispOwner) {
+    if (ispOwnerId) {
       const sendingData = {
         name: data.name,
-        ispOwner: auth.ispOwner.id,
+        ispOwner: ispOwnerId,
         id: oneArea ? oneArea.id : "",
       };
-      editArea(dispatch,sendingData)
-      setIsLoading(false);
+      editArea(dispatch,sendingData, setIsLoading)
+     
       
     }
   };
 
   return (
     <div>
-      <div
+      <div  
         className="modal fade modal-dialog-scrollable "
         id="areaEditModal"
         tabIndex="-1"

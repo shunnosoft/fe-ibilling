@@ -105,9 +105,9 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    console.log("Main Data: ", mainData);
-    addCustomer(dispatch, mainData);
-    setIsloading(false);
+    // console.log("Main Data: ", mainData);
+    addCustomer(dispatch, mainData,setIsloading);
+     
   };
 
   return (

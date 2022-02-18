@@ -55,10 +55,10 @@ export default function Reseller() {
 
   // delete reseller
   const deleteSingleReseller = async (ispId, resellerId) => {
-    setIsLoading(true);
+     
     const IDs = { ispId: ispId, resellerId: resellerId };
-      deleteReseller(dispatch,IDs); 
-    setIsLoading(false);
+      deleteReseller(dispatch,IDs,setIsLoading); 
+     
 
     
   };

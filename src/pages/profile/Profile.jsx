@@ -11,22 +11,32 @@ import { FtextField } from "../../components/common/FtextField";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
+import { passwordUpdate , profileUpdate} from "../../features/apiCalls";
+import { useDispatch } from "react-redux";
+import Loader from "../../components/common/Loader";
+import { useState } from "react";
 
 export default function Profile() {
-  const currentUser = useSelector(state=>state.auth.currentUser);
-
+  // const role = useSelector(state=>state.auth.currentUser?.user.role);
+  const currentUser = useSelector((state) => state.auth.userData);
+  const ispOwnerId =useSelector(state=>state.auth.ispOwnerId)
+   const [isLoading,setIsLoading] =useState(false)
+   const [isLoadingpass,setIsLoadingpass] =useState(false)
+  
   const passwordValidator = Yup.object({
     oldPassword: Yup.string().required("Old পাসওয়ার্ড ***"),
-    newPassword: Yup.string().required("New পাসওয়ার্ড ***").min(3),
+    newPassword: Yup.string().required("New পাসওয়ার্ড ***").matches(/^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
+    "Must Contain 8 Characters,   One Alphabat, One Number"),
   });
-
+const dispatch =useDispatch()
   const progileEditHandler = (data) => {
-    console.log("Updated Data: ", data);
+    profileUpdate(dispatch,data, ispOwnerId,setIsLoading)
   };
 
   //   change password handler
   const changePasswordHandler = (data) => {
-    console.log("Password Data: ", data);
+    // console.log(data)
+    passwordUpdate(data,setIsLoadingpass);
   };
   return (
     <>
@@ -92,7 +102,7 @@ export default function Profile() {
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                              আপডেট
+                            {isLoading ? <Loader /> : " আপডেট"} 
                             </button>
                           </Form>
                         )}
@@ -110,6 +120,7 @@ export default function Profile() {
                         validationSchema={passwordValidator}
                         onSubmit={(values) => {
                           changePasswordHandler(values);
+                           
                         }}
                       >
                         {() => (
@@ -128,7 +139,7 @@ export default function Profile() {
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                              পাসওয়ার্ড আপডেট
+                            {isLoadingpass? <Loader/>:"পাসওয়ার্ড আপডেট"}  
                             </button>
                           </Form>
                         )}

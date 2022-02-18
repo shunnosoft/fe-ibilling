@@ -70,7 +70,7 @@ export default function CollectorPost() {
         areas: OneSubArea,
         ispOwner: auth.ispOwner.id,
       };
-      addCollector(dispatch, sendingData);
+      addCollector(dispatch, sendingData, setIsLoading);
     }
   };
 

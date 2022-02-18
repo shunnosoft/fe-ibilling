@@ -44,12 +44,14 @@ import {
   deletePPPoEpackage,
   deleteSingleMikrotik,
   fetchActivepppoeUser,
+  fetchMikrotik,
   fetchMikrotikSyncUser,
   fetchpppoePackage,
   fetchpppoeUser,
    
 } from "../../features/apiCalls";
 import apiLink from "../../api/apiLink";
+import { clearMikrotik } from "../../features/mikrotikSlice";
 // import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
@@ -74,6 +76,7 @@ export default function ConfigMikrotik() {
   const mikrotikSyncUser = useSelector(state=>state.mikrotik.mikrotikSyncUser);
   
   const [isLoading, setIsloading] = useState(false);
+  const [isLoadingPac, setIsLoadingPac] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
@@ -94,8 +97,10 @@ export default function ConfigMikrotik() {
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
     };
+    dispatch(clearMikrotik())
+    fetchMikrotik(dispatch,ispOwner)
     fetchpppoeUser(dispatch, IDs);
-    fetchpppoePackage(dispatch, IDs);
+    fetchpppoePackage(dispatch, IDs,setIsLoadingPac);
     fetchMikrotikSyncUser(dispatch,IDs)
     fetchActivepppoeUser(dispatch, IDs);
   }, [ispOwner, mikrotikId, dispatch, refresh]);
@@ -137,32 +142,39 @@ export default function ConfigMikrotik() {
 
   const deleteSingleMKHandler = async () => {
     if (window.confirm("মাইক্রোটিক ডিলিট করতে চান?") === true) {
-      setIsloading(true);
+     
       const IDs = {
         ispOwner: ispOwner,
         id: mikrotikId,
       };
-      deleteSingleMikrotik(dispatch, IDs);
-      setIsloading(false);
+      deleteSingleMikrotik(dispatch, IDs ,setIsloading,navigate);
+      
+       
     }
   };
 
   
   const MikrotikConnectionTest = async () => {
+    setIsChecking(true)
+
     await apiLink({
       method: "GET",
       url: `/v1/mikrotik/testConnection/${ispOwner}/${mikrotikId}`,
     })
       .then(() => {
+        setIsChecking(false)
         toast("মাইক্রোটিক কানেকশন ঠিক আছে");
       })
       .catch(() => {
+    setIsChecking(false)
+
         toast("Error - মাইক্রোটিক কানেকশন !");
       });
   };
 
   const selectMikrotikOptionsHandler = (e) => {
     const val = e.target.value;
+    console.log(val)
     setWhatYouWantToShow(val);
   };
 
@@ -277,7 +289,7 @@ export default function ConfigMikrotik() {
                           <div className="col-sm-8">
                             <h4 className="allCollector">
                               PPPoE প্যাকেজ:{" "}
-                              <span>{pppoePackage?.length || "NULL"}</span>
+                              <span> {isLoadingPac?<Loader/>:pppoePackage?.length} </span>
                             </h4>
                           </div>
 
