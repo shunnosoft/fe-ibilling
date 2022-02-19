@@ -39,7 +39,10 @@ export default function Home() {
       fetchReseller(dispatch,ispOwnerId)
 
     }
-    getCollector(dispatch,ispOwnerId)
+    if (role==="ispOwner"||role==="manager"){
+      getCollector(dispatch,ispOwnerId)
+
+    }
     getArea(dispatch,ispOwnerId);
   
   },[dispatch,ispOwnerId,role])

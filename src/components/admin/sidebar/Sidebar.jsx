@@ -121,9 +121,10 @@ export default function Sidebar() {
               ) : (
                 ""
               )}
-
+              {
+                userRole==='manager'|| userRole==="ispOwner"?
               <NavLink
-                key={4}
+              key={4}
                 to={"/collector"}
                 className={(navInfo) =>
                   navInfo.isActive ? activeClass.active : ""
@@ -140,7 +141,8 @@ export default function Sidebar() {
                     <span className="sidebarLinksName">{"কালেক্টর"}</span>
                   </li>
                 </FontColor>
-              </NavLink>
+              </NavLink>:''
+              }
 
               <NavLink
                 key={6}

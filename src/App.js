@@ -18,7 +18,7 @@ import Customer from "./pages/Customer/Customer";
 import NotFound from "./pages/NotFound/NotFound";
 import Success from "./pages/success/Success";
 import Manager from "./pages/manager/Manager";
-import Reseller from "./pages/reseller/Reseller";
+// import Reseller from "./pages/reseller/Reseller";
 import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
@@ -65,6 +65,17 @@ function App() {
               )
             }
           />
+          <Route
+            path="/collector"
+            element={
+              userRole === "manager" || userRole === "ispOwner" ? (
+                <Collector />
+              ) : (
+                <Navigate to={"/"} />
+              )
+            }
+          />
+
 
           
           <Route
@@ -91,7 +102,6 @@ function App() {
             <Route path="bill" element={<Bill />} />
             {/* <Route path="reseller" element={<Reseller />} /> */}
             <Route path="customer" element={<Customer />} />
-            <Route path="collector" element={<Collector />} />
 
             <Route path="*" element={<NotFound />} />
           </Route>
