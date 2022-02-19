@@ -39,12 +39,12 @@ export default function Sidebar() {
   };
 
   // sub bill toggle
-  const toggleSubBillingHandle = () => {
-    setIsDown(!isDown);
-    document
-      .getElementById("toggleSubBilling")
-      .classList.toggle("hideSubBilling");
-  };
+  // const toggleSubBillingHandle = () => {
+  //   setIsDown(!isDown);
+  //   document
+  //     .getElementById("toggleSubBilling")
+  //     .classList.toggle("hideSubBilling");
+  // };
 
   return (
     <TitleColor>
@@ -98,6 +98,7 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </NavLink>
+
               {userRole === "ispOwner" ? (
                 <NavLink
                   key={3}
@@ -161,6 +162,7 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </NavLink>
+
               {userRole === "ispOwner" ? (
                 <NavLink
                   key={5}
@@ -187,19 +189,23 @@ export default function Sidebar() {
 
               {/* bill */}
               {userRole === "manager" || userRole === "collector" ? (
-                <div onClick={toggleSubBillingHandle}>
+                <NavLink
+                  key={6}
+                  to={"/bill"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
                   <FontColor>
-                    <li className="sidebarItems">
-                      <div className="sidebarIcon">
-                        <Coin />
-                      </div>
-                      <span className="sidebarLinksName">বিল</span>
-                      <span className="arrowRightFillStyle">
-                        {isDown ? <CaretDownFill /> : <CaretRightFill />}
-                      </span>
+                    <li
+                      className="sidebarItems"
+                      id={window.location.pathname === "/bill" ? "active" : ""}
+                    >
+                      <div className="sidebarIcon">{<Coin />}</div>
+                      <span className="sidebarLinksName">{"বিল"}</span>
                     </li>
                   </FontColor>
-                </div>
+                </NavLink>
               ) : (
                 <></>
               )}

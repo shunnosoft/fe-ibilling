@@ -1,5 +1,4 @@
-import { createSlice} from "@reduxjs/toolkit";
-
+import { createSlice } from "@reduxjs/toolkit";
 
 export const areaSlice = createSlice({
   name: "area",
@@ -24,14 +23,14 @@ export const areaSlice = createSlice({
         1
       );
     },
-clearArea:(state)=>{
-state.area=[]
-},
+    clearArea: (state) => {
+      state.area = [];
+    },
     AddSubAreaSuccess: (state, action) => {
-    
       // state.area[0].subAreas.push(action.payload)
-      state.area.find(item=>item.id===action.payload.area).subAreas.push(action.payload)
-         
+      state.area
+        .find((item) => item.id === action.payload.area)
+        .subAreas.push(action.payload);
     },
     EditSubAreaSuccess: (state, action) => {
       state.area.find((item) => item.id === action.payload.area).subAreas[
@@ -51,7 +50,6 @@ state.area=[]
         );
     },
   },
-  
 });
 
 export const {

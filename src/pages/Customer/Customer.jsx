@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
+import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -34,14 +35,17 @@ import { deleteACustomer, getCustomer } from "../../features/apiCalls";
 
 export default function Customer() {
   const dispatch = useDispatch();
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const auth = useSelector((state) => state.auth.currentUser);
+  const ispOwner = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
 
+  console.log("IspOwner: ", ispOwner);
+
   const Customers = useSelector((state) => state.customer.customer);
- 
+
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const getSpecificCustomer = (id) => {
@@ -56,42 +60,41 @@ export default function Customer() {
   // DELETE handler
   const deleteCustomer = async (ID) => {
     setIsDeleting(true);
-    
     const IDs = {
-      ispID: ispOwnerId,
+      ispID: ispOwner,
       customerID: ID,
     };
-    deleteACustomer(dispatch, IDs,  setIsDeleting);
-     
+    deleteACustomer(dispatch, IDs);
+    setIsDeleting(false);
   };
 
   useEffect(() => {
-    getCustomer(dispatch,  ispOwnerId);
-  }, [dispatch, ispOwnerId]);
+    getCustomer(dispatch, ispOwner);
+  }, [dispatch, auth]);
 
   const billUpdateHandler = (data) => {
     // console.log("Bill Data:", data);
   };
 
   useEffect(() => {
-    const getData = async () => {
+    const getData = () => {
       setIsloading(true);
       let limit = 10;
       const data2 = {
-        ispOwnerId: ispOwnerId,
+        ispOwnerId: ispOwner,
         limit: limit,
         currentPage: 1,
       };
       getCustomer(dispatch, data2, setIsloading);
     };
     getData();
-  }, [ispOwnerId,dispatch]);
+  }, []);
 
   const handlePageClick = (data) => {
     setIsloading(true);
     let limit = 10;
     const data2 = {
-      ispOwnerId:  ispOwnerId,
+      ispOwnerId: ispOwner,
       limit: limit,
       currentPage: data.selected + 1,
     };
@@ -113,8 +116,6 @@ export default function Customer() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              {/* <Alert message={"গ্রাহক  অ্যাড"} /> */}
-
               <FourGround>
                 <h2 className="collectorTitle">গ্রাহক </h2>
               </FourGround>
