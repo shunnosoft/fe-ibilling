@@ -192,7 +192,7 @@ export default function Sidebar() {
               {/* bill */}
               {userRole === "manager" || userRole === "collector" ? (
                 <NavLink
-                  key={6}
+                  key={7}
                   to={"/bill"}
                   className={(navInfo) =>
                     navInfo.isActive ? activeClass.active : ""

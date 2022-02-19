@@ -40,7 +40,7 @@ export default function Manager() {
 
   
 const[isLoading,setIsLoading]=useState(false)
-  const manager = useSelector((state) => state.manager.manager);
+  const manager = useSelector((state) => state.manager?.manager);
 
   const ispOwnerId = useSelector(
     (state) => state.auth.currentUser?.ispOwner?.id
@@ -51,7 +51,7 @@ const[isLoading,setIsLoading]=useState(false)
     getManger(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId]);
 
-  const [permissions, setPermissions] = useState(managerPermission(manager.permissions));
+  const [permissions, setPermissions] = useState(managerPermission(manager?.permissions));
    
   const managerValidate = Yup.object({
     name: Yup.string()

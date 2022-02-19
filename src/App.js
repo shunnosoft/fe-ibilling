@@ -58,7 +58,7 @@ function App() {
           <Route
             path="/bill"
             element={
-              userRole === "manager" || userRole === "collector" ? (
+            (  userRole === "manager" &&user )||( userRole === "collector" && user) ? (
                 <Bill />
               ) : (
                 <Navigate to={"/"} />
@@ -68,7 +68,7 @@ function App() {
           <Route
             path="/collector"
             element={
-              userRole === "manager" || userRole === "ispOwner" ? (
+             ( userRole === "manager" &&user) || (userRole === "ispOwner" &&user) ? (
                 <Collector />
               ) : (
                 <Navigate to={"/"} />
@@ -81,13 +81,13 @@ function App() {
           <Route
             path="manager"
             element={
-              userRole === "ispOwner" ? <Manager /> : <Navigate to={"/home"} />
+              userRole === "ispOwner" &&user ? <Manager /> : <Navigate to={"/home"} />
             }
           />
           <Route
             path="mikrotik"
             element={
-              userRole === "ispOwner" ? <Mikrotik /> : <Navigate to={"/home"} />
+              userRole === "ispOwner" &&user ? <Mikrotik /> : <Navigate to={"/home"} />
             }
           />
 
