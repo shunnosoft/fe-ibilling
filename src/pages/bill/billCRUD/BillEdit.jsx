@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
-import "../customer.css";
+import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 // import { editCustomer } from "../../../features/customerSlice";
 // import { fetchCustomer } from "../../../features/customerSlice";
@@ -46,7 +46,7 @@ export default function CustomerEdit({ single }) {
   const customerEditHandler = async (data) => {
     // console.log(data);
     setIsloading(true);
-     
+
     const mainData = {
       // customerId: "randon123",
       customerId: single.customerId,
@@ -55,8 +55,7 @@ export default function CustomerEdit({ single }) {
       ispOwner: ispOwnerId,
       ...data,
     };
-    editCustomer(dispatch, mainData,setIsloading);
-     
+    editCustomer(dispatch, mainData, setIsloading);
   };
 
   return (
