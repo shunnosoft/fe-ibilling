@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -68,11 +68,7 @@ export default function Bill() {
 
   useEffect(() => {
     getCustomer(dispatch, ispOwner);
-  }, [dispatch, auth]);
-
-  const billUpdateHandler = (data) => {
-    // console.log("Bill Data:", data);
-  };
+  }, [ispOwner, dispatch, auth]);
 
   useEffect(() => {
     const getData = () => {
@@ -86,7 +82,7 @@ export default function Bill() {
       getCustomer(dispatch, data2, setIsloading);
     };
     getData();
-  }, []);
+  }, [dispatch, ispOwner]);
 
   const handlePageClick = (data) => {
     setIsloading(true);
@@ -121,7 +117,7 @@ export default function Bill() {
               {/* Model start */}
               <BillPost />
               <BillEdit single={singleCustomer} />
-              <BillCollect />
+              <BillCollect singleCustomer={singleCustomer} />
               <BillDetails single={singleCustomer} />
               {/* Model finish */}
 
@@ -235,7 +231,7 @@ export default function Bill() {
                                     data-bs-toggle="modal"
                                     data-bs-target="#collectCustomerBillModal"
                                     onClick={() => {
-                                      billUpdateHandler(val.id);
+                                      getSpecificCustomer(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item">

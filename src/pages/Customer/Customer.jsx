@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
-  Wallet,
+  // Wallet,
   ThreeDots,
   ArchiveFill,
   PenFill,
@@ -42,8 +42,6 @@ export default function Customer() {
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
 
-  console.log("IspOwner: ", ispOwner);
-
   const Customers = useSelector((state) => state.customer.customer);
 
   // get specific customer
@@ -70,11 +68,7 @@ export default function Customer() {
 
   useEffect(() => {
     getCustomer(dispatch, ispOwner);
-  }, [dispatch, auth]);
-
-  const billUpdateHandler = (data) => {
-    // console.log("Bill Data:", data);
-  };
+  }, [ispOwner, dispatch, auth]);
 
   useEffect(() => {
     const getData = () => {
@@ -88,7 +82,7 @@ export default function Customer() {
       getCustomer(dispatch, data2, setIsloading);
     };
     getData();
-  }, []);
+  }, [dispatch, ispOwner]);
 
   const handlePageClick = (data) => {
     setIsloading(true);
@@ -233,12 +227,9 @@ export default function Customer() {
                                       </div>
                                     </div>
                                   </li>
-                                  <li
+                                  {/* <li
                                     data-bs-toggle="modal"
                                     data-bs-target="#collectCustomerBillModal"
-                                    onClick={() => {
-                                      billUpdateHandler(val.id);
-                                    }}
                                   >
                                     <div className="dropdown-item">
                                       <div className="customerAction">
@@ -246,7 +237,7 @@ export default function Customer() {
                                         <p className="actionP">বিল গ্রহণ</p>
                                       </div>
                                     </div>
-                                  </li>
+                                  </li> */}
                                   <li
                                     data-bs-toggle="modal"
                                     data-bs-target="#customerEditModal"

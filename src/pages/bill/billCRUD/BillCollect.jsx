@@ -1,19 +1,32 @@
 import { useState } from "react";
+import { Form, Formik } from "formik";
+import { useSelector } from "react-redux";
+import * as Yup from "yup";
+//internal imports
+import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 
-export default function CustomerBillCollect() {
-  const [billAmount, setBillAmount] = useState("");
+export default function CustomerBillCollect({ singleCustomer }) {
+  const [collectedBy, setCollectedBy] = useState("manager");
+  const [billType, setBillType] = useState("bill");
+  const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
+  const currentUser = useSelector((state) => state.auth?.currentUser);
 
+  const BillValidatoin = Yup.object({
+    amount: Yup.string().required("Please insert amount."),
+  });
   // bill amount
-  const customerBillHandler = () => {
-    const selector = document.querySelector(".ifCannotSelectBill");
-    if (billAmount === "") {
-      selector.style.display = "block";
-      return;
-    }
-    selector.style.display = "none";
+  const customerBillHandler = (data) => {
+    const sendingData = {
+      amount: data.amount,
+      collectedBy: collectedBy,
+      billType: billType,
+      customer: singleCustomer.id,
+      ispOwner: ispOwner,
+      collectorId: currentUser?.collector?.id, //when collector is logged in
+    };
 
-    // console.log("Amount: ", billAmount);
+    console.log("Colelcted Bill: ", sendingData);
   };
 
   return (
@@ -44,32 +57,46 @@ export default function CustomerBillCollect() {
                 ></button>
               </div>
               <div className="modal-body">
-                {/* inpurts */}
-                <div className="input-group mb-3">
-                  <span
-                    className="input-group-text"
-                    id="inputGroup-sizing-default"
-                  >
-                    পরিমান
-                  </span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default"
-                    onChange={(e) => setBillAmount(e.target.value)}
-                  />
-                </div>
-                <p className="ifCannotSelectBill">ফিল্ড ফাঁকা রাখা যাবে না</p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="submit"
-                  className="btn btn-success"
-                  onClick={customerBillHandler}
+                <Formik
+                  initialValues={{
+                    amount: "",
+                    // collectorId,customer,ispOwner
+                  }}
+                  validationSchema={BillValidatoin}
+                  onSubmit={(values) => {
+                    customerBillHandler(values);
+                  }}
                 >
-                  আপডেট
-                </button>
+                  {() => (
+                    <Form>
+                      <FtextField type="text" name="amount" label="পরিমান" />
+
+                      <label>কে কালেক্ট করছে </label>
+                      <select
+                        class="form-select"
+                        onChange={(e) => setCollectedBy(e.target.value)}
+                      >
+                        <option value="manager">ম্যানেজার</option>
+                        <option value="collector">কালেক্টর</option>
+                      </select>
+
+                      <label className="mt-3">ধরণ</label>
+                      <select
+                        class="form-select"
+                        onChange={(e) => setBillType(e.target.value)}
+                      >
+                        <option value="bill">বিল</option>
+                        <option value="connectionFee">কানেকশন ফি</option>
+                      </select>
+
+                      <div className="mt-3">
+                        <button type="submit" className="btn btn-success">
+                          সাবমিট
+                        </button>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </div>

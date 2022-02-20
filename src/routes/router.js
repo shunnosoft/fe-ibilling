@@ -3,11 +3,8 @@ import {
   Wallet2,
   PeopleFill,
   PersonPlus,
-  
   GeoAlt,
-  LayersFill,
   Wifi,
-  // Coin,
 } from "react-bootstrap-icons";
 
 export const AllRoutes = [
@@ -41,7 +38,7 @@ export const AllRoutes = [
     icon: <PeopleFill />,
     link: "/customer",
   },
-   
+
   {
     title: "মাইক্রোটিক",
     icon: <Wifi />,

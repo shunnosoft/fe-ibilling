@@ -1,4 +1,3 @@
-import { useState } from "react";
 import React from "react";
 import "./sidebar.css";
 
@@ -7,26 +6,20 @@ import {
   List,
   ArrowLeft,
   Coin,
-  CaretRightFill,
-  CaretDownFill,
   HouseDoorFill,
   Wallet2,
   PeopleFill,
   PersonPlus,
   GeoAlt,
-  LayersFill,
   Wifi,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
-import { AllRoutes } from "../../../routes/router";
 import activeClass from "../../../assets/css/active.module.css";
 import { billData } from "./billData";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {
   const userRole = useSelector((state) => state.auth.role);
-
-  const [isDown, setIsDown] = useState(false);
 
   // addSidebar
   const addSidebar = () => {
@@ -57,7 +50,8 @@ export default function Sidebar() {
             <h2>
               <NavLink to="/" className="adminDashboardTitle">
                 <ArrowLeft className="GotoHomeFromDashboard" />
-                ড্যাশবোর্ড
+                ড্যাশবোর্ড {userRole === "manager" ? " (ম্যানেজার)" : ""}
+                {userRole === "collector" ? " (কালেক্টর)" : ""}
               </NavLink>
               <span className="HideSidebar" onClick={removeSidebar}></span>
             </h2>
