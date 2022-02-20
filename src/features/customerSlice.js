@@ -7,7 +7,7 @@ const customerSliec = createSlice({
   },
   reducers: {
     getCustomerSuccess: (state, action) => {
-      state.customer = action.payload.results;
+      state.customer = action.payload;
     },
     addCustomerSuccess: (state, action) => {
       state.customer.push(action.payload);

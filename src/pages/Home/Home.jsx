@@ -37,6 +37,8 @@ export default function Home() {
       getManger(dispatch,ispOwnerId);  
       fetchMikrotik(dispatch,ispOwnerId)
       fetchReseller(dispatch,ispOwnerId)
+      
+
 
     }
     if (role==="ispOwner"||role==="manager"){

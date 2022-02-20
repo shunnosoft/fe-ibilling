@@ -135,7 +135,7 @@ export default function Collector() {
                         </tr>
                       </thead>
                       <tbody>
-                        {collector.length === undefined ? (
+                        {collector?.length === undefined ? (
                           <tr>
                             <TdLoader colspan={5} />
                           </tr>

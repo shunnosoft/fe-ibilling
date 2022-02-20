@@ -148,11 +148,10 @@ export const addArea = async (dispatch, data, setIsLoading) => {
     toast("এরিয়া অ্যাড সফল হয়েছে ");
   } catch (error) {
     setIsLoading(false);
-   if (error.response.status===401)
-   {
-     toast("Permission nei")
+    if (error.response.status === 401) {
+      toast("Permission nei");
     }
-    toast(error.message)
+    toast(error.message);
   }
 };
 export const editArea = async (dispatch, data, setIsLoading) => {
@@ -316,18 +315,17 @@ export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
 
 //Customers
 
-export const getCustomer = async (dispatch, data, setIsloading) => {
+export const getCustomer = async (dispatch,  ispOwnerId, setIsloading) => {
+  setIsloading(true)
   try {
-    const { ispOwnerId, limit, currentPage } = data;
-    if (limit && currentPage) {
-      const res = await apiLink.get(
-        `/v1/ispOwner/customer/${ispOwnerId}/?limit=${limit}&page=${currentPage}`
-      );
-      dispatch(getCustomerSuccess(res.data));
-      setIsloading(false);
-    }
+    
+
+    const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwnerId}`);
+    dispatch(getCustomerSuccess(res.data));
+    setIsloading(false);
   } catch (error) {
     console.log(error.message);
+    setIsloading(false)
   }
 };
 

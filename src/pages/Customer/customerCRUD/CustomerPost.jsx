@@ -58,7 +58,7 @@ export default function CustomerModal() {
       setSubArea(temp);
     }
   };
-
+const [loadingPac,setLoadingPac] =useState(false)
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -67,7 +67,7 @@ export default function CustomerModal() {
         ispOwner: auth.ispOwner.id,
         mikrotikId: id,
       };
-      fetchpppoePackage(dispatch, IDs);
+      fetchpppoePackage(dispatch, IDs, setLoadingPac);
     }
     setSingleMikrotik(id);
   };

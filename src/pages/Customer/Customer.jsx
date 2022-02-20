@@ -42,9 +42,11 @@ export default function Customer() {
   const [cusSearch, setCusSearch] = useState("");
   let serial = 0;
 
-  console.log("IspOwner: ", ispOwner);
-
+  
   const Customers = useSelector((state) => state.customer.customer);
+  
+  console.log("IspOwner: ", ispOwner);
+  console.log("customer: ",Customers);
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -69,26 +71,26 @@ export default function Customer() {
   };
 
   useEffect(() => {
-    getCustomer(dispatch, ispOwner);
-  }, [dispatch, auth]);
+    getCustomer(dispatch, ispOwner,setIsloading);
+  }, [dispatch,ispOwner]);
 
   const billUpdateHandler = (data) => {
     // console.log("Bill Data:", data);
   };
 
-  useEffect(() => {
-    const getData = () => {
-      setIsloading(true);
-      let limit = 10;
-      const data2 = {
-        ispOwnerId: ispOwner,
-        limit: limit,
-        currentPage: 1,
-      };
-      getCustomer(dispatch, data2, setIsloading);
-    };
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   const getData = () => {
+  //     setIsloading(true);
+  //     let limit = 10;
+  //     const data2 = {
+  //       ispOwnerId: ispOwner,
+  //       limit: limit,
+  //       currentPage: 1,
+  //     };
+  //     getCustomer(dispatch, data2, setIsloading);
+  //   };
+  //   getData();
+  // }, []);
 
   const handlePageClick = (data) => {
     setIsloading(true);
@@ -145,7 +147,7 @@ export default function Customer() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক : <span>{Customers.length || "NULL"}</span>
+                          মোট গ্রাহক : <span>{Customers?.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -189,7 +191,7 @@ export default function Customer() {
                           <tr>
                             <TdLoader colspan={6} />
                           </tr>
-                        ) : Customers.length === undefined ? (
+                        ) : Customers?.length === undefined ? (
                           ""
                         ) : (
                           Customers.filter((val) => {
@@ -286,7 +288,7 @@ export default function Customer() {
 
                     {/* previous */}
 
-                    <ReactPaginate
+                    {/* <ReactPaginate
                       previousLabel={"Previous"}
                       nextLabel={"Next"}
                       breakLabel={"..."}
@@ -303,7 +305,7 @@ export default function Customer() {
                       breakClassName={"page-item"}
                       breakLinkClassName={"page-link"}
                       activeClassName={"active"}
-                    />
+                    /> */}
                   </div>
                 </div>
               </FourGround>
