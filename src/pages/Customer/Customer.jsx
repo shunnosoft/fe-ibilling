@@ -32,27 +32,36 @@ import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 import { deleteACustomer, getCustomer } from "../../features/apiCalls";
+import arraySort from "array-sort";
 
 export default function Customer() {
+  const cus = useSelector((state) => state.customer.customer);
+
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth.currentUser);
   const ispOwner = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
+
   let serial = 0;
 
-  
-  const Customers = useSelector((state) => state.customer.customer);
-  
-  console.log("IspOwner: ", ispOwner);
-  console.log("customer: ",Customers);
+  const [Customers, setCustomers] = useState(cus);
+
+  useEffect(() => {
+    const keys = ["name", "mobile", "address", "paymentStatus", "status"];
+    setCustomers(
+      cus.filter((item) =>
+        keys.some((key) => item[key].toLowerCase().includes(cusSearch))
+      )
+    );
+  }, [cus, cusSearch]);
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const getSpecificCustomer = (id) => {
-    if (Customers.length !== undefined) {
-      const temp = Customers.find((val) => {
+    if (cus.length !== undefined) {
+      const temp = cus.find((val) => {
         return val.id === id;
       });
       setSingleCustomer(temp);
@@ -71,36 +80,17 @@ export default function Customer() {
   };
 
   useEffect(() => {
-    getCustomer(dispatch, ispOwner,setIsloading);
-  }, [dispatch,ispOwner]);
+    getCustomer(dispatch, ispOwner, setIsloading);
+  }, [dispatch, ispOwner]);
 
   const billUpdateHandler = (data) => {
     // console.log("Bill Data:", data);
   };
-
-  // useEffect(() => {
-  //   const getData = () => {
-  //     setIsloading(true);
-  //     let limit = 10;
-  //     const data2 = {
-  //       ispOwnerId: ispOwner,
-  //       limit: limit,
-  //       currentPage: 1,
-  //     };
-  //     getCustomer(dispatch, data2, setIsloading);
-  //   };
-  //   getData();
-  // }, []);
-
-  const handlePageClick = (data) => {
-    setIsloading(true);
-    let limit = 10;
-    const data2 = {
-      ispOwnerId: ispOwner,
-      limit: limit,
-      currentPage: data.selected + 1,
-    };
-    getCustomer(dispatch, data2, setIsloading);
+  const [isSorted, setSorted] = useState(false);
+  const toggleSort = (item) => {
+     
+    setCustomers(arraySort(Customers, item, { reverse:isSorted}));
+    setSorted(!isSorted);
   };
 
   return (
@@ -147,7 +137,7 @@ export default function Customer() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক : <span>{Customers?.length || "NULL"}</span>
+                          মোট গ্রাহক : <span>{cus?.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -178,7 +168,10 @@ export default function Customer() {
                         <tr>
                           <th scope="col">সিরিয়াল</th>
                           <th scope="col">নাম</th>
-                          <th scope="col">মোবাইল</th>
+                          <th scope="col">
+                            মোবাইল
+                            <button onClick={()=> toggleSort("name")}>sort</button>
+                          </th>
                           <th scope="col">এড্রেস</th>
                           <th scope="col">স্ট্যাটাস</th>
                           <th scope="col" className="centeringTD">
@@ -194,11 +187,7 @@ export default function Customer() {
                         ) : Customers?.length === undefined ? (
                           ""
                         ) : (
-                          Customers.filter((val) => {
-                            return val.name
-                              .toLowerCase()
-                              .includes(cusSearch.toLowerCase());
-                          }).map((val, key) => (
+                          Customers.map((val, key) => (
                             <tr key={key} id={val.id}>
                               <td style={{ paddingLeft: "30px" }}>
                                 {++serial}
