@@ -51,25 +51,36 @@ export default function Customer() {
   const [Customers, setCustomers] = useState(cus);
 
   useEffect(() => {
-    const keys = ["name", "mobile", "address", "paymentStatus", "status"];
+    const keys = [
+      "monthlyFee",
+      "customerId",
+      "name",
+      "mobile",
+      "address",
+      "paymentStatus",
+      "status",
+      "balance",
+    ];
     setCustomers(
       cus.filter((item) =>
-        keys.some((key) => item[key].toLowerCase().includes(cusSearch))
+        keys.some((key) =>
+          typeof item[key] === "string"
+            ? item[key].toLowerCase().includes(cusSearch)
+            : item[key].toString().includes(cusSearch)
+        )
       )
     );
   }, [cus, cusSearch]);
 
- 
   // active filter
   const handleActiveFilter = (e) => {
     let fvalue = e.target.value;
-     
+    setCusSearch(fvalue)
   };
 
   // paid filter
   const handlePaidFilter = (e) => {
     let pvalue = e.target.value;
-    
   };
 
   // get specific customer
@@ -103,8 +114,7 @@ export default function Customer() {
   };
   const [isSorted, setSorted] = useState(false);
   const toggleSort = (item) => {
-     
-    setCustomers(arraySort(Customers, item, { reverse:isSorted}));
+    setCustomers(arraySort(Customers, item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
 
@@ -156,16 +166,13 @@ export default function Customer() {
                         className="form-select"
                         onChange={handleActiveFilter}
                       >
+                        <option value="" selected>ফিল্টার করুন </option>
                         <option value="active">একটিভ</option>
                         <option value="inactive">ইনএকটিভ</option>
-                      </select>
-                      <select
-                        className="form-select"
-                        onChange={handlePaidFilter}
-                      >
                         <option value="unpaid">বকেয়া</option>
                         <option value="paid">পরিশোধ</option>
                       </select>
+                       
                     </div>
 
                     <div className="row searchCollector">
@@ -200,17 +207,39 @@ export default function Customer() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
-                          <th scope="col">আইডি</th>
-                          <th scope="col">নাম</th>
-                          <th scope="col">
-                            মোবাইল
-                            <button onClick={()=> toggleSort("name")}>sort</button>
+                          <th
+                            onClick={() => toggleSort("customerId")}
+                            scope="col"
+                          >
+                            আইডি
                           </th>
-                          <th scope="col">এড্রেস</th>
-                          <th scope="col">স্ট্যাটাস</th>
-                          <th scope="col">PPPoE</th>
-                          <th scope="col">ব্যালান্স</th>
-                          <th scope="col">মাসিক ফি</th>
+                          <th onClick={() => toggleSort("name")} scope="col">
+                            নাম
+                          </th>
+                          <th onClick={() => toggleSort("mobile")} scope="col">
+                            মোবাইল
+                          </th>
+                          <th onClick={() => toggleSort("address")} scope="col">
+                            এড্রেস
+                          </th>
+                          <th onClick={() => toggleSort("status")} scope="col">
+                            স্ট্যাটাস
+                          </th>
+                          <th
+                            onClick={() => toggleSort("pppoe.profile")}
+                            scope="col"
+                          >
+                            PPPoE
+                          </th>
+                          <th onClick={() => toggleSort("balance")} scope="col">
+                            ব্যালান্স
+                          </th>
+                          <th
+                            onClick={() => toggleSort("monthlyFee")}
+                            scope="col"
+                          >
+                            মাসিক ফি
+                          </th>
                           <th scope="col" className="centeringTD">
                             অ্যাকশন
                           </th>
