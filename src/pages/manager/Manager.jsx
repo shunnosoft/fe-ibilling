@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   PersonPlusFill,
   ThreeDots,
-  ArchiveFill,
+  // ArchiveFill,
   PenFill,
   PersonFill,
 } from "react-bootstrap-icons";
@@ -30,16 +30,14 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
   addManager,
-  deleteManager,
+  // deleteManager,
   editManager,
   getManger,
 } from "../../features/apiCalls";
 import Loader from "../../components/common/Loader";
 
 export default function Manager() {
-
-  
-const[isLoading,setIsLoading]=useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const manager = useSelector((state) => state.manager.manager);
 
   const ispOwnerId = useSelector(
@@ -51,8 +49,10 @@ const[isLoading,setIsLoading]=useState(false)
     getManger(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId]);
 
-  const [permissions, setPermissions] = useState(managerPermission(manager.permissions));
-   
+  const [permissions, setPermissions] = useState(
+    managerPermission(manager.permissions)
+  );
+
   const managerValidate = Yup.object({
     name: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
@@ -80,9 +80,9 @@ const[isLoading,setIsLoading]=useState(false)
     }
   };
 
-  const deleteManagerHandler = () => {
-    deleteManager(dispatch, ispOwnerId);
-  };
+  // const deleteManagerHandler = () => {
+  //   deleteManager(dispatch, ispOwnerId);
+  // };
 
   const handleChange = (e) => {
     const { name, checked } = e.target;
@@ -94,7 +94,7 @@ const[isLoading,setIsLoading]=useState(false)
   };
 
   const updatePermissionsHandler = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     let temp = {};
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;
@@ -103,19 +103,20 @@ const[isLoading,setIsLoading]=useState(false)
       ...manager.permissions,
       ...temp,
     };
-    
-     
-    editManager(dispatch,   { 
-    //manager not edited with only permission so (api problem)
-    //so we have to add those extra fields
-    email: manager.email, //required 
-    ispOwner:manager.ispOwner,
-    mobile: manager.mobile, // required
-    name: manager.name, // reqired
-    permissions:newP, // can't changed api problem 
-     
-  },setIsLoading);
-    
+
+    editManager(
+      dispatch,
+      {
+        //manager not edited with only permission so (api problem)
+        //so we have to add those extra fields
+        email: manager.email, //required
+        ispOwner: manager.ispOwner,
+        mobile: manager.mobile, // required
+        name: manager.name, // reqired
+        permissions: newP, // can't changed api problem
+      },
+      setIsLoading
+    );
   };
 
   return (
@@ -256,14 +257,14 @@ const[isLoading,setIsLoading]=useState(false)
                                 className="dropdown-menu"
                                 aria-labelledby="ManagerDropdownMenu"
                               >
-                                <li onClick={deleteManagerHandler}>
+                                {/* <li onClick={deleteManagerHandler}>
                                   <div className="dropdown-item actionManager">
                                     <div className="ManagerAactionLi">
                                       <ArchiveFill />
                                       <p className="actionP">ডিলিট</p>
                                     </div>
                                   </div>
-                                </li>
+                                </li> */}
                                 <li
                                   data-bs-toggle="modal"
                                   data-bs-target="#writeModal"
@@ -282,7 +283,7 @@ const[isLoading,setIsLoading]=useState(false)
                                   <div className="dropdown-item">
                                     <div className="ManagerAactionLi">
                                       <PersonFill />
-                                      <p className="actionP">বিস্তারিত</p>
+                                      <p className="actionP">প্রোফাইল</p>
                                     </div>
                                   </div>
                                 </li>
@@ -330,7 +331,7 @@ const[isLoading,setIsLoading]=useState(false)
                             onClick={updatePermissionsHandler}
                             disabled={isLoading}
                           >
-                             {isLoading ? <Loader /> : " আপডেট"}
+                            {isLoading ? <Loader /> : " আপডেট"}
                           </button>
                         </div>
                       </div>

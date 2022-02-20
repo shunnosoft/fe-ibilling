@@ -9,7 +9,7 @@ import {
 
 export const AllRoutes = [
   {
-    title: "হোম",
+    title: "ড্যাশবোর্ড",
     icon: <HouseDoorFill />,
     link: "/home",
   },

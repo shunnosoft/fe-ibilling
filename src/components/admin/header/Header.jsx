@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 
 export default function Header(props) {
+  const userRole = useSelector((state) => state.auth.role);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
@@ -54,7 +55,8 @@ export default function Header(props) {
                     className="dropdown-toggle profileDropdownBtn"
                     data-bs-toggle="dropdown"
                   >
-                    {userData ? userData.name : "Owner"}
+                    {userData?.name + " (" + userRole + ")"}
+
                     <img
                       src="https://us.123rf.com/450wm/luismolinero/luismolinero1909/luismolinero190917934/130592146-handsome-young-man-in-pink-shirt-over-isolated-blue-background-keeping-the-arms-crossed-in-frontal-p.jpg?ver=6"
                       alt=""
@@ -78,14 +80,14 @@ export default function Header(props) {
                         <span className="dropdownIcon">
                           <BoxArrowLeft />
                         </span>
-                        Logout
+                        লগআউট
                       </div>
                     </li>
                   </ul>
                 </div>
               ) : (
-                <NavLink to="/login">
-                  <p className="goToLoginPage">লগইন</p>
+                <NavLink to="/register">
+                  <p className="goToLoginPage">রেজিস্টার</p>
                 </NavLink>
               )}
             </div>

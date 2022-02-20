@@ -11,29 +11,23 @@ import Loader from "../common/Loader";
 
 export default function WriteModals(props) {
   const { manager } = props;
-  const dispatch=useDispatch()
-  const ispOwner =useSelector(state=>state.auth.currentUser?.ispOwner?.id)
+  const dispatch = useDispatch();
+  const ispOwner = useSelector((state) => state.auth.currentUser?.ispOwner?.id);
 
   // mangager validator
   const managerValidate = Yup.object({
     name: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
       .required("ম্যানেজার এর নাম দিন"),
-    mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("ম্যানেজার এর মোবাইল নম্বর দিন "),
     address: Yup.string().required("ম্যানেজার এর  এড্রেস দিন "),
     email: Yup.string()
       .email("ইমেইল সঠিক নয় ")
       .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-    nid: Yup.string().required("ম্যানেজার এর NID দিন"),
     image: Yup.string(),
   });
-const [isLoading,setIsLoading] =useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const editManagerHandler = (data) => {
-   
-    editManager(dispatch,{...data,ispOwner},setIsLoading);
+    editManager(dispatch, { ...data, ispOwner }, setIsLoading);
   };
 
   return (
@@ -62,10 +56,9 @@ const [isLoading,setIsLoading] =useState(false)
             <Formik
               initialValues={{
                 name: manager.name || "",
-                mobile: manager.mobile || "",
                 address: manager.address || "",
                 email: manager.email || "",
-                nid: manager.nid || "",
+                // nid: manager.nid || "",
                 // photo: ,
               }}
               validationSchema={managerValidate}
@@ -77,10 +70,9 @@ const [isLoading,setIsLoading] =useState(false)
               {(formik) => (
                 <Form>
                   <FtextField type="text" label="নাম" name="name" />
-                  <FtextField type="text" label="মোবাইল নম্বর" name="mobile" />
                   <FtextField type="text" label="এড্রেস" name="address" />
                   <FtextField type="email" label="ইমেইল" name="email" />
-                  <FtextField type="text" label="NID নম্বর" name="nid" />
+                  {/* <FtextField type="text" label="NID নম্বর" name="nid" /> */}
                   {/* <FtextField
                     type="file"
                     label="ম্যানেজার এর ছবি "
@@ -100,7 +92,7 @@ const [isLoading,setIsLoading] =useState(false)
                       type="submit"
                       className="btn btn-primary marginLeft"
                     >
-                   {isLoading?<Loader/>:"সেভ করুন"}   
+                      {isLoading ? <Loader /> : "সেভ করুন"}
                     </button>
                   </div>
                 </Form>

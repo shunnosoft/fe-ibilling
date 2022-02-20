@@ -5,16 +5,17 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
-  // Wallet,
+  Wallet,
   ThreeDots,
   ArchiveFill,
   PenFill,
   PersonFill,
+  Truck,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
-import ReactPaginate from "react-paginate";
+// import ReactPaginate from "react-paginate";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -28,6 +29,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
+import BillDiposit from "./customerCRUD/BillDiposit";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
@@ -40,9 +42,27 @@ export default function Customer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  let serial = 0;
 
-  const Customers = useSelector((state) => state.customer.customer);
+  const gettingCustomer = useSelector((state) => state.customer.customer);
+  const [Customers, setCustomers] = useState(gettingCustomer);
+
+  useEffect(() => {
+    setCustomers(gettingCustomer);
+  }, [gettingCustomer]);
+
+  // active filter
+  const handleActiveFilter = (e) => {
+    let fvalue = e.target.value;
+    const temp = gettingCustomer.filter((val) => val.status === fvalue);
+    setCustomers(temp);
+  };
+
+  // paid filter
+  const handlePaidFilter = (e) => {
+    let pvalue = e.target.value;
+    const temp = gettingCustomer.filter((val) => val.paymentStatus === pvalue);
+    setCustomers(temp);
+  };
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -70,30 +90,25 @@ export default function Customer() {
     getCustomer(dispatch, ispOwner);
   }, [ispOwner, dispatch, auth]);
 
+  // getting customer
   useEffect(() => {
     const getData = () => {
       setIsloading(true);
-      let limit = 10;
-      const data2 = {
-        ispOwnerId: ispOwner,
-        limit: limit,
-        currentPage: 1,
-      };
-      getCustomer(dispatch, data2, setIsloading);
+      getCustomer(dispatch, ispOwner, setIsloading);
     };
     getData();
   }, [dispatch, ispOwner]);
 
-  const handlePageClick = (data) => {
-    setIsloading(true);
-    let limit = 10;
-    const data2 = {
-      ispOwnerId: ispOwner,
-      limit: limit,
-      currentPage: data.selected + 1,
-    };
-    getCustomer(dispatch, data2, setIsloading);
-  };
+  // const handlePageClick = (data) => {
+  //   setIsloading(true);
+  //   let limit = 10;
+  //   const data2 = {
+  //     ispOwnerId: ispOwner,
+  //     limit: limit,
+  //     currentPage: data.selected + 1,
+  //   };
+  //   getCustomer(dispatch, data2, setIsloading);
+  // };
 
   return (
     <>
@@ -117,7 +132,8 @@ export default function Customer() {
               {/* Model start */}
               <CustomerPost />
               <CustomerEdit single={singleCustomer} />
-              <CustomerBillCollect />
+              <BillDiposit single={singleCustomer} />
+              <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               {/* Model finish */}
 
@@ -136,10 +152,29 @@ export default function Customer() {
                       </div>
                     </div>
 
+                    {/* filter selector */}
+                    <div className="selectFiltering">
+                      <select
+                        className="form-select"
+                        onChange={handleActiveFilter}
+                      >
+                        <option value="active">একটিভ</option>
+                        <option value="inactive">ইনএকটিভ</option>
+                      </select>
+                      <select
+                        className="form-select"
+                        onChange={handlePaidFilter}
+                      >
+                        <option value="unpaid">বকেয়া</option>
+                        <option value="paid">পরিশোধ</option>
+                      </select>
+                    </div>
+
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক : <span>{Customers.length || "NULL"}</span>
+                          মোট গ্রাহক :{" "}
+                          <span>{Customers?.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -168,11 +203,14 @@ export default function Customer() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
-                          <th scope="col">সিরিয়াল</th>
+                          <th scope="col">আইডি</th>
                           <th scope="col">নাম</th>
                           <th scope="col">মোবাইল</th>
                           <th scope="col">এড্রেস</th>
                           <th scope="col">স্ট্যাটাস</th>
+                          <th scope="col">PPPoE</th>
+                          <th scope="col">ব্যালান্স</th>
+                          <th scope="col">মাসিক ফি</th>
                           <th scope="col" className="centeringTD">
                             অ্যাকশন
                           </th>
@@ -181,9 +219,9 @@ export default function Customer() {
                       <tbody>
                         {isLoading ? (
                           <tr>
-                            <TdLoader colspan={6} />
+                            <TdLoader colspan={9} />
                           </tr>
-                        ) : Customers.length === undefined ? (
+                        ) : Customers?.length === undefined ? (
                           ""
                         ) : (
                           Customers.filter((val) => {
@@ -192,13 +230,14 @@ export default function Customer() {
                               .includes(cusSearch.toLowerCase());
                           }).map((val, key) => (
                             <tr key={key} id={val.id}>
-                              <td style={{ paddingLeft: "30px" }}>
-                                {++serial}
-                              </td>
+                              <td>{val.customerId}</td>
                               <td>{val.name}</td>
                               <td>{val.mobile}</td>
                               <td>{val.address}</td>
                               <td>{val.status}</td>
+                              <td>{val.pppoe.profile}</td>
+                              <td>{val.balance}</td>
+                              <td>{val.monthlyFee}</td>
                               <td className="centeringTD">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"
@@ -227,9 +266,12 @@ export default function Customer() {
                                       </div>
                                     </div>
                                   </li>
-                                  {/* <li
+                                  <li
                                     data-bs-toggle="modal"
                                     data-bs-target="#collectCustomerBillModal"
+                                    onClick={() => {
+                                      getSpecificCustomer(val.id);
+                                    }}
                                   >
                                     <div className="dropdown-item">
                                       <div className="customerAction">
@@ -237,7 +279,21 @@ export default function Customer() {
                                         <p className="actionP">বিল গ্রহণ</p>
                                       </div>
                                     </div>
-                                  </li> */}
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#billDipositeModal"
+                                    onClick={() => {
+                                      getSpecificCustomer(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <Truck />
+                                        <p className="actionP">ডিপোজিট</p>
+                                      </div>
+                                    </div>
+                                  </li>
                                   <li
                                     data-bs-toggle="modal"
                                     data-bs-target="#customerEditModal"
@@ -277,7 +333,7 @@ export default function Customer() {
 
                     {/* previous */}
 
-                    <ReactPaginate
+                    {/* <ReactPaginate
                       previousLabel={"Previous"}
                       nextLabel={"Next"}
                       breakLabel={"..."}
@@ -294,7 +350,7 @@ export default function Customer() {
                       breakClassName={"page-item"}
                       breakLinkClassName={"page-link"}
                       activeClassName={"active"}
-                    />
+                    /> */}
                   </div>
                 </div>
               </FourGround>

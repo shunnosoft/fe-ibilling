@@ -2,6 +2,12 @@
   padding: 0;
   /* margin-left: -22px !important; */
 }
+.selectFiltering {
+  width: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+}
 .deletingAction {
   padding: 20px 5px;
   color: tomato;

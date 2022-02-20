@@ -11,10 +11,11 @@ import Loader from "../../../components/common/Loader";
 import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
 
 export default function CustomerModal() {
-  const auth = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const area = useSelector((state) => state.area.area);
   const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
   const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -36,17 +37,8 @@ export default function CustomerModal() {
     monthlyFee: Yup.string().required("Montly Fee দিন"),
     Pname: Yup.string().required("PPPoE নাম"),
     Ppassword: Yup.string().required("PPPoE Password"),
-    Pprofile: Yup.string().required("PPPoE Profile"),
     Pcomment: Yup.string().required("Comment"),
   });
-
-  // // fetch Area fro select option
-  // useEffect(() => {
-  //   if (auth.ispOwner) {
-  //     dispatch(fetchArea(auth.ispOwner.id));
-  //     dispatch(fetchMikrotik(auth.ispOwner.id));
-  //   }
-  // }, [dispatch, auth.ispOwner]);
 
   // select subArea
   const selectSubArea = (data) => {
@@ -62,9 +54,9 @@ export default function CustomerModal() {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && auth.ispOwner) {
+    if (id && ispOwnerId) {
       const IDs = {
-        ispOwner: auth.ispOwner.id,
+        ispOwner: ispOwnerId,
         mikrotikId: id,
       };
       fetchpppoePackage(dispatch, IDs);
@@ -76,9 +68,11 @@ export default function CustomerModal() {
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
+    setPackageRate(temp.rate);
   };
 
-  // sendint data to backed
+  // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
     const subArea = document.getElementById("subAreaId").value;
@@ -86,28 +80,25 @@ export default function CustomerModal() {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    const { ispOwner } = auth;
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       customerId: "randon123",
       paymentStatus: "unpaid",
       subArea: subArea,
-      ispOwner: ispOwner.id,
+      ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       pppoe: {
         name: Pname,
         password: Ppassword,
-        profile: Pprofile,
         service: "pppoe",
         comment: Pcomment,
       },
       ...rest,
     };
     // console.log("Main Data: ", mainData);
-    addCustomer(dispatch, mainData,setIsloading);
-     
+    addCustomer(dispatch, mainData, setIsloading);
   };
 
   return (
@@ -136,107 +127,28 @@ export default function CustomerModal() {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  // customerid: "random123",
                   name: "",
                   mobile: "",
                   address: "",
                   email: "",
                   nid: "",
-                  monthlyFee: "",
+                  monthlyFee: packageRate || "",
                   Pname: "",
                   Ppassword: "",
                   Pprofile: "",
                   Pcomment: "",
-                  // ispOwner:
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
                   customerHandler(values);
                 }}
+                enableReinitialize
               >
                 {(formik) => (
                   <Form>
                     <div className="customerGrid">
-                      <div className="sectionOne">
-                        <FtextField type="text" label="নাম" name="name" />
-                        <FtextField type="text" label="মোবাইল" name="mobile" />
-                        <FtextField type="text" label="এড্রেস" name="address" />
-                        <FtextField type="text" label="ইমেইল" name="email" />
-                        <FtextField
-                          type="text"
-                          label="জাতীয় পরিচয়পত্র নং"
-                          name="nid"
-                        />
-                        {/* <div className="form-check customerFormCheck">
-                          <p>স্টেটাস</p>
-                          <div className="form-check form-check-inline">
-                            <FtextField
-                              label="Paid"
-                              className="form-check-input"
-                              type="radio"
-                              name="status"
-                              id="status1"
-                              value="paid"
-                            />
-                          </div>
-                          <div className="form-check form-check-inline">
-                            <FtextField
-                              label="Unpaid"
-                              className="form-check-input"
-                              type="radio"
-                              name="status"
-                              id="status2"
-                              value="unpaid"
-                            />
-                          </div>
-                          <div className="form-check form-check-inline">
-                            <FtextField
-                              label="Overdue"
-                              className="form-check-input"
-                              type="radio"
-                              name="status"
-                              id="status3"
-                              value="overdue"
-                            />
-                          </div>
-                        </div> */}
-
-                        {/* <div className="form-check customerFormCheck">
-                          <p>বিল পরিশোধের ধরণ </p>
-                          <div className="form-check form-check-inline">
-                            <FtextField
-                              label="Prepaid"
-                              className="form-check-input"
-                              type="radio"
-                              name="billPayType"
-                              id="billPayType1"
-                              value="prepaid"
-                            />
-                          </div>
-                          <div className="form-check form-check-inline">
-                            <FtextField
-                              label="Postpaid"
-                              className="form-check-input"
-                              type="radio"
-                              name="billPayType"
-                              id="billPayType2"
-                              value="postpaid"
-                            />
-                          </div>
-                        </div> */}
-                      </div>
                       {/* section two */}
                       <div className="Section2">
-                        {/* <FtextField
-                          type="text"
-                          label="ব্যালান্স"
-                          name="balance"
-                        /> */}
-                        <FtextField
-                          type="text"
-                          label="মাসিক ফি"
-                          name="monthlyFee"
-                        />
                         <p className="comstomerFieldsTitle">
                           এরিয়া সিলেক্ট করুন
                         </p>
@@ -298,7 +210,7 @@ export default function CustomerModal() {
                           PPPoE প্যাকেজ সিলেক্ট করুন
                         </p>
                         <select
-                          className="form-select"
+                          className="form-select mb-3"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                         >
@@ -311,7 +223,25 @@ export default function CustomerModal() {
                                 </option>
                               ))}
                         </select>
+                        <FtextField
+                          type="text"
+                          label="মাসিক ফি"
+                          name="monthlyFee"
+                        />
                       </div>
+                      {/* section 2 */}
+                      <div className="sectionOne">
+                        <FtextField type="text" label="নাম" name="name" />
+                        <FtextField type="text" label="মোবাইল" name="mobile" />
+                        <FtextField type="text" label="এড্রেস" name="address" />
+                        <FtextField type="text" label="ইমেইল" name="email" />
+                        <FtextField
+                          type="text"
+                          label="জাতীয় পরিচয়পত্র নং"
+                          name="nid"
+                        />
+                      </div>
+                      {/* section 3 */}
                       <div className="section3">
                         <FtextField
                           type="text"
@@ -322,11 +252,6 @@ export default function CustomerModal() {
                           type="text"
                           label="পাসওয়ার্ড"
                           name="Ppassword"
-                        />
-                        <FtextField
-                          type="text"
-                          label="প্রোফাইল"
-                          name="Pprofile"
                         />
                         <FtextField
                           type="text"

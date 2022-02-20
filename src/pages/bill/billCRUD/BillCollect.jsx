@@ -7,7 +7,6 @@ import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 
 export default function CustomerBillCollect({ singleCustomer }) {
-  const [collectedBy, setCollectedBy] = useState("manager");
   const [billType, setBillType] = useState("bill");
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
@@ -19,7 +18,7 @@ export default function CustomerBillCollect({ singleCustomer }) {
   const customerBillHandler = (data) => {
     const sendingData = {
       amount: data.amount,
-      collectedBy: collectedBy,
+      collectedBy: "",
       billType: billType,
       customer: singleCustomer.id,
       ispOwner: ispOwner,
@@ -34,7 +33,7 @@ export default function CustomerBillCollect({ singleCustomer }) {
       <div>
         <div
           className="modal fade"
-          id="collectCustomerBillModal"
+          id="collectBillModal"
           tabIndex="-1"
           aria-labelledby="customerModalDetails"
           aria-hidden="true"
@@ -71,18 +70,9 @@ export default function CustomerBillCollect({ singleCustomer }) {
                     <Form>
                       <FtextField type="text" name="amount" label="পরিমান" />
 
-                      <label>কে কালেক্ট করছে </label>
-                      <select
-                        class="form-select"
-                        onChange={(e) => setCollectedBy(e.target.value)}
-                      >
-                        <option value="manager">ম্যানেজার</option>
-                        <option value="collector">কালেক্টর</option>
-                      </select>
-
                       <label className="mt-3">ধরণ</label>
                       <select
-                        class="form-select"
+                        className="form-select"
                         onChange={(e) => setBillType(e.target.value)}
                       >
                         <option value="bill">বিল</option>

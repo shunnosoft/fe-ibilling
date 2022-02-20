@@ -11,7 +11,7 @@ import { FtextField } from "../../components/common/FtextField";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
-import { passwordUpdate , profileUpdate} from "../../features/apiCalls";
+import { passwordUpdate, profileUpdate } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { useState } from "react";
@@ -19,24 +19,30 @@ import { useState } from "react";
 export default function Profile() {
   // const role = useSelector(state=>state.auth.currentUser?.user.role);
   const currentUser = useSelector((state) => state.auth.userData);
-  const ispOwnerId =useSelector(state=>state.auth.ispOwnerId)
-   const [isLoading,setIsLoading] =useState(false)
-   const [isLoadingpass,setIsLoadingpass] =useState(false)
-  
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingpass, setIsLoadingpass] = useState(false);
+
   const passwordValidator = Yup.object({
     oldPassword: Yup.string().required("Old পাসওয়ার্ড ***"),
-    newPassword: Yup.string().required("New পাসওয়ার্ড ***").matches(/^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
-    "Must Contain 8 Characters,   One Alphabat, One Number"),
+    newPassword: Yup.string()
+      .required("New পাসওয়ার্ড ***")
+      .matches(
+        /^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
+        "Must Contain 8 Characters,   One Alphabat, One Number"
+      ),
   });
-const dispatch =useDispatch()
+  const dispatch = useDispatch();
   const progileEditHandler = (data) => {
-    profileUpdate(dispatch,data, ispOwnerId,setIsLoading)
+    profileUpdate(dispatch, data, ispOwnerId, setIsLoading);
   };
+
+  console.log("currentUser: ", currentUser);
 
   //   change password handler
   const changePasswordHandler = (data) => {
     // console.log(data)
-    passwordUpdate(data,setIsLoadingpass);
+    passwordUpdate(data, setIsLoadingpass);
   };
   return (
     <>
@@ -64,11 +70,11 @@ const dispatch =useDispatch()
                       <h5 className="mb-4">প্রোফাইল আপডেট</h5>
                       <Formik
                         initialValues={{
-                          name: currentUser.name || "",
-                          company: currentUser.company || "",
-                          mobile: currentUser.mobile || "",
-                          email: currentUser.email || "",
-                          smsRate: currentUser.smsRate || "",
+                          name: currentUser?.name || "",
+                          company: currentUser?.company || "",
+                          email: currentUser?.email || "",
+                          address: currentUser?.address || "",
+                          singnature: currentUser?.singnature || "",
                         }}
                         onSubmit={(values) => {
                           progileEditHandler(values);
@@ -83,11 +89,7 @@ const dispatch =useDispatch()
                               label={`কোম্পানি`}
                               name="company"
                             />
-                            <FtextField
-                              type="text"
-                              label={`মোবাইল`}
-                              name="mobile"
-                            />
+
                             <FtextField
                               type="email"
                               label={`ইমেইল`}
@@ -95,14 +97,19 @@ const dispatch =useDispatch()
                             />
                             <FtextField
                               type="text"
-                              label={`SMS রেট`}
-                              name="smsRate"
+                              label={`এড্রেস`}
+                              name="address"
+                            />
+                            <FtextField
+                              type="email"
+                              label={`Singnature`}
+                              name="signature"
                             />
                             <button
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                            {isLoading ? <Loader /> : " আপডেট"} 
+                              {isLoading ? <Loader /> : " আপডেট"}
                             </button>
                           </Form>
                         )}
@@ -120,7 +127,6 @@ const dispatch =useDispatch()
                         validationSchema={passwordValidator}
                         onSubmit={(values) => {
                           changePasswordHandler(values);
-                           
                         }}
                       >
                         {() => (
@@ -139,7 +145,7 @@ const dispatch =useDispatch()
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                            {isLoadingpass? <Loader/>:"পাসওয়ার্ড আপডেট"}  
+                              {isLoadingpass ? <Loader /> : "পাসওয়ার্ড আপডেট"}
                             </button>
                           </Form>
                         )}
