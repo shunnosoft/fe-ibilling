@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -10,11 +10,12 @@ import {
   ArchiveFill,
   PenFill,
   PersonFill,
+  Truck,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
-import ReactPaginate from "react-paginate";
+// import ReactPaginate from "react-paginate";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -28,6 +29,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
+import BillDiposit from "./customerCRUD/BillDiposit";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
@@ -56,6 +58,19 @@ export default function Customer() {
       )
     );
   }, [cus, cusSearch]);
+
+ 
+  // active filter
+  const handleActiveFilter = (e) => {
+    let fvalue = e.target.value;
+     
+  };
+
+  // paid filter
+  const handlePaidFilter = (e) => {
+    let pvalue = e.target.value;
+    
+  };
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -115,7 +130,8 @@ export default function Customer() {
               {/* Model start */}
               <CustomerPost />
               <CustomerEdit single={singleCustomer} />
-              <CustomerBillCollect />
+              <BillDiposit single={singleCustomer} />
+              <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               {/* Model finish */}
 
@@ -132,6 +148,24 @@ export default function Customer() {
                           data-bs-target="#customerModal"
                         />
                       </div>
+                    </div>
+
+                    {/* filter selector */}
+                    <div className="selectFiltering">
+                      <select
+                        className="form-select"
+                        onChange={handleActiveFilter}
+                      >
+                        <option value="active">একটিভ</option>
+                        <option value="inactive">ইনএকটিভ</option>
+                      </select>
+                      <select
+                        className="form-select"
+                        onChange={handlePaidFilter}
+                      >
+                        <option value="unpaid">বকেয়া</option>
+                        <option value="paid">পরিশোধ</option>
+                      </select>
                     </div>
 
                     <div className="row searchCollector">
@@ -166,7 +200,7 @@ export default function Customer() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
-                          <th scope="col">সিরিয়াল</th>
+                          <th scope="col">আইডি</th>
                           <th scope="col">নাম</th>
                           <th scope="col">
                             মোবাইল
@@ -174,6 +208,9 @@ export default function Customer() {
                           </th>
                           <th scope="col">এড্রেস</th>
                           <th scope="col">স্ট্যাটাস</th>
+                          <th scope="col">PPPoE</th>
+                          <th scope="col">ব্যালান্স</th>
+                          <th scope="col">মাসিক ফি</th>
                           <th scope="col" className="centeringTD">
                             অ্যাকশন
                           </th>
@@ -182,20 +219,21 @@ export default function Customer() {
                       <tbody>
                         {isLoading ? (
                           <tr>
-                            <TdLoader colspan={6} />
+                            <TdLoader colspan={9} />
                           </tr>
                         ) : Customers?.length === undefined ? (
                           ""
                         ) : (
                           Customers.map((val, key) => (
                             <tr key={key} id={val.id}>
-                              <td style={{ paddingLeft: "30px" }}>
-                                {++serial}
-                              </td>
+                              <td>{val.customerId}</td>
                               <td>{val.name}</td>
                               <td>{val.mobile}</td>
                               <td>{val.address}</td>
                               <td>{val.status}</td>
+                              <td>{val.pppoe.profile}</td>
+                              <td>{val.balance}</td>
+                              <td>{val.monthlyFee}</td>
                               <td className="centeringTD">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"
@@ -228,13 +266,27 @@ export default function Customer() {
                                     data-bs-toggle="modal"
                                     data-bs-target="#collectCustomerBillModal"
                                     onClick={() => {
-                                      billUpdateHandler(val.id);
+                                      getSpecificCustomer(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item">
                                       <div className="customerAction">
                                         <Wallet />
                                         <p className="actionP">বিল গ্রহণ</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#billDipositeModal"
+                                    onClick={() => {
+                                      getSpecificCustomer(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <Truck />
+                                        <p className="actionP">ডিপোজিট</p>
                                       </div>
                                     </div>
                                   </li>

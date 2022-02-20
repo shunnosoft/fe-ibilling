@@ -314,13 +314,9 @@ export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
 };
 
 //Customers
-
-export const getCustomer = async (dispatch,  ispOwnerId, setIsloading) => {
-  setIsloading(true)
+export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   try {
-    
-
-    const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwnerId}`);
+    const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwner}`);
     dispatch(getCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
@@ -538,8 +534,8 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
 
 // get pppoe Package
 export const fetchpppoePackage = async (dispatch, IDs, setIsLoadingPac) => {
-  setIsLoadingPac(true);
   try {
+    setIsLoadingPac(true);
     const res = await apiLink({
       method: "GET",
       url: `/v1/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
@@ -547,7 +543,7 @@ export const fetchpppoePackage = async (dispatch, IDs, setIsLoadingPac) => {
     dispatch(getpppoePackageSuccess(res.data));
     setIsLoadingPac(false);
   } catch (error) {
-    setIsLoadingPac(false);
+    // setIsLoadingPac(false);
     toast("PPPoE প্যাকেজ পাওয়া যায়নি!");
   }
 };
@@ -712,6 +708,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 
   try {
     const res = await apiLink.patch(`/v1/ispOwner/${id}`, data);
+    console.log(res.data)
     dispatch(updateProfile(res.data));
     setIsLoading(false);
     toast("Profile Update successfull");

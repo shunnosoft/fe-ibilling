@@ -2,7 +2,7 @@ import {
   PersonFill,
   HouseDoorFill,
   Messenger,
-  Cash,
+  // Cash,
 } from "react-bootstrap-icons";
 
 // there should add another item is LINK's
@@ -10,22 +10,22 @@ import {
 export const HeaderData = [
   {
     icon: <PersonFill />,
-    name: "Profile",
+    name: "প্রোফাইল",
     link: "/profile",
   },
   {
     icon: <HouseDoorFill />,
-    name: "Account",
+    name: "একাউন্ট",
     link: "/account",
   },
   {
     icon: <Messenger />,
-    name: "Message",
+    name: "মেসেজ",
     link: "/message",
   },
-  {
-    icon: <Cash />,
-    name: "Payment",
-    link: "/payment",
-  },
+  // {
+  //   icon: <Cash />,
+  //   name: "পেমেন্ট",
+  //   link: "/payment",
+  // },
 ];

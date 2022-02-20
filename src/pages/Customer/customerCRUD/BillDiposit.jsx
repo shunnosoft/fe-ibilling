@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -6,26 +6,25 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 
-export default function CustomerBillCollect({ single }) {
-  const [billType, setBillType] = useState("bill");
+export default function BillDiposit({ singleCustomer }) {
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
 
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
   });
+
   // bill amount
-  const customerBillHandler = (data) => {
+  const billDipositHandler = (data) => {
     const sendingData = {
+      depositBy: currentUser?.user.role,
       amount: data.amount,
-      collectedBy: currentUser?.user.role,
-      billType: billType,
-      customer: single.id,
+      balance: data.balance,
+      user: currentUser?.user.id,
       ispOwner: ispOwner,
-      collectorId: currentUser?.collector?.id, //when collector is logged in
     };
 
-    console.log("Colelcted Bill: ", sendingData);
+    console.log("Diposit Bill: ", sendingData);
   };
 
   return (
@@ -33,7 +32,7 @@ export default function CustomerBillCollect({ single }) {
       <div>
         <div
           className="modal fade"
-          id="collectCustomerBillModal"
+          id="billDipositeModal"
           tabIndex="-1"
           aria-labelledby="customerModalDetails"
           aria-hidden="true"
@@ -46,7 +45,7 @@ export default function CustomerBillCollect({ single }) {
                   className="modal-title"
                   id="customerModalDetails"
                 >
-                  বিল গ্রহণ
+                  ডিপোজিট
                 </h5>
                 <button
                   type="button"
@@ -59,25 +58,26 @@ export default function CustomerBillCollect({ single }) {
                 <Formik
                   initialValues={{
                     amount: "",
-                    // collectorId,customer,ispOwner
+                    balance: "xyz", //put the value from api
                   }}
                   validationSchema={BillValidatoin}
                   onSubmit={(values) => {
-                    customerBillHandler(values);
+                    billDipositHandler(values);
                   }}
                 >
                   {() => (
                     <Form>
-                      <FtextField type="text" name="amount" label="পরিমান" />
-
-                      <label>ধরণ</label>
-                      <select
-                        className="form-select"
-                        onChange={(e) => setBillType(e.target.value)}
-                      >
-                        <option value="bill">বিল</option>
-                        <option value="connectionFee">কানেকশন ফি</option>
-                      </select>
+                      <FtextField
+                        type="text"
+                        name="balance"
+                        label="মোট ব্যালান্স"
+                        disabled
+                      />
+                      <FtextField
+                        type="text"
+                        name="amount"
+                        label="ডিপোজিট পরিমান"
+                      />
 
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">

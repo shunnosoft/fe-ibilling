@@ -38,10 +38,13 @@ const authSlice = createSlice({
     updateProfile: (state, action) => {
       if (state.role === "ispOwner") {
         state.currentUser.ispOwner = action.payload;
+        state.userData=action.payload
       } else if (state.role === "manager") {
         state.currentUser.manager = action.payload;
+        state.userData=action.payload
       } else if (state.role === "collector") {
         state.currentUser.collector = action.payload;
+        state.userData=action.payload
       }
     },
 

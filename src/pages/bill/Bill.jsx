@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -8,13 +8,14 @@ import {
   Wallet,
   ThreeDots,
   ArchiveFill,
+  Truck,
   PenFill,
   PersonFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
-import ReactPaginate from "react-paginate";
+// import ReactPaginate from "react-paginate";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -28,6 +29,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import BillPost from "./billCRUD/BillPost";
 import BillDetails from "./billCRUD/BillDetails";
 import BillCollect from "./billCRUD/BillCollect";
+import BillDiposit from "../Customer/customerCRUD/BillDiposit";
 import BillEdit from "./billCRUD/BillEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
@@ -40,7 +42,6 @@ export default function Bill() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  let serial = 0;
 
   const Customers = useSelector((state) => state.customer.customer);
 
@@ -68,36 +69,27 @@ export default function Bill() {
 
   useEffect(() => {
     getCustomer(dispatch, ispOwner);
-  }, [dispatch, auth]);
+  }, [ispOwner, dispatch, auth]);
 
-  const billUpdateHandler = (data) => {
-    // console.log("Bill Data:", data);
-  };
-
+  // get customer
   useEffect(() => {
     const getData = () => {
       setIsloading(true);
-      let limit = 10;
-      const data2 = {
-        ispOwnerId: ispOwner,
-        limit: limit,
-        currentPage: 1,
-      };
-      getCustomer(dispatch, data2, setIsloading);
+      getCustomer(dispatch, ispOwner, setIsloading);
     };
     getData();
-  }, []);
+  }, [dispatch, ispOwner]);
 
-  const handlePageClick = (data) => {
-    setIsloading(true);
-    let limit = 10;
-    const data2 = {
-      ispOwnerId: ispOwner,
-      limit: limit,
-      currentPage: data.selected + 1,
-    };
-    getCustomer(dispatch, data2, setIsloading);
-  };
+  // const handlePageClick = (data) => {
+  //   setIsloading(true);
+  //   let limit = 10;
+  //   const data2 = {
+  //     ispOwnerId: ispOwner,
+  //     limit: limit,
+  //     currentPage: data.selected + 1,
+  //   };
+  //   getCustomer(dispatch, data2, setIsloading);
+  // };
 
   return (
     <>
@@ -121,7 +113,8 @@ export default function Bill() {
               {/* Model start */}
               <BillPost />
               <BillEdit single={singleCustomer} />
-              <BillCollect />
+              <BillCollect singleCustomer={singleCustomer} />
+              <BillDiposit />
               <BillDetails single={singleCustomer} />
               {/* Model finish */}
 
@@ -143,7 +136,8 @@ export default function Bill() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক : <span>{Customers.length || "NULL"}</span>
+                          মোট গ্রাহক :{" "}
+                          <span>{Customers?.length || "NULL"}</span>
                         </h4>
                       </div>
 
@@ -172,11 +166,14 @@ export default function Bill() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
-                          <th scope="col">সিরিয়াল</th>
+                          <th scope="col">আইডি</th>
                           <th scope="col">নাম</th>
                           <th scope="col">মোবাইল</th>
                           <th scope="col">এড্রেস</th>
                           <th scope="col">স্ট্যাটাস</th>
+                          <th scope="col">PPPoE</th>
+                          <th scope="col">ব্যালান্স</th>
+                          <th scope="col">মাসিক ফি</th>
                           <th scope="col" className="centeringTD">
                             অ্যাকশন
                           </th>
@@ -185,9 +182,9 @@ export default function Bill() {
                       <tbody>
                         {isLoading ? (
                           <tr>
-                            <TdLoader colspan={6} />
+                            <TdLoader colspan={9} />
                           </tr>
-                        ) : Customers.length === undefined ? (
+                        ) : Customers?.length === undefined ? (
                           ""
                         ) : (
                           Customers.filter((val) => {
@@ -196,13 +193,14 @@ export default function Bill() {
                               .includes(cusSearch.toLowerCase());
                           }).map((val, key) => (
                             <tr key={key} id={val.id}>
-                              <td style={{ paddingLeft: "30px" }}>
-                                {++serial}
-                              </td>
+                              <td>{val.customerId}</td>
                               <td>{val.name}</td>
                               <td>{val.mobile}</td>
                               <td>{val.address}</td>
                               <td>{val.status}</td>
+                              <td>{val.pppoe.profile}</td>
+                              <td>{val.balance}</td>
+                              <td>{val.monthlyFee}</td>
                               <td className="centeringTD">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"
@@ -233,15 +231,29 @@ export default function Bill() {
                                   </li>
                                   <li
                                     data-bs-toggle="modal"
-                                    data-bs-target="#collectCustomerBillModal"
+                                    data-bs-target="#collectBillModal"
                                     onClick={() => {
-                                      billUpdateHandler(val.id);
+                                      getSpecificCustomer(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item">
                                       <div className="customerAction">
                                         <Wallet />
                                         <p className="actionP">বিল গ্রহণ</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#billDipositeModal"
+                                    onClick={() => {
+                                      getSpecificCustomer(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <Truck />
+                                        <p className="actionP">ডিপোজিট</p>
                                       </div>
                                     </div>
                                   </li>
@@ -284,7 +296,7 @@ export default function Bill() {
 
                     {/* previous */}
 
-                    <ReactPaginate
+                    {/* <ReactPaginate
                       previousLabel={"Previous"}
                       nextLabel={"Next"}
                       breakLabel={"..."}
@@ -301,7 +313,7 @@ export default function Bill() {
                       breakClassName={"page-item"}
                       breakLinkClassName={"page-link"}
                       activeClassName={"active"}
-                    />
+                    /> */}
                   </div>
                 </div>
               </FourGround>

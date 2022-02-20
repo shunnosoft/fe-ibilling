@@ -3,16 +3,13 @@ import {
   Wallet2,
   PeopleFill,
   PersonPlus,
-  
   GeoAlt,
-  LayersFill,
   Wifi,
-  // Coin,
 } from "react-bootstrap-icons";
 
 export const AllRoutes = [
   {
-    title: "হোম",
+    title: "ড্যাশবোর্ড",
     icon: <HouseDoorFill />,
     link: "/home",
   },
@@ -41,7 +38,7 @@ export const AllRoutes = [
     icon: <PeopleFill />,
     link: "/customer",
   },
-   
+
   {
     title: "মাইক্রোটিক",
     icon: <Wifi />,
