@@ -148,7 +148,11 @@ export const addArea = async (dispatch, data, setIsLoading) => {
     toast("এরিয়া অ্যাড সফল হয়েছে ");
   } catch (error) {
     setIsLoading(false);
-    toast("Add area filed");
+   if (error.response.status===401)
+   {
+     toast("Permission nei")
+    }
+    toast(error.message)
   }
 };
 export const editArea = async (dispatch, data, setIsLoading) => {
