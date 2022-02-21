@@ -49,7 +49,8 @@ export default function Customer() {
   let serial = 0;
 
   const [Customers, setCustomers] = useState(cus);
-
+  const [filterdCus, setFilter] = useState(Customers);
+  const [isFilterRunning, setRunning] = useState(false);
   useEffect(() => {
     const keys = [
       "monthlyFee",
@@ -62,7 +63,7 @@ export default function Customer() {
       "balance",
     ];
     setCustomers(
-      cus.filter((item) =>
+      (isFilterRunning ? filterdCus : cus).filter((item) =>
         keys.some((key) =>
           typeof item[key] === "string"
             ? item[key].toLowerCase().includes(cusSearch)
@@ -70,17 +71,18 @@ export default function Customer() {
         )
       )
     );
-  }, [cus, cusSearch]);
+  }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
-  // active filter
+  //   filter
   const handleActiveFilter = (e) => {
+    setRunning(true);
     let fvalue = e.target.value;
-    setCusSearch(fvalue)
-  };
+    const field = fvalue.split(".")[0];
+    const subfield = fvalue.split(".")[1];
 
-  // paid filter
-  const handlePaidFilter = (e) => {
-    let pvalue = e.target.value;
+    const filterdData = cus.filter((item) => item[field] === subfield);
+
+    setFilter(filterdData);
   };
 
   // get specific customer
@@ -166,13 +168,14 @@ export default function Customer() {
                         className="form-select"
                         onChange={handleActiveFilter}
                       >
-                        <option value="" selected>ফিল্টার করুন </option>
-                        <option value="active">একটিভ</option>
-                        <option value="inactive">ইনএকটিভ</option>
-                        <option value="unpaid">বকেয়া</option>
-                        <option value="paid">পরিশোধ</option>
+                        <option value="" selected>
+                          ফিল্টার করুন{" "}
+                        </option>
+                        <option value="status.active">একটিভ</option>
+                        <option value="status.inactive">ইনএকটিভ</option>
+                        <option value="paymentStatus.unpaid">বকেয়া</option>
+                        <option value="paymentStatus.paid">পরিশোধ</option>
                       </select>
-                       
                     </div>
 
                     <div className="row searchCollector">
@@ -219,8 +222,11 @@ export default function Customer() {
                           <th onClick={() => toggleSort("mobile")} scope="col">
                             মোবাইল
                           </th>
-                          <th onClick={() => toggleSort("address")} scope="col">
-                            এড্রেস
+                          <th
+                            onClick={() => toggleSort("paymentStatus")}
+                            scope="col"
+                          >
+                            পেমেন্ট স্ট্যাটাস
                           </th>
                           <th onClick={() => toggleSort("status")} scope="col">
                             স্ট্যাটাস
@@ -258,7 +264,7 @@ export default function Customer() {
                               <td>{val.customerId}</td>
                               <td>{val.name}</td>
                               <td>{val.mobile}</td>
-                              <td>{val.address}</td>
+                              <td>{val.paymentStatus}</td>
                               <td>{val.status}</td>
                               <td>{val.pppoe.profile}</td>
                               <td>{val.balance}</td>
