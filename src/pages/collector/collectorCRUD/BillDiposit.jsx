@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 
-export default function BillDiposit({ singleCustomer }) {
+export default function BillDiposit() {
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
 

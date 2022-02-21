@@ -27,6 +27,7 @@ import Bill from "./pages/bill/Bill";
 import Profile from "./pages/profile/Profile";
 import Account from "./pages/account/Account";
 import Message from "./pages/message/Message";
+import Diposit from "./pages/diposit/Diposit";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -58,7 +59,8 @@ function App() {
           <Route
             path="/bill"
             element={
-            (  userRole === "manager" &&user )||( userRole === "collector" && user) ? (
+              (userRole === "manager" && user) ||
+              (userRole === "collector" && user) ? (
                 <Bill />
               ) : (
                 <Navigate to={"/"} />
@@ -68,7 +70,8 @@ function App() {
           <Route
             path="/collector"
             element={
-             ( userRole === "manager" &&user) || (userRole === "ispOwner" &&user) ? (
+              (userRole === "manager" && user) ||
+              (userRole === "ispOwner" && user) ? (
                 <Collector />
               ) : (
                 <Navigate to={"/"} />
@@ -76,17 +79,24 @@ function App() {
             }
           />
 
-
           <Route
             path="manager"
             element={
-              userRole === "ispOwner" &&user ? <Manager /> : <Navigate to={"/home"} />
+              userRole === "ispOwner" && user ? (
+                <Manager />
+              ) : (
+                <Navigate to={"/home"} />
+              )
             }
           />
           <Route
             path="mikrotik"
             element={
-              userRole === "ispOwner" &&user ? <Mikrotik /> : <Navigate to={"/home"} />
+              userRole === "ispOwner" && user ? (
+                <Mikrotik />
+              ) : (
+                <Navigate to={"/home"} />
+              )
             }
           />
 
@@ -97,8 +107,8 @@ function App() {
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="area" element={<Area />} />
-
             <Route path="bill" element={<Bill />} />
+            <Route path="diposit" element={<Diposit />} />
             {/* <Route path="reseller" element={<Reseller />} /> */}
             <Route path="customer" element={<Customer />} />
 

@@ -6,6 +6,7 @@ import {
   PersonFill,
   PenFill,
   ArchiveFill,
+  Truck,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,10 +16,11 @@ import "./collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
+import BillDiposit from "./collectorCRUD/BillDiposit";
 import Footer from "../../components/admin/footer/Footer";
 import CollectorPost from "./collectorCRUD/CollectorPost";
 import Loader from "../../components/common/Loader";
- 
+
 import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
@@ -29,15 +31,14 @@ export default function Collector() {
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const [isDeleting, setIsDeleting] = useState(false);
   const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector(state=>state.collector.collector);
-   
+  const collector = useSelector((state) => state.collector.collector);
+
   let serial = 0;
-  
+
   useEffect(() => {
-   
-    getCollector(dispatch,ispOwnerId)
+    getCollector(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch]);
-  
+
   const [singleCollector, setSingleCollector] = useState("");
   const getSpecificCollector = (id) => {
     if (collector.length !== undefined) {
@@ -50,10 +51,8 @@ export default function Collector() {
 
   // DELETE collector
   const deleteCollectorHandler = async (ID) => {
-     
     const IDs = { ispOwnerId, collectorId: ID };
-   deleteCollector(dispatch,IDs,setIsDeleting);
-    
+    deleteCollector(dispatch, IDs, setIsDeleting);
   };
 
   return (
@@ -74,6 +73,7 @@ export default function Collector() {
 
               {/* modals */}
               <CollectorPost />
+              <BillDiposit single={singleCollector} />
               <CollectorDetails single={singleCollector} />
               <CollectorEdit single={singleCollector} />
 
@@ -182,6 +182,20 @@ export default function Collector() {
                                     </li>
                                     <li
                                       data-bs-toggle="modal"
+                                      data-bs-target="#billDipositeModal"
+                                      onClick={() => {
+                                        getSpecificCollector(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <Truck />
+                                          <p className="actionP">ডিপোজিট</p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                    <li
+                                      data-bs-toggle="modal"
                                       data-bs-target="#collectorEditModal"
                                       onClick={() => {
                                         getSpecificCollector(val.id);
@@ -196,10 +210,7 @@ export default function Collector() {
                                     </li>
                                     <li
                                       onClick={() => {
-                                        deleteCollectorHandler(
-                                           
-                                          val.id
-                                        );
+                                        deleteCollectorHandler(val.id);
                                       }}
                                     >
                                       <div className="dropdown-item actionManager">

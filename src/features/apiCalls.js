@@ -321,7 +321,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
     setIsloading(false);
   } catch (error) {
     console.log(error.message);
-    setIsloading(false)
+    // setIsloading(false)
   }
 };
 
@@ -708,7 +708,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 
   try {
     const res = await apiLink.patch(`/v1/ispOwner/${id}`, data);
-    console.log(res.data)
+    console.log(res.data);
     dispatch(updateProfile(res.data));
     setIsLoading(false);
     toast("Profile Update successfull");

@@ -12,6 +12,7 @@ import {
   PersonPlus,
   GeoAlt,
   Wifi,
+  WalletFill,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -119,28 +120,31 @@ export default function Sidebar() {
               ) : (
                 ""
               )}
-              {
-                userRole==='manager'|| userRole==="ispOwner"?
-              <NavLink
-              key={4}
-                to={"/collector"}
-                className={(navInfo) =>
-                  navInfo.isActive ? activeClass.active : ""
-                }
-              >
-                <FontColor>
-                  <li
-                    className="sidebarItems"
-                    id={
-                      window.location.pathname === "/collector" ? "active" : ""
-                    }
-                  >
-                    <div className="sidebarIcon">{<Wallet2 />}</div>
-                    <span className="sidebarLinksName">{"কালেক্টর"}</span>
-                  </li>
-                </FontColor>
-              </NavLink>:''
-              }
+              {userRole === "manager" || userRole === "ispOwner" ? (
+                <NavLink
+                  key={4}
+                  to={"/collector"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/collector"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<Wallet2 />}</div>
+                      <span className="sidebarLinksName">{"কালেক্টর"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
 
               <NavLink
                 key={6}
@@ -188,23 +192,48 @@ export default function Sidebar() {
 
               {/* bill */}
               {userRole === "manager" || userRole === "collector" ? (
-                <NavLink
-                  key={7}
-                  to={"/bill"}
-                  className={(navInfo) =>
-                    navInfo.isActive ? activeClass.active : ""
-                  }
-                >
-                  <FontColor>
-                    <li
-                      className="sidebarItems"
-                      id={window.location.pathname === "/bill" ? "active" : ""}
-                    >
-                      <div className="sidebarIcon">{<Coin />}</div>
-                      <span className="sidebarLinksName">{"বিল"}</span>
-                    </li>
-                  </FontColor>
-                </NavLink>
+                <>
+                  <NavLink
+                    key={7}
+                    to={"/bill"}
+                    className={(navInfo) =>
+                      navInfo.isActive ? activeClass.active : ""
+                    }
+                  >
+                    <FontColor>
+                      <li
+                        className="sidebarItems"
+                        id={
+                          window.location.pathname === "/bill" ? "active" : ""
+                        }
+                      >
+                        <div className="sidebarIcon">{<Coin />}</div>
+                        <span className="sidebarLinksName">{"বিল"}</span>
+                      </li>
+                    </FontColor>
+                  </NavLink>
+                  <NavLink
+                    key={7}
+                    to={"/diposit"}
+                    className={(navInfo) =>
+                      navInfo.isActive ? activeClass.active : ""
+                    }
+                  >
+                    <FontColor>
+                      <li
+                        className="sidebarItems"
+                        id={
+                          window.location.pathname === "/diposit"
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        <div className="sidebarIcon">{<WalletFill />}</div>
+                        <span className="sidebarLinksName">{"ডিপোজিট"}</span>
+                      </li>
+                    </FontColor>
+                  </NavLink>
+                </>
               ) : (
                 <></>
               )}

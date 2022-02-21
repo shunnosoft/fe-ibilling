@@ -10,7 +10,7 @@ import {
   ArchiveFill,
   PenFill,
   PersonFill,
-  Truck,
+  ArrowDownUp,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -29,7 +29,6 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-import BillDiposit from "./customerCRUD/BillDiposit";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
@@ -40,13 +39,10 @@ export default function Customer() {
   const cus = useSelector((state) => state.customer.customer);
 
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth.currentUser);
   const ispOwner = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-
-  let serial = 0;
 
   const [Customers, setCustomers] = useState(cus);
 
@@ -75,16 +71,12 @@ export default function Customer() {
   // active filter
   const handleActiveFilter = (e) => {
     let fvalue = e.target.value;
-    setCusSearch(fvalue)
-  };
-
-  // paid filter
-  const handlePaidFilter = (e) => {
-    let pvalue = e.target.value;
+    setCusSearch(fvalue);
   };
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
+
   const getSpecificCustomer = (id) => {
     if (cus.length !== undefined) {
       const temp = cus.find((val) => {
@@ -109,10 +101,8 @@ export default function Customer() {
     getCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner]);
 
-  const billUpdateHandler = (data) => {
-    // console.log("Bill Data:", data);
-  };
   const [isSorted, setSorted] = useState(false);
+
   const toggleSort = (item) => {
     setCustomers(arraySort(Customers, item, { reverse: isSorted }));
     setSorted(!isSorted);
@@ -140,7 +130,6 @@ export default function Customer() {
               {/* Model start */}
               <CustomerPost />
               <CustomerEdit single={singleCustomer} />
-              <BillDiposit single={singleCustomer} />
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               {/* Model finish */}
@@ -166,13 +155,14 @@ export default function Customer() {
                         className="form-select"
                         onChange={handleActiveFilter}
                       >
-                        <option value="" selected>ফিল্টার করুন </option>
+                        <option value="" selected>
+                          ফিল্টার করুন{" "}
+                        </option>
                         <option value="active">একটিভ</option>
                         <option value="inactive">ইনএকটিভ</option>
                         <option value="unpaid">বকেয়া</option>
                         <option value="paid">পরিশোধ</option>
                       </select>
-                       
                     </div>
 
                     <div className="row searchCollector">
@@ -206,39 +196,47 @@ export default function Customer() {
                   <div className="table-responsive-lg">
                     <table className="table table-striped ">
                       <thead>
-                        <tr>
+                        <tr className="spetialSortingRow">
                           <th
                             onClick={() => toggleSort("customerId")}
                             scope="col"
                           >
                             আইডি
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("name")} scope="col">
                             নাম
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("mobile")} scope="col">
                             মোবাইল
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("address")} scope="col">
                             এড্রেস
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("status")} scope="col">
                             স্ট্যাটাস
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th
                             onClick={() => toggleSort("pppoe.profile")}
                             scope="col"
                           >
                             PPPoE
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("balance")} scope="col">
                             ব্যালান্স
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th
                             onClick={() => toggleSort("monthlyFee")}
                             scope="col"
                           >
                             মাসিক ফি
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th scope="col" className="centeringTD">
                             অ্যাকশন
@@ -302,20 +300,6 @@ export default function Customer() {
                                       <div className="customerAction">
                                         <Wallet />
                                         <p className="actionP">বিল গ্রহণ</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#billDipositeModal"
-                                    onClick={() => {
-                                      getSpecificCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <Truck />
-                                        <p className="actionP">ডিপোজিট</p>
                                       </div>
                                     </div>
                                   </li>

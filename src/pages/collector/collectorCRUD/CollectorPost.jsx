@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
 import { collectorData } from "../CollectorInputs";
+import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { addCollector } from "../../../features/apiCalls";
 // import { getArea, fetchArea } from "../../../features/areaSlice";
@@ -17,21 +18,21 @@ import { addCollector } from "../../../features/apiCalls";
 export default function CollectorPost() {
   const dispatch = useDispatch();
   const area = useSelector((state) => state.area.area);
-  const [subArea, setSubArea] = useState("");
+  const [areaIds, setAreaIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.auth.currentUser);
 
   //validator
   const collectorValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required("নাম ***"),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
+      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
-    address: Yup.string().required("ঠিকানা দিন"),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল দিন"),
+      .required("মোবাইল নম্বর *** "),
+    address: Yup.string().required("ঠিকানা ***"),
+    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
     nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
-    status: Yup.string().required("স্টেটাস দিন"),
+    status: Yup.string().required("স্টেটাস ***"),
     // refName: Yup.string().required("রেফারেন্স নাম"),
     // refMobile: Yup.string()
     //   .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
@@ -39,35 +40,23 @@ export default function CollectorPost() {
     //   .required("মোবাইল নম্বর দিন "),
   });
 
-  // fetch Area fro select option
-  // useEffect(() => {
-  //   if (auth.ispOwner) {
-  //     dispatch(fetchArea(auth.ispOwner.id));
-  //   }
-  // }, [dispatch, auth.ispOwner]);
-
-  // select subArea
-  const selectSubArea = (data) => {
-    const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setSubArea(temp);
+  const setAreaHandler = () => {
+    const temp = document.querySelectorAll(".getValueUsingClass");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
     }
+    setAreaIds(IDS_temp);
   };
 
   const collectorPostHandler = async (data) => {
     setIsLoading(true);
-    const OneSubArea = document.getElementById("subAreaId").value;
-    if (OneSubArea === "") {
-      setIsLoading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
-    }
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
-        areas: OneSubArea,
+        areas: areaIds,
         ispOwner: auth.ispOwner.id,
       };
       addCollector(dispatch, sendingData, setIsLoading);
@@ -153,42 +142,26 @@ export default function CollectorPost() {
                     </div>
 
                     {/* area */}
-                    <hr />
-                    <p>এরিয়া সিলেক্ট করুন</p>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      onChange={selectSubArea}
-                    >
-                      <option value="">...</option>
-                      {area.length === undefined
-                        ? ""
-                        : area.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
+                    {/* area section*/}
+                    <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <div className="AllAreaClass">
+                      {area?.map((val, key) => (
+                        <div key={key}>
+                          <h6 className="areaParent">{val.name}</h6>
+                          {val.subAreas.map((v, k) => (
+                            <div key={k} className="displayFlex">
+                              <input
+                                type="checkbox"
+                                className="getValueUsingClass"
+                                value={v.id}
+                                onChange={setAreaHandler}
+                              />
+                              <label>{v.name}</label>
+                            </div>
                           ))}
-                    </select>
-                    <br />
-                    <p>
-                      {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া সিলেক্ট
-                      করুন
-                    </p>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      name="subArea"
-                      id="subAreaId"
-                    >
-                      <option value="">...</option>
-                      {subArea?.subAreas
-                        ? subArea.subAreas.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
-                          ))
-                        : ""}
-                    </select>
+                        </div>
+                      ))}
+                    </div>
                     {/* area */}
                     <div className="modal-footer">
                       <button

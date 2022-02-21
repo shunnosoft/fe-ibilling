@@ -2,25 +2,25 @@ export const collectorData = [
   {
     id: 1,
     name: "name",
-    label: "কালেক্টর এর নাম",
+    label: "নাম",
     type: "text",
   },
   {
     id: 2,
     name: "mobile",
-    label: "কালেক্টর এর মোবাইল",
+    label: "মোবাইল",
     type: "text",
   },
   {
     id: 3,
     name: "email",
-    label: "কালেক্টর এর ইমেইল",
+    label: "ইমেইল",
     type: "email",
   },
   {
     id: 4,
     name: "address",
-    label: "কালেক্টর এর ঠিকানা",
+    label: "ঠিকানা",
     type: "text",
   },
   {

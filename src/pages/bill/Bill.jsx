@@ -29,7 +29,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import BillPost from "./billCRUD/BillPost";
 import BillDetails from "./billCRUD/BillDetails";
 import BillCollect from "./billCRUD/BillCollect";
-import BillDiposit from "../Customer/customerCRUD/BillDiposit";
+// import BillDiposit from "../Customer/customerCRUD/BillDiposit";
 import BillEdit from "./billCRUD/BillEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
@@ -114,7 +114,7 @@ export default function Bill() {
               <BillPost />
               <BillEdit single={singleCustomer} />
               <BillCollect singleCustomer={singleCustomer} />
-              <BillDiposit />
+              {/* <BillDiposit /> */}
               <BillDetails single={singleCustomer} />
               {/* Model finish */}
 
@@ -240,20 +240,6 @@ export default function Bill() {
                                       <div className="customerAction">
                                         <Wallet />
                                         <p className="actionP">বিল গ্রহণ</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#billDipositeModal"
-                                    onClick={() => {
-                                      getSpecificCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <Truck />
-                                        <p className="actionP">ডিপোজিট</p>
                                       </div>
                                     </div>
                                   </li>
