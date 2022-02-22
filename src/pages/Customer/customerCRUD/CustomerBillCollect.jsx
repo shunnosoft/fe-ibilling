@@ -13,6 +13,8 @@ export default function CustomerBillCollect({ single }) {
   const [billType, setBillType] = useState("bill");
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
+
+ const currentUserId=useSelector(state=>state.auth.userData.id)
 const dispatch = useDispatch()
 const [isLoading,setLoading] =useState(false)
   const BillValidatoin = Yup.object({
@@ -27,7 +29,7 @@ const [isLoading,setLoading] =useState(false)
       customer: single.id,
       ispOwner: ispOwner,
       user:currentUser?.user.id,
-      collectorId: currentUser?.collector?.id, //when collector is logged in
+      collectorId: currentUserId  //when collector is logged in
     };
 
     console.log("Colelcted Bill form custoerrrrrrr: ", sendingData);

@@ -51,6 +51,7 @@ import {
   getResellerrSuccess,
 } from "./resellerSlice";
 import { updateProfile } from "./authSlice";
+import { addDepositSuccess, getTotalBalanceSuccess } from "./paymentSlice";
 
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
@@ -322,7 +323,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
     setIsloading(false);
   } catch (error) {
     console.log(error.message);
-    setIsloading(false)
+    // setIsloading(false)
   }
 };
 
@@ -709,7 +710,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 
   try {
     const res = await apiLink.patch(`/v1/ispOwner/${id}`, data);
-    console.log(res.data)
+    console.log(res.data);
     dispatch(updateProfile(res.data));
     setIsLoading(false);
     toast("Profile Update successfull");
@@ -743,3 +744,55 @@ export const billCollect=async (dispatch,billData,setLoading) =>{
 
 }
 
+
+export const getDeposit=async (dispatch,data,setLoading) =>{
+  setLoading(true)
+
+  try {
+    
+    
+  } catch (error) {
+
+    
+  }
+}
+
+export const addDeposit= async (dispatch,data,setLoading) =>{
+  setLoading(true)
+
+  try {
+    const res =await apiLink.post(`/v1/deposit`,data) ; 
+
+
+    dispatch(addDepositSuccess(res.data))
+    setLoading(false)
+    
+  } catch (error) {
+    setLoading(false)
+    if(error.response.status === 400){
+      toast("ডিপোজিট অলরেডি পেন্ডিং এ আছে")
+
+    } else{
+      toast(error.message)
+    }
+
+  }
+}
+
+//balance 
+
+export const getTotalbal=async(dispatch,setLoading)=>{
+  setLoading(true)
+   try {
+     const res = await apiLink.get(`v1/bill/monthlyBill/balance`)
+    dispatch(getTotalBalanceSuccess(res.data))
+    setLoading(false)
+   } catch (error) {
+     setLoading(false)
+    toast(error.response.message)
+     
+
+     
+   }
+
+}

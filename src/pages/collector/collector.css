@@ -2,7 +2,7 @@
   padding: 15px 0;
   font-weight: 500;
   /* background: repeating-linear-gradient(45deg, var(--bs-purple), #6130bb 100px); */
-  background: #607c99;
+  background: linear-gradient(0deg, #9449f5, #6617cd);
   text-align: center;
   font-size: 1.7rem;
   color: white;

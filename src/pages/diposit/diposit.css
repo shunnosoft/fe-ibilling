@@ -1,0 +1,45 @@
+.displayGridForDiposit {
+  display: grid;
+  grid-template-columns: 1fr 1fr 150px;
+  grid-gap: 10px;
+  padding: 20px;
+  /* align-items: center; */
+}
+.dipositSubmitBtn {
+  height: 38px;
+  margin-top: 24px;
+}
+.acceptBackground {
+  background: #29b32d;
+  color: white;
+  text-align: center;
+  padding: 2px 16px;
+  font-size: 13px;
+  border-radius: 18px;
+}
+.AcceptRejectBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.AcceptRejectBtn > button {
+  border: none;
+  padding: 4px 20px;
+  color: white;
+  font-size: 14px;
+  border-radius: 15px;
+  text-transform: uppercase;
+}
+.textAlignCenter {
+  text-align: center;
+}
+.AcceptRejectBtn > button:hover {
+  opacity: 0.9;
+}
+.AcceptRejectBtn :nth-child(1) {
+  background: rgb(20, 124, 223);
+  margin-right: 10px;
+}
+.AcceptRejectBtn :nth-child(2) {
+  background: rgb(248, 93, 21);
+}

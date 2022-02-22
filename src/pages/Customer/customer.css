@@ -8,6 +8,14 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 10px;
 }
+.spetialSortingRow > th {
+  cursor: pointer;
+}
+.arrowDownUp {
+  padding: 1px;
+  margin-left: 4px;
+  color: #12cf6f;
+}
 .deletingAction {
   padding: 20px 5px;
   color: tomato;
@@ -35,7 +43,8 @@
   padding: 0;
   margin: 0;
 }
-.customerGrid {
+.customerGrid,
+.displayGrid3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
@@ -46,7 +55,67 @@
   color: rgb(250, 79, 0);
   padding: 0px;
 }
-
+.mikrotikSection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+.areaSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  padding-bottom: 15px;
+}
+.areaSection > div > p {
+  color: black;
+  padding: 0;
+  margin: 0;
+}
+.AllAreaClass {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-top: 10px;
+  padding: 20px;
+  border-radius: 7px;
+  border: 1px solid #ddd;
+  overflow-x: scroll;
+}
+.areaParent {
+  font-size: 16px;
+  color: black;
+  font-weight: 600;
+}
+.displayFlex {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+.displayFlex :nth-child(2) {
+  padding-left: 7px;
+}
+.autoDisable {
+  background: #efefef;
+  width: fit-content;
+  height: 38px;
+  margin-top: 24px;
+  padding: 5px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+.paginationSection {
+  display: flex;
+  justify-content: space-between;
+}
+.paginationFormSelect {
+  width: 130px !important;
+  height: 38px;
+}
+.pppoeSection2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
 @media only screen and (max-width: 980px) {
   .customerGrid {
     display: initial;

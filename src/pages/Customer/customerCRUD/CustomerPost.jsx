@@ -17,40 +17,40 @@ export default function CustomerModal() {
   const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  const [subArea, setSubArea] = useState("");
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
+  const [autoDisable, setAutoDisable] = useState(true);
+  const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
 
   // customer validator
   const customerValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required("নাম ***"),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
+      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
-    address: Yup.string().required("নাম দিন"),
-    email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-    nid: Yup.string().required("NID দিন"),
-    monthlyFee: Yup.string().required("Montly Fee দিন"),
+      .required("মোবাইল নম্বর *** "),
+    address: Yup.string().required("এড্রেস ***"),
+    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
+    nid: Yup.string().required("NID ***"),
+    monthlyFee: Yup.string().required("Montly Fee ***"),
     Pname: Yup.string().required("PPPoE নাম"),
     Ppassword: Yup.string().required("PPPoE Password"),
     Pcomment: Yup.string().required("Comment"),
   });
 
   // select subArea
-  const selectSubArea = (data) => {
-    const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setSubArea(temp);
-    }
-  };
-const [loadingPac,setLoadingPac] =useState(false)
+  // const selectSubArea = (data) => {
+  //   const areaId = data.target.value;
+  //   if (area) {
+  //     const temp = area.find((val) => {
+  //       return val.id === areaId;
+  //     });
+  //     setSubArea(temp);
+  //   }
+  // };
+
+  const [loadingPac, setLoadingPac] = useState(false);
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -64,19 +64,30 @@ const [loadingPac,setLoadingPac] =useState(false)
     setSingleMikrotik(id);
   };
 
+  // select subArea
+  const selectSubArea = (data) => {
+    const areaId = data.target.value;
+    if (area) {
+      const temp = area.find((val) => {
+        return val.id === areaId;
+      });
+      setSubArea(temp);
+    }
+  };
+
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
-    setPackageRate(temp.rate);
+    setPackageRate(temp);
   };
-
+  console.log("Autho: ", autoDisable);
   // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
-    const subArea = document.getElementById("subAreaId").value;
-    if (subArea === "") {
+    const subArea2 = document.getElementById("subAreaId").value;
+    if (subArea2 === "") {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
@@ -84,16 +95,18 @@ const [loadingPac,setLoadingPac] =useState(false)
     const mainData = {
       customerId: "randon123",
       paymentStatus: "unpaid",
-      subArea: subArea,
+      subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
+      autoDisable: autoDisable,
       pppoe: {
         name: Pname,
         password: Ppassword,
         service: "pppoe",
         comment: Pcomment,
+        profile: Pprofile,
       },
       ...rest,
     };
@@ -129,13 +142,13 @@ const [loadingPac,setLoadingPac] =useState(false)
                 initialValues={{
                   name: "",
                   mobile: "",
-                  address: "",
+                  address: "N/A",
                   email: "",
-                  nid: "",
-                  monthlyFee: packageRate || "",
+                  nid: "N/A",
+                  monthlyFee: packageRate?.rate || "",
                   Pname: "",
+                  Pprofile: packageRate?.name || "",
                   Ppassword: "",
-                  Pprofile: "",
                   Pcomment: "",
                 }}
                 validationSchema={customerValidator}
@@ -146,12 +159,67 @@ const [loadingPac,setLoadingPac] =useState(false)
               >
                 {(formik) => (
                   <Form>
-                    <div className="customerGrid">
-                      {/* section two */}
-                      <div className="Section2">
+                    <div className="mikrotikSection">
+                      <div>
                         <p className="comstomerFieldsTitle">
-                          এরিয়া সিলেক্ট করুন
+                          মাইক্রোটিক সিলেক্ট করুন
                         </p>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          onChange={selectMikrotik}
+                        >
+                          <option value="">...</option>
+                          {Getmikrotik.length === undefined
+                            ? ""
+                            : Getmikrotik.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))}
+                        </select>
+                      </div>
+
+                      {/* pppoe package */}
+                      <div>
+                        <p className="comstomerFieldsTitle">
+                          PPPoE প্যাকেজ সিলেক্ট করুন
+                        </p>
+                        <select
+                          className="form-select mb-3"
+                          aria-label="Default select example"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value="">...</option>
+                          {ppPackage.length === undefined
+                            ? ""
+                            : ppPackage.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))}
+                        </select>
+                      </div>
+                      <FtextField
+                        type="text"
+                        label="মাসিক ফি"
+                        name="monthlyFee"
+                      />
+                    </div>
+
+                    <div className="pppoeSection2">
+                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
+                      <FtextField
+                        type="text"
+                        label="পাসওয়ার্ড"
+                        name="Ppassword"
+                      />
+                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                    </div>
+
+                    <div className="displayGrid3">
+                      <div>
+                        <p>এরিয়া সিলেক্ট করুন</p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -166,8 +234,10 @@ const [loadingPac,setLoadingPac] =useState(false)
                                 </option>
                               ))}
                         </select>
+                      </div>
 
-                        <p className="comstomerFieldsTitle mt-3">
+                      <div>
+                        <p>
                           {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
                           সিলেক্ট করুন
                         </p>
@@ -186,81 +256,33 @@ const [loadingPac,setLoadingPac] =useState(false)
                               ))
                             : ""}
                         </select>
-
-                        <p className="comstomerFieldsTitle mt-3">
-                          মাইক্রোটিক সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          onChange={selectMikrotik}
-                        >
-                          <option value="">...</option>
-                          {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-
-                        {/* pppoe package */}
-                        <p className="comstomerFieldsTitle mt-3">
-                          PPPoE প্যাকেজ সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select mb-3"
-                          aria-label="Default select example"
-                          onChange={selectMikrotikPackage}
-                        >
-                          <option value="">...</option>
-                          {ppPackage.length === undefined
-                            ? ""
-                            : ppPackage.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-                        <FtextField
-                          type="text"
-                          label="মাসিক ফি"
-                          name="monthlyFee"
-                        />
                       </div>
-                      {/* section 2 */}
-                      <div className="sectionOne">
-                        <FtextField type="text" label="নাম" name="name" />
-                        <FtextField type="text" label="মোবাইল" name="mobile" />
-                        <FtextField type="text" label="এড্রেস" name="address" />
-                        <FtextField type="text" label="ইমেইল" name="email" />
-                        <FtextField
-                          type="text"
-                          label="জাতীয় পরিচয়পত্র নং"
-                          name="nid"
-                        />
-                      </div>
-                      {/* section 3 */}
-                      <div className="section3">
-                        <FtextField
-                          type="text"
-                          label="PPPoE নাম"
-                          name="Pname"
-                        />
-                        <FtextField
-                          type="text"
-                          label="পাসওয়ার্ড"
-                          name="Ppassword"
-                        />
-                        <FtextField
-                          type="text"
-                          label="কমেন্ট"
-                          name="Pcomment"
+
+                      <FtextField
+                        type="text"
+                        label="জাতীয় পরিচয়পত্র নং"
+                        name="nid"
+                      />
+                    </div>
+
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="নাম" name="name" />
+                      <FtextField type="text" label="মোবাইল" name="mobile" />
+                      <FtextField type="text" label="ঠিকানা" name="address" />
+                    </div>
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="ইমেইল" name="email" />
+                      <div className="autoDisable">
+                        <label>Auto Disable</label>
+                        <input
+                          type="checkBox"
+                          checked={autoDisable}
+                          onChange={(e) => setAutoDisable(e.target.checked)}
                         />
                       </div>
                     </div>
-                    <div className="modal-footer">
+
+                    <div className="modal-footer" style={{ border: "none" }}>
                       <button
                         type="button"
                         className="btn btn-secondary"

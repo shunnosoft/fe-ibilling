@@ -6,7 +6,9 @@ export const FtextField = ({ label, ...props }) => {
 
   return (
     <div className="mb-3">
-      <label htmlFor={field.name}>{label}</label>
+      <label htmlFor={field.name} className="changeLabelFontColor">
+        {label}
+      </label>
       <input
         className={`form-control shadow-none ${
           meta.touched && meta.error && "is-invalid"

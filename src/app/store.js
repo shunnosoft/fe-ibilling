@@ -5,6 +5,7 @@ import areaSlice from "../features/areaSlice";
 import mikrotikSlice from "../features/mikrotikSlice";
 import resellerSlice from "../features/resellerSlice";
 import collectorSlice from "../features/collectorSlice";
+import paymentSlice from "../features/paymentSlice";
 import managerSlice from "../features/managerSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   reseller: resellerSlice,
   collector: collectorSlice,
   manager: managerSlice,
+  payment:paymentSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

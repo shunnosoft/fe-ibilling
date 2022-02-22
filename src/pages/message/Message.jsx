@@ -8,7 +8,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 
-export default function Account() {
+export default function Message() {
   const [isChecked, setisChecked] = useState(false);
   const handleMessageCheckBox = (e) => {
     setisChecked(e.target.checked);
