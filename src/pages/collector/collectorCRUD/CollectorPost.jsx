@@ -96,8 +96,6 @@ export default function CollectorPost() {
                   email: "",
                   nid: "",
                   status: "",
-                  //   refName: "N/A" || "",
-                  //   refMobile: "N/A" || "",
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {

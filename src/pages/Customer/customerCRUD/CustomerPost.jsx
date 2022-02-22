@@ -207,7 +207,17 @@ export default function CustomerModal() {
                       />
                     </div>
 
-                    <div className="areaSection">
+                    <div className="pppoeSection2">
+                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
+                      <FtextField
+                        type="text"
+                        label="পাসওয়ার্ড"
+                        name="Ppassword"
+                      />
+                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                    </div>
+
+                    <div className="displayGrid3">
                       <div>
                         <p>এরিয়া সিলেক্ট করুন</p>
                         <select
@@ -247,47 +257,29 @@ export default function CustomerModal() {
                             : ""}
                         </select>
                       </div>
+
+                      <FtextField
+                        type="text"
+                        label="জাতীয় পরিচয়পত্র নং"
+                        name="nid"
+                      />
                     </div>
 
-                    <div className="customerGrid">
-                      {/* section one */}
-                      <div className="sectionOne">
-                        <FtextField type="text" label="নাম" name="name" />
-                        <FtextField type="text" label="মোবাইল" name="mobile" />
-                        <FtextField type="text" label="এড্রেস" name="address" />
-                        <FtextField type="text" label="ইমেইল" name="email" />
-                      </div>
-                      {/* section 3 */}
-                      <div className="section3">
-                        <FtextField
-                          type="text"
-                          label="জাতীয় পরিচয়পত্র নং"
-                          name="nid"
-                        />
-                        <FtextField
-                          type="text"
-                          label="PPPoE নাম"
-                          name="Pname"
-                        />
-                        <FtextField
-                          type="text"
-                          label="পাসওয়ার্ড"
-                          name="Ppassword"
-                        />
-                        <FtextField
-                          type="text"
-                          label="কমেন্ট"
-                          name="Pcomment"
-                        />
-                      </div>
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="নাম" name="name" />
+                      <FtextField type="text" label="মোবাইল" name="mobile" />
+                      <FtextField type="text" label="ঠিকানা" name="address" />
                     </div>
-                    <div className="autoDisable">
-                      <label>Auto Disable</label>
-                      <input
-                        type="checkBox"
-                        checked={autoDisable}
-                        onChange={(e) => setAutoDisable(e.target.checked)}
-                      />
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="ইমেইল" name="email" />
+                      <div className="autoDisable">
+                        <label>Auto Disable</label>
+                        <input
+                          type="checkBox"
+                          checked={autoDisable}
+                          onChange={(e) => setAutoDisable(e.target.checked)}
+                        />
+                      </div>
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

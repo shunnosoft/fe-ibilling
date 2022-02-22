@@ -43,6 +43,9 @@ td {
   font-size: 1.1rem !important;
   padding: 15px !important;
 }
+p {
+  margin-bottom: 0px !important;
+}
 .btn-success {
   background-color: #0eb96a !important;
 }

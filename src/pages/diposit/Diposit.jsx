@@ -96,65 +96,69 @@ export default function Diposit() {
               )}
 
               <br />
-              <FourGround>
-                <div className="collectorWrapper">
-                  {userRole !== "ispOwner" ? (
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          কালেক্টর ডিপোজিট: <span>NULL</span>
-                        </h4>
-                      </div>
+              {userRole !== "collector" ? (
+                <FourGround>
+                  <div className="collectorWrapper">
+                    {userRole !== "ispOwner" ? (
+                      <div className="row searchCollector">
+                        <div className="col-sm-8">
+                          <h4 className="allCollector">
+                            কালেক্টর ডিপোজিট: <span>NULL</span>
+                          </h4>
+                        </div>
 
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          {/* <Search className="serchingIcon" /> */}
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ"
-                            // onChange={(e) => setCusSearch(e.target.value)}
-                          />
+                        <div className="col-sm-4">
+                          <div className=" collectorSearch">
+                            {/* <Search className="serchingIcon" /> */}
+                            <input
+                              type="text"
+                              className="search"
+                              placeholder="সার্চ"
+                              // onChange={(e) => setCusSearch(e.target.value)}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                    ) : (
+                      ""
+                    )}
 
-                  {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <td>
-                            নাম{" "}
-                            {userRole === "ispOwner"
-                              ? "(ম্যানেজার)"
-                              : "(কালেক্টর)"}
-                          </td>
-                          <td>মোট</td>
-                          <td className="textAlignCenter">অ্যাকশন</td>
-                          <td>তারিখ</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Md. Rakib Hasan</td>
-                          <td>৳ {500}</td>
-                          <td>
-                            <div className="AcceptRejectBtn">
-                              <button>Accept</button>
-                              <button>Reject</button>
-                            </div>
-                          </td>
-                          <td>31/01/2022 07:25 PM</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    {/* table */}
+                    <div className="table-responsive-lg">
+                      <table className="table table-striped ">
+                        <thead>
+                          <tr>
+                            <td>
+                              নাম{" "}
+                              {userRole === "ispOwner"
+                                ? "(ম্যানেজার)"
+                                : "(কালেক্টর)"}
+                            </td>
+                            <td>মোট</td>
+                            <td className="textAlignCenter">অ্যাকশন</td>
+                            <td>তারিখ</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Md. Rakib Hasan</td>
+                            <td>৳ {500}</td>
+                            <td>
+                              <div className="AcceptRejectBtn">
+                                <button>Accept</button>
+                                <button>Reject</button>
+                              </div>
+                            </td>
+                            <td>31/01/2022 07:25 PM</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              </FourGround>
+                </FourGround>
+              ) : (
+                ""
+              )}
               <Footer />
             </FontColor>
           </div>

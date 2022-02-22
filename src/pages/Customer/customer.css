@@ -43,9 +43,10 @@
   padding: 0;
   margin: 0;
 }
-.customerGrid {
+.customerGrid,
+.displayGrid3 {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 }
 .ifCannotSelectBill {
@@ -95,6 +96,8 @@
 .autoDisable {
   background: #efefef;
   width: fit-content;
+  height: 38px;
+  margin-top: 24px;
   padding: 5px 15px;
   border-radius: 5px;
   display: flex;
@@ -107,6 +110,11 @@
 .paginationFormSelect {
   width: 130px !important;
   height: 38px;
+}
+.pppoeSection2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
 }
 @media only screen and (max-width: 980px) {
   .customerGrid {
