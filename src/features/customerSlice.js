@@ -23,6 +23,12 @@ const customerSliec = createSlice({
         state.customer.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
     },
+    updateBalance: (state, action) => {
+      state.customer.find(
+        (item) => item.id === action.payload.customer
+      ).balance +=
+        action.payload.amount;
+    },
     deleteCustomerSuccess: (state, action) => {
       // Example
       // const months = ['Jan', 'March', 'April', 'June'];
@@ -46,6 +52,7 @@ export const {
   addCustomerSuccess,
   editCustomerSuccess,
   deleteCustomerSuccess,
+  updateBalance
 } = customerSliec.actions;
 
 export default customerSliec.reducer;

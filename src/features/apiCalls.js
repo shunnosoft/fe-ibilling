@@ -30,6 +30,7 @@ import {
   deleteCustomerSuccess,
   editCustomerSuccess,
   getCustomerSuccess,
+  updateBalance,
 } from "./customerSlice";
 import {
   addMikrotikSuccess,
@@ -717,3 +718,28 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
     toast(error.message);
   }
 };
+
+
+//Bill 
+
+export const billCollect=async (dispatch,billData,setLoading) =>{
+  setLoading(true)
+  try {
+    const res= await apiLink.post("/v1/bill/monthlyBill",billData)
+    dispatch(updateBalance(res.data))
+    setLoading(false)
+    document.querySelector("#collectCustomerBillModal").click();
+
+    toast("Bill collect successfull")
+    
+  } catch (error) {
+    setLoading(false)
+    document.querySelector("#collectCustomerBillModal").click();
+
+    toast("Bill Collect Failed")
+    
+  }
+
+
+}
+
