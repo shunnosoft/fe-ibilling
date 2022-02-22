@@ -19,6 +19,7 @@ export default function CustomerModal() {
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
+  const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
 
@@ -79,9 +80,9 @@ export default function CustomerModal() {
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
-    setPackageRate(temp.rate);
+    setPackageRate(temp);
   };
-
+  console.log("Autho: ", autoDisable);
   // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
@@ -99,12 +100,13 @@ export default function CustomerModal() {
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
+      autoDisable: autoDisable,
       pppoe: {
         name: Pname,
         password: Ppassword,
         service: "pppoe",
         comment: Pcomment,
-        // profile: Pprofile,
+        profile: Pprofile,
       },
       ...rest,
     };
@@ -143,10 +145,10 @@ export default function CustomerModal() {
                   address: "N/A",
                   email: "",
                   nid: "N/A",
-                  monthlyFee: packageRate || "",
+                  monthlyFee: packageRate?.rate || "",
                   Pname: "",
+                  Pprofile: packageRate?.name || "",
                   Ppassword: "",
-                  // Pprofile: "",
                   Pcomment: "",
                 }}
                 validationSchema={customerValidator}
@@ -278,6 +280,14 @@ export default function CustomerModal() {
                           name="Pcomment"
                         />
                       </div>
+                    </div>
+                    <div className="autoDisable">
+                      <label>Auto Disable</label>
+                      <input
+                        type="checkBox"
+                        checked={autoDisable}
+                        onChange={(e) => setAutoDisable(e.target.checked)}
+                      />
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

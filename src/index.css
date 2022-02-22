@@ -50,6 +50,10 @@ td {
   background-color: #0d9c5a !important;
 }
 .page-item.active .page-link {
+  background-color: #05d36a !important;
+  border-color: #11b725 !important;
+}
+.page-item.active .page-link {
   color: #fff !important;
 }
 ::-webkit-input-placeholder {

@@ -1,3 +1,14 @@
+.displayGridForDiposit {
+  display: grid;
+  grid-template-columns: 1fr 1fr 150px;
+  grid-gap: 10px;
+  padding: 20px;
+  /* align-items: center; */
+}
+.dipositSubmitBtn {
+  height: 38px;
+  margin-top: 29px;
+}
 .acceptBackground {
   background: #29b32d;
   color: white;

@@ -212,31 +212,27 @@ export default function Sidebar() {
                       </li>
                     </FontColor>
                   </NavLink>
-                  <NavLink
-                    key={7}
-                    to={"/diposit"}
-                    className={(navInfo) =>
-                      navInfo.isActive ? activeClass.active : ""
-                    }
-                  >
-                    <FontColor>
-                      <li
-                        className="sidebarItems"
-                        id={
-                          window.location.pathname === "/diposit"
-                            ? "active"
-                            : ""
-                        }
-                      >
-                        <div className="sidebarIcon">{<WalletFill />}</div>
-                        <span className="sidebarLinksName">{"ডিপোজিট"}</span>
-                      </li>
-                    </FontColor>
-                  </NavLink>
                 </>
               ) : (
                 <></>
               )}
+              <NavLink
+                key={7}
+                to={"/diposit"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={window.location.pathname === "/diposit" ? "active" : ""}
+                  >
+                    <div className="sidebarIcon">{<WalletFill />}</div>
+                    <span className="sidebarLinksName">{"ডিপোজিট"}</span>
+                  </li>
+                </FontColor>
+              </NavLink>
               {/* bill sub links */}
               <div id="toggleSubBilling">
                 {billData.map((val, key) => (

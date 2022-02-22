@@ -92,7 +92,22 @@
 .displayFlex :nth-child(2) {
   padding-left: 7px;
 }
-
+.autoDisable {
+  background: #efefef;
+  width: fit-content;
+  padding: 5px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+.paginationSection {
+  display: flex;
+  justify-content: space-between;
+}
+.paginationFormSelect {
+  width: 130px !important;
+  height: 38px;
+}
 @media only screen and (max-width: 980px) {
   .customerGrid {
     display: initial;

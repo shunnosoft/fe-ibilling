@@ -33,6 +33,7 @@ export default function CollectorPost() {
     email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
     nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
     status: Yup.string().required("স্টেটাস ***"),
+
     // refName: Yup.string().required("রেফারেন্স নাম"),
     // refMobile: Yup.string()
     //   .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")

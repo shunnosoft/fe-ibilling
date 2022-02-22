@@ -1,14 +1,38 @@
-import { useState } from "react";
+// import { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
+import { Form, Formik } from "formik";
+import { useSelector } from "react-redux";
+import * as Yup from "yup";
 
 // internal import
+import { FtextField } from "../../components/common/FtextField";
 import "./diposit.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 
 export default function Diposit() {
+  const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
+  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const userRole = useSelector((state) => state.auth.role);
+  const BillValidatoin = Yup.object({
+    amount: Yup.string().required("Please insert amount."),
+  });
+
+  // bill amount
+  const billDipositHandler = (data) => {
+    const sendingData = {
+      depositBy: currentUser?.user.role,
+      amount: data.amount,
+      balance: data.balance,
+      user: currentUser?.user.id,
+      ispOwner: ispOwner,
+    };
+
+    console.log("Diposit Bill: ", sendingData);
+  };
+
   return (
     <>
       <Sidebar />
@@ -28,33 +52,87 @@ export default function Diposit() {
                 <h2 className="collectorTitle">ডিপোজিট</h2>
               </FourGround>
 
+              {userRole !== "ispOwner" ? (
+                <FourGround>
+                  <div className="managerDipositToIsp">
+                    <Formik
+                      initialValues={{
+                        amount: "",
+                        balance: "৳ xyz", //put the value from api
+                      }}
+                      validationSchema={BillValidatoin}
+                      onSubmit={(values) => {
+                        billDipositHandler(values);
+                      }}
+                    >
+                      {() => (
+                        <Form>
+                          <div className="displayGridForDiposit">
+                            <FtextField
+                              type="text"
+                              name="balance"
+                              label="মোট ব্যালান্স"
+                              disabled
+                            />
+                            <FtextField
+                              type="text"
+                              name="amount"
+                              label="ডিপোজিট পরিমান"
+                            />
+                            <button
+                              type="submit"
+                              className="btn btn-success dipositSubmitBtn"
+                            >
+                              সাবমিট
+                            </button>
+                          </div>
+                        </Form>
+                      )}
+                    </Formik>
+                  </div>
+                </FourGround>
+              ) : (
+                ""
+              )}
+
+              <br />
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="row searchCollector">
-                    <div className="col-sm-8">
-                      <h4 className="allCollector">
-                        মোট ডিপোজিট: <span>NULL</span>
-                      </h4>
-                    </div>
+                  {userRole !== "ispOwner" ? (
+                    <div className="row searchCollector">
+                      <div className="col-sm-8">
+                        <h4 className="allCollector">
+                          কালেক্টর ডিপোজিট: <span>NULL</span>
+                        </h4>
+                      </div>
 
-                    <div className="col-sm-4">
-                      <div className=" collectorSearch">
-                        {/* <Search className="serchingIcon" /> */}
-                        <input
-                          type="text"
-                          className="search"
-                          placeholder="সার্চ"
-                          // onChange={(e) => setCusSearch(e.target.value)}
-                        />
+                      <div className="col-sm-4">
+                        <div className=" collectorSearch">
+                          {/* <Search className="serchingIcon" /> */}
+                          <input
+                            type="text"
+                            className="search"
+                            placeholder="সার্চ"
+                            // onChange={(e) => setCusSearch(e.target.value)}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    ""
+                  )}
+
                   {/* table */}
                   <div className="table-responsive-lg">
                     <table className="table table-striped ">
                       <thead>
                         <tr>
-                          <td>নাম (কালেক্টর)</td>
+                          <td>
+                            নাম{" "}
+                            {userRole === "ispOwner"
+                              ? "(ম্যানেজার)"
+                              : "(কালেক্টর)"}
+                          </td>
                           <td>মোট</td>
                           <td className="textAlignCenter">অ্যাকশন</td>
                           <td>তারিখ</td>

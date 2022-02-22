@@ -16,10 +16,10 @@ import "./collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
-import BillDiposit from "./collectorCRUD/BillDiposit";
 import Footer from "../../components/admin/footer/Footer";
 import CollectorPost from "./collectorCRUD/CollectorPost";
 import Loader from "../../components/common/Loader";
+import Pagination from "../../components/Pagination";
 
 import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
@@ -34,6 +34,16 @@ export default function Collector() {
   const collector = useSelector((state) => state.collector.collector);
 
   let serial = 0;
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [collectorPerPage, setCollectorPerPage] = useState(5);
+  const lastIndex = currentPage * collectorPerPage;
+  const firstIndex = lastIndex - collectorPerPage;
+  const currentCollector = collector.slice(firstIndex, lastIndex);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     getCollector(dispatch, ispOwnerId);
@@ -73,7 +83,6 @@ export default function Collector() {
 
               {/* modals */}
               <CollectorPost />
-              <BillDiposit single={singleCollector} />
               <CollectorDetails single={singleCollector} />
               <CollectorEdit single={singleCollector} />
 
@@ -140,7 +149,7 @@ export default function Collector() {
                             <TdLoader colspan={5} />
                           </tr>
                         ) : (
-                          collector
+                          currentCollector
                             .filter((val) => {
                               return val.name
                                 .toLowerCase()
@@ -182,20 +191,6 @@ export default function Collector() {
                                     </li>
                                     <li
                                       data-bs-toggle="modal"
-                                      data-bs-target="#billDipositeModal"
-                                      onClick={() => {
-                                        getSpecificCollector(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Truck />
-                                          <p className="actionP">ডিপোজিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                    <li
-                                      data-bs-toggle="modal"
                                       data-bs-target="#collectorEditModal"
                                       onClick={() => {
                                         getSpecificCollector(val.id);
@@ -229,6 +224,23 @@ export default function Collector() {
                         )}
                       </tbody>
                     </table>
+                  </div>
+                  {/* Pagination */}
+                  <div className="paginationSection">
+                    <select
+                      class="form-select paginationFormSelect"
+                      aria-label="Default select example"
+                      onChange={(e) => setCollectorPerPage(e.target.value)}
+                    >
+                      <option value="5">৫ জন</option>
+                      <option value="10">১০ জন</option>
+                      <option value="100">১০০ জন</option>
+                    </select>
+                    <Pagination
+                      customerPerPage={collectorPerPage}
+                      totalCustomers={collector.length}
+                      paginate={paginate}
+                    />
                   </div>
                 </div>
               </FourGround>

@@ -15,29 +15,23 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
-// import ReactPaginate from "react-paginate";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-// import {
-//   fetchCustomer,
-//   getCustomer,
-//   setSingleCustomer,
-//   deleteSingleCustomer,
-// } from "../../features/customerSlice";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
+import Pagination from "../../components/Pagination";
 import { deleteACustomer, getCustomer } from "../../features/apiCalls";
 import arraySort from "array-sort";
 
 export default function Customer() {
   const cus = useSelector((state) => state.customer.customer);
-
+  const role = useSelector((state) => state.auth.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsloading] = useState(false);
@@ -45,6 +39,20 @@ export default function Customer() {
   const [cusSearch, setCusSearch] = useState("");
 
   const [Customers, setCustomers] = useState(cus);
+  // get specific customer
+  const [singleCustomer, setSingleCustomer] = useState("");
+
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [customerPerPage, setCustomerPerPage] = useState(5);
+  const lastIndex = currentPage * customerPerPage;
+  const firstIndex = lastIndex - customerPerPage;
+  const currentCustomers = Customers.slice(firstIndex, lastIndex);
+
+  // paginate call Back function -> response from paginate component
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     const keys = [
@@ -73,9 +81,6 @@ export default function Customer() {
     let fvalue = e.target.value;
     setCusSearch(fvalue);
   };
-
-  // get specific customer
-  const [singleCustomer, setSingleCustomer] = useState("");
 
   const getSpecificCustomer = (id) => {
     if (cus.length !== undefined) {
@@ -251,7 +256,7 @@ export default function Customer() {
                         ) : Customers?.length === undefined ? (
                           ""
                         ) : (
-                          Customers.map((val, key) => (
+                          currentCustomers.map((val, key) => (
                             <tr key={key} id={val.id}>
                               <td>{val.customerId}</td>
                               <td>{val.name}</td>
@@ -289,20 +294,25 @@ export default function Customer() {
                                       </div>
                                     </div>
                                   </li>
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#collectCustomerBillModal"
-                                    onClick={() => {
-                                      getSpecificCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <Wallet />
-                                        <p className="actionP">বিল গ্রহণ</p>
+                                  {role === "ispOwner" ? (
+                                    ""
+                                  ) : (
+                                    <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#collectCustomerBillModal"
+                                      onClick={() => {
+                                        getSpecificCustomer(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <Wallet />
+                                          <p className="actionP">বিল গ্রহণ</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>
+                                    </li>
+                                  )}
+
                                   <li
                                     data-bs-toggle="modal"
                                     data-bs-target="#customerEditModal"
@@ -340,26 +350,26 @@ export default function Customer() {
                       </tbody>
                     </table>
 
-                    {/* previous */}
-
-                    {/* <ReactPaginate
-                      previousLabel={"Previous"}
-                      nextLabel={"Next"}
-                      breakLabel={"..."}
-                      pageCount={8}
-                      marginPagesDisplayed={2}
-                      onPageChange={handlePageClick}
-                      containerClassName={"pagination"}
-                      pageClassName={"page-item"}
-                      pageLinkClassName={"page-link"}
-                      previousClassName={"page-item"}
-                      previousLinkClassName={"page-link"}
-                      nextClassName={"page-item"}
-                      nextLinkClassName={"page-link"}
-                      breakClassName={"page-item"}
-                      breakLinkClassName={"page-link"}
-                      activeClassName={"active"}
-                    /> */}
+                    {/* Pagination */}
+                    <div className="paginationSection">
+                      <select
+                        class="form-select paginationFormSelect"
+                        aria-label="Default select example"
+                        onChange={(e) => setCustomerPerPage(e.target.value)}
+                      >
+                        <option value="5">৫ জন</option>
+                        <option value="10">১০ জন</option>
+                        <option value="100">১০০ জন</option>
+                        <option value="200">২০০ জন</option>
+                        <option value="500">৫০০ জন</option>
+                        <option value="1000">১০০০ জন</option>
+                      </select>
+                      <Pagination
+                        customerPerPage={customerPerPage}
+                        totalCustomers={Customers.length}
+                        paginate={paginate}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
