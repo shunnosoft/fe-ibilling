@@ -41,7 +41,7 @@ export default function Manager() {
   
 const[isLoading,setIsLoading]=useState(false)
   const manager = useSelector((state) => state.manager?.manager);
-
+console.log(manager)
   const ispOwnerId = useSelector(
     (state) => state.auth.currentUser?.ispOwner?.id
   );
@@ -70,14 +70,14 @@ const[isLoading,setIsLoading]=useState(false)
   });
 
   const addManagerHandle = (data) => {
-    if (!manager) {
-      addManager(dispatch, {
-        ...data,
-        ispOwnerId,
-      });
-    } else {
-      toast("You can't add more than one manager");
-    }
+    addManager(dispatch, {
+      ...data,
+      ispOwner:ispOwnerId,
+    });
+    // if (!manager) {
+    // } else {
+    //   toast("You can't add more than one manager");
+    // }
   };
 
   // const deleteManagerHandler = () => {

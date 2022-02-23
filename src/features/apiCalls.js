@@ -85,7 +85,8 @@ export const addManager = async (dispatch, managerData) => {
       dispatch(managerAddSuccess(res.data));
       button.style.display = "initial";
       toast("Manager added successfully");
-      hideModal();
+    document.querySelector("#writeModal").click();
+      
     })
     .catch((err) => {
       if (err.response) {
