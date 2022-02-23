@@ -55,6 +55,7 @@ import {
   
   getDepositSuccess,
   getTotalBalanceSuccess,
+  updateDepositSuccess,
 } from "./paymentSlice";
 
 //manager
@@ -745,6 +746,7 @@ export const billCollect = async (dispatch, billData, setLoading) => {
 
 export const addDeposit = async (dispatch, data, setLoading) => {
   setLoading(true);
+  console.log(data, "from api calls")
 
   try {
    await apiLink.post(`/v1/deposit`, data);
@@ -791,10 +793,12 @@ export const getDeposit = async (dispatch, data) => {
   }
 };
 
-export const depositAcceptReject = async (data) => {
-  console.log(data)
+export const depositAcceptReject = async (dispatch,status,id) => {
+  console.log(status,id)
   try {
-    // await apiLink.patch(`/v1/deposit/${data.depositId}`, data);
+   const res =  await apiLink.patch(`/v1/deposit/${id}`, {status:status});
+   dispatch(updateDepositSuccess(res.data))
+
     toast("Deposit Collect Success");
   } catch (error) {
     toast(error.message);

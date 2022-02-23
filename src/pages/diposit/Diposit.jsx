@@ -12,10 +12,14 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import { useEffect } from "react";
-import { addDeposit, depositAcceptReject, getDeposit, getTotalbal } from "../../features/apiCalls";
+import {
+  addDeposit,
+  depositAcceptReject,
+  getDeposit,
+  getTotalbal,
+} from "../../features/apiCalls";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
- 
 
 export default function Diposit() {
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
@@ -24,14 +28,14 @@ export default function Diposit() {
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
   });
-  const [isLoading,setLoading] =useState(false)
-  const dispatch =useDispatch()
+  const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   // const balance = useSelector(state=>state.payment.balance)
-  // console.log(balance) 
-   const balancee = useSelector(state=>state.payment.balance)
-  const  allDeposit =useSelector(state=>state.payment.allDeposit)
-  console.log(allDeposit)
-  console.log(balancee)
+  // console.log(balance)
+  const balancee = useSelector((state) => state.payment.balance);
+  const allDeposit = useSelector((state) => state.payment.allDeposit);
+  console.log(allDeposit);
+  console.log(balancee);
   // bill amount
   const billDipositHandler = (data) => {
     const sendingData = {
@@ -41,33 +45,34 @@ export default function Diposit() {
       user: currentUser?.user.id,
       ispOwner: ispOwner,
     };
-    
-    addDeposit(dispatch,sendingData,setLoading)
+    console.log(sendingData);
+    addDeposit(dispatch, sendingData, setLoading);
   };
 
-const depositAcceptRejectHandler=(data)=>{
-  depositAcceptReject()
-   
-}
- 
-useEffect(()=>{
-  if (userRole!=="ispOwner")
-  getTotalbal(dispatch,setLoading)
+  const depositAcceptRejectHandler = (status,id) => {
+     
+    depositAcceptReject(dispatch, status,id);
+  };
 
-},[dispatch,userRole])
+  useEffect(() => {
+    if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
+  }, [dispatch, userRole]);
 
- 
-// console.log(deposit)
+  // console.log(deposit)
 
-useEffect(()=>{
-  if (userRole!=="collector"){
-
-    getDeposit(dispatch,{
-      depositerRole:userRole==="ispOwner"?"manager":userRole==="manager"?"collector":"",
-      ispOwnerID:ispOwner
-    })
-  }
-},[ispOwner,userRole,dispatch])
+  useEffect(() => {
+    if (userRole !== "collector") {
+      getDeposit(dispatch, {
+        depositerRole:
+          userRole === "ispOwner"
+            ? "manager"
+            : userRole === "manager"
+            ? "collector"
+            : "",
+        ispOwnerID: ispOwner,
+      });
+    }
+  }, [ispOwner, userRole, dispatch]);
   return (
     <>
       <Sidebar />
@@ -93,7 +98,7 @@ useEffect(()=>{
                     <Formik
                       initialValues={{
                         amount: "",
-                        balance: `৳ ${balancee}`, //put the value from api
+                        balance: balancee, //put the value from api
                       }}
                       validationSchema={BillValidatoin}
                       onSubmit={(values) => {
@@ -176,36 +181,41 @@ useEffect(()=>{
                           </tr>
                         </thead>
                         <tbody>
-                          {
-                             allDeposit?.map((item,key)=>(
-                              <tr key={key}>
+                          {allDeposit?.map((item, key) => (
+                            <tr key={key}>
                               <td>{item.depositBy}</td>
                               <td>৳ {item.amount}</td>
                               <td>
-                                {
-                                  item.status==="pending"?<div className="AcceptRejectBtn">
-                                  <button onClick={()=>{
-                                    depositAcceptRejectHandler({
-                                      status:"accept",
-                                      depositId:item.id
-                                    })
-                                  }}>Accept</button>
-                                  <button onClick={()=>{
-                                    depositAcceptRejectHandler({
-                                      status:"reject",
-                                      depositId:item.id
-                                    })
-                                  }} >Reject</button>
-                                </div>:(<span>{item.status}</span>)
-
-                                }
-                                
+                                {item.status === "pending" ? (
+                                  <div className="AcceptRejectBtn">
+                                    <button
+                                      onClick={() => {
+                                        depositAcceptRejectHandler(
+                                          "accepted",
+                                          item.id
+                                        );
+                                      }}
+                                    >
+                                      Accept
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        depositAcceptRejectHandler(
+                                          "rejected",
+                                          item.id
+                                        );
+                                      }}
+                                    >
+                                      Reject
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span>{item.status}</span>
+                                )}
                               </td>
                               <td>31/01/2022 07:25 PM</td>
                             </tr>
-                            ))
-                          }
-                         
+                          ))}
                         </tbody>
                       </table>
                     </div>
