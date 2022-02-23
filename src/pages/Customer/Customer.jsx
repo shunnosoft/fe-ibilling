@@ -169,7 +169,7 @@ export default function Customer() {
                         className="form-select"
                         onChange={handleActiveFilter}
                       >
-                        <option value="" selected>
+                        <option value="" defaultValue>
                           ফিল্টার করুন{" "}
                         </option>
                         <option value="status.active">একটিভ</option>
@@ -364,7 +364,7 @@ export default function Customer() {
                     {/* Pagination */}
                     <div className="paginationSection">
                       <select
-                        class="form-select paginationFormSelect"
+                        className="form-select paginationFormSelect"
                         aria-label="Default select example"
                         onChange={(e) => setCustomerPerPage(e.target.value)}
                       >

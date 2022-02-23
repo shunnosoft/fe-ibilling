@@ -228,7 +228,7 @@ export default function Collector() {
                   {/* Pagination */}
                   <div className="paginationSection">
                     <select
-                      class="form-select paginationFormSelect"
+                      className="form-select paginationFormSelect"
                       aria-label="Default select example"
                       onChange={(e) => setCollectorPerPage(e.target.value)}
                     >

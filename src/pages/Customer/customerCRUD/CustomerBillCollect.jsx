@@ -31,8 +31,6 @@ const [isLoading,setLoading] =useState(false)
       user:currentUser?.user.id,
       collectorId: currentUserId  //when collector is logged in
     };
-
-    console.log("Colelcted Bill form custoerrrrrrr: ", sendingData);
     billCollect(dispatch,sendingData,setLoading)
   };
 
