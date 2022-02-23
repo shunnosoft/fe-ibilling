@@ -51,7 +51,11 @@ import {
   getResellerrSuccess,
 } from "./resellerSlice";
 import { updateProfile } from "./authSlice";
-import { addDepositSuccess, getTotalBalanceSuccess } from "./paymentSlice";
+import {
+  
+  getDepositSuccess,
+  getTotalBalanceSuccess,
+} from "./paymentSlice";
 
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
@@ -363,17 +367,17 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
   }
 };
 
-export const deleteACustomer = async (dispatch, IDs, setIsloading) => {
+export const deleteACustomer = async (dispatch, IDs) => {
   try {
     await apiLink.delete(
       `/v1/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`
     );
     dispatch(deleteCustomerSuccess(IDs.customerID));
-    setIsloading(false);
+     
     toast("কাস্টমার ডিলিট সফল হয়েছে! ");
   } catch (err) {
     if (err.response) {
-      setIsloading(false);
+      
       toast(err.response.data.message);
     }
   }
@@ -720,79 +724,79 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
   }
 };
 
+//Bill
 
-//Bill 
-
-export const billCollect=async (dispatch,billData,setLoading) =>{
-  setLoading(true)
+export const billCollect = async (dispatch, billData, setLoading) => {
+  setLoading(true);
   try {
-    const res= await apiLink.post("/v1/bill/monthlyBill",billData)
-    dispatch(updateBalance(res.data))
-    setLoading(false)
+    const res = await apiLink.post("/v1/bill/monthlyBill", billData);
+    dispatch(updateBalance(res.data));
+    setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
 
-    toast("Bill collect successfull")
-    
+    toast("Bill collect successfull");
   } catch (error) {
-    setLoading(false)
+    setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
 
-    toast("Bill Collect Failed")
-    
+    toast("Bill Collect Failed");
   }
+};
 
-
-}
-
-
-export const getDeposit=async (dispatch,data,setLoading) =>{
-  setLoading(true)
+export const addDeposit = async (dispatch, data, setLoading) => {
+  setLoading(true);
 
   try {
-    
-    
+   await apiLink.post(`/v1/deposit`, data);
+
+    // dispatch(addDepositSuccess(res.data));
+    setLoading(false);
+    toast("ডিপোজিট  Success");
+
   } catch (error) {
-
-    
+    setLoading(false);
+    toast(error.message);
+    // if (error.response.status === 400) {
+    //   toast("ডিপোজিট অলরেডি পেন্ডিং এ আছে");
+    // } else {
+      
+    // }
   }
-}
+};
 
-export const addDeposit= async (dispatch,data,setLoading) =>{
-  setLoading(true)
+//balance
 
+export const getTotalbal = async (dispatch, setLoading) => {
+  setLoading(true);
   try {
-    const res =await apiLink.post(`/v1/deposit`,data) ; 
-
-
-    dispatch(addDepositSuccess(res.data))
-    setLoading(false)
-    
+    const res = await apiLink.get(`v1/bill/monthlyBill/balance`);
+    console.log(res.data)
+    dispatch(getTotalBalanceSuccess(res.data));
+    setLoading(false);
   } catch (error) {
-    setLoading(false)
-    if(error.response.status === 400){
-      toast("ডিপোজিট অলরেডি পেন্ডিং এ আছে")
-
-    } else{
-      toast(error.message)
-    }
-
+    setLoading(false);
+    toast(error.response.message);
   }
-}
+};
 
-//balance 
+export const getDeposit = async (dispatch, data) => {
+  try {
+    const res = await apiLink.get(
+      `/v1/deposit/${data.depositerRole}/${data.ispOwnerID}`
+    );
 
-export const getTotalbal=async(dispatch,setLoading)=>{
-  setLoading(true)
-   try {
-     const res = await apiLink.get(`v1/bill/monthlyBill/balance`)
-    dispatch(getTotalBalanceSuccess(res.data))
-    setLoading(false)
-   } catch (error) {
-     setLoading(false)
-    toast(error.response.message)
-     
+    dispatch(getDepositSuccess(res.data));
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
-     
-   }
-
-}
+export const depositAcceptReject = async (data) => {
+  console.log(data)
+  try {
+    // await apiLink.patch(`/v1/deposit/${data.depositId}`, data);
+    toast("Deposit Collect Success");
+  } catch (error) {
+    toast(error.message);
+  }
+};

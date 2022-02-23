@@ -12,10 +12,10 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import { useEffect } from "react";
-import { addDeposit, getTotalbal } from "../../features/apiCalls";
+import { addDeposit, depositAcceptReject, getDeposit, getTotalbal } from "../../features/apiCalls";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import apiLink from "../../api/apiLink";
+ 
 
 export default function Diposit() {
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
@@ -28,7 +28,9 @@ export default function Diposit() {
   const dispatch =useDispatch()
   // const balance = useSelector(state=>state.payment.balance)
   // console.log(balance) 
-  const [balancee,setBalance] = useState("")
+   const balancee = useSelector(state=>state.payment.balance)
+  const  allDeposit =useSelector(state=>state.payment.allDeposit)
+  console.log(allDeposit)
   console.log(balancee)
   // bill amount
   const billDipositHandler = (data) => {
@@ -39,24 +41,33 @@ export default function Diposit() {
       user: currentUser?.user.id,
       ispOwner: ispOwner,
     };
-
+    
     addDeposit(dispatch,sendingData,setLoading)
   };
+
+const depositAcceptRejectHandler=(data)=>{
+  depositAcceptReject()
+   
+}
  
 useEffect(()=>{
-   const gettotal=async ()=>{
-     try {
-       const res = await apiLink.get(`v1/bill/monthlyBill/balance`)
-       setBalance(res.data.balance)
-       
-     } catch (error) {
+  if (userRole!=="ispOwner")
+  getTotalbal(dispatch,setLoading)
 
-       
-     }
-   }
-   gettotal()
+},[dispatch,userRole])
 
-},[])
+ 
+// console.log(deposit)
+
+useEffect(()=>{
+  if (userRole!=="collector"){
+
+    getDeposit(dispatch,{
+      depositerRole:userRole==="ispOwner"?"manager":userRole==="manager"?"collector":"",
+      ispOwnerID:ispOwner
+    })
+  }
+},[ispOwner,userRole,dispatch])
   return (
     <>
       <Sidebar />
@@ -165,17 +176,36 @@ useEffect(()=>{
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>Md. Rakib Hasan</td>
-                            <td>৳ {500}</td>
-                            <td>
-                              <div className="AcceptRejectBtn">
-                                <button>Accept</button>
-                                <button>Reject</button>
-                              </div>
-                            </td>
-                            <td>31/01/2022 07:25 PM</td>
-                          </tr>
+                          {
+                             allDeposit?.map((item,key)=>(
+                              <tr key={key}>
+                              <td>{item.depositBy}</td>
+                              <td>৳ {item.amount}</td>
+                              <td>
+                                {
+                                  item.status==="pending"?<div className="AcceptRejectBtn">
+                                  <button onClick={()=>{
+                                    depositAcceptRejectHandler({
+                                      status:"accept",
+                                      depositId:item.id
+                                    })
+                                  }}>Accept</button>
+                                  <button onClick={()=>{
+                                    depositAcceptRejectHandler({
+                                      status:"reject",
+                                      depositId:item.id
+                                    })
+                                  }} >Reject</button>
+                                </div>:(<span>{item.status}</span>)
+
+                                }
+                                
+                              </td>
+                              <td>31/01/2022 07:25 PM</td>
+                            </tr>
+                            ))
+                          }
+                         
                         </tbody>
                       </table>
                     </div>

@@ -4,8 +4,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const paymentSlice =createSlice({
     name:"payment",
     initialState:{
-        balance:null, 
+        balance:"", 
         allDeposit:[], 
+
         
     },
      reducers:{
@@ -14,13 +15,10 @@ const paymentSlice =createSlice({
         } , 
         getDepositSuccess:(state,action) =>{
             state.allDeposit=action.payload
-        } , 
-        addDepositSuccess:(state,action) =>{
-            state.allDeposit.push(action.payload)
-        }
+        }  
     } 
 
 })
 
-export const {getTotalBalanceSuccess , getDepositSuccess,addDepositSuccess} =paymentSlice.actions
+export const {getTotalBalanceSuccess , getDepositSuccess } =paymentSlice.actions
 export default paymentSlice.reducer ;
