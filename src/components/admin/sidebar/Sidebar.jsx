@@ -13,6 +13,7 @@ import {
   GeoAlt,
   Wifi,
   WalletFill,
+  GraphUpArrow,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -162,6 +163,27 @@ export default function Sidebar() {
                   >
                     <div className="sidebarIcon">{<PeopleFill />}</div>
                     <span className="sidebarLinksName">{"গ্রাহক"}</span>
+                  </li>
+                </FontColor>
+              </NavLink>
+
+              
+              <NavLink
+                key={8}
+                to={"/report"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/report" ? "active" : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<GraphUpArrow/>}</div>
+                    <span className="sidebarLinksName">{"রিপোর্ট"}</span>
                   </li>
                 </FontColor>
               </NavLink>
