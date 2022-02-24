@@ -26,10 +26,15 @@ export default function Report() {
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
+
+  console.log(today, firstDay);
+
   const allBills = useSelector((state) => state.payment.allBills);
   const [dateStart, setMinDate] = useState(firstDay);
   const [dateEnd, setMaxDate] = useState(today);
-  const [mainData, setMainData] = useState(allBills);
+  const [mainData, setMainData] = useState([]);
 
   const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
 
@@ -46,6 +51,9 @@ export default function Report() {
 
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
+  }, [ispOwnerId, dispatch]);
+
+  useEffect(() => {
     setMainData(
       allBills.filter(
         (item) =>
@@ -53,7 +61,9 @@ export default function Report() {
           Date.parse(item.createdAt) <= Date.parse(dateEnd)
       )
     );
-  }, [ispOwnerId, dispatch, dateStart, dateEnd,allBills]);
+  }, [dateStart, dateEnd, allBills]);
+
+  console.log(mainData);
 
   return (
     <>
