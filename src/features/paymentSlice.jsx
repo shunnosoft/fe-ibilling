@@ -5,6 +5,7 @@ const paymentSlice = createSlice({
   initialState: {
     balance: "",
     allDeposit: [],
+    allBills:[]
   },
   reducers: {
     getTotalBalanceSuccess: (state, action) => {
@@ -18,9 +19,12 @@ const paymentSlice = createSlice({
         state.allDeposit.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
     },
+    getAllBillsSuccess:(state,action) =>{
+      state.allBills=action.payload
+    }
   },
 });
 
-export const { getTotalBalanceSuccess, getDepositSuccess , updateDepositSuccess} =
+export const { getAllBillsSuccess,getTotalBalanceSuccess, getDepositSuccess , updateDepositSuccess} =
   paymentSlice.actions;
 export default paymentSlice.reducer;

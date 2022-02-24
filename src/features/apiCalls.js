@@ -53,6 +53,7 @@ import {
 import { updateProfile } from "./authSlice";
 import {
   
+  getAllBillsSuccess,
   getDepositSuccess,
   getTotalBalanceSuccess,
   updateDepositSuccess,
@@ -85,7 +86,8 @@ export const addManager = async (dispatch, managerData) => {
       dispatch(managerAddSuccess(res.data));
       button.style.display = "initial";
       toast("Manager added successfully");
-      hideModal();
+    document.querySelector("#writeModal").click();
+      
     })
     .catch((err) => {
       if (err.response) {
@@ -804,3 +806,15 @@ export const depositAcceptReject = async (dispatch,status,id) => {
     toast(error.message);
   }
 };
+
+
+export const getAllBills=async(dispatch,ispOwnerId) =>{
+  try {
+    const res = await apiLink.get(`/v1/bill/${ispOwnerId}`)
+    dispatch(getAllBillsSuccess(res.data))
+    
+  } catch (error) {
+    toast.error(error.response.data.message)
+    
+  }
+}

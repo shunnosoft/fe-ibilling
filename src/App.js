@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
 import PrivateOutlet from "./PrivateOutlet";
@@ -28,6 +26,7 @@ import Profile from "./pages/profile/Profile";
 import Account from "./pages/account/Account";
 import Message from "./pages/message/Message";
 import Diposit from "./pages/diposit/Diposit";
+import Report from "./pages/report/Report";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -103,6 +102,7 @@ function App() {
           {/* dashboard */}
           <Route path="/*" element={<PrivateOutlet />}>
             <Route path="profile" element={<Profile />} />
+            <Route path="report" element={<Report />} />
             <Route path="account" element={<Account />} />
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />
