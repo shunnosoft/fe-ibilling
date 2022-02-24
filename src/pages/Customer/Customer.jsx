@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
+import moment from "moment";
 // import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -11,6 +12,7 @@ import {
   PenFill,
   PersonFill,
   ArrowDownUp,
+  CashStack,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -46,7 +48,7 @@ export default function Customer() {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(5);
+  const [customerPerPage, setCustomerPerPage] = useState(50);
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
@@ -152,8 +154,6 @@ export default function Customer() {
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>নতুন গ্রাহক অ্যাড করুন </p>
-
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
                           className="addcutmButton"
@@ -231,6 +231,7 @@ export default function Customer() {
                             scope="col"
                           >
                             পেমেন্ট স্ট্যাটাস
+                            <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("status")} scope="col">
                             স্ট্যাটাস
@@ -240,7 +241,7 @@ export default function Customer() {
                             onClick={() => toggleSort("pppoe.profile")}
                             scope="col"
                           >
-                            PPPoE
+                            প্যাকেজ
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("balance")} scope="col">
@@ -252,6 +253,13 @@ export default function Customer() {
                             scope="col"
                           >
                             মাসিক ফি
+                            <ArrowDownUp className="arrowDownUp" />
+                          </th>
+                          <th
+                            onClick={() => toggleSort("billingCycle")}
+                            scope="col"
+                          >
+                            বিল ডেট
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th scope="col" className="centeringTD">
@@ -277,6 +285,9 @@ export default function Customer() {
                               <td>{val.pppoe.profile}</td>
                               <td>{val.balance}</td>
                               <td>{val.monthlyFee}</td>
+                              <td>
+                                {moment(val.billingCycle).format("DD-MM-YYYY")}
+                              </td>
                               <td className="centeringTD">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"
@@ -340,8 +351,26 @@ export default function Customer() {
                                   </li>
 
                                   <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showCustomerDetails"
                                     onClick={() => {
-                                      deleteCustomer(val.id);
+                                      getSpecificCustomer(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <CashStack />
+                                        <p className="actionP">রিপোর্ট</p>
+                                      </div>
+                                    </div>
+                                  </li>
+
+                                  <li
+                                    onClick={() => {
+                                      let con = window.confirm(
+                                        `${val.name} গ্রাহক ডিলিট করতে চান?`
+                                      );
+                                      con && deleteCustomer(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item actionManager">
@@ -368,8 +397,7 @@ export default function Customer() {
                         aria-label="Default select example"
                         onChange={(e) => setCustomerPerPage(e.target.value)}
                       >
-                        <option value="5">৫ জন</option>
-                        <option value="10">১০ জন</option>
+                        <option value="50">৫০ জন</option>
                         <option value="100">১০০ জন</option>
                         <option value="200">২০০ জন</option>
                         <option value="500">৫০০ জন</option>
