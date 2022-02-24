@@ -53,6 +53,7 @@ import {
 import { updateProfile } from "./authSlice";
 import {
   
+  getAllBillsSuccess,
   getDepositSuccess,
   getTotalBalanceSuccess,
   updateDepositSuccess,
@@ -805,3 +806,15 @@ export const depositAcceptReject = async (dispatch,status,id) => {
     toast(error.message);
   }
 };
+
+
+export const getAllBills=async(dispatch,ispOwnerId) =>{
+  try {
+    const res = await apiLink.get(`/v1/bill/${ispOwnerId}`)
+    dispatch(getAllBillsSuccess(res.data))
+    
+  } catch (error) {
+    toast.error(error.response.data.message)
+    
+  }
+}

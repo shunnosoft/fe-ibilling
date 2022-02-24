@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
+import moment from "moment";
 import {
   ArchiveFill,
   ArrowDownUp,
@@ -17,8 +18,43 @@ import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
+import { useDispatch } from "react-redux";
+import { getAllBills } from "../../features/apiCalls";
+import { useSelector } from "react-redux";
 
 export default function Report() {
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const allBills = useSelector((state) => state.payment.allBills);
+  const [dateStart, setMinDate] = useState(firstDay);
+  const [dateEnd, setMaxDate] = useState(today);
+  const [mainData, setMainData] = useState(allBills);
+
+  const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
+
+  const dispatch = useDispatch();
+
+  const filterdByData = (start, end) => {
+    const filteredByDate = mainData.filter(
+      (item) =>
+        Date.parse(item.createdAt) >= Date.parse(start) &&
+        Date.parse(item.createdAt) <= Date.parse(end)
+    );
+    setMainData(filteredByDate);
+  };
+
+  useEffect(() => {
+    getAllBills(dispatch, ispOwnerId);
+    setMainData(
+      allBills.filter(
+        (item) =>
+          Date.parse(item.createdAt) >= Date.parse(dateStart) &&
+          Date.parse(item.createdAt) <= Date.parse(dateEnd)
+      )
+    );
+  }, [ispOwnerId, dispatch, dateStart, dateEnd,allBills]);
+
   return (
     <>
       <Sidebar />
@@ -74,10 +110,10 @@ export default function Report() {
                         <option value="paymentStatus.unpaid">বকেয়া</option>
                         <option value="paymentStatus.paid">পরিশোধ</option>
                       </select>
-                       
+
                       <select className="form-select" onChange={() => {}}>
                         <option value="" defaultValue>
-                          ফিল্টার করুন{" "} 
+                          ফিল্টার করুন{" "}
                         </option>
                         <option value="status.active">একটিভ</option>
                         <option value="status.inactive">ইনএকটিভ</option>
@@ -86,8 +122,11 @@ export default function Report() {
                       </select>
                     </div>
                     <div className="submitdiv d-grid gap-2">
-                      <button className="btn fs-5 fw-bold btn-success w-100" type="button">
-                      সাবমিট
+                      <button
+                        className="btn fs-5 fw-bold btn-success w-100"
+                        type="button"
+                      >
+                        সাবমিট
                       </button>
                     </div>
 
@@ -138,17 +177,10 @@ export default function Report() {
                             //    onClick={() => toggleSort("mobile")}
                             scope="col"
                           >
-                            আদায়
+                            bill
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
 
-                          <th
-                            //   onClick={() => toggleSort("status")}
-                            scope="col"
-                          >
-                            বাকি
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
                           <th
                             // onClick={() => toggleSort("pppoe.profile")}
                             scope="col"
@@ -163,19 +195,18 @@ export default function Report() {
                           <tr>
                             <TdLoader colspan={9} />
                           </tr>
-                        ) : []?.length === undefined ? (
+                        ) : mainData?.length === undefined ? (
                           ""
                         ) : (
-                          [].map((val, key) => (
+                          mainData.map((val, key) => (
                             <tr key={key} id={val.id}>
-                              <td>{val.customerId}</td>
-                              <td>{val.name}</td>
-                              <td>{val.mobile}</td>
-                              <td>{val.paymentStatus}</td>
-                              <td>{val.status}</td>
-                              <td>{val.pppoe.profile}</td>
-                              <td>{val.balance}</td>
-                              <td>{val.monthlyFee}</td>
+                              <td>{val.customer.customerId}</td>
+                              <td>{val.customer.name}</td>
+                              <td>{val.amount}</td>
+                              <td>
+                                {moment(val.createdAt).format("DD-MM-YYYY")}
+                              </td>
+
                               <td className="centeringTD">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"

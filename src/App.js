@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
 import PrivateOutlet from "./PrivateOutlet";
