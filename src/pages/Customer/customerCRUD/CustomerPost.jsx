@@ -82,7 +82,6 @@ export default function CustomerModal() {
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
-  console.log("Autho: ", autoDisable);
   // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
