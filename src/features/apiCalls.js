@@ -145,7 +145,7 @@ export const addArea = async (dispatch, data, setIsLoading) => {
     dispatch(AddAreaSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#areaModal").click();
-    toast("এরিয়া অ্যাড সফল হয়েছে ");
+    toast.success("এরিয়া অ্যাড সফল হয়েছে ");
   } catch (error) {
     setIsLoading(false);
     if (error.response.status === 401) {
@@ -326,7 +326,6 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
 };
 
 export const addCustomer = async (dispatch, data, setIsloading) => {
-  console.log(data);
   try {
     const res = await apiLink.post("/v1/ispOwner/customer", data);
     dispatch(addCustomerSuccess(res.data));
@@ -342,8 +341,8 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
 };
 
 export const editCustomer = async (dispatch, data, setIsloading) => {
+  console.log("Edit Data: ", data);
   const { singleCustomerID, ispOwner, ...sendingData } = data;
-
   try {
     const res = await apiLink.patch(
       `/v1/ispOwner/customer/${ispOwner}/${singleCustomerID}`,

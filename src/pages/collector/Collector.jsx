@@ -6,7 +6,6 @@ import {
   PersonFill,
   PenFill,
   ArchiveFill,
-  Truck,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";

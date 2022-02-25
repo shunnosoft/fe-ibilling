@@ -8,7 +8,6 @@ import {
   Wallet,
   ThreeDots,
   ArchiveFill,
-  Truck,
   PenFill,
   PersonFill,
 } from "react-bootstrap-icons";
