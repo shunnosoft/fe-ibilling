@@ -147,30 +147,31 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector">
-                      <div className="addAndSettingIcon">
-                        <PersonPlusFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#customerModal"
-                        />
+                    <div className="displexFlexSys">
+                      {/* filter selector */}
+                      <div className="selectFiltering">
+                        <select
+                          className="form-select"
+                          onChange={handleActiveFilter}
+                        >
+                          <option value="" defaultValue>
+                            ফিল্টার করুন{" "}
+                          </option>
+                          <option value="status.active">একটিভ</option>
+                          <option value="status.inactive">ইনএকটিভ</option>
+                          <option value="paymentStatus.unpaid">বকেয়া</option>
+                          <option value="paymentStatus.paid">পরিশোধ</option>
+                        </select>
                       </div>
-                    </div>
-
-                    {/* filter selector */}
-                    <div className="selectFiltering">
-                      <select
-                        className="form-select"
-                        onChange={handleActiveFilter}
-                      >
-                        <option value="" defaultValue>
-                          ফিল্টার করুন{" "}
-                        </option>
-                        <option value="status.active">একটিভ</option>
-                        <option value="status.inactive">ইনএকটিভ</option>
-                        <option value="paymentStatus.unpaid">বকেয়া</option>
-                        <option value="paymentStatus.paid">পরিশোধ</option>
-                      </select>
+                      <div className="addNewCollector">
+                        <div className="addAndSettingIcon">
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#customerModal"
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <div className="row searchCollector">

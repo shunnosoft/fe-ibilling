@@ -57,7 +57,7 @@ import {
   getTotalBalanceSuccess,
   updateDepositSuccess,
 } from "./paymentSlice";
-
+import { getChartSuccess } from "./chartsSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -66,6 +66,15 @@ export const getManger = async (dispatch, ispWonerId) => {
     dispatch(managerFetchSuccess(res.data));
   } catch (error) {
     dispatch(managerFetchFailure());
+  }
+};
+
+export const getCharts = async (dispatch, ID) => {
+  try {
+    const res = await apiLink(`/v1/dashboard/${ID}`);
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    console.log("Charts error: ", err);
   }
 };
 
@@ -262,7 +271,7 @@ export const getCollector = async (dispatch, ispOwnerId) => {
     const res = await apiLink.get(`/v1/ispOwner/collector/${ispOwnerId}`);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
-    toast(error.message);
+    toast.error(error.message);
   }
 };
 
@@ -391,7 +400,7 @@ export const fetchMikrotikSyncUser = async (dispatch, IDs) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
     })
     .catch((error) => {
-      toast.success(error.message);
+      toast.error(error.message);
     });
 };
 
@@ -404,7 +413,7 @@ export const fetchMikrotik = async (dispatch, ispOwnerId) => {
     });
     dispatch(getMikrotikSuccess(response.data));
   } catch (error) {
-    console.log(error.message);
+    toast.error(error.message);
   }
 };
 
@@ -514,7 +523,6 @@ export const fetchpppoeUser = async (dispatch, IDs) => {
     });
     dispatch(getpppoeUserSuccess(res.data));
   } catch (error) {
-    console.log(error.message);
     toast.error("PPPoE গ্রাহক পাওয়া যায়নি!");
   }
 };
@@ -528,7 +536,6 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
     });
     dispatch(getpppoeActiveUserSuccess(res.data));
   } catch (error) {
-    console.log(error.message);
     toast.error("এক্টিভ গ্রাহক পাওয়া যায়নি!");
   }
 };

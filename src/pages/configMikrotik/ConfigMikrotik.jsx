@@ -25,20 +25,6 @@ import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
 import TdLoader from "../../components/common/TdLoader";
 import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal";
 
-// import {
-//   fetchMikrotik,
-//   fetchSingleMikrotik,
-//   getSingleMikrotik,
-//   deleteSingleMikrotik,
-//   fetchpppoeUser,
-//   mikrotikTesting,
-//   getPPPoEuser,
-//   fetchActivepppoeUser,
-//   getActiveUser,
-//   fetchpppoePackage,
-//   getPPPoEpackage,
-//   deletePPPoEpackage,
-// } from "../../features/mikrotikSlice";
 import Loader from "../../components/common/Loader";
 import {
   deletePPPoEpackage,
@@ -103,14 +89,6 @@ export default function ConfigMikrotik() {
     fetchMikrotikSyncUser(dispatch, IDs);
     fetchActivepppoeUser(dispatch, IDs);
   }, [ispOwner, mikrotikId, dispatch, refresh]);
-
-  // useEffect(() => {
-  //   const IDs = {
-  //     ispOwner: ispOwner,
-  //     id: mikrotikId,
-  //   };
-  //   dispatch(fetchActivepppoeUser(IDs));
-  // }, [ispOwner, mikrotikId, dispatch, refresh2]);
 
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
@@ -254,8 +232,10 @@ export default function ConfigMikrotik() {
                           <option value="showMikrotikPackage">
                             PPPoE প্যাকেজ
                           </option>
-                          <option value="showMikrotikUser">PPPoE গ্রাহক</option>
                           <option value="showMikrotikActiveUser">
+                            PPPoE গ্রাহক
+                          </option>
+                          <option value="showMikrotikUser">
                             এক্টিভ গ্রাহক
                           </option>
                           <option value="showMikrotikSyncUser">

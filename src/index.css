@@ -33,6 +33,10 @@ a {
 .dropdown-item {
   margin-bottom: 10px !important;
 }
+.form-select {
+  max-width: none !important;
+  margin: initial !important;
+}
 label {
   font-weight: 500;
   color: rgb(29, 28, 28);
