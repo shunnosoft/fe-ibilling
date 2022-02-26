@@ -26,44 +26,45 @@ export default function Report() {
   const allArea = useSelector((state) => state.area.area);
   const allCollector = useSelector((state) => state.collector.collector);
   const manager = useSelector((state) => state.manager.manager);
-  console.log(manager, allCollector);
+
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  // console.log(today, firstDay);
-
   const allBills = useSelector((state) => state.payment.allBills);
 
   const [singleArea, setArea] = useState({});
-  const [subArea, setSubArea] = useState([]);
+  const [subAreaIds, setSubArea] = useState([]);
 
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
   const [mainData, setMainData] = useState([]);
-  const [collectorUserIds, setCollectorUserIds] = useState([]);
+  const [collectors, setCollectors] = useState([]);
+  const [collectorIds, setCollectorIds] = useState([]);
   const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let collectorUserIds = [];
+    let collectors = [];
 
     allCollector.map((item) =>
-      collectorUserIds.push({ name: item.name, user: item.user, id: item.id })
+      collectors.push({ name: item.name, user: item.user, id: item.id })
     );
 
-    if (collectorUserIds.length === allCollector.length) {
+    if (collectors.length === allCollector.length) {
       const { user, name, id } = manager;
-      collectorUserIds.unshift({ name, user, id });
+      collectors.unshift({ name, user, id });
     }
 
-    setCollectorUserIds(collectorUserIds);
-  }, [allCollector, manager]);
+    setCollectors(collectors);
 
-  console.log("IDS", collectorUserIds);
+    let collectorUserIdsArr = [];
+    collectors.map((item) => collectorUserIdsArr.push(item.user));
+    setCollectorIds(collectorUserIdsArr);
+  }, [allCollector, manager]);
 
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
@@ -79,36 +80,71 @@ export default function Report() {
     );
   }, [dateStart, dateEnd, allBills]);
 
-  // console.log("main", mainData);
-
-  // const handleFilterForArea = (selectVal) => {
-  //   setArea(allArea.find((item) => item.name === selectVal));
-  // };
-  const onChangeCollector = (collectorId) => {
+  const onChangeCollector = (userId) => {
     // console.log("collector id", collectorId);
+
+    if (userId) {
+      setCollectorIds([userId]);
+    } else {
+      let collectorUserIdsArr = [];
+      collectors.map((item) => collectorUserIdsArr.push(item.user));
+      setCollectorIds(collectorUserIdsArr);
+    }
   };
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
     setArea(area);
 
-    let subAreaIds = [];
+    if (
+      area &&
+      Object.keys(area).length === 0 &&
+      Object.getPrototypeOf(area) === Object.prototype
+    ) {
+      setSubArea([]);
+    } else {
+      let subAreaIds = [];
 
-    area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
 
-    setSubArea(subAreaIds);
-
-    // console.log("area", singleArea, subArea);
+      setSubArea(subAreaIds);
+    }
   };
 
   const onChangeSubArea = (id) => {
-    // console.log("sub area", id);
+    if (!id) {
+      let subAreaIds = [];
+      singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
 
-    setSubArea([id]);
+      setSubArea(subAreaIds);
+    } else {
+      setSubArea([id]);
+    }
   };
 
   const onClickFilter = () => {
-    // console.log(dateStart, dateEnd);
+    console.log("filter data");
+
+    let arr = allBills;
+
+    if (subAreaIds.length) {
+      arr = allBills.filter((bill) =>
+        subAreaIds.includes(bill.customer.subArea)
+      );
+    }
+    if (collectorIds.length) {
+      arr = arr.filter((bill) => collectorIds.includes(bill.user));
+    }
+
+    arr = arr.filter(
+      (item) =>
+        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
+        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+    );
+
+    console.log(arr);
+
+    setMainData(arr);
   };
 
   return (
@@ -137,7 +173,7 @@ export default function Report() {
                         className="form-select"
                         onChange={(e) => onChangeArea(e.target.value)}
                       >
-                        <option value="" defaultValue>
+                        <option value={JSON.stringify({})} defaultValue>
                           সকল এরিয়া{" "}
                         </option>
                         {allArea.map((area) => (
@@ -164,7 +200,7 @@ export default function Report() {
                         <option value="" defaultValue>
                           সকল কালেক্টর{" "}
                         </option>
-                        {collectorUserIds?.map((c) => (
+                        {collectors?.map((c) => (
                           <option value={c.user}>{c.name}</option>
                         ))}
                       </select>
