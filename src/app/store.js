@@ -7,11 +7,11 @@ import resellerSlice from "../features/resellerSlice";
 import collectorSlice from "../features/collectorSlice";
 import paymentSlice from "../features/paymentSlice";
 import managerSlice from "../features/managerSlice";
+import chartsSlice from "../features/chartsSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
-
 const persistConfig = {
   key: "root",
   version: 1,
@@ -25,7 +25,8 @@ const rootReducer = combineReducers({
   reseller: resellerSlice,
   collector: collectorSlice,
   manager: managerSlice,
-  payment:paymentSlice
+  payment: paymentSlice,
+  chart: chartsSlice,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -41,25 +42,3 @@ const store = configureStore({
 
 export default store;
 export const persistor = persistStore(store);
-
-// import { configureStore } from "@reduxjs/toolkit";
-
-// import authSlice from "../features/authSlice";
-// import customerSlice from "../features/customerSlice";
-// import linemanSlice from "../features/linemanSlice";
-// import areaSlice from "../features/areaSlice";
-// import mikrotikSlice from "../features/mikrotikSlice";
-// import resellerSlice from "../features/resellerSlice";
-// import collectorSlice from "../features/collectorSlice";
-
-// export const store = configureStore({
-//   reducer: {
-//     auth: authSlice,
-//     customer: customerSlice,
-//     lineman: linemanSlice,
-//     area: areaSlice,
-//     mikrotik: mikrotikSlice,
-//     reseller: resellerSlice,
-//     collector: collectorSlice,
-//   },
-// });

@@ -83,20 +83,23 @@ export default function Collector() {
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>নতুন কালেক্টর অ্যাড</p>
-                      <div className="addAndSettingIcon">
-                        <PersonPlusFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#collectorModal"
-                        />
-                        <GearFill
-                          className="addcutmButton"
-                          // data-bs-toggle="modal"
-                          // data-bs-target="#exampleModal"
-                        />
+                      <div className="displexFlexSys">
+                        <div></div>
+                        <div className="addAndSettingIcon">
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#collectorModal"
+                          />
+                          <GearFill
+                            className="addcutmButton"
+                            // data-bs-toggle="modal"
+                            // data-bs-target="#exampleModal"
+                          />
+                        </div>
                       </div>
                     </div>
+
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
