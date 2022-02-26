@@ -41,6 +41,7 @@ export default function Report() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
   const [mainData, setMainData] = useState(allBills);
+  const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
   const [cusSearch, setCusSearch] = useState("");
@@ -48,23 +49,23 @@ export default function Report() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const keys = ["amount", "name", "customerId", "createdAt"];
+  // useEffect(() => {
+  //   const keys = ["amount", "name", "customerId", "createdAt"];
 
-    setMainData(
-      allBills.filter((item) =>
-        keys.some((key) =>
-          item[key]
-            ? typeof item[key] === "string"
-              ? item[key]?.toLowerCase().includes(cusSearch)
-              : item[key]?.toString().includes(cusSearch)
-            : typeof item["customer"][key] === "string"
-            ? item["customer"][key]?.toLowerCase().includes(cusSearch)
-            : item["customer"][key]?.toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cusSearch, allBills]);
+  //   setMainData(
+  //     allBills.filter((item) =>
+  //       keys.some((key) =>
+  //         item[key]
+  //           ? typeof item[key] === "string"
+  //             ? item[key]?.toLowerCase().includes(cusSearch)
+  //             : item[key]?.toString().includes(cusSearch)
+  //           : typeof item["customer"][key] === "string"
+  //           ? item["customer"][key]?.toLowerCase().includes(cusSearch)
+  //           : item["customer"][key]?.toString().includes(cusSearch)
+  //       )
+  //     )
+  //   );
+  // }, [cusSearch, allBills]);
 
   useEffect(() => {
     let collectors = [];
@@ -100,6 +101,15 @@ export default function Report() {
     initialFirst.setHours(0, 0, 0, 0);
     initialToday.setHours(23, 59, 59, 999);
     setMainData(
+      allBills.filter(
+        (item) =>
+          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+          Date.parse(item.createdAt) <= Date.parse(initialToday)
+      )
+    );
+
+    // Temp varialbe for search
+    setMainData2(
       allBills.filter(
         (item) =>
           Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
@@ -171,6 +181,26 @@ export default function Report() {
     );
 
     console.log(arr);
+
+    setMainData(arr);
+    setMainData2(arr);
+  };
+
+  const onSearch = (e) => {
+    console.log(e);
+    const keys = ["amount", "name", "customerId", "createdAt"];
+
+    let arr = mainData2.filter((item) =>
+      keys.some((key) =>
+        item[key]
+          ? typeof item[key] === "string"
+            ? item[key]?.toLowerCase().includes(e)
+            : item[key]?.toString().includes(e)
+          : typeof item["customer"][key] === "string"
+          ? item["customer"][key]?.toLowerCase().includes(e)
+          : item["customer"][key]?.toString().includes(e)
+      )
+    );
 
     setMainData(arr);
   };
@@ -299,7 +329,7 @@ export default function Report() {
                             type="text"
                             className="search"
                             placeholder="সার্চ"
-                            onChange={(e) => setCusSearch(e.target.value)}
+                            onChange={(e) => onSearch(e.target.value)}
                           />
                         </div>
                       </div>
