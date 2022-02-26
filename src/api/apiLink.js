@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.1.24:3030/api/";
+const BASE_URL = "http://137.184.69.182/api/";
+
+// const BASE_URL = "http://192.168.1.24:3030/api/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
 // const access = user && JSON.parse(user)?.access;

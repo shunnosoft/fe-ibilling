@@ -14,7 +14,7 @@ import "./login.css";
 import { useDispatch } from "react-redux";
 
 export default function Login() {
-  const dispatch =useDispatch()
+  const dispatch = useDispatch();
   const loginValidate = Yup.object({
     mobile: Yup.string()
       .min(11, "১১ ডিজিট এর সঠিক নম্বর দিন ")
@@ -28,7 +28,7 @@ export default function Login() {
     loader.style.display = "block";
 
     // send to login control
-    asyncLogin(dispatch,loginData);
+    asyncLogin(dispatch, loginData);
   };
 
   return (
@@ -54,14 +54,14 @@ export default function Login() {
               {(formik) => (
                 <div>
                   <img
-                    className="mb-4 login-Logo"
-                    src="https://bayannopay.com/logo.png"
+                    className="mb-5 login-Logo"
+                    src="/assets/img/logo.png"
                     alt=""
-                    width="100"
+                    width="200"
                   />
-                  <h1 className="h3 mb-3 fw-normal">
+                  {/* <h1 className="h3 mb-3 fw-normal">
                     <FontColor>লগইন</FontColor>
-                  </h1>
+                  </h1> */}
                   <Form>
                     <LoginField label="মোবাইল" name="mobile" type="text" />
                     <LoginField

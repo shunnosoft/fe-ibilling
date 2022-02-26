@@ -109,7 +109,13 @@ export default function Register() {
             >
               {(formik) => (
                 <div className="formStyle">
-                  <h2>রেজিস্ট্রেশন করুন </h2>
+                  <img
+                    className="mb-4 login-Logo"
+                    src="/assets/img/logo.png"
+                    alt=""
+                    width="150"
+                  />
+                  <h3 className="mb-4">রেজিস্ট্রেশন করুন </h3>
                   <Form>
                     <TextField
                       label="কোম্পানির  নাম"

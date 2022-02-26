@@ -52,7 +52,7 @@ export default function Sidebar() {
             <h2>
               <NavLink to="/" className="adminDashboardTitle">
                 <ArrowLeft className="GotoHomeFromDashboard" />
-                বায়ান্ন পে {userRole === "manager" ? " (ম্যানেজার)" : ""}
+                নেট ফি {userRole === "manager" ? " (ম্যানেজার)" : ""}
                 {userRole === "collector" ? " (কালেক্টর)" : ""}
                 {userRole === "ispOwner" ? " (Owner)" : ""}
               </NavLink>
@@ -167,7 +167,6 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              
               <NavLink
                 key={8}
                 to={"/report"}
@@ -178,11 +177,9 @@ export default function Sidebar() {
                 <FontColor>
                   <li
                     className="sidebarItems"
-                    id={
-                      window.location.pathname === "/report" ? "active" : ""
-                    }
+                    id={window.location.pathname === "/report" ? "active" : ""}
                   >
-                    <div className="sidebarIcon">{<GraphUpArrow/>}</div>
+                    <div className="sidebarIcon">{<GraphUpArrow />}</div>
                     <span className="sidebarLinksName">{"রিপোর্ট"}</span>
                   </li>
                 </FontColor>
