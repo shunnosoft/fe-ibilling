@@ -34,12 +34,12 @@ export default function Reseller() {
   const [singleUser, setSingleUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
-  const reseller = useSelector(state=>state.reseller.reseller);
+  const reseller = useSelector((state) => state.reseller.reseller);
   let serial = 0;
 
   useEffect(() => {
     if (auth.ispOwner) {
-      fetchReseller(dispatch,auth.ispOwner.id)
+      fetchReseller(dispatch, auth.ispOwner.id);
     }
   }, [dispatch, auth.ispOwner]);
 
@@ -55,24 +55,14 @@ export default function Reseller() {
 
   // delete reseller
   const deleteSingleReseller = async (ispId, resellerId) => {
-     
     const IDs = { ispId: ispId, resellerId: resellerId };
-      deleteReseller(dispatch,IDs,setIsLoading); 
-     
-
-    
+    deleteReseller(dispatch, IDs, setIsLoading);
   };
 
   return (
     <>
       <Sidebar />
-      <ToastContainer
-        toastStyle={{
-          backgroundColor: "#677078",
-          color: "white",
-          fontWeight: "500",
-        }}
-      />
+      <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">

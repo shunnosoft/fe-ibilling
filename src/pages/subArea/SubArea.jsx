@@ -25,7 +25,7 @@ import SubAreaPost from "./subAreaModals/SubAreaPost";
 // import { fetchArea, getArea } from "../../features/areaSlice";
 // import { deleteSubArea, editSubArea } from "../../features/subAreaSlice";
 import { FtextField } from "../../components/common/FtextField";
-import { deleteSubArea, getArea,editSubArea } from "../../features/apiCalls";
+import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
 
 export default function SubArea() {
   const navigate = useNavigate();
@@ -45,13 +45,13 @@ export default function SubArea() {
     name: Yup.string().required("নাম দিন"),
   });
 
-   const dispatch =useDispatch()
+  const dispatch = useDispatch();
 
-// const user = useSelector((state) => state.auth.currentUser);
-const ispOwnerId=useSelector(state=>state.auth.ispOwnerId)
- useEffect(() => {
-   getArea(dispatch,  ispOwnerId);
- }, [dispatch,  ispOwnerId]);
+  // const user = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  useEffect(() => {
+    getArea(dispatch, ispOwnerId);
+  }, [dispatch, ispOwnerId]);
 
   // go back to area
   const gotoAllArea = () => {
@@ -67,9 +67,7 @@ const ispOwnerId=useSelector(state=>state.auth.ispOwnerId)
       id: subAreaID,
       name: data.name,
     };
-    editSubArea(dispatch,IDs, setIsLoading)
-   
-    
+    editSubArea(dispatch, IDs, setIsLoading);
   };
 
   useEffect(() => {
@@ -94,31 +92,20 @@ const ispOwnerId=useSelector(state=>state.auth.ispOwnerId)
   // };
 
   // delete sub area
-  const deleteSingleSubAarea =(id, ispOwner) => {
+  const deleteSingleSubAarea = (id, ispOwner) => {
     setIsLoading(true);
     const IDs = {
       ispOwnerId: ispOwnerId,
       subAreaId: id,
-      areaId
+      areaId,
     };
-      deleteSubArea(dispatch,IDs, setIsLoading)
-      
-     
-
-    
+    deleteSubArea(dispatch, IDs, setIsLoading);
   };
 
   return (
     <>
       <Sidebar />
-      <ToastContainer
-        className="bg-green"
-        toastStyle={{
-          backgroundColor: "#677078",
-          color: "white",
-          fontWeight: "500",
-        }}
-      />
+      <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -265,7 +252,8 @@ const ispOwnerId=useSelector(state=>state.auth.ispOwnerId)
                             </td>
                           </tr>
                         ) : (
-                          subAreas?.filter((val) => {
+                          subAreas
+                            ?.filter((val) => {
                               return val.name
                                 .toLowerCase()
                                 .includes(search.toLowerCase());

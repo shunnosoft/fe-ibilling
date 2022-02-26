@@ -97,7 +97,7 @@ export default function Register() {
     <FontColor>
       <div className="register">
         <div className="Loader"></div>
-        <ToastContainer />
+        <ToastContainer position="top-right" theme="colored" />
         <div className="container">
           <FourGround>
             <Formik

@@ -93,13 +93,7 @@ export default function Bill() {
   return (
     <>
       <Sidebar />
-      <ToastContainer
-        toastStyle={{
-          backgroundColor: "#677078",
-          fontWeight: "500",
-          color: "white",
-        }}
-      />
+      <ToastContainer position="top-right" theme="colored" />
 
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">

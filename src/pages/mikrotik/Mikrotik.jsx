@@ -33,13 +33,7 @@ export default function Mikrotik() {
   return (
     <>
       <Sidebar />
-      <ToastContainer
-        toastStyle={{
-          backgroundColor: "#677078",
-          color: "white",
-          fontWeight: "500",
-        }}
-      />
+      <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">

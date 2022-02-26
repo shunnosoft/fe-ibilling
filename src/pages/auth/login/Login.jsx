@@ -35,9 +35,7 @@ export default function Login() {
     <Background>
       <FourGround>
         <div className="Loader"></div>
-        <ToastContainer
-          toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
-        />
+        <ToastContainer position="top-right" theme="colored" />
 
         <div className="text-center loginWeapper">
           <main className="form-signin">

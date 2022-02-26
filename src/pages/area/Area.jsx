@@ -65,7 +65,7 @@ export default function Area() {
     <>
       <Sidebar />
       {/* toast */}
-      <ToastContainer position="top-right" />
+      <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">

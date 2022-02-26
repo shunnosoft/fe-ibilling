@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 
 // internal imports
 import "./manager.css";
-import "../collector/collector.css"
+import "../collector/collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -37,11 +37,9 @@ import {
 import Loader from "../../components/common/Loader";
 
 export default function Manager() {
-
-  
-const[isLoading,setIsLoading]=useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const manager = useSelector((state) => state.manager?.manager);
-console.log(manager)
+  console.log(manager);
   const ispOwnerId = useSelector(
     (state) => state.auth.currentUser?.ispOwner?.id
   );
@@ -51,8 +49,10 @@ console.log(manager)
     getManger(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId]);
 
-  const [permissions, setPermissions] = useState(managerPermission(manager?.permissions));
-   
+  const [permissions, setPermissions] = useState(
+    managerPermission(manager?.permissions)
+  );
+
   const managerValidate = Yup.object({
     name: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
@@ -72,7 +72,7 @@ console.log(manager)
   const addManagerHandle = (data) => {
     addManager(dispatch, {
       ...data,
-      ispOwner:ispOwnerId,
+      ispOwner: ispOwnerId,
     });
     // if (!manager) {
     // } else {
@@ -122,9 +122,7 @@ console.log(manager)
   return (
     <>
       <Sidebar />
-      <ToastContainer
-        toastStyle={{ backgroundColor: "#992c0c", color: "white" }}
-      />
+      <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
