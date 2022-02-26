@@ -28,7 +28,7 @@ export const asyncRegister = async (userData) => {
     .catch((err) => {
       document.querySelector(".Loader").style.display = "none";
       if (err.response) {
-        toast(err.response.data.message);
+        toast.error(err.response.data.message);
       }
     });
 };
@@ -51,13 +51,13 @@ export const asyncLogin = async (dispatch, loginData) => {
       document.querySelector(".Loader").style.display = "none";
       if (res.status === 200) {
         if (res.data.ispOwner === null) {
-          toast("সার্ভার Error!");
+          toast.error("সার্ভার Error!");
         } else {
           dispatch(logInSuccess(res.data));
           window.location.href = "/home";
         }
       } else {
-        toast("সার্ভার Error!");
+        toast.error("সার্ভার Error!");
       }
     })
     .catch((err) => {
@@ -66,9 +66,9 @@ export const asyncLogin = async (dispatch, loginData) => {
       dispatch(loginFailure());
       if (err.response) {
         const errorMessage = err.response.data.message;
-        toast(errorMessage);
+        toast.error(errorMessage);
       } else {
-        toast("Server Error!");
+        toast.error("Server Error!");
       }
     });
 };
@@ -93,11 +93,11 @@ export const asyncLogin = async (dispatch, loginData) => {
 //     });
 // };
 
-export const userLogout=async(dispatch)=>{
-  dispatch(clearCustomer())
-  dispatch(clearArea())
-  dispatch(clearManager())
-  dispatch(clearCollector())
-  dispatch(clearMikrotik())
-  dispatch(logOut())
-}
+export const userLogout = async (dispatch) => {
+  dispatch(clearCustomer());
+  dispatch(clearArea());
+  dispatch(clearManager());
+  dispatch(clearCollector());
+  dispatch(clearMikrotik());
+  dispatch(logOut());
+};

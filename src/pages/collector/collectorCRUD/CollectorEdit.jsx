@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../components/common/Loader";
@@ -16,9 +16,16 @@ import { editCollector } from "../../../features/apiCalls";
 
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
-  const area = useSelector(state=>state.area.area);
-  const [subArea, setSubArea] = useState("");
+  const area = useSelector((state) => state.area.area);
+  const [allowedAreas, setAllowedAreas] = useState([]);
+  const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (single) {
+      setAllowedAreas(single?.areas);
+    }
+  }, [single]);
 
   //validator
   const collectorValidator = Yup.object({
@@ -31,41 +38,31 @@ export default function CollectorEdit({ single }) {
     email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল দিন"),
     nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
     status: Yup.string().required("স্টেটাস দিন"),
-    // refName: Yup.string().required("রেফারেন্স নাম"),
-    // refMobile: Yup.string()
-    //   .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-    //   .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-    //   .required("মোবাইল নম্বর দিন "),
   });
 
-  // select subArea
-  const selectSubArea = (data) => {
-    const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setSubArea(temp);
+  const setAreaHandler = () => {
+    const temp = document.querySelectorAll(".getValueUsingClass_Edit");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
     }
+    setAllowedAreas(IDS_temp);
+    setAreaIds_Edit(IDS_temp);
   };
 
   const collectorEditHandler = async (data) => {
     setIsLoading(true);
-    const OneSubArea = document.getElementById("EditSubAreaId").value;
-    if (OneSubArea === "") {
-      setIsLoading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
-    }
     if (single.ispOwner) {
       const sendingData = {
         ...data,
-        areas: OneSubArea,
+        areas: areaIds_Edit,
         ispOwner: single.ispOwner,
         ispOwnerId: single.ispOwner,
         collectorId: single.id,
       };
-       editCollector(dispatch,sendingData, setIsLoading);
-       
+      editCollector(dispatch, sendingData, setIsLoading);
     }
   };
 
@@ -83,7 +80,7 @@ export default function CollectorEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন কালেক্টর অ্যাড
+                {single?.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -103,6 +100,7 @@ export default function CollectorEdit({ single }) {
                   status: single.status || "",
                   //   refName: "N/A" || "",
                   //   refMobile: "N/A" || "",
+                  // areas: single?.areas || [],
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
@@ -110,7 +108,7 @@ export default function CollectorEdit({ single }) {
                 }}
                 enableReinitialize
               >
-                {() => (
+                {(formik) => (
                   <Form>
                     <div className="collectorInputs">
                       {collectorData.map((val, key) => (
@@ -148,43 +146,30 @@ export default function CollectorEdit({ single }) {
                     </div>
 
                     {/* area */}
-                    <hr />
-                    <p>এরিয়া সিলেক্ট করুন</p>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      onChange={selectSubArea}
-                    >
-                      <option value="">...</option>
-                      {area.length === undefined
-                        ? ""
-                        : area.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
+                    <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <div className="AllAreaClass">
+                      {area?.map((val, key) => (
+                        <div key={key}>
+                          <h6 className="areaParent">{val.name}</h6>
+                          {val.subAreas.map((v, k) => (
+                            <div key={k} className="displayFlex">
+                              <input
+                                type="checkbox"
+                                className="getValueUsingClass_Edit"
+                                value={v.id}
+                                checked={
+                                  allowedAreas?.includes(v.id) ? true : false
+                                }
+                                onChange={setAreaHandler}
+                              />
+                              <label>{v.name}</label>
+                            </div>
                           ))}
-                    </select>
-                    <br />
-                    <p>
-                      {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া সিলেক্ট
-                      করুন
-                    </p>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      // name="subArea"
-                      id="EditSubAreaId"
-                    >
-                      <option value="">...</option>
-                      {subArea?.subAreas
-                        ? subArea.subAreas.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
-                          ))
-                        : ""}
-                    </select>
+                        </div>
+                      ))}
+                    </div>
                     {/* area */}
+
                     <div className="modal-footer">
                       <button
                         type="button"

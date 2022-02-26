@@ -58,6 +58,7 @@ export default function Mikrotik() {
                         />
                       </div>
                     </div>
+
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">

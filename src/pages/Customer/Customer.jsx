@@ -155,10 +155,18 @@ export default function Customer() {
                           onChange={handleActiveFilter}
                         >
                           <option value="" defaultValue>
-                            ফিল্টার করুন{" "}
+                            PPPoE স্ট্যাটাস
                           </option>
-                          <option value="status.active">একটিভ</option>
-                          <option value="status.inactive">ইনএকটিভ</option>
+                          <option value="status.active">PPPoE একটিভ</option>
+                          <option value="status.inactive">PPPoE ইনএকটিভ</option>
+                        </select>
+                        <select
+                          className="form-select"
+                          onChange={handleActiveFilter}
+                        >
+                          <option value="" defaultValue>
+                            পেমেন্ট
+                          </option>
                           <option value="paymentStatus.unpaid">বকেয়া</option>
                           <option value="paymentStatus.paid">পরিশোধ</option>
                         </select>

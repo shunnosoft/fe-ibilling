@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
+import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 
 // internal import
@@ -10,9 +11,27 @@ import useDash from "../../assets/css/dash.module.css";
 
 export default function Message() {
   const [isChecked, setisChecked] = useState(false);
+  const area = useSelector((state) => state.area.area);
+  const [areaIds, setAreaIds] = useState([]);
+
   const handleMessageCheckBox = (e) => {
     setisChecked(e.target.checked);
   };
+
+  const setAreaHandler = () => {
+    const temp = document.querySelectorAll(".getValueUsingClass");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
+    }
+    setAreaIds(IDS_temp);
+  };
+
+  // WE GOT ALL AREA_IDS ON -> areaIds;
+  console.log("Areas: ", areaIds);
+
   return (
     <>
       <Sidebar />
@@ -84,28 +103,42 @@ export default function Message() {
                         <div className="ifNotCheckBox">
                           <select
                             id="selectCustomerID1"
-                            className="form-select mb-2"
+                            className="form-select mb-4"
                           >
                             <option value="">গ্রাহক সিলেক্ট করুন</option>
                             <option value="">dummy</option>
                             <option value="">dummy</option>
                           </select>
-                          <select
-                            id="selectCustomerID2"
-                            className="form-select mb-2"
-                          >
-                            <option value="">সকল এরিয়া</option>
-                            <option value="">dummy</option>
-                            <option value="">dummy</option>
-                          </select>
-                          <select
+                          {/* area */}
+                          {/* area section*/}
+                          <b className="mt-4">এরিয়া সিলেক্ট</b>
+                          <div className="AllAreaClass mb-4">
+                            {area?.map((val, key) => (
+                              <div key={key}>
+                                <h6 className="areaParent">{val.name}</h6>
+                                {val.subAreas.map((v, k) => (
+                                  <div key={k} className="displayFlex">
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={v.id}
+                                      onChange={setAreaHandler}
+                                    />
+                                    <label>{v.name}</label>
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                          {/* area */}
+                          {/* <select
                             id="selectCustomerID3"
                             className="form-select"
                           >
                             <option value="">সকল গ্রাহক</option>
                             <option value="">dummy</option>
                             <option value="">dummy</option>
-                          </select>
+                          </select> */}
                         </div>
                       )}
 

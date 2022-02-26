@@ -49,6 +49,7 @@ export default function CollectorPost() {
         IDS_temp.push(temp[i].value);
       }
     }
+    console.log("IDS: ", IDS_temp);
     setAreaIds(IDS_temp);
   };
 

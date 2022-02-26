@@ -273,11 +273,11 @@ export default function Report() {
                     </div>
                     <div className="submitdiv d-grid gap-2">
                       <button
-                        className="btn fs-5 fw-bold btn-success w-100"
+                        className="btn fs-5 btn-success w-100"
                         type="button"
                         onClick={onClickFilter}
                       >
-                        সাবমিট
+                        ফিল্টার
                       </button>
                     </div>
 

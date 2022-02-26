@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { Check, X, ThreeDots } from "react-bootstrap-icons";
+// import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
@@ -203,7 +203,9 @@ export default function Diposit() {
                                     </button>
                                   </div>
                                 ) : (
-                                  <span>{item.status}</span>
+                                  <span className="statusClass">
+                                    {item.status}
+                                  </span>
                                 )}
                               </td>
                               <td>31/01/2022 07:25 PM</td>
@@ -219,7 +221,7 @@ export default function Diposit() {
               )}
 
               {/* Diposit status */}
-              <FourGround>
+              {/* <FourGround>
                 <div className="DipositStatusSection">
                   <h6 className="dipositStatusCheck">ডিপোজিট স্ট্যাটাস</h6>
                   <div className="dipositStatus">
@@ -241,9 +243,7 @@ export default function Diposit() {
                             <td>Md. Rakib Hasan</td>
                             <td>৳ {500}</td>
                             <td>
-                              <h5 className="ACPbtn acceptBtn">
-                                Accepted <Check />
-                              </h5>
+                              <h5 className="ACPbtn acceptBtn">Accepted</h5>
                             </td>
                             <td>31/01/2022 07:25 PM</td>
                           </tr>
@@ -251,9 +251,7 @@ export default function Diposit() {
                             <td>Md. Rakib Hasan</td>
                             <td>৳ {500}</td>
                             <td>
-                              <h5 className="ACPbtn rejectBtn">
-                                Rejected <X />
-                              </h5>
+                              <h5 className="ACPbtn rejectBtn">Rejected</h5>
                             </td>
                             <td>31/01/2022 07:25 PM</td>
                           </tr>
@@ -261,9 +259,7 @@ export default function Diposit() {
                             <td>Md. Rakib Hasan</td>
                             <td>৳ {500}</td>
                             <td>
-                              <h5 className="ACPbtn pendingBtn">
-                                Pending <ThreeDots />
-                              </h5>
+                              <h5 className="ACPbtn pendingBtn">Pending</h5>
                             </td>
                             <td>31/01/2022 07:25 PM</td>
                           </tr>
@@ -272,7 +268,7 @@ export default function Diposit() {
                     </div>
                   </div>
                 </div>
-              </FourGround>
+              </FourGround> */}
 
               <Footer />
             </FontColor>

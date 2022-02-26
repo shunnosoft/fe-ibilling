@@ -199,6 +199,10 @@ export default function ConfigMikrotik() {
                             className="addcutmButton deleteColorBtn"
                             onClick={deleteSingleMKHandler}
                           />
+                          <ArrowClockwise
+                            className="addcutmButton btn-primary"
+                            onClick={deleteSingleMKHandler}
+                          />
                           {isLoading ? (
                             <div className="deletingAction">
                               <Loader /> <b>Deleting...</b>
@@ -237,9 +241,6 @@ export default function ConfigMikrotik() {
                           </option>
                           <option value="showMikrotikUser">
                             এক্টিভ গ্রাহক
-                          </option>
-                          <option value="showMikrotikSyncUser">
-                            Sync গ্রাহক
                           </option>
                         </select>
                       </div>
@@ -522,85 +523,6 @@ export default function ConfigMikrotik() {
                                       <td>{val.name}</td>
                                       <td>{val.callerId}</td>
                                       <td>{val.address}</td>
-                                    </tr>
-                                  ))
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </>
-                    ) : (
-                      ""
-                    )}
-
-                    {/* Active PPPoE users */}
-                    {whatYouWantToShow === "showMikrotikSyncUser" ? (
-                      <>
-                        <h2 className="secondaryTitle">Sync গ্রাহক</h2>
-                        <div className="row searchCollector">
-                          <div className="col-sm-8">
-                            <h4 className="allCollector">
-                              Sync গ্রাহক :{" "}
-                              <span>{mikrotikSyncUser?.length || "NULL"}</span>
-                            </h4>
-                          </div>
-
-                          <div className="col-sm-4">
-                            <div className="pppoeRefresh">
-                              {/* Refresh: {refresh} */}
-                              <ArrowClockwise
-                                className="addcutmButton"
-                                onClick={() =>
-                                  setSyncUserRefresh(syncUserRefresh + 1)
-                                }
-                              />
-                              <div className=" collectorSearch">
-                                <input
-                                  type="text"
-                                  className="search"
-                                  placeholder="সার্চ"
-                                  onChange={(e) => setSearch(e.target.value)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="table-responsive-lg">
-                          <table className="table table-striped ">
-                            <thead>
-                              <tr>
-                                <th scope="col">সিরিয়াল</th>
-                                <th scope="col">নাম</th>
-                                <th scope="col">মোবাইল</th>
-                                <th scope="col">স্টেটাস</th>
-                                <th scope="col">পেমেন্ট স্টেটাস</th>
-                                {/* <th scope="col" style={{ textAlign: "center" }}>
-                              অ্যাকশন
-                            </th> */}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {mikrotikSyncUser.length === undefined ? (
-                                <tr>
-                                  <TdLoader colspan={5} />
-                                </tr>
-                              ) : (
-                                mikrotikSyncUser
-                                  .filter((val) => {
-                                    return val.name
-                                      .toLowerCase()
-                                      .includes(search.toLowerCase());
-                                  })
-                                  .map((val, key) => (
-                                    <tr key={key}>
-                                      <td style={{ paddingLeft: "30px" }}>
-                                        {++serial2}
-                                      </td>
-                                      <td>{val.name}</td>
-                                      <td>{val.mobile}</td>
-                                      <td>{val.status}</td>
-                                      <td>{val.paymentStatus}</td>
                                     </tr>
                                   ))
                               )}
