@@ -17,6 +17,7 @@ import { editCollector } from "../../../features/apiCalls";
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
   const area = useSelector((state) => state.area.area);
+  const [allowedAreas, setAllowedAreas] = useState(single.areas);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +45,7 @@ export default function CollectorEdit({ single }) {
     for (let i = 0; i < temp.length; i++) {
       if (temp[i].checked === true) {
         IDS_temp.push(temp[i].value);
+        // setAllowedAreas(IDS_temp);
       }
     }
     setAreaIds_Edit(IDS_temp);
@@ -82,7 +84,7 @@ export default function CollectorEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন কালেক্টর অ্যাড
+                {single?.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -102,6 +104,7 @@ export default function CollectorEdit({ single }) {
                   status: single.status || "",
                   //   refName: "N/A" || "",
                   //   refMobile: "N/A" || "",
+                  areas: single?.areas || [],
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
@@ -109,7 +112,7 @@ export default function CollectorEdit({ single }) {
                 }}
                 enableReinitialize
               >
-                {() => (
+                {(formik) => (
                   <Form>
                     <div className="collectorInputs">
                       {collectorData.map((val, key) => (
@@ -159,6 +162,11 @@ export default function CollectorEdit({ single }) {
                                 type="checkbox"
                                 className="getValueUsingClass_Edit"
                                 value={v.id}
+                                checked={
+                                  formik.initialValues.areas.includes(v.id)
+                                    ? true
+                                    : false
+                                }
                                 onChange={setAreaHandler}
                               />
                               <label>{v.name}</label>
