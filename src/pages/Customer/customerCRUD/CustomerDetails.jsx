@@ -68,13 +68,13 @@ export default function CustomerDetails({ single }) {
                   <h5>PPPoE Details</h5>
                   <hr />
                   <h6>
-                    name: <b>{single?.pppoe.name}</b>
+                    name: <b>{single?.pppoe?.name}</b>
                   </h6>
                   <h6>
-                    Profile: <b> {single?.pppoe.profile}</b>
+                    Profile: <b> {single?.pppoe?.profile}</b>
                   </h6>
                   <h6>
-                    service: <b>{single?.pppoe.service}</b>
+                    service: <b>{single?.pppoe?.service}</b>
                   </h6>
                 </div>
               </div>
