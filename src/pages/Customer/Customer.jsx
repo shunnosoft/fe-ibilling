@@ -82,7 +82,8 @@ export default function Customer() {
 
   //   filter
   const handleActiveFilter = (e) => {
-    setRunning(true);
+  
+  setRunning(true);
     let fvalue = e.target.value;
     const field = fvalue.split(".")[0];
     const subfield = fvalue.split(".")[1];
@@ -91,7 +92,6 @@ export default function Customer() {
 
     setFilter(filterdData);
   };
-
   // get specific customer
   const getSpecificCustomer = (id) => {
     if (cus.length !== undefined) {

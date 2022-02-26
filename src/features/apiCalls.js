@@ -803,6 +803,6 @@ export const getAllBills = async (dispatch, ispOwnerId) => {
     const res = await apiLink.get(`/v1/bill/${ispOwnerId}`);
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };

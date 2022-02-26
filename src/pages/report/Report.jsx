@@ -23,6 +23,9 @@ import { getAllBills } from "../../features/apiCalls";
 import { useSelector } from "react-redux";
 
 export default function Report() {
+  const allArea = useSelector((state) => state.area.area);
+  const allCollector = useSelector((state) => state.collector.collector);
+  console.log(allArea);
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -32,22 +35,25 @@ export default function Report() {
   console.log(today, firstDay);
 
   const allBills = useSelector((state) => state.payment.allBills);
-  const [dateStart, setMinDate] = useState(firstDay);
-  const [dateEnd, setMaxDate] = useState(today);
-  const [mainData, setMainData] = useState([]);
 
+  const [singleArea, setArea] = useState({});
+
+  const [dateStart, setStartDate] = useState(firstDay);
+  const [dateEnd, setEndDate] = useState(today);
+  const [mainData, setMainData] = useState([]);
+  const [collectorID, setCollectorID] = "";
   const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
 
   const dispatch = useDispatch();
 
-  const filterdByData = (start, end) => {
-    const filteredByDate = mainData.filter(
-      (item) =>
-        Date.parse(item.createdAt) >= Date.parse(start) &&
-        Date.parse(item.createdAt) <= Date.parse(end)
-    );
-    setMainData(filteredByDate);
-  };
+  // const filterdByDate = (start, end) => {
+  //   const filteredByDate = mainData.filter(
+  //     (item) =>
+  //       Date.parse(item.createdAt) >= Date.parse(start) &&
+  //       Date.parse(item.createdAt) <= Date.parse(end)
+  //   );
+  //   setMainData(filteredByDate);
+  // };
 
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
@@ -63,7 +69,21 @@ export default function Report() {
     );
   }, [dateStart, dateEnd, allBills]);
 
-  console.log(mainData);
+  
+
+  console.log("main", mainData);
+  
+
+  const handleFilterForArea = (selectVal) => {
+    setArea(allArea.find((item) => item.name === selectVal));
+  };
+  const handleFilterForCollector = (selectVal) => {
+    if(selectVal===null){
+      setMainData(allBills)
+    }
+    setMainData(allBills.filter((item) => item.collectorId === selectVal));
+
+  };
 
   return (
     <>
@@ -87,43 +107,72 @@ export default function Report() {
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">
-                      <select className="form-select" onChange={() => {}}>
+                      <select
+                        className="form-select"
+                        onChange={(e) => handleFilterForArea(e.target.value)}
+                      >
                         <option value="" defaultValue>
-                          ফিল্টার করুন{" "}
+                          সকল এরিয়া{" "}
                         </option>
-                        <option value="status.active">একটিভ</option>
-                        <option value="status.inactive">ইনএকটিভ</option>
-                        <option value="paymentStatus.unpaid">বকেয়া</option>
-                        <option value="paymentStatus.paid">পরিশোধ</option>
+                        {allArea.map((area) => (
+                          <option value={area.name}>{area.name}</option>
+                        ))}
                       </select>
                       <select className="form-select" onChange={() => {}}>
                         <option value="" defaultValue>
-                          ফিল্টার করুন{" "}
+                          সকল সাব এরিয়া{" "}
                         </option>
-                        <option value="status.active">একটিভ</option>
-                        <option value="status.inactive">ইনএকটিভ</option>
-                        <option value="paymentStatus.unpaid">বকেয়া</option>
-                        <option value="paymentStatus.paid">পরিশোধ</option>
+                        {singleArea?.subAreas?.map((sub) => (
+                          <option value={sub.name}>{sub.name}</option>
+                        ))}
                       </select>
-                      <select className="form-select" onChange={() => {}}>
+                      <select
+                        className="form-select"
+                        onChange={(e) =>
+                          handleFilterForCollector(e.target.value)
+                        }
+                      >
                         <option value="" defaultValue>
-                          ফিল্টার করুন{" "}
+                          সকল কালেক্টর{" "}
                         </option>
-                        <option value="status.active">একটিভ</option>
-                        <option value="status.inactive">ইনএকটিভ</option>
-                        <option value="paymentStatus.unpaid">বকেয়া</option>
-                        <option value="paymentStatus.paid">পরিশোধ</option>
+                        {allCollector?.map((c) => (
+                          <option value={c.id}>{c.name}</option>
+                        ))}
                       </select>
 
-                      <select className="form-select" onChange={() => {}}>
-                        <option value="" defaultValue>
-                          ফিল্টার করুন{" "}
-                        </option>
-                        <option value="status.active">একটিভ</option>
-                        <option value="status.inactive">ইনএকটিভ</option>
-                        <option value="paymentStatus.unpaid">বকেয়া</option>
-                        <option value="paymentStatus.paid">পরিশোধ</option>
-                      </select>
+                      <div className="dateDiv">
+                        <label for="start">শুরুর তারিখ</label>
+                        <input
+                          type="date"
+                          id="start"
+                          name="trip-start"
+                          value={dateStart}
+                          onChange={(e) => {
+                            setStartDate(e.target.value);
+                          }}
+                          // value="2018-07-22"
+
+                          // min="2018-01-01"
+                          // max="2018-12-31"
+                        />
+                      </div>
+                      <div className="dateDiv">
+                        <label for="end">শেষের তারিখ</label>
+                        <input
+                          type="date"
+                          id="end"
+                          name="trip-start"
+                          value={dateEnd}
+                          onChange={(e) => {
+                            setEndDate(e.target.value);
+                          }}
+
+                          // value="2018-07-22"
+
+                          // min="2018-01-01"
+                          // max="2018-12-31"
+                        />
+                      </div>
                     </div>
                     <div className="submitdiv d-grid gap-2">
                       <button
