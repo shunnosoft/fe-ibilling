@@ -25,35 +25,45 @@ import { useSelector } from "react-redux";
 export default function Report() {
   const allArea = useSelector((state) => state.area.area);
   const allCollector = useSelector((state) => state.collector.collector);
-  console.log(allArea);
+  const manager = useSelector((state) => state.manager.manager);
+  console.log(manager, allCollector);
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  console.log(today, firstDay);
+  // console.log(today, firstDay);
 
   const allBills = useSelector((state) => state.payment.allBills);
 
   const [singleArea, setArea] = useState({});
+  const [subArea, setSubArea] = useState([]);
 
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
   const [mainData, setMainData] = useState([]);
-  const [collectorID, setCollectorID] = "";
+  const [collectorUserIds, setCollectorUserIds] = useState([]);
   const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
 
   const dispatch = useDispatch();
 
-  // const filterdByDate = (start, end) => {
-  //   const filteredByDate = mainData.filter(
-  //     (item) =>
-  //       Date.parse(item.createdAt) >= Date.parse(start) &&
-  //       Date.parse(item.createdAt) <= Date.parse(end)
-  //   );
-  //   setMainData(filteredByDate);
-  // };
+  useEffect(() => {
+    let collectorUserIds = [];
+
+    allCollector.map((item) =>
+      collectorUserIds.push({ name: item.name, user: item.user, id: item.id })
+    );
+
+    if (collectorUserIds.length === allCollector.length) {
+      const { user, name, id } = manager;
+      collectorUserIds.unshift({ name, user, id });
+    }
+
+    setCollectorUserIds(collectorUserIds);
+  }, [allCollector, manager]);
+
+  console.log("IDS", collectorUserIds);
 
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
@@ -69,20 +79,36 @@ export default function Report() {
     );
   }, [dateStart, dateEnd, allBills]);
 
-  
+  // console.log("main", mainData);
 
-  console.log("main", mainData);
-  
-
-  const handleFilterForArea = (selectVal) => {
-    setArea(allArea.find((item) => item.name === selectVal));
+  // const handleFilterForArea = (selectVal) => {
+  //   setArea(allArea.find((item) => item.name === selectVal));
+  // };
+  const onChangeCollector = (collectorId) => {
+    // console.log("collector id", collectorId);
   };
-  const handleFilterForCollector = (selectVal) => {
-    if(selectVal===null){
-      setMainData(allBills)
-    }
-    setMainData(allBills.filter((item) => item.collectorId === selectVal));
 
+  const onChangeArea = (param) => {
+    let area = JSON.parse(param);
+    setArea(area);
+
+    let subAreaIds = [];
+
+    area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+
+    setSubArea(subAreaIds);
+
+    // console.log("area", singleArea, subArea);
+  };
+
+  const onChangeSubArea = (id) => {
+    // console.log("sub area", id);
+
+    setSubArea([id]);
+  };
+
+  const onClickFilter = () => {
+    // console.log(dateStart, dateEnd);
   };
 
   return (
@@ -109,34 +135,37 @@ export default function Report() {
                     <div className="selectFilteringg">
                       <select
                         className="form-select"
-                        onChange={(e) => handleFilterForArea(e.target.value)}
+                        onChange={(e) => onChangeArea(e.target.value)}
                       >
                         <option value="" defaultValue>
                           সকল এরিয়া{" "}
                         </option>
                         {allArea.map((area) => (
-                          <option value={area.name}>{area.name}</option>
-                        ))}
-                      </select>
-                      <select className="form-select" onChange={() => {}}>
-                        <option value="" defaultValue>
-                          সকল সাব এরিয়া{" "}
-                        </option>
-                        {singleArea?.subAreas?.map((sub) => (
-                          <option value={sub.name}>{sub.name}</option>
+                          <option value={JSON.stringify(area)}>
+                            {area.name}
+                          </option>
                         ))}
                       </select>
                       <select
                         className="form-select"
-                        onChange={(e) =>
-                          handleFilterForCollector(e.target.value)
-                        }
+                        onChange={(e) => onChangeSubArea(e.target.value)}
+                      >
+                        <option value="" defaultValue>
+                          সকল সাব এরিয়া{" "}
+                        </option>
+                        {singleArea?.subAreas?.map((sub) => (
+                          <option value={sub.id}>{sub.name}</option>
+                        ))}
+                      </select>
+                      <select
+                        className="form-select"
+                        onChange={(e) => onChangeCollector(e.target.value)}
                       >
                         <option value="" defaultValue>
                           সকল কালেক্টর{" "}
                         </option>
-                        {allCollector?.map((c) => (
-                          <option value={c.id}>{c.name}</option>
+                        {collectorUserIds?.map((c) => (
+                          <option value={c.user}>{c.name}</option>
                         ))}
                       </select>
 
@@ -146,7 +175,7 @@ export default function Report() {
                           type="date"
                           id="start"
                           name="trip-start"
-                          value={dateStart}
+                          value={moment(dateStart).format("YYYY-MM-DD")}
                           onChange={(e) => {
                             setStartDate(e.target.value);
                           }}
@@ -162,7 +191,7 @@ export default function Report() {
                           type="date"
                           id="end"
                           name="trip-start"
-                          value={dateEnd}
+                          value={moment(dateEnd).format("YYYY-MM-DD")}
                           onChange={(e) => {
                             setEndDate(e.target.value);
                           }}
@@ -178,6 +207,7 @@ export default function Report() {
                       <button
                         className="btn fs-5 fw-bold btn-success w-100"
                         type="button"
+                        onClick={onClickFilter}
                       >
                         সাবমিট
                       </button>
