@@ -112,12 +112,12 @@
   grid-gap: 20px;
 }
 
-.allCollector {
+/* .allCollector {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   flex-wrap: wrap;
-}
+} */
 .allCollectorSpan {
   margin: 10px;
 }

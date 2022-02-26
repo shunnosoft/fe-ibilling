@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../components/common/Loader";
@@ -17,9 +17,15 @@ import { editCollector } from "../../../features/apiCalls";
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
   const area = useSelector((state) => state.area.area);
-  const [allowedAreas, setAllowedAreas] = useState(single.areas);
+  const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (single) {
+      setAllowedAreas(single?.areas);
+    }
+  }, [single]);
 
   //validator
   const collectorValidator = Yup.object({
@@ -32,11 +38,6 @@ export default function CollectorEdit({ single }) {
     email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল দিন"),
     nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
     status: Yup.string().required("স্টেটাস দিন"),
-    // refName: Yup.string().required("রেফারেন্স নাম"),
-    // refMobile: Yup.string()
-    //   .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-    //   .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-    //   .required("মোবাইল নম্বর দিন "),
   });
 
   const setAreaHandler = () => {
@@ -45,19 +46,14 @@ export default function CollectorEdit({ single }) {
     for (let i = 0; i < temp.length; i++) {
       if (temp[i].checked === true) {
         IDS_temp.push(temp[i].value);
-        // setAllowedAreas(IDS_temp);
       }
     }
+    setAllowedAreas(IDS_temp);
     setAreaIds_Edit(IDS_temp);
   };
 
   const collectorEditHandler = async (data) => {
     setIsLoading(true);
-    const OneSubArea = document.getElementById("EditSubAreaId").value;
-    if (OneSubArea === "") {
-      setIsLoading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
-    }
     if (single.ispOwner) {
       const sendingData = {
         ...data,
@@ -104,7 +100,7 @@ export default function CollectorEdit({ single }) {
                   status: single.status || "",
                   //   refName: "N/A" || "",
                   //   refMobile: "N/A" || "",
-                  areas: single?.areas || [],
+                  // areas: single?.areas || [],
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
@@ -150,7 +146,6 @@ export default function CollectorEdit({ single }) {
                     </div>
 
                     {/* area */}
-                    {/* area section*/}
                     <b className="mt-2">এরিয়া সিলেক্ট</b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
@@ -163,9 +158,7 @@ export default function CollectorEdit({ single }) {
                                 className="getValueUsingClass_Edit"
                                 value={v.id}
                                 checked={
-                                  formik.initialValues.areas.includes(v.id)
-                                    ? true
-                                    : false
+                                  allowedAreas?.includes(v.id) ? true : false
                                 }
                                 onChange={setAreaHandler}
                               />

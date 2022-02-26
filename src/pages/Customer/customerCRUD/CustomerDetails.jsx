@@ -3,7 +3,7 @@ import "../customer.css";
 
 export default function CustomerDetails({ single }) {
   // const single = useSelector((state) => state.customer.singleCustomer);
-
+  console.log("Single: ", single);
   return (
     <div>
       <div
@@ -13,7 +13,7 @@ export default function CustomerDetails({ single }) {
         aria-labelledby="customerModalDetails"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-dialog-scrollable">
+        <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h5
@@ -21,7 +21,7 @@ export default function CustomerDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                গ্রাহক প্রোফাইল
+                {single?.name} - প্রোফাইল
               </h5>
               <button
                 type="button"
@@ -32,58 +32,52 @@ export default function CustomerDetails({ single }) {
             </div>
             <div className="modal-body">
               <h2 className="ProfileName">{single.name}</h2>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      মোবাইল:
-                    </th>
-                    <th scope="col">{single.mobile}</th>
-                  </tr>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      এড্রেস:
-                    </th>
-                    <th scope="col">{single.address}</th>
-                  </tr>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      ইমেইল:
-                    </th>
-                    <th scope="col">{single.email}</th>
-                  </tr>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      NID নম্বর:
-                    </th>
-                    <th scope="col">{single.nid}</th>
-                  </tr>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      ব্যালান্স:
-                    </th>
-                    <th scope="col">{single.balance}</th>
-                  </tr>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      মাসিক বেতন:
-                    </th>
-                    <th scope="col">{single.monthlyFee}</th>
-                  </tr>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      স্ট্যাটাস:
-                    </th>
-                    <th scope="col">{single.status}</th>
-                  </tr>
-                  <tr>
-                    <th scope="col" className="thSt">
-                      ইউজারের ধরণ:
-                    </th>
-                    <th scope="col">{single.userType}</th>
-                  </tr>
-                </thead>
-              </table>
+              <div className="profileMain">
+                <div>
+                  <h5>User Details</h5>
+                  <hr />
+                  <h6>
+                    Name: <b>{single?.name}</b>
+                  </h6>
+                  <h6>
+                    email: <b> {single?.email}</b>
+                  </h6>
+                  <h6>
+                    mobile: <b>{single?.mobile}</b>
+                  </h6>
+                  <h6>
+                    NID: <b>{single?.nid}</b>
+                  </h6>
+                  <h6>
+                    billPayType: <b>{single?.billPayType}</b>
+                  </h6>
+                  <h6>
+                    monthlyFee:<b> {single?.monthlyFee}</b>
+                  </h6>
+                  <h6>
+                    customerId: <b>{single?.customerId}</b>
+                  </h6>
+                  <h6>
+                    password: <b>{single?.password}</b>
+                  </h6>
+                  <h6>
+                    paymentStatus: <b>{single?.paymentStatus}</b>
+                  </h6>
+                </div>
+                <div>
+                  <h5>PPPoE Details</h5>
+                  <hr />
+                  <h6>
+                    name: <b>{single?.pppoe.name}</b>
+                  </h6>
+                  <h6>
+                    Profile: <b> {single?.pppoe.profile}</b>
+                  </h6>
+                  <h6>
+                    service: <b>{single?.pppoe.service}</b>
+                  </h6>
+                </div>
+              </div>
             </div>
           </div>
         </div>
