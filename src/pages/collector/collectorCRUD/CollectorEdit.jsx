@@ -16,8 +16,8 @@ import { editCollector } from "../../../features/apiCalls";
 
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
-  const area = useSelector(state=>state.area.area);
-  const [subArea, setSubArea] = useState("");
+  const area = useSelector((state) => state.area.area);
+  const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   //validator
@@ -38,15 +38,15 @@ export default function CollectorEdit({ single }) {
     //   .required("মোবাইল নম্বর দিন "),
   });
 
-  // select subArea
-  const selectSubArea = (data) => {
-    const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setSubArea(temp);
+  const setAreaHandler = () => {
+    const temp = document.querySelectorAll(".getValueUsingClass_Edit");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
     }
+    setAreaIds_Edit(IDS_temp);
   };
 
   const collectorEditHandler = async (data) => {
@@ -59,13 +59,12 @@ export default function CollectorEdit({ single }) {
     if (single.ispOwner) {
       const sendingData = {
         ...data,
-        areas: OneSubArea,
+        areas: areaIds_Edit,
         ispOwner: single.ispOwner,
         ispOwnerId: single.ispOwner,
         collectorId: single.id,
       };
-       editCollector(dispatch,sendingData, setIsLoading);
-       
+      editCollector(dispatch, sendingData, setIsLoading);
     }
   };
 
@@ -148,43 +147,28 @@ export default function CollectorEdit({ single }) {
                     </div>
 
                     {/* area */}
-                    <hr />
-                    <p>এরিয়া সিলেক্ট করুন</p>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      onChange={selectSubArea}
-                    >
-                      <option value="">...</option>
-                      {area.length === undefined
-                        ? ""
-                        : area.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
+                    {/* area section*/}
+                    <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <div className="AllAreaClass">
+                      {area?.map((val, key) => (
+                        <div key={key}>
+                          <h6 className="areaParent">{val.name}</h6>
+                          {val.subAreas.map((v, k) => (
+                            <div key={k} className="displayFlex">
+                              <input
+                                type="checkbox"
+                                className="getValueUsingClass_Edit"
+                                value={v.id}
+                                onChange={setAreaHandler}
+                              />
+                              <label>{v.name}</label>
+                            </div>
                           ))}
-                    </select>
-                    <br />
-                    <p>
-                      {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া সিলেক্ট
-                      করুন
-                    </p>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      // name="subArea"
-                      id="EditSubAreaId"
-                    >
-                      <option value="">...</option>
-                      {subArea?.subAreas
-                        ? subArea.subAreas.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
-                          ))
-                        : ""}
-                    </select>
+                        </div>
+                      ))}
+                    </div>
                     {/* area */}
+
                     <div className="modal-footer">
                       <button
                         type="button"
