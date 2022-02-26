@@ -129,16 +129,25 @@
     align-items: center;
     justify-content: space-around;
     flex-wrap: wrap;
+    font-weight: bold;
+    
   }
   .form-select{
       max-width: 200px;
        margin: 10px;
       
   }
-  
+  .dateDiv{
+display: flex;
+align-items: center;
+justify-content:space-between;
+padding: 10px;
+flex-direction: column;
+  }
   .submitdiv{
       margin: 18px 0;
   }
+  
   @media only screen and (max-width: 980px) {
     .customerGrid {
       display: initial;
