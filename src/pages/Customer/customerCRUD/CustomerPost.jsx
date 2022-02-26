@@ -51,6 +51,7 @@ export default function CustomerModal() {
   // };
 
   const [loadingPac, setLoadingPac] = useState(false);
+
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -82,7 +83,7 @@ export default function CustomerModal() {
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
-  console.log("Autho: ", autoDisable);
+
   // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);

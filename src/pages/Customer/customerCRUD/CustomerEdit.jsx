@@ -10,53 +10,131 @@ import { FtextField } from "../../../components/common/FtextField";
 // import { editCustomer } from "../../../features/customerSlice";
 // import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
-import { editCustomer } from "../../../features/apiCalls";
+import { editCustomer, fetchpppoePackage } from "../../../features/apiCalls";
+import { useEffect } from "react";
 
 export default function CustomerEdit({ single }) {
-  const CUSTOMER = single;
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
-  // const CUSTOMER = useSelector((state) => state.customer.singleCustomer);
+  const area = useSelector((state) => state.area.area);
+  const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
+  const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
+  const [singleMikrotik, setSingleMikrotik] = useState("");
+  const [mikrotikPackage, setMikrotikPackage] = useState("");
+  const [autoDisable, setAutoDisable] = useState(true);
+  const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
-  // customer validator
-  const customerEditValidator = Yup.object({
-    name: Yup.string(),
-    address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয় "),
-    nid: Yup.string(),
-    balance: Yup.string(),
-    monthlyFee: Yup.string(),
-  });
-  // const customerEditValidator = Yup.object({
-  //   name: Yup.string().required("নাম দিন"),
-  //   mobile: Yup.string()
-  //     .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-  //     .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-  //     .required("মোবাইল নম্বর দিন "),
-  //   address: Yup.string().required("নাম দিন"),
-  //   email: Yup.string()
-  //     .email("ইমেইল সঠিক নয় ")
-  //     .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-  //   nid: Yup.string().required("NID দিন"),
-  //   status: Yup.string().required("Choose one"),
-  //   balance: Yup.string().required("Balance দিন"),
-  //   monthlyFee: Yup.string().required("Montly Fee দিন"),
-  // });
+  const [pppoePacakage, setPppoePacakage] = useState([]);
+  const [activeStatus, setActiveStatus] = useState(single?.pppoe?.disabled);
+  const [mikrotikName, setmikrotikName] = useState("");
+  const [areaID, setAreaID] = useState("");
+  const [subAreaId, setSubAreaId] = useState("");
 
-  const customerEditHandler = async (data) => {
-    // console.log(data);
+  useEffect(() => {
+    const temp = Getmikrotik.find((val) => val.id === single.mikrotik);
+    setmikrotikName(temp);
+
+    // findout area id by sub area id
+    const areaIDTemp = area.find((areaItem) => {
+      return areaItem.subAreas.find((val) => {
+        if (single.subArea === val.id) {
+          setSubAreaId(val);
+          return areaItem;
+        }
+      });
+    });
+    setAreaID(areaIDTemp);
+  });
+
+  // customer validator
+  const customerValidator = Yup.object({
+    name: Yup.string().required("নাম ***"),
+    mobile: Yup.string()
+      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
+      .required("মোবাইল নম্বর *** "),
+    address: Yup.string().required("এড্রেস ***"),
+    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
+    nid: Yup.string().required("NID ***"),
+    monthlyFee: Yup.string().required("Montly Fee ***"),
+    Pname: Yup.string().required("PPPoE নাম"),
+    Ppassword: Yup.string().required("PPPoE Password"),
+    Pcomment: Yup.string().required("Comment"),
+  });
+
+  // const [loadingPac, setLoadingPac] = useState(false);
+
+  // select Getmikrotik
+  const selectMikrotik = (e) => {
+    const id = e.target.value;
+    if (id && ispOwnerId) {
+      const IDs = {
+        ispOwner: ispOwnerId,
+        mikrotikId: id,
+      };
+      fetchpppoePackage(dispatch, IDs);
+    }
+
+    const getOneMikrotik = Getmikrotik.find((val) => val.id === id);
+    setSingleMikrotik(getOneMikrotik.id);
+
+    // set Pppoe Pacakage
+    const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
+    setPppoePacakage(filterPPPoEpacakage);
+  };
+
+  // select Mikrotik Package
+  const selectMikrotikPackage = (e) => {
+    const mikrotikPackageId = e.target.value;
+    setMikrotikPackage(mikrotikPackageId);
+    const temp = pppoePacakage.find((val) => val.id === mikrotikPackageId);
+    setPackageRate(temp);
+  };
+
+  // select subArea
+  const selectSubArea = (data) => {
+    const areaId = data.target.value;
+    if (area) {
+      const temp = area.find((val) => {
+        return val.id === areaId;
+      });
+      setSubArea(temp);
+    }
+  };
+
+  // sending data to backed
+  const customerHandler = async (data) => {
     setIsloading(true);
-     
+    const subArea2 = document.getElementById("subAreaIdFromEdit").value;
+    console.log("SubArea: ", subArea2);
+    if (subArea2 === "") {
+      setIsloading(false);
+      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
+    }
+    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
-      // customerId: "randon123",
-      customerId: single.customerId,
-      singleCustomerID: single.id,
-      // ispID: ispOwner.id,
+      customerId: "randon123",
+      paymentStatus: "unpaid",
+      singleCustomerID: single?.id,
+      subArea: subArea2,
       ispOwner: ispOwnerId,
-      ...data,
+      mikrotik: singleMikrotik,
+      mikrotikPackage: mikrotikPackage,
+      billPayType: "prepaid",
+      autoDisable: autoDisable,
+      pppoe: {
+        name: Pname,
+        password: Ppassword,
+        service: "pppoe",
+        comment: Pcomment,
+        profile: Pprofile,
+        disabled: activeStatus,
+      },
+      ...rest,
     };
-    editCustomer(dispatch, mainData,setIsloading);
-     
+    // console.log("Main Data: ", mainData);
+    editCustomer(dispatch, mainData, setIsloading);
   };
 
   return (
@@ -72,7 +150,7 @@ export default function CustomerEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {`${CUSTOMER.name}`} এর তথ্য এডিট করুন
+                {single?.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -85,69 +163,197 @@ export default function CustomerEdit({ single }) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: CUSTOMER.name || "",
-                  address: CUSTOMER.address || "",
-                  email: CUSTOMER.email || "",
-                  nid: CUSTOMER.nid || "",
-                  balance: CUSTOMER.balance || "",
-                  monthlyFee: CUSTOMER.monthlyFee || "",
-                  billPayType: CUSTOMER.billPayType || "",
+                  name: single?.name || "",
+                  mobile: single?.mobile || "01....",
+                  address: single?.address || "N/A",
+                  email: single?.email || "demo@gmail.com",
+                  nid: single?.nid || "N/A",
+                  Pcomment: "N/A",
+                  monthlyFee: packageRate?.rate || single?.monthlyFee,
+                  Pname: single?.pppoe?.name || "",
+                  Pprofile: packageRate?.name || single?.pppoe?.profile,
+                  Ppassword: single.pppoe?.password || "",
                 }}
-                validationSchema={customerEditValidator}
+                validationSchema={customerValidator}
                 onSubmit={(values) => {
-                  customerEditHandler(values);
+                  customerHandler(values);
                 }}
                 enableReinitialize
               >
                 {() => (
                   <Form>
-                    <FtextField type="text" label={`নাম`} name="name" />
-                    <FtextField type="text" label={`এড্রেস`} name="address" />
-                    <FtextField type="text" label={`ইমেইল`} name="email" />
-                    <FtextField type="text" label={`NID নম্বর`} name="nid" />
-
-                    <div className="form-check customerFormCheck">
-                      <p>বিল পরিশোধের ধরণ</p>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Prepaid"
-                          className="form-check-input"
-                          type="radio"
-                          name="billPayType"
-                          id="billPayType1"
-                          value="prepaid"
-                        />
+                    <div className="mikrotikSection">
+                      <div>
+                        <p className="comstomerFieldsTitle">
+                          মাইক্রোটিক সিলেক্ট করুন
+                        </p>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          onChange={selectMikrotik}
+                        >
+                          <option value={mikrotikName?.name || ""}>
+                            {mikrotikName?.name || "..."}
+                          </option>
+                          {Getmikrotik.length === undefined
+                            ? ""
+                            : Getmikrotik.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))}
+                        </select>
                       </div>
-                      <div className="form-check form-check-inline">
-                        <FtextField
-                          label="Postpaid"
-                          className="form-check-input"
-                          type="radio"
-                          name="billPayType"
-                          id="billPayType2"
-                          value="postpaid"
+
+                      {/* pppoe package */}
+                      <div>
+                        <p className="comstomerFieldsTitle">
+                          PPPoE প্যাকেজ সিলেক্ট করুন
+                        </p>
+                        <select
+                          className="form-select mb-3"
+                          aria-label="Default select example"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value={single?.pppoe?.profile || "..."}>
+                            {single?.pppoe?.profile || "..."}
+                          </option>
+                          {pppoePacakage?.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <FtextField
+                        type="text"
+                        label="মাসিক ফি"
+                        name="monthlyFee"
+                      />
+                    </div>
+
+                    <div className="pppoeSection2">
+                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
+                      <FtextField
+                        type="text"
+                        label="পাসওয়ার্ড"
+                        name="Ppassword"
+                      />
+                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                    </div>
+
+                    <div className="displayGrid3">
+                      <div>
+                        <p>এরিয়া সিলেক্ট করুন</p>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          onChange={selectSubArea}
+                        >
+                          <option value={areaID?.id || "..."}>
+                            {areaID?.name || "..."}
+                          </option>
+                          {area.length === undefined
+                            ? ""
+                            : area.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <p>
+                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
+                          সিলেক্ট করুন
+                        </p>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          name="subArea"
+                          id="subAreaIdFromEdit"
+                        >
+                          <option value={subAreaId?.id || "..."}>
+                            {subAreaId?.name || "..."}
+                          </option>
+                          {subArea?.subAreas
+                            ? subArea.subAreas.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))
+                            : ""}
+                        </select>
+                      </div>
+
+                      <FtextField
+                        type="text"
+                        label="জাতীয় পরিচয়পত্র নং"
+                        name="nid"
+                      />
+                    </div>
+
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="নাম" name="name" />
+                      <FtextField type="text" label="মোবাইল" name="mobile" />
+                      <FtextField type="text" label="ঠিকানা" name="address" />
+                    </div>
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="ইমেইল" name="email" />
+                      <div className="autoDisable">
+                        <label>Auto Disable</label>
+                        <input
+                          type="checkBox"
+                          checked={autoDisable}
+                          onChange={(e) => setAutoDisable(e.target.checked)}
                         />
                       </div>
                     </div>
-                    <FtextField
-                      type="text"
-                      label={`ব্যালান্স`}
-                      name="balance"
-                    />
-                    <FtextField
-                      type="text"
-                      label={`মাসিক ফি`}
-                      name="monthlyFee"
-                    />
-                    <div className="modal-footer">
+
+                    <div className="pppoeStatus">
+                      <p>স্ট্যাটাস</p>
+                      <div class="form-check form-check-inline">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="inlineRadioOptions"
+                          onChange={() => setActiveStatus(false)}
+                          defaultChecked={!activeStatus}
+                        />
+                        <label class="form-check-label" for="inlineRadio1">
+                          Active
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="inlineRadioOptions"
+                          id="inlineRadio2"
+                          onChange={() => setActiveStatus(true)}
+                          defaultChecked={activeStatus}
+                        />
+                        <label class="form-check-label" for="inlineRadio2">
+                          Inactive
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="modal-footer" style={{ border: "none" }}>
                       <button
                         type="button"
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
+                        disabled={isLoading}
                       >
                         বাতিল করুন
                       </button>
-                      <button type="submit" className="btn btn-success">
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={isLoading}
+                      >
                         {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>
                     </div>

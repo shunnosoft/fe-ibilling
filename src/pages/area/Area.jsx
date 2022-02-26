@@ -32,17 +32,16 @@ export default function Area() {
   let serial = 0;
   // const dispatchArea = () => {
   //   if (user.ispOwner) {
-    //     dispatch(FetchAreaSuccess(user.ispOwner.id));
-    //   }
-    // };
-      
-    const dispatch = useDispatch();
-    // const user = useSelector((state) => state.auth.currentUser);
-    const ispOwnerId=useSelector((state)=>state.auth.ispOwnerId)
+  //     dispatch(FetchAreaSuccess(user.ispOwner.id));
+  //   }
+  // };
+
+  const dispatch = useDispatch();
+  // const user = useSelector((state) => state.auth.currentUser);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   useEffect(() => {
-    getArea(dispatch,  ispOwnerId);
+    getArea(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId]);
-  
 
   const deleteSingleArea = async (id, ispOwner) => {
     setIsLoading(true);
@@ -50,9 +49,7 @@ export default function Area() {
       ispOwner: ispOwner,
       id: id,
     };
-    deleteArea(dispatch,IDs,setIsLoading)
-    
-    
+    deleteArea(dispatch, IDs, setIsLoading);
   };
 
   const getSpecificArea = (id) => {
@@ -67,14 +64,8 @@ export default function Area() {
   return (
     <>
       <Sidebar />
-      <ToastContainer
-        className="bg-green"
-        toastStyle={{
-          backgroundColor: "#677078",
-          color: "white",
-          fontWeight: "500",
-        }}
-      />
+      {/* toast */}
+      <ToastContainer position="top-right" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">

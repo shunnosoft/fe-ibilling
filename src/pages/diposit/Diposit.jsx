@@ -1,5 +1,6 @@
 // import { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
+import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
@@ -49,9 +50,8 @@ export default function Diposit() {
     addDeposit(dispatch, sendingData, setLoading);
   };
 
-  const depositAcceptRejectHandler = (status,id) => {
-     
-    depositAcceptReject(dispatch, status,id);
+  const depositAcceptRejectHandler = (status, id) => {
+    depositAcceptReject(dispatch, status, id);
   };
 
   useEffect(() => {
@@ -224,6 +224,63 @@ export default function Diposit() {
               ) : (
                 ""
               )}
+
+              {/* Diposit status */}
+              <FourGround>
+                <div className="DipositStatusSection">
+                  <h6 className="dipositStatusCheck">ডিপোজিট স্ট্যাটাস</h6>
+                  <div className="dipositStatus">
+                    <div className="table-responsive-lg">
+                      <table className="table table-striped ">
+                        <thead>
+                          <tr>
+                            <td>
+                              নাম {userRole === "manager" ? "(ম্যানেজার)" : ""}
+                              {userRole === "collector" ? "(কালেক্টর)" : ""}
+                            </td>
+                            <td>জমা</td>
+                            <td className="textAlignCenter">স্ট্যাটাস</td>
+                            <td>তারিখ</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Md. Rakib Hasan</td>
+                            <td>৳ {500}</td>
+                            <td>
+                              <h5 className="ACPbtn acceptBtn">
+                                Accepted <Check />
+                              </h5>
+                            </td>
+                            <td>31/01/2022 07:25 PM</td>
+                          </tr>
+                          <tr>
+                            <td>Md. Rakib Hasan</td>
+                            <td>৳ {500}</td>
+                            <td>
+                              <h5 className="ACPbtn rejectBtn">
+                                Rejected <X />
+                              </h5>
+                            </td>
+                            <td>31/01/2022 07:25 PM</td>
+                          </tr>
+                          <tr>
+                            <td>Md. Rakib Hasan</td>
+                            <td>৳ {500}</td>
+                            <td>
+                              <h5 className="ACPbtn pendingBtn">
+                                Pending <ThreeDots />
+                              </h5>
+                            </td>
+                            <td>31/01/2022 07:25 PM</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </FourGround>
+
               <Footer />
             </FontColor>
           </div>

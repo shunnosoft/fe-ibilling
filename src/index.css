@@ -30,6 +30,9 @@ a {
 .btn-success {
   width: 150px;
 }
+.dropdown-item {
+  margin-bottom: 10px !important;
+}
 label {
   font-weight: 500;
   color: rgb(29, 28, 28);

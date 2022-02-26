@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://137.184.69.182/api/";
+const BASE_URL = "http://192.168.1.24:3030/api/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
 // const access = user && JSON.parse(user)?.access;
@@ -13,16 +13,10 @@ export const publicRequest = axios.create({
   baseURL: BASE_URL,
 });
 
-
-
 export default axios.create({
   baseURL: BASE_URL,
-  headers: {'Authorization': 'Bearer '+TOKEN}
+  headers: { Authorization: "Bearer " + TOKEN },
 });
-
-
-
-
 
 // const refreshToken = async () => {
 //   try {
@@ -55,9 +49,8 @@ export default axios.create({
 //   }
 // );
 
- 
 // update token
-   // update token
+// update token
 // const updateToken = useCallback(async () => {
 //   try {
 //   const response = await apiLink("v1/auth/­refresh-tokens", {
@@ -80,7 +73,7 @@ export default axios.create({
 //   setLoading(false);
 //   }
 //   }, [loading]);
-  
+
 //   // called Update Token
 //   useEffect(() => {
 //   if (loading) {
@@ -95,4 +88,3 @@ export default axios.create({
 //   }, timeToUpdate);
 //   return () => clearInterval(interv­al);
 //   }, [loading, updateToken]);
-  

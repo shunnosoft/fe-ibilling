@@ -21,7 +21,7 @@
   cursor: pointer;
 }
 .actionP {
-  margin: 10px;
+  padding-left: 10px;
 }
 .managerDetails {
   width: 100%;
