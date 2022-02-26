@@ -40,12 +40,31 @@ export default function Report() {
 
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
-  const [mainData, setMainData] = useState([]);
+  const [mainData, setMainData] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
+  const [cusSearch, setCusSearch] = useState("");
   const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const keys = ["amount", "name", "customerId", "createdAt"];
+
+    setMainData(
+      allBills.filter((item) =>
+        keys.some((key) =>
+          item[key]
+            ? typeof item[key] === "string"
+              ? item[key]?.toLowerCase().includes(cusSearch)
+              : item[key]?.toString().includes(cusSearch)
+            : typeof item["customer"][key] === "string"
+            ? item["customer"][key]?.toLowerCase().includes(cusSearch)
+            : item["customer"][key]?.toString().includes(cusSearch)
+        )
+      )
+    );
+  }, [cusSearch, allBills]);
 
   useEffect(() => {
     let collectors = [];
@@ -71,14 +90,23 @@ export default function Report() {
   }, [ispOwnerId, dispatch]);
 
   useEffect(() => {
+    var initialToday = new Date();
+    var initialFirst = new Date(
+      initialToday.getFullYear(),
+      initialToday.getMonth(),
+      1
+    );
+
+    initialFirst.setHours(0, 0, 0, 0);
+    initialToday.setHours(23, 59, 59, 999);
     setMainData(
       allBills.filter(
         (item) =>
-          Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-          Date.parse(item.createdAt) <= Date.parse(dateEnd)
+          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+          Date.parse(item.createdAt) <= Date.parse(initialToday)
       )
     );
-  }, [dateStart, dateEnd, allBills]);
+  }, [allBills]);
 
   const onChangeCollector = (userId) => {
     // console.log("collector id", collectorId);
@@ -176,8 +204,8 @@ export default function Report() {
                         <option value={JSON.stringify({})} defaultValue>
                           সকল এরিয়া{" "}
                         </option>
-                        {allArea.map((area) => (
-                          <option value={JSON.stringify(area)}>
+                        {allArea.map((area, key) => (
+                          <option key={key} value={JSON.stringify(area)}>
                             {area.name}
                           </option>
                         ))}
@@ -189,8 +217,10 @@ export default function Report() {
                         <option value="" defaultValue>
                           সকল সাব এরিয়া{" "}
                         </option>
-                        {singleArea?.subAreas?.map((sub) => (
-                          <option value={sub.id}>{sub.name}</option>
+                        {singleArea?.subAreas?.map((sub, key) => (
+                          <option key={key} value={sub.id}>
+                            {sub.name}
+                          </option>
                         ))}
                       </select>
                       <select
@@ -200,13 +230,15 @@ export default function Report() {
                         <option value="" defaultValue>
                           সকল কালেক্টর{" "}
                         </option>
-                        {collectors?.map((c) => (
-                          <option value={c.user}>{c.name}</option>
+                        {collectors?.map((c, key) => (
+                          <option key={key} value={c.user}>
+                            {c.name}
+                          </option>
                         ))}
                       </select>
 
                       <div className="dateDiv">
-                        <label for="start">শুরুর তারিখ</label>
+                        <label htmlFor="start">শুরুর তারিখ</label>
                         <input
                           type="date"
                           id="start"
@@ -222,7 +254,7 @@ export default function Report() {
                         />
                       </div>
                       <div className="dateDiv">
-                        <label for="end">শেষের তারিখ</label>
+                        <label htmlFor="end">শেষের তারিখ</label>
                         <input
                           type="date"
                           id="end"
@@ -267,7 +299,7 @@ export default function Report() {
                             type="text"
                             className="search"
                             placeholder="সার্চ"
-                            // onChange={(e) => setCusSearch(e.target.value)}
+                            onChange={(e) => setCusSearch(e.target.value)}
                           />
                         </div>
                       </div>
