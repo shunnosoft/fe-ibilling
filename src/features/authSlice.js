@@ -7,6 +7,7 @@ const initialState = {
   userData: {},
   isFetching: false,
   error: false,
+  manager:{}, 
 };
 
 const authSlice = createSlice({
@@ -25,7 +26,8 @@ const authSlice = createSlice({
           (state.userData = action.payload?.ispOwner)
         : action.payload?.user.role === "manager"
         ? (state.ispOwnerId = action.payload.manager.ispOwner) &&
-          (state.userData = action.payload?.manager)
+          (state.userData = action.payload?.manager) && 
+          (state.manager=action.payload?.manager)
         : action.payload?.user.role === "collector"
         ? (state.ispOwnerId = action.payload.collector.ispOwner) &&
           (state.userData = action.payload?.collector)
