@@ -21,6 +21,7 @@ import "./report.css";
 import { useDispatch } from "react-redux";
 import { getAllBills } from "../../features/apiCalls";
 import { useSelector } from "react-redux";
+import arraySort from "array-sort";
 
 export default function Report() {
   const allArea = useSelector((state) => state.area.area);
@@ -46,6 +47,7 @@ export default function Report() {
   const [collectorIds, setCollectorIds] = useState([]);
   const [cusSearch, setCusSearch] = useState("");
   const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
+  const [isSorted, setSorted] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -205,6 +207,10 @@ export default function Report() {
     setMainData(arr);
   };
 
+  const toggleSort = (item) => {
+     setMainData(arraySort(mainData2, item, { reverse: isSorted }));
+    setSorted(!isSorted);
+  };
   return (
     <>
       <Sidebar />
@@ -341,21 +347,21 @@ export default function Report() {
                       <thead>
                         <tr className="spetialSortingRow">
                           <th
-                            // onClick={() => toggleSort("customerId")}
+                            onClick={() => toggleSort("customer.customerId")}
                             scope="col"
                           >
                             আইডি
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th
-                            //   onClick={() => toggleSort("name")}
+                              onClick={() => toggleSort("customer.name")}
                             scope="col"
                           >
                             গ্রাহক
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th
-                            //    onClick={() => toggleSort("mobile")}
+                               onClick={() => toggleSort("amount")}
                             scope="col"
                           >
                             bill
@@ -363,7 +369,7 @@ export default function Report() {
                           </th>
 
                           <th
-                            // onClick={() => toggleSort("pppoe.profile")}
+                            onClick={() => toggleSort("createdAt")}
                             scope="col"
                           >
                             তারিখ
