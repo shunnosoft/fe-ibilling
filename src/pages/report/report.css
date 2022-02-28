@@ -117,7 +117,7 @@
 /* css added by enamul */
 .allCollector {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -147,7 +147,10 @@
   flex-wrap: wrap;
   font-weight: bold;
 }
- 
+.form-select {
+  max-width: 200px;
+  margin: 10px;
+}
 .dateDiv {
   display: flex;
   align-items: center;
@@ -166,9 +169,8 @@
     display: initial;
   }
 }
-
-
 @media only screen and (max-width: 700px) {
-  
-   
+  form-selectt{
+    width: 100%;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -48,6 +48,7 @@ export default function Report() {
   const [cusSearch, setCusSearch] = useState("");
   const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
   const [isSorted, setSorted] = useState(false);
+  const [totalBill,setTotalBill]= useState("")
 
   const dispatch = useDispatch();
 
@@ -186,7 +187,30 @@ export default function Report() {
 
     setMainData(arr);
     setMainData2(arr);
+
+     
+    
   };
+
+  // const addAllBills = ()=>{
+  //   var total=0; 
+  //    mainData.forEach((item)=>{
+  //      console.log(item.amount)
+  //      total=total+item.amount
+
+  //    })
+  //    return total.toString() ; 
+     
+  // }
+  const addAllBills= useCallback(() => {
+      var count = 0 ; 
+      mainData.forEach((item)=>{
+        count=count+item.amount 
+      })
+      return  count.toString()
+     
+  }, [mainData])
+  // console.log(addAllBills())
 
   const onSearch = (e) => {
     console.log(e);
@@ -320,11 +344,8 @@ export default function Report() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          বিলঃ<span className="allCollectorSpan">{0} টাকা</span>
-                          আদায়ঃ
-                          <span className="allCollectorSpan">{10} টাকা</span>
-                          বকেয়াঃ
-                          <span className="allCollectorSpan">{10} টাকা</span>
+                          বিলঃ<span className="allCollectorSpan">{addAllBills()} টাকা</span>
+                           
                         </h4>
                       </div>
 
