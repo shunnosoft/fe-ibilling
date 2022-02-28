@@ -88,9 +88,9 @@ export default function Report() {
     setCollectorIds(collectorUserIdsArr);
   }, [allCollector, manager]);
 
-  useEffect(() => {
-    getAllBills(dispatch, ispOwnerId);
-  }, [ispOwnerId, dispatch]);
+  // useEffect(() => {
+  //   getAllBills(dispatch, ispOwnerId);
+  // }, [ispOwnerId, dispatch]);
 
   useEffect(() => {
     var initialToday = new Date();

@@ -757,7 +757,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
     toast.success("ডিপোজিট  Success");
   } catch (error) {
     setLoading(false);
-    toast.error(error.message);
+    toast.error(error.response?.data.message);
     // if (error.response.status === 400) {
     //   toast.success("ডিপোজিট অলরেডি পেন্ডিং এ আছে");
     // } else {
@@ -789,7 +789,7 @@ export const getDeposit = async (dispatch, data) => {
 
     dispatch(getDepositSuccess(res.data));
   } catch (error) {
-    console.log(error.message);
+    console.log(error.response?.data.message);
   }
 };
 

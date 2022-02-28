@@ -55,7 +55,7 @@ function App() {
           />
 
           <Route path="/register/success" element={<Success />} />
-          <Route
+          {/* <Route
             path="/bill"
             element={
               (userRole === "manager" && user) ||
@@ -65,7 +65,7 @@ function App() {
                 <Navigate to={"/"} />
               )
             }
-          />
+          /> */}
           <Route
             path="/collector"
             element={
@@ -107,7 +107,7 @@ function App() {
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="area" element={<Area />} />
-            <Route path="bill" element={<Bill />} />
+            {/* <Route path="bill" element={<Bill />} /> */}
             <Route path="diposit" element={<Diposit />} />
             {/* <Route path="reseller" element={<Reseller />} /> */}
             <Route path="customer" element={<Customer />} />

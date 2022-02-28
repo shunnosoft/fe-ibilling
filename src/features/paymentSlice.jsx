@@ -21,10 +21,15 @@ const paymentSlice = createSlice({
     },
     getAllBillsSuccess:(state,action) =>{
       state.allBills=action.payload
+    },
+    clearBills:(state) =>{
+      state.balance=""
+      state.allBills=[]
+      state.allDeposit=[]
     }
   },
 });
 
-export const { getAllBillsSuccess,getTotalBalanceSuccess, getDepositSuccess , updateDepositSuccess} =
+export const {clearBills, getAllBillsSuccess,getTotalBalanceSuccess, getDepositSuccess , updateDepositSuccess} =
   paymentSlice.actions;
 export default paymentSlice.reducer;

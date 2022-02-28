@@ -209,7 +209,7 @@ export default function Sidebar() {
                 ""
               )}
 
-              {/* bill */}
+              {/* bill
               {userRole === "manager" || userRole === "collector" ? (
                 <>
                   <NavLink
@@ -234,7 +234,7 @@ export default function Sidebar() {
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
               <NavLink
                 key={7}
                 to={"/diposit"}

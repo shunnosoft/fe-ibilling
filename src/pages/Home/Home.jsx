@@ -10,6 +10,7 @@ import { cardData } from "./homeData";
 import {
   fetchMikrotik,
   fetchReseller,
+  getAllBills,
   getArea,
   getCollector,
   getManger,
@@ -26,10 +27,10 @@ export default function Home() {
   const [currUserData, setCurrUserData] = useState([]);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const ID = userData?.id;
-    getCharts(dispatch, ID); //ispOwner Id Change with  current user id
-  }, []);
+  // useEffect(() => {
+  //   const ID = userData?.id;
+  //   getCharts(dispatch, ID); //ispOwner Id Change with  current user id
+  // }, [dispatch,userData]);
 
   useEffect(() => {
     let tempArr = [];
@@ -41,7 +42,7 @@ export default function Home() {
     console.log(tempArr, tempUser);
     setLabelsData(tempArr);
     setCurrUserData(tempUser);
-  }, []);
+  }, [ ChartsData]);
 
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -75,9 +76,13 @@ export default function Home() {
     }
     if (role === "ispOwner" || role === "manager") {
       getCollector(dispatch, ispOwnerId);
+      getCharts(dispatch, userData?.id);
     }
     getArea(dispatch, ispOwnerId);
-  }, [dispatch, ispOwnerId, role]);
+    getAllBills(dispatch, ispOwnerId);
+
+  }, [dispatch, ispOwnerId, role,userData]);
+
 
   return (
     <div className="container homeWrapper">

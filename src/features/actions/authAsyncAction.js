@@ -11,6 +11,9 @@ import { clearArea } from "../areaSlice";
 import { clearManager } from "../managerSlice";
 import { clearCollector } from "../collectorSlice";
 import { clearMikrotik } from "../mikrotikSlice";
+import { clearBills } from "../paymentSlice";
+import { clearChart } from "../chartsSlice";
+import { clearReseller } from "../resellerSlice";
 // registration handle
 export const asyncRegister = async (userData) => {
   await apiLink({
@@ -99,5 +102,8 @@ export const userLogout = async (dispatch) => {
   dispatch(clearManager());
   dispatch(clearCollector());
   dispatch(clearMikrotik());
+  dispatch(clearChart())
+  dispatch(clearBills())
+  dispatch(clearReseller())
   dispatch(logOut());
 };
