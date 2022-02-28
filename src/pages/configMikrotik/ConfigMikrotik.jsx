@@ -151,6 +151,13 @@ export default function ConfigMikrotik() {
     setWhatYouWantToShow(val);
   };
 
+  
+const syncCustomer =() =>{
+  
+}
+const syncPackage =() =>{
+
+}
   return (
     <>
       <Sidebar />
@@ -186,23 +193,41 @@ export default function ConfigMikrotik() {
                           ""
                         )}
                         <div className="addAndSettingIcon">
-                          <PlugFill
-                            className="addcutmButton rotating"
+                          <button
+                            title="Check Connection"
+                            className="addcutmButton  btnbyEnamul"
                             onClick={MikrotikConnectionTest}
-                          />
-                          <PencilFill
-                            className="addcutmButton"
+                          >
+                            <PlugFill className="rotating" />
+                          </button>
+                          <button
+                            title="Edit Mikrotik"
                             data-bs-toggle="modal"
                             data-bs-target="#configMikrotikModal"
-                          />
-                          <Trash2Fill
+                            className="btnbyEnamul addcutmButton"
+                          >
+                            <PencilFill />
+                          </button>
+
+                          {/* <Trash2Fill
                             className="addcutmButton deleteColorBtn"
-                            onClick={deleteSingleMKHandler}
-                          />
-                          <ArrowClockwise
-                            className="addcutmButton btn-primary"
-                            onClick={deleteSingleMKHandler}
-                          />
+                            // onClick={deleteSingleMKHandler}
+                          /> */}
+
+                          <button
+                             onClick={syncCustomer}
+                            title="Sync Customer"
+                           className="addcutmButton btn-primary btnbyEnamul">
+                            <ArrowClockwise />
+                          </button>
+                          <button
+                             onClick={syncPackage}
+
+                          title="Sync Package"
+                           className="addcutmButton btn-info btnbyEnamul">
+                            <ArrowClockwise />
+                          </button>
+
                           {isLoading ? (
                             <div className="deletingAction">
                               <Loader /> <b>Deleting...</b>

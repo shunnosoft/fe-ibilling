@@ -234,7 +234,7 @@ export default function Report() {
                     {/* filter selector */}
                     <div className="selectFilteringg">
                       <select
-                        className="form-select"
+                        className="form-selectt"
                         onChange={(e) => onChangeArea(e.target.value)}
                       >
                         <option value={JSON.stringify({})} defaultValue>
@@ -247,7 +247,7 @@ export default function Report() {
                         ))}
                       </select>
                       <select
-                        className="form-select"
+                        className="form-selectt"
                         onChange={(e) => onChangeSubArea(e.target.value)}
                       >
                         <option value="" defaultValue>
@@ -260,10 +260,10 @@ export default function Report() {
                         ))}
                       </select>
                       <select
-                        className="form-select"
+                        className="form-selectt"
                         onChange={(e) => onChangeCollector(e.target.value)}
                       >
-                        <option value="" defaultValue>
+                        <option  value="" defaultValue>
                           সকল কালেক্টর{" "}
                         </option>
                         {collectors?.map((c, key) => (
@@ -273,9 +273,9 @@ export default function Report() {
                         ))}
                       </select>
 
-                      <div className="dateDiv">
-                        <label htmlFor="start">শুরুর তারিখ</label>
+                      <div className="dateDiv  ">
                         <input
+                        className="form-selectt"
                           type="date"
                           id="start"
                           name="trip-start"
@@ -290,8 +290,8 @@ export default function Report() {
                         />
                       </div>
                       <div className="dateDiv">
-                        <label htmlFor="end">শেষের তারিখ</label>
                         <input
+                        className="form-selectt"
                           type="date"
                           id="end"
                           name="trip-start"

@@ -112,38 +112,63 @@
   grid-gap: 20px;
 }
 
-/* .allCollector {
+
+
+/* css added by enamul */
+.allCollector {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   flex-wrap: wrap;
-} */
+}
 .allCollectorSpan {
   margin: 10px;
 }
-.selectFilteringg {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-.form-select {
+
+.form-selectt {
+  width: 150px;
+  height: 40px;
   max-width: 200px;
+  cursor: pointer;
+  padding: 6px;
+
   margin: 10px;
 }
 
 .submitdiv {
   margin: 18px 0;
 }
+
+.selectFilteringg {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  font-weight: bold;
+}
+ 
+.dateDiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  flex-direction: column;
+}
+.submitdiv {
+  margin: 18px 0;
+}
+
+/* css added by enamul end  */
+
 @media only screen and (max-width: 980px) {
   .customerGrid {
     display: initial;
   }
 }
+
+
 @media only screen and (max-width: 700px) {
-  .form-select {
-    max-width: 100%;
-  }
+  
+   
 }
