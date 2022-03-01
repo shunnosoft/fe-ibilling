@@ -42,14 +42,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 
   // apiCall
   dispatch(logInStart());
-  await publicRequest({
-    url: "/v1/auth/login",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: loginData,
-  })
+  await publicRequest.post("/v1/auth/login",loginData)
     .then((res) => {
       document.querySelector(".Loader").style.display = "none";
       if (res.status === 200) {

@@ -33,14 +33,14 @@ export default function Report() {
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
+  const [dateStart, setStartDate] = useState(firstDay);
+  const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state.payment.allBills);
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
 
-  const [dateStart, setStartDate] = useState(firstDay);
-  const [dateEnd, setEndDate] = useState(today);
   const [mainData, setMainData] = useState(allBills);
   const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
@@ -208,6 +208,10 @@ export default function Report() {
         count=count+item.amount 
       })
       return  count.toString()
+      // mainData.reudce((preval,nextval)=>{
+      //  const res = preval+nextval.amount ; 
+      //  return res.toString()
+      // },0)
      
   }, [mainData])
   // console.log(addAllBills())

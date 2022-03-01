@@ -21,11 +21,29 @@ import {
 } from "../../features/apiCalls";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import moment from "moment";
 
 export default function Diposit() {
+
+
+  const balancee = useSelector((state) => state.payment.balance);
+  const allDeposit = useSelector((state) => state.payment.allDeposit);
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
+  const [dateStart, setStartDate] = useState(firstDay);
+  const [dateEnd, setEndDate] = useState(today);
+
+  const collectors =useSelector(state=>state.collector.collector)
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
+  const [collectorIds, setCollectorIds] = useState([]);
+  const [mainData, setMainData] = useState(allDeposit);
+  const [mainData2, setMainData2] = useState(allDeposit);
   const userRole = useSelector((state) => state.auth.role);
+  const [depositAccepted, setDepositAccepet] = useState("")
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
   });
@@ -33,10 +51,8 @@ export default function Diposit() {
   const dispatch = useDispatch();
   // const balance = useSelector(state=>state.payment.balance)
   // console.log(balance)
-  const balancee = useSelector((state) => state.payment.balance);
-  const allDeposit = useSelector((state) => state.payment.allDeposit);
-  console.log(allDeposit);
-  console.log(balancee);
+  
+  console.log(allDeposit)
   // bill amount
   const billDipositHandler = (data) => {
     const sendingData = {
@@ -61,6 +77,35 @@ export default function Diposit() {
   // console.log(deposit)
 
   useEffect(() => {
+    var initialToday = new Date();
+    var initialFirst = new Date(
+      initialToday.getFullYear(),
+      initialToday.getMonth(),
+      1
+    );
+
+    initialFirst.setHours(0, 0, 0, 0);
+    initialToday.setHours(23, 59, 59, 999);
+    setMainData(
+      allDeposit.filter(
+        (item) =>
+          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+          Date.parse(item.createdAt) <= Date.parse(initialToday)
+      )
+    );
+
+    // Temp varialbe for search
+    setMainData2(
+      allDeposit.filter(
+        (item) =>
+          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+          Date.parse(item.createdAt) <= Date.parse(initialToday)
+      )
+    );
+  }, [allDeposit]);
+
+
+  useEffect(() => {
     if (userRole !== "collector") {
       getDeposit(dispatch, {
         depositerRole:
@@ -73,6 +118,45 @@ export default function Diposit() {
       });
     }
   }, [ispOwner, userRole, dispatch]);
+
+
+  const onChangeCollector = (userId) => {
+
+    if (userId) {
+      setCollectorIds([userId]);
+    } else {
+      let collectorUserIdsArr = [];
+      collectors.map((item) => collectorUserIdsArr.push(item.user));
+      setCollectorIds(collectorUserIdsArr);
+    }
+  };
+  console.log(allDeposit,collectorIds , dateStart,dateEnd)
+
+  const onClickFilter = () => {
+    console.log("filter data");
+
+    let arr = allDeposit;
+
+    
+    if (collectorIds.length) {
+      arr = arr.filter((bill) => collectorIds.includes(bill.user));
+    }
+
+    arr = arr.filter(
+      (item) =>
+        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
+        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+    );
+
+    console.log(arr);
+
+    setMainData(arr);
+    setMainData2(arr);
+
+     
+    
+  };
+
   return (
     <>
       <Sidebar />
@@ -133,6 +217,75 @@ export default function Diposit() {
               {userRole !== "collector" ? (
                 <FourGround>
                   <div className="collectorWrapper">
+
+
+
+
+
+                  <div className="selectFilteringg">
+                       
+                      
+                    { userRole !== "ispOwner" &&  <select
+                        className="form-selectt"
+                        onChange={(e) => onChangeCollector(e.target.value)}
+                      >
+                        <option  value="" defaultValue>
+                          সকল কালেক্টর{" "}
+                        </option>
+                        {collectors?.map((c, key) => (
+                          <option key={key} value={c.user}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>}
+
+                      <div className="dateDiv  ">
+                        <input
+                        className="form-selectt"
+                          type="date"
+                          id="start"
+                          name="trip-start"
+                          value={moment(dateStart).format("YYYY-MM-DD")}
+                          onChange={(e) => {
+                            setStartDate(e.target.value);
+                          }}
+                          // value="2018-07-22"
+
+                          // min="2018-01-01"
+                          // max="2018-12-31"
+                        />
+                      </div>
+                      <div className="dateDiv">
+                        <input
+                        className="form-selectt"
+                          type="date"
+                          id="end"
+                          name="trip-start"
+                          value={moment(dateEnd).format("YYYY-MM-DD")}
+                          onChange={(e) => {
+                            setEndDate(e.target.value);
+                          }}
+
+                          // value="2018-07-22"
+
+                          // min="2018-01-01"
+                          // max="2018-12-31"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="submitdiv d-grid gap-2">
+                      <button
+                        className="btn fs-5 btn-success w-100"
+                        type="button"
+                        onClick={onClickFilter}
+                      >
+                        ফিল্টার
+                      </button>
+                    </div>
+
+
+
                     {userRole !== "ispOwner" ? (
                       <div className="row searchCollector">
                         <div className="col-sm-8">
@@ -174,7 +327,7 @@ export default function Diposit() {
                           </tr>
                         </thead>
                         <tbody>
-                          {allDeposit?.map((item, key) => (
+                          {mainData?.map((item, key) => (
                             <tr key={key}>
                               <td>{item.depositBy}</td>
                               <td>৳ {item.amount}</td>
@@ -208,7 +361,7 @@ export default function Diposit() {
                                   </span>
                                 )}
                               </td>
-                              <td>31/01/2022 07:25 PM</td>
+                              <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
                             </tr>
                           ))}
                         </tbody>
