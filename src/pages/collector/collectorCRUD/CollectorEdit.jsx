@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
 import { editCollector } from "../../../features/apiCalls";
+import { collectorPermission } from "./collectorPermission";
 // import { getArea } from "../../../features/areaSlice";
 // import {
 //   editCollector,
@@ -20,10 +21,14 @@ export default function CollectorEdit({ single }) {
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [permissions, setPermissions] = useState([]);
+  console.log(permissions);
+  console.log(single.permissions);
 
   useEffect(() => {
     if (single) {
       setAllowedAreas(single?.areas);
+      setPermissions(collectorPermission(single.permissions));
     }
   }, [single]);
 
@@ -54,6 +59,14 @@ export default function CollectorEdit({ single }) {
 
   const collectorEditHandler = async (data) => {
     setIsLoading(true);
+    let temp = {};
+    permissions.forEach((val) => {
+      temp[val.value] = val.isChecked;
+    });
+    const newP = {
+      ...single.permissions,
+      ...temp,
+    };
     if (single.ispOwner) {
       const sendingData = {
         ...data,
@@ -61,11 +74,20 @@ export default function CollectorEdit({ single }) {
         ispOwner: single.ispOwner,
         ispOwnerId: single.ispOwner,
         collectorId: single.id,
+        permissions: newP
       };
       editCollector(dispatch, sendingData, setIsLoading);
     }
   };
 
+  const handleChange = (e) => {
+    const { name, checked } = e.target;
+    let temp = permissions.map((val) =>
+      val.value === name ? { ...val, isChecked: checked } : val
+    );
+
+    setPermissions(temp);
+  };
   return (
     <div>
       {/* Model start */}
@@ -165,6 +187,22 @@ export default function CollectorEdit({ single }) {
                               <label>{v.name}</label>
                             </div>
                           ))}
+                        </div>
+                      ))}
+                    </div>
+
+                    <b className="mt-2">পারমিশান পরিবর্তন করুন</b>
+                    <div className="AllAreaClass">
+                      {permissions.map((val, key) => (
+                        <div className="CheckboxContainer" key={key}>
+                          <input
+                            type="checkbox"
+                            className="CheckBox"
+                            name={val.value}
+                            checked={val.isChecked}
+                            onChange={handleChange}
+                          />
+                          <label className="checkboxLabel">{val.label}</label>
                         </div>
                       ))}
                     </div>
