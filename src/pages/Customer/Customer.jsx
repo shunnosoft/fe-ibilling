@@ -39,7 +39,7 @@ export default function Customer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-
+const permission =useSelector(state=>state.auth?.userData?.permissions)
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
@@ -123,7 +123,7 @@ export default function Customer() {
     setCustomers(arraySort(Customers, item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
-
+console.log(permission)
   return (
     <>
       <Sidebar />
@@ -171,7 +171,7 @@ export default function Customer() {
                           <option value="paymentStatus.paid">পরিশোধ</option>
                         </select>
                       </div>
-                      <div className="addNewCollector">
+                      {(permission?.customerAdd || role==="ispOwner")? <div className="addNewCollector">
                         <div className="addAndSettingIcon">
                           <PersonPlusFill
                             className="addcutmButton"
@@ -179,7 +179,7 @@ export default function Customer() {
                             data-bs-target="#customerModal"
                           />
                         </div>
-                      </div>
+                      </div>:""}
                     </div>
 
                     <div className="row searchCollector">
@@ -321,7 +321,7 @@ export default function Customer() {
                                   </li>
                                   {role === "ispOwner" ? (
                                     ""
-                                  ) : (
+                                  ) : permission?.billPosting ?(
                                     <li
                                       data-bs-toggle="modal"
                                       data-bs-target="#collectCustomerBillModal"
@@ -335,10 +335,10 @@ export default function Customer() {
                                           <p className="actionP">বিল গ্রহণ</p>
                                         </div>
                                       </div>
-                                    </li>
-                                  )}
+                                    </li>  
+                                  ):""}
 
-                                  <li
+                                  {(permission?.customerEdit || role==="ispOwner")? <li
                                     data-bs-toggle="modal"
                                     data-bs-target="#customerEditModal"
                                     onClick={() => {
@@ -351,11 +351,11 @@ export default function Customer() {
                                         <p className="actionP">এডিট</p>
                                       </div>
                                     </div>
-                                  </li>
+                                  </li>:""}
 
                                   <li
                                     data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerDetails"
+                                    data-bs-target="#showCustomerDetails" 
                                     onClick={() => {
                                       getSpecificCustomer(val.id);
                                     }}
@@ -368,7 +368,7 @@ export default function Customer() {
                                     </div>
                                   </li>
 
-                                  <li
+                                 {(permission?.customerDelete || role==="ispOwner")? <li
                                     onClick={() => {
                                       let con = window.confirm(
                                         `${val.name} গ্রাহক ডিলিট করতে চান?`
@@ -382,7 +382,7 @@ export default function Customer() {
                                         <p className="actionP">ডিলিট</p>
                                       </div>
                                     </div>
-                                  </li>
+                                  </li>:""}
                                 </ul>
 
                                 {/* end */}

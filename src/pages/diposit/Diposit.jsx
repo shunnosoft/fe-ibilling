@@ -12,7 +12,7 @@ import "./diposit.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
-import { useEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect } from "react";
 import {
   addDeposit,
   depositAcceptReject,
@@ -35,7 +35,7 @@ export default function Diposit() {
   today.setHours(23, 59, 59, 999);
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
-
+const manager =useSelector(state=>state.manager.manager)
   const collectors =useSelector(state=>state.collector.collector)
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
@@ -50,9 +50,7 @@ export default function Diposit() {
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   // const balance = useSelector(state=>state.payment.balance)
-  // console.log(balance)
   
-  console.log(allDeposit)
   // bill amount
   const billDipositHandler = (data) => {
     const sendingData = {
@@ -62,19 +60,62 @@ export default function Diposit() {
       user: currentUser?.user.id,
       ispOwner: ispOwner,
     };
-    console.log(sendingData);
     addDeposit(dispatch, sendingData, setLoading);
   };
 
   const depositAcceptRejectHandler = (status, id) => {
     depositAcceptReject(dispatch, status, id);
   };
+const allCollector = useSelector(state=>state.collector.collector)
+
+  // useEffect(()=>{
+    
+  //   var arr = []
+  //   allDeposit.forEach((item)=>{
+  //     var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === item.user))
+
+  //     if(match) {
+  //       arr.push({...item,name:match.name})
+  //     }
+
+
+  //   })
+  //   setMainData(arr)
+  //   setMainData2(arr)
+  // },[allCollector,allDeposit,userRole,manager])
+
+
+  const getTotalDeposit =useCallback(()=>{
+
+    const initialValue = 0;
+  const sumWithInitial = mainData.reduce(
+    (previousValue, currentValue) => previousValue + currentValue.amount,
+    initialValue
+  );
+ return sumWithInitial.toString()
+  
+  },[mainData])
+
+  const getNames = useCallback(()=>{
+    var arr = []
+    allDeposit.forEach((item)=>{
+      var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === item.user))
+
+      if(match) {
+        arr.push({...item,name:match.name})
+      }
+
+
+    })
+    
+     return arr 
+  },[allCollector,userRole,manager,allDeposit])
+
 
   useEffect(() => {
     if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
   }, [dispatch, userRole]);
 
-  // console.log(deposit)
 
   useEffect(() => {
     var initialToday = new Date();
@@ -87,7 +128,7 @@ export default function Diposit() {
     initialFirst.setHours(0, 0, 0, 0);
     initialToday.setHours(23, 59, 59, 999);
     setMainData(
-      allDeposit.filter(
+      getNames().filter(
         (item) =>
           Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
           Date.parse(item.createdAt) <= Date.parse(initialToday)
@@ -96,13 +137,13 @@ export default function Diposit() {
 
     // Temp varialbe for search
     setMainData2(
-      allDeposit.filter(
+      getNames().filter(
         (item) =>
           Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
           Date.parse(item.createdAt) <= Date.parse(initialToday)
       )
     );
-  }, [allDeposit]);
+  }, [ getNames]);
 
 
   useEffect(() => {
@@ -130,12 +171,11 @@ export default function Diposit() {
       setCollectorIds(collectorUserIdsArr);
     }
   };
-  console.log(allDeposit,collectorIds , dateStart,dateEnd)
+
 
   const onClickFilter = () => {
-    console.log("filter data");
 
-    let arr = allDeposit;
+    let arr = getNames();
 
     
     if (collectorIds.length) {
@@ -148,7 +188,6 @@ export default function Diposit() {
         Date.parse(item.createdAt) <= Date.parse(dateEnd)
     );
 
-    console.log(arr);
 
     setMainData(arr);
     setMainData2(arr);
@@ -290,7 +329,7 @@ export default function Diposit() {
                       <div className="row searchCollector">
                         <div className="col-sm-8">
                           <h4 className="allCollector">
-                            কালেক্টর ডিপোজিট: <span>NULL</span>
+                            কালেক্টর ডিপোজিট: <span>{getTotalDeposit()}</span>
                           </h4>
                         </div>
 
@@ -329,7 +368,7 @@ export default function Diposit() {
                         <tbody>
                           {mainData?.map((item, key) => (
                             <tr key={key}>
-                              <td>{item.depositBy}</td>
+                              <td>{item.name}</td>
                               <td>৳ {item.amount}</td>
                               <td>
                                 {item.status === "pending" ? (

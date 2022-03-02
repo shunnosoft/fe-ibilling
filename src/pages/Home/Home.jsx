@@ -17,6 +17,7 @@ import {
 } from "../../features/apiCalls";
 import { getCharts } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
+import { managerFetchSuccess } from "../../features/managerSlice";
 
 export default function Home() {
   const role = useSelector((state) => state.auth.role);
@@ -217,13 +218,24 @@ export default function Home() {
       getManger(dispatch, ispOwnerId);
       fetchMikrotik(dispatch, ispOwnerId);
       fetchReseller(dispatch, ispOwnerId);
+        
     }
+    if (role==="manager") {
+      dispatch(managerFetchSuccess(userData))
+
+    }
+    
     if (role === "ispOwner" || role === "manager") {
       getCollector(dispatch, ispOwnerId);
       getCharts(dispatch, userData?.id);
+      
     }
+    
     getArea(dispatch, ispOwnerId);
+    //problem collector can't access them
     getAllBills(dispatch, ispOwnerId);
+    getManger(dispatch, ispOwnerId);
+
   }, [dispatch, ispOwnerId, role, userData]);
 
   return (

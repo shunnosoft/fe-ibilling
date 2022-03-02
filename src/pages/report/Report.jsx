@@ -33,7 +33,7 @@ export default function Report() {
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
-  const [dateStart, setStartDate] = useState(firstDay);
+  const [dateStart, setStartDate]= useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state.payment.allBills);
@@ -70,6 +70,7 @@ export default function Report() {
   //   );
   // }, [cusSearch, allBills]);
 
+  
   useEffect(() => {
     let collectors = [];
 
@@ -88,6 +89,8 @@ export default function Report() {
     collectors.map((item) => collectorUserIdsArr.push(item.user));
     setCollectorIds(collectorUserIdsArr);
   }, [allCollector, manager]);
+
+  
 
   // useEffect(() => {
   //   getAllBills(dispatch, ispOwnerId);
@@ -239,6 +242,8 @@ export default function Report() {
      setMainData(arraySort(mainData2, item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
+
+  
   return (
     <>
       <Sidebar />
@@ -343,6 +348,7 @@ export default function Report() {
                       >
                         ফিল্টার
                       </button>
+                       
                     </div>
 
                     <div className="row searchCollector">

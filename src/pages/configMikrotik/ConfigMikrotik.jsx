@@ -64,6 +64,7 @@ export default function ConfigMikrotik() {
 
   const [isLoading, setIsloading] = useState(false);
   const [isLoadingPac, setIsLoadingPac] = useState(false);
+  const [isLoadingCus, setIsLoadingCus] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
@@ -86,7 +87,7 @@ export default function ConfigMikrotik() {
     fetchMikrotik(dispatch, ispOwner);
     fetchpppoeUser(dispatch, IDs);
     fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
-    fetchMikrotikSyncUser(dispatch, IDs);
+    fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     fetchActivepppoeUser(dispatch, IDs);
   }, [ispOwner, mikrotikId, dispatch, refresh]);
 
@@ -117,15 +118,15 @@ export default function ConfigMikrotik() {
     navigate("/mikrotik");
   };
 
-  const deleteSingleMKHandler = async () => {
-    if (window.confirm("মাইক্রোটিক ডিলিট করতে চান?") === true) {
-      const IDs = {
-        ispOwner: ispOwner,
-        id: mikrotikId,
-      };
-      deleteSingleMikrotik(dispatch, IDs, setIsloading, navigate);
-    }
-  };
+  // const deleteSingleMKHandler = async () => {
+  //   if (window.confirm("মাইক্রোটিক ডিলিট করতে চান?") === true) {
+  //     const IDs = {
+  //       ispOwner: ispOwner,
+  //       id: mikrotikId,
+  //     };
+  //     deleteSingleMikrotik(dispatch, IDs, setIsloading, navigate);
+  //   }
+  // };
 
   const MikrotikConnectionTest = async () => {
     setIsChecking(true);
@@ -151,13 +152,20 @@ export default function ConfigMikrotik() {
     setWhatYouWantToShow(val);
   };
 
-  
-const syncCustomer =() =>{
-  
-}
-const syncPackage =() =>{
-
-}
+  const syncCustomer = () => {
+    const IDs = {
+      ispOwner: ispOwner,
+      mikrotikId: mikrotikId,
+    };
+    fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
+  };
+  const syncPackage = () => {
+    const IDs = {
+      ispOwner: ispOwner,
+      mikrotikId: mikrotikId,
+    };
+    fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
+  };
   return (
     <>
       <Sidebar />
@@ -214,19 +222,33 @@ const syncPackage =() =>{
                             // onClick={deleteSingleMKHandler}
                           /> */}
 
-                          <button
-                             onClick={syncCustomer}
-                            title="Sync Customer"
-                           className="addcutmButton btn-primary btnbyEnamul">
-                            <ArrowClockwise />
-                          </button>
-                          <button
-                             onClick={syncPackage}
+                          {isLoadingCus ? (
+                            <span>
+                              <Loader />
+                            </span>
+                          ) : (
+                            <button
+                              onClick={syncCustomer}
+                              title="Sync Customer"
+                              className="addcutmButton btn-primary btnbyEnamul"
+                            >
+                              <ArrowClockwise />
+                            </button>
+                          )}
 
-                          title="Sync Package"
-                           className="addcutmButton btn-info btnbyEnamul">
-                            <ArrowClockwise />
-                          </button>
+                          {isLoadingPac ? (
+                            <span>
+                              <Loader />
+                            </span>
+                          ) : (
+                            <button
+                              onClick={syncPackage}
+                              title="Sync Package"
+                              className="addcutmButton btn-info btnbyEnamul"
+                            >
+                              <ArrowClockwise />
+                            </button>
+                          )}
 
                           {isLoading ? (
                             <div className="deletingAction">
@@ -492,7 +514,14 @@ const syncPackage =() =>{
                           <div className="col-sm-8">
                             <h4 className="allCollector">
                               এক্টিভ গ্রাহক :{" "}
-                              <span>{activeUser.length || "NULL"}</span>
+                              <span>
+                                {" "}
+                                {isLoadingCus ? (
+                                  <Loader />
+                                ) : (
+                                  pppoePackage?.length
+                                )}{" "}
+                              </span>
                             </h4>
                           </div>
 

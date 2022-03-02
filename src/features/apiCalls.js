@@ -391,15 +391,20 @@ export const deleteACustomer = async (dispatch, IDs) => {
 //Mikrotik
 
 // get Mikrotik Sync user
-export const fetchMikrotikSyncUser = async (dispatch, IDs) => {
+export const fetchMikrotikSyncUser = async (dispatch, IDs, setIsLoadingCus) => {
+  setIsLoadingCus(true)
   await apiLink({
     method: "GET",
     url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
+      setIsLoadingCus(false)
+    toast.success("PPPoE sync customer success");
+
     })
     .catch((error) => {
+      setIsLoadingCus(false)
       toast.error(error.message);
     });
 };
@@ -542,16 +547,18 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
 
 // get pppoe Package
 export const fetchpppoePackage = async (dispatch, IDs, setIsLoadingPac) => {
+  setIsLoadingPac(true);
   try {
-    setIsLoadingPac(true);
     const res = await apiLink({
       method: "GET",
       url: `/v1/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
     dispatch(getpppoePackageSuccess(res.data));
     setIsLoadingPac(false);
+    toast.success("PPPoE প্যাকেজ fetch success");
+
   } catch (error) {
-    // setIsLoadingPac(false);
+    setIsLoadingPac(false);
     toast.error("PPPoE প্যাকেজ পাওয়া যায়নি!");
   }
 };
