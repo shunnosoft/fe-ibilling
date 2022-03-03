@@ -39,7 +39,7 @@ export default function Customer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-const permission =useSelector(state=>state.auth?.userData?.permissions)
+  const permission =useSelector(state=>state.auth?.userData?.permissions)
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);

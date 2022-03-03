@@ -39,6 +39,8 @@ export default function Collector() {
   const lastIndex = currentPage * collectorPerPage;
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
+  const permission =useSelector(state=>state.auth?.userData?.permissions)
+  const role = useSelector(state=>state.auth.role)
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -84,18 +86,18 @@ export default function Collector() {
                   <div className="addCollector">
                     <div className="addNewCollector">
                       <div className="displexFlexSys">
-                        <div></div>
+                         
                         <div className="addAndSettingIcon">
-                          <PersonPlusFill
+                         {(permission?.collectorAdd || role==="ispOwner")? <PersonPlusFill
                             className="addcutmButton"
                             data-bs-toggle="modal"
                             data-bs-target="#collectorModal"
-                          />
-                          <GearFill
+                          />:""}
+                          {/* <GearFill
                             className="addcutmButton"
                             // data-bs-toggle="modal"
                             // data-bs-target="#exampleModal"
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
@@ -185,7 +187,7 @@ export default function Collector() {
                                         </div>
                                       </div>
                                     </li>
-                                    <li
+                                    {(permission?.collectorEdit || role==="ispOwner")?<li
                                       data-bs-toggle="modal"
                                       data-bs-target="#collectorEditModal"
                                       onClick={() => {
@@ -198,8 +200,8 @@ export default function Collector() {
                                           <p className="actionP">এডিট</p>
                                         </div>
                                       </div>
-                                    </li>
-                                    <li
+                                    </li>:""}
+                                   {role==="ispOwner"? <li
                                       onClick={() => {
                                         deleteCollectorHandler(val.id);
                                       }}
@@ -210,7 +212,7 @@ export default function Collector() {
                                           <p className="actionP">ডিলিট</p>
                                         </div>
                                       </div>
-                                    </li>
+                                    </li>:""}
                                   </ul>
 
                                   {/* end */}
