@@ -11,6 +11,8 @@ import Loader from "../../../components/common/Loader";
 
 export default function CustomerBillCollect({ single }) {
   const [billType, setBillType] = useState("bill");
+
+  const [ defaultAmount , setDefault] = useState(single.monthlyFee);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
 
@@ -34,6 +36,8 @@ const [isLoading,setLoading] =useState(false)
     billCollect(dispatch,sendingData,setLoading)
   };
 
+  
+console.log(defaultAmount)
   return (
     <div>
       <div>
@@ -64,7 +68,7 @@ const [isLoading,setLoading] =useState(false)
               <div className="modal-body">
                 <Formik
                   initialValues={{
-                    amount: "",
+                    amount: single.monthlyFee,
                     // collectorId,customer,ispOwner
                   }}
                   validationSchema={BillValidatoin}
@@ -74,8 +78,10 @@ const [isLoading,setLoading] =useState(false)
                 >
                   {() => (
                     <Form>
-                      <FtextField type="text" name="amount" label="পরিমান" />
+                      <h4>Name:{single.name}</h4>
+                      <h4>ID:{single.customerId}</h4>
 
+                      <FtextField onChange={(e)=>setDefault(e.target.value)} type="number" value={defaultAmount} name="amount" label="পরিমান" />
                       <label>ধরণ</label>
                       <select
                         className="form-select"

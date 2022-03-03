@@ -140,7 +140,7 @@ console.log(permission)
               {/* Model start */}
               <CustomerPost />
               <CustomerEdit single={singleCustomer} />
-              <CustomerBillCollect single={singleCustomer} />
+              <CustomerBillCollect single={singleCustomer}  />
               <CustomerDetails single={singleCustomer} />
               {/* Model finish */}
 
@@ -185,7 +185,7 @@ console.log(permission)
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক : <span>{cus?.length || "NULL"}</span>
+                          মোট গ্রাহক : <span>{Customers?.length || "0"}</span>
                         </h4>
                       </div>
 
