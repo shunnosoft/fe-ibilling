@@ -30,6 +30,7 @@ import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 import { deleteACustomer, getCustomer } from "../../features/apiCalls";
 import arraySort from "array-sort";
+import CustomerReport from "./customerCRUD/showCustomerReport";
 
 export default function Customer() {
   const cus = useSelector((state) => state.customer.customer);
@@ -45,6 +46,7 @@ export default function Customer() {
   const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
+  const [singleCustomerReport, setSingleCustomerReport] = useState("");
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,6 +103,14 @@ export default function Customer() {
       setSingleCustomer(temp);
     }
   };
+  // get specific customer Report
+  
+  const getSpecificCustomerReport = (id) => {
+    console.log(id)
+    
+  };
+
+
 
   // DELETE handler
   const deleteCustomer = async (ID) => {
@@ -142,6 +152,8 @@ console.log(permission)
               <CustomerEdit single={singleCustomer} />
               <CustomerBillCollect single={singleCustomer}  />
               <CustomerDetails single={singleCustomer} />
+              <CustomerReport single={singleCustomerReport} />
+
               {/* Model finish */}
 
               <FourGround>
@@ -355,9 +367,9 @@ console.log(permission)
 
                                   <li
                                     data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerDetails" 
+                                    data-bs-target="#showCustomerReport" 
                                     onClick={() => {
-                                      getSpecificCustomer(val.id);
+                                      getSpecificCustomerReport(val.id);
                                     }}
                                   >
                                     <div className="dropdown-item">
