@@ -8,6 +8,7 @@ const initialState = {
   isFetching: false,
   error: false,
   manager:{}, 
+  accessToken:""
 };
 
 const authSlice = createSlice({
@@ -20,6 +21,7 @@ const authSlice = createSlice({
     logInSuccess: (state, action) => {
       state.isFetching = false;
       state.currentUser = action.payload;
+      state.accessToken=action.payload?.access.token
       state.role = action.payload?.user.role;
       action.payload?.user.role === "ispOwner"
         ? (state.ispOwnerId = action.payload?.ispOwner?.id) &&
@@ -49,6 +51,11 @@ const authSlice = createSlice({
         state.userData=action.payload
       }
     },
+    updateTokenSuccess:(state,action)=>{
+      state.accessToken=action.payload
+
+    },
+
 
     logOut: (state) => {
       state.currentUser = null;
@@ -56,7 +63,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { updateProfile, logInStart, logInSuccess, loginFailure, logOut } =
+export const {updateTokenSuccess, updateProfile, logInStart, logInSuccess, loginFailure, logOut } =
   authSlice.actions;
 
 export default authSlice.reducer;

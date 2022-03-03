@@ -17,6 +17,7 @@ import {
   addDeposit,
   depositAcceptReject,
   getDeposit,
+  getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
 import { useState } from "react";
@@ -39,6 +40,10 @@ const manager =useSelector(state=>state.manager.manager)
   const collectors =useSelector(state=>state.collector.collector)
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
+//To do after api impliment 
+  const ownDeposits =useSelector(state=>state.payment.myDeposit)
+  console.log("owndeposit",ownDeposits)
+
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
   const [mainData2, setMainData2] = useState(allDeposit);
@@ -95,6 +100,22 @@ const allCollector = useSelector(state=>state.collector.collector)
  return sumWithInitial.toString()
   
   },[mainData])
+
+useEffect(()=>{
+  getMyDeposit(dispatch)
+  
+},[dispatch])
+ 
+  const getTotalOwnDeposit =useCallback(()=>{
+
+    const initialValue = 0;
+  const sumWithInitial = ownDeposits.reduce(
+    (previousValue, currentValue) => previousValue + currentValue.amount,
+    initialValue
+  );
+ return sumWithInitial.toString()
+  
+  },[ownDeposits])
 
   const getNames = useCallback(()=>{
     var arr = []
@@ -253,6 +274,55 @@ const allCollector = useSelector(state=>state.collector.collector)
               )}
 
               <br />
+              {userRole === "collector" ? (
+                      <div className="row searchCollector">
+                        <div className="col-sm-8">
+                          <h4 className="allCollector">
+                          নিজ ডিপোজিট (মোট): <span>{getTotalOwnDeposit()}</span>
+                          </h4>
+                        </div>
+
+                        <div className="col-sm-4">
+                          <div className=" collectorSearch">
+                            {/* <Search className="serchingIcon" /> */}
+                            <input
+                              type="text"
+                              className="search"
+                              placeholder="সার্চ"
+                              // onChange={(e) => setCusSearch(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
+                    {/* table */}
+                    <div className="table-responsive-lg">
+                      <table className="table table-striped ">
+                        <thead>
+                          <tr>
+                             
+                            <td>পরিমান</td>
+                            <td className="textAlignCenter">স্টেটাস</td>
+                            <td>তারিখ</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ownDeposits?.map((item, key) => (
+                            <tr key={key}>
+                               
+                              <td>৳ {item.amount}</td>
+                              <td>
+                                {item.status}
+                              </td>
+                              <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
               {userRole !== "collector" ? (
                 <FourGround>
                   <div className="collectorWrapper">
@@ -406,6 +476,60 @@ const allCollector = useSelector(state=>state.collector.collector)
                         </tbody>
                       </table>
                     </div>
+                    {userRole === "ispOwner" ? (
+                      <div className="row searchCollector">
+                        <div className="col-sm-8">
+                          <h4 className="allCollector">
+                          নিজ ডিপোজিট: <span>{getTotalOwnDeposit()}</span>
+                          </h4>
+                        </div>
+
+                        <div className="col-sm-4">
+                          <div className=" collectorSearch">
+                            {/* <Search className="serchingIcon" /> */}
+                            <input
+                              type="text"
+                              className="search"
+                              placeholder="সার্চ"
+                              // onChange={(e) => setCusSearch(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
+                    {/* table */}
+                    <div className="table-responsive-lg">
+                      <table className="table table-striped ">
+                        <thead>
+                          <tr>
+                             
+                            <td>পরিমান</td>
+                            <td className="textAlignCenter">স্টেটাস</td>
+                            <td>তারিখ</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ownDeposits?.map((item, key) => (
+                            <tr key={key}>
+                               
+                              <td>৳ {item.amount}</td>
+                              <td>
+                                {item.status}
+                              </td>
+                              <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+
+
+
+
                   </div>
                 </FourGround>
               ) : (

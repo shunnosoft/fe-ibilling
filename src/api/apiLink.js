@@ -12,6 +12,8 @@ const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
 const currentUser = user && JSON.parse(user)?.currentUser;
 const TOKEN = currentUser?.access?.token;
 
+// const TOKEN = user && JSON.parse(user)?.accessToken;
+
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,

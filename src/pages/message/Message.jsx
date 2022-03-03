@@ -46,7 +46,7 @@ export default function Message() {
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="profileWrapper">
+                  <div className="profileWrapper uiChange">
                     <div className="messageGuide">
                       <h4>যেভাবে আপনি গ্রাহকদের মোবাইলে মেসেজ দিবেনঃ</h4>
                       <p>

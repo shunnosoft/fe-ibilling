@@ -9,3 +9,10 @@
   transform: scale(1.2);
   margin-right: 10px;
 }
+
+
+/* css added by enamul */
+.uiChange{
+  display: flex;
+  flex-direction: column;
+}

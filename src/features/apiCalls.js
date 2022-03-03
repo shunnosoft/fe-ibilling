@@ -54,6 +54,7 @@ import { updateProfile } from "./authSlice";
 import {
   getAllBillsSuccess,
   getDepositSuccess,
+  getmyDepositSucces,
   getTotalBalanceSuccess,
   updateDepositSuccess,
 } from "./paymentSlice";
@@ -820,3 +821,22 @@ export const getAllBills = async (dispatch, ispOwnerId) => {
     toast.error(error.response?.data.message);
   }
 };
+
+
+//my deposit
+
+export const getMyDeposit =async(dispatch)=>{
+  try {
+
+    const res =await apiLink.get("/v1/deposit")
+   dispatch( getmyDepositSucces(res.data))
+
+    
+  } catch (error) {
+    console.log(error?.response?.data.message)
+    
+  }
+
+
+
+}
