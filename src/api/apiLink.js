@@ -1,59 +1,71 @@
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
-const BASE_URL = "http://137.184.69.182/api/";
+// const BASE_URL = "http://137.184.69.182/api/";
 
-// const BASE_URL = "http://192.168.1.24:3030/api/";
+const BASE_URL = "http://192.168.1.24:3030/api/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
 // const access = user && JSON.parse(user)?.access;
 // const TOKEN = access?.token;
 
+const userAllData = JSON.parse(localStorage.getItem("persist:root"));
 const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
-const currentUser = user && JSON.parse(user)?.currentUser;
-const TOKEN = currentUser?.access?.token;
 
-// const TOKEN = user && JSON.parse(user)?.accessToken;
+// const currentUser = user && JSON.parse(user)?.currentUser;
+// const TOKEN = currentUser?.access?.token;
 
+const TOKEN = user && JSON.parse(user)?.accessToken;
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,
 });
 
-export default axios.create({
+const apiLink = axios.create({
   baseURL: BASE_URL,
   headers: { Authorization: "Bearer " + TOKEN },
 });
 
-// const refreshToken = async () => {
-//   try {
-//     const res = await axios.post("/refresh", { token: user.refreshToken });
-//     setUser({
-//       ...user,
-//       accessToken: res.data.accessToken,
-//       refreshToken: res.data.refreshToken,
-//     });
-//     return res.data;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+const refreshToken = async () => {
+  console.log("check from refresh start");
+  try {
+    const res = await publicRequest.post("v1/auth/refresh-tokens");
+    console.log("from inside refresh ", res.data)
+    localStorage.setItem(
+      "persist:root",
+      JSON.stringify({
+        ...userAllData,
+        auth: { ...userAllData.auth, accessToken: res.data?.access.token },
+      })
+    );
+
+    return res.data?.access.token;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // const axiosJWT = axios.create()
 
-// axiosJWT.interceptors.request.use(
-//   async (config) => {
-//     let currentDate = new Date();
-//     const decodedToken = jwt_decode(user.accessToken);
-//     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-//       const data = await refreshToken();
-//       config.headers["authorization"] = "Bearer " + data.accessToken;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+apiLink.interceptors.request.use(
+  async (config) => {
+    let currentDate = new Date();
+    const decodedToken = jwt_decode(TOKEN);
+
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      const accToken = await refreshToken();
+      console.log("from inside interceptors",accToken)
+      config.baseURL = BASE_URL;
+      config.headers["authorization"] = "Bearer " + accToken;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default apiLink;
 
 // update token
 // update token
