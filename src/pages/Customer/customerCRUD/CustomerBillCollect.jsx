@@ -80,6 +80,7 @@ console.log(defaultAmount)
                     <Form>
                       <h4>Name:{single.name}</h4>
                       <h4>ID:{single.customerId}</h4>
+                      <h4>Monthly Fee:{single.monthlyFee}</h4>
 
                       <FtextField  type="number"  name="amount" label="পরিমান" />
                       <label>ধরণ</label>
