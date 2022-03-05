@@ -46,7 +46,7 @@ export default function Customer() {
   const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
-  const [singleCustomerReport, setSingleCustomerReport] = useState("");
+  const [cusId, setSingleCustomerReport] = useState("");
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,9 +104,9 @@ export default function Customer() {
     }
   };
   // get specific customer Report
-  
+  const [customerReportId,setId] =useState("")
   const getSpecificCustomerReport = (id) => {
-    console.log(id)
+    setId(id)
     
   };
 
@@ -152,7 +152,7 @@ console.log(permission)
               <CustomerEdit single={singleCustomer} />
               <CustomerBillCollect single={singleCustomer}  />
               <CustomerDetails single={singleCustomer} />
-              <CustomerReport single={singleCustomerReport} />
+              <CustomerReport single={customerReportId} />
 
               {/* Model finish */}
 

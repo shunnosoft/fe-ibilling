@@ -20,12 +20,12 @@ export default function CustomerBillCollect({ single }) {
 const dispatch = useDispatch()
 const [isLoading,setLoading] =useState(false)
   const BillValidatoin = Yup.object({
-    amount: Yup.string().required("Please insert amount."),
+    amount: Yup.number().required("Please insert amount."),
   });
   // bill amount
   const customerBillHandler = (data) => {
     const sendingData = {
-      amount: parseInt(data.amount),
+      amount: data.amount,
       collectedBy: currentUser?.user.role,
       billType: billType,
       customer: single.id,
@@ -81,7 +81,7 @@ console.log(defaultAmount)
                       <h4>Name:{single.name}</h4>
                       <h4>ID:{single.customerId}</h4>
 
-                      <FtextField onChange={(e)=>setDefault(e.target.value)} type="number" value={defaultAmount} name="amount" label="পরিমান" />
+                      <FtextField  type="number"  name="amount" label="পরিমান" />
                       <label>ধরণ</label>
                       <select
                         className="form-select"
