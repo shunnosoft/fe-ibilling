@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
@@ -21,13 +21,12 @@ import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 import SubArea from "./pages/subArea/SubArea";
-import Bill from "./pages/bill/Bill";
 import Profile from "./pages/profile/Profile";
 import Account from "./pages/account/Account";
 import Message from "./pages/message/Message";
 import Diposit from "./pages/diposit/Diposit";
 import Report from "./pages/report/Report";
-import apiLink, {publicRequest} from "./api/apiLink";
+import apiLink from "./api/apiLink";
 import { useDispatch } from "react-redux";
 import { updateTokenSuccess } from "./features/authSlice";
 import { userLogout } from "./features/actions/authAsyncAction";
@@ -36,53 +35,52 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  const [loading,setLoading]=useState(false)
+  const [loading,setLoading]=useState(true)
   const dispatch =useDispatch()
   const accessToken = useSelector(state=>state.auth.accessToken)
 
-  // // update token
-  // const updateToken = useCallback(async () => {
-  //   try {
-  //     const response = await apiLink.post("v1/auth/refresh-tokens", {
-  //       method: "POST",
-  //     });
-  //     if (response.status === 200) {
-  //       console.log("We got the Token: ", response);
+  // update token
+  const updateToken = useCallback(async () => {
+    try {
+      const response = await apiLink.post("v1/auth/refresh-tokens", {
+        method: "POST",
+      });
+      if (response.status === 200) {
+        console.log("We got the Token: ", response);
       
-  //       // set new token to localstorage
-  //       // localStorage.setItem("token", JSON.stringify(response.data));
-  //       dispatch(updateTokenSuccess(response.data?.access.token))
-  //     } else {
-  //       // call logout method here
-  //       userLogout(dispatch)
-  //     }
-  //   } catch (err) {
-  //     console.log("Should Logout!");
-  //     // call logout method here
-  //     userLogout(dispatch);
-  //   }
-  //   if (loading) {
-  //     setLoading(false);
-  //   }
-  // }, [loading,dispatch]);
+        // set new token to localstorage
+        // localStorage.setItem("token", JSON.stringify(response.data));
+        dispatch(updateTokenSuccess(response.data?.access.token))
+      } else {
+        // call logout method here
+        userLogout(dispatch)
+      }
+    } catch (err) {
+      console.log("Should Logout!");
+      // call logout method here
+      userLogout(dispatch);
+    }
+    if (loading) {
+      setLoading(false);
+    }
+  }, [loading,dispatch]);
 
 
-
-  // // called Update Token
-  // useEffect(() => {
-  //   if (loading) {
-  //     updateToken();
-  //   }
+  // called Update Token
+  useEffect(() => {
+    if (loading) {
+      updateToken();
+    }
     
-  //   const timeToUpdate = 1000 * 60 * 12;
-  //   const interval = setInterval(() => {
-  //     if (accessToken) {
-  //       updateToken();
-  //     }
-  //   }, timeToUpdate);
-  //   return () => clearInterval(interval);
-  // }, [loading, updateToken ,accessToken]);
-  //  // update token
+    const timeToUpdate = 1000 * 60 * 5;
+    const interval = setInterval(() => {
+      if (accessToken) {
+        updateToken();
+      }
+    }, timeToUpdate);
+    return () => clearInterval(interval);
+  }, [loading, updateToken ,accessToken]);
+   // update token
 
   return (
     <ThemeProvider theme={themes[theme]}>

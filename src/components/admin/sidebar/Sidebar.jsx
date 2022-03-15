@@ -5,7 +5,6 @@ import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
 import {
   List,
   ArrowLeft,
-  Coin,
   HouseDoorFill,
   Wallet2,
   PeopleFill,

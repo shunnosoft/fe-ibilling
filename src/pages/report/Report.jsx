@@ -1,25 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
-import {
-  ArchiveFill,
-  ArrowDownUp,
-  PenFill,
-  PersonFill,
-  PersonPlusFill,
-  ThreeDots,
-  Wallet,
-} from "react-bootstrap-icons";
+import { ArchiveFill, ArrowDownUp, PenFill, PersonFill, ThreeDots, Wallet } from "react-bootstrap-icons";
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
 import { useDispatch } from "react-redux";
-import { getAllBills } from "../../features/apiCalls";
 import { useSelector } from "react-redux";
 import arraySort from "array-sort";
 
@@ -45,12 +36,12 @@ export default function Report() {
   const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
-  const [cusSearch, setCusSearch] = useState("");
-  const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
+  // const [cusSearch, setCusSearch] = useState("");
+  // const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
   const [isSorted, setSorted] = useState(false);
-  const [totalBill,setTotalBill]= useState("")
+  // const [totalBill,setTotalBill]= useState("")
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   // useEffect(() => {
   //   const keys = ["amount", "name", "customerId", "createdAt"];

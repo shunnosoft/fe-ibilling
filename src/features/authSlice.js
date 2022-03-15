@@ -7,8 +7,7 @@ const initialState = {
   userData: {},
   isFetching: false,
   error: false,
-   
-  accessToken:null
+  accessToken: null,
 };
 
 const authSlice = createSlice({
@@ -21,14 +20,14 @@ const authSlice = createSlice({
     logInSuccess: (state, action) => {
       state.isFetching = false;
       state.currentUser = action.payload;
-      state.accessToken=action.payload?.access.token
+      state.accessToken = action.payload?.access.token;
       state.role = action.payload?.user.role;
       action.payload?.user.role === "ispOwner"
         ? (state.ispOwnerId = action.payload?.ispOwner?.id) &&
           (state.userData = action.payload?.ispOwner)
         : action.payload?.user.role === "manager"
         ? (state.ispOwnerId = action.payload.manager.ispOwner) &&
-          (state.userData = action.payload?.manager)  
+          (state.userData = action.payload?.manager)
         : action.payload?.user.role === "collector"
         ? (state.ispOwnerId = action.payload.collector.ispOwner) &&
           (state.userData = action.payload?.collector)
@@ -41,32 +40,36 @@ const authSlice = createSlice({
     updateProfile: (state, action) => {
       if (state.role === "ispOwner") {
         state.currentUser.ispOwner = action.payload;
-        state.userData=action.payload
+        state.userData = action.payload;
       } else if (state.role === "manager") {
         state.currentUser.manager = action.payload;
-        state.userData=action.payload
+        state.userData = action.payload;
       } else if (state.role === "collector") {
         state.currentUser.collector = action.payload;
-        state.userData=action.payload
+        state.userData = action.payload;
       }
     },
-    updateTokenSuccess:(state,action)=>{
-      state.accessToken=action.payload
-
+    updateTokenSuccess: (state, action) => {
+      state.accessToken = action.payload;
     },
-
 
     logOut: (state) => {
       state.currentUser = null;
-      state.accessToken=null
-      state.role=null
-      state.ispOwnerId=""
-      state.userData={}
+      state.accessToken = null;
+      state.role = null;
+      state.ispOwnerId = "";
+      state.userData = {};
     },
   },
 });
 
-export const {updateTokenSuccess, updateProfile, logInStart, logInSuccess, loginFailure, logOut } =
-  authSlice.actions;
+export const {
+  updateTokenSuccess,
+  updateProfile,
+  logInStart,
+  logInSuccess,
+  loginFailure,
+  logOut,
+} = authSlice.actions;
 
 export default authSlice.reducer;

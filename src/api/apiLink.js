@@ -1,5 +1,5 @@
 import axios from "axios";
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 
 const BASE_URL = "http://137.184.69.182/api/";
 
@@ -9,12 +9,12 @@ const BASE_URL = "http://137.184.69.182/api/";
 // const access = user && JSON.parse(user)?.access;
 // const TOKEN = access?.token;
 
-const userAllData = JSON.parse(localStorage.getItem("persist:root"));
-const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
+// const userAllData = JSON.parse(localStorage.getItem("persist:root"));
 
 // const currentUser = user && JSON.parse(user)?.currentUser;
 // const TOKEN = currentUser?.access?.token;
 
+const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
 const TOKEN = user && JSON.parse(user)?.accessToken;
 
 export const publicRequest = axios.create({
@@ -25,47 +25,50 @@ const apiLink = axios.create({
   baseURL: BASE_URL,
   headers: { Authorization: "Bearer " + TOKEN },
 });
+export default apiLink ; 
 
-const refreshToken = async () => {
-  console.log("check from refresh start");
-  try {
-    const res = await publicRequest.post("v1/auth/refresh-tokens");
-    console.log("from inside refresh ", res.data)
-    localStorage.setItem(
-      "persist:root",
-      JSON.stringify({
-        ...userAllData,
-        auth: { ...userAllData.auth, accessToken: res.data?.access.token },
-      })
-    );
 
-    return res.data?.access.token;
-  } catch (err) {
-    console.log(err);
-  }
-};
 
-// const axiosJWT = axios.create()
+// const refreshToken = async () => {
+//   console.log("check from refresh start");
+//   try {
+//     const res = await publicRequest.post("v1/auth/refresh-tokens");
+//     console.log("from inside refresh ", res.data)
+//     localStorage.setItem(
+//       "persist:root",
+//       JSON.stringify({
+//         ...userAllData,
+//         auth: { ...userAllData.auth, accessToken: res.data?.access.token },
+//       })
+//     );
 
-apiLink.interceptors.request.use(
-  async (config) => {
-    let currentDate = new Date();
-    const decodedToken = jwt_decode(TOKEN);
+//     return res.data?.access.token;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
-    if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      const accToken = await refreshToken();
-      console.log("from inside interceptors",accToken)
-      config.baseURL = BASE_URL;
-      config.headers["authorization"] = "Bearer " + accToken;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// // const axiosJWT = axios.create()
 
-export default apiLink;
+// apiLink.interceptors.request.use(
+//   async (config) => {
+//     let currentDate = new Date();
+//     const decodedToken = jwt_decode(TOKEN);
+
+//     if (decodedToken.exp * 1000 < currentDate.getTime()) {
+//       const accToken = await refreshToken();
+//       console.log("from inside interceptors",accToken)
+//       config.baseURL = BASE_URL;
+//       config.headers["authorization"] = "Bearer " + accToken;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
+// export default apiLink;
 
 // update token
 // update token
