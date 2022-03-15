@@ -37,7 +37,7 @@ const [isLoading,setLoading] =useState(false)
   };
 
   
-console.log(defaultAmount)
+// console.log(defaultAmount)
   return (
     <div>
       <div>

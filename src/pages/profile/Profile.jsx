@@ -38,7 +38,6 @@ export default function Profile() {
     profileUpdate(dispatch, data, ispOwnerId, setIsLoading);
   };
 
-  console.log("currentUser: ", currentUser);
 
   //   change password handler
   const changePasswordHandler = (data) => {

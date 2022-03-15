@@ -39,7 +39,6 @@ export default function Home() {
       tempArr.push(val.amount);
       tempUser.push(val.collectedBy);
     });
-    console.log(tempArr, tempUser);
     setLabelsData(tempArr);
     setCurrUserData(tempUser);
   }, [ChartsData]);

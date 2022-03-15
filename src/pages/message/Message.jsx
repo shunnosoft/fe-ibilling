@@ -30,7 +30,6 @@ export default function Message() {
   };
 
   // WE GOT ALL AREA_IDS ON -> areaIds;
-  console.log("Areas: ", areaIds);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import axios from "axios";
-// import jwt_decode from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 const BASE_URL = "http://137.184.69.182/api/";
 
@@ -11,10 +11,11 @@ const BASE_URL = "http://137.184.69.182/api/";
 
 // const userAllData = JSON.parse(localStorage.getItem("persist:root"));
 
+const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
+
 // const currentUser = user && JSON.parse(user)?.currentUser;
 // const TOKEN = currentUser?.access?.token;
 
-const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
 const TOKEN = user && JSON.parse(user)?.accessToken;
 
 export const publicRequest = axios.create({
@@ -25,10 +26,7 @@ const apiLink = axios.create({
   baseURL: BASE_URL,
   headers: { Authorization: "Bearer " + TOKEN },
 });
-export default apiLink ; 
-
-
-
+export default apiLink
 // const refreshToken = async () => {
 //   console.log("check from refresh start");
 //   try {

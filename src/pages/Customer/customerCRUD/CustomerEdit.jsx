@@ -52,8 +52,7 @@ export default function CustomerEdit({ single }) {
     name: Yup.string().required("নাম ***"),
     mobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর *** "),
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে "),
     address: Yup.string().required("এড্রেস ***"),
     email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
     nid: Yup.string().required("NID ***"),
@@ -107,7 +106,7 @@ export default function CustomerEdit({ single }) {
   const customerHandler = async (data) => {
     setIsloading(true);
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
-    console.log("SubArea: ", subArea2);
+    // console.log("SubArea: ", subArea2);
     if (subArea2 === "") {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");

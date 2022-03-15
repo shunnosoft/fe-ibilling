@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import Loader from "../../../components/common/Loader";
 import { useSelector, useDispatch } from "react-redux";
 
-// internal imports
+// internal importsp
 import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
 import { editCollector } from "../../../features/apiCalls";
@@ -22,8 +22,7 @@ export default function CollectorEdit({ single }) {
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);
-  console.log(permissions);
-  console.log(single.permissions);
+   
 
   useEffect(() => {
     if (single) {

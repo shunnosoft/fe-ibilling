@@ -50,6 +50,7 @@ export const asyncLogin = async (dispatch, loginData) => {
           toast.error("সার্ভার Error!");
         } else {
           dispatch(logInSuccess(res.data));
+          window.location.reload(); 
         }
       } else {
         toast.error("সার্ভার Error!");

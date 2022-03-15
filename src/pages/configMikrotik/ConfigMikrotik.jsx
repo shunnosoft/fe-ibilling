@@ -147,7 +147,7 @@ export default function ConfigMikrotik() {
 
   const selectMikrotikOptionsHandler = (e) => {
     const val = e.target.value;
-    console.log(val);
+    // console.log(val);
     setWhatYouWantToShow(val);
   };
 
@@ -306,12 +306,7 @@ export default function ConfigMikrotik() {
                             <h4 className="allCollector">
                               PPPoE প্যাকেজ:{" "}
                               <span>
-                                {" "}
-                                {isLoadingPac ? (
-                                  <Loader />
-                                ) : (
-                                  pppoePackage?.length
-                                )}{" "}
+                            {pppoePackage?.length?pppoePackage?.length:"0"}
                               </span>
                             </h4>
                           </div>

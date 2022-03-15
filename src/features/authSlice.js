@@ -18,9 +18,9 @@ const authSlice = createSlice({
       state.isFetching = true;
     },
     logInSuccess: (state, action) => {
+      state.accessToken = action.payload?.access.token;
       state.isFetching = false;
       state.currentUser = action.payload;
-      state.accessToken = action.payload?.access.token;
       state.role = action.payload?.user.role;
       action.payload?.user.role === "ispOwner"
         ? (state.ispOwnerId = action.payload?.ispOwner?.id) &&

@@ -6,16 +6,13 @@ import apiLink from "../../../api/apiLink";
 import "../customer.css";
 
 export default function CustomerReport({ single }) {
-  console.log("Single: ", single);
   const [mainData ,setMaindata] =useState([])
 
-  console.log(mainData)
 
   useEffect(()=>{
     const getReport = async () =>{
       try {
         const res = await apiLink.get(`/v1/bill/customer/${"6209346cf896731c26ecca51"}`)
-        console.log(res.data)
         setMaindata(res.data)
 
         

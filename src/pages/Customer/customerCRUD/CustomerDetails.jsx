@@ -3,7 +3,7 @@ import "../customer.css";
 
 export default function CustomerDetails({ single }) {
   // const single = useSelector((state) => state.customer.singleCustomer);
-  console.log("Single: ", single);
+  // console.log("Single: ", single);
   return (
     <div>
       <div

@@ -61,7 +61,7 @@ export default function Header(props) {
                     {userRole === "manager" ? "( Manager )" : ""}
 
                     <img
-                      src="https://us.123rf.com/450wm/luismolinero/luismolinero1909/luismolinero190917934/130592146-handsome-young-man-in-pink-shirt-over-isolated-blue-background-keeping-the-arms-crossed-in-frontal-p.jpg?ver=6"
+                      src="./assets/img/noAvater.jpg"
                       alt=""
                       className="profileDropdownImg"
                     />

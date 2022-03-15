@@ -47,7 +47,6 @@ export default function Customer() {
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   // const [cusId, setSingleCustomerReport] = useState("");
-
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [customerPerPage, setCustomerPerPage] = useState(50);
@@ -133,7 +132,7 @@ export default function Customer() {
     setCustomers(arraySort(Customers, item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
-console.log(permission)
+// console.log(permission)
   return (
     <>
       <Sidebar />

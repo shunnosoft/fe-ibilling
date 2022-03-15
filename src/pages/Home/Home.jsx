@@ -232,8 +232,9 @@ export default function Home() {
     }
     
     getArea(dispatch, ispOwnerId);
-    //problem collector can't access them
     
+    //problem collector can't access them
+
     getAllBills(dispatch, ispOwnerId);
     getManger(dispatch, ispOwnerId);
 
