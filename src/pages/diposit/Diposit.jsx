@@ -1,4 +1,4 @@
-// import { useState } from "react";
+import { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 // import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -20,13 +20,10 @@ import {
   getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 
 export default function Diposit() {
-
-
   const balancee = useSelector((state) => state.payment.balance);
   const allDeposit = useSelector((state) => state.payment.allDeposit);
   var today = new Date();
@@ -36,13 +33,13 @@ export default function Diposit() {
   today.setHours(23, 59, 59, 999);
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
-const manager =useSelector(state=>state.manager.manager)
-  const collectors =useSelector(state=>state.collector.collector)
+  const manager = useSelector((state) => state.manager.manager);
+  const collectors = useSelector((state) => state.collector.collector);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
-//To do after api impliment 
-  const ownDeposits =useSelector(state=>state.payment.myDeposit)
-  console.log("owndeposit",ownDeposits)
+  //To do after api impliment
+  const ownDeposits = useSelector((state) => state.payment.myDeposit);
+  console.log("owndeposit", ownDeposits);
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
@@ -55,7 +52,7 @@ const manager =useSelector(state=>state.manager.manager)
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   // const balance = useSelector(state=>state.payment.balance)
-  
+
   // bill amount
   const billDipositHandler = (data) => {
     const sendingData = {
@@ -71,10 +68,10 @@ const manager =useSelector(state=>state.manager.manager)
   const depositAcceptRejectHandler = (status, id) => {
     depositAcceptReject(dispatch, status, id);
   };
-const allCollector = useSelector(state=>state.collector.collector)
+  const allCollector = useSelector((state) => state.collector.collector);
 
   // useEffect(()=>{
-    
+
   //   var arr = []
   //   allDeposit.forEach((item)=>{
   //     var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === item.user))
@@ -83,60 +80,52 @@ const allCollector = useSelector(state=>state.collector.collector)
   //       arr.push({...item,name:match.name})
   //     }
 
-
   //   })
   //   setMainData(arr)
   //   setMainData2(arr)
   // },[allCollector,allDeposit,userRole,manager])
 
-
-  const getTotalDeposit =useCallback(()=>{
-
+  const getTotalDeposit = useCallback(() => {
     const initialValue = 0;
-  const sumWithInitial = mainData.reduce(
-    (previousValue, currentValue) => previousValue + currentValue.amount,
-    initialValue
-  );
- return sumWithInitial.toString()
-  
-  },[mainData])
+    const sumWithInitial = mainData.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+    return sumWithInitial.toString();
+  }, [mainData]);
 
-useEffect(()=>{
-  getMyDeposit(dispatch)
-  
-},[dispatch])
- 
-  const getTotalOwnDeposit =useCallback(()=>{
+  useEffect(() => {
+    getMyDeposit(dispatch);
+  }, [dispatch]);
 
+  const getTotalOwnDeposit = useCallback(() => {
     const initialValue = 0;
-  const sumWithInitial = ownDeposits.reduce(
-    (previousValue, currentValue) => previousValue + currentValue.amount,
-    initialValue
-  );
- return sumWithInitial.toString()
-  
-  },[ownDeposits])
+    const sumWithInitial = ownDeposits.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+    return sumWithInitial.toString();
+  }, [ownDeposits]);
 
-  const getNames = useCallback(()=>{
-    var arr = []
-    allDeposit.forEach((item)=>{
-      var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === item.user))
+  const getNames = useCallback(() => {
+    var arr = [];
+    allDeposit.forEach((item) => {
+      var match =
+        userRole === "ispOwner"
+          ? manager
+          : allCollector.find((c) => c.user === item.user);
 
-      if(match) {
-        arr.push({...item,name:match.name})
+      if (match) {
+        arr.push({ ...item, name: match.name });
       }
+    });
 
-
-    })
-    
-     return arr 
-  },[allCollector,userRole,manager,allDeposit])
-
+    return arr;
+  }, [allCollector, userRole, manager, allDeposit]);
 
   useEffect(() => {
     if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
   }, [dispatch, userRole]);
-
 
   useEffect(() => {
     var initialToday = new Date();
@@ -164,8 +153,7 @@ useEffect(()=>{
     //       Date.parse(item.createdAt) <= Date.parse(initialToday)
     //   )
     // );
-  }, [ getNames]);
-
+  }, [getNames]);
 
   useEffect(() => {
     if (userRole !== "collector") {
@@ -181,9 +169,7 @@ useEffect(()=>{
     }
   }, [ispOwner, userRole, dispatch]);
 
-
   const onChangeCollector = (userId) => {
-
     if (userId) {
       setCollectorIds([userId]);
     } else {
@@ -193,12 +179,9 @@ useEffect(()=>{
     }
   };
 
-
   const onClickFilter = () => {
-
     let arr = getNames();
 
-    
     if (collectorIds.length) {
       arr = arr.filter((bill) => collectorIds.includes(bill.user));
     }
@@ -209,12 +192,8 @@ useEffect(()=>{
         Date.parse(item.createdAt) <= Date.parse(dateEnd)
     );
 
-
     setMainData(arr);
     // setMainData2(arr);
-
-     
-    
   };
 
   return (
@@ -275,82 +254,73 @@ useEffect(()=>{
 
               <br />
               {userRole === "collector" ? (
-                      <div className="row searchCollector">
-                        <div className="col-sm-8">
-                          <h4 className="allCollector">
-                          নিজ ডিপোজিট (মোট): <span>{getTotalOwnDeposit()}</span>
-                          </h4>
-                        </div>
+                <div className="row searchCollector">
+                  <div className="col-sm-8">
+                    <h4 className="allCollector">
+                      নিজ ডিপোজিট (মোট): <span>{getTotalOwnDeposit()}</span>
+                    </h4>
+                  </div>
 
-                        <div className="col-sm-4">
-                          <div className=" collectorSearch">
-                            {/* <Search className="serchingIcon" /> */}
-                            <input
-                              type="text"
-                              className="search"
-                              placeholder="সার্চ"
-                              // onChange={(e) => setCusSearch(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-
-                    {/* table */}
-                    <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                             
-                            <td>পরিমান</td>
-                            <td className="textAlignCenter">স্টেটাস</td>
-                            <td>তারিখ</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {ownDeposits?.map((item, key) => (
-                            <tr key={key}>
-                               
-                              <td>৳ {item.amount}</td>
-                              <td>
-                                {item.status}
-                              </td>
-                              <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                  <div className="col-sm-4">
+                    <div className=" collectorSearch">
+                      {/* <Search className="serchingIcon" /> */}
+                      <input
+                        type="text"
+                        className="search"
+                        placeholder="সার্চ"
+                        // onChange={(e) => setCusSearch(e.target.value)}
+                      />
                     </div>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
+              {/* table */}
+              <div className="table-responsive-lg">
+                <table className="table table-striped ">
+                  <thead>
+                    <tr>
+                      <td>পরিমান</td>
+                      <td className="textAlignCenter">স্টেটাস</td>
+                      <td>তারিখ</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ownDeposits?.map((item, key) => (
+                      <tr key={key}>
+                        <td>৳ {item.amount}</td>
+                        <td>{item.status}</td>
+                        <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               {userRole !== "collector" ? (
                 <FourGround>
                   <div className="collectorWrapper">
-
-
-
-
-
-                  <div className="selectFilteringg">
-                       
-                      
-                    { userRole !== "ispOwner" &&  <select
-                        className="form-selectt"
-                        onChange={(e) => onChangeCollector(e.target.value)}
-                      >
-                        <option  value="" defaultValue>
-                          সকল কালেক্টর{" "}
-                        </option>
-                        {collectors?.map((c, key) => (
-                          <option key={key} value={c.user}>
-                            {c.name}
+                    <div className="selectFilteringg">
+                      {userRole !== "ispOwner" && (
+                        <select
+                          className="form-selectt"
+                          onChange={(e) => onChangeCollector(e.target.value)}
+                        >
+                          <option value="" defaultValue>
+                            সকল কালেক্টর{" "}
                           </option>
-                        ))}
-                      </select>}
+                          {collectors?.map((c, key) => (
+                            <option key={key} value={c.user}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
 
                       <div className="dateDiv  ">
                         <input
-                        className="form-selectt"
+                          className="form-selectt"
                           type="date"
                           id="start"
                           name="trip-start"
@@ -366,7 +336,7 @@ useEffect(()=>{
                       </div>
                       <div className="dateDiv">
                         <input
-                        className="form-selectt"
+                          className="form-selectt"
                           type="date"
                           id="end"
                           name="trip-start"
@@ -392,8 +362,6 @@ useEffect(()=>{
                         ফিল্টার
                       </button>
                     </div>
-
-
 
                     {userRole !== "ispOwner" ? (
                       <div className="row searchCollector">
@@ -470,7 +438,9 @@ useEffect(()=>{
                                   </span>
                                 )}
                               </td>
-                              <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+                              <td>
+                                {moment(item.createdAt).format("DD-MM-YYYY")}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -480,7 +450,7 @@ useEffect(()=>{
                       <div className="row searchCollector">
                         <div className="col-sm-8">
                           <h4 className="allCollector">
-                          নিজ ডিপোজিট: <span>{getTotalOwnDeposit()}</span>
+                            নিজ ডিপোজিট: <span>{getTotalOwnDeposit()}</span>
                           </h4>
                         </div>
 
@@ -505,7 +475,6 @@ useEffect(()=>{
                       <table className="table table-striped ">
                         <thead>
                           <tr>
-                             
                             <td>পরিমান</td>
                             <td className="textAlignCenter">স্টেটাস</td>
                             <td>তারিখ</td>
@@ -514,22 +483,16 @@ useEffect(()=>{
                         <tbody>
                           {ownDeposits?.map((item, key) => (
                             <tr key={key}>
-                               
                               <td>৳ {item.amount}</td>
+                              <td>{item.status}</td>
                               <td>
-                                {item.status}
+                                {moment(item.createdAt).format("DD-MM-YYYY")}
                               </td>
-                              <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
-
-
-
-
-
                   </div>
                 </FourGround>
               ) : (
