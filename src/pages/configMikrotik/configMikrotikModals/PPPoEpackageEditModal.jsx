@@ -19,7 +19,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
 
   //validator
   const pppoeValidator = Yup.object({
-    name: Yup.string().required("রেট দিন"),
+    name: Yup.string(),
   });
 
   const pppoeEditHandler = async (data) => {
@@ -34,9 +34,8 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
         mikrotikId: singlePackage.mikrotik,
         pppPackageId: singlePackage.id,
       };
-       editPPPoEpackageRate(dispatch,sendingData)
+      editPPPoEpackageRate(dispatch, sendingData);
       setIsLoading(false);
-      
     }
   };
 
@@ -65,7 +64,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: singlePackage?.rate || "",
+                  name: "",
                 }}
                 validationSchema={pppoeValidator}
                 onSubmit={(values) => {

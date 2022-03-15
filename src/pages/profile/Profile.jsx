@@ -19,7 +19,7 @@ import { useState } from "react";
 export default function Profile() {
   // const role = useSelector(state=>state.auth.currentUser?.user.role);
   const currentUser = useSelector((state) => state.auth.userData);
-  
+
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingpass, setIsLoadingpass] = useState(false);
@@ -76,6 +76,7 @@ export default function Profile() {
                           email: currentUser?.email || "",
                           address: currentUser?.address || "",
                           signature: currentUser?.signature || "",
+                          mobile: currentUser?.mobile || "",
                         }}
                         onSubmit={(values) => {
                           progileEditHandler(values);
@@ -95,6 +96,12 @@ export default function Profile() {
                               type="email"
                               label={`ইমেইল`}
                               name="email"
+                            />
+                            <FtextField
+                              type="text"
+                              label={`মোবাইল`}
+                              name="mobile"
+                              disabled={true}
                             />
                             <FtextField
                               type="text"

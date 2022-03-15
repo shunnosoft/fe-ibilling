@@ -85,8 +85,8 @@ export default function ConfigMikrotik() {
     dispatch(clearMikrotik());
     fetchMikrotik(dispatch, ispOwner);
     fetchpppoeUser(dispatch, IDs);
-    fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
-    fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
+    // fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
+    // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     fetchActivepppoeUser(dispatch, IDs);
   }, [ispOwner, mikrotikId, dispatch, refresh]);
 
@@ -94,7 +94,7 @@ export default function ConfigMikrotik() {
   const getSpecificPPPoEPackage = (id) => {
     if (pppoePackage.length !== undefined) {
       const temp = pppoePackage.find((val) => {
-        return val.id === id;
+        return val.id ===id;
       });
       setSinglePackage(temp);
     }
