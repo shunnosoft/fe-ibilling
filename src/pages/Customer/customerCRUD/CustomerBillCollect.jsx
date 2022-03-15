@@ -68,13 +68,14 @@ console.log(defaultAmount)
               <div className="modal-body">
                 <Formik
                   initialValues={{
-                    amount: single.monthlyFee,
+                    amount: single?.monthlyFee,
                     // collectorId,customer,ispOwner
                   }}
                   validationSchema={BillValidatoin}
                   onSubmit={(values) => {
                     customerBillHandler(values);
                   }}
+                  enableReinitialize
                 >
                   {() => (
                     <Form>

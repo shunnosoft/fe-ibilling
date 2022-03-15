@@ -46,7 +46,7 @@ export default function Customer() {
   const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
-  const [cusId, setSingleCustomerReport] = useState("");
+  // const [cusId, setSingleCustomerReport] = useState("");
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);

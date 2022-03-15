@@ -1,8 +1,8 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import apiLink from "../../../api/apiLink";
-import TdLoader from "../../../components/common/TdLoader";
-import Pagination from "../../../components/Pagination";
+// import TdLoader from "../../../components/common/TdLoader";
+// import Pagination from "../../../components/Pagination";
 import "../customer.css";
 
 export default function CustomerReport({ single }) {

@@ -39,48 +39,48 @@ function App() {
   const dispatch =useDispatch()
   const accessToken = useSelector(state=>state.auth.accessToken)
 
-  // update token
-  const updateToken = useCallback(async () => {
-    try {
-      const response = await apiLink.post("v1/auth/refresh-tokens", {
-        method: "POST",
-      });
-      if (response.status === 200) {
-        console.log("We got the Token: ", response);
+  // // update token
+  // const updateToken = useCallback(async () => {
+  //   try {
+  //     const response = await apiLink.post("v1/auth/refresh-tokens", {
+  //       method: "POST",
+  //     });
+  //     if (response.status === 200) {
+  //       console.log("We got the Token: ", response);
       
-        // set new token to localstorage
-        // localStorage.setItem("token", JSON.stringify(response.data));
-        dispatch(updateTokenSuccess(response.data?.access.token))
-      } else {
-        // call logout method here
-        userLogout(dispatch)
-      }
-    } catch (err) {
-      console.log("Should Logout!");
-      // call logout method here
-      userLogout(dispatch);
-    }
-    if (loading) {
-      setLoading(false);
-    }
-  }, [loading,dispatch]);
+  //       // set new token to localstorage
+  //       // localStorage.setItem("token", JSON.stringify(response.data));
+  //       dispatch(updateTokenSuccess(response.data?.access.token))
+  //     } else {
+  //       // call logout method here
+  //       userLogout(dispatch)
+  //     }
+  //   } catch (err) {
+  //     console.log("Should Logout!");
+  //     // call logout method here
+  //     userLogout(dispatch);
+  //   }
+  //   if (loading) {
+  //     setLoading(false);
+  //   }
+  // }, [loading,dispatch]);
 
 
-  // called Update Token
-  useEffect(() => {
-    if (loading) {
-      updateToken();
-    }
+  // // called Update Token
+  // useEffect(() => {
+  //   if (loading) {
+  //     updateToken();
+  //   }
     
-    const timeToUpdate = 1000 * 60 * 5;
-    const interval = setInterval(() => {
-      if (accessToken) {
-        updateToken();
-      }
-    }, timeToUpdate);
-    return () => clearInterval(interval);
-  }, [loading, updateToken ,accessToken]);
-   // update token
+  //   const timeToUpdate = 1000 * 60 * 5;
+  //   const interval = setInterval(() => {
+  //     if (accessToken) {
+  //       updateToken();
+  //     }
+  //   }, timeToUpdate);
+  //   return () => clearInterval(interval);
+  // }, [loading, updateToken ,accessToken]);
+  //  // update token
 
   return (
     <ThemeProvider theme={themes[theme]}>

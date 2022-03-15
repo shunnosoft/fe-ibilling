@@ -12,7 +12,7 @@ import "./diposit.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
-import { useCallback, useEffect, useLayoutEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   addDeposit,
   depositAcceptReject,
@@ -46,9 +46,9 @@ const manager =useSelector(state=>state.manager.manager)
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
-  const [mainData2, setMainData2] = useState(allDeposit);
+  // const [mainData2, setMainData2] = useState(allDeposit);
   const userRole = useSelector((state) => state.auth.role);
-  const [depositAccepted, setDepositAccepet] = useState("")
+  // const [depositAccepted, setDepositAccepet] = useState("")
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
   });
@@ -157,13 +157,13 @@ useEffect(()=>{
     );
 
     // Temp varialbe for search
-    setMainData2(
-      getNames().filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    // setMainData2(
+    //   getNames().filter(
+    //     (item) =>
+    //       Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+    //       Date.parse(item.createdAt) <= Date.parse(initialToday)
+    //   )
+    // );
   }, [ getNames]);
 
 
@@ -211,7 +211,7 @@ useEffect(()=>{
 
 
     setMainData(arr);
-    setMainData2(arr);
+    // setMainData2(arr);
 
      
     

@@ -10,7 +10,7 @@ import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import arraySort from "array-sort";
 

@@ -6,7 +6,6 @@ import {
   ArrowClockwise,
   PencilFill,
   ArrowLeftShort,
-  Trash2Fill,
   ThreeDots,
   PenFill,
   ArchiveFill,
@@ -73,7 +72,7 @@ export default function ConfigMikrotik() {
   );
   const [refresh, setRefresh] = useState(0);
   const [refresh2, setRefresh2] = useState(0);
-  const [syncUserRefresh, setSyncUserRefresh] = useState(0);
+  // const [syncUserRefresh, setSyncUserRefresh] = useState(0);
   const dispatch = useDispatch();
 
   // fetch single mikrotik

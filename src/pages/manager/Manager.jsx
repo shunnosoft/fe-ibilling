@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   PersonPlusFill,
   ThreeDots,
@@ -11,7 +11,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 
 // internal imports
 import "./manager.css";
