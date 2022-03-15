@@ -329,13 +329,14 @@ export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
 
 //Customers
 export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
+  setIsloading(true);
   try {
     const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwner}`);
     dispatch(getCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
     console.log(error.message);
-    // setIsloading(false)
+    setIsloading(false);
   }
 };
 
@@ -393,19 +394,18 @@ export const deleteACustomer = async (dispatch, IDs) => {
 
 // get Mikrotik Sync user
 export const fetchMikrotikSyncUser = async (dispatch, IDs, setIsLoadingCus) => {
-  setIsLoadingCus(true)
+  setIsLoadingCus(true);
   await apiLink({
     method: "GET",
     url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
-      setIsLoadingCus(false)
-    toast.success("PPPoE sync customer success");
-
+      setIsLoadingCus(false);
+      toast.success("PPPoE sync customer success");
     })
     .catch((error) => {
-      setIsLoadingCus(false)
+      setIsLoadingCus(false);
       toast.error(error.message);
     });
 };
@@ -557,7 +557,6 @@ export const fetchpppoePackage = async (dispatch, IDs, setIsLoadingPac) => {
     dispatch(getpppoePackageSuccess(res.data));
     setIsLoadingPac(false);
     toast.success("PPPoE প্যাকেজ fetch success");
-
   } catch (error) {
     setIsLoadingPac(false);
     toast.error("PPPoE প্যাকেজ পাওয়া যায়নি!");
@@ -822,21 +821,13 @@ export const getAllBills = async (dispatch, ispOwnerId) => {
   }
 };
 
-
 //my deposit
 
-export const getMyDeposit =async(dispatch)=>{
+export const getMyDeposit = async (dispatch) => {
   try {
-
-    const res =await apiLink.get("/v1/deposit")
-   dispatch( getmyDepositSucces(res.data))
-
-    
+    const res = await apiLink.get("/v1/deposit");
+    dispatch(getmyDepositSucces(res.data));
   } catch (error) {
-    console.log(error?.response?.data.message)
-    
+    console.log(error?.response?.data.message);
   }
-
-
-
-}
+};

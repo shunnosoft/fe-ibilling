@@ -42,7 +42,8 @@ export const asyncLogin = async (dispatch, loginData) => {
 
   // apiCall
   dispatch(logInStart());
-  await publicRequest.post("/v1/auth/login",loginData)
+  await publicRequest
+    .post("/v1/auth/login", loginData)
     .then((res) => {
       document.querySelector(".Loader").style.display = "none";
       if (res.status === 200) {
@@ -50,7 +51,7 @@ export const asyncLogin = async (dispatch, loginData) => {
           toast.error("সার্ভার Error!");
         } else {
           dispatch(logInSuccess(res.data));
-          window.location.href = "/home";
+          window.location.reload();
         }
       } else {
         toast.error("সার্ভার Error!");
@@ -95,8 +96,8 @@ export const userLogout = async (dispatch) => {
   dispatch(clearManager());
   dispatch(clearCollector());
   dispatch(clearMikrotik());
-  dispatch(clearChart())
-  dispatch(clearBills())
-  dispatch(clearReseller())
+  dispatch(clearChart());
+  dispatch(clearBills());
+  dispatch(clearReseller());
   dispatch(logOut());
 };

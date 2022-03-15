@@ -12,13 +12,13 @@ import Loader from "../../../components/common/Loader";
 export default function CustomerBillCollect({ single }) {
   const [billType, setBillType] = useState("bill");
 
-  const [ defaultAmount , setDefault] = useState(single.monthlyFee);
+  const [defaultAmount, setDefault] = useState(single.monthlyFee);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
 
- const currentUserId=useSelector(state=>state.auth.userData.id)
-const dispatch = useDispatch()
-const [isLoading,setLoading] =useState(false)
+  const currentUserId = useSelector((state) => state.auth.userData.id);
+  const dispatch = useDispatch();
+  const [isLoading, setLoading] = useState(false);
   const BillValidatoin = Yup.object({
     amount: Yup.number().required("Please insert amount."),
   });
@@ -30,14 +30,13 @@ const [isLoading,setLoading] =useState(false)
       billType: billType,
       customer: single.id,
       ispOwner: ispOwner,
-      user:currentUser?.user.id,
-      collectorId: currentUserId  //when collector is logged in
+      user: currentUser?.user.id,
+      collectorId: currentUserId, //when collector is logged in
     };
-    billCollect(dispatch,sendingData,setLoading)
+    billCollect(dispatch, sendingData, setLoading);
   };
 
-  
-console.log(defaultAmount)
+  console.log(defaultAmount);
   return (
     <div>
       <div>
@@ -81,9 +80,8 @@ console.log(defaultAmount)
                     <Form>
                       <h4>Name:{single.name}</h4>
                       <h4>ID:{single.customerId}</h4>
-                      <h4>Monthly Fee:{single.monthlyFee}</h4>
 
-                      <FtextField  type="number"  name="amount" label="পরিমান" />
+                      <FtextField type="number" name="amount" label="পরিমান" />
                       <label>ধরণ</label>
                       <select
                         className="form-select"
@@ -95,7 +93,7 @@ console.log(defaultAmount)
 
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
-                         {isLoading? <Loader/>: "সাবমিট"} 
+                          {isLoading ? <Loader /> : "সাবমিট"}
                         </button>
                       </div>
                     </Form>

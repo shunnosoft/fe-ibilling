@@ -4,7 +4,14 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
-import { ArchiveFill, ArrowDownUp, PenFill, PersonFill, ThreeDots, Wallet } from "react-bootstrap-icons";
+import {
+  ArchiveFill,
+  ArrowDownUp,
+  PenFill,
+  PersonFill,
+  ThreeDots,
+  Wallet,
+} from "react-bootstrap-icons";
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
@@ -24,7 +31,7 @@ export default function Report() {
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
-  const [dateStart, setStartDate]= useState(firstDay);
+  const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state.payment.allBills);
@@ -61,7 +68,6 @@ export default function Report() {
   //   );
   // }, [cusSearch, allBills]);
 
-  
   useEffect(() => {
     let collectors = [];
 
@@ -80,8 +86,6 @@ export default function Report() {
     collectors.map((item) => collectorUserIdsArr.push(item.user));
     setCollectorIds(collectorUserIdsArr);
   }, [allCollector, manager]);
-
-  
 
   // useEffect(() => {
   //   getAllBills(dispatch, ispOwnerId);
@@ -181,33 +185,29 @@ export default function Report() {
 
     setMainData(arr);
     setMainData2(arr);
-
-     
-    
   };
 
   // const addAllBills = ()=>{
-  //   var total=0; 
+  //   var total=0;
   //    mainData.forEach((item)=>{
   //      console.log(item.amount)
   //      total=total+item.amount
 
   //    })
-  //    return total.toString() ; 
-     
+  //    return total.toString() ;
+
   // }
-  const addAllBills= useCallback(() => {
-      var count = 0 ; 
-      mainData.forEach((item)=>{
-        count=count+item.amount 
-      })
-      return  count.toString()
-      // mainData.reudce((preval,nextval)=>{
-      //  const res = preval+nextval.amount ; 
-      //  return res.toString()
-      // },0)
-     
-  }, [mainData])
+  const addAllBills = useCallback(() => {
+    var count = 0;
+    mainData.forEach((item) => {
+      count = count + item.amount;
+    });
+    return count.toString();
+    // mainData.reudce((preval,nextval)=>{
+    //  const res = preval+nextval.amount ;
+    //  return res.toString()
+    // },0)
+  }, [mainData]);
   // console.log(addAllBills())
 
   const onSearch = (e) => {
@@ -230,11 +230,10 @@ export default function Report() {
   };
 
   const toggleSort = (item) => {
-     setMainData(arraySort(mainData2, item, { reverse: isSorted }));
+    setMainData(arraySort(mainData2, item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
 
-  
   return (
     <>
       <Sidebar />
@@ -287,7 +286,7 @@ export default function Report() {
                         className="form-selectt"
                         onChange={(e) => onChangeCollector(e.target.value)}
                       >
-                        <option  value="" defaultValue>
+                        <option value="" defaultValue>
                           সকল কালেক্টর{" "}
                         </option>
                         {collectors?.map((c, key) => (
@@ -299,7 +298,7 @@ export default function Report() {
 
                       <div className="dateDiv  ">
                         <input
-                        className="form-selectt"
+                          className="form-selectt"
                           type="date"
                           id="start"
                           name="trip-start"
@@ -315,7 +314,7 @@ export default function Report() {
                       </div>
                       <div className="dateDiv">
                         <input
-                        className="form-selectt"
+                          className="form-selectt"
                           type="date"
                           id="end"
                           name="trip-start"
@@ -339,14 +338,15 @@ export default function Report() {
                       >
                         ফিল্টার
                       </button>
-                       
                     </div>
 
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          বিলঃ<span className="allCollectorSpan">{addAllBills()} টাকা</span>
-                           
+                          বিলঃ
+                          <span className="allCollectorSpan">
+                            {addAllBills()} টাকা
+                          </span>
                         </h4>
                       </div>
 
@@ -376,16 +376,13 @@ export default function Report() {
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th
-                              onClick={() => toggleSort("customer.name")}
+                            onClick={() => toggleSort("customer.name")}
                             scope="col"
                           >
                             গ্রাহক
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
-                          <th
-                               onClick={() => toggleSort("amount")}
-                            scope="col"
-                          >
+                          <th onClick={() => toggleSort("amount")} scope="col">
                             bill
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
@@ -409,8 +406,8 @@ export default function Report() {
                         ) : (
                           mainData.map((val, key) => (
                             <tr key={key} id={val.id}>
-                              <td>{val.customer.customerId}</td>
-                              <td>{val.customer.name}</td>
+                              <td>{val.customer?.customerId}</td>
+                              <td>{val.customer?.name}</td>
                               <td>{val.amount}</td>
                               <td>
                                 {moment(val.createdAt).format("DD-MM-YYYY")}

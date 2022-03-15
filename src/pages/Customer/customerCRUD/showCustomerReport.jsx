@@ -3,29 +3,42 @@ import React, { useEffect, useState } from "react";
 import apiLink from "../../../api/apiLink";
 // import TdLoader from "../../../components/common/TdLoader";
 // import Pagination from "../../../components/Pagination";
+import TdLoader from "../../../components/common/TdLoader";
 import "../customer.css";
 
 export default function CustomerReport({ single }) {
-  console.log("Single: ", single);
-  const [mainData ,setMaindata] =useState([])
+  const [customerReport, setCustomerReport] = useState([]);
+  const [mainData, setMaindata] = useState([]);
 
-  console.log(mainData)
-
-  useEffect(()=>{
-    const getReport = async () =>{
+  useEffect(() => {
+    const getCustoemrReport = async () => {
       try {
-        const res = await apiLink.get(`/v1/bill/customer/${"6209346cf896731c26ecca51"}`)
-        console.log(res.data)
-        setMaindata(res.data)
-
-        
-      } catch (error) {
-        console.log(error)
-        
+        const res = await apiLink(`/v1/bill/customer/${single?.id}`);
+        const data = await res.data;
+        setCustomerReport(data);
+      } catch (err) {
+        console.log("Error to get report: ", err);
       }
-    }
-    getReport()
-  },[single])
+    };
+    getCustoemrReport();
+  }, [single]);
+
+  console.log("Single: ", single);
+
+  useEffect(() => {
+    const getReport = async () => {
+      try {
+        const res = await apiLink.get(
+          `/v1/bill/customer/${"6209346cf896731c26ecca51"}`
+        );
+        console.log(res.data);
+        setMaindata(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getReport();
+  }, [single]);
   //todo
   return (
     <div>
@@ -36,7 +49,7 @@ export default function CustomerReport({ single }) {
         aria-labelledby="customerModalDetails"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-xl">
+        <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5
@@ -59,17 +72,18 @@ export default function CustomerReport({ single }) {
                   <thead>
                     <tr className="spetialSortingRow">
                       <th scope="col">বিল</th>
-
                       <th scope="col">তারিখ</th>
+                      <th scope="col">সময়</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {mainData.map((val, key) => (
-                      <tr key={key} id={val.id}>
-                        <td>{val.amount}</td>
-                        <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
-
-                        <td className="centeringTD"></td>
+                    {customerReport?.map((val, index) => (
+                      <tr className="spetialSortingRow" key={index}>
+                        <td scope="col">{val.amount}</td>
+                        <td scope="col">
+                          {moment(val.createdAt).format("DD-MM-YYYY")}
+                        </td>
+                        <td>{moment(val.createdAt).format("hh:mm")}</td>
                       </tr>
                     ))}
                   </tbody>
