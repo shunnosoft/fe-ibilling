@@ -2,7 +2,7 @@ import React from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { BoxArrowLeft } from "react-bootstrap-icons";
 
 // internal imports
@@ -17,7 +17,8 @@ export default function Header(props) {
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-
+  const pathName = useLocation().pathname;
+  console.log(pathName);
   const changeTHeme = () => {
     if (props.theme === "light") {
       props.setTheme("dark");
@@ -88,6 +89,10 @@ export default function Header(props) {
                     </li>
                   </ul>
                 </div>
+              ) : pathName === "/register" ? (
+                <NavLink to="/login">
+                  <p className="goToLoginPage">লগইন</p>
+                </NavLink>
               ) : (
                 <NavLink to="/register">
                   <p className="goToLoginPage">রেজিস্টার</p>
