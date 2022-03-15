@@ -101,6 +101,7 @@ const allCollector = useSelector(state=>state.collector.collector)
   
   },[mainData])
 
+  // nothing
 useEffect(()=>{
   getMyDeposit(dispatch)
   
