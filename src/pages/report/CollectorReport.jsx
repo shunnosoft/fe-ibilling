@@ -45,21 +45,36 @@ export default function CollectorReport() {
 
   console.log(collectorArea);
   useEffect(() => {
-    const areas = [];
+    let areas = [];
 
-    collectorArea.map((sub) => {
-        
-    //   return areas.push({
-    //     name: sub.area.name,
-    //     id: sub.area.id,
-    //     subArea: [{ name: sub.name, id: sub.id }],
-    //   });
+    collectorArea?.map((item) => {
+      let area = {
+        id: item.area.id,
+        name: item.area.name,
+        subAreas: [
+          {
+            id: item.id,
+            name: item.name,
+          },
+        ],
+      };
 
-    
+      let found = areas?.find((area) => area.id === item.area.id);
+      if (found) {
+        found.subAreas.push({ id: item.id, name: item.name });
 
+        areas[areas.findIndex((item) => item.id === found.id)] = found;
+      } else {
+        areas.push(area);
+      }
+
+      //   return areas.push({
+      //     name: sub.area.name,
+      //     id: sub.area.id,
+      //     subArea: [{ name: sub.name, id: sub.id }],
+      //   });
     });
     console.log(areas);
-    
   }, [collectorArea]);
 
   useEffect(() => {
