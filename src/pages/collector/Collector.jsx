@@ -39,8 +39,9 @@ export default function Collector() {
   const lastIndex = currentPage * collectorPerPage;
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
-  const permission =useSelector(state=>state.auth?.userData?.permissions)
-  const role = useSelector(state=>state.auth.role)
+  const [allCollector, setCollector] = useState(currentCollector);
+  const permission = useSelector((state) => state.auth?.userData?.permissions);
+  const role = useSelector((state) => state.auth.role);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -65,7 +66,29 @@ export default function Collector() {
   //   const IDs = { ispOwnerId, collectorId: ID };
   //   deleteCollector(dispatch, IDs, setIsDeleting);
   // };
+  // console.log(allCollector)
 
+  
+  useEffect(() => {
+    const keys = ["name", "mobile", "email"];
+    if (collSearch !== "") {
+      setCollector(
+        collector.filter((item) =>
+          keys.some((key) =>
+            typeof item[key] === "string"
+              ? item[key].toLowerCase().includes(collSearch)
+              : item[key].toString().includes(collSearch)
+          )
+        )
+      );
+    } else {
+      setCollector(collector);
+    }
+  }, [collSearch,collector]);
+
+  const searchHandler = (e) => {
+    setCollSearch(e.toLowerCase())
+  };
   return (
     <>
       <Sidebar />
@@ -86,13 +109,16 @@ export default function Collector() {
                   <div className="addCollector">
                     <div className="addNewCollector">
                       <div className="displexFlexSys">
-                         
                         <div className="addAndSettingIcon">
-                         {(permission?.collectorAdd || role==="ispOwner")? <PersonPlusFill
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#collectorModal"
-                          />:""}
+                          {permission?.collectorAdd || role === "ispOwner" ? (
+                            <PersonPlusFill
+                              className="addcutmButton"
+                              data-bs-toggle="modal"
+                              data-bs-target="#collectorModal"
+                            />
+                          ) : (
+                            ""
+                          )}
                           {/* <GearFill
                             className="addcutmButton"
                             // data-bs-toggle="modal"
@@ -106,7 +132,7 @@ export default function Collector() {
                       <div className="col-sm-8">
                         <h4 className="allCollector">
                           মোট কালেক্টর:
-                          <span>{collector.length || "NULL"}</span>
+                          <span>{collector?.length || ""}</span>
                         </h4>
                       </div>
 
@@ -116,7 +142,7 @@ export default function Collector() {
                             type="text"
                             className="search"
                             placeholder="সার্চ এর জন্য নাম লিখুন"
-                            onChange={(e) => setCollSearch(e.target.value)}
+                            onChange={(e) => searchHandler(e.target.value)}
                           />
                         </div>
                       </div>
@@ -147,47 +173,43 @@ export default function Collector() {
                             <TdLoader colspan={5} />
                           </tr>
                         ) : (
-                          currentCollector
-                            .filter((val) => {
-                              return val.name
-                                .toLowerCase()
-                                .includes(collSearch.toLowerCase());
-                            })
-                            .map((val, key) => (
-                              <tr key={key}>
-                                <td>{++serial}</td>
-                                <td>{val.name}</td>
-                                <td>{val.mobile}</td>
-                                <td>{val.email}</td>
-                                <td className="centeringTD">
-                                  <ThreeDots
-                                    className="dropdown-toggle ActionDots"
-                                    id="customerDrop"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  />
+                          allCollector?.map((val, key) => (
+                            <tr key={key}>
+                              <td>{++serial}</td>
+                              <td>{val.name}</td>
+                              <td>{val.mobile}</td>
+                              <td>{val.email}</td>
+                              <td className="centeringTD">
+                                <ThreeDots
+                                  className="dropdown-toggle ActionDots"
+                                  id="customerDrop"
+                                  type="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                />
 
-                                  {/* modal */}
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="customerDrop"
+                                {/* modal */}
+                                <ul
+                                  className="dropdown-menu"
+                                  aria-labelledby="customerDrop"
+                                >
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showCollectorDetails"
+                                    onClick={() => {
+                                      getSpecificCollector(val.id);
+                                    }}
                                   >
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#showCollectorDetails"
-                                      onClick={() => {
-                                        getSpecificCollector(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PersonFill />
-                                          <p className="actionP">প্রোফাইল</p>
-                                        </div>
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <PersonFill />
+                                        <p className="actionP">প্রোফাইল</p>
                                       </div>
-                                    </li>
-                                    {(permission?.collectorEdit || role==="ispOwner")?<li
+                                    </div>
+                                  </li>
+                                  {permission?.collectorEdit ||
+                                  role === "ispOwner" ? (
+                                    <li
                                       data-bs-toggle="modal"
                                       data-bs-target="#collectorEditModal"
                                       onClick={() => {
@@ -200,8 +222,11 @@ export default function Collector() {
                                           <p className="actionP">এডিট</p>
                                         </div>
                                       </div>
-                                    </li>:""}
-                                   {/* {role==="ispOwner"? <li
+                                    </li>
+                                  ) : (
+                                    ""
+                                  )}
+                                  {/* {role==="ispOwner"? <li
                                       onClick={() => {
                                         deleteCollectorHandler(val.id);
                                       }}
@@ -213,12 +238,12 @@ export default function Collector() {
                                         </div>
                                       </div>
                                     </li>:""} */}
-                                  </ul>
+                                </ul>
 
-                                  {/* end */}
-                                </td>
-                              </tr>
-                            ))
+                                {/* end */}
+                              </td>
+                            </tr>
+                          ))
                         )}
                       </tbody>
                     </table>

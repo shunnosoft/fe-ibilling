@@ -107,7 +107,7 @@ export default function Customer() {
   const getSpecificCustomerReport = (reportData) => {
     setId(reportData);
   };
-
+ 
   // DELETE handler
   const deleteCustomer = async (ID) => {
     setIsDeleting(true);

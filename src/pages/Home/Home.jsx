@@ -62,25 +62,21 @@ export default function Home() {
   useEffect(() => {
     if (role === "ispOwner") {
       getManger(dispatch, ispOwnerId);
-      fetchMikrotik(dispatch, ispOwnerId);
       fetchReseller(dispatch, ispOwnerId);
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
-      fetchMikrotik(dispatch, ispOwnerId);
     }
 
     if (role === "ispOwner" || role === "manager") {
       getCollector(dispatch, ispOwnerId);
-      getCharts(dispatch, ispOwnerId);
+      getAllBills(dispatch, ispOwnerId);
+      fetchMikrotik(dispatch, ispOwnerId);
     }
 
+    //for all roles
     getArea(dispatch, ispOwnerId);
-
-    //problem collector can't access them
-
-    getAllBills(dispatch, ispOwnerId);
-    getManger(dispatch, ispOwnerId);
+    getCharts(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId, role, userData]);
 
   useEffect(() => {
