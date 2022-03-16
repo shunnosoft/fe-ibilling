@@ -445,7 +445,7 @@ export default function Diposit() {
                         </tbody>
                       </table>
                     </div>
-                    {userRole === "ispOwner" ? (
+                    {userRole !== "ispOwner" ? (
                       <div className="row searchCollector">
                         <div className="col-sm-8">
                           <h4 className="allCollector">
@@ -470,7 +470,7 @@ export default function Diposit() {
                     )}
 
                     {/* table */}
-                    <div className="table-responsive-lg">
+                   {  userRole !== "ispOwner" ? <div className="table-responsive-lg">
                       <table className="table table-striped ">
                         <thead>
                           <tr>
@@ -491,7 +491,7 @@ export default function Diposit() {
                           ))}
                         </tbody>
                       </table>
-                    </div>
+                    </div>:""}
                   </div>
                 </FourGround>
               ) : (
