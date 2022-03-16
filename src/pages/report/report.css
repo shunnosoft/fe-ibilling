@@ -112,8 +112,6 @@
   grid-gap: 20px;
 }
 
-
-
 /* css added by enamul */
 .allCollector {
   display: flex;
@@ -141,11 +139,11 @@
 
 .selectFilteringg {
   width: 100%;
-  display: flex;
+  font-weight: 500;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 20px;
   align-items: center;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  font-weight: bold;
 }
 .form-select {
   max-width: 200px;
@@ -170,7 +168,7 @@
   }
 }
 @media only screen and (max-width: 700px) {
-  form-selectt{
+  form-selectt {
     width: 100%;
   }
 }

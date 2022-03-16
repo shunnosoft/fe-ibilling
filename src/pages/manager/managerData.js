@@ -1,24 +1,25 @@
 export const managerPermission = (permission) => {
-//   accounts: true
-// billEdit: false
-// billPosting: false
-// collectorAdd: false
-// collectorEdit: false
-// customerActivate: false
-// customerAdd: false
-// customerDeactivate: false
-// customerDelete: false
-// customerEdit: false
-// fileExport: true
-// inventory: true
-// monthlyFeeEdit: false
-// print: true
-// sendSMS: false
-// viewCollectorReport: false
-// viewCustomerList: true
-// viewTotalReport: true
-// webLogin: true
-   const per= [
+  //   accounts: true
+  // billEdit: false
+  // billPosting: false
+  // collectorAdd: false
+  // collectorEdit: false
+  // customerActivate: false
+  // customerAdd: false
+  // customerDeactivate: false
+  // customerDelete: false
+  // customerEdit: false
+  // fileExport: true
+  // inventory: true
+  // monthlyFeeEdit: false
+  // print: true
+  // sendSMS: false
+  // viewCollectorReport: false
+  // viewCustomerList: true
+  // viewTotalReport: true
+  // webLogin: true
+  console.log("Permission: ", permission);
+  const per = [
     {
       id: 1,
       value: "customerAdd",
@@ -53,13 +54,13 @@ export const managerPermission = (permission) => {
       id: 6,
       value: "billEdit",
       label: "বিল আপডেট",
-      isChecked:  false,
+      isChecked: permission?.billEdit,
     },
     {
       id: 7,
       value: "monthlyFeeEdit",
       label: "মাসিক ফি আপডেট",
-      isChecked: false,
+      isChecked: permission?.monthlyFeeEdit,
     },
     {
       id: 8,
@@ -93,5 +94,5 @@ export const managerPermission = (permission) => {
     },
   ];
 
-  return per ; 
+  return per;
 };
