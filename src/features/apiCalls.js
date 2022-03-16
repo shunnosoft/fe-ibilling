@@ -71,9 +71,13 @@ export const getManger = async (dispatch, ispWonerId) => {
   }
 };
 
-export const getCharts = async (dispatch, ID) => {
+export const getCharts = async (dispatch, ispOwnerId, Year, Month, User) => {
   try {
-    const res = await apiLink(`/v1/dashboard/${ID}`);
+    let link = `/v1/dashboard/${ispOwnerId}?year=${Year}&month=${Month}`;
+    if (User)
+      link = `/v1/dashboard/${ispOwnerId}?year=${Year}&month=${Month}&user=${User}`;
+    const res = await apiLink(link);
+    console.log("Charts: ", res.data);
     dispatch(getChartSuccess(res.data));
   } catch (err) {
     console.log("Charts error: ", err);
