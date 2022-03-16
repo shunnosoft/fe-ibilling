@@ -22,6 +22,7 @@ import {
 } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import Loader from "../../components/common/Loader";
 
 export default function Diposit() {
   const balancee = useSelector((state) => state.payment.balance);
@@ -39,6 +40,7 @@ export default function Diposit() {
   const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
+  console.log(ownDeposits)
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
@@ -64,8 +66,10 @@ export default function Diposit() {
     addDeposit(dispatch, sendingData, setLoading);
   };
 
+  const [acceptLoading,setAccLoading] =useState( true)
+
   const depositAcceptRejectHandler = (status, id) => {
-    depositAcceptReject(dispatch, status, id);
+    depositAcceptReject(dispatch, status, id , setAccLoading);
   };
   const allCollector = useSelector((state) => state.collector.collector);
 
@@ -239,7 +243,7 @@ export default function Diposit() {
                               type="submit"
                               className="btn btn-success dipositSubmitBtn"
                             >
-                              সাবমিট
+                       {  isLoading? <Loader></Loader> :   " সাবমিট"}
                             </button>
                           </div>
                         </Form>
@@ -409,6 +413,9 @@ export default function Diposit() {
                               <td>৳ {item.amount}</td>
                               <td>
                                 {item.status === "pending" ? (
+                                 acceptLoading ? <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                  <Loader />
+                                </div> :
                                   <div className="AcceptRejectBtn">
                                     <button
                                       onClick={() => {
