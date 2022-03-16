@@ -8,7 +8,6 @@ import "../customer.css";
 
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
-  const [mainData, setMaindata] = useState([]);
 
   useEffect(() => {
     const getCustoemrReport = async () => {
@@ -23,23 +22,6 @@ export default function CustomerReport({ single }) {
     getCustoemrReport();
   }, [single]);
 
-  console.log("Single: ", single);
-
-  useEffect(() => {
-    const getReport = async () => {
-      try {
-        const res = await apiLink.get(
-          `/v1/bill/customer/${"6209346cf896731c26ecca51"}`
-        );
-        console.log(res.data);
-        setMaindata(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getReport();
-  }, [single]);
-  //todo
   return (
     <div>
       <div

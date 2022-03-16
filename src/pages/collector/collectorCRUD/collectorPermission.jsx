@@ -1,5 +1,5 @@
 export const collectorPermission = (permission) => {
-    // currently added 
+  // currently added
   // customerAdd(pin):true
   // customerEdit(pin):true
   // customerActivate(pin):true
@@ -7,11 +7,10 @@ export const collectorPermission = (permission) => {
   // sendSMS(pin):true
   // billPosting(pin):true
 
-
-//NOt implimented 
+  //NOt implimented
   // viewTotalReport(pin):true
   // webLogin(pin):true
-  
+
   //these are not matched with manager
   // viewCustomerList(pin):true//
   // connectionFee(pin):true //
@@ -45,20 +44,20 @@ export const collectorPermission = (permission) => {
     },
     {
       id: 5,
-      value: "customerDelete",
-      label: "গ্রাহক Dekhbe",
+      value: "viewCustomer",
+      label: "গ্রাহক দেখবে",
       isChecked: permission?.viewCustomerList,
     },
     {
       id: 6,
-      value: "billEdit",
-      label: "Connection Fee",
+      value: "connectionFee",
+      label: "কানেকশন ফি",
       isChecked: permission?.connectionFee, //ToDo
     },
     {
       id: 7,
-      value: "monthlyFeeEdit",
-      label: "customer Mobile Edit",
+      value: "CustomerMobileEdit",
+      label: "মোবাইল পরিবর্তন",
       isChecked: permission?.customerMobileEdit, //ToDo
     },
     {
@@ -76,7 +75,7 @@ export const collectorPermission = (permission) => {
     {
       id: 11,
       value: "billPosting",
-      label: "বিল Print",
+      label: "বিল প্রিন্ট",
       isChecked: permission?.billPrint,
     },
   ];

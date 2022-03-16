@@ -67,6 +67,7 @@ export default function Home() {
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
+      fetchMikrotik(dispatch, ispOwnerId);
     }
 
     if (role === "ispOwner" || role === "manager") {

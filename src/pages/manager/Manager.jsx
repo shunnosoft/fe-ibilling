@@ -38,7 +38,6 @@ import Loader from "../../components/common/Loader";
 export default function Manager() {
   const [isLoading, setIsLoading] = useState(false);
   const manager = useSelector((state) => state.manager?.manager);
-  console.log(manager);
   const ispOwnerId = useSelector(
     (state) => state.auth.currentUser?.ispOwner?.id
   );
