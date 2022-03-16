@@ -18,23 +18,28 @@ import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
+import { getCollectorBill } from "../../features/apiCalls";
 
 export default function CollectorReport() {
-  const allArea = useSelector((state) => state.area.area);
+  //   const allArea = useSelector((state) => state.area.area);
+  const [allArea, setAreas] = useState([]);
   const collectorArea = useSelector(
     (state) => state.auth.currentUser?.collector.areas
   );
+  
+  
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
+
+  
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const allBills = useSelector((state) => state.payment.allBills);
+  const allBills = useSelector((state) => state.collector.collectorBill);
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
@@ -43,7 +48,12 @@ export default function CollectorReport() {
 
   const [isSorted, setSorted] = useState(false);
 
-  console.log(collectorArea);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getCollectorBill(dispatch);
+  }, [dispatch]);
+
   useEffect(() => {
     let areas = [];
 
@@ -63,18 +73,12 @@ export default function CollectorReport() {
       if (found) {
         found.subAreas.push({ id: item.id, name: item.name });
 
-        areas[areas.findIndex((item) => item.id === found.id)] = found;
+        return (areas[areas.findIndex((item) => item.id === found.id)] = found);
       } else {
-        areas.push(area);
+        return areas.push(area);
       }
-
-      //   return areas.push({
-      //     name: sub.area.name,
-      //     id: sub.area.id,
-      //     subArea: [{ name: sub.name, id: sub.id }],
-      //   });
     });
-    console.log(areas);
+    setAreas(areas);
   }, [collectorArea]);
 
   useEffect(() => {
@@ -88,7 +92,7 @@ export default function CollectorReport() {
     initialFirst.setHours(0, 0, 0, 0);
     initialToday.setHours(23, 59, 59, 999);
     setMainData(
-      allBills.filter(
+      allBills?.filter(
         (item) =>
           Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
           Date.parse(item.createdAt) <= Date.parse(initialToday)
@@ -97,7 +101,7 @@ export default function CollectorReport() {
 
     // Temp varialbe for search
     setMainData2(
-      allBills.filter(
+      allBills?.filter(
         (item) =>
           Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
           Date.parse(item.createdAt) <= Date.parse(initialToday)
@@ -139,7 +143,7 @@ export default function CollectorReport() {
     let arr = allBills;
 
     if (subAreaIds.length) {
-      arr = allBills.filter((bill) =>
+      arr = allBills?.filter((bill) =>
         subAreaIds.includes(bill.customer.subArea)
       );
     }
@@ -156,7 +160,7 @@ export default function CollectorReport() {
 
   const addAllBills = useCallback(() => {
     var count = 0;
-    mainData.forEach((item) => {
+    mainData?.forEach((item) => {
       count = count + item.amount;
     });
     return count.toString();

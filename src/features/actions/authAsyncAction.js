@@ -91,13 +91,19 @@ export const asyncLogin = async (dispatch, loginData) => {
 // };
 
 export const userLogout = async (dispatch) => {
-  dispatch(clearCustomer());
-  dispatch(clearArea());
-  dispatch(clearManager());
-  dispatch(clearCollector());
-  dispatch(clearMikrotik());
-  dispatch(clearChart());
-  dispatch(clearBills());
-  dispatch(clearReseller());
-  dispatch(logOut());
+  try {
+    // await apiLink.post("/v1/auth/logout");
+
+    dispatch(clearCustomer());
+    dispatch(clearArea());
+    dispatch(clearManager());
+    dispatch(clearCollector());
+    dispatch(clearMikrotik());
+    dispatch(clearChart());
+    dispatch(clearBills());
+    dispatch(clearReseller());
+    dispatch(logOut());
+  } catch (error) {
+    console.log(error);
+  }
 };

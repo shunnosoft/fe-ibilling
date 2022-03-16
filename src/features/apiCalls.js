@@ -23,6 +23,7 @@ import {
   addCollectorSuccess,
   deleteCollectorSuccess,
   editCollectorSuccess,
+  getCollectorBills,
   getCollectorSuccess,
 } from "./collectorSlice";
 import {
@@ -797,14 +798,18 @@ export const getDeposit = async (dispatch, data) => {
   }
 };
 
-export const depositAcceptReject = async (dispatch, status, id) => {
+export const depositAcceptReject = async (dispatch, status, id , setAccLoading) => {
+
   console.log(status, id);
+  setAccLoading(true)
   try {
     const res = await apiLink.patch(`/v1/deposit/${id}`, { status: status });
     dispatch(updateDepositSuccess(res.data));
-
+    setAccLoading(false)
     toast.success("Deposit Collect Success");
   } catch (error) {
+    setAccLoading(false)
+
     toast.error(error.message);
   }
 };
@@ -828,3 +833,20 @@ export const getMyDeposit = async (dispatch) => {
     console.log(error?.response?.data.message);
   }
 };
+
+
+
+//Collector Bills
+
+export const getCollectorBill= async (dispatch)=>{
+  try {
+    const res =await apiLink.get("/v1/bill/monthlyBill")
+    
+    dispatch(getCollectorBills(res.data))
+    
+  } catch (error) {
+    console.log(error.message)
+    
+  }
+
+}

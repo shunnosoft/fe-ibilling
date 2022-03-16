@@ -5,6 +5,7 @@ const collectorSlice = createSlice({
   name: "collector",
   initialState: {
     collector: [],
+    collectorBill:[]
   },
   reducers: {
     getCollectorSuccess: (state, action) => {
@@ -25,14 +26,19 @@ const collectorSlice = createSlice({
         1
       );
     },
+    getCollectorBills:(state,action) =>{
+      state.collectorBill=action.payload
+    },
     clearCollector:(state)=>{
       state.collector=[]
+      state.collectorBill=[]
     }
   },
 });
 
 export const {
   getCollectorSuccess,
+  getCollectorBills,
   clearCollector,
   addCollectorSuccess,
   editCollectorSuccess,
