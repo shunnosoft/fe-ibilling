@@ -35,9 +35,9 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  const [loading,setLoading]=useState(false)
-  const dispatch =useDispatch()
-  const accessToken = useSelector(state=>state.auth.accessToken)
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
   // update token
   const updateToken = useCallback(async () => {
@@ -45,42 +45,32 @@ function App() {
       const response = await apiLink.post("v1/auth/refresh-tokens", {
         method: "POST",
       });
-      if (response.status === 200) {
-        console.log("We got the Token: ", response);
-      
-        // set new token to localstorage
-        // localStorage.setItem("token", JSON.stringify(response.data));
-        dispatch(updateTokenSuccess(response.data?.access.token))
-      } else {
-        // call logout method here
-        userLogout(dispatch)
-      }
+      const data = await response?.data;
+      dispatch(updateTokenSuccess(data?.access.token));
     } catch (err) {
-      console.log("Should Logout!");
-      // call logout method here
       userLogout(dispatch);
+      console.log("Refresh token error: ", err);
     }
     if (loading) {
       setLoading(false);
     }
-  }, [loading,dispatch]);
-
+  }, [loading, dispatch]);
 
   // called Update Token
   useEffect(() => {
     if (loading) {
       updateToken();
     }
-    
-    const timeToUpdate = 1000 * 60 * 500;
+
+    const timeToUpdate = 1000 * 60 * 12;
     const interval = setInterval(() => {
       if (accessToken) {
         updateToken();
       }
     }, timeToUpdate);
     return () => clearInterval(interval);
-  }, [loading, updateToken ,accessToken]);
-   // update token
+  }, [loading, updateToken, accessToken]);
+  // update token
 
   return (
     <ThemeProvider theme={themes[theme]}>

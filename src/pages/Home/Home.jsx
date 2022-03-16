@@ -7,7 +7,7 @@ import { ThreeDotsVertical } from "react-bootstrap-icons";
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
-import { cardData } from "./homeData";
+import { cardData, monthsName } from "./homeData";
 import {
   fetchMikrotik,
   fetchReseller,
@@ -19,7 +19,6 @@ import {
 import { getCharts } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
-import { Formik, Form } from "formik";
 
 export default function Home() {
   const role = useSelector((state) => state.auth.role);
@@ -34,12 +33,18 @@ export default function Home() {
   const [count, setCount] = useState([]);
   const dispatch = useDispatch();
 
+  const date = new Date();
+
+  const [currentCollector, setCurrentCollector] = useState("");
+  const [Year, setYear] = useState(date.getFullYear());
+  const [Month, setMonth] = useState(date.getMonth());
+
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
     labels: collection,
     datasets: [
       {
-        label: "Count",
+        label: "বিল",
         data: count,
         backgroundColor: ["purple", "yellow", "green", "blue"],
         borderColor: "#0cc30c",
@@ -48,7 +53,7 @@ export default function Home() {
         backgroundColor: "rgb(110 110 110 / 24%)",
       },
       {
-        labels: "এমাউন্ট",
+        label: "এমাউন্ট",
         data: label,
         backgroundColor: "rgb(110 110 110 / 24%)",
         borderJoinStyle: "round",
@@ -93,7 +98,8 @@ export default function Home() {
 
     //for all roles
     getArea(dispatch, ispOwnerId);
-    getCharts(dispatch, ispOwnerId);
+    // getArea(dispatch, IDBOpenDBRequest)
+    getCharts(dispatch, ispOwnerId, Year, Month);
   }, [dispatch, ispOwnerId, role, userData]);
 
   useEffect(() => {
@@ -110,25 +116,15 @@ export default function Home() {
     setLabel(tempArr);
     setCollection(tempCollection);
     setCount(tempCount);
-  }, []);
-
-  const currentYear = new Date().getFullYear();
+  }, [ChartsData]);
 
   const handleFilterHandler = () => {
-    const collectorValue = document.getElementById("filterCollector").value;
-    const YearValue = document.getElementById("filterYear").value;
-    const MonthValue = document.getElementById("filterMonth").value;
-
-    if (collectorValue && YearValue && MonthValue) {
-      const filterData = {
-        Collector: collectorValue,
-        Year: YearValue,
-        Month: MonthValue,
-      };
-      console.log("Data: ", filterData);
-    } else {
-      toast.warning("সকল ফিল্টার  সিলেক্ট করুন");
-    }
+    const filterData = {
+      User: currentCollector,
+      Year: Year,
+      Month: Month,
+    };
+    getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
   };
 
   return (
@@ -163,7 +159,10 @@ export default function Home() {
               <h3 className="chartTitle">কালেকশন</h3>
 
               <div className="ChartsFilter">
-                <select className="form-select" id="filterCollector">
+                <select
+                  className="form-select"
+                  onChange={(e) => setCurrentCollector(e.target.value)}
+                >
                   <option value="">সকল কালেক্টর</option>
                   {collectors?.map((c, key) => (
                     <option key={key} value={c.user}>
@@ -171,25 +170,23 @@ export default function Home() {
                     </option>
                   ))}
                 </select>
-                <select className="form-select" id="filterYear">
-                  <option value="">বছর</option>
-                  <option value={currentYear - 1}>{currentYear - 1}</option>
-                  <option value={currentYear}>{currentYear}</option>
+                <select
+                  className="form-select"
+                  onChange={(e) => setYear(e.target.value)}
+                >
+                  <option value={Year}>{Year}</option>
+                  <option value={Year - 1}>{Year - 1}</option>
                 </select>
-                <select className="form-select" id="filterMonth">
-                  <option value="">মাস</option>
-                  <option value="0">জানুয়ারি</option>
-                  <option value="1">ফেব্রুয়ারি</option>
-                  <option value="2">মার্চ</option>
-                  <option value="3">এপ্রিল</option>
-                  <option value="4">মে</option>
-                  <option value="5">জুন</option>
-                  <option value="6">জুলাই</option>
-                  <option value="7">আগস্ট</option>
-                  <option value="8">সেপ্টেম্বর</option>
-                  <option value="9">অক্টোবর</option>
-                  <option value="10">নভেম্বর</option>
-                  <option value="11">ডিসেম্বর</option>
+                <select
+                  className="form-select"
+                  onChange={(e) => setMonth(e.target.value)}
+                >
+                  <option value={Month}>
+                    {monthsName.filter((val, index) => index === Month)}
+                  </option>
+                  {monthsName.map((val, index) => (
+                    <option value={index}>{val}</option>
+                  ))}
                 </select>
                 <button
                   type="button"
