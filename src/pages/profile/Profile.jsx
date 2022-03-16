@@ -19,19 +19,23 @@ import { useState } from "react";
 export default function Profile() {
   // const role = useSelector(state=>state.auth.currentUser?.user.role);
   const currentUser = useSelector((state) => state.auth.userData);
-  
+
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingpass, setIsLoadingpass] = useState(false);
 
   const passwordValidator = Yup.object({
-    oldPassword: Yup.string().required("Old পাসওয়ার্ড ***"),
+    oldPassword: Yup.string().required("পুরাতন পাসওয়ার্ড ***"),
     newPassword: Yup.string()
-      .required("New পাসওয়ার্ড ***")
+      .required("নতুন পাসওয়ার্ড ***")
       .matches(
         /^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
         "Must Contain 8 Characters,   One Alphabat, One Number"
       ),
+    confrimPassword: Yup.string().oneOf(
+      [Yup.ref("newPassword"), null],
+      "Passwords must match"
+    ),
   });
   const dispatch = useDispatch();
   const progileEditHandler = (data) => {
@@ -135,12 +139,17 @@ export default function Profile() {
                             <FtextField
                               type="password"
                               name="oldPassword"
-                              label="Old পাসওয়ার্ড"
+                              label="পুরাতন পাসওয়ার্ড"
                             />
                             <FtextField
                               type="password"
                               name="newPassword"
-                              label="New পাসওয়ার্ড"
+                              label="নতুন পাসওয়ার্ড"
+                            />
+                            <FtextField
+                              type="password"
+                              name="confrimPassword"
+                              label="Confirm পাসওয়ার্ড"
                             />
                             <button
                               type="submit"
