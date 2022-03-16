@@ -17,14 +17,12 @@ import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
-// import { useDispatch } from "react-redux";
+
 import { useSelector } from "react-redux";
 import arraySort from "array-sort";
 
 export default function Report() {
   const allArea = useSelector((state) => state.area.area);
-  const allCollector = useSelector((state) => state.collector.collector);
-  const manager = useSelector((state) => state.manager.manager);
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -38,58 +36,10 @@ export default function Report() {
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
-  const userRole =useSelector(state=>state.auth.role)
   const [mainData, setMainData] = useState(allBills);
   const [mainData2, setMainData2] = useState(allBills);
-  const [collectors, setCollectors] = useState([]);
-  const [collectorIds, setCollectorIds] = useState([]);
-  // const [cusSearch, setCusSearch] = useState("");
-  // const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
+
   const [isSorted, setSorted] = useState(false);
-  // const [totalBill,setTotalBill]= useState("")
-
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const keys = ["amount", "name", "customerId", "createdAt"];
-
-  //   setMainData(
-  //     allBills.filter((item) =>
-  //       keys.some((key) =>
-  //         item[key]
-  //           ? typeof item[key] === "string"
-  //             ? item[key]?.toLowerCase().includes(cusSearch)
-  //             : item[key]?.toString().includes(cusSearch)
-  //           : typeof item["customer"][key] === "string"
-  //           ? item["customer"][key]?.toLowerCase().includes(cusSearch)
-  //           : item["customer"][key]?.toString().includes(cusSearch)
-  //       )
-  //     )
-  //   );
-  // }, [cusSearch, allBills]);
-
-  useEffect(() => {
-    let collectors = [];
-
-    allCollector.map((item) =>
-      collectors.push({ name: item.name, user: item.user, id: item.id })
-    );
-
-    if (collectors.length === allCollector.length) {
-      const { user, name, id } = manager;
-      collectors.unshift({ name, user, id });
-    }
-
-    setCollectors(collectors);
-
-    let collectorUserIdsArr = [];
-    collectors.map((item) => collectorUserIdsArr.push(item.user));
-    setCollectorIds(collectorUserIdsArr);
-  }, [allCollector, manager]);
-
-  // useEffect(() => {
-  //   getAllBills(dispatch, ispOwnerId);
-  // }, [ispOwnerId, dispatch]);
 
   useEffect(() => {
     var initialToday = new Date();
@@ -118,18 +68,6 @@ export default function Report() {
       )
     );
   }, [allBills]);
-
-  const onChangeCollector = (userId) => {
-    // console.log("collector id", collectorId);
-
-    if (userId) {
-      setCollectorIds([userId]);
-    } else {
-      let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.user));
-      setCollectorIds(collectorUserIdsArr);
-    }
-  };
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
@@ -171,9 +109,7 @@ export default function Report() {
         subAreaIds.includes(bill.customer.subArea)
       );
     }
-    if (collectorIds.length) {
-      arr = arr.filter((bill) => collectorIds.includes(bill.user));
-    }
+     
 
     arr = arr.filter(
       (item) =>
@@ -187,28 +123,15 @@ export default function Report() {
     setMainData2(arr);
   };
 
-  // const addAllBills = ()=>{
-  //   var total=0;
-  //    mainData.forEach((item)=>{
-  //      console.log(item.amount)
-  //      total=total+item.amount
-
-  //    })
-  //    return total.toString() ;
-
-  // }
+ 
   const addAllBills = useCallback(() => {
     var count = 0;
     mainData.forEach((item) => {
       count = count + item.amount;
     });
     return count.toString();
-    // mainData.reudce((preval,nextval)=>{
-    //  const res = preval+nextval.amount ;
-    //  return res.toString()
-    // },0)
+    
   }, [mainData]);
-  // console.log(addAllBills())
 
   const onSearch = (e) => {
     console.log(e);
@@ -282,19 +205,6 @@ export default function Report() {
                           </option>
                         ))}
                       </select>
-                     { userRole!=="collector"? <select
-                        className="form-select"
-                        onChange={(e) => onChangeCollector(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          সকল কালেক্টর{" "}
-                        </option>
-                        {collectors?.map((c, key) => (
-                          <option key={key} value={c.user}>
-                            {c.name}
-                          </option>
-                        ))}
-                      </select>:""}
 
                       <div className="dateDiv  ">
                         <input
@@ -323,10 +233,7 @@ export default function Report() {
                             setEndDate(e.target.value);
                           }}
 
-                          // value="2018-07-22"
-
-                          // min="2018-01-01"
-                          // max="2018-12-31"
+                          
                         />
                       </div>
                     </div>
@@ -352,7 +259,6 @@ export default function Report() {
 
                       <div className="col-sm-4">
                         <div className=" collectorSearch">
-                          {/* <Search className="serchingIcon" /> */}
                           <input
                             type="text"
                             className="search"
