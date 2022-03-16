@@ -40,7 +40,7 @@ export default function Customer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  const permission =useSelector(state=>state.auth?.userData?.permissions)
+  const permission = useSelector((state) => state.auth?.userData?.permissions);
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
@@ -83,8 +83,7 @@ export default function Customer() {
 
   //   filter
   const handleActiveFilter = (e) => {
-  
-  setRunning(true);
+    setRunning(true);
     let fvalue = e.target.value;
     const field = fvalue.split(".")[0];
     const subfield = fvalue.split(".")[1];
@@ -103,13 +102,11 @@ export default function Customer() {
     }
   };
   // get specific customer Report
-  const [customerReportId,setId] =useState("")
-  const getSpecificCustomerReport = (id) => {
-    setId(id)
-    
+  const [customerReportData, setId] = useState([]);
+
+  const getSpecificCustomerReport = (reportData) => {
+    setId(reportData);
   };
-
-
 
   // DELETE handler
   const deleteCustomer = async (ID) => {
@@ -132,7 +129,7 @@ export default function Customer() {
     setCustomers(arraySort(Customers, item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
-// console.log(permission)
+  // console.log(permission)
   return (
     <>
       <Sidebar />
@@ -149,9 +146,9 @@ export default function Customer() {
               {/* Model start */}
               <CustomerPost />
               <CustomerEdit single={singleCustomer} />
-              <CustomerBillCollect single={singleCustomer}  />
+              <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
-              <CustomerReport single={customerReportId} />
+              <CustomerReport single={customerReportData} />
 
               {/* Model finish */}
 
@@ -182,15 +179,19 @@ export default function Customer() {
                           <option value="paymentStatus.paid">পরিশোধ</option>
                         </select>
                       </div>
-                      {(permission?.customerAdd || role==="ispOwner")? <div className="addNewCollector">
-                        <div className="addAndSettingIcon">
-                          <PersonPlusFill
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#customerModal"
-                          />
+                      {permission?.customerAdd || role === "ispOwner" ? (
+                        <div className="addNewCollector">
+                          <div className="addAndSettingIcon">
+                            <PersonPlusFill
+                              className="addcutmButton"
+                              data-bs-toggle="modal"
+                              data-bs-target="#customerModal"
+                            />
+                          </div>
                         </div>
-                      </div>:""}
+                      ) : (
+                        ""
+                      )}
                     </div>
 
                     <div className="row searchCollector">
@@ -284,7 +285,7 @@ export default function Customer() {
                       <tbody>
                         {isLoading ? (
                           <tr>
-                            <TdLoader colspan={9} />
+                            <TdLoader colspan={10} />
                           </tr>
                         ) : Customers?.length === undefined ? (
                           ""
@@ -332,7 +333,7 @@ export default function Customer() {
                                   </li>
                                   {role === "ispOwner" ? (
                                     ""
-                                  ) : permission?.billPosting ?(
+                                  ) : permission?.billPosting ? (
                                     <li
                                       data-bs-toggle="modal"
                                       data-bs-target="#collectCustomerBillModal"
@@ -346,29 +347,36 @@ export default function Customer() {
                                           <p className="actionP">বিল গ্রহণ</p>
                                         </div>
                                       </div>
-                                    </li>  
-                                  ):""}
+                                    </li>
+                                  ) : (
+                                    ""
+                                  )}
 
-                                  {(permission?.customerEdit || role==="ispOwner")? <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#customerEditModal"
-                                    onClick={() => {
-                                      getSpecificCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PenFill />
-                                        <p className="actionP">এডিট</p>
+                                  {permission?.customerEdit ||
+                                  role === "ispOwner" ? (
+                                    <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#customerEditModal"
+                                      onClick={() => {
+                                        getSpecificCustomer(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <PenFill />
+                                          <p className="actionP">এডিট</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>:""}
+                                    </li>
+                                  ) : (
+                                    ""
+                                  )}
 
                                   <li
                                     data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerReport" 
+                                    data-bs-target="#showCustomerReport"
                                     onClick={() => {
-                                      getSpecificCustomerReport(val.id);
+                                      getSpecificCustomerReport(val);
                                     }}
                                   >
                                     <div className="dropdown-item">
@@ -379,21 +387,26 @@ export default function Customer() {
                                     </div>
                                   </li>
 
-                                 {(permission?.customerDelete || role==="ispOwner")? <li
-                                    onClick={() => {
-                                      let con = window.confirm(
-                                        `${val.name} গ্রাহক ডিলিট করতে চান?`
-                                      );
-                                      con && deleteCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item actionManager">
-                                      <div className="customerAction">
-                                        <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
+                                  {permission?.customerDelete ||
+                                  role === "ispOwner" ? (
+                                    <li
+                                      onClick={() => {
+                                        let con = window.confirm(
+                                          `${val.name} গ্রাহক ডিলিট করতে চান?`
+                                        );
+                                        con && deleteCustomer(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item actionManager">
+                                        <div className="customerAction">
+                                          <ArchiveFill />
+                                          <p className="actionP">ডিলিট</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </li>:""}
+                                    </li>
+                                  ) : (
+                                    ""
+                                  )}
                                 </ul>
 
                                 {/* end */}
