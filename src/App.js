@@ -30,6 +30,7 @@ import apiLink from "./api/apiLink";
 import { useDispatch } from "react-redux";
 import { updateTokenSuccess } from "./features/authSlice";
 import { userLogout } from "./features/actions/authAsyncAction";
+import CollectorReport from "./pages/report/CollectorReport";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -151,7 +152,7 @@ function App() {
           {/* dashboard */}
           <Route path="/*" element={<PrivateOutlet />}>
             <Route path="profile" element={<Profile />} />
-            <Route path="report" element={<Report />} />
+            <Route path="report" element={userRole==="collector"?<CollectorReport/>:<Report /> } />
             {/* <Route path="account" element={<Account />} /> */}
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />

@@ -21,9 +21,11 @@ import "./report.css";
 import { useSelector } from "react-redux";
 import arraySort from "array-sort";
 
-export default function Report() {
+export default function CollectorReport() {
   const allArea = useSelector((state) => state.area.area);
-
+  const collectorArea = useSelector(
+    (state) => state.auth.currentUser?.collector.areas
+  );
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -40,6 +42,40 @@ export default function Report() {
   const [mainData2, setMainData2] = useState(allBills);
 
   const [isSorted, setSorted] = useState(false);
+
+  console.log(collectorArea);
+  useEffect(() => {
+    let areas = [];
+
+    collectorArea?.map((item) => {
+      let area = {
+        id: item.area.id,
+        name: item.area.name,
+        subAreas: [
+          {
+            id: item.id,
+            name: item.name,
+          },
+        ],
+      };
+
+      let found = areas?.find((area) => area.id === item.area.id);
+      if (found) {
+        found.subAreas.push({ id: item.id, name: item.name });
+
+        areas[areas.findIndex((item) => item.id === found.id)] = found;
+      } else {
+        areas.push(area);
+      }
+
+      //   return areas.push({
+      //     name: sub.area.name,
+      //     id: sub.area.id,
+      //     subArea: [{ name: sub.name, id: sub.id }],
+      //   });
+    });
+    console.log(areas);
+  }, [collectorArea]);
 
   useEffect(() => {
     var initialToday = new Date();
@@ -100,8 +136,6 @@ export default function Report() {
   };
 
   const onClickFilter = () => {
-    console.log("filter data");
-
     let arr = allBills;
 
     if (subAreaIds.length) {
@@ -109,7 +143,6 @@ export default function Report() {
         subAreaIds.includes(bill.customer.subArea)
       );
     }
-     
 
     arr = arr.filter(
       (item) =>
@@ -117,24 +150,19 @@ export default function Report() {
         Date.parse(item.createdAt) <= Date.parse(dateEnd)
     );
 
-    console.log(arr);
-
     setMainData(arr);
     setMainData2(arr);
   };
 
- 
   const addAllBills = useCallback(() => {
     var count = 0;
     mainData.forEach((item) => {
       count = count + item.amount;
     });
     return count.toString();
-    
   }, [mainData]);
 
   const onSearch = (e) => {
-    console.log(e);
     const keys = ["amount", "name", "customerId", "createdAt"];
 
     let arr = mainData2.filter((item) =>
@@ -232,8 +260,6 @@ export default function Report() {
                           onChange={(e) => {
                             setEndDate(e.target.value);
                           }}
-
-                          
                         />
                       </div>
                     </div>
