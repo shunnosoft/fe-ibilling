@@ -303,7 +303,7 @@ export default function Diposit() {
                     <div className="selectFilteringg">
                       {userRole !== "ispOwner" && (
                         <select
-                          className="form-selectt"
+                          className="form-select"
                           onChange={(e) => onChangeCollector(e.target.value)}
                         >
                           <option value="" defaultValue>
@@ -319,7 +319,7 @@ export default function Diposit() {
 
                       <div className="dateDiv  ">
                         <input
-                          className="form-selectt"
+                          className="form-select"
                           type="date"
                           id="start"
                           name="trip-start"
@@ -335,7 +335,7 @@ export default function Diposit() {
                       </div>
                       <div className="dateDiv">
                         <input
-                          className="form-selectt"
+                          className="form-select"
                           type="date"
                           id="end"
                           name="trip-start"

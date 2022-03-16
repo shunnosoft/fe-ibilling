@@ -257,7 +257,7 @@ export default function Report() {
                     {/* filter selector */}
                     <div className="selectFilteringg">
                       <select
-                        className="form-selectt"
+                        className="form-select"
                         onChange={(e) => onChangeArea(e.target.value)}
                       >
                         <option value={JSON.stringify({})} defaultValue>
@@ -270,7 +270,7 @@ export default function Report() {
                         ))}
                       </select>
                       <select
-                        className="form-selectt"
+                        className="form-select"
                         onChange={(e) => onChangeSubArea(e.target.value)}
                       >
                         <option value="" defaultValue>
@@ -283,7 +283,7 @@ export default function Report() {
                         ))}
                       </select>
                       <select
-                        className="form-selectt"
+                        className="form-select"
                         onChange={(e) => onChangeCollector(e.target.value)}
                       >
                         <option value="" defaultValue>
@@ -298,7 +298,7 @@ export default function Report() {
 
                       <div className="dateDiv  ">
                         <input
-                          className="form-selectt"
+                          className="form-select"
                           type="date"
                           id="start"
                           name="trip-start"
@@ -314,7 +314,7 @@ export default function Report() {
                       </div>
                       <div className="dateDiv">
                         <input
-                          className="form-selectt"
+                          className="form-select"
                           type="date"
                           id="end"
                           name="trip-start"
