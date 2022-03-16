@@ -1,5 +1,6 @@
 // external imports
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
@@ -18,36 +19,36 @@ import {
 import { getCharts } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
+import { Formik, Form } from "formik";
 
 export default function Home() {
   const role = useSelector((state) => state.auth.role);
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const allCollector = useSelector((state) => state.collector.collector);
+  const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.auth.userData);
   const ChartsData = useSelector((state) => state.chart.charts);
   const [label, setLabel] = useState([]);
+  const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   getCharts(dispatch, ispOwnerId);
-  // }, [dispatch]);
 
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
     labels: collection,
     datasets: [
-      // {
-      //   label: "Users",
-      //   data: [45, 221, 100, 83, 20, 150],
-      //   backgroundColor: ["purple", "yellow", "green", "blue"],
-      //   borderColor: "#0cc30c",
-      //   borderWidth: 2,
-      //   fill: "origin",
-      //   backgroundColor: "rgb(110 110 110 / 24%)",
-      // },
       {
-        label: "এমাউন্ট",
+        label: "Count",
+        data: count,
+        backgroundColor: ["purple", "yellow", "green", "blue"],
+        borderColor: "#0cc30c",
+        borderWidth: 2,
+        fill: "origin",
+        backgroundColor: "rgb(110 110 110 / 24%)",
+      },
+      {
+        labels: "এমাউন্ট",
         data: label,
         backgroundColor: "rgb(110 110 110 / 24%)",
         borderJoinStyle: "round",
@@ -58,6 +59,22 @@ export default function Home() {
       },
     ],
   };
+
+  // select colloectors
+  useEffect(() => {
+    let collectors = [];
+
+    allCollector.map((item) =>
+      collectors.push({ name: item.name, user: item.user, id: item.id })
+    );
+
+    if (collectors.length === allCollector.length) {
+      const { user, name, id } = manager;
+      collectors.unshift({ name, user, id });
+    }
+
+    setCollectors(collectors);
+  }, [allCollector, manager]);
 
   useEffect(() => {
     if (role === "ispOwner") {
@@ -83,6 +100,7 @@ export default function Home() {
     let tempArr = [],
       tempCollection = [],
       tempCount = [];
+
     ChartsData?.forEach((val) => {
       tempArr.push(val.total);
       tempCollection.push(val._id);
@@ -94,8 +112,28 @@ export default function Home() {
     setCount(tempCount);
   }, []);
 
+  const currentYear = new Date().getFullYear();
+
+  const handleFilterHandler = () => {
+    const collectorValue = document.getElementById("filterCollector").value;
+    const YearValue = document.getElementById("filterYear").value;
+    const MonthValue = document.getElementById("filterMonth").value;
+
+    if (collectorValue && YearValue && MonthValue) {
+      const filterData = {
+        Collector: collectorValue,
+        Year: YearValue,
+        Month: MonthValue,
+      };
+      console.log("Data: ", filterData);
+    } else {
+      toast.warning("সকল ফিল্টার  সিলেক্ট করুন");
+    }
+  };
+
   return (
     <div className="container homeWrapper">
+      <ToastContainer position="top-right" theme="colored" />
       <FontColor>
         <div className="home">
           {/* card section */}
@@ -119,8 +157,49 @@ export default function Home() {
 
           {/* chart section */}
           {/* <h2 className="dashboardTitle mt-2">কালেকশন</h2> */}
+          <br />
           <FourGround>
-            <h3 className="chartTitle">কালেকশন</h3>
+            <div className="ChartsHeader">
+              <h3 className="chartTitle">কালেকশন</h3>
+
+              <div className="ChartsFilter">
+                <select className="form-select" id="filterCollector">
+                  <option value="">সকল কালেক্টর</option>
+                  {collectors?.map((c, key) => (
+                    <option key={key} value={c.user}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+                <select className="form-select" id="filterYear">
+                  <option value="">বছর</option>
+                  <option value={currentYear - 1}>{currentYear - 1}</option>
+                  <option value={currentYear}>{currentYear}</option>
+                </select>
+                <select className="form-select" id="filterMonth">
+                  <option value="">মাস</option>
+                  <option value="0">জানুয়ারি</option>
+                  <option value="1">ফেব্রুয়ারি</option>
+                  <option value="2">মার্চ</option>
+                  <option value="3">এপ্রিল</option>
+                  <option value="4">মে</option>
+                  <option value="5">জুন</option>
+                  <option value="6">জুলাই</option>
+                  <option value="7">আগস্ট</option>
+                  <option value="8">সেপ্টেম্বর</option>
+                  <option value="9">অক্টোবর</option>
+                  <option value="10">নভেম্বর</option>
+                  <option value="11">ডিসেম্বর</option>
+                </select>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={handleFilterHandler}
+                >
+                  সাবমিট
+                </button>
+              </div>
+            </div>
             <div className="lineChart">
               <Line
                 data={chartsData}

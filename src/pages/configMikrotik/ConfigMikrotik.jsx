@@ -94,7 +94,7 @@ export default function ConfigMikrotik() {
   const getSpecificPPPoEPackage = (id) => {
     if (pppoePackage.length !== undefined) {
       const temp = pppoePackage.find((val) => {
-        return val.id ===id;
+        return val.id === id;
       });
       setSinglePackage(temp);
     }
@@ -306,7 +306,9 @@ export default function ConfigMikrotik() {
                             <h4 className="allCollector">
                               PPPoE প্যাকেজ:{" "}
                               <span>
-                            {pppoePackage?.length?pppoePackage?.length:"0"}
+                                {pppoePackage?.length
+                                  ? pppoePackage?.length
+                                  : "0"}
                               </span>
                             </h4>
                           </div>
@@ -393,7 +395,7 @@ export default function ConfigMikrotik() {
                                             </div>
                                           </li>
 
-                                          <li
+                                          {/* <li
                                             onClick={() => {
                                               deleteSinglePPPoEpackage(
                                                 val.mikrotik,
@@ -407,7 +409,7 @@ export default function ConfigMikrotik() {
                                                 <p className="actionP">ডিলিট</p>
                                               </div>
                                             </div>
-                                          </li>
+                                          </li> */}
                                         </ul>
                                       </td>
                                     </tr>
