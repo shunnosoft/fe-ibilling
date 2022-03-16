@@ -72,7 +72,7 @@ function App() {
       updateToken();
     }
     
-    const timeToUpdate = 1000 * 60 * 5;
+    const timeToUpdate = 1000 * 60 * 500;
     const interval = setInterval(() => {
       if (accessToken) {
         updateToken();
@@ -152,7 +152,7 @@ function App() {
           <Route path="/*" element={<PrivateOutlet />}>
             <Route path="profile" element={<Profile />} />
             <Route path="report" element={<Report />} />
-            <Route path="account" element={<Account />} />
+            {/* <Route path="account" element={<Account />} /> */}
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="area" element={<Area />} />

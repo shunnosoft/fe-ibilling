@@ -61,10 +61,10 @@ export default function Collector() {
   };
 
   // DELETE collector
-  const deleteCollectorHandler = async (ID) => {
-    const IDs = { ispOwnerId, collectorId: ID };
-    deleteCollector(dispatch, IDs, setIsDeleting);
-  };
+  // const deleteCollectorHandler = async (ID) => {
+  //   const IDs = { ispOwnerId, collectorId: ID };
+  //   deleteCollector(dispatch, IDs, setIsDeleting);
+  // };
 
   return (
     <>
@@ -201,7 +201,7 @@ export default function Collector() {
                                         </div>
                                       </div>
                                     </li>:""}
-                                   {role==="ispOwner"? <li
+                                   {/* {role==="ispOwner"? <li
                                       onClick={() => {
                                         deleteCollectorHandler(val.id);
                                       }}
@@ -212,7 +212,7 @@ export default function Collector() {
                                           <p className="actionP">ডিলিট</p>
                                         </div>
                                       </div>
-                                    </li>:""}
+                                    </li>:""} */}
                                   </ul>
 
                                   {/* end */}

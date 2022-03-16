@@ -13,11 +13,11 @@ export const HeaderData = [
     name: "প্রোফাইল",
     link: "/profile",
   },
-  {
-    icon: <HouseDoorFill />,
-    name: "একাউন্ট",
-    link: "/account",
-  },
+  // {
+  //   icon: <HouseDoorFill />,
+  //   name: "একাউন্ট",
+  //   link: "/account",
+  // },
   {
     icon: <Messenger />,
     name: "মেসেজ",
