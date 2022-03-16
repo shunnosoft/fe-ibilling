@@ -191,7 +191,7 @@ export default function CustomerEdit({ single }) {
                           aria-label="Default select example"
                           onChange={selectMikrotik}
                         >
-                          <option value={mikrotikName?.name || ""}>
+                          <option value={mikrotikName?.id || ""}>
                             {mikrotikName?.name || "..."}
                           </option>
                           {Getmikrotik.length === undefined

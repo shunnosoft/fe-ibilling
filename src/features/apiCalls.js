@@ -547,18 +547,15 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
 };
 
 // get pppoe Package
-export const fetchpppoePackage = async (dispatch, IDs, setIsLoadingPac) => {
-  setIsLoadingPac(true);
+export const fetchpppoePackage = async (dispatch, IDs) => {
   try {
     const res = await apiLink({
       method: "GET",
       url: `/v1/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
     dispatch(getpppoePackageSuccess(res.data));
-    setIsLoadingPac(false);
     toast.success("PPPoE প্যাকেজ fetch success");
   } catch (error) {
-    setIsLoadingPac(false);
     toast.error("PPPoE প্যাকেজ পাওয়া যায়নি!");
   }
 };

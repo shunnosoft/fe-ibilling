@@ -34,7 +34,6 @@ export default function Home() {
   //   getCharts(dispatch, ID); //ispOwner Id Change with  current user id
   // }, [dispatch,userData]);
 
-  
   useEffect(() => {
     const data = [
       {
@@ -218,26 +217,23 @@ export default function Home() {
       getManger(dispatch, ispOwnerId);
       fetchMikrotik(dispatch, ispOwnerId);
       fetchReseller(dispatch, ispOwnerId);
-        
     }
-    if (role==="manager") {
-      dispatch(managerFetchSuccess(userData))
+    if (role === "manager") {
+      dispatch(managerFetchSuccess(userData));
+      fetchMikrotik(dispatch, ispOwnerId);
+    }
 
-    }
-    
     if (role === "ispOwner" || role === "manager") {
       getCollector(dispatch, ispOwnerId);
       getCharts(dispatch, userData?.id);
-      
     }
-    
+
     getArea(dispatch, ispOwnerId);
-    
+
     //problem collector can't access them
 
     getAllBills(dispatch, ispOwnerId);
     getManger(dispatch, ispOwnerId);
-
   }, [dispatch, ispOwnerId, role, userData]);
 
   return (

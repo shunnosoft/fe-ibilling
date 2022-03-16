@@ -18,7 +18,6 @@ export const managerPermission = (permission) => {
   // viewCustomerList: true
   // viewTotalReport: true
   // webLogin: true
-  console.log("Permission: ", permission);
   const per = [
     {
       id: 1,
