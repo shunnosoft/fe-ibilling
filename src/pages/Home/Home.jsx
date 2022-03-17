@@ -207,15 +207,19 @@ export default function Home() {
 
             {/* select graph */}
             <div className="selectGraph">
-              <select
-                className="form-select form-select-sm"
-                onChange={(e) => setShowGraphData(e.target.value)}
-              >
-                <option value="amount" selected={true}>
-                  এমাউন্ট গ্রাফ
-                </option>
-                <option value="bill">বিল গ্রাফ</option>
-              </select>
+              <input
+                type="radio"
+                name="graphSelectRadio"
+                checked={showGraphData === "amount" && "checked"}
+                onChange={() => setShowGraphData("amount")}
+              />
+               <label for="html">এমাউন্ট</label>
+              <input
+                type="radio"
+                name="graphSelectRadio"
+                onChange={() => setShowGraphData("bill")}
+              />
+                <label for="css">বিল</label>
             </div>
             <div className="lineChart">
               <Line

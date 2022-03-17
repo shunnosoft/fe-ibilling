@@ -221,20 +221,6 @@ export default function ConfigMikrotik() {
                             // onClick={deleteSingleMKHandler}
                           /> */}
 
-                          {isLoadingCus ? (
-                            <span>
-                              <Loader />
-                            </span>
-                          ) : (
-                            <button
-                              onClick={syncCustomer}
-                              title="Sync Customer"
-                              className="addcutmButton btn-primary btnbyEnamul"
-                            >
-                              <ArrowClockwise />
-                            </button>
-                          )}
-
                           {isLoadingPac ? (
                             <span>
                               <Loader />
@@ -244,6 +230,20 @@ export default function ConfigMikrotik() {
                               onClick={syncPackage}
                               title="Sync Package"
                               className="addcutmButton btn-info btnbyEnamul"
+                            >
+                              <ArrowClockwise />
+                            </button>
+                          )}
+
+                          {isLoadingCus ? (
+                            <span>
+                              <Loader />
+                            </span>
+                          ) : (
+                            <button
+                              onClick={syncCustomer}
+                              title="Sync Customer"
+                              className="addcutmButton btn-primary btnbyEnamul"
                             >
                               <ArrowClockwise />
                             </button>
