@@ -50,7 +50,7 @@ export default function CustomerModal() {
   //   }
   // };
 
-  const [loadingPac, setLoadingPac] = useState(false);
+  // const [loadingPac, setLoadingPac] = useState(false);
 
   // select Getmikrotik
   const selectMikrotik = (e) => {
@@ -60,7 +60,7 @@ export default function CustomerModal() {
         ispOwner: ispOwnerId,
         mikrotikId: id,
       };
-      fetchpppoePackage(dispatch, IDs, setLoadingPac);
+      fetchpppoePackage(dispatch, IDs);
     }
     setSingleMikrotik(id);
   };

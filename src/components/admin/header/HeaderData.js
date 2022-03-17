@@ -1,6 +1,5 @@
 import {
   PersonFill,
-  HouseDoorFill,
   Messenger,
   // Cash,
 } from "react-bootstrap-icons";

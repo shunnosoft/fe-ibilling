@@ -1,6 +1,6 @@
 // external imports
 import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer  } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
@@ -50,7 +50,7 @@ export default function Home() {
         borderColor: "#0cc30c",
         borderWidth: 2,
         fill: "origin",
-        backgroundColor: "rgb(110 110 110 / 24%)",
+        // backgroundColor: "rgb(110 110 110 / 24%)",
       },
       {
         label: "এমাউন্ট",
@@ -100,7 +100,7 @@ export default function Home() {
     getArea(dispatch, ispOwnerId);
     // getArea(dispatch, IDBOpenDBRequest)
     getCharts(dispatch, ispOwnerId, Year, Month);
-  }, [dispatch, ispOwnerId, role, userData]);
+  }, [dispatch, ispOwnerId, role, userData, Month,Year]);
 
   useEffect(() => {
     let tempArr = [],
@@ -119,11 +119,11 @@ export default function Home() {
   }, [ChartsData]);
 
   const handleFilterHandler = () => {
-    const filterData = {
-      User: currentCollector,
-      Year: Year,
-      Month: Month,
-    };
+    // const filterData = {
+    //   User: currentCollector,
+    //   Year: Year,
+    //   Month: Month,
+    // };
     getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
   };
 
@@ -185,7 +185,7 @@ export default function Home() {
                     {monthsName.filter((val, index) => index === Month)}
                   </option>
                   {monthsName.map((val, index) => (
-                    <option value={index}>{val}</option>
+                    <option value={index} key={index}>{val}</option>
                   ))}
                 </select>
                 <button

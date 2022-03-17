@@ -12,7 +12,7 @@ import Loader from "../../../components/common/Loader";
 export default function CustomerBillCollect({ single }) {
   const [billType, setBillType] = useState("bill");
 
-  const [defaultAmount, setDefault] = useState(single.monthlyFee);
+  // const [defaultAmount, setDefault] = useState(single.monthlyFee);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
 

@@ -60,7 +60,6 @@ export const asyncLogin = async (dispatch, loginData) => {
     })
     .catch((err) => {
       document.querySelector(".Loader").style.display = "none";
-      console.log(err.response);
       dispatch(loginFailure());
       if (err.response) {
         const errorMessage = err.response.data.message;
@@ -93,7 +92,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 
 export const userLogout = async (dispatch) => {
   try {
-    // await apiLink.post("/v1/auth/logout");
+    await apiLink.post("/v1/auth/logout");
 
     dispatch(clearCustomer());
     dispatch(clearArea());

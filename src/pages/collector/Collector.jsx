@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
   PersonPlusFill,
-  GearFill,
   ThreeDots,
   PersonFill,
   PenFill,
-  ArchiveFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,18 +15,17 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import CollectorPost from "./collectorCRUD/CollectorPost";
-import Loader from "../../components/common/Loader";
+// import Loader from "../../components/common/Loader";
 import Pagination from "../../components/Pagination";
 
 import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
-import { deleteCollector, getCollector } from "../../features/apiCalls";
+import { getCollector } from "../../features/apiCalls";
 
 export default function Collector() {
   const dispatch = useDispatch();
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector((state) => state.collector.collector);
 
@@ -147,13 +144,7 @@ export default function Collector() {
                         </div>
                       </div>
                     </div>
-                    {isDeleting ? (
-                      <div className="deletingAction">
-                        <Loader /> <b>Deleting...</b>
-                      </div>
-                    ) : (
-                      ""
-                    )}
+                    
                   </div>
                   {/* table */}
                   <div className="table-responsive-lg">
@@ -260,6 +251,7 @@ export default function Collector() {
                       <option value="100">১০০ জন</option>
                     </select>
                     <Pagination
+                      
                       customerPerPage={collectorPerPage}
                       totalCustomers={collector.length}
                       paginate={paginate}

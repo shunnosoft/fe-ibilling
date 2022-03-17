@@ -25,7 +25,6 @@ export default function CustomerBillCollect({ singleCustomer }) {
       collectorId: currentUser?.collector?.id, //when collector is logged in
     };
 
-    console.log("Colelcted Bill: ", sendingData);
   };
 
   return (

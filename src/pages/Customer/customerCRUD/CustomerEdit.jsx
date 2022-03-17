@@ -40,12 +40,12 @@ export default function CustomerEdit({ single }) {
       return areaItem.subAreas.find((val) => {
         if (single.subArea === val.id) {
           setSubAreaId(val);
-          return areaItem;
         }
+        return areaItem;
       });
     });
     setAreaID(areaIDTemp);
-  });
+  },[Getmikrotik, area, single.mikrotik, single.subArea]);
 
   // customer validator
   const customerValidator = Yup.object({

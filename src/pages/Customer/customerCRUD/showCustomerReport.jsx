@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import apiLink from "../../../api/apiLink";
 // import TdLoader from "../../../components/common/TdLoader";
 // import Pagination from "../../../components/Pagination";
-import TdLoader from "../../../components/common/TdLoader";
+// import TdLoader from "../../../components/common/TdLoader";
 import "../customer.css";
 
 export default function CustomerReport({ single }) {
@@ -19,7 +19,7 @@ export default function CustomerReport({ single }) {
         console.log("Error to get report: ", err);
       }
     };
-    getCustoemrReport();
+  single?.id &&  getCustoemrReport();
   }, [single]);
 
   return (
@@ -61,8 +61,8 @@ export default function CustomerReport({ single }) {
                   <tbody>
                     {customerReport?.map((val, index) => (
                       <tr className="spetialSortingRow" key={index}>
-                        <td scope="col">{val.amount}</td>
-                        <td scope="col">
+                        <td  >{val.amount}</td>
+                        <td  >
                           {moment(val.createdAt).format("DD-MM-YYYY")}
                         </td>
                         <td>{moment(val.createdAt).format("hh:mm")}</td>

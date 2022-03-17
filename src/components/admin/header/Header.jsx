@@ -18,7 +18,6 @@ export default function Header(props) {
   const dispatch = useDispatch();
   // const navigate = useNavigate();
   const pathName = useLocation().pathname;
-  console.log(pathName);
   const changeTHeme = () => {
     if (props.theme === "light") {
       props.setTheme("dark");

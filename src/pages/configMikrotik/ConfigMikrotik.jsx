@@ -8,7 +8,6 @@ import {
   ArrowLeftShort,
   ThreeDots,
   PenFill,
-  ArchiveFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -26,8 +25,6 @@ import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal"
 
 import Loader from "../../components/common/Loader";
 import {
-  deletePPPoEpackage,
-  deleteSingleMikrotik,
   fetchActivepppoeUser,
   fetchMikrotik,
   fetchMikrotikSyncUser,
@@ -57,14 +54,14 @@ export default function ConfigMikrotik() {
   const activeUser = useSelector((state) => state.mikrotik.pppoeActiveUser);
   const pppoePackage = useSelector((state) => state.mikrotik.pppoePackage);
 
-  const mikrotikSyncUser = useSelector(
-    (state) => state.mikrotik.mikrotikSyncUser
-  );
+  // const mikrotikSyncUser = useSelector(
+  //   (state) => state.mikrotik.mikrotikSyncUser
+  // );
 
-  const [isLoading, setIsloading] = useState(false);
+  // const [isLoading, setIsloading] = useState(false);
   const [isLoadingPac, setIsLoadingPac] = useState(false);
   const [isLoadingCus, setIsLoadingCus] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  // const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
@@ -101,15 +98,15 @@ export default function ConfigMikrotik() {
   };
 
   // delete single pppoe package
-  const deleteSinglePPPoEpackage = async (mikrotikID, Id) => {
-    setIsDeleting(true);
-    const IDs = {
-      mikrotikId: mikrotikID,
-      pppPackageId: Id,
-    };
+  // const deleteSinglePPPoEpackage = async (mikrotikID, Id) => {
+  //   setIsDeleting(true);
+  //   const IDs = {
+  //     mikrotikId: mikrotikID,
+  //     pppPackageId: Id,
+  //   };
 
-    deletePPPoEpackage(dispatch, IDs);
-  };
+  //   deletePPPoEpackage(dispatch, IDs);
+  // };
 
   // fetch Active user
 
@@ -249,13 +246,13 @@ export default function ConfigMikrotik() {
                             </button>
                           )}
 
-                          {isLoading ? (
+                          {/* {isLoading ? (
                             <div className="deletingAction">
                               <Loader /> <b>Deleting...</b>
                             </div>
                           ) : (
                             ""
-                          )}
+                          )} */}
                         </div>
                         <div className="mikrotikDetails mt-5">
                           <p>
@@ -324,7 +321,7 @@ export default function ConfigMikrotik() {
                             </div>
                           </div>
                         </div>
-                        {isDeleting ? (
+                        {/* {isDeleting ? (
                           <div className="deletingLoader">
                             <Loader />
                             <span style={{ marginLeft: "10px" }}>
@@ -333,7 +330,7 @@ export default function ConfigMikrotik() {
                           </div>
                         ) : (
                           ""
-                        )}
+                        )} */}
 
                         <div className="table-responsive-lg">
                           <table className="table table-striped ">

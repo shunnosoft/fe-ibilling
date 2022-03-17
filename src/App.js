@@ -22,7 +22,7 @@ import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 import SubArea from "./pages/subArea/SubArea";
 import Profile from "./pages/profile/Profile";
-import Account from "./pages/account/Account";
+// import Account from "./pages/account/Account";
 import Message from "./pages/message/Message";
 import Diposit from "./pages/diposit/Diposit";
 import Report from "./pages/report/Report";
@@ -36,7 +36,7 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -50,7 +50,7 @@ function App() {
       dispatch(updateTokenSuccess(data?.access.token));
     } catch (err) {
       userLogout(dispatch);
-      console.log("Refresh token error: ", err);
+      // console.log("Refresh token error: ", err);
     }
     if (loading) {
       setLoading(false);

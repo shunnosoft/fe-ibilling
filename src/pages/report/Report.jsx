@@ -181,7 +181,6 @@ export default function Report() {
         Date.parse(item.createdAt) <= Date.parse(dateEnd)
     );
 
-    console.log(arr);
 
     setMainData(arr);
     setMainData2(arr);
@@ -211,7 +210,6 @@ export default function Report() {
   // console.log(addAllBills())
 
   const onSearch = (e) => {
-    console.log(e);
     const keys = ["amount", "name", "customerId", "createdAt"];
 
     let arr = mainData2.filter((item) =>

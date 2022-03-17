@@ -77,7 +77,6 @@ export const getCharts = async (dispatch, ispOwnerId, Year, Month, User) => {
     if (User)
       link = `/v1/dashboard/${ispOwnerId}?year=${Year}&month=${Month}&user=${User}`;
     const res = await apiLink(link);
-    console.log("Charts: ", res.data);
     dispatch(getChartSuccess(res.data));
   } catch (err) {
     console.log("Charts error: ", err);

@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // internal imports
-import { Background, FontColor, FourGround } from "../../../assets/js/theme";
+import { Background,   FourGround } from "../../../assets/js/theme";
 import { LoginField } from "./LoginField";
 import { asyncLogin } from "../../../features/actions/authAsyncAction";
 import "./login.css";

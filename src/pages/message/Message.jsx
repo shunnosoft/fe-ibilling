@@ -12,7 +12,7 @@ import useDash from "../../assets/css/dash.module.css";
 export default function Message() {
   const [isChecked, setisChecked] = useState(false);
   const area = useSelector((state) => state.area.area);
-  const [areaIds, setAreaIds] = useState([]);
+  // const [areaIds, setAreaIds] = useState([]);
 
   const handleMessageCheckBox = (e) => {
     setisChecked(e.target.checked);
@@ -26,7 +26,7 @@ export default function Message() {
         IDS_temp.push(temp[i].value);
       }
     }
-    setAreaIds(IDS_temp);
+    // setAreaIds(IDS_temp);
   };
 
   // WE GOT ALL AREA_IDS ON -> areaIds;
