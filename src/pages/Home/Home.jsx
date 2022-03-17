@@ -124,10 +124,10 @@ export default function Home() {
 
   const handleFilterHandler = () => {
     if (role === "collector") {
-      setCurrentCollector(userData?.user);
+      getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
+    } else {
+      getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
     }
-
-    getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
   };
 
   return (
