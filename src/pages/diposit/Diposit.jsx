@@ -398,7 +398,7 @@ export default function Diposit() {
                                 : "(কালেক্টর)"}
                             </td>
                             <td>মোট</td>
-                            <td className="textAlignCenter">অ্যাকশন</td>
+                            <td>অ্যাকশন</td>
                             <td>তারিখ</td>
                           </tr>
                         </thead>
@@ -470,28 +470,32 @@ export default function Diposit() {
                     )}
 
                     {/* table */}
-                   {  userRole !== "ispOwner" ? <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                            <td>পরিমান</td>
-                            <td className="textAlignCenter">স্টেটাস</td>
-                            <td>তারিখ</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {ownDeposits?.map((item, key) => (
-                            <tr key={key}>
-                              <td>৳ {item.amount}</td>
-                              <td>{item.status}</td>
-                              <td>
-                                {moment(item.createdAt).format("DD-MM-YYYY")}
-                              </td>
+                    {userRole !== "ispOwner" ? (
+                      <div className="table-responsive-lg">
+                        <table className="table table-striped ">
+                          <thead>
+                            <tr>
+                              <td>পরিমান</td>
+                              <td className="textAlignCenter">স্টেটাস</td>
+                              <td>তারিখ</td>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>:""}
+                          </thead>
+                          <tbody>
+                            {ownDeposits?.map((item, key) => (
+                              <tr key={key}>
+                                <td>৳ {item.amount}</td>
+                                <td>{item.status}</td>
+                                <td>
+                                  {moment(item.createdAt).format("DD-MM-YYYY")}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </FourGround>
               ) : (

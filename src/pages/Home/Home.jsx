@@ -119,11 +119,10 @@ export default function Home() {
   }, [ChartsData]);
 
   const handleFilterHandler = () => {
-    const filterData = {
-      User: currentCollector,
-      Year: Year,
-      Month: Month,
-    };
+    if (role === "collector") {
+      setCurrentCollector(userData.id);
+    }
+
     getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
   };
 
@@ -157,19 +156,23 @@ export default function Home() {
           <FourGround>
             <div className="ChartsHeader">
               <h3 className="chartTitle">কালেকশন</h3>
-
               <div className="ChartsFilter">
-                <select
-                  className="form-select"
-                  onChange={(e) => setCurrentCollector(e.target.value)}
-                >
-                  <option value="">সকল কালেক্টর</option>
-                  {collectors?.map((c, key) => (
-                    <option key={key} value={c.user}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                {role === "collector" ? (
+                  ""
+                ) : (
+                  <select
+                    className="form-select"
+                    onChange={(e) => setCurrentCollector(e.target.value)}
+                  >
+                    <option value="">সকল কালেক্টর</option>
+                    {collectors?.map((c, key) => (
+                      <option key={key} value={c.user}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
                 <select
                   className="form-select"
                   onChange={(e) => setYear(e.target.value)}

@@ -1,9 +1,9 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-// const BASE_URL = "http://137.184.69.182/api/";
+const BASE_URL = "http://137.184.69.182/api/";
 
-const BASE_URL = "http://192.168.1.24:3030/api/";
+// const BASE_URL = "http://192.168.1.24:3030/api/";
 
 // const BASE_URL = "http://localhost:3030/api/";
 
