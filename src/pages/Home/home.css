@@ -63,6 +63,9 @@
   grid-gap: 10px;
   padding: 10px;
 }
+.selectGraph {
+  padding: 0 20px;
+}
 #card1 {
   background: linear-gradient(17deg, #d53040, #c2505b);
 }

@@ -3,25 +3,25 @@ import { People, CashStack, CartCheck, ChatDots } from "react-bootstrap-icons";
 export const cardData = [
   {
     icon: <People />,
-    title: "Total Clients",
+    title: "মোট গ্রাহক",
     balance: "5289",
     classnam: "card1",
   },
   {
     icon: <CashStack />,
-    title: "Account Balance",
+    title: "ব্যালান্স",
     balance: "$ 2300",
     classnam: "card2",
   },
   {
     icon: <CartCheck />,
-    title: "New sales",
+    title: "নিউ সেলস",
     balance: "231",
     classnam: "card3",
   },
   {
     icon: <ChatDots />,
-    title: "Pending Contacts",
+    title: "পেন্ডিং",
     balance: "23",
     classnam: "card4",
   },

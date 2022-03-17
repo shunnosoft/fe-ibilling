@@ -27,6 +27,7 @@ export default function Home() {
   const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.auth.userData);
   const ChartsData = useSelector((state) => state.chart.charts);
+  const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
@@ -39,29 +40,31 @@ export default function Home() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
 
+  console.log("True False: ", showGraphData);
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
     labels: collection,
     datasets: [
-      {
-        label: "বিল",
-        data: count,
-        backgroundColor: ["purple", "yellow", "green", "blue"],
-        borderColor: "#0cc30c",
-        borderWidth: 2,
-        fill: "origin",
-        backgroundColor: "rgb(110 110 110 / 24%)",
-      },
-      {
-        label: "এমাউন্ট",
-        data: label,
-        backgroundColor: "rgb(110 110 110 / 24%)",
-        borderJoinStyle: "round",
-        borderColor: "#00a4e3",
-        // borderCapStyle: "bevel" || "round" || "miter",
-        fill: "origin",
-        borderWidth: 2,
-      },
+      showGraphData === "amount"
+        ? {
+            label: "এমাউন্ট",
+            data: label,
+            backgroundColor: "rgb(110 110 110 / 24%)",
+            borderJoinStyle: "round",
+            borderColor: "#00a4e3",
+            // borderCapStyle: "bevel" || "round" || "miter",
+            fill: "origin",
+            borderWidth: 2,
+          }
+        : {
+            label: "বিল",
+            data: count,
+            backgroundColor: ["purple", "yellow", "green", "blue"],
+            borderColor: "#0cc30c",
+            borderWidth: 2,
+            fill: "origin",
+            backgroundColor: "rgb(110 110 110 / 24%)",
+          },
     ],
   };
 
@@ -156,6 +159,7 @@ export default function Home() {
           <FourGround>
             <div className="ChartsHeader">
               <h3 className="chartTitle">কালেকশন</h3>
+
               <div className="ChartsFilter">
                 {role === "collector" ? (
                   ""
@@ -199,6 +203,19 @@ export default function Home() {
                   সাবমিট
                 </button>
               </div>
+            </div>
+
+            {/* select graph */}
+            <div className="selectGraph">
+              <select
+                className="form-select form-select-sm"
+                onChange={(e) => setShowGraphData(e.target.value)}
+              >
+                <option value="amount" selected={true}>
+                  এমাউন্ট গ্রাফ
+                </option>
+                <option value="bill">বিল গ্রাফ</option>
+              </select>
             </div>
             <div className="lineChart">
               <Line
