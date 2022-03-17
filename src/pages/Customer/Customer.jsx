@@ -53,12 +53,12 @@ export default function Customer() {
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
+  const areas = useSelector((state) => state.area.area);
 
   // paginate call Back function -> response from paginate component
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
   useEffect(() => {
     const keys = [
       "monthlyFee",
@@ -69,6 +69,7 @@ export default function Customer() {
       "paymentStatus",
       "status",
       "balance",
+      "subArea"
     ];
     setCustomers(
       (isFilterRunning ? filterdCus : cus).filter((item) =>
@@ -107,7 +108,7 @@ export default function Customer() {
   const getSpecificCustomerReport = (reportData) => {
     setId(reportData);
   };
- 
+
   // DELETE handler
   const deleteCustomer = async (ID) => {
     setIsDeleting(true);
@@ -130,6 +131,52 @@ export default function Customer() {
     setSorted(!isSorted);
   };
   // console.log(permission)
+  const [subAreaIds, setSubArea] = useState([]);
+  const [singleArea, setArea] = useState({});
+
+  const onChangeArea = (param) => {
+    // console.log(JSON.parse(param))
+    let area = JSON.parse(param);
+
+    setArea(area);
+    if (
+      area &&
+      Object.keys(area).length === 0 &&
+      Object.getPrototypeOf(area) === Object.prototype
+    ) {
+      setSubArea([]);
+    } else {
+      let subAreaIds = [];
+
+      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+
+      setSubArea(subAreaIds);
+    }
+  };
+  useEffect(() => {
+    if (subAreaIds.length) {
+      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
+    } else {
+      setCustomers(cus);
+    }
+  }, [cus, subAreaIds]);
+  console.log(singleArea, subAreaIds);
+
+  const onChangeSubArea = (id) => {
+    setCusSearch(id);
+    // console.log(id)
+    //     const filterdData = cus.filter((item) => item["subArea"] === id);
+
+    //     setFilter(filterdData);
+    // if (!id) {
+    //   let subAreaIds = [];
+    //   singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
+
+    //   setSubArea(subAreaIds);
+    // } else {
+    //   setSubArea([id]);
+    // }
+  };
   return (
     <>
       <Sidebar />
@@ -157,7 +204,37 @@ export default function Customer() {
                   <div className="addCollector">
                     <div className="displexFlexSys">
                       {/* filter selector */}
-                      <div className="selectFiltering">
+                      <div className="selectFiltering allFilter">
+                        <select
+                          className="form-select"
+                          onChange={(e) => onChangeArea(e.target.value)}
+                        >
+                          <option value={JSON.stringify({})} defaultValue>
+                            সকল এরিয়া
+                          </option>
+                          {areas?.map((area, key) => {
+                            return (
+                              <option key={key} value={JSON.stringify(area)}>
+                                {area.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+
+                        {/* //Todo */}
+                        <select
+                          className="form-select"
+                          onChange={(e) => onChangeSubArea(e.target.value)}
+                        >
+                          <option value="" defaultValue>
+                            সাব এরিয়া
+                          </option>
+                          {singleArea?.subAreas?.map((sub, key) => (
+                            <option key={key} value={sub.id}>
+                              {sub.name}
+                            </option>
+                          ))}
+                        </select>
                         <select
                           className="form-select"
                           onChange={handleActiveFilter}

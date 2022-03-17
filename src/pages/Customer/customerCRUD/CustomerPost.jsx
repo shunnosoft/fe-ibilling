@@ -55,6 +55,7 @@ export default function CustomerModal() {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
+    console.log(id)
     if (id && ispOwnerId) {
       const IDs = {
         ispOwner: ispOwnerId,
