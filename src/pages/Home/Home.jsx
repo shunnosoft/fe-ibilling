@@ -1,6 +1,6 @@
 // external imports
 import React, { useState, useEffect } from "react";
-import { ToastContainer  } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
@@ -99,8 +99,12 @@ export default function Home() {
     //for all roles
     getArea(dispatch, ispOwnerId);
     // getArea(dispatch, IDBOpenDBRequest)
-    getCharts(dispatch, ispOwnerId, Year, Month);
-  }, [dispatch, ispOwnerId, role, userData, Month,Year]);
+    if (role === "collector") {
+      getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
+    } else {
+      getCharts(dispatch, ispOwnerId, Year, Month);
+    }
+  }, [dispatch, ispOwnerId, role, userData, Month, Year]);
 
   useEffect(() => {
     let tempArr = [],
@@ -119,11 +123,10 @@ export default function Home() {
   }, [ChartsData]);
 
   const handleFilterHandler = () => {
-    // const filterData = {
-    //   User: currentCollector,
-    //   Year: Year,
-    //   Month: Month,
-    // };
+    if (role === "collector") {
+      setCurrentCollector(userData?.user);
+    }
+
     getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
   };
 
@@ -157,19 +160,23 @@ export default function Home() {
           <FourGround>
             <div className="ChartsHeader">
               <h3 className="chartTitle">কালেকশন</h3>
-
               <div className="ChartsFilter">
-                <select
-                  className="form-select"
-                  onChange={(e) => setCurrentCollector(e.target.value)}
-                >
-                  <option value="">সকল কালেক্টর</option>
-                  {collectors?.map((c, key) => (
-                    <option key={key} value={c.user}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                {role === "collector" ? (
+                  ""
+                ) : (
+                  <select
+                    className="form-select"
+                    onChange={(e) => setCurrentCollector(e.target.value)}
+                  >
+                    <option value="">সকল কালেক্টর</option>
+                    {collectors?.map((c, key) => (
+                      <option key={key} value={c.user}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
                 <select
                   className="form-select"
                   onChange={(e) => setYear(e.target.value)}
@@ -181,11 +188,14 @@ export default function Home() {
                   className="form-select"
                   onChange={(e) => setMonth(e.target.value)}
                 >
-                  <option value={Month}>
-                    {monthsName.filter((val, index) => index === Month)}
-                  </option>
                   {monthsName.map((val, index) => (
-                    <option value={index} key={index}>{val}</option>
+                    <option
+                      selected={index === Month ? true : false}
+                      value={index}
+                      key={index}
+                    >
+                      {val}
+                    </option>
                   ))}
                 </select>
                 <button
