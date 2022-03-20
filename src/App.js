@@ -48,6 +48,7 @@ function App() {
       });
       const data = await response?.data;
       dispatch(updateTokenSuccess(data?.access.token));
+
     } catch (err) {
       userLogout(dispatch);
       // console.log("Refresh token error: ", err);

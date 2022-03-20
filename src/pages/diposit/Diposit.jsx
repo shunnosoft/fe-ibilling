@@ -415,10 +415,11 @@ export default function Diposit() {
                                 {item.status === "pending" ? (
                                   acceptLoading ? (
                                     <div
-                                      className="AcceptRejectBtn"
+                                      className="loaderDiv"
                                     >
                                       <Loader />
                                     </div>
+                                    
                                   ) : (
                                     <div className="AcceptRejectBtn">
                                       <button
