@@ -6,6 +6,7 @@ export default function Pagination({
   paginate,
 }) {
   const totalPage = Math.ceil(totalCustomers / customerPerPage);
+   
 
   return (
     <>

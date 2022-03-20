@@ -113,7 +113,7 @@ export default function CustomerEdit({ single }) {
     }
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
-      customerId: "randon123",
+      // customerId: "randon123",
       paymentStatus: "unpaid",
       singleCustomerID: single?.id,
       subArea: subArea2,

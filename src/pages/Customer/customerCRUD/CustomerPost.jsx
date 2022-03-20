@@ -95,7 +95,7 @@ export default function CustomerModal() {
     }
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
-      customerId: "randon123",
+      // customerId: "randon123",
       paymentStatus: "unpaid",
       subArea: subArea2,
       ispOwner: ispOwnerId,

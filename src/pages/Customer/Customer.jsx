@@ -52,6 +52,7 @@ export default function Customer() {
   const [customerPerPage, setCustomerPerPage] = useState(50);
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
+  
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
   const areas = useSelector((state) => state.area.area);
 
@@ -160,7 +161,6 @@ export default function Customer() {
       setCustomers(cus);
     }
   }, [cus, subAreaIds]);
-  console.log(singleArea, subAreaIds);
 
   const onChangeSubArea = (id) => {
     setCusSearch(id);

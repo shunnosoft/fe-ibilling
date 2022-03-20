@@ -22,6 +22,9 @@ import { useSelector } from "react-redux";
 import arraySort from "array-sort";
 
 export default function Report() {
+  // const cus = useSelector((state) => state.customer.customer);
+  // console.log(cus.length)
+
   const allArea = useSelector((state) => state.area.area);
   const allCollector = useSelector((state) => state.collector.collector);
   const manager = useSelector((state) => state.manager.manager);
@@ -47,7 +50,17 @@ export default function Report() {
   // const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
   const [isSorted, setSorted] = useState(false);
   // const [totalBill,setTotalBill]= useState("")
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const [customerPerPage, setCustomerPerPage] = useState(50);
+  const lastIndex = currentPage * customerPerPage;
+  const firstIndex = lastIndex - customerPerPage;
+
+  const currentCustomers = mainData.slice(firstIndex, lastIndex);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   // const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -399,10 +412,10 @@ export default function Report() {
                           <tr>
                             <TdLoader colspan={9} />
                           </tr>
-                        ) : mainData?.length === undefined ? (
+                        ) : currentCustomers?.length === undefined ? (
                           ""
                         ) : (
-                          mainData.map((val, key) => (
+                          currentCustomers.map((val, key) => (
                             <tr key={key} id={val?.id}>
                               <td>{val?.customer?.customerId}</td>
                               <td>{val?.customer?.name}</td>
@@ -500,19 +513,18 @@ export default function Report() {
                       <select
                         className="form-select paginationFormSelect"
                         aria-label="Default select example"
-                        // onChange={(e) => setCustomerPerPage(e.target.value)}
+                        onChange={(e) => setCustomerPerPage(e.target.value)}
                       >
-                        <option value="5">৫ জন</option>
-                        <option value="10">১০ জন</option>
-                        <option value="100">১০০ জন</option>
-                        <option value="200">২০০ জন</option>
-                        <option value="500">৫০০ জন</option>
-                        <option value="1000">১০০০ জন</option>
+                        <option value="50">৫০</option>
+                        <option value="100">১০০</option>
+                        <option value="200">২০০</option>
+                        <option value="500">৫০০</option>
+                        <option value="1000">১০০০</option>
                       </select>
                       <Pagination
-                      // customerPerPage={customerPerPage}
-                      // totalCustomers={Customers.length}
-                      // paginate={paginate}
+                      customerPerPage={customerPerPage}
+                      totalCustomers={allBills?.length}
+                      paginate={paginate}
                       />
                     </div>
                   </div>

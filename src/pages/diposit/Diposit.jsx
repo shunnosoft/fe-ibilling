@@ -17,7 +17,7 @@ import {
   addDeposit,
   depositAcceptReject,
   getDeposit,
-  getMyDeposit,
+  // getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
@@ -65,10 +65,10 @@ export default function Diposit() {
     addDeposit(dispatch, sendingData, setLoading);
   };
 
-  const [acceptLoading,setAccLoading] =useState( true)
+  const [acceptLoading, setAccLoading] = useState(false);
 
   const depositAcceptRejectHandler = (status, id) => {
-    depositAcceptReject(dispatch, status, id , setAccLoading);
+    depositAcceptReject(dispatch, status, id, setAccLoading);
   };
   const allCollector = useSelector((state) => state.collector.collector);
 
@@ -96,9 +96,9 @@ export default function Diposit() {
     return sumWithInitial.toString();
   }, [mainData]);
 
-  useEffect(() => {
-    getMyDeposit(dispatch);
-  }, [dispatch]);
+  // useEffect(() => {
+  //   getMyDeposit(dispatch);
+  // }, [dispatch]);
 
   const getTotalOwnDeposit = useCallback(() => {
     const initialValue = 0;
@@ -242,7 +242,7 @@ export default function Diposit() {
                               type="submit"
                               className="btn btn-success dipositSubmitBtn"
                             >
-                       {  isLoading? <Loader></Loader> :   " সাবমিট"}
+                              {isLoading ? <Loader></Loader> : " সাবমিট"}
                             </button>
                           </div>
                         </Form>
@@ -280,7 +280,8 @@ export default function Diposit() {
               )}
 
               {/* table */}
-              <div className="table-responsive-lg">
+              {userRole==="collector"?<div className="table-responsive-lg">
+
                 <table className="table table-striped ">
                   <thead>
                     <tr>
@@ -299,7 +300,7 @@ export default function Diposit() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </div>:""}
               {userRole !== "collector" ? (
                 <FourGround>
                   <div className="collectorWrapper">
@@ -412,31 +413,36 @@ export default function Diposit() {
                               <td>৳ {item.amount}</td>
                               <td>
                                 {item.status === "pending" ? (
-                                 acceptLoading ? <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
-                                  <Loader />
-                                </div> :
-                                  <div className="AcceptRejectBtn">
-                                    <button
-                                      onClick={() => {
-                                        depositAcceptRejectHandler(
-                                          "accepted",
-                                          item.id
-                                        );
-                                      }}
+                                  acceptLoading ? (
+                                    <div
+                                      className="AcceptRejectBtn"
                                     >
-                                      Accept
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        depositAcceptRejectHandler(
-                                          "rejected",
-                                          item.id
-                                        );
-                                      }}
-                                    >
-                                      Reject
-                                    </button>
-                                  </div>
+                                      <Loader />
+                                    </div>
+                                  ) : (
+                                    <div className="AcceptRejectBtn">
+                                      <button
+                                        onClick={() => {
+                                          depositAcceptRejectHandler(
+                                            "accepted",
+                                            item.id
+                                          );
+                                        }}
+                                      >
+                                        Accept
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          depositAcceptRejectHandler(
+                                            "rejected",
+                                            item.id
+                                          );
+                                        }}
+                                      >
+                                        Reject
+                                      </button>
+                                    </div>
+                                  )
                                 ) : (
                                   <span className="statusClass">
                                     {item.status}

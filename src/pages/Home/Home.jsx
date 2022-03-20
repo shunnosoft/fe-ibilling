@@ -186,11 +186,13 @@ export default function Home() {
                 </select>
                 <select
                   className="form-select"
+                  value={Month}
+
                   onChange={(e) => setMonth(e.target.value)}
                 >
                   {monthsName.map((val, index) => (
                     <option
-                      selected={index === Month ? true : false}
+                      // selected={index === Month ? true : false}
                       value={index}
                       key={index}
                     >
