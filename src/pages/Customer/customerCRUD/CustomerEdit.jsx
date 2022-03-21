@@ -10,7 +10,7 @@ import { FtextField } from "../../../components/common/FtextField";
 // import { editCustomer } from "../../../features/customerSlice";
 // import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
-import { editCustomer, fetchpppoePackage } from "../../../features/apiCalls";
+import { editCustomer  } from "../../../features/apiCalls";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 
@@ -29,7 +29,7 @@ export default function CustomerEdit({ single }) {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
-  const [pppoePacakage, setPppoePacakage] = useState([]);
+  // const [pppoePacakage, setPppoePacakage] = useState([]);
   const [activeStatus, setActiveStatus] = useState(single?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
@@ -113,7 +113,7 @@ export default function CustomerEdit({ single }) {
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
-    const temp = pppoePacakage.find((val) => val.id === mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
 
