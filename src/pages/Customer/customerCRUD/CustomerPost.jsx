@@ -226,6 +226,7 @@ export default function CustomerModal() {
                           className="form-select"
                           aria-label="Default select example"
                           onChange={selectSubArea}
+                          
                         >
                           <option value="">...</option>
                           {area.length === undefined

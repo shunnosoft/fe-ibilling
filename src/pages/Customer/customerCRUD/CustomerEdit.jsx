@@ -12,16 +12,20 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { editCustomer, fetchpppoePackage } from "../../../features/apiCalls";
 import { useEffect } from "react";
+import apiLink from "../../../api/apiLink";
 
 export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const area = useSelector((state) => state.area.area);
   const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
-  const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  // const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  const [ppPackage, setppPackage] = useState([]);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  const [singleMikrotik, setSingleMikrotik] = useState("");
-  const [mikrotikPackage, setMikrotikPackage] = useState("");
+  // const [singleMikrotik, setSingleMikrotik] = useState(single?.mikrotik);
+  const [mikrotikPackage, setMikrotikPackage] = useState(
+    single?.mikrotikPackage
+  );
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
@@ -45,7 +49,29 @@ export default function CustomerEdit({ single }) {
       });
     });
     setAreaID(areaIDTemp);
-  },[Getmikrotik, area, single.mikrotik, single.subArea]);
+
+    // single?.mikrotik && fetchpppoePackage(dispatch, IDs);
+    // const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
+    // setPppoePacakage(filterPPPoEpacakage);
+  }, [Getmikrotik, area, single, dispatch, ispOwnerId, ppPackage]);
+
+  useEffect(() => {
+    const IDs = {
+      ispOwner: ispOwnerId,
+      mikrotikId: single?.mikrotik,
+    };
+    const fetchPac = async () => {
+      try {
+        const res = await apiLink.get(
+          `/v1/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
+        );
+        setppPackage(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    single?.mikrotik && fetchPac();
+  }, [ispOwnerId, single]);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -65,23 +91,23 @@ export default function CustomerEdit({ single }) {
   // const [loadingPac, setLoadingPac] = useState(false);
 
   // select Getmikrotik
-  const selectMikrotik = (e) => {
-    const id = e.target.value;
-    if (id && ispOwnerId) {
-      const IDs = {
-        ispOwner: ispOwnerId,
-        mikrotikId: id,
-      };
-      fetchpppoePackage(dispatch, IDs);
-    }
+  // const selectMikrotik = (e) => {
+  //   const id = e.target.value;
+  //   if (id && ispOwnerId) {
+  //     const IDs = {
+  //       ispOwner: ispOwnerId,
+  //       mikrotikId: id,
+  //     };
+  //     fetchpppoePackage(dispatch, IDs);
+  //   }
 
-    const getOneMikrotik = Getmikrotik.find((val) => val.id === id);
-    setSingleMikrotik(getOneMikrotik.id);
+  //   const getOneMikrotik = Getmikrotik.find((val) => val.id === id);
+  //   setSingleMikrotik(getOneMikrotik.id);
 
-    // set Pppoe Pacakage
-    const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
-    setPppoePacakage(filterPPPoEpacakage);
-  };
+  //   // set Pppoe Pacakage
+  //   const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
+  //   setPppoePacakage(filterPPPoEpacakage);
+  // };
 
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
@@ -118,7 +144,7 @@ export default function CustomerEdit({ single }) {
       singleCustomerID: single?.id,
       subArea: subArea2,
       ispOwner: ispOwnerId,
-      mikrotik: singleMikrotik,
+      mikrotik: single?.mikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
@@ -164,13 +190,13 @@ export default function CustomerEdit({ single }) {
                 initialValues={{
                   name: single?.name || "",
                   mobile: single?.mobile || "01....",
-                  address: single?.address || "N/A",
-                  email: single?.email || "demo@gmail.com",
-                  nid: single?.nid || "N/A",
-                  Pcomment: "N/A",
-                  monthlyFee: packageRate?.rate || single?.monthlyFee,
+                  address: single?.address || "",
+                  email: single?.email || "",
+                  nid: single?.nid || "",
+                  Pcomment: "",
+                  monthlyFee: packageRate?.rate || single?.monthlyFee || "",
                   Pname: single?.pppoe?.name || "",
-                  Pprofile: packageRate?.name || single?.pppoe?.profile,
+                  Pprofile: packageRate?.name || single?.pppoe?.profile || "",
                   Ppassword: single.pppoe?.password || "",
                 }}
                 validationSchema={customerValidator}
@@ -189,18 +215,20 @@ export default function CustomerEdit({ single }) {
                         <select
                           className="form-select"
                           aria-label="Default select example"
-                          onChange={selectMikrotik}
+                          // onChange={selectMikrotik}
+                          disabled
+                          value={single?.mikrotik || ""}
                         >
                           <option value={mikrotikName?.id || ""}>
-                            {mikrotikName?.name || "..."}
+                            {mikrotikName?.name || ""}
                           </option>
-                          {Getmikrotik.length === undefined
+                          {/* {Getmikrotik.length === undefined
                             ? ""
                             : Getmikrotik.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>
-                              ))}
+                              ))} */}
                         </select>
                       </div>
 
@@ -213,12 +241,13 @@ export default function CustomerEdit({ single }) {
                           className="form-select mb-3"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
+                          value={mikrotikPackage}
                         >
-                          <option value={single?.pppoe?.profile || "..."}>
+                          {/* <option value={single?.pppoe?.profile || "..."}>
                             {single?.pppoe?.profile || "..."}
-                          </option>
-                          {pppoePacakage?.map((val, key) => (
-                            <option key={key} value={val.id}>
+                          </option> */}
+                          {ppPackage?.map((val, key) => (
+                            <option key={key} value={val.id || ""}>
                               {val.name}
                             </option>
                           ))}
@@ -249,13 +278,13 @@ export default function CustomerEdit({ single }) {
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
-                          <option value={areaID?.id || "..."}>
-                            {areaID?.name || "..."}
+                          <option value={areaID?.id || ""}>
+                            {areaID?.name || ""}
                           </option>
                           {area.length === undefined
                             ? ""
                             : area.map((val, key) => (
-                                <option key={key} value={val.id}>
+                                <option key={key} value={val.id || ""}>
                                   {val.name}
                                 </option>
                               ))}
@@ -273,12 +302,12 @@ export default function CustomerEdit({ single }) {
                           name="subArea"
                           id="subAreaIdFromEdit"
                         >
-                          <option value={subAreaId?.id || "..."}>
-                            {subAreaId?.name || "..."}
+                          <option value={subAreaId?.id || ""}>
+                            {subAreaId?.name || ""}
                           </option>
                           {subArea?.subAreas
                             ? subArea.subAreas.map((val, key) => (
-                                <option key={key} value={val.id}>
+                                <option key={key} value={val.id || ""}>
                                   {val.name}
                                 </option>
                               ))
