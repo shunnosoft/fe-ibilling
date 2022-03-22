@@ -13,7 +13,7 @@ import Loader from "../../../components/common/Loader";
 import { editCustomer  } from "../../../features/apiCalls";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
-
+import moment from "moment"
 export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const area = useSelector((state) => state.area.area);
@@ -34,8 +34,12 @@ export default function CustomerEdit({ single }) {
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
-
+  const [billDate,setBillDate] =useState()
+  const [billTime,setBilltime] =useState()
+ 
   useEffect(() => {
+    setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"))
+    setBilltime(moment(single.billingCycle).format("hh:mm"))
     const temp = Getmikrotik.find((val) => val.id === single.mikrotik);
     setmikrotikName(temp);
 
@@ -87,6 +91,8 @@ export default function CustomerEdit({ single }) {
     Ppassword: Yup.string().required("PPPoE Password"),
     Pcomment: Yup.string().required("Comment"),
   });
+  
+   
 
   // const [loadingPac, setLoadingPac] = useState(false);
 
@@ -132,7 +138,6 @@ export default function CustomerEdit({ single }) {
   const customerHandler = async (data) => {
     setIsloading(true);
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
-    // console.log("SubArea: ", subArea2);
     if (subArea2 === "") {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
@@ -148,6 +153,7 @@ export default function CustomerEdit({ single }) {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
+      billingCycle: moment(billDate + " " + billTime).format("YYYY-MM-DD:hh:mm:ss"),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -158,10 +164,11 @@ export default function CustomerEdit({ single }) {
       },
       ...rest,
     };
-    // console.log("Main Data: ", mainData);
+     
     editCustomer(dispatch, mainData, setIsloading);
+    
   };
-
+   
   return (
     <div>
       <div
@@ -207,6 +214,10 @@ export default function CustomerEdit({ single }) {
               >
                 {() => (
                   <Form>
+
+                    
+
+              
                     <div className="mikrotikSection">
                       <div>
                         <p className="comstomerFieldsTitle">
@@ -327,8 +338,19 @@ export default function CustomerEdit({ single }) {
                       <FtextField type="text" label="মোবাইল" name="mobile" />
                       <FtextField type="text" label="ঠিকানা" name="address" />
                     </div>
-                    <div className="displayGrid3">
-                      <FtextField type="text" label="ইমেইল" name="email" />
+                    <div className="newDisplay">
+                      <FtextField  type="text" label="ইমেইল" name="email" />
+
+                      <div  className="billCycle">
+                      <p className="customerFieldsTitle">
+                      বিল সাইকেল
+                      </p>
+                      
+                      <div className="timeDate">
+                        <input    value={billDate}  onChange={(e)=>setBillDate(e.target.value)} type="date" />
+                        <input className="billTime"   value={billTime} onChange={(e)=>setBilltime(e.target.value)} type="time" />
+                      </div>
+                    </div>
                       <div className="autoDisable">
                         <label>Auto Disable</label>
                         <input

@@ -138,10 +138,63 @@
   width:90%; 
   margin-right:10px ;
   /* flex-wrap:wrap */
+
+}
+.billCycle{
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  flex-direction: column;
+
+}
+.timeDate{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* flex-wrap: wrap; */
+}
+.timeDate > input{
+  padding: 7px;
+  
+  width: 200px;
+  border: 2px gray solid;
+  border-radius: 5px;
+  max-width: 160px;
+  margin-top: 0px;
+
+}
+.timeDate >.billTime{
+  margin-left: 10px;
+}
+.newDisplay{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
 }
 
 @media only screen and (max-width: 980px) {
   .customerGrid {
     display: initial;
   }
+  .newDisplay{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+     
+     
+  }
+  .newDisplay> .autoDisable{
+    margin: 10px 0;
+    margin-top: 0px;
+  }
+  .newDisplay> .billCycle{
+    margin-bottom: 0px;
+    margin-top: 0px;
+     
+  }
+  .newDisplay> .mb-3{
+    margin-bottom: -10px !important ; 
+    margin-top: 0px;
+  }
+  
 }

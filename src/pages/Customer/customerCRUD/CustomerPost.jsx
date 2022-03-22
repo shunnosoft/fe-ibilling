@@ -9,7 +9,7 @@ import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
-
+import moment from "moment";
 export default function CustomerModal() {
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const area = useSelector((state) => state.area.area);
@@ -103,6 +103,7 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
+      billingCycle: moment().endOf("day").format() , 
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -112,7 +113,7 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    // console.log("Main Data: ", mainData);
+    console.log("Main Data: ", mainData);
     addCustomer(dispatch, mainData, setIsloading);
   };
 
@@ -144,9 +145,9 @@ export default function CustomerModal() {
                 initialValues={{
                   name: "",
                   mobile: "",
-                  address: "N/A",
+                  address: "",
                   email: "",
-                  nid: "N/A",
+                  nid: "",
                   monthlyFee: packageRate?.rate || "",
                   Pname: "",
                   Pprofile: packageRate?.name || "",
