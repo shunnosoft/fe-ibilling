@@ -59,7 +59,7 @@ function App() {
   }, [loading, dispatch]);
 
   // called Update Token
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (loading) {
       updateToken();
     }
