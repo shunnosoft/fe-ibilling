@@ -153,7 +153,7 @@ export default function CustomerEdit({ single }) {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime).format("YYYY-MM-DD:hh:mm:ss"),
+      billingCycle: moment(billDate + " " + billTime).format( 'YYYY-MM-DDTHH:mm:ss.ms[Z]'),
       pppoe: {
         name: Pname,
         password: Ppassword,

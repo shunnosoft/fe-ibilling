@@ -58,7 +58,6 @@ export default function CustomerModal() {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    console.log(id)
     if (id && ispOwnerId) {
       const IDs = {
         ispOwner: ispOwnerId,
@@ -106,7 +105,7 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle:  moment(billDate + " " + billTime).format("YYYY-MM-DD:hh:mm:ss") , 
+      billingCycle:  moment(billDate + " " + billTime).format('YYYY-MM-DDTHH:mm:ss.ms[Z]') , 
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -116,13 +115,12 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    console.log(mainData)
     addCustomer(dispatch, mainData, setIsloading);
   };
 
   useEffect(()=>{
     setBillDate( moment().endOf("day").format("YYYY-MM-DD"))
-    setBilltime( moment().endOf("day").format("hh:mm"))
+    setBilltime(moment().endOf('day').format("HH:mm"))
   },[])
   return (
     <div>

@@ -59,7 +59,6 @@ export default function Home() {
         : {
             label: "বিল",
             data: count,
-            backgroundColor: ["purple", "yellow", "green", "blue"],
             borderColor: "#0cc30c",
             borderWidth: 2,
             fill: "origin",
