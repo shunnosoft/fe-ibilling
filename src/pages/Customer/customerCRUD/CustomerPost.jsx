@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,6 +22,9 @@ export default function CustomerModal() {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
+  const [billDate,setBillDate] =useState()
+  const [billTime,setBilltime] =useState()
+
 
   // customer validator
   const customerValidator = Yup.object({
@@ -103,7 +106,7 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment().endOf("day").format() , 
+      billingCycle:  moment(billDate + " " + billTime).format("YYYY-MM-DD:hh:mm:ss") , 
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -113,10 +116,14 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    console.log("Main Data: ", mainData);
+    console.log(mainData)
     addCustomer(dispatch, mainData, setIsloading);
   };
 
+  useEffect(()=>{
+    setBillDate( moment().endOf("day").format("YYYY-MM-DD"))
+    setBilltime( moment().endOf("day").format("hh:mm"))
+  },[])
   return (
     <div>
       <div
@@ -274,8 +281,20 @@ export default function CustomerModal() {
                       <FtextField type="text" label="মোবাইল" name="mobile" />
                       <FtextField type="text" label="ঠিকানা" name="address" />
                     </div>
-                    <div className="displayGrid3">
+                    <div className="newDisplay">
                       <FtextField type="text" label="ইমেইল" name="email" />
+
+                    <div  className="billCycle">
+                      <p className="customerFieldsTitle">
+                      বিল সাইকেল
+                      </p>
+                      
+                      <div className="timeDate">
+                        <input    value={billDate}  onChange={(e)=>setBillDate(e.target.value)} type="date" />
+                        <input className="billTime"   value={billTime} onChange={(e)=>setBilltime(e.target.value)} type="time" />
+                      </div>
+                    </div>
+                    <div className="displayGrid3">
                       <div className="autoDisable">
                         <label>Auto Disable</label>
                         <input
@@ -284,6 +303,7 @@ export default function CustomerModal() {
                           onChange={(e) => setAutoDisable(e.target.checked)}
                         />
                       </div>
+                    </div>
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

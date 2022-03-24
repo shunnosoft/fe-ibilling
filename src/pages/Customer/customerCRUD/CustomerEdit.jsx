@@ -332,7 +332,7 @@ export default function CustomerEdit({ single }) {
                         name="nid"
                       />
                     </div>
-
+                              
                     <div className="displayGrid3">
                       <FtextField type="text" label="নাম" name="name" />
                       <FtextField type="text" label="মোবাইল" name="mobile" />

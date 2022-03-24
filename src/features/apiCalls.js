@@ -345,6 +345,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
 };
 
 export const addCustomer = async (dispatch, data, setIsloading) => {
+  setIsloading(true)
   try {
     const res = await apiLink.post("/v1/ispOwner/customer", data);
     dispatch(addCustomerSuccess(res.data));
