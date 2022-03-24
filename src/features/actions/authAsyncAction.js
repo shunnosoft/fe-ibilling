@@ -70,25 +70,7 @@ export const asyncLogin = async (dispatch, loginData) => {
     });
 };
 
-// LOGOUT
-// export const userLogout = async (dispatch) => {
-//   await apiLink({
-//     url: "/v1/auth/logout",
-//     method: "POST",
-//   })
-//     .then(() => {
-//       localStorage.removeItem("persist:root");
-//       dispatch(logOut());
-//       window.location.href = "/";
-//     })
-//     .catch((error) => {
-//       localStorage.removeItem("persist:root");
-//       dispatch(logOut());
-
-//       window.location.href = "/";
-//      console.log(error)
-//     });
-// };
+ 
 
 export const userLogout = async (dispatch) => {
   try {
@@ -103,7 +85,17 @@ export const userLogout = async (dispatch) => {
     dispatch(clearBills());
     dispatch(clearReseller());
     dispatch(logOut());
+
   } catch (error) {
-    console.log(error);
+    dispatch(clearCustomer());
+    dispatch(clearArea());
+    dispatch(clearManager());
+    dispatch(clearCollector());
+    dispatch(clearMikrotik());
+    dispatch(clearChart());
+    dispatch(clearBills());
+    dispatch(clearReseller());
+    dispatch(logOut());
+    // window.location.reload()
   }
 };

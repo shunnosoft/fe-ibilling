@@ -31,14 +31,16 @@ import { useDispatch } from "react-redux";
 import { updateTokenSuccess } from "./features/authSlice";
 import { userLogout } from "./features/actions/authAsyncAction";
 import CollectorReport from "./pages/report/CollectorReport";
+import {   useLocation } from "react-router-dom";
 
 function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const pathName = useLocation().pathname;
 
   // update token
   const updateToken = useCallback(async () => {
@@ -48,30 +50,28 @@ function App() {
       });
       const data = await response?.data;
       dispatch(updateTokenSuccess(data?.access.token));
-
     } catch (err) {
       userLogout(dispatch);
-      // console.log("Refresh token error: ", err);
     }
-    if (loading) {
-      setLoading(false);
-    }
-  }, [loading, dispatch]);
+    // if (loading) {
+    //   setLoading(false);
+    // }
+  }, [dispatch]);
 
   // called Update Token
   useLayoutEffect(() => {
-    if (loading) {
+    if (pathName === "/home") {
       updateToken();
     }
 
-    const timeToUpdate = 1000 * 60 * 12;
+    const timeToUpdate = 1000 * 60 * 1;
     const interval = setInterval(() => {
-      if (accessToken) {
+      if (accessToken !== null) {
         updateToken();
       }
     }, timeToUpdate);
     return () => clearInterval(interval);
-  }, [loading, updateToken, accessToken]);
+  }, [pathName, updateToken, accessToken]);
   // update token
 
   return (
@@ -143,7 +143,12 @@ function App() {
           {/* dashboard */}
           <Route path="/*" element={<PrivateOutlet />}>
             <Route path="profile" element={<Profile />} />
-            <Route path="report" element={userRole==="collector"?<CollectorReport/>:<Report /> } />
+            <Route
+              path="report"
+              element={
+                userRole === "collector" ? <CollectorReport /> : <Report />
+              }
+            />
             {/* <Route path="account" element={<Account />} /> */}
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />

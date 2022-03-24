@@ -40,7 +40,6 @@ export default function Home() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
 
-  console.log("True False: ", showGraphData);
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
     labels: collection,
