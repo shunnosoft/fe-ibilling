@@ -52,7 +52,7 @@ export const asyncLogin = async (dispatch, loginData) => {
         } else {
           dispatch(logInSuccess(res.data));
           // window.location.reload();
-          window.location.href = "/home";
+          // window.location.href = "/home";
         }
       } else {
         toast.error("সার্ভার Error!");

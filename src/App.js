@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
@@ -31,7 +31,7 @@ import { useDispatch } from "react-redux";
 import { updateTokenSuccess } from "./features/authSlice";
 import { userLogout } from "./features/actions/authAsyncAction";
 import CollectorReport from "./pages/report/CollectorReport";
-import {   useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -56,25 +56,24 @@ function App() {
     if (loading) {
       setLoading(false);
     }
-  }, [dispatch,loading]);
+  }, [dispatch, loading]);
 
   // called Update Token
-  
+
   useLayoutEffect(() => {
-    if (pathName === "/home" && loading ) {
+    if (pathName === "/home" && loading) {
       updateToken();
     }
 
-    const timeToUpdate = 1000 * 60 * 1;
+    const timeToUpdate = 1000 * 60 * 12;
     const interval = setInterval(() => {
       if (accessToken !== null) {
         updateToken();
       }
     }, timeToUpdate);
     return () => clearInterval(interval);
-  }, [pathName, updateToken, accessToken,loading]);
-  // update token
-
+  }, [pathName, updateToken, accessToken, loading]);
+ 
   return (
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
