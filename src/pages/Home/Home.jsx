@@ -27,6 +27,7 @@ export default function Home() {
   const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.auth.userData);
   const ChartsData = useSelector((state) => state.chart.charts);
+  const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
@@ -39,29 +40,31 @@ export default function Home() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
 
+  console.log("True False: ", showGraphData);
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
     labels: collection,
     datasets: [
-      {
-        label: "বিল",
-        data: count,
-        backgroundColor: ["purple", "yellow", "green", "blue"],
-        borderColor: "#0cc30c",
-        borderWidth: 2,
-        fill: "origin",
-        // backgroundColor: "rgb(110 110 110 / 24%)",
-      },
-      {
-        label: "এমাউন্ট",
-        data: label,
-        backgroundColor: "rgb(110 110 110 / 24%)",
-        borderJoinStyle: "round",
-        borderColor: "#00a4e3",
-        // borderCapStyle: "bevel" || "round" || "miter",
-        fill: "origin",
-        borderWidth: 2,
-      },
+      showGraphData === "amount"
+        ? {
+            label: "এমাউন্ট",
+            data: label,
+            backgroundColor: "rgb(110 110 110 / 24%)",
+            borderJoinStyle: "round",
+            borderColor: "#00a4e3",
+            // borderCapStyle: "bevel" || "round" || "miter",
+            fill: "origin",
+            borderWidth: 2,
+          }
+        : {
+            label: "বিল",
+            data: count,
+            backgroundColor: ["purple", "yellow", "green", "blue"],
+            borderColor: "#0cc30c",
+            borderWidth: 2,
+            fill: "origin",
+            backgroundColor: "rgb(110 110 110 / 24%)",
+          },
     ],
   };
 
@@ -160,6 +163,7 @@ export default function Home() {
           <FourGround>
             <div className="ChartsHeader">
               <h3 className="chartTitle">কালেকশন</h3>
+
               <div className="ChartsFilter">
                 {role === "collector" ? (
                   ""
@@ -187,7 +191,6 @@ export default function Home() {
                 <select
                   className="form-select"
                   value={Month}
-
                   onChange={(e) => setMonth(e.target.value)}
                 >
                   {monthsName.map((val, index) => (
@@ -208,6 +211,23 @@ export default function Home() {
                   সাবমিট
                 </button>
               </div>
+            </div>
+
+            {/* select graph */}
+            <div className="selectGraph">
+              <input
+                type="radio"
+                name="graphSelectRadio"
+                checked={showGraphData === "amount" && "checked"}
+                onChange={() => setShowGraphData("amount")}
+              />
+               <label for="html">এমাউন্ট</label>
+              <input
+                type="radio"
+                name="graphSelectRadio"
+                onChange={() => setShowGraphData("bill")}
+              />
+                <label for="css">বিল</label>
             </div>
             <div className="lineChart">
               <Line

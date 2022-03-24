@@ -70,13 +70,9 @@
   padding: 7px;
 }
 
-
 /* css added by enamul  */
-.btnbyEnamul{
-  border:none ; 
+.btnbyEnamul {
+  border: none;
   outline: none;
-  
-   
+  padding: 0px;
 }
-
- 
