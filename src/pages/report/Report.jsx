@@ -4,14 +4,7 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
-import {
-  ArchiveFill,
-  ArrowDownUp,
-  PenFill,
-  PersonFill,
-  ThreeDots,
-  Wallet,
-} from "react-bootstrap-icons";
+ 
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
