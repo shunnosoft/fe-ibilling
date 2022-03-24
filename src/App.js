@@ -37,7 +37,7 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth.accessToken);
   const pathName = useLocation().pathname;
@@ -53,14 +53,15 @@ function App() {
     } catch (err) {
       userLogout(dispatch);
     }
-    // if (loading) {
-    //   setLoading(false);
-    // }
-  }, [dispatch]);
+    if (loading) {
+      setLoading(false);
+    }
+  }, [dispatch,loading]);
 
   // called Update Token
+  
   useLayoutEffect(() => {
-    if (pathName === "/home") {
+    if (pathName === "/home" && loading ) {
       updateToken();
     }
 
@@ -71,7 +72,7 @@ function App() {
       }
     }, timeToUpdate);
     return () => clearInterval(interval);
-  }, [pathName, updateToken, accessToken]);
+  }, [pathName, updateToken, accessToken,loading]);
   // update token
 
   return (
