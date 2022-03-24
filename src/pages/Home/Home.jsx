@@ -219,13 +219,13 @@ export default function Home() {
                 checked={showGraphData === "amount" && "checked"}
                 onChange={() => setShowGraphData("amount")}
               />
-               <label for="html">এমাউন্ট</label>
+               <label  htmlFor="html">এমাউন্ট</label>
               <input
                 type="radio"
                 name="graphSelectRadio"
                 onChange={() => setShowGraphData("bill")}
               />
-                <label for="css">বিল</label>
+                <label  htmlFor="css">বিল</label>
             </div>
             <div className="lineChart">
               <Line
