@@ -13,6 +13,7 @@ import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import arraySort from "array-sort";
+import { ArrowDownUp } from "react-bootstrap-icons";
 
 export default function Report() {
   // const cus = useSelector((state) => state.customer.customer);
