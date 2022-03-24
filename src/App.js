@@ -26,7 +26,7 @@ import Profile from "./pages/profile/Profile";
 import Message from "./pages/message/Message";
 import Diposit from "./pages/diposit/Diposit";
 import Report from "./pages/report/Report";
-import apiLink from "./api/apiLink";
+import { publicRequest} from "./api/apiLink";
 import { useDispatch } from "react-redux";
 import { updateTokenSuccess } from "./features/authSlice";
 import { userLogout } from "./features/actions/authAsyncAction";
@@ -45,7 +45,7 @@ function App() {
   // update token
   const updateToken = useCallback(async () => {
     try {
-      const response = await apiLink.post("v1/auth/refresh-tokens", {
+      const response = await publicRequest.post("v1/auth/refresh-tokens", {
         method: "POST",
       });
       const data = await response?.data;
