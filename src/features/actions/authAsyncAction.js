@@ -53,7 +53,7 @@ export const asyncLogin = async (dispatch, loginData) => {
          
           
           dispatch(logInSuccess(res.data));
-          // window.location.reload();
+          window.location.reload();
           // window.location.href = "/home";
         }
       } else {
