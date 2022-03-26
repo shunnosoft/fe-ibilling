@@ -43,6 +43,8 @@ const refreshToken = async () => {
 
     return  res.data?.access.token;
   } catch (err) {
+    console.log(err)
+    console.log("logged OUt for refresh route")
      userLogout()
   }
 };
@@ -58,7 +60,9 @@ apiLink.interceptors.request.use(
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
       const accToken = await refreshToken();
       // config.baseURL = BASE_URL;
-      config.headers["authorization"] = "Bearer " + accToken;
+    const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
+
+      config.headers["authorization"] = "Bearer " + TOKEN;
     } else{
       config.headers["authorization"] = "Bearer " + TOKEN;
 
