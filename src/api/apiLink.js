@@ -40,7 +40,7 @@ const refreshToken = async () => {
   try {
     const res = await publicRequest.post("v1/auth/refresh-tokens");
     console.log(res.data)
-    localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access.toke)n) 
+    localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access.toke)) 
 
     return  res.data?.access.token;
   } catch (err) {
