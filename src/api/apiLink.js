@@ -1,5 +1,6 @@
 import axios from "axios";
-// import jwt_decode from "jwt-decode";
+import jwt_decode from "jwt-decode";
+import { userLogout } from "../features/actions/authAsyncAction";
 
 const BASE_URL = "http://137.184.69.182/api/";
 
@@ -14,61 +15,58 @@ const BASE_URL = "http://137.184.69.182/api/";
 // const userAllData = JSON.parse(localStorage.getItem("persist:root"));
  
 
-const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
 
 // const currentUser = user && JSON.parse(user)?.currentUser;
 // const TOKEN = currentUser?.access?.token;
 
-const TOKEN = user && JSON.parse(user)?.accessToken;
+// const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
+// const TOKEN = user && JSON.parse(user)?.accessToken;
 
- 
+
 export const publicRequest = axios.create({
   baseURL: BASE_URL,
 });
 
+// const TOKEN = JSON.parse(localStorage.getItem("netFeeToken"))
+
 const apiLink = axios.create({
   baseURL: BASE_URL,
-  headers: { Authorization: "Bearer " + TOKEN },
+  
 });
-export default apiLink;
-// const refreshToken = async () => {
-//   console.log("check from refresh start");
-//   try {
-//     const res = await publicRequest.post("v1/auth/refresh-tokens");
-//     console.log("from inside refresh ", res.data)
-//     localStorage.setItem(
-//       "persist:root",
-//       JSON.stringify({
-//         ...userAllData,
-//         auth: { ...userAllData.auth, accessToken: res.data?.access.token },
-//       })
-//     );
-
-//     return res.data?.access.token;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-
-// // const axiosJWT = axios.create()
-
-// apiLink.interceptors.request.use(
-//   async (config) => {
-//     let currentDate = new Date();
-//     const decodedToken = jwt_decode(TOKEN);
-
-//     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-//       const accToken = await refreshToken();
-//       console.log("from inside interceptors",accToken)
-//       config.baseURL = BASE_URL;
-//       config.headers["authorization"] = "Bearer " + accToken;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
 
 // export default apiLink;
+
+const refreshToken = async () => {
+  try {
+    const res = await publicRequest.post("v1/auth/refresh-tokens");
+    localStorage.setItem("netFeeToken",res.data?.access.token) 
+
+    return  res.data?.access.token;
+  } catch (err) {
+     userLogout()
+  }
+};
+
+// const axiosJWT = axios.create()
+
+apiLink.interceptors.request.use(
+  async (config) => {
+    const TOKEN = JSON.parse(localStorage.getItem("netFeeToken"))
+    let currentDate = new Date();
+    const decodedToken = jwt_decode(TOKEN);
+
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      const accToken = await refreshToken();
+      config.baseURL = BASE_URL;
+      config.headers["authorization"] = "Bearer " + accToken;
+    }
+    config.headers["authorization"] = "Bearer " + TOKEN;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default apiLink;
 

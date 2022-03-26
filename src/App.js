@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useState } from "react";
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
@@ -26,64 +26,17 @@ import Profile from "./pages/profile/Profile";
 import Message from "./pages/message/Message";
 import Diposit from "./pages/diposit/Diposit";
 import Report from "./pages/report/Report";
-import { publicRequest } from "./api/apiLink";
-import { useDispatch } from "react-redux";
-import { updateTokenSuccess } from "./features/authSlice";
-import { userLogout } from "./features/actions/authAsyncAction";
+ 
 import CollectorReport from "./pages/report/CollectorReport";
-import { useLocation } from "react-router-dom";
-import jwtDecode from "jwt-decode";
+ 
 
 function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.auth.accessToken);
-  const pathName = useLocation().pathname;
+  
 
-  // update token
-  const updateToken = useCallback(async () => {
-    try {
-      const response = await publicRequest.post("v1/auth/refresh-tokens", {
-        method: "POST",
-      });
-      const data = await response?.data;
-      dispatch(updateTokenSuccess(data?.access.token));
-    } catch (err) {
-      userLogout(dispatch);
-    }
-    if (loading) {
-      setLoading(false);
-    }
-  }, [dispatch, loading]);
-
-  // called Update Token
-
-
-  useEffect(() => {
-    if (accessToken !== null) {
-      let currentDate = new Date();
-      const decodedToken = jwtDecode(accessToken);
-      if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        window.location.reload();
-      }
-    }
-  }, [accessToken]);
-  useLayoutEffect(() => {
-    if (pathName === "/home" && loading) {
-      updateToken();
-    }
-
-    const timeToUpdate = 1000 * 60 * 12;
-    const interval = setInterval(() => {
-      if (accessToken !== null) {
-        updateToken();
-      }
-    }, timeToUpdate);
-    return () => clearInterval(interval);
-  }, [pathName, updateToken, accessToken, loading]);
+  
 
   return (
     <ThemeProvider theme={themes[theme]}>
