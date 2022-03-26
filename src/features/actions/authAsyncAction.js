@@ -98,7 +98,7 @@ export const userLogout = async () => {
     // dispatch(clearReseller());
     // dispatch(logOut());
     localStorage.clear()
-    window.location.reload()
+    // window.location.reload()
 
   } catch (error) {
     // dispatch(clearCustomer());

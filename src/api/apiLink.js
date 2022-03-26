@@ -39,7 +39,8 @@ const apiLink = axios.create({
 const refreshToken = async () => {
   try {
     const res = await publicRequest.post("v1/auth/refresh-tokens");
-    localStorage.setItem("netFeeToken",res.data?.access.token) 
+    console.log(res.data)
+    localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access.toke)n) 
 
     return  res.data?.access.token;
   } catch (err) {
@@ -58,7 +59,7 @@ apiLink.interceptors.request.use(
     const decodedToken = jwt_decode(TOKEN);
 
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      const accToken = await refreshToken();
+       await refreshToken();
       // config.baseURL = BASE_URL;
     const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
 
