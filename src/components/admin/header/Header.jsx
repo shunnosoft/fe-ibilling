@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 
 export default function Header(props) {
-  const userRole = useSelector((state) => state.auth.role);
+  // const userRole = useSelector((state) => state.auth.role);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
