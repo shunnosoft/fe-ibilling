@@ -53,7 +53,7 @@ export default function Sidebar() {
                 <ArrowLeft className="GotoHomeFromDashboard" />
                 নেট ফি {userRole === "manager" ? " (ম্যানেজার)" : ""}
                 {userRole === "collector" ? " (কালেক্টর)" : ""}
-                {userRole === "ispOwner" ? " (Owner)" : ""}
+                {userRole === "ispOwner" ? " (অ্যাডমিন)" : ""}
               </NavLink>
               <span className="HideSidebar" onClick={removeSidebar}></span>
             </h2>

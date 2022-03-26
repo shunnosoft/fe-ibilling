@@ -60,9 +60,8 @@ function App() {
   }, [dispatch, loading]);
 
   // called Update Token
-  console.log("loading State", loading);
 
-  
+
   useEffect(() => {
     if (accessToken !== null) {
       let currentDate = new Date();
@@ -75,7 +74,6 @@ function App() {
   useLayoutEffect(() => {
     if (pathName === "/home" && loading) {
       updateToken();
-      console.log("Checked on First load");
     }
 
     const timeToUpdate = 1000 * 60 * 12;

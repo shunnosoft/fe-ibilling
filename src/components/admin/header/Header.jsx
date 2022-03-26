@@ -56,9 +56,9 @@ export default function Header(props) {
                     data-bs-toggle="dropdown"
                   >
                     {userData?.name}
-                    {userRole === "ispOwner" ? "( Admin )" : ""}
+                    {/* {userRole === "ispOwner" ? "( Admin )" : ""}
                     {userRole === "collector" ? "( Staff )" : ""}
-                    {userRole === "manager" ? "( Manager )" : ""}
+                    {userRole === "manager" ? "( Manager )" : ""} */}
 
                     <img
                       src="./assets/img/noAvater.jpg"
