@@ -84,7 +84,7 @@ export const asyncLogin =async (dispatch,loginData) =>{
 
  
 
-export const userLogout = async (dispatch) => {
+export const userLogout = async () => {
   try {
     await apiLink.post("/v1/auth/logout");
 
@@ -110,6 +110,7 @@ export const userLogout = async (dispatch) => {
     // dispatch(clearBills());
     // dispatch(clearReseller());
     // dispatch(logOut());
-    console.log(error)
+    localStorage.clear()
+    window.location.reload()
   }
 };

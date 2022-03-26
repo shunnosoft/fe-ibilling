@@ -51,16 +51,18 @@ const refreshToken = async () => {
 
 apiLink.interceptors.request.use(
   async (config) => {
-    const TOKEN = JSON.parse(localStorage.getItem("netFeeToken"))
+    const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
     let currentDate = new Date();
     const decodedToken = jwt_decode(TOKEN);
 
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
       const accToken = await refreshToken();
-      config.baseURL = BASE_URL;
+      // config.baseURL = BASE_URL;
       config.headers["authorization"] = "Bearer " + accToken;
+    } else{
+      config.headers["authorization"] = "Bearer " + TOKEN;
+
     }
-    config.headers["authorization"] = "Bearer " + TOKEN;
     return config;
   },
   (error) => {
