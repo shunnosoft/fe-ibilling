@@ -12,6 +12,9 @@ const BASE_URL = "http://137.184.69.182/api/";
 // const TOKEN = access?.token;
 
 // const userAllData = JSON.parse(localStorage.getItem("persist:root"));
+export const runThis =()=>{
+  return console.log("apiLink runing...")
+}
 
 const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
 
@@ -19,6 +22,9 @@ const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
 // const TOKEN = currentUser?.access?.token;
 
 const TOKEN = user && JSON.parse(user)?.accessToken;
+
+console.log("triggered from apiLink")
+console.log("is token",TOKEN)
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,

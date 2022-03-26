@@ -22,7 +22,7 @@ export default function Login() {
       .required("ফিল্ড ফাঁকা রাখা যাবে না "),
     password: Yup.string().required("ফিল্ড ফাঁকা রাখা যাবে না "),
   });
-
+   
   const handleLogin = (loginData) => {
     const loader = document.querySelector(".Loader");
     loader.style.display = "block";
