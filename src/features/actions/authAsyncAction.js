@@ -14,14 +14,8 @@ import {
 // import { clearReseller } from "../resellerSlice";
 // registration handle
 export const asyncRegister = async (userData) => {
-  await apiLink({
-    url: "/v1/auth/register",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: userData,
-  })
+  publicRequest
+    .post("/v1/auth/register", userData)
     .then((res) => {
       window.location.href = res.data.paymentUrl;
       document.querySelector(".Loader").style.display = "none";
