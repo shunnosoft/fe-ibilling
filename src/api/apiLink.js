@@ -55,7 +55,7 @@ const refreshToken = async () => {
 apiLink.interceptors.request.use(
   async (config) => {
 
-    await refreshToken();
+     
 
     const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
     let currentDate = new Date();
