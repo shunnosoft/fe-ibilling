@@ -39,13 +39,13 @@ const apiLink = axios.create({
 const refreshToken = async () => {
   try {
     const res = await publicRequest.post("v1/auth/refresh-tokens");
-    console.log(res.data)
+    // console.log(res.data)
     localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access.toke)) 
 
     return  res.data?.access.token;
   } catch (err) {
-    console.log(err)
-    console.log("logged OUt for refresh route")
+    // console.log(err)
+    // console.log("logged OUt for refresh route")
      userLogout()
   }
 };
@@ -54,6 +54,8 @@ const refreshToken = async () => {
 
 apiLink.interceptors.request.use(
   async (config) => {
+    await refreshToken();
+
     const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
     let currentDate = new Date();
     const decodedToken = jwt_decode(TOKEN);
