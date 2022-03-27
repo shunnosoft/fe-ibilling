@@ -40,7 +40,7 @@ const refreshToken = async () => {
   try {
     const res = await publicRequest.post("v1/auth/refresh-tokens");
     // console.log(res.data)
-    localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access.toke)) 
+    localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access.token)) 
 
     return  res.data?.access.token;
   } catch (err) {
@@ -54,6 +54,7 @@ const refreshToken = async () => {
 
 apiLink.interceptors.request.use(
   async (config) => {
+
     await refreshToken();
 
     const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
