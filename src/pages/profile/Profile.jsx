@@ -34,18 +34,18 @@ export default function Profile() {
       ),
     confrimPassword: Yup.string().oneOf(
       [Yup.ref("newPassword"), null],
-      "Passwords must match"
+      "পাসওয়ার্ড মিলে নি"
     ),
   });
   const dispatch = useDispatch();
   const progileEditHandler = (data) => {
+    delete data.mobile;
     profileUpdate(dispatch, data, ispOwnerId, setIsLoading);
   };
 
-
   //   change password handler
   const changePasswordHandler = (data) => {
-    // console.log(data)
+    delete data.confrimPassword;
     passwordUpdate(data, setIsLoadingpass);
   };
   return (
@@ -108,12 +108,12 @@ export default function Profile() {
                             />
                             <FtextField
                               type="text"
-                              label={`এড্রেস`}
+                              label={`ঠিকানা`}
                               name="address"
                             />
                             <FtextField
                               type="text"
-                              label={`Singnature`}
+                              label={`সিগনেচার`}
                               name="signature"
                             />
                             <button
@@ -155,7 +155,7 @@ export default function Profile() {
                             <FtextField
                               type="password"
                               name="confrimPassword"
-                              label="Confirm পাসওয়ার্ড"
+                              label="পুনরায় নতুন পাসওয়ার্ড লিখুন"
                             />
                             <button
                               type="submit"
