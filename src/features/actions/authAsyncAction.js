@@ -1,7 +1,6 @@
 import apiLink, { publicRequest } from "../../api/apiLink";
 import { toast } from "react-toastify";
 import {
-   
   logInSuccess,
   // logOut,
 } from "../../features/authSlice";
@@ -14,40 +13,36 @@ import {
 // import { clearChart } from "../chartsSlice";
 // import { clearReseller } from "../resellerSlice";
 // registration handle
-export const asyncRegister = async (userData) => {
-  await apiLink({
-    url: "/v1/auth/register",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: userData,
-  })
-    .then((res) => {
-      window.location.href = res.data.paymentUrl;
-      document.querySelector(".Loader").style.display = "none";
-    })
-    .catch((err) => {
-      document.querySelector(".Loader").style.display = "none";
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
-    });
+export const asyncRegister = async (userData, setLoading) => {
+  setLoading(true);
+  try {
+  const res =await publicRequest.post("/v1/auth/register", userData);
+    setLoading(false);
+    window.location.href = res.data.paymentUrl;
+  } catch (err) {
+    setLoading(false);
+    if (err.response) {
+      toast.error(err.response.data.message);
+    }
+  }
 };
-export const asyncLogin =async (dispatch,loginData) =>{
+export const asyncLogin = async (dispatch, loginData) => {
   document.querySelector(".Loader").style.display = "block";
 
   try {
-    const res = await publicRequest.post("/v1/auth/login", loginData)
-    localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access?.token))
+    const res = await publicRequest.post("/v1/auth/login", loginData);
+    localStorage.setItem(
+      "netFeeToken",
+      JSON.stringify(res.data?.access?.token)
+    );
     document.querySelector(".Loader").style.display = "none";
     // window.location.reload()
     dispatch(logInSuccess(res.data));
   } catch (error) {
     document.querySelector(".Loader").style.display = "none";
-    toast.error("Login Failed")
+    toast.error("Login Failed");
   }
-}
+};
 // export const asyncLogin = async (dispatch, loginData) => {
 //   // display loader
 
@@ -60,7 +55,7 @@ export const asyncLogin =async (dispatch,loginData) =>{
 //         if (res.data.ispOwner === null) {
 //           toast.error("সার্ভার Error!");
 //         } else {
-         
+
 //           localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access?.token))
 //           dispatch(logInSuccess(res.data));
 //           // window.location.reload();
@@ -82,8 +77,6 @@ export const asyncLogin =async (dispatch,loginData) =>{
 //     });
 // };
 
- 
-
 export const userLogout = async () => {
   try {
     await apiLink.post("/v1/auth/logout");
@@ -97,9 +90,8 @@ export const userLogout = async () => {
     // dispatch(clearBills());
     // dispatch(clearReseller());
     // dispatch(logOut());
-    localStorage.clear()
-    window.location.reload()
-
+    localStorage.clear();
+    window.location.reload();
   } catch (error) {
     // dispatch(clearCustomer());
     // dispatch(clearArea());
@@ -110,7 +102,7 @@ export const userLogout = async () => {
     // dispatch(clearBills());
     // dispatch(clearReseller());
     // dispatch(logOut());
-    localStorage.clear()
-    window.location.reload()
+    localStorage.clear();
+    window.location.reload();
   }
 };
