@@ -36,11 +36,10 @@ export const asyncLogin = async (dispatch, loginData) => {
       JSON.stringify(res.data?.access?.token)
     );
     document.querySelector(".Loader").style.display = "none";
-    // window.location.reload()
     dispatch(logInSuccess(res.data));
   } catch (error) {
     document.querySelector(".Loader").style.display = "none";
-    toast.error("Login Failed");
+    toast.error(error.response.data.message);
   }
 };
 // export const asyncLogin = async (dispatch, loginData) => {

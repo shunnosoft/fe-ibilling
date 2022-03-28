@@ -2,10 +2,14 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { userLogout } from "../features/actions/authAsyncAction";
 
-const BASE_URL = "http://137.184.69.182/api/";
+// PRODUCTION
+const BASE_URL = "https://netfeebd.net/api/";
 
+// DEVELOPMENT
+// const BASE_URL = "http://137.184.69.182/api/";
+
+// LOCAL
 // const BASE_URL = "http://192.168.1.24:3030/api/";
-
 // const BASE_URL = "http://localhost:3030/api/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
@@ -13,15 +17,12 @@ const BASE_URL = "http://137.184.69.182/api/";
 // const TOKEN = access?.token;
 
 // const userAllData = JSON.parse(localStorage.getItem("persist:root"));
- 
-
 
 // const currentUser = user && JSON.parse(user)?.currentUser;
 // const TOKEN = currentUser?.access?.token;
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.auth;
 // const TOKEN = user && JSON.parse(user)?.accessToken;
-
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,
@@ -31,7 +32,6 @@ export const publicRequest = axios.create({
 
 const apiLink = axios.create({
   baseURL: BASE_URL,
-  
 });
 
 // export default apiLink;
@@ -40,13 +40,13 @@ const refreshToken = async () => {
   try {
     const res = await publicRequest.post("v1/auth/refresh-tokens");
     // console.log(res.data)
-    localStorage.setItem("netFeeToken",JSON.stringify(res.data?.access.token)) 
+    localStorage.setItem("netFeeToken", JSON.stringify(res.data?.access.token));
 
-    return  res.data?.access.token;
+    return res.data?.access.token;
   } catch (err) {
     // console.log(err)
     // console.log("logged OUt for refresh route")
-     userLogout()
+    userLogout();
   }
 };
 
@@ -54,22 +54,18 @@ const refreshToken = async () => {
 
 apiLink.interceptors.request.use(
   async (config) => {
-
-     
-
-    const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
+    const TOKEN = await JSON.parse(localStorage.getItem("netFeeToken"));
     let currentDate = new Date();
     const decodedToken = jwt_decode(TOKEN);
 
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-       await refreshToken();
+      await refreshToken();
       // config.baseURL = BASE_URL;
-    const TOKEN =await JSON.parse(localStorage.getItem("netFeeToken"))
+      const TOKEN = await JSON.parse(localStorage.getItem("netFeeToken"));
 
       config.headers["authorization"] = "Bearer " + TOKEN;
-    } else{
+    } else {
       config.headers["authorization"] = "Bearer " + TOKEN;
-
     }
     return config;
   },
@@ -79,4 +75,3 @@ apiLink.interceptors.request.use(
 );
 
 export default apiLink;
-
