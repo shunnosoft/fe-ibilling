@@ -55,7 +55,7 @@
   margin-top: 15px;
   display: none;
 }
-.customFormSelect{
+.customFormSelect {
   width: 100%;
   height: 40px;
   border: 1px solid gainsboro;
@@ -63,17 +63,13 @@
   cursor: pointer;
   border-radius: 5px;
   margin-top: 10px;
-
-
 }
 /* .customFormSelect::selection{
   border: none;
    
 } */
-.customOption{
+.customOption {
   margin-top: 50px;
-  
-   
 }
 .submitBtn {
   padding: 7px 40px;
@@ -87,7 +83,7 @@
   margin-left: 10px;
   border-radius: 7px !important;
 }
-.radiopak{
+.radiopak {
   width: 100%;
   display: flex;
   align-items: center;
@@ -95,28 +91,27 @@
   flex-wrap: wrap;
 }
 
-.singlePak{
+.singlePak {
   display: flex;
   align-items: center;
   justify-content: center;
-   
+
   font-weight: bold;
   font-size: 20px;
   margin-top: 10px;
-
 }
-.pakinput{
+.pakinput {
   margin-right: 8px;
   width: 20px;
   height: 20px;
   cursor: pointer;
   border-radius: 10px;
 }
-.pakinfo{
+.pakinfo {
   width: 100%;
   /* height: 40px; */
   padding: 10px;
-  border: 2px gainsboro solid ;
+  border: 2px gainsboro solid;
   border-radius: 5px;
   display: block;
   margin-bottom: 7px;
@@ -124,8 +119,10 @@
   align-items: center;
   justify-content: space-evenly;
   flex-wrap: wrap;
+  background: var(--primaryColor);
+  color: white;
 }
-.pakinfo>span{
+.pakinfo > span {
   font-weight: bold;
   margin-left: 5px;
 }

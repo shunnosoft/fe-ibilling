@@ -55,8 +55,8 @@ export default function Register() {
       pack: singlePakage[0].subPackageName,
       packType: pakage.packageName,
       reference: {
-        name: refName,
-        mobile: refMobile,
+        name: refName || "আব্দুর রাজ্জাক",
+        mobile: refMobile || "01321141789",
       },
     };
 
@@ -81,7 +81,6 @@ export default function Register() {
   // };
 
   const handlePakageSelect = (e) => {
-    
     // setChecked(!isChecked)
     const pakage = JSON.parse(e.target.value);
     setPakage(pakage);
@@ -131,12 +130,7 @@ export default function Register() {
                     <label className="form-label mt-2">
                       আপনার পছন্দের প্যাকেজ সিলেক্ট করুন
                     </label>
-                    <div className="pakinfo">
-                      <span>কাস্টমারঃ {singlePakage[0].customer}</span>
-                      <span>ইনস্টলেশন ফিঃ {singlePakage[0].installation}</span>
-                      <span>মাসিক ফিঃ {singlePakage[0].monthly}</span>
-                       
-                    </div>
+
                     {/* <option value="">প্যাকেজ সিলেক্ট করুন</option> */}
                     <div className="radiopak">
                       {allpakage.map((pak, index) => {
@@ -153,7 +147,7 @@ export default function Register() {
                               onChange={handlePakageSelect}
                             />
                             <label htmlFor={pak.packageName}>
-                              {pak.packageName}
+                              {pak.packageNameBangla}
                             </label>
                           </div>
                         );
@@ -177,11 +171,17 @@ export default function Register() {
                           >
                             {/* {pak.subPackageName} */}
 
-                            {`${pak.subPackageName}`}
+                            {`${pak.subPackageName} - ${pak.customer}`}
                           </option>
                         );
                       })}
                     </select>
+
+                    <div className="pakinfo mt-2">
+                      <span>কাস্টমারঃ {singlePakage[0].customer}</span>
+                      <span>ইনস্টলেশন ফিঃ {singlePakage[0].installation}</span>
+                      <span>মাসিক ফিঃ {singlePakage[0].monthly}</span>
+                    </div>
 
                     {/* <div className="form-outline" id="get_customer">
                       <TextField
