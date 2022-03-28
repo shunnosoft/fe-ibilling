@@ -22,7 +22,7 @@ export default function Register() {
   const [singlePakage, setSinglePakage] = useState([
     allpakage[0]["subPakage"][0],
   ]);
-  const [isLoading,setLoading] =useState(false)
+  const [isLoading, setLoading] = useState(false);
   const validate = Yup.object({
     company: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে ")
@@ -37,18 +37,14 @@ export default function Register() {
     email: Yup.string()
       .email("ইমেইল সঠিক নয় ")
       .required("আপনার ইমেইল দিতে হবে"),
-    refName: Yup.string()
-      .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
-       ,
+    refName: Yup.string().min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে"),
     refMobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "নাম্বার ১১ ডিজিট এর বেশি হয়ে  গেছে ")
-       ,
+      .max(11, "নাম্বার ১১ ডিজিট এর বেশি হয়ে  গেছে "),
   });
 
   const submitHandle = (values) => {
     // const selector = document.getElementById("selector");
-    
 
     // const { refName, refMobile, ...rest } = values;
     let userData = {};
@@ -57,7 +53,7 @@ export default function Register() {
     userData = {
       ...rest,
       pack: singlePakage[0].subPackageName,
-      packType:pakage.packageName ,
+      packType: pakage.packageName,
       reference: {
         name: refName,
         mobile: refMobile,
@@ -65,8 +61,8 @@ export default function Register() {
     };
 
     // send user data to async function
-    console.log(userData) 
-    asyncRegister(userData , setLoading);
+    console.log(userData);
+    asyncRegister(userData, setLoading);
   };
 
   // show customer field
@@ -85,6 +81,8 @@ export default function Register() {
   // };
 
   const handlePakageSelect = (e) => {
+    
+    // setChecked(!isChecked)
     const pakage = JSON.parse(e.target.value);
     setPakage(pakage);
     setsubPakage(pakage?.subPakage);
@@ -97,12 +95,9 @@ export default function Register() {
     setSinglePakage([JSON.parse(e.target.value)]);
   };
 
-  
-
   return (
     <FontColor>
       <div className="register">
-     
         <ToastContainer position="top-right" theme="colored" />
         <div className="container">
           <FourGround>
@@ -127,7 +122,6 @@ export default function Register() {
                       label="প্রতিষ্ঠান এর নাম"
                       name="company"
                       type="text"
-                       
                     />
                     <TextField label="এডমিনের নাম" name="name" type="text" />
                     <TextField label="মোবাইল" name="mobile" type="text" />
@@ -137,22 +131,35 @@ export default function Register() {
                     <label className="form-label mt-2">
                       আপনার পছন্দের প্যাকেজ সিলেক্ট করুন
                     </label>
-                    <select
-                      name="package"
-                      className="customFormSelect"
-                      id="selector"
-                      onChange={handlePakageSelect}
-                      // value={JSON.stringify(pakage)}
-                    >
-                      {/* <option value="">প্যাকেজ সিলেক্ট করুন</option> */}
+                    <div className="pakinfo">
+                      <span>কাস্টমারঃ {singlePakage[0].customer}</span>
+                      <span>ইনস্টলেশন ফিঃ {singlePakage[0].installation}</span>
+                      <span>মাসিক ফিঃ {singlePakage[0].monthly}</span>
+                       
+                    </div>
+                    {/* <option value="">প্যাকেজ সিলেক্ট করুন</option> */}
+                    <div className="radiopak">
                       {allpakage.map((pak, index) => {
                         return (
-                          <option className="customOption" key={index} value={JSON.stringify(pak)}>
-                            {pak.packageName}
-                          </option>
+                          <div className="singlePak" key={index}>
+                            <input
+                              className="pakinput"
+                              type="radio"
+                              id={pak.packageName}
+                              // name="drone"
+                              value={JSON.stringify(pak)}
+                              // checked
+                              checked={pak.packageName === pakage.packageName}
+                              onChange={handlePakageSelect}
+                            />
+                            <label htmlFor={pak.packageName}>
+                              {pak.packageName}
+                            </label>
+                          </div>
                         );
                       })}
-                    </select>
+                    </div>
+
                     <select
                       name="package"
                       className="customFormSelect"
@@ -163,10 +170,14 @@ export default function Register() {
 
                       {subpakage?.map((pak, index) => {
                         return (
-                          <option className="customOption" key={index} value={JSON.stringify(pak)}>
+                          <option
+                            className="customOption"
+                            key={index}
+                            value={JSON.stringify(pak)}
+                          >
                             {/* {pak.subPackageName} */}
 
-                            {`${pak.subPackageName}  Customer:${pak.customer}  Installation Fee:${pak.installation}  Monthly Fee:${pak.monthly}`}
+                            {`${pak.subPackageName}`}
                           </option>
                         );
                       })}
@@ -198,8 +209,8 @@ export default function Register() {
                       </div>
                     </div>
 
-                    <button   type="submit" className="submitBtn">
-                    { isLoading? <Loader></Loader> : "রেজিস্টার"}
+                    <button type="submit" className="submitBtn">
+                      {isLoading ? <Loader></Loader> : "রেজিস্টার"}
                     </button>
                     <NavLink to="/">
                       <button
