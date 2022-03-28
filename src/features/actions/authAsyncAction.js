@@ -13,19 +13,18 @@ import {
 // import { clearChart } from "../chartsSlice";
 // import { clearReseller } from "../resellerSlice";
 // registration handle
-export const asyncRegister = async (userData) => {
-  publicRequest
-    .post("/v1/auth/register", userData)
-    .then((res) => {
-      window.location.href = res.data.paymentUrl;
-      document.querySelector(".Loader").style.display = "none";
-    })
-    .catch((err) => {
-      document.querySelector(".Loader").style.display = "none";
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
-    });
+export const asyncRegister = async (userData, setLoading) => {
+  setLoading(true);
+  try {
+  const res =await publicRequest.post("/v1/auth/register", userData);
+    setLoading(false);
+    window.location.href = res.data.paymentUrl;
+  } catch (err) {
+    setLoading(false);
+    if (err.response) {
+      toast.error(err.response.data.message);
+    }
+  }
 };
 export const asyncLogin = async (dispatch, loginData) => {
   document.querySelector(".Loader").style.display = "block";

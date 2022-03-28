@@ -11,17 +11,25 @@ import { NavLink } from "react-router-dom";
 import "./register.css";
 import { initialValues, TextField } from "./TextField";
 import { asyncRegister } from "../../../features/actions/authAsyncAction";
+import allpakage from "./pakageData";
+import Loader from "../../../components/common/Loader";
 
 export default function Register() {
-  const [packValue, setPackValue] = useState("");
+  // const [packValue, setPackValue] = useState("");
 
+  const [pakage, setPakage] = useState(allpakage[0]);
+  const [subpakage, setsubPakage] = useState(allpakage[0]["subPakage"]);
+  const [singlePakage, setSinglePakage] = useState([
+    allpakage[0]["subPakage"][0],
+  ]);
+  const [isLoading, setLoading] = useState(false);
   const validate = Yup.object({
     company: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে ")
-      .required("কোম্পানির নাম দিন"),
+      .required("প্রতিষ্ঠান এর নাম দিন"),
     name: Yup.string()
       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
-      .required("আপনার নাম দিন"),
+      .required("এডমিনের নাম দিন"),
     mobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে  ")
@@ -29,74 +37,67 @@ export default function Register() {
     email: Yup.string()
       .email("ইমেইল সঠিক নয় ")
       .required("আপনার ইমেইল দিতে হবে"),
-    refName: Yup.string()
-      .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
-      .required("রেফারেন্সএর  নাম দিন"),
+    refName: Yup.string().min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে"),
     refMobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "নাম্বার ১১ ডিজিট এর বেশি হয়ে  গেছে ")
-      .required("রেফারেন্সএর  মোবাইল নম্বর দিন "),
+      .max(11, "নাম্বার ১১ ডিজিট এর বেশি হয়ে  গেছে "),
   });
 
   const submitHandle = (values) => {
-    const selector = document.getElementById("selector");
-    const loader = document.querySelector(".Loader");
-
-    loader.style.display = "block";
-
-    if (packValue === "") {
-      alert("Select Pack");
-      document.querySelector(".Loader").style.display = "none";
-      return;
-    }
+    // const selector = document.getElementById("selector");
 
     // const { refName, refMobile, ...rest } = values;
     let userData = {};
 
-    if (selector.value === "P4") {
-      const { refName, refMobile, ...rest } = values;
-      userData = {
-        ...rest,
-        pack: packValue,
-        reference: {
-          name: refName,
-          mobile: refMobile,
-        },
-      };
-    } else {
-      const { refName, maxUser, refMobile, ...rest } = values;
-      userData = {
-        ...rest,
-        pack: packValue,
-        reference: {
-          name: refName,
-          mobile: refMobile,
-        },
-      };
-    }
+    const { refName, maxUser, refMobile, ...rest } = values;
+    userData = {
+      ...rest,
+      pack: singlePakage[0].subPackageName,
+      packType: pakage.packageName,
+      reference: {
+        name: refName,
+        mobile: refMobile,
+      },
+    };
+
     // send user data to async function
-    asyncRegister(userData);
+    console.log(userData);
+    asyncRegister(userData, setLoading);
   };
 
   // show customer field
-  let showField = () => {
-    const selector = document.getElementById("selector");
-    const customer = document.getElementById("get_customer");
+  // let showField = () => {
+  //   const selector = document.getElementById("selector");
+  //   const customer = document.getElementById("get_customer");
 
-    setPackValue(selector.value);
+  //   setPackValue(selector.value);
 
-    if (selector.value === "P4") {
-      customer.style.display = "block";
-    } else {
-      document.getElementById("maxUserValue").value = "";
-      customer.style.display = "none";
-    }
+  //   if (selector.value === "P4") {
+  //     customer.style.display = "block";
+  //   } else {
+  //     document.getElementById("maxUserValue").value = "";
+  //     customer.style.display = "none";
+  //   }
+  // };
+
+  const handlePakageSelect = (e) => {
+    
+    // setChecked(!isChecked)
+    const pakage = JSON.parse(e.target.value);
+    setPakage(pakage);
+    setsubPakage(pakage?.subPakage);
+    const getsinglePak = pakage?.subPakage?.filter(
+      (p) => p.subPackageName === singlePakage[0]?.subPackageName
+    );
+    setSinglePakage(getsinglePak);
+  };
+  const handleSubPakage = (e) => {
+    setSinglePakage([JSON.parse(e.target.value)]);
   };
 
   return (
     <FontColor>
       <div className="register">
-        <div className="Loader"></div>
         <ToastContainer position="top-right" theme="colored" />
         <div className="container">
           <FourGround>
@@ -118,11 +119,11 @@ export default function Register() {
                   <h3 className="mb-4">রেজিস্ট্রেশন করুন </h3>
                   <Form>
                     <TextField
-                      label="কোম্পানির  নাম"
+                      label="প্রতিষ্ঠান এর নাম"
                       name="company"
                       type="text"
                     />
-                    <TextField label="নিজের নাম" name="name" type="text" />
+                    <TextField label="এডমিনের নাম" name="name" type="text" />
                     <TextField label="মোবাইল" name="mobile" type="text" />
                     <TextField label="ইমেইল" name="email" type="email" />
 
@@ -130,34 +131,66 @@ export default function Register() {
                     <label className="form-label mt-2">
                       আপনার পছন্দের প্যাকেজ সিলেক্ট করুন
                     </label>
+                    <div className="pakinfo">
+                      <span>কাস্টমারঃ {singlePakage[0].customer}</span>
+                      <span>ইনস্টলেশন ফিঃ {singlePakage[0].installation}</span>
+                      <span>মাসিক ফিঃ {singlePakage[0].monthly}</span>
+                       
+                    </div>
+                    {/* <option value="">প্যাকেজ সিলেক্ট করুন</option> */}
+                    <div className="radiopak">
+                      {allpakage.map((pak, index) => {
+                        return (
+                          <div className="singlePak" key={index}>
+                            <input
+                              className="pakinput"
+                              type="radio"
+                              id={pak.packageName}
+                              // name="drone"
+                              value={JSON.stringify(pak)}
+                              // checked
+                              checked={pak.packageName === pakage.packageName}
+                              onChange={handlePakageSelect}
+                            />
+                            <label htmlFor={pak.packageName}>
+                              {pak.packageName}
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+
                     <select
                       name="package"
-                      className="form-select shadow-none"
+                      className="customFormSelect"
                       id="selector"
-                      onChange={showField}
+                      onChange={handleSubPakage}
                     >
-                      <option value="">ওপেন </option>
-                      <option value="Basic">Basic</option>
-                      <option value="Bronze">Bronze</option>
-                      <option value="Silver">Silver</option>
-                      <option value="Gold">Gold</option>
-                      <option value="Platinum">Platinum</option>
-                      <option value="Diamond">Diamond</option>
-                      <option value="Old">Old</option>
-                      <option value="P1">P1</option>
-                      <option value="P2">P2</option>
-                      <option value="P3">P3</option>
-                      <option value="P4">P4</option>
+                      {/* <option value="">সাব প্যাকেজ সিলেক্ট করুন</option> */}
+
+                      {subpakage?.map((pak, index) => {
+                        return (
+                          <option
+                            className="customOption"
+                            key={index}
+                            value={JSON.stringify(pak)}
+                          >
+                            {/* {pak.subPackageName} */}
+
+                            {`${pak.subPackageName}`}
+                          </option>
+                        );
+                      })}
                     </select>
 
-                    <div className="form-outline" id="get_customer">
+                    {/* <div className="form-outline" id="get_customer">
                       <TextField
                         id="maxUserValue"
                         label="কাস্টমার সংখ্যা"
                         name="maxUser"
                         type="number"
                       />
-                    </div>
+                    </div> */}
                     {/* options */}
 
                     <div className="customInputGroup">
@@ -177,7 +210,7 @@ export default function Register() {
                     </div>
 
                     <button type="submit" className="submitBtn">
-                      রেজিস্টার
+                      {isLoading ? <Loader></Loader> : "রেজিস্টার"}
                     </button>
                     <NavLink to="/">
                       <button
