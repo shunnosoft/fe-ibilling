@@ -1,4 +1,4 @@
-import apiLink, { publicRequest } from "../../api/apiLink";
+import   { publicRequest } from "../../api/apiLink";
 import { toast } from "react-toastify";
 import {
   logInSuccess,
@@ -78,7 +78,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 
 export const userLogout = async () => {
   try {
-    await apiLink.post("/v1/auth/logout");
+    await publicRequest.post("/v1/auth/logout");
 
     // dispatch(clearCustomer());
     // dispatch(clearArea());
