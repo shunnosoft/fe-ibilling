@@ -10,10 +10,10 @@ import { FtextField } from "../../../components/common/FtextField";
 // import { editCustomer } from "../../../features/customerSlice";
 // import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
-import { editCustomer  } from "../../../features/apiCalls";
+import { editCustomer } from "../../../features/apiCalls";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
-import moment from "moment"
+import moment from "moment";
 export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const area = useSelector((state) => state.area.area);
@@ -34,12 +34,12 @@ export default function CustomerEdit({ single }) {
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
-  const [billDate,setBillDate] =useState()
-  const [billTime,setBilltime] =useState()
- 
+  const [billDate, setBillDate] = useState();
+  const [billTime, setBilltime] = useState();
+
   useEffect(() => {
-    setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"))
-    setBilltime(moment(single.billingCycle).format("hh:mm"))
+    setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"));
+    setBilltime(moment(single.billingCycle).format("hh:mm"));
     const temp = Getmikrotik.find((val) => val.id === single.mikrotik);
     setmikrotikName(temp);
 
@@ -79,20 +79,19 @@ export default function CustomerEdit({ single }) {
 
   // customer validator
   const customerValidator = Yup.object({
-    name: Yup.string().required("নাম ***"),
+    name: Yup.string().required("গ্রাহকের নাম লিখুন"),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে "),
-    address: Yup.string().required("এড্রেস ***"),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
-    nid: Yup.string().required("NID ***"),
-    monthlyFee: Yup.string().required("Montly Fee ***"),
-    Pname: Yup.string().required("PPPoE নাম"),
-    Ppassword: Yup.string().required("PPPoE Password"),
-    Pcomment: Yup.string().required("Comment"),
+      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+    address: Yup.string(),
+    email: Yup.string().email("ইমেইল সঠিক নয়"),
+    nid: Yup.string(),
+    monthlyFee: Yup.string().required("মাসিক ফি লিখুন"),
+    Pname: Yup.string().required("PPPoE নাম লিখুন"),
+    Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
+    Pcomment: Yup.string(),
   });
-  
-   
 
   // const [loadingPac, setLoadingPac] = useState(false);
 
@@ -153,7 +152,9 @@ export default function CustomerEdit({ single }) {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime).format( 'YYYY-MM-DDTHH:mm:ss.ms[Z]'),
+      billingCycle: moment(billDate + " " + billTime).format(
+        "YYYY-MM-DDTHH:mm:ss.ms[Z]"
+      ),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -164,11 +165,10 @@ export default function CustomerEdit({ single }) {
       },
       ...rest,
     };
-     
+
     editCustomer(dispatch, mainData, setIsloading);
-    
   };
-   
+
   return (
     <div>
       <div
@@ -196,11 +196,11 @@ export default function CustomerEdit({ single }) {
               <Formik
                 initialValues={{
                   name: single?.name || "",
-                  mobile: single?.mobile || "01....",
+                  mobile: single?.mobile || "",
                   address: single?.address || "",
                   email: single?.email || "",
                   nid: single?.nid || "",
-                  Pcomment: "",
+                  Pcomment: single?.pppoe?.comment || "",
                   monthlyFee: packageRate?.rate || single?.monthlyFee || "",
                   Pname: single?.pppoe?.name || "",
                   Pprofile: packageRate?.name || single?.pppoe?.profile || "",
@@ -214,10 +214,6 @@ export default function CustomerEdit({ single }) {
               >
                 {() => (
                   <Form>
-
-                    
-
-              
                     <div className="mikrotikSection">
                       <div>
                         <p className="comstomerFieldsTitle">
@@ -332,27 +328,34 @@ export default function CustomerEdit({ single }) {
                         name="nid"
                       />
                     </div>
-                              
+
                     <div className="displayGrid3">
                       <FtextField type="text" label="নাম" name="name" />
                       <FtextField type="text" label="মোবাইল" name="mobile" />
                       <FtextField type="text" label="ঠিকানা" name="address" />
                     </div>
                     <div className="newDisplay">
-                      <FtextField  type="text" label="ইমেইল" name="email" />
+                      <FtextField type="text" label="ইমেইল" name="email" />
 
-                      <div  className="billCycle">
-                      <p className="customerFieldsTitle">
-                      বিল সাইকেল
-                      </p>
-                      
-                      <div className="timeDate">
-                        <input    value={billDate}  onChange={(e)=>setBillDate(e.target.value)} type="date" />
-                        <input className="billTime"   value={billTime} onChange={(e)=>setBilltime(e.target.value)} type="time" />
+                      <div className="billCycle">
+                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+
+                        <div className="timeDate">
+                          <input
+                            value={billDate}
+                            onChange={(e) => setBillDate(e.target.value)}
+                            type="date"
+                          />
+                          <input
+                            className="billTime"
+                            value={billTime}
+                            onChange={(e) => setBilltime(e.target.value)}
+                            type="time"
+                          />
+                        </div>
                       </div>
-                    </div>
                       <div className="autoDisable">
-                        <label>Auto Disable</label>
+                        <label>অটোমেটিক সংযোগ বন্ধ</label>
                         <input
                           type="checkBox"
                           checked={autoDisable}
@@ -375,7 +378,7 @@ export default function CustomerEdit({ single }) {
                           className="form-check-label"
                           htmlFor="inlineRadio1"
                         >
-                          Active
+                          এক্টিভ
                         </label>
                       </div>
                       <div className="form-check form-check-inline">
@@ -391,7 +394,7 @@ export default function CustomerEdit({ single }) {
                           className="form-check-label"
                           htmlFor="inlineRadio2"
                         >
-                          Inactive
+                          ইন-এক্টিভ
                         </label>
                       </div>
                     </div>

@@ -22,24 +22,24 @@ export default function CustomerModal() {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
-  const [billDate,setBillDate] =useState()
-  const [billTime,setBilltime] =useState()
-
+  const [billDate, setBillDate] = useState();
+  const [billTime, setBilltime] = useState();
 
   // customer validator
   const customerValidator = Yup.object({
-    name: Yup.string().required("নাম ***"),
+    name: Yup.string().required("গ্রাহকের নাম লিখুন"),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর *** "),
-    address: Yup.string().required("এড্রেস ***"),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
-    nid: Yup.string().required("NID ***"),
-    monthlyFee: Yup.string().required("Montly Fee ***"),
-    Pname: Yup.string().required("PPPoE নাম"),
-    Ppassword: Yup.string().required("PPPoE Password"),
-    Pcomment: Yup.string().required("Comment"),
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে")
+      .required("মোবাইল নম্বর লিখুন"),
+    address: Yup.string(),
+    email: Yup.string().email("ইমেইল সঠিক নয়"),
+    nid: Yup.string(),
+    monthlyFee: Yup.string().required("মাসিক ফি লিখুন"),
+    Pname: Yup.string().required("PPPoE নাম লিখুন"),
+    Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
+    Pcomment: Yup.string(),
   });
 
   // select subArea
@@ -105,7 +105,9 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle:  moment(billDate + " " + billTime).format('YYYY-MM-DDTHH:mm:ss.ms[Z]') , 
+      billingCycle: moment(billDate + " " + billTime).format(
+        "YYYY-MM-DDTHH:mm:ss.ms[Z]"
+      ),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -118,10 +120,10 @@ export default function CustomerModal() {
     addCustomer(dispatch, mainData, setIsloading);
   };
 
-  useEffect(()=>{
-    setBillDate( moment().endOf("day").format("YYYY-MM-DD"))
-    setBilltime(moment().endOf('day').format("HH:mm"))
-  },[])
+  useEffect(() => {
+    setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
+    setBilltime(moment().endOf("day").format("HH:mm"));
+  }, []);
   return (
     <div>
       <div
@@ -232,7 +234,6 @@ export default function CustomerModal() {
                           className="form-select"
                           aria-label="Default select example"
                           onChange={selectSubArea}
-                          
                         >
                           <option value="">...</option>
                           {area.length === undefined
@@ -282,26 +283,33 @@ export default function CustomerModal() {
                     <div className="newDisplay">
                       <FtextField type="text" label="ইমেইল" name="email" />
 
-                    <div  className="billCycle">
-                      <p className="customerFieldsTitle">
-                      বিল সাইকেল
-                      </p>
-                      
-                      <div className="timeDate">
-                        <input    value={billDate}  onChange={(e)=>setBillDate(e.target.value)} type="date" />
-                        <input className="billTime"   value={billTime} onChange={(e)=>setBilltime(e.target.value)} type="time" />
+                      <div className="billCycle">
+                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+
+                        <div className="timeDate">
+                          <input
+                            value={billDate}
+                            onChange={(e) => setBillDate(e.target.value)}
+                            type="date"
+                          />
+                          <input
+                            className="billTime"
+                            value={billTime}
+                            onChange={(e) => setBilltime(e.target.value)}
+                            type="time"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="displayGrid3">
-                      <div className="autoDisable">
-                        <label>Auto Disable</label>
-                        <input
-                          type="checkBox"
-                          checked={autoDisable}
-                          onChange={(e) => setAutoDisable(e.target.checked)}
-                        />
+                      <div className="displayGrid3">
+                        <div className="autoDisable">
+                          <label>অটোমেটিক সংযোগ বন্ধ</label>
+                          <input
+                            type="checkBox"
+                            checked={autoDisable}
+                            onChange={(e) => setAutoDisable(e.target.checked)}
+                          />
+                        </div>
                       </div>
-                    </div>
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>
