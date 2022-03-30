@@ -8,6 +8,7 @@ import "./message.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
+import SmsParchase from "./smsParchaseModal";
 
 export default function Message() {
   const [isChecked, setisChecked] = useState(false);
@@ -33,6 +34,7 @@ export default function Message() {
 
   return (
     <>
+      <SmsParchase></SmsParchase>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
@@ -46,6 +48,20 @@ export default function Message() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="profileWrapper uiChange">
+                    <div className="smsbal">
+                      <div>
+                        এসএমএস ব্যালান্সঃ <strong>{2000}</strong>{" "}
+                      </div>
+
+                      <button
+                        data-bs-toggle="modal"
+                        data-bs-target="#smsparchase"
+                        className="buysms"
+                      >
+                        এসএমএস কিনুন
+                      </button>
+                    </div>
+
                     <div className="messageGuide">
                       <h4>যেভাবে আপনি গ্রাহকদের মোবাইলে মেসেজ দিবেনঃ</h4>
                       <p>

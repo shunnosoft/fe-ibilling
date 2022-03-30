@@ -169,7 +169,7 @@ export const addArea = async (dispatch, data, setIsLoading) => {
     toast.success("এরিয়া সংযুক্ত সফল হয়েছে ");
   } catch (error) {
     setIsLoading(false);
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 export const editArea = async (dispatch, data, setIsLoading) => {
@@ -215,7 +215,7 @@ export const addSubArea = async (dispatch, data, setIsLoading) => {
   } catch (error) {
     setIsLoading(false);
     document.querySelector("#subAreaModal").click();
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -276,7 +276,7 @@ export const getCollector = async (dispatch, ispOwnerId) => {
     const res = await apiLink.get(`/v1/ispOwner/collector/${ispOwnerId}`);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -411,7 +411,7 @@ export const fetchMikrotikSyncUser = async (dispatch, IDs, setIsLoadingCus) => {
     })
     .catch((error) => {
       setIsLoadingCus(false);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data.message);
     });
 };
 
@@ -424,7 +424,7 @@ export const fetchMikrotik = async (dispatch, ispOwnerId) => {
     });
     dispatch(getMikrotikSuccess(response.data));
   } catch (error) {
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -507,7 +507,7 @@ export const deleteSingleMikrotik = async (
     })
     .catch((error) => {
       setIsloading(false);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data.message);
     });
 };
 
@@ -716,7 +716,7 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
   } catch (error) {
     console.log(error.message);
     setIsLoadingpass(false);
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -731,7 +731,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
     toast.success("প্রোফাইল আপডেট সফল হয়েছে");
   } catch (error) {
     setIsLoading(false);
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -750,7 +750,7 @@ export const billCollect = async (dispatch, billData, setLoading) => {
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
 
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -786,7 +786,7 @@ export const getTotalbal = async (dispatch, setLoading) => {
     setLoading(false);
   } catch (error) {
     setLoading(false);
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -818,7 +818,7 @@ export const depositAcceptReject = async (
   } catch (error) {
     setAccLoading(false);
 
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 
@@ -850,6 +850,6 @@ export const getCollectorBill = async (dispatch) => {
 
     dispatch(getCollectorBills(res.data));
   } catch (error) {
-    console.log(error.response.data.message);
+    console.log(error.response?.data.message);
   }
 };

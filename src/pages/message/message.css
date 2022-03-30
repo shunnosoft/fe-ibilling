@@ -16,3 +16,107 @@
   display: flex;
   flex-direction: column;
 }
+
+.smsPerchase{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 7px;
+  border: 1px solid #ddd;
+
+}
+.smsbuy{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.smsbal{
+  /* background-color:rgb(192, 190, 190); */
+  border-radius: 4px ;
+  height: 45px;
+  font-weight: bold;
+  font-size: 17px;
+  color: rgb(2, 2, 2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.smsbutton{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px;
+}
+.smsparchasebtn{
+  width: 100%;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  height: 40px;
+  font-weight: bold;
+}
+
+.button1{
+  background-color:#086E7D;
+}
+
+.button2{
+  background-color: #FF1700;
+}
+
+.numsms{
+  font-weight: bold;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.smsinput{
+  flex: 2;
+  border: 2px rgb(136, 136, 136) solid;
+  border-radius: 4px;
+  padding-left: 5px;
+  font-weight: 500;
+  height: 35px;
+}
+
+.smsinput:focus{
+  outline: none;
+}
+.smsspan{
+  flex: 1;
+   font-size: 17px;
+}
+.amountsms{
+  font-weight: bold;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  font-size: 17px;
+}
+.price{
+  color: green;
+  font-weight: bolder;
+}
+
+.buysms{
+  border: none;
+  border-radius: 5px;
+  width: 150px;
+  height: 40px;
+  background-color: #F0A500;
+  font-weight: 600;
+}
+
+.kroymullo{
+  margin-right: 10px;
+}

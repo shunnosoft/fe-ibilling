@@ -1,6 +1,6 @@
 import {
   PersonFill,
-  Messenger,
+   
   // Cash,
 } from "react-bootstrap-icons";
 
@@ -17,11 +17,11 @@ export const HeaderData = [
   //   name: "একাউন্ট",
   //   link: "/account",
   // },
-  {
-    icon: <Messenger />,
-    name: "মেসেজ",
-    link: "/message",
-  },
+  // {
+  //   icon: <Messenger />,
+  //   name: "মেসেজ",
+  //   link: "/message",
+  // },
   // {
   //   icon: <Cash />,
   //   name: "পেমেন্ট",

@@ -13,6 +13,7 @@ import {
   Wifi,
   WalletFill,
   GraphUpArrow,
+  Messenger,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -251,6 +252,31 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </NavLink>
+              
+
+
+              <NavLink
+                key={99}
+                to={"/message"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/customer" ? "active" : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<Messenger />}</div>
+                    <span className="sidebarLinksName">{"মেসেজ"}</span>
+                  </li>
+                </FontColor>
+              </NavLink>
+
+
+
               {/* bill sub links */}
               <div id="toggleSubBilling">
                 {billData.map((val, key) => (
