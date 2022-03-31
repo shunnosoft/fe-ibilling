@@ -1,0 +1,200 @@
+.customerFormCheck {
+  padding: 0;
+  /* margin-left: -22px !important; */
+}
+.selectFiltering {
+  width: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+}
+.spetialSortingRow > th {
+  cursor: pointer;
+}
+.arrowDownUp {
+  padding: 1px;
+  margin-left: 4px;
+  color: #12cf6f;
+}
+.deletingAction {
+  padding: 20px 5px;
+  color: tomato;
+}
+.customerFormCheck > p {
+  font-weight: 500;
+  color: black;
+  margin-bottom: 7px;
+}
+.customerAction {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+}
+.dropdown-menu > li {
+  cursor: pointer;
+  display: block;
+}
+
+.thSt {
+  color: #2485aa;
+  font-size: 17px;
+}
+.comstomerFieldsTitle {
+  padding: 0;
+  margin: 0;
+}
+.customerGrid,
+.displayGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+.ifCannotSelectBill {
+  display: none;
+  text-align: center;
+  color: rgb(250, 79, 0);
+  padding: 0px;
+}
+.mikrotikSection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+.areaSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  padding-bottom: 15px;
+}
+.areaSection > div > p {
+  color: black;
+  padding: 0;
+  margin: 0;
+}
+.AllAreaClass {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-gap: 20px;
+  margin-top: 10px;
+  padding: 20px;
+  border-radius: 7px;
+  border: 1px solid #ddd;
+  /* overflow-x: scroll; */
+}
+.areaParent {
+  font-size: 16px;
+  color: black;
+  font-weight: 600;
+}
+.displayFlex {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+.displayFlex :nth-child(2) {
+  padding-left: 7px;
+}
+.autoDisable {
+  background: #efefef;
+  width: fit-content;
+  height: 38px;
+  margin-top: 24px;
+  padding: 5px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+.paginationSection {
+  display: flex;
+  justify-content: space-between;
+}
+.paginationFormSelect {
+  width: 130px !important;
+  height: 38px;
+}
+.pppoeSection2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+.profileMain {
+  display: grid;
+  color: black;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+  padding: 0 50px 50px;
+}
+.profileMain > div > h6 {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+/* css added by enamul  */
+.allFilter{
+  display:flex;
+
+  align-items:center;
+  justify-content:center; 
+  width:90%; 
+  margin-right:10px ;
+  /* flex-wrap:wrap */
+
+}
+.billCycle{
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  flex-direction: column;
+
+}
+.timeDate{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* flex-wrap: wrap; */
+}
+.timeDate > input{
+  padding: 7px;
+  
+  width: 200px;
+  border: 2px gray solid;
+  border-radius: 5px;
+  max-width: 160px;
+  margin-top: 0px;
+
+}
+.timeDate >.billTime{
+  margin-left: 10px;
+}
+.newDisplay{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+@media only screen and (max-width: 980px) {
+  .customerGrid {
+    display: initial;
+  }
+  .newDisplay{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+     
+     
+  }
+  .newDisplay> .autoDisable{
+    margin: 10px 0;
+    margin-top: 0px;
+  }
+  .newDisplay> .billCycle{
+    margin-bottom: 0px;
+    margin-top: 0px;
+     
+  }
+  .newDisplay> .mb-3{
+    margin-bottom: -10px !important ; 
+    margin-top: 0px;
+  }
+  
+}

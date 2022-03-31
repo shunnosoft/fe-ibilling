@@ -41,6 +41,11 @@ export default function Sidebar() {
   //     .classList.toggle("hideSubBilling");
   // };
 
+  let homeRoute = "/home";
+  if (userRole === "reseller") {
+    homeRoute = "/reseller/home";
+  }
+
   return (
     <TitleColor>
       <div>
@@ -54,14 +59,15 @@ export default function Sidebar() {
                 <ArrowLeft className="GotoHomeFromDashboard" />
                 নেট ফি {userRole === "manager" ? " (ম্যানেজার)" : ""}
                 {userRole === "collector" ? " (কালেক্টর)" : ""}
-                {userRole === "ispOwner" ? " (অ্যাডমিন)" : ""}
+                {userRole === "ispOwner" ? " (এডমিন)" : ""}
+                {userRole === "reseller" ? " (রিসেলার)" : ""}
               </NavLink>
               <span className="HideSidebar" onClick={removeSidebar}></span>
             </h2>
 
             <ul className="sidebarUl">
               <NavLink
-                to={"/home"}
+                to={homeRoute}
                 className={(navInfo) =>
                   navInfo.isActive ? activeClass.active : ""
                 }
@@ -69,7 +75,7 @@ export default function Sidebar() {
                 <FontColor>
                   <li
                     className="sidebarItems"
-                    id={window.location.pathname === "/home" ? "active" : ""}
+                    id={window.location.pathname === homeRoute ? "active" : ""}
                   >
                     <div className="sidebarIcon">{<HouseDoorFill />}</div>
                     <span className="sidebarLinksName">{"ড্যাশবোর্ড"}</span>
@@ -77,7 +83,9 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              {userRole === "manager" || userRole === "collector" ? (
+              {userRole === "manager" ||
+              userRole === "collector" ||
+              userRole === "reseller" ? (
                 ""
               ) : (
                 <NavLink
@@ -121,7 +129,9 @@ export default function Sidebar() {
               ) : (
                 ""
               )}
-              {userRole === "manager" || userRole === "ispOwner" ? (
+              {userRole === "manager" ||
+              userRole === "ispOwner" ||
+              userRole === "reseller" ? (
                 <NavLink
                   key={4}
                   to={"/collector"}
@@ -149,7 +159,9 @@ export default function Sidebar() {
 
               <NavLink
                 key={6}
-                to={"/customer"}
+                to={
+                  userRole === "reseller" ? "/reseller/customer" : "/customer"
+                }
                 className={(navInfo) =>
                   navInfo.isActive ? activeClass.active : ""
                 }
@@ -252,8 +264,6 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </NavLink>
-              
-
 
               <NavLink
                 key={99}
@@ -274,8 +284,6 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </NavLink>
-
-
 
               {/* bill sub links */}
               <div id="toggleSubBilling">

@@ -11,8 +11,10 @@ import PrivateOutlet from "./PrivateOutlet";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
+import RDashboard from "./reseller/dashboard/Dashboard";
 import Collector from "./pages/collector/Collector";
 import Customer from "./pages/Customer/Customer";
+import RCustomer from "./reseller/Customer/Customer";
 import NotFound from "./pages/NotFound/NotFound";
 import Success from "./pages/success/Success";
 import Manager from "./pages/manager/Manager";
@@ -26,17 +28,18 @@ import Profile from "./pages/profile/Profile";
 import Message from "./pages/message/Message";
 import Diposit from "./pages/diposit/Diposit";
 import Report from "./pages/report/Report";
- 
+
 import CollectorReport from "./pages/report/CollectorReport";
- 
 
 function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  
 
-  
+  let homeRoute = "/home";
+  if (userRole === "reseller") {
+    homeRoute = "/reseller/home";
+  }
 
   return (
     <ThemeProvider theme={themes[theme]}>
@@ -47,7 +50,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route
             path="/login"
-            element={!user ? <Login /> : <Navigate to="/home" />}
+            element={!user ? <Login /> : <Navigate to={homeRoute} />}
           />
 
           <Route
@@ -116,11 +119,13 @@ function App() {
             {/* <Route path="account" element={<Account />} /> */}
             <Route path="message" element={<Message />} />
             <Route path="home" element={<Dashboard />} />
+            <Route path="reseller/home" element={<RDashboard />} />
             <Route path="area" element={<Area />} />
             {/* <Route path="bill" element={<Bill />} /> */}
             <Route path="diposit" element={<Diposit />} />
             {/* <Route path="reseller" element={<Reseller />} /> */}
             <Route path="customer" element={<Customer />} />
+            <Route path="reseller/customer" element={<RCustomer />} />
 
             <Route path="*" element={<NotFound />} />
           </Route>

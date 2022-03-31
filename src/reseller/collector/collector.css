@@ -1,0 +1,138 @@
+.collectorTitle {
+  padding: 15px 0;
+  font-weight: 500;
+  /* background: repeating-linear-gradient(45deg, var(--bs-purple), #6130bb 100px); */
+  background: linear-gradient(0deg, #9449f5, #6617cd);
+  text-align: center;
+  font-size: 1.7rem;
+  color: white;
+  border-radius: 5px;
+}
+.displexFlexSys {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ProfileName {
+  color: #898383;
+  padding: 10px;
+  font-size: 24px;
+  text-align: center;
+  border-bottom: 2px solid;
+  margin: 0px 0px 20px;
+}
+
+.collectorWrapper {
+  padding: 20px;
+}
+.addNewCollector {
+  /* width: fit-content; */
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+.addNewCollector > p {
+  font-size: 20px;
+  font-weight: 700;
+}
+.addcutmButton {
+  width: 50px;
+  height: 38px;
+  padding: 9px;
+  color: #fff;
+  background: #12cf6f;
+  /* border: 1px solid #06bf79; */
+  border-radius: 7px;
+  /* box-shadow: 0px 3px 10px #1ab53d87; */
+  margin-right: 12px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.addcutmButton:hover {
+  /* box-shadow: none; */
+  background: #0ea158;
+}
+.serchingIcon {
+  margin-top: 10px;
+  margin-left: -25px;
+  position: absolute;
+}
+
+.ActionDots {
+  font-size: 24px;
+  color: var(--primaryColor);
+  cursor: pointer;
+}
+.centeringTD {
+  text-align: center;
+  font-weight: 600;
+}
+.searchCollector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0 7px 20px;
+  margin: 20px 0px !important;
+  box-shadow: 3px 3px 3px #46464629;
+  background: var(--primaryColor);
+  border-radius: 7px;
+  color: white;
+}
+.allCollector {
+  font-size: 18px;
+  font-weight: 400;
+  margin-top: 7px;
+}
+.allCollector > span {
+  background: rgb(0 0 0 / 13%);
+  border-radius: 21px;
+  font-size: 16px;
+  margin-left: 6px;
+  margin-right: 30px;
+  padding: 2px 15px;
+}
+
+.collectorSearch {
+  border-radius: 5px;
+  padding: 0px;
+  background: none;
+  text-align: right;
+}
+
+.search {
+  width: 100%;
+  border: none;
+  padding: 5px 9px;
+  background: #7037b9;
+  border-radius: 5px;
+  color: white;
+}
+.search:focus {
+  outline: none;
+}
+.searchButton {
+  padding: 5px 10px;
+  border: none;
+  background: none;
+  color: #ffffff;
+}
+/* collector post */
+.collectorInputs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0px 20px;
+}
+.profileImage {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+.profileImage > img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid;
+}
