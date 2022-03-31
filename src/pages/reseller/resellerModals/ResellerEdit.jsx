@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
@@ -16,6 +16,18 @@ export default function ResellerEdit({ reseller }) {
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
+  const [allowedAreas, setAllowedAreas] = useState([]);
+  const area = useSelector((state) => state.area.area);
+  const [areaIds_Edit, setAreaIds_Edit] = useState([]);
+
+  // const [permissions, setPermissions] = useState([]);
+
+  useEffect(() => {
+    if (reseller) {
+      setAllowedAreas(reseller?.areas);
+      // setPermissions(collectorPermission(reseller.permissions));
+    }
+  }, [reseller]);
 
   //validator
   const resellerValidator = Yup.object({
@@ -63,6 +75,17 @@ export default function ResellerEdit({ reseller }) {
           
        
     }
+  };
+  const setAreaHandler = () => {
+    const temp = document.querySelectorAll(".getValueUsingClass_Edit");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
+    }
+    setAllowedAreas(IDS_temp);
+    setAreaIds_Edit(IDS_temp);
   };
 
   return (
@@ -252,6 +275,53 @@ export default function ResellerEdit({ reseller }) {
                         </div>
                       </div>
                     </div>
+
+
+                    {/* <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
+                    <div className="AllAreaClass">
+                      {mikrotik?.map((val, key) => (
+                        
+                           
+                            <div key={key}  className="displayFlex">
+                              <input
+                                type="checkbox"
+                                className="getValueUsingClasses"
+                                value={val.id}
+                                onChange={(e)=>setMikrotikHandler(e.target.value)}
+                              />
+                              <label>{val.name}</label>
+                           
+                        
+                        </div>
+                      ))}
+                    </div> */}
+
+                      {/* area */}
+                      <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <div className="AllAreaClass">
+                      {area?.map((val, key) => (
+                        <div key={key}>
+                          <h6 className="areaParent">{val.name}</h6>
+                          {val.subAreas.map((v, k) => (
+                            <div key={k} className="displayFlex">
+                              <input
+                                type="checkbox"
+                                className="getValueUsingClass_Edit"
+                                value={v.id}
+                                checked={
+                                  allowedAreas?.includes(v.id) ? true : false
+                                }
+                                onChange={setAreaHandler}
+                              />
+                              <label>{v.name}</label>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+
+
+                              
 
                     <div className="modal-footer modalFooterEdit">
                       <button

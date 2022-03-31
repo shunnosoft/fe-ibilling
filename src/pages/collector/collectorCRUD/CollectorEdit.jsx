@@ -207,6 +207,13 @@ export default function CollectorEdit({ single }) {
                     </div>
                     {/* area */}
 
+
+                        
+
+
+
+
+
                     <div className="modal-footer">
                       <button
                         type="button"

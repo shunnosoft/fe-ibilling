@@ -17,6 +17,11 @@ export default function ResellerPost() {
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
+  const area = useSelector((state) => state.area.area);
+  const mikrotik = useSelector(state=>state.mikrotik.mikrotik)
+
+  const [areaIds, setAreaIds] = useState([]);
+  const [mikrotikIds, setMikrotikIds] = useState([]);
 
   //validator
   const resellerValidator = Yup.object({
@@ -63,7 +68,32 @@ export default function ResellerPost() {
       
     }
   };
+  
 
+  const setAreaHandler = () => {
+    const temp = document.querySelectorAll(".getValueUsingClass");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
+    }
+    // console.log("IDS: ", IDS_temp);
+    setAreaIds(IDS_temp);
+  };
+
+const setMikrotikHandler=(e) =>{
+  
+   const temp = document.querySelectorAll(".getValueUsingClasses");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
+    }
+    console.log("IDS: ", IDS_temp);
+    setMikrotikIds(IDS_temp);
+}
   return (
     <div>
       <div
@@ -95,8 +125,8 @@ export default function ResellerPost() {
                   mobile: "", //*
                   email: "", //*
                   nid: "", //*
-                  website: "N/A",
-                  address: "N/A",
+                  website: "",
+                  address: "",
                   billCollectionType: "", // ['prepaid', 'postpaid', 'both'], /*
                   status: "", //['new', 'active', 'inactive', 'banned', 'deleted'],
                   // rechargeBalance: "", //number
@@ -250,6 +280,44 @@ export default function ResellerPost() {
                           ))}
                         </div>
                       </div>
+                    </div>
+
+                    <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
+                    <div className="AllAreaClass">
+                      {mikrotik?.map((val, key) => (
+                        
+                           
+                            <div key={key}  className="displayFlex">
+                              <input
+                                type="checkbox"
+                                className="getValueUsingClasses"
+                                value={val.id}
+                                onChange={(e)=>setMikrotikHandler(e.target.value)}
+                              />
+                              <label>{val.name}</label>
+                           
+                        
+                        </div>
+                      ))}
+                    </div>
+                    <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <div className="AllAreaClass">
+                      {area?.map((val, key) => (
+                        <div key={key}>
+                          <h6 className="areaParent">{val.name}</h6>
+                          {val.subAreas.map((v, k) => (
+                            <div key={k} className="displayFlex">
+                              <input
+                                type="checkbox"
+                                className="getValueUsingClass"
+                                value={v.id}
+                                onChange={setAreaHandler}
+                              />
+                              <label>{v.name}</label>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
                     </div>
 
                     <div className="modal-footer modalFooterEdit">

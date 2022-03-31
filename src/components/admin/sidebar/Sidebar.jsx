@@ -8,12 +8,14 @@ import {
   HouseDoorFill,
   Wallet2,
   PeopleFill,
-  PersonPlus,
+   
   GeoAlt,
   Wifi,
   WalletFill,
   GraphUpArrow,
   Messenger,
+  PersonLinesFill,
+  PersonBoundingBox,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -22,7 +24,8 @@ import { useSelector } from "react-redux";
 
 export default function Sidebar() {
   const userRole = useSelector((state) => state.auth.role);
-
+  // const hasReseller= useSelector(state=>state.auth.userData?.bpSettings?.hasReseller)
+  const hasReseller= true
   // addSidebar
   const addSidebar = () => {
     document.querySelector(".sidebar").classList.add("toggleSidebar");
@@ -40,12 +43,7 @@ export default function Sidebar() {
   //     .getElementById("toggleSubBilling")
   //     .classList.toggle("hideSubBilling");
   // };
-
-  let homeRoute = "/home";
-  if (userRole === "reseller") {
-    homeRoute = "/reseller/home";
-  }
-
+ 
   return (
     <TitleColor>
       <div>
@@ -67,7 +65,7 @@ export default function Sidebar() {
 
             <ul className="sidebarUl">
               <NavLink
-                to={homeRoute}
+                to={userRole==="reseller"?"/reseller/home":"/home"}
                 className={(navInfo) =>
                   navInfo.isActive ? activeClass.active : ""
                 }
@@ -75,7 +73,7 @@ export default function Sidebar() {
                 <FontColor>
                   <li
                     className="sidebarItems"
-                    id={window.location.pathname === homeRoute ? "active" : ""}
+                    id={window.location.pathname === (userRole==="reseller"?"/reseller/home":"/home") ? "active" : ""}
                   >
                     <div className="sidebarIcon">{<HouseDoorFill />}</div>
                     <span className="sidebarLinksName">{"ড্যাশবোর্ড"}</span>
@@ -106,6 +104,31 @@ export default function Sidebar() {
                 </NavLink>
               )}
 
+              {( hasReseller) ? (
+                <NavLink
+                  key={33}
+                  to={"/reseller"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/reseller" ? "active" : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<PersonLinesFill />}</div>
+                      <span className="sidebarLinksName">{"রিসেলার"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
+
               {userRole === "ispOwner" ? (
                 <NavLink
                   key={3}
@@ -121,7 +144,7 @@ export default function Sidebar() {
                         window.location.pathname === "/manager" ? "active" : ""
                       }
                     >
-                      <div className="sidebarIcon">{<PersonPlus />}</div>
+                      <div className="sidebarIcon">{<PersonBoundingBox />}</div>
                       <span className="sidebarLinksName">{"ম্যানেজার"}</span>
                     </li>
                   </FontColor>
@@ -134,7 +157,7 @@ export default function Sidebar() {
               userRole === "reseller" ? (
                 <NavLink
                   key={4}
-                  to={"/collector"}
+                  to={(userRole==="reseller"?"/reseller/collector":"/collector")}
                   className={(navInfo) =>
                     navInfo.isActive ? activeClass.active : ""
                   }
@@ -143,7 +166,7 @@ export default function Sidebar() {
                     <li
                       className="sidebarItems"
                       id={
-                        window.location.pathname === "/collector"
+                        window.location.pathname === (userRole==="reseller"?"/reseller/collector":"/collector")
                           ? "active"
                           : ""
                       }
@@ -170,7 +193,7 @@ export default function Sidebar() {
                   <li
                     className="sidebarItems"
                     id={
-                      window.location.pathname === "/customer" ? "active" : ""
+                      window.location.pathname === (userRole==="reseller"?"/reseller/customer":"/customer") ? "active" : ""
                     }
                   >
                     <div className="sidebarIcon">{<PeopleFill />}</div>
@@ -181,7 +204,7 @@ export default function Sidebar() {
 
               <NavLink
                 key={8}
-                to={"/report"}
+                to={(userRole==="reseller"?"/reseller/report":"/report")}
                 className={(navInfo) =>
                   navInfo.isActive ? activeClass.active : ""
                 }
@@ -189,7 +212,7 @@ export default function Sidebar() {
                 <FontColor>
                   <li
                     className="sidebarItems"
-                    id={window.location.pathname === "/report" ? "active" : ""}
+                    id={window.location.pathname ===(userRole==="reseller"?"/reseller/report":"/report")? "active" : ""}
                   >
                     <div className="sidebarIcon">{<GraphUpArrow />}</div>
                     <span className="sidebarLinksName">{"রিপোর্ট"}</span>
@@ -249,7 +272,7 @@ export default function Sidebar() {
               )} */}
               <NavLink
                 key={7}
-                to={"/diposit"}
+                to={(userRole==="reseller"?"/reseller/diposit":"/diposit")}
                 className={(navInfo) =>
                   navInfo.isActive ? activeClass.active : ""
                 }
@@ -257,7 +280,7 @@ export default function Sidebar() {
                 <FontColor>
                   <li
                     className="sidebarItems"
-                    id={window.location.pathname === "/diposit" ? "active" : ""}
+                    id={window.location.pathname === (userRole==="reseller"?"/reseller/diposit":"/diposit") ? "active" : ""}
                   >
                     <div className="sidebarIcon">{<WalletFill />}</div>
                     <span className="sidebarLinksName">{"ডিপোজিট"}</span>
@@ -265,7 +288,7 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              <NavLink
+             { userRole==="ispOwner" ? <NavLink
                 key={99}
                 to={"/message"}
                 className={(navInfo) =>
@@ -283,7 +306,7 @@ export default function Sidebar() {
                     <span className="sidebarLinksName">{"মেসেজ"}</span>
                   </li>
                 </FontColor>
-              </NavLink>
+              </NavLink>:""}
 
               {/* bill sub links */}
               <div id="toggleSubBilling">
