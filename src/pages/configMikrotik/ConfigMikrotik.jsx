@@ -129,7 +129,7 @@ export default function ConfigMikrotik() {
 
     await apiLink({
       method: "GET",
-      url: `/v1/mikrotik/testConnection/${ispOwner}/${mikrotikId}`,
+      url: `/mikrotik/testConnection/${ispOwner}/${mikrotikId}`,
     })
       .then(() => {
         setIsChecking(false);

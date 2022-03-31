@@ -67,7 +67,7 @@ export default function CustomerEdit({ single }) {
     const fetchPac = async () => {
       try {
         const res = await apiLink.get(
-          `/v1/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
+          `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
         );
         setppPackage(res.data);
       } catch (error) {

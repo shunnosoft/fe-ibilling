@@ -64,7 +64,7 @@ import { getChartSuccess } from "./chartsSlice";
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
   try {
-    const res = await apiLink.get(`/v1/ispOwner/manager/${ispWonerId}`);
+    const res = await apiLink.get(`/ispOwner/manager/${ispWonerId}`);
     dispatch(managerFetchSuccess(res.data));
   } catch (error) {
     dispatch(managerFetchFailure());
@@ -73,9 +73,9 @@ export const getManger = async (dispatch, ispWonerId) => {
 
 export const getCharts = async (dispatch, ispOwnerId, Year, Month, User) => {
   try {
-    let link = `/v1/dashboard/${ispOwnerId}?year=${Year}&month=${Month}`;
+    let link = `/dashboard/${ispOwnerId}?year=${Year}&month=${Month}`;
     if (User)
-      link = `/v1/dashboard/${ispOwnerId}?year=${Year}&month=${Month}&user=${User}`;
+      link = `/dashboard/${ispOwnerId}?year=${Year}&month=${Month}&user=${User}`;
     const res = await apiLink(link);
     dispatch(getChartSuccess(res.data));
   } catch (err) {
@@ -88,7 +88,7 @@ export const addManager = async (dispatch, managerData) => {
   button.style.display = "none";
 
   await apiLink({
-    url: "/v1/ispOwner/manager",
+    url: "/ispOwner/manager",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export const addManager = async (dispatch, managerData) => {
 
 export const deleteManager = async (dispatch, ispOwnerId) => {
   await apiLink({
-    url: `/v1/ispOwner/manager/${ispOwnerId}`,
+    url: `/ispOwner/manager/${ispOwnerId}`,
     method: "DELETE",
   })
     .then((res) => {
@@ -131,7 +131,7 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
   button.style.display = "none";
   try {
     const res = await apiLink.patch(
-      `/v1/ispOwner/manager/${managerData.ispOwner}`,
+      `/ispOwner/manager/${managerData.ispOwner}`,
       managerData
     );
 
@@ -152,7 +152,7 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
 
 export const getArea = async (dispatch, ispOwnerId) => {
   try {
-    const res = await apiLink.get(`/v1/ispOwner/area/${ispOwnerId}`);
+    const res = await apiLink.get(`/ispOwner/area/${ispOwnerId}`);
     dispatch(FetchAreaSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -161,7 +161,7 @@ export const getArea = async (dispatch, ispOwnerId) => {
 
 export const addArea = async (dispatch, data, setIsLoading) => {
   try {
-    const res = await apiLink.post("/v1/ispOwner/area", data);
+    const res = await apiLink.post("/ispOwner/area", data);
 
     dispatch(AddAreaSuccess(res.data));
     setIsLoading(false);
@@ -175,7 +175,7 @@ export const addArea = async (dispatch, data, setIsLoading) => {
 export const editArea = async (dispatch, data, setIsLoading) => {
   try {
     const res = await apiLink.patch(
-      `/v1/ispOwner/area/${data.ispOwner}/${data.id}`,
+      `/ispOwner/area/${data.ispOwner}/${data.id}`,
       data
     );
     dispatch(EditAreaSuccess(res.data));
@@ -190,7 +190,7 @@ export const editArea = async (dispatch, data, setIsLoading) => {
 
 export const deleteArea = async (dispatch, data, setIsLoading) => {
   try {
-    await apiLink.delete(`/v1/ispOwner/area/${data.ispOwner}/${data.id}`);
+    await apiLink.delete(`/ispOwner/area/${data.ispOwner}/${data.id}`);
     dispatch(DeleteAreaSuccess(data.id));
     setIsLoading(false);
     toast.success("এরিয়া ডিলিট সফল হয়েছে");
@@ -204,7 +204,7 @@ export const deleteArea = async (dispatch, data, setIsLoading) => {
 
 export const addSubArea = async (dispatch, data, setIsLoading) => {
   try {
-    const res = await apiLink.post("/v1/ispOwner/subArea", data);
+    const res = await apiLink.post("/ispOwner/subArea", data);
 
     dispatch(AddSubAreaSuccess(res.data));
     setIsLoading(false);
@@ -223,7 +223,7 @@ export const addSubArea = async (dispatch, data, setIsLoading) => {
 export const editSubArea = async (dispatch, data, setIsLoading) => {
   const { ispOwnerID, id, ...rest } = data;
   await apiLink({
-    url: `/v1/ispOwner/subArea/${ispOwnerID}/${id}`,
+    url: `/ispOwner/subArea/${ispOwnerID}/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -249,7 +249,7 @@ export const deleteSubArea = async (dispatch, data, setIsLoading) => {
   const { ispOwnerId, subAreaId, areaId } = data;
 
   await apiLink({
-    url: `/v1/ispOwner/subArea/${ispOwnerId}/${subAreaId}`,
+    url: `/ispOwner/subArea/${ispOwnerId}/${subAreaId}`,
     method: "DELETE",
   })
     .then((res) => {
@@ -273,7 +273,7 @@ export const deleteSubArea = async (dispatch, data, setIsLoading) => {
 
 export const getCollector = async (dispatch, ispOwnerId) => {
   try {
-    const res = await apiLink.get(`/v1/ispOwner/collector/${ispOwnerId}`);
+    const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -282,7 +282,7 @@ export const getCollector = async (dispatch, ispOwnerId) => {
 
 export const addCollector = async (dispatch, data, setIsLoading) => {
   try {
-    const res = await apiLink.post("v1/ispOwner/collector", data);
+    const res = await apiLink.post("ispOwner/collector", data);
     dispatch(addCollectorSuccess(res.data));
     setIsLoading(false);
     toast.success("কালেক্টর সংযুক্ত সফল হয়েছে! ");
@@ -299,7 +299,7 @@ export const editCollector = async (dispatch, data, setIsLoading) => {
   const { ispOwnerId, collectorId, ...rest } = data;
   try {
     const res = await apiLink.patch(
-      `v1/ispOwner/collector/${ispOwnerId}/${collectorId}`,
+      `ispOwner/collector/${ispOwnerId}/${collectorId}`,
       rest
     );
     dispatch(editCollectorSuccess(res.data));
@@ -318,7 +318,7 @@ export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
   setIsDeleting(true);
   try {
     await apiLink.delete(
-      `v1/ispOwner/collector/${ids.ispOwnerId}/${ids.collectorId}`
+      `ispOwner/collector/${ids.ispOwnerId}/${ids.collectorId}`
     );
     dispatch(deleteCollectorSuccess(ids.collectorId));
     setIsDeleting(false);
@@ -335,7 +335,7 @@ export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
 export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
-    const res = await apiLink.get(`/v1/ispOwner/customer/${ispOwner}`);
+    const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
     dispatch(getCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
@@ -347,7 +347,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
 export const addCustomer = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   try {
-    const res = await apiLink.post("/v1/ispOwner/customer", data);
+    const res = await apiLink.post("/ispOwner/customer", data);
     dispatch(addCustomerSuccess(res.data));
     setIsloading(false);
     toast.success("কাস্টমার সংযুক্ত সফল হয়েছে! ");
@@ -365,7 +365,7 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
   const { singleCustomerID, ispOwner, ...sendingData } = data;
   try {
     const res = await apiLink.patch(
-      `/v1/ispOwner/customer/${ispOwner}/${singleCustomerID}`,
+      `/ispOwner/customer/${ispOwner}/${singleCustomerID}`,
       sendingData
     );
     dispatch(editCustomerSuccess(res.data));
@@ -382,9 +382,7 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
 
 export const deleteACustomer = async (dispatch, IDs) => {
   try {
-    await apiLink.delete(
-      `/v1/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`
-    );
+    await apiLink.delete(`/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`);
     dispatch(deleteCustomerSuccess(IDs.customerID));
 
     toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
@@ -402,7 +400,7 @@ export const fetchMikrotikSyncUser = async (dispatch, IDs, setIsLoadingCus) => {
   setIsLoadingCus(true);
   await apiLink({
     method: "GET",
-    url: `/v1/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+    url: `/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
@@ -420,7 +418,7 @@ export const fetchMikrotik = async (dispatch, ispOwnerId) => {
   try {
     const response = await apiLink({
       method: "GET",
-      url: `/v1/mikrotik/${ispOwnerId}`,
+      url: `/mikrotik/${ispOwnerId}`,
     });
     dispatch(getMikrotikSuccess(response.data));
   } catch (error) {
@@ -432,7 +430,7 @@ export const fetchMikrotik = async (dispatch, ispOwnerId) => {
 export const postMikrotik = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   await apiLink({
-    url: "/v1/mikrotik",
+    url: "/mikrotik",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -458,7 +456,7 @@ export const editSingleMikrotik = async (dispatch, data) => {
   const { ispId, id, ...rest } = data;
 
   await apiLink({
-    url: `/v1/mikrotik/${ispId}/${id}`,
+    url: `/mikrotik/${ispId}/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -497,7 +495,7 @@ export const deleteSingleMikrotik = async (
   setIsloading(true);
   await apiLink({
     method: "DELETE",
-    url: `/v1/mikrotik/${IDs.ispOwner}/${IDs.id}`,
+    url: `/mikrotik/${IDs.ispOwner}/${IDs.id}`,
   })
     .then((res) => {
       dispatch(deleteMikrotikSuccess(IDs.id));
@@ -515,7 +513,7 @@ export const deleteSingleMikrotik = async (
 export const mikrotikTesting = async (IDs) => {
   await apiLink({
     method: "GET",
-    url: `/v1/mikrotik/testConnection/${IDs.ispOwner}/${IDs.id}`,
+    url: `/mikrotik/testConnection/${IDs.ispOwner}/${IDs.id}`,
   })
     .then(() => {
       toast.success("মাইক্রোটিক কানেকশন ঠিক আছে");
@@ -530,7 +528,7 @@ export const fetchpppoeUser = async (dispatch, IDs) => {
   try {
     const res = await apiLink({
       method: "GET",
-      url: `/v1/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
+      url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
     dispatch(getpppoeUserSuccess(res.data));
   } catch (error) {
@@ -543,7 +541,7 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
   try {
     const res = await apiLink({
       method: "GET",
-      url: `/v1/mikrotik/PPPactiveUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
+      url: `/mikrotik/PPPactiveUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
     dispatch(getpppoeActiveUserSuccess(res.data));
   } catch (error) {
@@ -556,7 +554,7 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
   try {
     const res = await apiLink({
       method: "GET",
-      url: `/v1/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
+      url: `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
     dispatch(getpppoePackageSuccess(res.data));
     toast.success("PPPoE প্যাকেজ fetch success");
@@ -570,7 +568,7 @@ export const editPPPoEpackageRate = async (dispatch, data) => {
   const { mikrotikId, pppPackageId, ...rest } = data;
   await apiLink({
     method: "PATCH",
-    url: `/v1/mikrotik/PPPpackage/${mikrotikId}/${pppPackageId}`,
+    url: `/mikrotik/PPPpackage/${mikrotikId}/${pppPackageId}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -593,7 +591,7 @@ export const deletePPPoEpackage = async (dispatch, IDs) => {
   const { mikrotikId, pppPackageId } = IDs;
   await apiLink({
     method: "DELETE",
-    url: `/v1/mikrotik/PPPpackage/${mikrotikId}/${pppPackageId}`,
+    url: `/mikrotik/PPPpackage/${mikrotikId}/${pppPackageId}`,
   })
     .then((res) => {
       dispatch(deletepppoePackageSuccess(pppPackageId));
@@ -612,7 +610,7 @@ export const deletePPPoEpackage = async (dispatch, IDs) => {
 // GET reseller
 export const fetchReseller = async (dispatch, ispOwner) => {
   try {
-    const res = await apiLink.get(`/v1/ispOwner/reseller/${ispOwner}`);
+    const res = await apiLink.get(`/ispOwner/reseller/${ispOwner}`);
     dispatch(getResellerrSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -623,7 +621,7 @@ export const fetchReseller = async (dispatch, ispOwner) => {
 export const postReseller = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   await apiLink({
-    url: "/v1/ispOwner/reseller",
+    url: "/ispOwner/reseller",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -649,7 +647,7 @@ export const editReseller = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   const { ispId, resellerId, ...rest } = data;
   await apiLink({
-    url: `/v1/ispOwner/reseller/${ispId}/${resellerId}`,
+    url: `/ispOwner/reseller/${ispId}/${resellerId}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -675,7 +673,7 @@ export const deleteReseller = async (dispatch, IDs, setIsLoading) => {
   setIsLoading(true);
   const { ispId, resellerId } = IDs;
   await apiLink({
-    url: `/v1/ispOwner/reseller/${ispId}/${resellerId}`,
+    url: `/ispOwner/reseller/${ispId}/${resellerId}`,
     method: "DELETE",
   })
     .then(() => {
@@ -710,7 +708,7 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
   setIsLoadingpass(true);
 
   try {
-    await apiLink.post(`/v1/auth/update-password`, data);
+    await apiLink.post(`/auth/update-password`, data);
     setIsLoadingpass(false);
     toast.success("পাসওয়ার্ড আপডেট সফল হয়েছে");
   } catch (error) {
@@ -724,7 +722,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
   setIsLoading(true);
 
   try {
-    const res = await apiLink.patch(`/v1/ispOwner/${id}`, data);
+    const res = await apiLink.patch(`/ispOwner/${id}`, data);
     console.log(res.data);
     dispatch(updateProfile(res.data));
     setIsLoading(false);
@@ -740,7 +738,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 export const billCollect = async (dispatch, billData, setLoading) => {
   setLoading(true);
   try {
-    const res = await apiLink.post("/v1/bill/monthlyBill", billData);
+    const res = await apiLink.post("/bill/monthlyBill", billData);
     dispatch(updateBalance(res.data));
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
@@ -759,7 +757,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
   // console.log(data, "from api calls");
 
   try {
-    await apiLink.post(`/v1/deposit`, data);
+    await apiLink.post(`/deposit`, data);
 
     // dispatch(addDepositSuccess(res.data));
     setLoading(false);
@@ -780,7 +778,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 export const getTotalbal = async (dispatch, setLoading) => {
   setLoading(true);
   try {
-    const res = await apiLink.get(`v1/bill/monthlyBill/balance`);
+    const res = await apiLink.get(`bill/monthlyBill/balance`);
     console.log(res.data);
     dispatch(getTotalBalanceSuccess(res.data));
     setLoading(false);
@@ -793,7 +791,7 @@ export const getTotalbal = async (dispatch, setLoading) => {
 export const getDeposit = async (dispatch, data) => {
   try {
     const res = await apiLink.get(
-      `/v1/deposit/${data.depositerRole}/${data.ispOwnerID}`
+      `/deposit/${data.depositerRole}/${data.ispOwnerID}`
     );
 
     dispatch(getDepositSuccess(res.data));
@@ -811,7 +809,7 @@ export const depositAcceptReject = async (
   console.log(status, id);
   setAccLoading(true);
   try {
-    const res = await apiLink.patch(`/v1/deposit/${id}`, { status: status });
+    const res = await apiLink.patch(`/deposit/${id}`, { status: status });
     dispatch(updateDepositSuccess(res.data));
     setAccLoading(false);
     toast.success("ডিপোজিট গ্রহণ সফল হয়েছে।");
@@ -824,7 +822,7 @@ export const depositAcceptReject = async (
 
 export const getAllBills = async (dispatch, ispOwnerId) => {
   try {
-    const res = await apiLink.get(`/v1/bill/${ispOwnerId}`);
+    const res = await apiLink.get(`/bill/${ispOwnerId}`);
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -835,7 +833,7 @@ export const getAllBills = async (dispatch, ispOwnerId) => {
 
 export const getMyDeposit = async (dispatch) => {
   try {
-    const res = await apiLink.get("/v1/deposit");
+    const res = await apiLink.get("/deposit");
     dispatch(getmyDepositSucces(res.data));
   } catch (error) {
     console.log(error?.response?.data.message);
@@ -846,7 +844,7 @@ export const getMyDeposit = async (dispatch) => {
 
 export const getCollectorBill = async (dispatch) => {
   try {
-    const res = await apiLink.get("/v1/bill/monthlyBill");
+    const res = await apiLink.get("/bill/monthlyBill");
 
     dispatch(getCollectorBills(res.data));
   } catch (error) {

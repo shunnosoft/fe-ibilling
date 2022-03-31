@@ -12,14 +12,14 @@ export default function CustomerReport({ single }) {
   useEffect(() => {
     const getCustoemrReport = async () => {
       try {
-        const res = await apiLink(`/v1/bill/customer/${single?.id}`);
+        const res = await apiLink(`/bill/customer/${single?.id}`);
         const data = await res.data;
         setCustomerReport(data);
       } catch (err) {
         console.log("Error to get report: ", err);
       }
     };
-  single?.id &&  getCustoemrReport();
+    single?.id && getCustoemrReport();
   }, [single]);
 
   return (
@@ -61,10 +61,8 @@ export default function CustomerReport({ single }) {
                   <tbody>
                     {customerReport?.map((val, index) => (
                       <tr className="spetialSortingRow" key={index}>
-                        <td  >{val.amount}</td>
-                        <td  >
-                          {moment(val.createdAt).format("DD-MM-YYYY")}
-                        </td>
+                        <td>{val.amount}</td>
+                        <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
                         <td>{moment(val.createdAt).format("hh:mm")}</td>
                       </tr>
                     ))}

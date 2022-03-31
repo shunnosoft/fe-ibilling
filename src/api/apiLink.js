@@ -3,14 +3,14 @@ import jwt_decode from "jwt-decode";
 import { userLogout } from "../features/actions/authAsyncAction";
 
 // PRODUCTION
-// const BASE_URL = "https://netfeebd.net/api/";
+// const BASE_URL = "https://netfeebd.net/api/v1/";
 
 // DEVELOPMENT
-const BASE_URL = "http://137.184.69.182/api/";
+const BASE_URL = "http://137.184.69.182/api/v1/";
 
 // LOCAL
-// const BASE_URL = "http://192.168.1.24:3030/api/";
-// const BASE_URL = "http://localhost:3030/api/";
+// const BASE_URL = "http://192.168.1.24:3030/api/v1/";
+// const BASE_URL = "http://localhost:3030/api/v1/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
 // const access = user && JSON.parse(user)?.access;
@@ -38,7 +38,7 @@ const apiLink = axios.create({
 
 const refreshToken = async () => {
   try {
-    const res = await publicRequest.post("v1/auth/refresh-tokens");
+    const res = await publicRequest.post("auth/refresh-tokens");
     // console.log(res.data)
     localStorage.setItem("netFeeToken", JSON.stringify(res.data?.access.token));
 

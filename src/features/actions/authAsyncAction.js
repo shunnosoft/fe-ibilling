@@ -1,4 +1,4 @@
-import   { publicRequest } from "../../api/apiLink";
+import { publicRequest } from "../../api/apiLink";
 import { toast } from "react-toastify";
 import {
   logInSuccess,
@@ -16,7 +16,7 @@ import {
 export const asyncRegister = async (userData, setLoading) => {
   setLoading(true);
   try {
-  const res =await publicRequest.post("/v1/auth/register", userData);
+    const res = await publicRequest.post("/auth/register", userData);
     setLoading(false);
     window.location.href = res.data.paymentUrl;
   } catch (err) {
@@ -30,7 +30,7 @@ export const asyncLogin = async (dispatch, loginData) => {
   document.querySelector(".Loader").style.display = "block";
 
   try {
-    const res = await publicRequest.post("/v1/auth/login", loginData);
+    const res = await publicRequest.post("/auth/login", loginData);
     localStorage.setItem(
       "netFeeToken",
       JSON.stringify(res.data?.access?.token)
@@ -48,7 +48,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 //   // apiCall
 //   dispatch(logInStart());
 //   await publicRequest
-//     .post("/v1/auth/login", loginData)
+//     .post("/auth/login", loginData)
 //     .then((res) => {
 //       if (res.status === 200) {
 //         if (res.data.ispOwner === null) {
@@ -78,7 +78,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 
 export const userLogout = async () => {
   try {
-    await publicRequest.post("/v1/auth/logout");
+    await publicRequest.post("/auth/logout");
 
     // dispatch(clearCustomer());
     // dispatch(clearArea());
