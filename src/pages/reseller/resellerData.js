@@ -13,10 +13,10 @@ export const RPD = [
 ];
 
 export const RADIO = [
-  { id: 1, label: "নতুন", value: "new" },
+   
   { id: 2, label: "এক্টিভ", value: "active" },
   { id: 3, label: "ইনএক্টিভ", value: "inactive" },
-  { id: 4, label: "ডিলিট", value: "deleted" },
+  
 ];
 
 export const RBD = [

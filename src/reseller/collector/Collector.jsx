@@ -21,14 +21,13 @@ import Pagination from "../../components/Pagination";
 import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
-import { getCollector } from "../../features/apiCalls";
+import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 
 export default function Collector() {
   const dispatch = useDispatch();
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector((state) => state.collector.collector);
-
+  const userData=useSelector((state)=>state.auth.userData)
   let serial = 0;
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,16 +36,17 @@ export default function Collector() {
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
   const [allCollector, setCollector] = useState(currentCollector);
-  const permission = useSelector((state) => state.auth?.userData?.permissions);
+  const permission = useSelector((state) => state.auth?.userData?.permission);
   const role = useSelector((state) => state.auth.role);
-
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
-    getCollector(dispatch, ispOwnerId);
-  }, [ispOwnerId, dispatch]);
+    getCollector(dispatch, userData.id);
+    getSubAreas(dispatch,userData.id)
+
+  }, [userData, dispatch]);
 
   const [singleCollector, setSingleCollector] = useState("");
   const getSpecificCollector = (id) => {
@@ -107,7 +107,7 @@ export default function Collector() {
                     <div className="addNewCollector">
                       <div className="displexFlexSys">
                         <div className="addAndSettingIcon">
-                          {permission?.collectorAdd || role === "ispOwner" ? (
+                          {userData.permission?.customerAdd || role === "ispOwner" ? (
                             <PersonPlusFill
                               className="addcutmButton"
                               data-bs-toggle="modal"

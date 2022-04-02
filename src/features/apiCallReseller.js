@@ -1,14 +1,9 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
 
-import { hideModal } from "./actions/managerHandle";
+// import { hideModal } from "./actions/managerHandle";
 import {
-  AddAreaSuccess,
-  AddSubAreaSuccess,
-  DeleteAreaSuccess,
-  DeleteSubAreaSuccess,
-  EditAreaSuccess,
-  EditSubAreaSuccess,
+  
   FetchAreaSuccess,
 } from "./areaSlice";
 import {
@@ -50,14 +45,14 @@ export const getCharts = async (dispatch, resellerId, Year, Month, User) => {
 
 //Areas
 
-export const getArea = async (dispatch, resellerId) => {
-  try {
-    const res = await apiLink.get(`/reseller/area/${resellerId}`);
-    dispatch(FetchAreaSuccess(res.data));
-  } catch (error) {
-    console.log(error.message);
-  }
-};
+// export const getArea = async (dispatch, resellerId) => {
+//   try {
+//     const res = await apiLink.get(`/reseller/area/${resellerId}`);
+//     dispatch(FetchAreaSuccess(res.data));
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
 
 // Collector
 export const getCollector = async (dispatch, resellerId) => {
@@ -70,8 +65,9 @@ export const getCollector = async (dispatch, resellerId) => {
 };
 
 export const addCollector = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
   try {
-    const res = await apiLink.post("reseller/collector", data);
+    const res = await apiLink.post(`reseller/collector/${data.reseller}`, data);
     dispatch(addCollectorSuccess(res.data));
     setIsLoading(false);
     toast.success("কালেক্টর সংযুক্ত সফল হয়েছে! ");
@@ -328,5 +324,16 @@ export const getCollectorBill = async (dispatch) => {
     dispatch(getCollectorBills(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
+  }
+};
+
+//sub areas for reseller
+
+export const getSubAreas = async (dispatch, resellerId) => {
+  try {
+    const res = await apiLink.get(`/reseller/subArea/${resellerId}`);
+    dispatch(FetchAreaSuccess(res.data));
+  } catch (error) {
+    console.log(error);
   }
 };

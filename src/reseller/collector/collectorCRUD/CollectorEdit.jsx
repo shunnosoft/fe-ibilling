@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 // internal importsp
 import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
-import { editCollector } from "../../../features/apiCalls";
+import { editCollector } from "../../../features/apiCallReseller";
 import { collectorPermission } from "./collectorPermission";
 // import { getArea } from "../../../features/areaSlice";
 // import {
@@ -22,7 +22,7 @@ export default function CollectorEdit({ single }) {
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);
-   
+  const resellerId = useSelector((state) => state.auth?.userData.id);
 
   useEffect(() => {
     if (single) {
@@ -38,10 +38,10 @@ export default function CollectorEdit({ single }) {
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
       .required("মোবাইল নম্বর দিন "),
-    address: Yup.string().required("ঠিকানা দিন"),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল দিন"),
-    nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
-    status: Yup.string().required("স্টেটাস দিন"),
+    address: Yup.string(),
+    email: Yup.string().email("ইমেইল সঠিক নয় "),
+    nid: Yup.string(),
+    status: Yup.string(),
   });
 
   const setAreaHandler = () => {
@@ -66,27 +66,25 @@ export default function CollectorEdit({ single }) {
       ...single.permissions,
       ...temp,
     };
-    if (single.ispOwner) {
-      const sendingData = {
-        ...data,
-        areas: areaIds_Edit,
-        ispOwner: single.ispOwner,
-        ispOwnerId: single.ispOwner,
-        collectorId: single.id,
-        permissions: newP
-      };
-      editCollector(dispatch, sendingData, setIsLoading);
-    }
+    const sendingData = {
+      ...data,
+      areas: areaIds_Edit,
+
+      collectorId: single.id,
+      resellerId: resellerId,
+      permissions: newP,
+    };
+    editCollector(dispatch, sendingData, setIsLoading);
   };
 
-  const handleChange = (e) => {
-    const { name, checked } = e.target;
-    let temp = permissions.map((val) =>
-      val.value === name ? { ...val, isChecked: checked } : val
-    );
+  // const handleChange = (e) => {
+  //   const { name, checked } = e.target;
+  //   let temp = permissions.map((val) =>
+  //     val.value === name ? { ...val, isChecked: checked } : val
+  //   );
 
-    setPermissions(temp);
-  };
+  //   setPermissions(temp);
+  // };
   return (
     <div>
       {/* Model start */}
@@ -171,26 +169,25 @@ export default function CollectorEdit({ single }) {
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
                         <div key={key}>
-                          <h6 className="areaParent">{val.name}</h6>
-                          {val.subAreas.map((v, k) => (
-                            <div key={k} className="displayFlex">
+                           
+                            <div key={key} className="displayFlex">
                               <input
                                 type="checkbox"
                                 className="getValueUsingClass_Edit"
-                                value={v.id}
+                                value={val.id}
                                 checked={
-                                  allowedAreas?.includes(v.id) ? true : false
+                                  allowedAreas?.includes(val.id) ? true : false
                                 }
                                 onChange={setAreaHandler}
                               />
-                              <label>{v.name}</label>
+                              <label>{val.name}</label>
                             </div>
-                          ))}
+                         
                         </div>
                       ))}
                     </div>
 
-                    <b className="mt-2">পারমিশান পরিবর্তন করুন</b>
+                    {/* <b className="mt-2">পারমিশান পরিবর্তন করুন</b>
                     <div className="AllAreaClass">
                       {permissions.map((val, key) => (
                         <div className="CheckboxContainer" key={key}>
@@ -204,7 +201,7 @@ export default function CollectorEdit({ single }) {
                           <label className="checkboxLabel">{val.label}</label>
                         </div>
                       ))}
-                    </div>
+                    </div> */}
                     {/* area */}
 
                     <div className="modal-footer">

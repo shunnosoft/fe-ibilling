@@ -24,8 +24,8 @@ import { useSelector } from "react-redux";
 
 export default function Sidebar() {
   const userRole = useSelector((state) => state.auth.role);
-  // const hasReseller= useSelector(state=>state.auth.userData?.bpSettings?.hasReseller)
-  const hasReseller= true
+  const hasReseller= useSelector(state=>state.auth.userData?.bpSettings?.hasReseller)
+  // const hasReseller= true
   // addSidebar
   const addSidebar = () => {
     document.querySelector(".sidebar").classList.add("toggleSidebar");

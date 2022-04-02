@@ -15,18 +15,24 @@ import { editReseller } from "../../../features/apiCalls";
 export default function ResellerEdit({ reseller }) {
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.auth.currentUser);
+  const area = useSelector((state) => state.area.area);
+  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
   const dispatch = useDispatch();
   const [allowedAreas, setAllowedAreas] = useState([]);
-  const area = useSelector((state) => state.area.area);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
 
-  // const [permissions, setPermissions] = useState([]);
+  const [allowedMikrotik, setAllowedMikrotik] = useState([]);
+  const [mikrotikIds_Edit, setMikrotikIds_Edit] = useState([]);
 
+  // const [permissions, setPermissions] = useState([]);
   useEffect(() => {
-    if (reseller) {
-      setAllowedAreas(reseller?.areas);
-      // setPermissions(collectorPermission(reseller.permissions));
-    }
+    setMikrotikIds_Edit(reseller.mikrotiks);
+
+    setAreaIds_Edit(reseller.subAreas);
+
+    setAllowedAreas(reseller?.subAreas);
+
+    setAllowedMikrotik(reseller?.mikrotiks);
   }, [reseller]);
 
   //validator
@@ -36,14 +42,12 @@ export default function ResellerEdit({ reseller }) {
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
       .required("মোবাইল নম্বর দিন "),
-    email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-    nid: Yup.string().required("NID দিন"),
-    website: Yup.string().required("ওয়েবসাইট না থাকলে 'N/A' দিন "),
-    address: Yup.string().required("ফিল্ড ফাঁকা রাখা যাবে বা (N/A) দিন"),
-    billCollectionType: Yup.string().required("****"),
-    status: Yup.string().required("****"),
+    email: Yup.string().email("ইমেইল সঠিক নয় "),
+    nid: Yup.string(),
+    website: Yup.string(),
+    address: Yup.string(),
+
+    status: Yup.string().required("স্ট্যাটাস সিলেক্ট করুন"),
   });
 
   // const handleChange = (e) => {
@@ -62,18 +66,18 @@ export default function ResellerEdit({ reseller }) {
 
   // edit Reseller
   const resellerHandler = async (data) => {
-   
-
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
         ispOwner: reseller.ispOwner,
         ispId: reseller.ispOwner,
         resellerId: reseller.id,
+        subAreas: areaIds_Edit,
+
+        mikrotiks: mikrotikIds_Edit,
       };
-         editReseller(dispatch,sendingData,setIsLoading)
-          
-       
+      console.log(sendingData);
+      editReseller(dispatch, sendingData, setIsLoading);
     }
   };
   const setAreaHandler = () => {
@@ -88,6 +92,17 @@ export default function ResellerEdit({ reseller }) {
     setAreaIds_Edit(IDS_temp);
   };
 
+  const setMikrotikHandler = (e) => {
+    const temp = document.querySelectorAll(".getValueUsingClassesforMikrotik");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
+    }
+    setAllowedMikrotik(IDS_temp);
+    setMikrotikIds_Edit(IDS_temp);
+  };
   return (
     <div>
       <div
@@ -119,9 +134,9 @@ export default function ResellerEdit({ reseller }) {
                   mobile: reseller.mobile || "", //*
                   email: reseller.email || "", //*
                   nid: reseller.nid || "", //*
-                  website: reseller.website || "N/A",
-                  address: reseller.address || "N/A",
-                  billCollectionType: reseller.billCollectionType || "", // ['prepaid', 'postpaid', 'both'], /*
+                  website: reseller.website || "",
+                  address: reseller.address || "",
+                  // ['prepaid', 'postpaid', 'both'], /*
                   status: reseller.status || "", //['new', 'active', 'inactive', 'banned', 'deleted'],
                   // rechargeBalance: "", //number
                   // smsRate: "", //number
@@ -197,39 +212,6 @@ export default function ResellerEdit({ reseller }) {
                       {/* start radion button */}
                       <div className="thirdSection">
                         {/* বিল গ্রহণের ধরণ */}
-                        <div className="form-check ">
-                          <p className="radioTitle">বিল গ্রহণের ধরণ</p>
-
-                          <div className="form-check">
-                            <FtextField
-                              label="Prepaid"
-                              className="form-check-input"
-                              type="radio"
-                              name="billCollectionType"
-                              value="prepaid"
-                            />
-                          </div>
-                          <div className="form-check">
-                            <FtextField
-                              label="Postpaid"
-                              className="form-check-input"
-                              type="radio"
-                              name="billCollectionType"
-                              value="postpaid"
-                            />
-                          </div>
-                          <div className="form-check">
-                            <FtextField
-                              label="Both"
-                              className="form-check-input"
-                              type="radio"
-                              name="billCollectionType"
-                              value="both"
-                            />
-                          </div>
-                        </div>
-
-                        <hr />
 
                         {/* commistion type */}
                         {/* <div className="form-check ">
@@ -276,28 +258,26 @@ export default function ResellerEdit({ reseller }) {
                       </div>
                     </div>
 
-
-                    {/* <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
+                    <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
                     <div className="AllAreaClass">
                       {mikrotik?.map((val, key) => (
-                        
-                           
-                            <div key={key}  className="displayFlex">
-                              <input
-                                type="checkbox"
-                                className="getValueUsingClasses"
-                                value={val.id}
-                                onChange={(e)=>setMikrotikHandler(e.target.value)}
-                              />
-                              <label>{val.name}</label>
-                           
-                        
+                        <div key={key} className="displayFlex">
+                          <input
+                            type="checkbox"
+                            className="getValueUsingClassesforMikrotik"
+                            value={val.id}
+                            checked={
+                              allowedMikrotik?.includes(val.id) ? true : false
+                            }
+                            onChange={(e) => setMikrotikHandler(e.target.value)}
+                          />
+                          <label>{val.name}</label>
                         </div>
                       ))}
-                    </div> */}
+                    </div>
 
-                      {/* area */}
-                      <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    {/* area */}
+                    <b className="mt-2">এরিয়া সিলেক্ট</b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
                         <div key={key}>
@@ -319,9 +299,6 @@ export default function ResellerEdit({ reseller }) {
                         </div>
                       ))}
                     </div>
-
-
-                              
 
                     <div className="modal-footer modalFooterEdit">
                       <button

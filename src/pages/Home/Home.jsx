@@ -91,7 +91,7 @@ export default function Home() {
       dispatch(managerFetchSuccess(userData));
     }
 
-    if (role === "ispOwner" || role === "manager") {
+    if (role === "ispOwner" || role === "manager" || role!=="reseller") {
       getCollector(dispatch, ispOwnerId);
       getAllBills(dispatch, ispOwnerId);
       fetchMikrotik(dispatch, ispOwnerId);

@@ -48,8 +48,8 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  // const hasReseller= useSelector(state=>state.auth.userData?.bpSettings?.hasReseller)
-  const hasReseller= true
+  const hasReseller= useSelector(state=>state.auth.userData?.bpSettings?.hasReseller)
+  // const hasReseller= true
 
 
   return (

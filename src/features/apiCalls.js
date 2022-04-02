@@ -618,7 +618,7 @@ export const fetchReseller = async (dispatch, ispOwner) => {
 };
 
 // add reseller
-export const postReseller = async (dispatch, data, setIsLoading) => {
+export const postReseller = async (dispatch, data, setIsLoading,resetForm) => {
   setIsLoading(true);
   await apiLink({
     url: "/ispOwner/reseller",
@@ -632,6 +632,7 @@ export const postReseller = async (dispatch, data, setIsLoading) => {
       dispatch(addResellerSuccess(res.data));
       setIsLoading(false);
       document.querySelector("#resellerModal").click();
+      resetForm()
       toast.success("রিসেলার এড সফল হয়েছে !");
     })
     .catch((err) => {

@@ -8,7 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { collectorData } from "../CollectorInputs";
 import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { addCollector } from "../../../features/apiCalls";
+import { addCollector } from "../../../features/apiCallReseller";
+// import { addCollector } from "../../../features/apiCalls";
 // import { getArea, fetchArea } from "../../../features/areaSlice";
 // import {
 //   postCollector,
@@ -23,16 +24,17 @@ export default function CollectorPost() {
   const auth = useSelector((state) => state.auth.currentUser);
 
   //validator
+  console.log(area)
   const collectorValidator = Yup.object({
     name: Yup.string().required("নাম ***"),
     mobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
       .required("মোবাইল নম্বর *** "),
-    address: Yup.string().required("ঠিকানা ***"),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
-    nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
-    status: Yup.string().required("স্টেটাস ***"),
+    address: Yup.string(),
+    email: Yup.string().email("ইমেইল সঠিক নয় "),
+    nid: Yup.string() ,
+    status: Yup.string(),
 
     // refName: Yup.string().required("রেফারেন্স নাম"),
     // refMobile: Yup.string()
@@ -40,7 +42,10 @@ export default function CollectorPost() {
     //   .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
     //   .required("মোবাইল নম্বর দিন "),
   });
-
+  
+  
+ 
+  
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
     let IDS_temp = [];
@@ -52,17 +57,18 @@ export default function CollectorPost() {
     // console.log("IDS: ", IDS_temp);
     setAreaIds(IDS_temp);
   };
-
+ 
   const collectorPostHandler = async (data) => {
-    setIsLoading(true);
-    if (auth.ispOwner) {
+    console.log(data)
+    
+   
       const sendingData = {
         ...data,
         areas: areaIds,
-        ispOwner: auth.ispOwner.id,
+        reseller: auth.reseller.id,
       };
       addCollector(dispatch, sendingData, setIsLoading);
-    }
+    
   };
 
   return (
@@ -96,7 +102,7 @@ export default function CollectorPost() {
                   address: "",
                   email: "",
                   nid: "",
-                  status: "",
+                  status: "active",
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
@@ -146,20 +152,18 @@ export default function CollectorPost() {
                     <b className="mt-2">এরিয়া সিলেক্ট</b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
-                        <div key={key}>
-                          <h6 className="areaParent">{val.name}</h6>
-                          {val.subAreas.map((v, k) => (
-                            <div key={k} className="displayFlex">
+                        
+                           
+                            <div key={key} className="displayFlex">
                               <input
                                 type="checkbox"
                                 className="getValueUsingClass"
-                                value={v.id}
+                                value={val.id}
                                 onChange={setAreaHandler}
                               />
-                              <label>{v.name}</label>
+                              <label>{val.name}</label>
                             </div>
-                          ))}
-                        </div>
+                         
                       ))}
                     </div>
                     {/* area */}

@@ -32,12 +32,12 @@ export default function ResellerPost() {
       .required("মোবাইল নম্বর দিন "),
     email: Yup.string()
       .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-    nid: Yup.string().required("NID দিন"),
-    website: Yup.string().required("ওয়েবসাইট না থাকলে 'N/A' দিন "),
-    address: Yup.string().required("ফিল্ড ফাঁকা রাখা যাবে বা (N/A) দিন"),
-    billCollectionType: Yup.string().required("****"),
-    status: Yup.string().required("****"),
+       ,
+    nid: Yup.string(),
+    website: Yup.string(),
+    address: Yup.string(),
+     
+    status: Yup.string().required("স্ট্যাটাস সিলেক্ট করুন"),
   });
 
   // const handleChange = (e) => {
@@ -54,15 +54,20 @@ export default function ResellerPost() {
   //   }
   // };
 
-  const resellerHandler = async (data) => {
+  const resellerHandler = async (data,resetForm) => {
     
 
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
         ispOwner: auth.ispOwner.id,
+        subAreas:areaIds,
+        //todo backend
+        mikrotiks:mikrotikIds,
+        billCollectionType:"prepaid"
       };
-      postReseller(dispatch,sendingData, setIsLoading)
+      console.log(sendingData)
+      postReseller(dispatch,sendingData, setIsLoading,resetForm)
      
 
       
@@ -127,8 +132,8 @@ const setMikrotikHandler=(e) =>{
                   nid: "", //*
                   website: "",
                   address: "",
-                  billCollectionType: "", // ['prepaid', 'postpaid', 'both'], /*
-                  status: "", //['new', 'active', 'inactive', 'banned', 'deleted'],
+                   // ['prepaid', 'postpaid', 'both'], /*
+                  status: "active", //['new', 'active', 'inactive', 'banned', 'deleted'],
                   // rechargeBalance: "", //number
                   // smsRate: "", //number
                   // commissionRate: "", //number
@@ -156,8 +161,8 @@ const setMikrotikHandler=(e) =>{
                   // fileExport: "",
                 }}
                 validationSchema={resellerValidator}
-                onSubmit={(values) => {
-                  resellerHandler(values);
+                onSubmit={(values,{ resetForm }) => {
+                  resellerHandler(values, resetForm);
                 }}
                 enableReinitialize
               >
@@ -203,39 +208,8 @@ const setMikrotikHandler=(e) =>{
                       {/* start radion button */}
                       <div className="thirdSection">
                         {/* বিল গ্রহণের ধরণ */}
-                        <div className="form-check ">
-                          <p className="radioTitle">বিল গ্রহণের ধরণ</p>
+                         
 
-                          <div className="form-check">
-                            <FtextField
-                              label="Prepaid"
-                              className="form-check-input"
-                              type="radio"
-                              name="billCollectionType"
-                              value="prepaid"
-                            />
-                          </div>
-                          <div className="form-check">
-                            <FtextField
-                              label="Postpaid"
-                              className="form-check-input"
-                              type="radio"
-                              name="billCollectionType"
-                              value="postpaid"
-                            />
-                          </div>
-                          <div className="form-check">
-                            <FtextField
-                              label="Both"
-                              className="form-check-input"
-                              type="radio"
-                              name="billCollectionType"
-                              value="both"
-                            />
-                          </div>
-                        </div>
-
-                        <hr />
 
                         {/* commistion type */}
                         {/* <div className="form-check ">
@@ -266,7 +240,7 @@ const setMikrotikHandler=(e) =>{
 
                         {/* Status */}
                         <div className="form-check ">
-                          <p className="radioTitle">স্টেটাস</p>
+                          <p className="radioTitle">স্ট্যাটাস</p>
                           {RADIO.map((val, key) => (
                             <div key={key} className="form-check">
                               <FtextField
