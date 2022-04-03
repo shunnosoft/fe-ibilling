@@ -76,7 +76,6 @@ export default function ResellerEdit({ reseller }) {
 
         mikrotiks: mikrotikIds_Edit,
       };
-      console.log(sendingData);
       editReseller(dispatch, sendingData, setIsLoading);
     }
   };

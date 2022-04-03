@@ -34,7 +34,7 @@ export default function CustomerEdit({ single }) {
   const [activeStatus, setActiveStatus] = useState(single?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
-  const [subAreaId, setSubAreaId] = useState("");
+  // const [subAreaId, setSubAreaId] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
 
@@ -107,7 +107,6 @@ export default function CustomerEdit({ single }) {
   const selectSubArea = (data) => {
     setSubArea(data.target.value);
   };
-console.log(single)
   // sending data to backed
   const customerHandler = async (data) => {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;

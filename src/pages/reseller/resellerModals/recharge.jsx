@@ -13,7 +13,6 @@ function Recharge({reseller}) {
   const [isLoading,setIsloading] = useState(false)
   const ispOwnerId=useSelector(state=>state.auth.userData.id)
   const rechargeHandler =()=>{
-console.log(reseller)
     // window.alert("are you sure?")
     // console.log(rechargeRef.current.value)
     const data = {
@@ -22,7 +21,6 @@ console.log(reseller)
       reseller:reseller.id, 
 
     }
-    console.log(data)
     recharge(data,setIsloading,dispatch)
 
   }

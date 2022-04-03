@@ -2,30 +2,29 @@ import { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 // import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
-import { Form, Formik } from "formik";
+// import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
-import * as Yup from "yup";
+// import * as Yup from "yup";
 
 // internal import
-import { FtextField } from "../../components/common/FtextField";
+// import { FtextField } from "../../components/common/FtextField";
 import "./diposit.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import { useCallback, useEffect } from "react";
 import {
-  addDeposit,
-  depositAcceptReject,
+  
   getDeposit,
   // getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import moment from "moment";
-import Loader from "../../components/common/Loader";
+// import Loader from "../../components/common/Loader";
 
 export default function RechargeHistoryofReseller() {
-  const balancee = useSelector((state) => state.payment.balance);
+  // const balancee = useSelector((state) => state.payment.balance);
   const allDeposit = useSelector((state) => state.payment.allDeposit);
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -37,7 +36,7 @@ export default function RechargeHistoryofReseller() {
   const manager = useSelector((state) => state.manager.manager);
   const collectors = useSelector((state) => state.reseller.reseller);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
-  const currentUser = useSelector((state) => state.auth?.currentUser);
+  // const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
 
@@ -74,14 +73,14 @@ export default function RechargeHistoryofReseller() {
 
   
 //todo 
-  const getTotalRecharge = useCallback(() => {
-    const initialValue = 0;
-    const sumWithInitial = mainData.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-    return sumWithInitial.toString();
-  }, [mainData]);
+  // const getTotalRecharge = useCallback(() => {
+  //   const initialValue = 0;
+  //   const sumWithInitial = mainData.reduce(
+  //     (previousValue, currentValue) => previousValue + currentValue.amount,
+  //     initialValue
+  //   );
+  //   return sumWithInitial.toString();
+  // }, [mainData]);
 
   // useEffect(() => {
   //   getMyDeposit(dispatch);
@@ -167,7 +166,6 @@ export default function RechargeHistoryofReseller() {
       setCollectorIds(collectorUserIdsArr);
     }
   };
-  console.log(collectorIds);
   const onClickFilter = () => {
     let arr = getNames();
 

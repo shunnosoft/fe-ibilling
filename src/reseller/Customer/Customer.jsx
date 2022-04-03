@@ -138,7 +138,7 @@ export default function Customer() {
   };
   // console.log(permission)
   const [subAreaIds, setSubArea] = useState([]);
-  const [singleArea, setArea] = useState({});
+  // const [singleArea, setArea] = useState({});
 
   
   useEffect(() => {

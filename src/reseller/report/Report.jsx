@@ -56,7 +56,6 @@ export default function Report() {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-console.log(subAreaIds)
   useEffect(()=>{
     getAllBills(dispatch,userData.id)
     setSubArea(subAreas.map(i=>i.id))
@@ -129,7 +128,6 @@ console.log(subAreaIds)
  
 
   const onChangeSubArea = (id) => {
-    console.log(id)
     if (!id) {
      
       
@@ -141,7 +139,6 @@ console.log(subAreaIds)
   };
 
   const onClickFilter = () => {
-    console.log("filter data");
 
     let arr = allBills;
 

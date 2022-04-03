@@ -24,7 +24,6 @@ export default function CollectorPost() {
   const auth = useSelector((state) => state.auth.currentUser);
 
   //validator
-  console.log(area)
   const collectorValidator = Yup.object({
     name: Yup.string().required("নাম ***"),
     mobile: Yup.string()

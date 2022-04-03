@@ -39,7 +39,6 @@ export default function Reseller() {
   const [rsearch, setRsearch] = useState("");
   const reseller = useSelector((state) => state.reseller.reseller);
   let serial = 0;
-console.log(reseller)
   useEffect(() => {
     if (auth.ispOwner) {
       fetchReseller(dispatch, auth.ispOwner.id);
@@ -54,7 +53,6 @@ console.log(reseller)
       const singleReseller = reseller.find((val) => {
         return val.id === rid;
       });
-      console.log(singleReseller)
       setSingleUser(singleReseller);
     
   };

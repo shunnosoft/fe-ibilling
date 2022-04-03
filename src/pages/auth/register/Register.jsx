@@ -61,7 +61,7 @@ export default function Register() {
     };
 
     // send user data to async function
-    console.log(userData);
+    // console.log(userData);
     asyncRegister(userData, setLoading);
   };
 

@@ -8,11 +8,10 @@ import "../customer.css";
 
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
-
   useEffect(() => {
     const getCustoemrReport = async () => {
       try {
-        const res = await apiLink(`/bill/customer/${single?.id}`);
+        const res = await apiLink(`/reseller/bills/customer/${single?.id}`);
         const data = await res.data;
         setCustomerReport(data);
       } catch (err) {

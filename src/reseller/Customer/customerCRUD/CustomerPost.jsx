@@ -25,7 +25,6 @@ export default function CustomerModal() {
   const dispatch = useDispatch();
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
-  console.log(Getmikrotik)
   // customer validator
   const customerValidator = Yup.object({
     name: Yup.string().required("গ্রাহকের নাম লিখুন"),
@@ -55,7 +54,6 @@ export default function CustomerModal() {
   // };
 
   // const [loadingPac, setLoadingPac] = useState(false);
-console.log(userData)
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -124,7 +122,6 @@ const [subAreaId,setsubAreaId]= useState("")
     setBilltime(moment().endOf("day").format("HH:mm"));
   }, []);
   const selectArea =(e)=>{
-    console.log(e)
     setsubAreaId(e)
   }
   return (
