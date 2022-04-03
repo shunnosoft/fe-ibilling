@@ -16,6 +16,7 @@ import {
   Messenger,
   PersonLinesFill,
   PersonBoundingBox,
+  Cash,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -46,13 +47,13 @@ export default function Sidebar() {
  
   return (
     <TitleColor>
-      <div>
+      <div >
         <div className="container menuIcon">
           <List onClick={addSidebar} className="ListIcon" />
         </div>
         <div className="sidebar">
           <FourGround>
-            <h2>
+            <h2 className="name">
               <NavLink to="/" className="adminDashboardTitle">
                 <ArrowLeft className="GotoHomeFromDashboard" />
                 নেট ফি {userRole === "manager" ? " (ম্যানেজার)" : ""}
@@ -287,6 +288,24 @@ export default function Sidebar() {
                   </li>
                 </FontColor>
               </NavLink>
+
+             { (userRole==="ispOwner" || userRole==="reseller")? <NavLink
+                key={70}
+                to={(userRole==="reseller"?"/reseller/recharge":"/recharge")}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={window.location.pathname === (userRole==="reseller"?"/reseller/recharge":"/recharge") ? "active" : ""}
+                  >
+                    <div className="sidebarIcon">{<Cash />}</div>
+                    <span className="sidebarLinksName">{"রিচার্জ হিস্ট্রি"}</span>
+                  </li>
+                </FontColor>
+              </NavLink>:""}
 
              { userRole==="ispOwner" ? <NavLink
                 key={99}

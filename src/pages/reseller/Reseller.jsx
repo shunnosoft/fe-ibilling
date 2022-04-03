@@ -6,6 +6,8 @@ import {
   PenFill,
   ArchiveFill,
   PersonFill,
+  Wallet,
+  
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -27,16 +29,17 @@ import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 import ResellerDetails from "./resellerModals/ResellerDetails";
 import { deleteReseller, fetchReseller } from "../../features/apiCalls";
+import Recharge from "./resellerModals/recharge";
 
 export default function Reseller() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth.currentUser);
-  const [singleUser, setSingleUser] = useState("");
+  const [singleUser, setSingleUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
   const reseller = useSelector((state) => state.reseller.reseller);
   let serial = 0;
-
+console.log(reseller)
   useEffect(() => {
     if (auth.ispOwner) {
       fetchReseller(dispatch, auth.ispOwner.id);
@@ -45,12 +48,15 @@ export default function Reseller() {
 
   // get Single reseller
   const getSpecificReseller = (rid) => {
-    if (reseller.length !== undefined) {
+
+
+   
       const singleReseller = reseller.find((val) => {
         return val.id === rid;
       });
+      console.log(singleReseller)
       setSingleUser(singleReseller);
-    }
+    
   };
 
   // delete reseller
@@ -69,8 +75,10 @@ export default function Reseller() {
             <FontColor>
               {/* modals */}
               <ResellerPost />
+              {/* <ResellerRecharge reseller={singleUser}></ResellerRecharge> */}
               <ResellerEdit reseller={singleUser} />
               <ResellerDetails reseller={singleUser} />
+              <Recharge reseller={singleUser} ></Recharge>
               {/* modals */}
               <FourGround>
                 <h2 className="collectorTitle">রি-সেলার</h2>
@@ -133,8 +141,9 @@ export default function Reseller() {
                           <th scope="col">Serial</th>
                           <th scope="col">নাম</th>
                           <th scope="col">এড্রেস</th>
-                          <th scope="col">ইমেইল</th>
                           <th scope="col">মোবাইল</th>
+                          <th scope="col">ইমেইল</th>
+                          <th scope="col">রিচার্জ ব্যালান্স</th>
                           <th scope="col" style={{ textAlign: "center" }}>
                             অ্যাকশন
                           </th>
@@ -159,6 +168,7 @@ export default function Reseller() {
                                 <td>{val.address}</td>
                                 <td>{val.mobile}</td>
                                 <td>{val.email}</td>
+                                <td>{val.rechargeBalance}</td>
                                 <td style={{ textAlign: "center" }}>
                                   {/* dropdown */}
 
@@ -175,6 +185,35 @@ export default function Reseller() {
                                     className="dropdown-menu"
                                     aria-labelledby="resellerDropdown"
                                   >
+                                    <li
+                                      data-bs-toggle="modal"
+                                      href="#resellerRechargeModal"
+                                      role="button"
+                                      onClick={() => {
+                                        getSpecificReseller(val.id);
+                                      }}
+                                       
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <Wallet />
+                                          <p className="actionP">রিচার্জ</p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                    {/* <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#resellerrechargehistory"
+                                      role="button"
+                                       
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <Cash />
+                                          <p className="actionP">রিচার্জ হিস্ট্রি</p>
+                                        </div>
+                                      </div>
+                                    </li> */}
                                     <li
                                       data-bs-toggle="modal"
                                       data-bs-target="#resellerDetailsModal"

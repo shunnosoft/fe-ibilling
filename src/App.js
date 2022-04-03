@@ -43,6 +43,7 @@ import Message from "./pages/message/Message";
 
 import CollectorReport from "./pages/report/CollectorReport";
 import Reseller from "./pages/reseller/Reseller";
+import RechargeHistoryofReseller from "./pages/recharge/Diposit";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -72,6 +73,7 @@ function App() {
               <Route path="reseller/report" element={<RReport />} />
               <Route path="reseller/home" element={<RDashboard />} />
               <Route path="reseller/collector" element={<RCollector />} />
+              <Route path="reseller/recharge" element={<RechargeHistoryofReseller />} />
 
               <Route path="reseller/diposit" element={<RDiposit />} />
               <Route path="reseller/customer" element={<RCustomer />} />
@@ -158,6 +160,8 @@ function App() {
               <Route path="area" element={<Area />} />
               {/* <Route path="bill" element={<Bill />} /> */}
               <Route path="diposit" element={<Diposit />} />
+              <Route path="recharge" element={<RechargeHistoryofReseller />} />
+
               <Route path="reseller" element={hasReseller ?<Reseller />:<Navigate to={"/home"}></Navigate>} />
               <Route path="customer" element={<Customer />} />
               <Route path="reseller/customer" element={<RCustomer />} />

@@ -89,7 +89,7 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data) => {
-    setIsloading(true);
+    
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);

@@ -99,7 +99,7 @@ export default function CollectorEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {single?.name} - এর প্রোফাইল এডিট করুন
+                {single?.name} - এর প্রোফাইল এডিট করুন kkk
               </h5>
               <button
                 type="button"
@@ -132,6 +132,7 @@ export default function CollectorEdit({ single }) {
                     <div className="collectorInputs">
                       {collectorData.map((val, key) => (
                         <FtextField
+                        disabled={val.name==="mobile"}
                           key={key}
                           type={val.type}
                           label={val.label}

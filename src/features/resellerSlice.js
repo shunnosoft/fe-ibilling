@@ -1,5 +1,4 @@
-import { createSlice} from "@reduxjs/toolkit";
- 
+import { createSlice } from "@reduxjs/toolkit";
 
 export const resellerSlice = createSlice({
   name: "reseller",
@@ -18,6 +17,18 @@ export const resellerSlice = createSlice({
         state.reseller.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
     },
+    editResellerforRecharge: (state, action) => {
+      const findR = state.reseller.find(
+        (r) => r.id === action.payload.reseller
+      );
+      // console.log(findR)
+      state.reseller[
+        state.reseller.findIndex((item) => item.id === action.payload.reseller)
+      ] = {
+        ...findR,
+        rechargeBalance: findR.rechargeBalance + action.payload.amount,
+      };
+    },
     deleteResellerSuccess: (state, action) => {
       state.reseller.splice(
         state.reseller.findIndex((item) => item.id === action.payload),
@@ -34,6 +45,7 @@ export const {
   addResellerSuccess,
   editResellerSuccess,
   deleteResellerSuccess,
-  clearReseller
+  editResellerforRecharge,
+  clearReseller,
 } = resellerSlice.actions;
 export default resellerSlice.reducer;

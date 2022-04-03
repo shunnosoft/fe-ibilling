@@ -28,7 +28,7 @@ import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
-import { deleteACustomer, getCustomer } from "../../features/apiCalls";
+import { deleteACustomer, getCustomer, getMikrotik, getSubAreas } from "../../features/apiCallReseller";
 import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 
@@ -36,11 +36,11 @@ export default function Customer() {
   const cus = useSelector((state) => state.customer.customer);
   const role = useSelector((state) => state.auth.role);
   const dispatch = useDispatch();
-  const ispOwner = useSelector((state) => state.auth.ispOwnerId);
+  const resellerId = useSelector((state) => state.auth.userData.id);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  const permission = useSelector((state) => state.auth?.userData?.permissions);
+  const permission = useSelector((state) => state.auth?.userData?.permission);
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
@@ -54,7 +54,7 @@ export default function Customer() {
   const firstIndex = lastIndex - customerPerPage;
 
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
-  const areas = useSelector((state) => state.area.area);
+  const subAreas = useSelector((state) => state.area.area);
 
   // paginate call Back function -> response from paginate component
   const paginate = (pageNumber) => {
@@ -114,16 +114,21 @@ export default function Customer() {
   const deleteCustomer = async (ID) => {
     setIsDeleting(true);
     const IDs = {
-      ispID: ispOwner,
+      ispID: resellerId,
       customerID: ID,
     };
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
+ 
+
 
   useEffect(() => {
-    getCustomer(dispatch, ispOwner, setIsloading);
-  }, [dispatch, ispOwner]);
+    getMikrotik(dispatch,resellerId)
+    getCustomer(dispatch, resellerId, setIsloading);
+    getSubAreas(dispatch,resellerId)
+
+  }, [dispatch, resellerId]);
 
   const [isSorted, setSorted] = useState(false);
 
@@ -135,25 +140,7 @@ export default function Customer() {
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
 
-  const onChangeArea = (param) => {
-    // console.log(JSON.parse(param))
-    let area = JSON.parse(param);
-
-    setArea(area);
-    if (
-      area &&
-      Object.keys(area).length === 0 &&
-      Object.getPrototypeOf(area) === Object.prototype
-    ) {
-      setSubArea([]);
-    } else {
-      let subAreaIds = [];
-
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
-      setSubArea(subAreaIds);
-    }
-  };
+  
   useEffect(() => {
     if (subAreaIds.length) {
       setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
@@ -205,21 +192,7 @@ export default function Customer() {
                     <div className="displexFlexSys">
                       {/* filter selector */}
                       <div className="selectFiltering allFilter">
-                        <select
-                          className="form-select"
-                          onChange={(e) => onChangeArea(e.target.value)}
-                        >
-                          <option value={JSON.stringify({})} defaultValue>
-                            সকল এরিয়া
-                          </option>
-                          {areas?.map((area, key) => {
-                            return (
-                              <option key={key} value={JSON.stringify(area)}>
-                                {area.name}
-                              </option>
-                            );
-                          })}
-                        </select>
+                         
 
                         {/* //Todo */}
                         <select
@@ -229,7 +202,7 @@ export default function Customer() {
                           <option value="" defaultValue>
                             সাব এরিয়া
                           </option>
-                          {singleArea?.subAreas?.map((sub, key) => (
+                          {subAreas?.map((sub, key) => (
                             <option key={key} value={sub.id}>
                               {sub.name}
                             </option>

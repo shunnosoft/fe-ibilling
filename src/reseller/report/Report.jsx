@@ -19,9 +19,8 @@ export default function Report() {
   // const cus = useSelector((state) => state.customer.customer);
   // console.log(cus.length)
 
-  const allArea = useSelector((state) => state.area.area);
+  const subAreas = useSelector((state) => state.area.area);
   const allCollector = useSelector((state) => state.collector.collector);
-  const manager = useSelector((state) => state.manager.manager);
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -55,25 +54,7 @@ export default function Report() {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const keys = ["amount", "name", "customerId", "createdAt"];
-
-  //   setMainData(
-  //     allBills.filter((item) =>
-  //       keys.some((key) =>
-  //         item[key]
-  //           ? typeof item[key] === "string"
-  //             ? item[key]?.toLowerCase().includes(cusSearch)
-  //             : item[key]?.toString().includes(cusSearch)
-  //           : typeof item["customer"][key] === "string"
-  //           ? item["customer"][key]?.toLowerCase().includes(cusSearch)
-  //           : item["customer"][key]?.toString().includes(cusSearch)
-  //       )
-  //     )
-  //   );
-  // }, [cusSearch, allBills]);
+  
 
   useEffect(() => {
     let collectors = [];
@@ -82,21 +63,16 @@ export default function Report() {
       collectors.push({ name: item.name, user: item.user, id: item.id })
     );
 
-    if (collectors.length === allCollector.length) {
-      const { user, name, id } = manager;
-      collectors.unshift({ name, user, id });
-    }
+    
 
     setCollectors(collectors);
 
     let collectorUserIdsArr = [];
     collectors.map((item) => collectorUserIdsArr.push(item.user));
     setCollectorIds(collectorUserIdsArr);
-  }, [allCollector, manager]);
+  }, [allCollector]);
 
-  // useEffect(() => {
-  //   getAllBills(dispatch, ispOwnerId);
-  // }, [ispOwnerId, dispatch]);
+   
 
   useEffect(() => {
     var initialToday = new Date();
@@ -138,24 +114,7 @@ export default function Report() {
     }
   };
 
-  const onChangeArea = (param) => {
-    let area = JSON.parse(param);
-    setArea(area);
-
-    if (
-      area &&
-      Object.keys(area).length === 0 &&
-      Object.getPrototypeOf(area) === Object.prototype
-    ) {
-      setSubArea([]);
-    } else {
-      let subAreaIds = [];
-
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
-      setSubArea(subAreaIds);
-    }
-  };
+ 
 
   const onChangeSubArea = (id) => {
     if (!id) {
@@ -249,7 +208,7 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">Reseller বিল রিপোর্ট </h2>
+                <h2 className="collectorTitle">রিসেলার বিল রিপোর্ট </h2>
               </FourGround>
 
               {/* Model start */}
@@ -261,19 +220,7 @@ export default function Report() {
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">
-                      <select
-                        className="form-select"
-                        onChange={(e) => onChangeArea(e.target.value)}
-                      >
-                        <option value={JSON.stringify({})} defaultValue>
-                          সকল এরিয়া{" "}
-                        </option>
-                        {allArea.map((area, key) => (
-                          <option key={key} value={JSON.stringify(area)}>
-                            {area.name}
-                          </option>
-                        ))}
-                      </select>
+                      
                       <select
                         className="form-select"
                         onChange={(e) => onChangeSubArea(e.target.value)}
@@ -281,7 +228,7 @@ export default function Report() {
                         <option value="" defaultValue>
                           সকল সাব এরিয়া{" "}
                         </option>
-                        {singleArea?.subAreas?.map((sub, key) => (
+                        {subAreas?.map((sub, key) => (
                           <option key={key} value={sub.id}>
                             {sub.name}
                           </option>

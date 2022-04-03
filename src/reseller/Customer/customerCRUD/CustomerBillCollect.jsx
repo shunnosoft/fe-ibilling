@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCalls";
+import { billCollect } from "../../../features/apiCallReseller";
 import Loader from "../../../components/common/Loader";
 
 export default function CustomerBillCollect({ single }) {
@@ -14,6 +14,7 @@ export default function CustomerBillCollect({ single }) {
 
   // const [defaultAmount, setDefault] = useState(single.monthlyFee);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
+  
   const currentUser = useSelector((state) => state.auth?.currentUser);
 
   const currentUserId = useSelector((state) => state.auth.userData.id);

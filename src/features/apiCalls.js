@@ -48,6 +48,7 @@ import {
 import {
   addResellerSuccess,
   deleteResellerSuccess,
+  editResellerforRecharge,
   editResellerSuccess,
   getResellerrSuccess,
 } from "./resellerSlice";
@@ -852,3 +853,21 @@ export const getCollectorBill = async (dispatch) => {
     console.log(error.response?.data.message);
   }
 };
+
+
+//recharge 
+
+export const recharge = async (data,setIsLoading,dispatch)=>{
+  setIsLoading(true)
+  try {
+   const res =   await apiLink.post("/reseller/recharge",data)
+    console.log(res.data)
+    dispatch(editResellerforRecharge(res.data))
+    setIsLoading(false)
+    toast.success("রিচার্জ সফল হয়েছে")
+  } catch (error) {
+    setIsLoading(false)
+    toast.error(error.response?.data.message)
+    
+  }
+}

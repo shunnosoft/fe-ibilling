@@ -30,6 +30,7 @@ import {
   updateDepositSuccess,
 } from "./paymentSlice";
 import { getChartSuccess } from "./chartsSlice";
+import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
 
 export const getCharts = async (dispatch, resellerId, Year, Month, User) => {
   try {
@@ -129,6 +130,7 @@ export const getCustomer = async (dispatch, reseller, setIsloading) => {
   }
 };
 
+ 
 export const addCustomer = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   try {
@@ -146,7 +148,7 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
 };
 
 export const editCustomer = async (dispatch, data, setIsloading) => {
-  console.log("Edit Data: ", data);
+   setIsloading(true)
   const { singleCustomerID, reseller, ...sendingData } = data;
   try {
     const res = await apiLink.patch(
@@ -213,7 +215,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 export const billCollect = async (dispatch, billData, setLoading) => {
   setLoading(true);
   try {
-    const res = await apiLink.post("/bill/monthlyBill", billData);
+    const res = await apiLink.post("/reseller/monthlyBill", billData);
     dispatch(updateBalance(res.data));
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
@@ -335,5 +337,30 @@ export const getSubAreas = async (dispatch, resellerId) => {
     dispatch(FetchAreaSuccess(res.data));
   } catch (error) {
     console.log(error);
+  }
+};
+
+
+// mikrotiks 
+
+export const getMikrotik = async (dispatch,resellerId) =>{
+  try {
+      const res = await apiLink.get(`/reseller/mikrotik/${resellerId}`)
+      dispatch(getMikrotikSuccess(res.data))
+  } catch (error) {
+    console.log(error)
+    
+  }
+}
+
+export const fetchpppoePackage = async (dispatch, IDs) => {
+  try {
+    const res = await apiLink({
+      method: "GET",
+      url: `/mikrotik/ppp/package/${IDs.mikrotikId}`,
+    });
+    dispatch(getpppoePackageSuccess(res.data));
+  } catch (error) {
+    
   }
 };

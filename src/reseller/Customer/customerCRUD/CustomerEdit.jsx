@@ -10,12 +10,13 @@ import { FtextField } from "../../../components/common/FtextField";
 // import { editCustomer } from "../../../features/customerSlice";
 // import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
-import { editCustomer } from "../../../features/apiCalls";
+import { editCustomer } from "../../../features/apiCallReseller";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
 export default function CustomerEdit({ single }) {
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const ispOwnerId = useSelector((state) => state.auth.userData.ispOwner);
+  const resellerId =useSelector(state=>state.auth.userData.id)
   const area = useSelector((state) => state.area.area);
   const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
   // const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
@@ -38,21 +39,22 @@ export default function CustomerEdit({ single }) {
   const [billTime, setBilltime] = useState();
 
   useEffect(() => {
+    setSubArea(single.subArea)
     setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"));
     setBilltime(moment(single.billingCycle).format("hh:mm"));
-    const temp = Getmikrotik.find((val) => val.id === single.mikrotik);
+    const temp = Getmikrotik?.find((val) => val.id === single.mikrotik);
     setmikrotikName(temp);
 
     // findout area id by sub area id
-    const areaIDTemp = area.find((areaItem) => {
-      return areaItem.subAreas.find((val) => {
-        if (single.subArea === val.id) {
-          setSubAreaId(val);
-        }
-        return areaItem;
-      });
-    });
-    setAreaID(areaIDTemp);
+    // const areaIDTemp = area.find((areaItem) => {
+    //   return areaItem.subAreas.find((val) => {
+    //     if (single.subArea === val.id) {
+    //       setSubAreaId(val);
+    //     }
+    //     return areaItem;
+    //   });
+    // });
+    // setAreaID(areaIDTemp);
 
     // single?.mikrotik && fetchpppoePackage(dispatch, IDs);
     // const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
@@ -67,7 +69,7 @@ export default function CustomerEdit({ single }) {
     const fetchPac = async () => {
       try {
         const res = await apiLink.get(
-          `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
+          `/mikrotik/ppp/package/${IDs.mikrotikId}`
         );
         setppPackage(res.data);
       } catch (error) {
@@ -93,27 +95,6 @@ export default function CustomerEdit({ single }) {
     Pcomment: Yup.string(),
   });
 
-  // const [loadingPac, setLoadingPac] = useState(false);
-
-  // select Getmikrotik
-  // const selectMikrotik = (e) => {
-  //   const id = e.target.value;
-  //   if (id && ispOwnerId) {
-  //     const IDs = {
-  //       ispOwner: ispOwnerId,
-  //       mikrotikId: id,
-  //     };
-  //     fetchpppoePackage(dispatch, IDs);
-  //   }
-
-  //   const getOneMikrotik = Getmikrotik.find((val) => val.id === id);
-  //   setSingleMikrotik(getOneMikrotik.id);
-
-  //   // set Pppoe Pacakage
-  //   const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
-  //   setPppoePacakage(filterPPPoEpacakage);
-  // };
-
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
@@ -124,34 +105,23 @@ export default function CustomerEdit({ single }) {
 
   // select subArea
   const selectSubArea = (data) => {
-    const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setSubArea(temp);
-    }
+    setSubArea(data.target.value);
   };
-
+console.log(single)
   // sending data to backed
   const customerHandler = async (data) => {
-    setIsloading(true);
-    const subArea2 = document.getElementById("subAreaIdFromEdit").value;
-    if (subArea2 === "") {
-      setIsloading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
-    }
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
-      paymentStatus: "unpaid",
+      paymentStatus: single?.paymentStatus,
       singleCustomerID: single?.id,
-      subArea: subArea2,
+      subArea: subArea,
       ispOwner: ispOwnerId,
       mikrotik: single?.mikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
+      reseller:resellerId,
       billingCycle: moment(billDate + " " + billTime).format(
         "YYYY-MM-DDTHH:mm:ss.ms[Z]"
       ),
@@ -295,30 +265,6 @@ export default function CustomerEdit({ single }) {
                                   {val.name}
                                 </option>
                               ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <p>
-                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
-                          সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          name="subArea"
-                          id="subAreaIdFromEdit"
-                        >
-                          <option value={subAreaId?.id || ""}>
-                            {subAreaId?.name || ""}
-                          </option>
-                          {subArea?.subAreas
-                            ? subArea.subAreas.map((val, key) => (
-                                <option key={key} value={val.id || ""}>
-                                  {val.name}
-                                </option>
-                              ))
-                            : ""}
                         </select>
                       </div>
 

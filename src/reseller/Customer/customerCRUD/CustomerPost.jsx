@@ -8,11 +8,12 @@ import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
+import { addCustomer, fetchpppoePackage } from "../../../features/apiCallReseller";
 import moment from "moment";
 export default function CustomerModal() {
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const userData = useSelector((state) => state.auth.userData);
   const area = useSelector((state) => state.area.area);
+  
   const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
   const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
   const [packageRate, setPackageRate] = useState("");
@@ -20,11 +21,11 @@ export default function CustomerModal() {
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(true);
-  const [subArea, setSubArea] = useState("");
+  // const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
-
+  console.log(Getmikrotik)
   // customer validator
   const customerValidator = Yup.object({
     name: Yup.string().required("গ্রাহকের নাম লিখুন"),
@@ -54,13 +55,13 @@ export default function CustomerModal() {
   // };
 
   // const [loadingPac, setLoadingPac] = useState(false);
-
+console.log(userData)
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && ispOwnerId) {
+    if (id && userData.id) {
       const IDs = {
-        ispOwner: ispOwnerId,
+        reseller: userData.id,
         mikrotikId: id,
       };
       fetchpppoePackage(dispatch, IDs);
@@ -69,15 +70,15 @@ export default function CustomerModal() {
   };
 
   // select subArea
-  const selectSubArea = (data) => {
-    const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setSubArea(temp);
-    }
-  };
+  // const selectSubArea = (data) => {
+  //   const areaId = data.target.value;
+  //   if (area) {
+  //     const temp = area.find((val) => {
+  //       return val.id === areaId;
+  //     });
+  //     setSubArea(temp);
+  //   }
+  // };
 
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
@@ -86,21 +87,18 @@ export default function CustomerModal() {
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
-
+const [subAreaId,setsubAreaId]= useState("")
   // sending data to backed
   const customerHandler = async (data) => {
-    setIsloading(true);
-    const subArea2 = document.getElementById("subAreaId").value;
-    if (subArea2 === "") {
-      setIsloading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
-    }
+    
+     
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
       paymentStatus: "unpaid",
-      subArea: subArea2,
-      ispOwner: ispOwnerId,
+      ispOwner:userData.ispOwner,
+      subArea: subAreaId,
+      reseller: userData.id,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
@@ -114,6 +112,7 @@ export default function CustomerModal() {
         service: "pppoe",
         comment: Pcomment,
         profile: Pprofile,
+         
       },
       ...rest,
     };
@@ -124,6 +123,10 @@ export default function CustomerModal() {
     setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
     setBilltime(moment().endOf("day").format("HH:mm"));
   }, []);
+  const selectArea =(e)=>{
+    console.log(e)
+    setsubAreaId(e)
+  }
   return (
     <div>
       <div
@@ -180,9 +183,9 @@ export default function CustomerModal() {
                           onChange={selectMikrotik}
                         >
                           <option value="">...</option>
-                          {Getmikrotik.length === undefined
+                          {Getmikrotik?.length === undefined
                             ? ""
-                            : Getmikrotik.map((val, key) => (
+                            : Getmikrotik?.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>
@@ -233,7 +236,7 @@ export default function CustomerModal() {
                         <select
                           className="form-select"
                           aria-label="Default select example"
-                          onChange={selectSubArea}
+                          onChange={(e)=>selectArea(e.target.value)}
                         >
                           <option value="">...</option>
                           {area.length === undefined
@@ -245,28 +248,7 @@ export default function CustomerModal() {
                               ))}
                         </select>
                       </div>
-
-                      <div>
-                        <p>
-                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
-                          সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          name="subArea"
-                          id="subAreaId"
-                        >
-                          <option value="">...</option>
-                          {subArea?.subAreas
-                            ? subArea.subAreas.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))
-                            : ""}
-                        </select>
-                      </div>
+ 
 
                       <FtextField
                         type="text"

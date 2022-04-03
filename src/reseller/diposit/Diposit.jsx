@@ -207,7 +207,7 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">ডিপোজিট</h2>
+                <h2 className="collectorTitle">রিসেলার ডিপোজিট</h2>
               </FourGround>
 
               {userRole !== "ispOwner" ? (
@@ -254,7 +254,7 @@ export default function Diposit() {
                 ""
               )}
 
-              <br />
+               
               {userRole === "collector" ? (
                 <div className="row searchCollector">
                   <div className="col-sm-8">
