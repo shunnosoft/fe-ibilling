@@ -210,7 +210,7 @@ export default function Diposit() {
                 <h2 className="collectorTitle">রিসেলার ডিপোজিট</h2>
               </FourGround>
 
-              {userRole !== "ispOwner" ? (
+              {userRole !== "reseller" ? (
                 <FourGround>
                   <div className="managerDipositToIsp">
                     <Formik
@@ -411,6 +411,9 @@ export default function Diposit() {
                             <tr key={key}>
                               <td>{item.name}</td>
                               <td>৳ {item.amount}</td>
+                              
+
+                            
                               <td>
                                 {item.status === "pending" ? (
                                   acceptLoading ? (
@@ -450,6 +453,7 @@ export default function Diposit() {
                                   </span>
                                 )}
                               </td>
+ 
                               <td>
                                 {moment(item.createdAt).format("DD-MM-YYYY")}
                               </td>

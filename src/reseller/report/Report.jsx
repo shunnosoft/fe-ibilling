@@ -11,9 +11,10 @@ import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
 // import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
 import { ArrowDownUp } from "react-bootstrap-icons";
+import { getAllBills } from "../../features/apiCallReseller";
 
 export default function Report() {
   // const cus = useSelector((state) => state.customer.customer);
@@ -31,8 +32,8 @@ export default function Report() {
   const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state.payment.allBills);
-
-  const [singleArea, setArea] = useState({});
+  const userData=useSelector(state=>state.auth.userData)
+  // const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
   const userRole =useSelector(state=>state.auth.role)
   const [mainData, setMainData] = useState(allBills);
@@ -50,11 +51,22 @@ export default function Report() {
   const firstIndex = lastIndex - customerPerPage;
 
   const currentCustomers = mainData.slice(firstIndex, lastIndex);
+  const dispatch = useDispatch()
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  
+console.log(subAreaIds)
+  useEffect(()=>{
+    getAllBills(dispatch,userData.id)
+    setSubArea(subAreas.map(i=>i.id))
+
+    if (collectors.length === allCollector.length) {
+      const { user, name, id } =userData;
+      collectors.unshift({ name, user, id });
+    }
+  },[dispatch,userData,subAreas,allCollector,collectors])
+
 
   useEffect(() => {
     let collectors = [];
@@ -117,11 +129,12 @@ export default function Report() {
  
 
   const onChangeSubArea = (id) => {
+    console.log(id)
     if (!id) {
-      let subAreaIds = [];
-      singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
+     
+      
 
-      setSubArea(subAreaIds);
+      setSubArea(subAreas.map(i=>i.id));
     } else {
       setSubArea([id]);
     }
@@ -226,7 +239,7 @@ export default function Report() {
                         onChange={(e) => onChangeSubArea(e.target.value)}
                       >
                         <option value="" defaultValue>
-                          সকল সাব এরিয়া{" "}
+                          সকল এরিয়া{" "}
                         </option>
                         {subAreas?.map((sub, key) => (
                           <option key={key} value={sub.id}>

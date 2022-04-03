@@ -9,16 +9,11 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData, monthsName } from "./homeData";
 import {
-  fetchMikrotik,
-  fetchReseller,
-  getAllBills,
-  getArea,
-  getCollector,
-  getManger,
-} from "../../features/apiCalls";
+   
+} from "../../features/apiCallReseller";
 import { getCharts } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
-import { managerFetchSuccess } from "../../features/managerSlice";
+// import { managerFetchSuccess } from "../../features/managerSlice";
 
 export default function Home() {
   const role = useSelector((state) => state.auth.role);
@@ -82,30 +77,30 @@ export default function Home() {
     setCollectors(collectors);
   }, [allCollector, manager]);
 
-  useEffect(() => {
-    if (role === "ispOwner") {
-      getManger(dispatch, ispOwnerId);
-      fetchReseller(dispatch, ispOwnerId);
-    }
-    if (role === "manager") {
-      dispatch(managerFetchSuccess(userData));
-    }
+  // useEffect(() => {
+  //   if (role === "ispOwner") {
+  //     getManger(dispatch, ispOwnerId);
+  //     fetchReseller(dispatch, ispOwnerId);
+  //   }
+  //   if (role === "manager") {
+  //     dispatch(managerFetchSuccess(userData));
+  //   }
 
-    if (role === "ispOwner" || role === "manager") {
-      getCollector(dispatch, ispOwnerId);
-      getAllBills(dispatch, ispOwnerId);
-      fetchMikrotik(dispatch, ispOwnerId);
-    }
+  //   if (role === "ispOwner" || role === "manager") {
+  //     getCollector(dispatch, ispOwnerId);
+  //     getAllBills(dispatch, ispOwnerId);
+  //     fetchMikrotik(dispatch, ispOwnerId);
+  //   }
 
-    //for all roles
-    getArea(dispatch, ispOwnerId);
-    // getArea(dispatch, IDBOpenDBRequest)
-    if (role === "collector") {
-      getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
-    } else {
-      getCharts(dispatch, ispOwnerId, Year, Month);
-    }
-  }, [dispatch, ispOwnerId, role, userData, Month, Year]);
+  //   //for all roles
+  //   getArea(dispatch, ispOwnerId);
+  //   // getArea(dispatch, IDBOpenDBRequest)
+  //   if (role === "collector") {
+  //     getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
+  //   } else {
+  //     getCharts(dispatch, ispOwnerId, Year, Month);
+  //   }
+  // }, [dispatch, ispOwnerId, role, userData, Month, Year]);
 
   useEffect(() => {
     let tempArr = [],

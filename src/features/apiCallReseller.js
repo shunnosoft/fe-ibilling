@@ -299,7 +299,7 @@ export const depositAcceptReject = async (
 
 export const getAllBills = async (dispatch, resellerId) => {
   try {
-    const res = await apiLink.get(`/bill/${resellerId}`);
+    const res = await apiLink.get(`/reseller/bills/${resellerId}`);
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
