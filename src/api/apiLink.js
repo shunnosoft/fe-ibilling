@@ -11,8 +11,8 @@ import { userLogout } from "../features/actions/authAsyncAction";
 
 
 // LOCAL
-const BASE_URL = "http://192.168.1.25:3030/api/v1/";
-// const BASE_URL = "http://localhost:3030/api/v1/";
+// const BASE_URL = "http://192.168.1.25:3030/api/v1/";
+const BASE_URL = "http://localhost:3030/api/v1/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
 // const access = user && JSON.parse(user)?.access;

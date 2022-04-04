@@ -61,6 +61,7 @@ import {
   updateDepositSuccess,
 } from "./paymentSlice";
 import { getChartSuccess } from "./chartsSlice";
+import { getAllRechargeHistory } from "./rechargeSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -856,7 +857,7 @@ export const getCollectorBill = async (dispatch) => {
 
 
 //recharge 
-
+//isp Owner end
 export const recharge = async (data,setIsLoading,dispatch)=>{
   setIsLoading(true)
   try {
@@ -868,6 +869,16 @@ export const recharge = async (data,setIsLoading,dispatch)=>{
   } catch (error) {
     setIsLoading(false)
     toast.error(error.response?.data.message)
+    
+  }
+}
+
+export const rechargeHistoryfunc =async (dispatch,ispOwnerId)=>{
+  try {
+    const res = await apiLink.get(`/ispOwner/recharge/${ispOwnerId}`)
+    dispatch(getAllRechargeHistory(res.data))
+  } catch (error) {
+    console.log(error.response?.data.message)
     
   }
 }

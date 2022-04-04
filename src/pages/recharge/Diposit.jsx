@@ -15,9 +15,9 @@ import useDash from "../../assets/css/dash.module.css";
 import { useCallback, useEffect } from "react";
 import {
   
-  getDeposit,
+  getDeposit, rechargeHistoryfunc,
   // getMyDeposit,
-  getTotalbal,
+   
 } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import moment from "moment";
@@ -28,6 +28,7 @@ export default function RechargeHistoryofReseller() {
   const allDeposit = useSelector((state) => state.payment.allDeposit);
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  const rechargeHistory = useSelector(state=>state.recharge.rechargeHistory)
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
@@ -41,19 +42,18 @@ export default function RechargeHistoryofReseller() {
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
 
   const [collectorIds, setCollectorIds] = useState([]);
-  const [mainData, setMainData] = useState(allDeposit);
+  const [mainData, setMainData] = useState(rechargeHistory);
   // const [mainData2, setMainData2] = useState(allDeposit);
   const userRole = useSelector((state) => state.auth.role);
   // const [depositAccepted, setDepositAccepet] = useState("")
   
-  const [isLoading, setLoading] = useState(false);
+  // const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   // const balance = useSelector(state=>state.payment.balance)
 
   // bill amount
    
-
-   
+   console.log(rechargeHistory)
   const allCollector = useSelector((state) => state.collector.collector);
 
   // useEffect(()=>{
@@ -95,25 +95,28 @@ export default function RechargeHistoryofReseller() {
     return sumWithInitial.toString();
   }, [ownDeposits]);
 
-  const getNames = useCallback(() => {
-    var arr = [];
-    allDeposit.forEach((item) => {
-      var match =
-        userRole === "ispOwner"
-          ? manager
-          : allCollector.find((c) => c.user === item.user);
+  // const getNames = useCallback(() => {
+  //   var arr = [];
+  //   allDeposit.forEach((item) => {
+  //     var match =
+  //       userRole === "ispOwner"
+  //         ? manager
+  //         : allCollector.find((c) => c.user === item.user);
 
-      if (match) {
-        arr.push({ ...item, name: match.name });
-      }
-    });
+  //     if (match) {
+  //       arr.push({ ...item, name: match.name });
+  //     }
+  //   });
 
-    return arr;
-  }, [allCollector, userRole, manager, allDeposit]);
+  //   return arr;
+  // }, [allCollector, userRole, manager, allDeposit]);
 
-  useEffect(() => {
-    if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
-  }, [dispatch, userRole]);
+  // useEffect(() => {
+  //   if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
+  // }, [dispatch, userRole]);
+useEffect(()=>{
+  rechargeHistoryfunc(dispatch,ispOwner) 
+},[dispatch,ispOwner])
 
   useEffect(() => {
     var initialToday = new Date();
@@ -126,7 +129,7 @@ export default function RechargeHistoryofReseller() {
     initialFirst.setHours(0, 0, 0, 0);
     initialToday.setHours(23, 59, 59, 999);
     setMainData(
-      getNames().filter(
+      rechargeHistory.filter(
         (item) =>
           Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
           Date.parse(item.createdAt) <= Date.parse(initialToday)
@@ -141,7 +144,7 @@ export default function RechargeHistoryofReseller() {
     //       Date.parse(item.createdAt) <= Date.parse(initialToday)
     //   )
     // );
-  }, [getNames]);
+  }, [rechargeHistory]);
 
   useEffect(() => {
     if (userRole !== "collector") {
@@ -157,7 +160,7 @@ export default function RechargeHistoryofReseller() {
     }
   }, [ispOwner, userRole, dispatch]);
 
-  const onChangeCollector = (userId) => {
+  const onChangeReseller = (userId) => {
     if (userId) {
       setCollectorIds([userId]);
     } else {
@@ -166,22 +169,22 @@ export default function RechargeHistoryofReseller() {
       setCollectorIds(collectorUserIdsArr);
     }
   };
-  const onClickFilter = () => {
-    let arr = getNames();
+  // const onClickFilter = () => {
+  //   let arr = getNames();
 
-    if (collectorIds.length) {
-      arr = arr.filter((bill) => collectorIds.includes(bill.user));
-    }
+  //   if (collectorIds.length) {
+  //     arr = arr.filter((bill) => collectorIds.includes(bill.user));
+  //   }
 
-    arr = arr.filter(
-      (item) =>
-        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(item.createdAt) <= Date.parse(dateEnd)
-    );
+  //   arr = arr.filter(
+  //     (item) =>
+  //       Date.parse(item.createdAt) >= Date.parse(dateStart) &&
+  //       Date.parse(item.createdAt) <= Date.parse(dateEnd)
+  //   );
 
-    setMainData(arr);
-    // setMainData2(arr);
-  };
+  //   setMainData(arr);
+  //   // setMainData2(arr);
+  // };
 
   return (
     <>
@@ -202,7 +205,7 @@ export default function RechargeHistoryofReseller() {
                       {userRole === "ispOwner" && (
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeCollector(e.target.value)}
+                          onChange={(e) => onChangeReseller(e.target.value)}
                         >
                           <option value="" defaultValue>
                             সকল রিসেলার{" "}
@@ -254,7 +257,7 @@ export default function RechargeHistoryofReseller() {
                       <button
                         className="btn fs-5 btn-success w-100"
                         type="button"
-                        onClick={onClickFilter}
+                        // onClick={onClickFilter}
                       >
                         ফিল্টার
                       </button>
@@ -295,7 +298,7 @@ export default function RechargeHistoryofReseller() {
                         <tbody>
                           {mainData?.map((item, key) => (
                             <tr key={key}>
-                              <td>{item.name}</td>
+                              <td>{item.reseller?.name}</td>
                               <td>৳ {item.amount}</td>
 
                               <td>
