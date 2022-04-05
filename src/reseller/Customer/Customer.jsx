@@ -28,7 +28,12 @@ import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
-import { deleteACustomer, getCustomer, getMikrotik, getSubAreas } from "../../features/apiCallReseller";
+import {
+  deleteACustomer,
+  getCustomer,
+  getMikrotik,
+  getSubAreas,
+} from "../../features/apiCallReseller";
 import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 
@@ -37,7 +42,7 @@ export default function Customer() {
   const role = useSelector((state) => state.auth.role);
   const dispatch = useDispatch();
   const resellerId = useSelector((state) => state.auth.userData.id);
-  
+
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
@@ -56,8 +61,8 @@ export default function Customer() {
 
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
   const subAreas = useSelector((state) => state.area.area);
-  const userData = useSelector(state=>state.auth.currentUser)
-  console.log(userData)
+  const userData = useSelector((state) => state.auth.currentUser);
+
   // paginate call Back function -> response from paginate component
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -122,15 +127,18 @@ export default function Customer() {
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
- 
-
 
   useEffect(() => {
-    getMikrotik(dispatch,resellerId)
-    getCustomer(dispatch,  userData.collector.reseller, setIsloading);
-    getSubAreas(dispatch,resellerId)
+    console.log(role);
 
-  }, [dispatch, resellerId,userData]);
+    if (role === "reseller") {
+      getMikrotik(dispatch, resellerId);
+      getCustomer(dispatch, userData?.reseller.id, setIsloading);
+      getSubAreas(dispatch, resellerId);
+    } else if (role === "collector") {
+      getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
+    }
+  }, [dispatch, resellerId, userData]);
 
   const [isSorted, setSorted] = useState(false);
 
@@ -142,7 +150,6 @@ export default function Customer() {
   const [subAreaIds, setSubArea] = useState([]);
   // const [singleArea, setArea] = useState({});
 
-  
   useEffect(() => {
     if (subAreaIds.length) {
       setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
@@ -194,8 +201,6 @@ export default function Customer() {
                     <div className="displexFlexSys">
                       {/* filter selector */}
                       <div className="selectFiltering allFilter">
-                         
-
                         {/* //Todo */}
                         <select
                           className="form-select"

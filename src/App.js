@@ -12,7 +12,6 @@ import PrivateOutlet from "./PrivateOutlet";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 
-
 import Dashboard from "./pages/dashboard/Dashboard";
 import Collector from "./pages/collector/Collector";
 import Customer from "./pages/Customer/Customer";
@@ -27,8 +26,6 @@ import RCustomer from "./reseller/Customer/Customer";
 import RDiposit from "./reseller/diposit/Diposit";
 import RReport from "./reseller/report/Report";
 import RProfile from "./reseller/profile/Profile";
-
-
 
 import NotFound from "./pages/NotFound/NotFound";
 import Success from "./pages/success/Success";
@@ -49,16 +46,18 @@ function App() {
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
-  const hasReseller= useSelector(state=>state.auth.userData?.bpSettings?.hasReseller)
+  const hasReseller = useSelector(
+    (state) => state.auth.userData?.bpSettings?.hasReseller
+  );
   // const hasReseller= true
-
 
   return (
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
       <div className="App">
         <Header theme={theme} setTheme={setTheme} />
-        {userRole === "reseller" ? (
+        {userRole === "reseller" ||
+        (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
           <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
@@ -73,7 +72,10 @@ function App() {
               <Route path="reseller/report" element={<RReport />} />
               <Route path="reseller/home" element={<RDashboard />} />
               <Route path="reseller/collector" element={<RCollector />} />
-              <Route path="reseller/recharge" element={<RechargeHistoryofReseller />} />
+              <Route
+                path="reseller/recharge"
+                element={<RechargeHistoryofReseller />}
+              />
 
               <Route path="reseller/diposit" element={<RDiposit />} />
               <Route path="reseller/customer" element={<RCustomer />} />
@@ -162,7 +164,16 @@ function App() {
               <Route path="diposit" element={<Diposit />} />
               <Route path="recharge" element={<RechargeHistoryofReseller />} />
 
-              <Route path="reseller" element={hasReseller ?<Reseller />:<Navigate to={"/home"}></Navigate>} />
+              <Route
+                path="reseller"
+                element={
+                  hasReseller ? (
+                    <Reseller />
+                  ) : (
+                    <Navigate to={"/home"}></Navigate>
+                  )
+                }
+              />
               <Route path="customer" element={<Customer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
 
