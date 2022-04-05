@@ -5,11 +5,10 @@ import { NavLink } from "react-router-dom";
 export default function Success() {
   return (
     <div className="customcontainer successMessage">
-      <h2 className="successTitle">আপনার রেজিস্ট্রেশন সফল হয়েছে </h2>
+      <h2 className="successTitle">আপনার পেমেন্ট সফল হয়েছে </h2>
       <p className="successText">
-        আপনি যে ফোন নম্বর দিয়ে রেজিস্ট্রেশন করেছে ওই নম্বর এ SMS এর মাধ্যমে
-        পাসওয়ার্ড পাঠানো হয়েছে । আপনার একাউন্ট এ লগইন করতে মোবাইল নম্বর এবং
-        কাঙ্খিত পাসওয়ার্ড দিন
+        বাংলাদেশের অন্যতম ISP বিলিং সফটওয়্যার নেটফির সাথে থাকার জন্য আপনাকে
+        আন্তরিক ধন্যবাদ।
       </p>
       <NavLink to="/" className="successButton">
         হোম এ যান
