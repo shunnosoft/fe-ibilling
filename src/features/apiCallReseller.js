@@ -262,7 +262,7 @@ export const getTotalbal = async (dispatch, setLoading) => {
   }
 };
 
-export const getDeposit = async (dispatch, resellerId) => {
+export const getDeposit = async (dispatch) => {
   // v1/deposit/reseller/collector/:resellerId
   try {
     const res = await apiLink.get(`/deposit`);
@@ -272,6 +272,19 @@ export const getDeposit = async (dispatch, resellerId) => {
     console.log(error.response?.data.message);
   }
 };
+
+
+export const getDepositforReseller = async (dispatch, resellerId) =>{
+  try {
+    const res = await apiLink.get(`/deposit/reseller/collector/${resellerId}`)
+    dispatch(getDepositSuccess(res.data))
+  } catch (error) {
+    console.log(error)
+    
+  }
+
+}
+ 
 
 
 

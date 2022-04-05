@@ -8,9 +8,7 @@ import { ThreeDotsVertical } from "react-bootstrap-icons";
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData, monthsName } from "./homeData";
-import {
-   
-} from "../../features/apiCallReseller";
+import { getCollector } from "../../features/apiCallReseller";
 import { getCharts } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchAreaSuccess } from "../../features/areaSlice";
@@ -138,6 +136,7 @@ export default function Home() {
     if (role === "collector") {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
     } else {
+      getCollector(dispatch, userData?.reseller.id)
       getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
     }
   };

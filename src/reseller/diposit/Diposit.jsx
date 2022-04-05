@@ -17,6 +17,7 @@ import {
   addDeposit,
   depositAcceptReject,
   getDeposit,
+  getDepositforReseller,
   // getMyDeposit,
   getTotalbal,
 } from "../../features/apiCallReseller";
@@ -27,6 +28,7 @@ import Loader from "../../components/common/Loader";
 export default function Diposit() {
   const balancee = useSelector((state) => state.payment.balance);
   const allDeposit = useSelector((state) => state.payment.allDeposit);
+   
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -37,6 +39,7 @@ export default function Diposit() {
   const [dateEnd, setEndDate] = useState(today);
   const manager = useSelector((state) => state.manager.manager);
   const collectors = useSelector((state) => state.collector.collector);
+  console.log(collectors)
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
@@ -44,7 +47,7 @@ export default function Diposit() {
 const userData =useSelector(state=>state.auth.currentUser)
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
-  // const [mainData2, setMainData2] = useState(allDeposit);
+  const [mainData2, setMainData2] = useState(allDeposit);
   const userRole = useSelector((state) => state.auth.role);
   // const [depositAccepted, setDepositAccepet] = useState("")
   const BillValidatoin = Yup.object({
@@ -53,7 +56,7 @@ const userData =useSelector(state=>state.auth.currentUser)
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   // const balance = useSelector(state=>state.payment.balance)
-console.log(userData)
+ 
   // bill amount
   const billDipositHandler = (data) => {
     const sendingData = {
@@ -74,20 +77,20 @@ console.log(userData)
   };
   const allCollector = useSelector((state) => state.collector.collector);
 
-  // useEffect(()=>{
+  useEffect(()=>{
 
-  //   var arr = []
-  //   allDeposit.forEach((item)=>{
-  //     var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === item.user))
+    var arr = []
+    allDeposit.forEach((item)=>{
+      var match =  ( allCollector.find((c) => c.user === item.user))
 
-  //     if(match) {
-  //       arr.push({...item,name:match.name})
-  //     }
+      if(match) {
+        arr.push({...item,name:match.name})
+      }
 
-  //   })
-  //   setMainData(arr)
-  //   setMainData2(arr)
-  // },[allCollector,allDeposit,userRole,manager])
+    })
+    setMainData(arr)
+    setMainData2(arr)
+  },[allCollector,allDeposit,userRole,manager])
 
   const getTotalDeposit = useCallback(() => {
     const initialValue = 0;
@@ -163,7 +166,7 @@ console.log(userData)
     if (userData.user.role==="collector")
       getDeposit(dispatch)
     else if (userData.user.role==="reseller")
-      getDeposit(dispatch,userData.reseller.id)
+    getDepositforReseller(dispatch,userData.reseller.id)
     
   }, [dispatch,userData]);
 
@@ -301,7 +304,7 @@ console.log(userData)
                 <FourGround>
                   <div className="collectorWrapper">
                     <div className="selectFilteringg">
-                      {userRole !== "ispOwner" && (
+                      {userRole === "reseller" && (
                         <select
                           className="form-select"
                           onChange={(e) => onChangeCollector(e.target.value)}
@@ -362,7 +365,7 @@ console.log(userData)
                       </button>
                     </div>
 
-                    {userRole !== "ispOwner" ? (
+                    {userRole === "reseller" ? (
                       <div className="row searchCollector">
                         <div className="col-sm-8">
                           <h4 className="allCollector">
