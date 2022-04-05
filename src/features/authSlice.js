@@ -29,8 +29,8 @@ const authSlice = createSlice({
         ? (state.ispOwnerId = action.payload.manager.ispOwner) &&
           (state.userData = action.payload?.manager)
         : action.payload?.user.role === "collector"
-        ? (state.ispOwnerId = action.payload.collector.ispOwner) &&
-          (state.userData = action.payload?.collector)
+        ?(state.userData = action.payload?.collector) && (state.ispOwnerId = action.payload.collector.ispOwner) 
+          
         :action.payload?.user.role==="reseller"? (state.ispOwnerId = action.payload?.reseller?.ispOwner) &&
         (state.userData = action.payload?.reseller) : (state.ispOwnerId = "")
     },

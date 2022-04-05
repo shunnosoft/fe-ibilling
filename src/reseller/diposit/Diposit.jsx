@@ -41,7 +41,7 @@ export default function Diposit() {
   const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
-const userData =useSelector(state=>state.auth.userData)
+const userData =useSelector(state=>state.auth.currentUser)
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
   // const [mainData2, setMainData2] = useState(allDeposit);
@@ -53,7 +53,7 @@ const userData =useSelector(state=>state.auth.userData)
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   // const balance = useSelector(state=>state.payment.balance)
-
+console.log(userData)
   // bill amount
   const billDipositHandler = (data) => {
     const sendingData = {
@@ -62,7 +62,7 @@ const userData =useSelector(state=>state.auth.userData)
       balance: data.balance,
       user: currentUser?.user.id,
       ispOwner: ispOwner,
-      // reseller:userData.id
+      reseller:userData.collector.reseller
     };
     addDeposit(dispatch, sendingData, setLoading);
   };
@@ -160,9 +160,12 @@ const userData =useSelector(state=>state.auth.userData)
   }, [getNames]);
 
   useEffect(() => {
-      getDeposit(dispatch,userData.id)
+    if (userData.user.role==="collector")
+      getDeposit(dispatch)
+    else if (userData.user.role==="reseller")
+      getDeposit(dispatch,userData.reseller.id)
     
-  }, [dispatch]);
+  }, [dispatch,userData]);
 
   const onChangeCollector = (userId) => {
     if (userId) {

@@ -2,10 +2,7 @@ import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
 
 // import { hideModal } from "./actions/managerHandle";
-import {
-  
-  FetchAreaSuccess,
-} from "./areaSlice";
+import { FetchAreaSuccess } from "./areaSlice";
 import {
   addCollectorSuccess,
   deleteCollectorSuccess,
@@ -131,7 +128,6 @@ export const getCustomer = async (dispatch, reseller, setIsloading) => {
   }
 };
 
- 
 export const addCustomer = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   try {
@@ -149,7 +145,7 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
 };
 
 export const editCustomer = async (dispatch, data, setIsloading) => {
-   setIsloading(true)
+  setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
   try {
     const res = await apiLink.patch(
@@ -266,18 +262,19 @@ export const getTotalbal = async (dispatch, setLoading) => {
   }
 };
 
-export const getDeposit = async (dispatch,resellerId) => {
+export const getDeposit = async (dispatch, resellerId) => {
   // v1/deposit/reseller/collector/:resellerId
   try {
-    const res = await apiLink.get(
-      `/deposit/reseller/collector/${resellerId}`
-    );
+    const res = await apiLink.get(`/deposit`);
 
-    dispatch(getDepositSuccess(res.data));
+    dispatch(getmyDepositSucces(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }
 };
+
+
+
 
 export const depositAcceptReject = async (
   dispatch,
@@ -342,18 +339,16 @@ export const getSubAreas = async (dispatch, resellerId) => {
   }
 };
 
+// mikrotiks
 
-// mikrotiks 
-
-export const getMikrotik = async (dispatch,resellerId) =>{
+export const getMikrotik = async (dispatch, resellerId) => {
   try {
-      const res = await apiLink.get(`/reseller/mikrotik/${resellerId}`)
-      dispatch(getMikrotikSuccess(res.data))
+    const res = await apiLink.get(`/reseller/mikrotik/${resellerId}`);
+    dispatch(getMikrotikSuccess(res.data));
   } catch (error) {
-    console.log(error)
-    
+    console.log(error);
   }
-}
+};
 
 export const fetchpppoePackage = async (dispatch, IDs) => {
   try {
@@ -362,17 +357,14 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
       url: `/mikrotik/ppp/package/${IDs.mikrotikId}`,
     });
     dispatch(getpppoePackageSuccess(res.data));
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 };
 
-export const rechargeHistoryfuncR =async (dispatch,resellerId)=>{
+export const rechargeHistoryfuncR = async (dispatch, resellerId) => {
   try {
-    const res = await apiLink.get(`/reseller/recharge/${resellerId}`)
-    dispatch(getAllRechargeHistory(res.data))
+    const res = await apiLink.get(`/reseller/recharge/${resellerId}`);
+    dispatch(getAllRechargeHistory(res.data));
   } catch (error) {
-    console.log(error.response?.data.message)
-    
+    console.log(error.response?.data.message);
   }
-}
+};

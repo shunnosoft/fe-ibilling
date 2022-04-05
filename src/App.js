@@ -26,6 +26,7 @@ import RCustomer from "./reseller/Customer/Customer";
 import RDiposit from "./reseller/diposit/Diposit";
 import RReport from "./reseller/report/Report";
 import RProfile from "./reseller/profile/Profile";
+import RCollectorReport from "./reseller/report/CollectorReport";
 
 import NotFound from "./pages/NotFound/NotFound";
 import Success from "./pages/success/Success";
@@ -66,10 +67,16 @@ function App() {
               element={!user ? <Login /> : <Navigate to={"/reseller/home"} />}
             />
 
+<Route
+                path="/reseller/report"
+                element={
+                  userRole === "collector" ? <RCollectorReport /> : <RReport />
+                }
+              />
+
             {/* dashboard */}
             <Route path="/*" element={<PrivateOutlet />}>
               <Route path="reseller/profile" element={<RProfile />} />
-              <Route path="reseller/report" element={<RReport />} />
               <Route path="reseller/home" element={<RDashboard />} />
               <Route path="reseller/collector" element={<RCollector />} />
               <Route
