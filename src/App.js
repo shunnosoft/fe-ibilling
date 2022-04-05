@@ -38,6 +38,7 @@ import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
 import SubArea from "./pages/subArea/SubArea";
 // import Account from "./pages/account/Account";
 import Message from "./pages/message/Message";
+import Invoice from "./pages/invoice/Invoice";
 
 import CollectorReport from "./pages/report/CollectorReport";
 import Reseller from "./pages/reseller/Reseller";
@@ -67,12 +68,12 @@ function App() {
               element={!user ? <Login /> : <Navigate to={"/reseller/home"} />}
             />
 
-<Route
-                path="/reseller/report"
-                element={
-                  userRole === "collector" ? <RCollectorReport /> : <RReport />
-                }
-              />
+            <Route
+              path="/reseller/report"
+              element={
+                userRole === "collector" ? <RCollectorReport /> : <RReport />
+              }
+            />
 
             {/* dashboard */}
             <Route path="/*" element={<PrivateOutlet />}>
@@ -169,6 +170,7 @@ function App() {
               <Route path="area" element={<Area />} />
               {/* <Route path="bill" element={<Bill />} /> */}
               <Route path="diposit" element={<Diposit />} />
+              <Route path="invoice" element={<Invoice />} />
               <Route path="recharge" element={<RechargeHistoryofReseller />} />
 
               <Route

@@ -394,6 +394,30 @@ export default function Sidebar() {
                 ""
               )}
 
+              {userRole === "ispOwner" ? (
+                <NavLink
+                  key={3}
+                  to={"/invoice"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/invoice" ? "active" : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<PersonBoundingBox />}</div>
+                      <span className="sidebarLinksName">{"ইনভয়েস"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
               {/* bill sub links */}
               <div id="toggleSubBilling">
                 {billData.map((val, key) => (

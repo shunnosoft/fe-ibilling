@@ -62,6 +62,7 @@ import {
 } from "./paymentSlice";
 import { getChartSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
+import { getInvoiceListSuccess } from "./invoiceSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -620,7 +621,7 @@ export const fetchReseller = async (dispatch, ispOwner) => {
 };
 
 // add reseller
-export const postReseller = async (dispatch, data, setIsLoading,resetForm) => {
+export const postReseller = async (dispatch, data, setIsLoading, resetForm) => {
   setIsLoading(true);
   await apiLink({
     url: "/ispOwner/reseller",
@@ -634,7 +635,7 @@ export const postReseller = async (dispatch, data, setIsLoading,resetForm) => {
       dispatch(addResellerSuccess(res.data));
       setIsLoading(false);
       document.querySelector("#resellerModal").click();
-      resetForm()
+      resetForm();
       toast.success("রিসেলার এড সফল হয়েছে !");
     })
     .catch((err) => {
@@ -855,30 +856,50 @@ export const getCollectorBill = async (dispatch) => {
   }
 };
 
-
-//recharge 
+//recharge
 //isp Owner end
-export const recharge = async (data,setIsLoading,dispatch)=>{
-  setIsLoading(true)
+export const recharge = async (data, setIsLoading, dispatch) => {
+  setIsLoading(true);
   try {
-   const res =   await apiLink.post("/reseller/recharge",data)
-    console.log(res.data)
-    dispatch(editResellerforRecharge(res.data))
-    setIsLoading(false)
-    toast.success("রিচার্জ সফল হয়েছে")
+    const res = await apiLink.post("/reseller/recharge", data);
+    console.log(res.data);
+    dispatch(editResellerforRecharge(res.data));
+    setIsLoading(false);
+    toast.success("রিচার্জ সফল হয়েছে");
   } catch (error) {
-    setIsLoading(false)
-    toast.error(error.response?.data.message)
-    
+    setIsLoading(false);
+    toast.error(error.response?.data.message);
   }
-}
+};
 
-export const rechargeHistoryfunc =async (dispatch,ispOwnerId)=>{
+export const rechargeHistoryfunc = async (dispatch, ispOwnerId) => {
   try {
-    const res = await apiLink.get(`/ispOwner/recharge/${ispOwnerId}`)
-    dispatch(getAllRechargeHistory(res.data))
+    const res = await apiLink.get(`/ispOwner/recharge/${ispOwnerId}`);
+    dispatch(getAllRechargeHistory(res.data));
   } catch (error) {
-    console.log(error.response?.data.message)
-    
+    console.log(error.response?.data.message);
   }
-}
+};
+
+export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(`/ispOwner/invoice/${ispOwnerId}`);
+    console.log(res.data);
+    dispatch(getInvoiceListSuccess(res.data));
+    setIsloading(false);
+  } catch (err) {
+    setIsloading(false);
+    console.log("Invoice error: ", err);
+  }
+};
+
+export const initiatePayment = async (invoice) => {
+  try {
+    const res = await apiLink.post(`/payment/generate-payment-url`, invoice);
+
+    window.location.href = res.data.paymentUrl;
+  } catch (err) {
+    console.log("Invoice error: ", err);
+  }
+};
