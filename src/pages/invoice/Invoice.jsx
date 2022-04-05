@@ -138,7 +138,7 @@ function Invoice() {
                                 )}
                               </td>
                               <td>
-                                {moment(val.dueDate).format(
+                                {moment(val.createdAt).format(
                                   "DD-MM-YYYY hh:mm:ss A"
                                 )}
                               </td>
