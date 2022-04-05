@@ -37,13 +37,15 @@ export default function RechargeHistoryofReseller() {
   const manager = useSelector((state) => state.manager.manager);
   const collectors = useSelector((state) => state.reseller.reseller);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
+  const [cusSearch, setCusSearch] = useState("");
+
   // const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
-
+console.log(collectors)
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(rechargeHistory);
-  // const [mainData2, setMainData2] = useState(allDeposit);
+  const [mainData2, setMainData2] = useState(rechargeHistory);
   const userRole = useSelector((state) => state.auth.role);
   // const [depositAccepted, setDepositAccepet] = useState("")
   
@@ -52,9 +54,8 @@ export default function RechargeHistoryofReseller() {
   // const balance = useSelector(state=>state.payment.balance)
 
   // bill amount
-   
-   console.log(rechargeHistory)
-  const allCollector = useSelector((state) => state.collector.collector);
+   console.log(mainData)
+  const allCollector = useSelector((state) => state.reseller.reseller);
 
   // useEffect(()=>{
 
@@ -73,14 +74,14 @@ export default function RechargeHistoryofReseller() {
 
   
 //todo 
-  // const getTotalRecharge = useCallback(() => {
-  //   const initialValue = 0;
-  //   const sumWithInitial = mainData.reduce(
-  //     (previousValue, currentValue) => previousValue + currentValue.amount,
-  //     initialValue
-  //   );
-  //   return sumWithInitial.toString();
-  // }, [mainData]);
+  const getTotalRecharge = useCallback(() => {
+    const initialValue = 0;
+    const sumWithInitial = mainData.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+    return sumWithInitial.toString();
+  }, [mainData]);
 
   // useEffect(() => {
   //   getMyDeposit(dispatch);
@@ -97,11 +98,9 @@ export default function RechargeHistoryofReseller() {
 
   // const getNames = useCallback(() => {
   //   var arr = [];
-  //   allDeposit.forEach((item) => {
+  //   rechargeHistory.forEach((item) => {
   //     var match =
-  //       userRole === "ispOwner"
-  //         ? manager
-  //         : allCollector.find((c) => c.user === item.user);
+  //        allCollector.find((c) => c.user === item.user);
 
   //     if (match) {
   //       arr.push({ ...item, name: match.name });
@@ -109,15 +108,37 @@ export default function RechargeHistoryofReseller() {
   //   });
 
   //   return arr;
-  // }, [allCollector, userRole, manager, allDeposit]);
+  // }, [allCollector,rechargeHistory]);
 
   // useEffect(() => {
   //   if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
   // }, [dispatch, userRole]);
+
+  useEffect(() => {
+    const keys = [
+       "amount",
+       "createdAt",
+       "reseller+name"
+    ];
+    setMainData(
+       mainData2.filter((item) =>
+        (keys.some((key) =>
+          key.split("+")[1]?
+         (typeof item[key.split("+")[0]][key.split("+")[1]] === "string"
+            ? item[key.split("+")[0]][key.split("+")[1]].toLowerCase().includes(cusSearch)
+            : item[key.split("+")[0]][key.split("+")[1]].toString().includes(cusSearch)):
+            ((typeof item[key] === "string")
+            ?( item[key]==="createdAt"?( moment(item[key]).format("YYYY-MM-DD").includes(cusSearch)): (item[key].toLowerCase().includes(cusSearch)))
+            : item[key].toString().includes(cusSearch))
+        ))
+      )
+    );
+  }, [cusSearch,mainData2]);
+
 useEffect(()=>{
   rechargeHistoryfunc(dispatch,ispOwner) 
 },[dispatch,ispOwner])
-
+console.log(dateEnd,dateStart)
   useEffect(() => {
     var initialToday = new Date();
     var initialFirst = new Date(
@@ -136,55 +157,49 @@ useEffect(()=>{
       )
     );
 
-    // Temp varialbe for search
-    // setMainData2(
-    //   getNames().filter(
-    //     (item) =>
-    //       Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-    //       Date.parse(item.createdAt) <= Date.parse(initialToday)
-    //   )
-    // );
+     
   }, [rechargeHistory]);
 
-  useEffect(() => {
-    if (userRole !== "collector") {
-      getDeposit(dispatch, {
-        depositerRole:
-          userRole === "ispOwner"
-            ? "manager"
-            : userRole === "manager"
-            ? "collector"
-            : "",
-        ispOwnerID: ispOwner,
-      });
-    }
-  }, [ispOwner, userRole, dispatch]);
+  // useEffect(() => {
+  //   if (userRole !== "collector") {
+  //     getDeposit(dispatch, {
+  //       depositerRole:
+  //         userRole === "ispOwner"
+  //           ? "manager"
+  //           : userRole === "manager"
+  //           ? "collector"
+  //           : "",
+  //       ispOwnerID: ispOwner,
+  //     });
+  //   }
+  // }, [ispOwner, userRole, dispatch]);
 
   const onChangeReseller = (userId) => {
     if (userId) {
       setCollectorIds([userId]);
     } else {
       let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.user));
+      collectors.map((item) => collectorUserIdsArr.push(item.id));
       setCollectorIds(collectorUserIdsArr);
     }
   };
-  // const onClickFilter = () => {
-  //   let arr = getNames();
 
-  //   if (collectorIds.length) {
-  //     arr = arr.filter((bill) => collectorIds.includes(bill.user));
-  //   }
-
-  //   arr = arr.filter(
-  //     (item) =>
-  //       Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-  //       Date.parse(item.createdAt) <= Date.parse(dateEnd)
-  //   );
-
-  //   setMainData(arr);
-  //   // setMainData2(arr);
-  // };
+   
+  const onClickFilter = () => {
+    // let arr = getNames();
+    let arr =rechargeHistory
+    console.log(collectorIds)
+    if (collectorIds.length) {
+      arr = rechargeHistory.filter((recharge) =>(collectorIds.includes(recharge.reseller.id)));
+    }
+    arr = arr.filter(
+      (item) =>
+        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
+        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+    );
+    setMainData(arr);
+    setMainData2(arr);
+  };
 
   return (
     <>
@@ -211,7 +226,7 @@ useEffect(()=>{
                             সকল রিসেলার{" "}
                           </option>
                           {collectors?.map((c, key) => (
-                            <option key={key} value={c.user}>
+                            <option key={key} value={c.id}>
                               {c.name}
                             </option>
                           ))}
@@ -257,7 +272,7 @@ useEffect(()=>{
                       <button
                         className="btn fs-5 btn-success w-100"
                         type="button"
-                        // onClick={onClickFilter}
+                        onClick={onClickFilter}
                       >
                         ফিল্টার
                       </button>
@@ -268,7 +283,7 @@ useEffect(()=>{
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          History: <span>{getTotalOwnDeposit()}</span>
+                        মোট রিচার্জঃ  <span>{getTotalRecharge()}</span>
                         </h4>
                       </div>
 
@@ -279,7 +294,7 @@ useEffect(()=>{
                             type="text"
                             className="search"
                             placeholder="সার্চ"
-                            // onChange={(e) => setCusSearch(e.target.value)}
+                            onChange={(e) => setCusSearch(e.target.value)}
                           />
                         </div>
                       </div>
@@ -290,7 +305,7 @@ useEffect(()=>{
                         <thead>
                           <tr>
                             <td>নাম</td>
-                            <td>মোট</td>
+                            <td>পরিমান</td>
                              
                             <td>তারিখ</td>
                           </tr>
