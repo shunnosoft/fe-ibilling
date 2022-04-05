@@ -15,17 +15,18 @@ import useDash from "../../assets/css/dash.module.css";
 import { useCallback, useEffect } from "react";
 import {
   
-  getDeposit, rechargeHistoryfunc,
+ rechargeHistoryfunc,
   // getMyDeposit,
    
 } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 // import Loader from "../../components/common/Loader";
 
 export default function RechargeHistoryofReseller() {
   // const balancee = useSelector((state) => state.payment.balance);
-  const allDeposit = useSelector((state) => state.payment.allDeposit);
+  // const allDeposit = useSelector((state) => state.payment.allDeposit);
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   const rechargeHistory = useSelector(state=>state.recharge.rechargeHistory)
@@ -34,15 +35,13 @@ export default function RechargeHistoryofReseller() {
   today.setHours(23, 59, 59, 999);
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
-  const manager = useSelector((state) => state.manager.manager);
+  // const manager = useSelector((state) => state.manager.manager);
   const collectors = useSelector((state) => state.reseller.reseller);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const [cusSearch, setCusSearch] = useState("");
-
+const userData = useSelector(state =>state.auth.userData)
   // const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
-  const ownDeposits = useSelector((state) => state.payment.myDeposit);
-console.log(collectors)
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(rechargeHistory);
   const [mainData2, setMainData2] = useState(rechargeHistory);
@@ -54,8 +53,7 @@ console.log(collectors)
   // const balance = useSelector(state=>state.payment.balance)
 
   // bill amount
-   console.log(mainData)
-  const allCollector = useSelector((state) => state.reseller.reseller);
+  // const allCollector = useSelector((state) => state.reseller.reseller);
 
   // useEffect(()=>{
 
@@ -83,36 +81,11 @@ console.log(collectors)
     return sumWithInitial.toString();
   }, [mainData]);
 
-  // useEffect(() => {
-  //   getMyDeposit(dispatch);
-  // }, [dispatch]);
+   
 
-  const getTotalOwnDeposit = useCallback(() => {
-    const initialValue = 0;
-    const sumWithInitial = ownDeposits.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-    return sumWithInitial.toString();
-  }, [ownDeposits]);
+   
 
-  // const getNames = useCallback(() => {
-  //   var arr = [];
-  //   rechargeHistory.forEach((item) => {
-  //     var match =
-  //        allCollector.find((c) => c.user === item.user);
-
-  //     if (match) {
-  //       arr.push({ ...item, name: match.name });
-  //     }
-  //   });
-
-  //   return arr;
-  // }, [allCollector,rechargeHistory]);
-
-  // useEffect(() => {
-  //   if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
-  // }, [dispatch, userRole]);
+   
 
   useEffect(() => {
     const keys = [
@@ -125,8 +98,8 @@ console.log(collectors)
         (keys.some((key) =>
           key.split("+")[1]?
          (typeof item[key.split("+")[0]][key.split("+")[1]] === "string"
-            ? item[key.split("+")[0]][key.split("+")[1]].toLowerCase().includes(cusSearch)
-            : item[key.split("+")[0]][key.split("+")[1]].toString().includes(cusSearch)):
+            ? item[key.split("+")[0]][key.split("+")[1]]?.toLowerCase().includes(cusSearch)
+            : item[key.split("+")[0]][key.split("+")[1]]?.toString().includes(cusSearch)):
             ((typeof item[key] === "string")
             ?( item[key]==="createdAt"?( moment(item[key]).format("YYYY-MM-DD").includes(cusSearch)): (item[key].toLowerCase().includes(cusSearch)))
             : item[key].toString().includes(cusSearch))
@@ -136,9 +109,10 @@ console.log(collectors)
   }, [cusSearch,mainData2]);
 
 useEffect(()=>{
+  userRole==="reseller"?rechargeHistoryfuncR(dispatch,userData.id):
   rechargeHistoryfunc(dispatch,ispOwner) 
-},[dispatch,ispOwner])
-console.log(dateEnd,dateStart)
+},[dispatch,ispOwner,userRole,userData])
+
   useEffect(() => {
     var initialToday = new Date();
     var initialFirst = new Date(
@@ -188,7 +162,6 @@ console.log(dateEnd,dateStart)
   const onClickFilter = () => {
     // let arr = getNames();
     let arr =rechargeHistory
-    console.log(collectorIds)
     if (collectorIds.length) {
       arr = rechargeHistory.filter((recharge) =>(collectorIds.includes(recharge.reseller.id)));
     }
@@ -304,7 +277,7 @@ console.log(dateEnd,dateStart)
                       <table className="table table-striped ">
                         <thead>
                           <tr>
-                            <td>নাম</td>
+                         { userRole!=="reseller" ?  <td>নাম</td>:<td></td>}
                             <td>পরিমান</td>
                              
                             <td>তারিখ</td>
@@ -313,7 +286,7 @@ console.log(dateEnd,dateStart)
                         <tbody>
                           {mainData?.map((item, key) => (
                             <tr key={key}>
-                              <td>{item.reseller?.name}</td>
+                             {userRole!=="reseller"? <td>{item.reseller?.name}</td>:<td></td>}
                               <td>৳ {item.amount}</td>
 
                               <td>

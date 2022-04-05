@@ -31,6 +31,7 @@ import {
 } from "./paymentSlice";
 import { getChartSuccess } from "./chartsSlice";
 import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
+import { getAllRechargeHistory } from "./rechargeSlice";
 
 export const getCharts = async (dispatch, resellerId, Year, Month, User) => {
   try {
@@ -364,3 +365,13 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
     
   }
 };
+
+export const rechargeHistoryfuncR =async (dispatch,resellerId)=>{
+  try {
+    const res = await apiLink.get(`/reseller/recharge/${resellerId}`)
+    dispatch(getAllRechargeHistory(res.data))
+  } catch (error) {
+    console.log(error.response?.data.message)
+    
+  }
+}
