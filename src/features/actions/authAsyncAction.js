@@ -16,9 +16,19 @@ import {
 export const asyncRegister = async (userData, setLoading) => {
   setLoading(true);
   try {
-    const res = await publicRequest.post("/auth/register", userData);
+    // const res = await publicRequest.post("/auth/register", userData);
+    const res = await publicRequest.post(
+      "/auth/registerWithoutPayment",
+      userData
+    );
     setLoading(false);
-    window.location.href = res.data.paymentUrl;
+    // window.location.href = res.data.paymentUrl;
+    toast.success(res.data.message);
+    console.log(res);
+    setTimeout(() => {
+      // window.location.href("https://netfeebd.com/login");
+      window.location.href = "/login";
+    }, 5000);
   } catch (err) {
     setLoading(false);
     if (err.response) {
