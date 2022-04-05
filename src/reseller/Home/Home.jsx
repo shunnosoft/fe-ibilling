@@ -1,5 +1,5 @@
 // external imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -13,6 +13,7 @@ import {
 } from "../../features/apiCallReseller";
 import { getCharts } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
+import { FetchAreaSuccess } from "../../features/areaSlice";
 // import { managerFetchSuccess } from "../../features/managerSlice";
 
 export default function Home() {
@@ -20,7 +21,7 @@ export default function Home() {
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const allCollector = useSelector((state) => state.collector.collector);
   const manager = useSelector((state) => state.manager.manager);
-  const userData = useSelector((state) => state.auth.userData);
+  const userData = useSelector((state) => state.auth.currentUser);
   const ChartsData = useSelector((state) => state.chart.charts);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
@@ -61,7 +62,22 @@ export default function Home() {
     ],
   };
 
-  // select colloectors
+   useEffect(()=>{
+     if(role==="collector") {
+
+       const areas = [] ; 
+       userData.collector?.areas.map((i)=>{
+         const arr = {
+           name:i.name,id:i.id
+           
+          }
+       return   areas.push(arr)
+        })
+        
+        dispatch(FetchAreaSuccess(areas))
+      }
+   },[dispatch,userData,role])
+
   useEffect(() => {
     let collectors = [];
 

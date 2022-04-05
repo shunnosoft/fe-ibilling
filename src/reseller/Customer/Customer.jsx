@@ -36,6 +36,7 @@ import {
 } from "../../features/apiCallReseller";
 import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
+import { FetchAreaSuccess } from "../../features/areaSlice";
 
 export default function Customer() {
   const cus = useSelector((state) => state.customer.customer);
@@ -138,7 +139,7 @@ export default function Customer() {
     } else if (role === "collector") {
       getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
     }
-  }, [dispatch, resellerId, userData]);
+  }, [dispatch, resellerId, userData, role]);
 
   const [isSorted, setSorted] = useState(false);
 
@@ -388,26 +389,21 @@ export default function Customer() {
                                       </div>
                                     </div>
                                   </li>
-                                  {role === "ispOwner" ? (
-                                    ""
-                                  ) : permission?.billPosting ? (
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#collectCustomerBillModal"
-                                      onClick={() => {
-                                        getSpecificCustomer(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Wallet />
-                                          <p className="actionP">বিল গ্রহণ</p>
-                                        </div>
+
+                                  <li
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#collectCustomerBillModal"
+                                    onClick={() => {
+                                      getSpecificCustomer(val.id);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <Wallet />
+                                        <p className="actionP">বিল গ্রহণ</p>
                                       </div>
-                                    </li>
-                                  ) : (
-                                    ""
-                                  )}
+                                    </div>
+                                  </li>
 
                                   {permission?.customerEdit ||
                                   role === "ispOwner" ? (

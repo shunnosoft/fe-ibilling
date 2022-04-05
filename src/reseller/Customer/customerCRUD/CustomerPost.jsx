@@ -236,9 +236,9 @@ const [subAreaId,setsubAreaId]= useState("")
                           onChange={(e)=>selectArea(e.target.value)}
                         >
                           <option value="">...</option>
-                          {area.length === undefined
+                          {area?.length === undefined
                             ? ""
-                            : area.map((val, key) => (
+                            : area?.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>
