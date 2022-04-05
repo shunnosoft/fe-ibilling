@@ -266,10 +266,11 @@ export const getTotalbal = async (dispatch, setLoading) => {
   }
 };
 
-export const getDeposit = async (dispatch, data) => {
+export const getDeposit = async (dispatch,resellerId) => {
+  // v1/deposit/reseller/collector/:resellerId
   try {
     const res = await apiLink.get(
-      `/deposit/${data.depositerRole}/${data.resellerID}`
+      `/deposit/reseller/collector/${resellerId}`
     );
 
     dispatch(getDepositSuccess(res.data));

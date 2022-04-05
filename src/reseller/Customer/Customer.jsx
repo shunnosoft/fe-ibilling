@@ -37,6 +37,7 @@ export default function Customer() {
   const role = useSelector((state) => state.auth.role);
   const dispatch = useDispatch();
   const resellerId = useSelector((state) => state.auth.userData.id);
+  
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
@@ -55,7 +56,8 @@ export default function Customer() {
 
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
   const subAreas = useSelector((state) => state.area.area);
-
+  const userData = useSelector(state=>state.auth.currentUser)
+  console.log(userData)
   // paginate call Back function -> response from paginate component
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -125,10 +127,10 @@ export default function Customer() {
 
   useEffect(() => {
     getMikrotik(dispatch,resellerId)
-    getCustomer(dispatch, resellerId, setIsloading);
+    getCustomer(dispatch,  userData.collector.reseller, setIsloading);
     getSubAreas(dispatch,resellerId)
 
-  }, [dispatch, resellerId]);
+  }, [dispatch, resellerId,userData]);
 
   const [isSorted, setSorted] = useState(false);
 

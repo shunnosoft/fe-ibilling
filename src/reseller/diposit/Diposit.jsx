@@ -19,7 +19,7 @@ import {
   getDeposit,
   // getMyDeposit,
   getTotalbal,
-} from "../../features/apiCalls";
+} from "../../features/apiCallReseller";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import Loader from "../../components/common/Loader";
@@ -30,6 +30,7 @@ export default function Diposit() {
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
+  // const userData = useSelector((state)=>state.auth.userData)
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
   const [dateStart, setStartDate] = useState(firstDay);
@@ -40,7 +41,7 @@ export default function Diposit() {
   const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
-
+const userData =useSelector(state=>state.auth.userData)
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
   // const [mainData2, setMainData2] = useState(allDeposit);
@@ -61,6 +62,7 @@ export default function Diposit() {
       balance: data.balance,
       user: currentUser?.user.id,
       ispOwner: ispOwner,
+      // reseller:userData.id
     };
     addDeposit(dispatch, sendingData, setLoading);
   };
@@ -158,18 +160,9 @@ export default function Diposit() {
   }, [getNames]);
 
   useEffect(() => {
-    if (userRole !== "collector") {
-      getDeposit(dispatch, {
-        depositerRole:
-          userRole === "ispOwner"
-            ? "manager"
-            : userRole === "manager"
-            ? "collector"
-            : "",
-        ispOwnerID: ispOwner,
-      });
-    }
-  }, [ispOwner, userRole, dispatch]);
+      getDeposit(dispatch,userData.id)
+    
+  }, [dispatch]);
 
   const onChangeCollector = (userId) => {
     if (userId) {
