@@ -14,11 +14,20 @@ export default function Message() {
   const [isChecked, setisChecked] = useState(false);
   const area = useSelector((state) => state.area.area);
   // const [areaIds, setAreaIds] = useState([]);
+  const [status, setStatus] = useState("")
+  const [payment, setPayment] = useState("")
 
   const handleMessageCheckBox = (e) => {
     setisChecked(e.target.checked);
   };
+  const handleStatusSelect =(e)=>{
+    setStatus(e)
+    
+  }
+  const  handlePaymentSelect =(e)=>{
+    setPayment(e)
 
+  }
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
     let IDS_temp = [];
@@ -116,14 +125,27 @@ export default function Message() {
                         </div>
                       ) : (
                         <div className="ifNotCheckBox">
-                          <select
-                            id="selectCustomerID1"
-                            className="form-select mb-4"
-                          >
-                            <option value="">গ্রাহক সিলেক্ট করুন</option>
-                            <option value="active">একটিভ</option>
-                            <option value="inactive">ইনক্টিভ</option>
-                          </select>
+                          <div className="cusSelect">
+                             <select
+                              id="selectCustomerID1"
+                              className="form-select mb-4"
+                        
+                              onChange={(e)=> handleStatusSelect(e.target.value)}
+                              >
+                              <option value="">স্ট্যাটাস</option>
+                              <option value="active">একটিভ</option>
+                              <option value="inactive">ইনক্টিভ</option>
+                                                       </select>
+                             <select
+                              id="selectCustomerID1"
+                              className="form-select mb-4"
+                              onChange={(e)=> handlePaymentSelect(e.target.value)}
+                              >
+                              <option value="">পেমেন্ট</option>
+                              <option value="paid">পরিশোধ</option>
+                              <option value="unpaid">বকেয়া </option>
+                                                       </select>
+                           </div>
                           {/* area */}
                           {/* area section*/}
                           <b className="mt-4">এরিয়া সিলেক্ট</b>

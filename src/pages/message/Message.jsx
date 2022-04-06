@@ -13,6 +13,9 @@ import SmsParchase from "./smsParchaseModal";
 export default function Message() {
   const userRole = useSelector((state) => state.auth.role);
   const [isChecked, setisChecked] = useState(false);
+  const [status, setStatus] = useState("")
+  const [payment, setPayment] = useState("")
+
   const area = useSelector((state) => state.area.area);
   // const [areaIds, setAreaIds] = useState([]);
   const userData = useSelector((state) => state.auth.userData);
@@ -32,8 +35,16 @@ export default function Message() {
     // setAreaIds(IDS_temp);
   };
 
-  // WE GOT ALL AREA_IDS ON -> areaIds;
+  // WE GOT ALL AREA_IDS ON -> areaIds; 
+  const handleStatusSelect =(e)=>{
+    setStatus(e)
+    
+  }
+  const  handlePaymentSelect =(e)=>{
+    setPayment(e)
 
+  }
+console.log(status,payment)
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -124,7 +135,7 @@ export default function Message() {
                              <select
                               id="selectCustomerID1"
                               className="form-select mb-4"
-                        
+                                onChange={(e)=> handleStatusSelect(e.target.value)}
                                                        >
                               <option value="">স্ট্যাটাস</option>
                               <option value="active">একটিভ</option>
@@ -133,10 +144,12 @@ export default function Message() {
                              <select
                               id="selectCustomerID1"
                               className="form-select mb-4"
+                              onChange={(e)=> handlePaymentSelect(e.target.value)}
+
                                                        >
                               <option value="">পেমেন্ট</option>
-                              <option value="paid">পরিশোধ</option>
-                              <option value="unpaid">বকেয়া </option>
+                              <option   value="paid">পরিশোধ</option>
+                              <option  value="unpaid">বকেয়া </option>
                                                        </select>
                            </div>
                           {/* area */}

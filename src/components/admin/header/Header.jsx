@@ -88,7 +88,7 @@ export default function Header(props) {
                     </li>
                   </ul>
                 </div>
-              ) : pathName === "/register" ? (
+              ) : (pathName === "/register" || pathName === "/landing")  ? (
                 <NavLink to="/login">
                   <p className="goToLoginPage">লগইন</p>
                 </NavLink>
