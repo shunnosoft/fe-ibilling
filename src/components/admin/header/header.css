@@ -114,6 +114,19 @@
   color: rgb(251 173 143) !important;
 }
 
+.homediv{
+  margin-left: 20px;
+ 
+}
+.homeicon{
+  width: 33px;
+  height: 33px;
+}
+
+.homeicon:hover{
+  color: #2666CF;
+}
+
 @media only screen and (max-width: 720px) {
   .headerLinks {
     margin-right: 20px;

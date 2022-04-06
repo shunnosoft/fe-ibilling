@@ -21,7 +21,7 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: transparent;
+  background-color: white;
 }
 ::-webkit-scrollbar-thumb {
   background-color: #d6dee1;

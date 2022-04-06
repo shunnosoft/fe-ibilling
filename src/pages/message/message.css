@@ -120,9 +120,48 @@
   margin-right: 10px;
 }
 
-
-.cusSelect{
+.cusSelect {
   display: flex;
   align-items: center;
   justify-content: space-around;
+}
+
+.refreshDiv {
+  display: flex;
+  align-items: center;
+  height: 45px;
+  width: fit-content;
+  justify-content: space-between;
+
+  border-radius: 4px;
+}
+
+.refreshIcon {
+  height: 45.3px;
+  width: 50px;
+  background-color: #FFCA03;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  font-size: 20px;
+  font-weight: bold;
+  
+}
+.refreshIcon:hover{
+  background-color: #ffc803a6;
+}
+
+.balancetext {
+  background-color: #49ff00;
+  height: inherit;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mainsmsbalance{
+  margin-left: 10px;
+  margin-right: 10px;
 }

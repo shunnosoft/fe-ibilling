@@ -4,38 +4,34 @@ import { useSelector } from "react-redux";
 import "./landing.css";
 
 export default function Landing() {
-  const currentUser= useSelector((state) => state.auth.currentUser);
+  const currentUser = useSelector((state) => state.auth.currentUser);
 
   // console.log("From Landing: ", currentUser);
 
   // const currentUser = false;
   return (
-    <>
+    <div className="mainlanding">
       <div className="landingWrapper">
         <div className="container-fluide">
           {/* <video src="img/v3.mp4" muted loop autoplay type="mp4"></video> */}
           <div className="textBox">
             <div className="landingMain">
-              <h2 className="LandingTitle">শূন্য সফটওয়্যার </h2>
+              <h2 className="LandingTitle">নেটফি</h2>
               <p className="landingText">
-                আমরা বাংলায় ওয়েব ডেডলপমেন্ট নিয়ে কাজ করতে গিয়ে প্রথম যে
-                সমস্যাটার মুখোমুখি হই, সেটা হলো, বাংলা ডেমো টেক্সট। ইংরেজির জন্য
-                lorem ipsum তো আছে । বাংলার জন্য কি আছে? সেই ধারনা থেকেই বাংলা
-                ডেমো টেক্সট তৈরীর চেষ্টা।
+                 
               </p>
-              <br />
-              {currentUser ? (
-                <NavLink to="/home" className="landingSubscribeBtn custom-btn">
-                  ড্যাশবোর্ড
-                </NavLink>
-              ) : (
+
+              
+              
                 <NavLink
                   to="/register"
-                  className="landingSubscribeBtn custom-btn"
+                   
                 >
-                  সাবস্ক্রাইব
+                  
+                  <p className="goToLoginPage custom-btn"> সাবস্ক্রাইব</p>
+                 
                 </NavLink>
-              )}
+              
             </div>
           </div>
         </div>
@@ -44,6 +40,6 @@ export default function Landing() {
           <span>@copyright 2021 sunnosoft</span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
