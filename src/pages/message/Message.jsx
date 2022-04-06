@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -11,6 +11,7 @@ import useDash from "../../assets/css/dash.module.css";
 import SmsParchase from "./smsParchaseModal";
 
 export default function Message() {
+  const userRole = useSelector((state) => state.auth.role);
   const [isChecked, setisChecked] = useState(false);
   const area = useSelector((state) => state.area.area);
   // const [areaIds, setAreaIds] = useState([]);
@@ -53,13 +54,15 @@ export default function Message() {
                         এসএমএস ব্যালান্সঃ <strong>{2000}</strong>{" "}
                       </div>
 
-                      <button
-                        data-bs-toggle="modal"
-                        data-bs-target="#smsparchase"
-                        className="buysms"
-                      >
-                        এসএমএস কিনুন
-                      </button>
+                      {userRole === "ispOwner" && (
+                        <button
+                          data-bs-toggle="modal"
+                          data-bs-target="#smsparchase"
+                          className="buysms"
+                        >
+                          এসএমএস কিনুন
+                        </button>
+                      )}
                     </div>
 
                     <div className="messageGuide">

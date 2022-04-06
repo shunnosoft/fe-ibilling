@@ -10,14 +10,13 @@
   margin-right: 10px;
 }
 
-
 /* css added by enamul */
-.uiChange{
+.uiChange {
   display: flex;
   flex-direction: column;
 }
 
-.smsPerchase{
+.smsPerchase {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,9 +24,8 @@
   padding: 20px;
   border-radius: 7px;
   border: 1px solid #ddd;
-
 }
-.smsbuy{
+.smsbuy {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,9 +33,9 @@
   width: 100%;
   margin-bottom: 20px;
 }
-.smsbal{
+.smsbal {
   /* background-color:rgb(192, 190, 190); */
-  border-radius: 4px ;
+  border-radius: 4px;
   height: 45px;
   font-weight: bold;
   font-size: 17px;
@@ -47,14 +45,14 @@
   justify-content: space-between;
 }
 
-.smsbutton{
+.smsbutton {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   margin-top: 20px;
 }
-.smsparchasebtn{
+.smsparchasebtn {
   width: 100%;
   margin: 10px;
   border: none;
@@ -63,22 +61,23 @@
   font-weight: bold;
 }
 
-.button1{
-  background-color:#086E7D;
+.button1 {
+  color: white;
+  background-color: #086e7d;
 }
 
-.button2{
-  background-color: #FF1700;
+.button2 {
+  background-color: #ff1700;
 }
 
-.numsms{
+.numsms {
   font-weight: bold;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
-.smsinput{
+.smsinput {
   flex: 2;
   border: 2px rgb(136, 136, 136) solid;
   border-radius: 4px;
@@ -87,14 +86,14 @@
   height: 35px;
 }
 
-.smsinput:focus{
+.smsinput:focus {
   outline: none;
 }
-.smsspan{
+.smsspan {
   flex: 1;
-   font-size: 17px;
+  font-size: 17px;
 }
-.amountsms{
+.amountsms {
   font-weight: bold;
   width: 100%;
   display: flex;
@@ -103,20 +102,20 @@
   margin-bottom: 20px;
   font-size: 17px;
 }
-.price{
+.price {
   color: green;
   font-weight: bolder;
 }
 
-.buysms{
+.buysms {
   border: none;
   border-radius: 5px;
   width: 150px;
   height: 40px;
-  background-color: #F0A500;
+  background-color: #f0a500;
   font-weight: 600;
 }
 
-.kroymullo{
+.kroymullo {
   margin-right: 10px;
 }

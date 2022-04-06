@@ -903,3 +903,21 @@ export const initiatePayment = async (invoice) => {
     console.log("Invoice error: ", err);
   }
 };
+
+export const purchaseSms = async (data, setIsloading) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.post(`/sms`, data);
+    console.log(res.data);
+    setIsloading(false);
+    toast.success(
+      "এসএমএস ইনভয়েস তৈরি সফল হয়েছে। কনফার্ম করতে হলে পেমেন্ট করুন।"
+    );
+    setTimeout(() => {
+      window.location.href = "/invoice";
+    }, 5000);
+  } catch (err) {
+    setIsloading(false);
+    console.log("SMS purchase error: ", err);
+  }
+};
