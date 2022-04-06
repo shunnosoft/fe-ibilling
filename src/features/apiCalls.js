@@ -1,5 +1,6 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 import {
   managerAddSuccess,
@@ -62,7 +63,7 @@ import {
 } from "./paymentSlice";
 import { getChartSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
-import { getInvoiceListSuccess } from "./invoiceSlice";
+import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -862,7 +863,7 @@ export const recharge = async (data, setIsLoading, dispatch) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/reseller/recharge", data);
-    console.log(res.data);
+
     dispatch(editResellerforRecharge(res.data));
     setIsLoading(false);
     toast.success("রিচার্জ সফল হয়েছে");
@@ -885,7 +886,7 @@ export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink(`/ispOwner/invoice/${ispOwnerId}`);
-    console.log(res.data);
+
     dispatch(getInvoiceListSuccess(res.data));
     setIsloading(false);
   } catch (err) {
@@ -908,7 +909,7 @@ export const purchaseSms = async (data, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.post(`/sms`, data);
-    console.log(res.data);
+
     setIsloading(false);
     toast.success(
       "এসএমএস ইনভয়েস তৈরি সফল হয়েছে। কনফার্ম করতে হলে পেমেন্ট করুন।"
@@ -919,5 +920,38 @@ export const purchaseSms = async (data, setIsloading) => {
   } catch (err) {
     setIsloading(false);
     console.log("SMS purchase error: ", err);
+  }
+};
+
+export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
+  try {
+    const res = await apiLink.get(`/dashboard/invoice/unpaid/${ispOwnerId}`);
+
+    const invoice = res.data;
+    if (
+      invoice &&
+      new Date(invoice?.dueDate).getTime() < new Date().getTime()
+    ) {
+      let con = window.confirm(
+        `নেটফি রেজিস্ট্রেশন ফি ${invoice.amount} Tk পরিশোধের শেষ সময় ${moment(
+          invoice.dueDate
+        ).format(
+          "DD-MM-YYYY hh:mm:ss A"
+        )} অতিবাহিত হয়েছে। অনুগ্রহ করে পেমেন্ট করুন।`
+      );
+
+      if (con || !con) {
+        const res = await apiLink.post(
+          `/payment/generate-payment-url`,
+          invoice
+        );
+
+        window.location.href = res.data.paymentUrl;
+      }
+    }
+
+    dispatch(getUnpaidInvoiceSuccess(invoice));
+  } catch (err) {
+    console.log("unpaid invoice error: ", err);
   }
 };

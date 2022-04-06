@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
 import PrivateOutlet from "./PrivateOutlet";
@@ -45,14 +45,25 @@ import Reseller from "./pages/reseller/Reseller";
 import RechargeHistoryofReseller from "./pages/recharge/Diposit";
 import Landing from "./pages/landing/Landing";
 
+import { getUnpaidInvoice } from "./features/apiCalls";
+import { useEffect } from "react";
+
 function App() {
+  const invoice = useSelector((state) => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
+  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const hasReseller = useSelector(
     (state) => state.auth.userData?.bpSettings?.hasReseller
   );
   // const hasReseller= true
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getUnpaidInvoice(dispatch, ispOwnerId);
+  }, [ispOwnerId, dispatch]);
 
   return (
     <ThemeProvider theme={themes[theme]}>
@@ -63,9 +74,7 @@ function App() {
         (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
           <Routes>
-            
-
-<Route  path="/" element={<Navigate to="/landing" />} />
+            <Route path="/" element={<Navigate to="/landing" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/home"} />}
@@ -102,7 +111,7 @@ function App() {
           //NOt for reseller
 
           <Routes>
-            <Route  path="/" element={<Navigate to="/landing" />} />
+            <Route path="/" element={<Navigate to="/landing" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/home"} />}

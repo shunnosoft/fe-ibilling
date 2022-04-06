@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
+import moment from "moment";
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -16,17 +17,19 @@ import {
   getCollector,
   getManger,
 } from "../../features/apiCalls";
-import { getCharts } from "../../features/apiCalls";
+import { getCharts, initiatePayment } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
 
 export default function Home() {
+  const [isLoading, setIsloading] = useState(false);
   const role = useSelector((state) => state.auth.role);
   const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
   const allCollector = useSelector((state) => state.collector.collector);
   const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.auth.userData);
   const ChartsData = useSelector((state) => state.chart.charts);
+  const invoice = useSelector((state) => state.invoice.invoice);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
@@ -91,7 +94,7 @@ export default function Home() {
       dispatch(managerFetchSuccess(userData));
     }
 
-    if (role === "ispOwner" || role === "manager" || role!=="reseller") {
+    if (role === "ispOwner" || role === "manager" || role !== "reseller") {
       getCollector(dispatch, ispOwnerId);
       getAllBills(dispatch, ispOwnerId);
       fetchMikrotik(dispatch, ispOwnerId);
@@ -105,6 +108,8 @@ export default function Home() {
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
     }
+
+    // if (!invoice) getUnpaidInvoice(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId, role, userData, Month, Year]);
 
   useEffect(() => {
@@ -131,6 +136,20 @@ export default function Home() {
     }
   };
 
+  let invoiceFlag;
+
+  if (invoice) {
+    if (new Date(invoice?.dueDate).getTime() < new Date().getTime()) {
+      invoiceFlag = "EXPIRED";
+    } else {
+      invoiceFlag = "UNPAID";
+    }
+  }
+
+  const payNowHandler = (invoice) => {
+    initiatePayment(invoice);
+  };
+
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
@@ -139,6 +158,27 @@ export default function Home() {
           {/* card section */}
           <div className="row">
             <h2 className="dashboardTitle">ড্যাশবোর্ড</h2>
+
+            {invoiceFlag === "UNPAID" && (
+              <div className="col-md-12 mb-3 pt-3 pb-3 badge bg-primary text-wrap fs-5 text">
+                <div className="mb-1 pt-1 pb-1">{`নেটফি রেজিস্ট্রেশন ফি ${
+                  invoice.amount
+                } Tk পরিশোধের শেষ সময় ${moment(invoice.dueDate).format(
+                  "DD-MM-YYYY hh:mm:ss A"
+                )}`}</div>
+
+                <button
+                  type="button"
+                  className="btn btn-success fs-5 text"
+                  onClick={() => {
+                    payNowHandler(invoice);
+                  }}
+                >
+                  পেমেন্ট
+                </button>
+              </div>
+            )}
+
             {cardData.map((val, key) => {
               return (
                 <div className="col-md-3" key={key}>
@@ -219,13 +259,13 @@ export default function Home() {
                 checked={showGraphData === "amount" && "checked"}
                 onChange={() => setShowGraphData("amount")}
               />
-               <label  htmlFor="html">এমাউন্ট</label>
+               <label htmlFor="html">এমাউন্ট</label>
               <input
                 type="radio"
                 name="graphSelectRadio"
                 onChange={() => setShowGraphData("bill")}
               />
-                <label  htmlFor="css">বিল</label>
+                <label htmlFor="css">বিল</label>
             </div>
             <div className="lineChart">
               <Line

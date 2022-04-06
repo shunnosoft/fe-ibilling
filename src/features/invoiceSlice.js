@@ -9,8 +9,14 @@ export const invoiceSlice = createSlice({
     getInvoiceListSuccess: (state, action) => {
       state.invoices = action.payload;
     },
+    getUnpaidInvoiceSuccess: (state, action) => {
+      state.invoice = action.payload;
+    },
   },
 });
 
-export const { getInvoiceListSuccess } = invoiceSlice.actions;
+export const {
+  getInvoiceListSuccess,
+  getUnpaidInvoiceSuccess,
+} = invoiceSlice.actions;
 export default invoiceSlice.reducer;
