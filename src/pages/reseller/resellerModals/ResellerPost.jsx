@@ -18,7 +18,7 @@ export default function ResellerPost() {
   const auth = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
   const area = useSelector((state) => state.area.area);
-  const mikrotik = useSelector(state=>state.mikrotik.mikrotik)
+  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
 
   const [areaIds, setAreaIds] = useState([]);
   const [mikrotikIds, setMikrotikIds] = useState([]);
@@ -30,14 +30,17 @@ export default function ResellerPost() {
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
       .required("মোবাইল নম্বর দিন "),
-    email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-       ,
+    email: Yup.string().email("ইমেইল সঠিক নয় "),
     nid: Yup.string(),
     website: Yup.string(),
     address: Yup.string(),
-     
+
     status: Yup.string().required("স্ট্যাটাস সিলেক্ট করুন"),
+    commissionRate: Yup.number()
+      .integer()
+      .min(1, "সর্বনিম্ন শেয়ার ১% ")
+      .max(99, "সর্বোচ্চ শেয়ার ৯৯%")
+      .required("রিসেলার শেয়ার দিন"),
   });
 
   // const handleChange = (e) => {
@@ -54,26 +57,26 @@ export default function ResellerPost() {
   //   }
   // };
 
-  const resellerHandler = async (data,resetForm) => {
-    
-
+  const resellerHandler = async (data, resetForm) => {
+    let commision = data.commissionRate;
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
         ispOwner: auth.ispOwner.id,
-        subAreas:areaIds,
+        subAreas: areaIds,
         //todo backend
-        mikrotiks:mikrotikIds,
-        billCollectionType:"prepaid"
+        mikrotiks: mikrotikIds,
+        billCollectionType: "prepaid",
       };
-      console.log(sendingData)
-      postReseller(dispatch,sendingData, setIsLoading,resetForm)
-     
 
-      
+      sendingData.commissionRate = {
+        reseller: commision,
+        isp: 100 - commision,
+      };
+
+      postReseller(dispatch, sendingData, setIsLoading, resetForm);
     }
   };
-  
 
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
@@ -87,18 +90,17 @@ export default function ResellerPost() {
     setAreaIds(IDS_temp);
   };
 
-const setMikrotikHandler=(e) =>{
-  
-   const temp = document.querySelectorAll(".getValueUsingClasses");
+  const setMikrotikHandler = (e) => {
+    const temp = document.querySelectorAll(".getValueUsingClasses");
     let IDS_temp = [];
     for (let i = 0; i < temp.length; i++) {
       if (temp[i].checked === true) {
         IDS_temp.push(temp[i].value);
       }
     }
-    console.log("IDS: ", IDS_temp);
+
     setMikrotikIds(IDS_temp);
-}
+  };
   return (
     <div>
       <div
@@ -112,7 +114,7 @@ const setMikrotikHandler=(e) =>{
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন রি-সেলার অ্যাড করুন
+                নতুন রিসেলার অ্যাড করুন
               </h5>
               <button
                 type="button"
@@ -132,11 +134,11 @@ const setMikrotikHandler=(e) =>{
                   nid: "", //*
                   website: "",
                   address: "",
-                   // ['prepaid', 'postpaid', 'both'], /*
+                  // ['prepaid', 'postpaid', 'both'], /*
                   status: "active", //['new', 'active', 'inactive', 'banned', 'deleted'],
+                  commissionRate: 0, //number
                   // rechargeBalance: "", //number
                   // smsRate: "", //number
-                  // commissionRate: "", //number
                   // commissionType: "", //['global', 'individual'],
                   // refName: "",
                   // refMobile: "",
@@ -161,7 +163,7 @@ const setMikrotikHandler=(e) =>{
                   // fileExport: "",
                 }}
                 validationSchema={resellerValidator}
-                onSubmit={(values,{ resetForm }) => {
+                onSubmit={(values, { resetForm }) => {
                   resellerHandler(values, resetForm);
                 }}
                 enableReinitialize
@@ -208,8 +210,6 @@ const setMikrotikHandler=(e) =>{
                       {/* start radion button */}
                       <div className="thirdSection">
                         {/* বিল গ্রহণের ধরণ */}
-                         
-
 
                         {/* commistion type */}
                         {/* <div className="form-check ">
@@ -253,24 +253,31 @@ const setMikrotikHandler=(e) =>{
                             </div>
                           ))}
                         </div>
+                        <div className="form-check ">
+                          <p className="radioTitle">শেয়ার (%)</p>
+
+                          <FtextField
+                            key="commissionRate"
+                            type="number"
+                            label="রিসেলার"
+                            name="commissionRate"
+                            min={0}
+                          />
+                        </div>
                       </div>
                     </div>
 
                     <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
                     <div className="AllAreaClass">
                       {mikrotik?.map((val, key) => (
-                        
-                           
-                            <div key={key}  className="displayFlex">
-                              <input
-                                type="checkbox"
-                                className="getValueUsingClasses"
-                                value={val.id}
-                                onChange={(e)=>setMikrotikHandler(e.target.value)}
-                              />
-                              <label>{val.name}</label>
-                           
-                        
+                        <div key={key} className="displayFlex">
+                          <input
+                            type="checkbox"
+                            className="getValueUsingClasses"
+                            value={val.id}
+                            onChange={(e) => setMikrotikHandler(e.target.value)}
+                          />
+                          <label>{val.name}</label>
                         </div>
                       ))}
                     </div>
