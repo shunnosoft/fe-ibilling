@@ -121,8 +121,8 @@ export default function Message() {
                             className="form-select mb-4"
                           >
                             <option value="">গ্রাহক সিলেক্ট করুন</option>
-                            <option value="">dummy</option>
-                            <option value="">dummy</option>
+                            <option value="active">একটিভ</option>
+                            <option value="inactive">ইনক্টিভ</option>
                           </select>
                           {/* area */}
                           {/* area section*/}

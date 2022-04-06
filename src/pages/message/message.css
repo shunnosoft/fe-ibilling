@@ -119,3 +119,10 @@
 .kroymullo {
   margin-right: 10px;
 }
+
+
+.cusSelect{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}

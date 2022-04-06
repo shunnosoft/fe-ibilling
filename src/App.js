@@ -43,6 +43,7 @@ import Invoice from "./pages/invoice/Invoice";
 import CollectorReport from "./pages/report/CollectorReport";
 import Reseller from "./pages/reseller/Reseller";
 import RechargeHistoryofReseller from "./pages/recharge/Diposit";
+import Landing from "./pages/landing/Landing";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -62,10 +63,16 @@ function App() {
         (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
+            
+
+<Route  path="/" element={<Navigate to="/landing" />} />
             <Route
               path="/login"
-              element={!user ? <Login /> : <Navigate to={"/reseller/home"} />}
+              element={!user ? <Login /> : <Navigate to={"/home"} />}
+            />
+            <Route
+              path="/landing"
+              element={!user ? <Landing></Landing> : <Navigate to={"/home"} />}
             />
 
             <Route
@@ -95,10 +102,14 @@ function App() {
           //NOt for reseller
 
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
+            <Route  path="/" element={<Navigate to="/landing" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/home"} />}
+            />
+            <Route
+              path="/landing"
+              element={!user ? <Landing></Landing> : <Navigate to={"/home"} />}
             />
 
             <Route
