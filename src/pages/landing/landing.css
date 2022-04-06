@@ -33,6 +33,30 @@
   flex-direction: column;
   color: #f5f5f5;
 }
+.textBox2 {
+  position: absolute;
+  width: 60%;
+  right: 0px;
+
+  height: 100%;
+  padding-top: 80px;
+  display: flex;
+  /* -webkit-backdrop-filter: blur(80px); */
+  /* backdrop-filter: blur(10px); */
+  overflow-y: scroll;
+  text-align: start;
+ 
+   
+  flex-direction: column;
+  color:black;
+}
+
+.intro1{
+  width: 100%;
+ 
+  padding: 10px;
+  font-weight: 600;
+}
 .LandingTitle {
   font-size: 5rem;
 }
@@ -85,6 +109,12 @@ a {
 /* .landingMain{
   overflow-y: scroll;
 } */
+.bulletul{
+  list-style-type: square;
+}
+.bulletul2{
+  list-style-type: circle;
+}
 @media screen and (max-width: 1024px) {
    
   .LandingTitle {
