@@ -3,8 +3,22 @@ import { FourGround } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
-import { BoxArrowLeft } from "react-bootstrap-icons";
-
+import { BoxArrowLeft, HouseDoor } from "react-bootstrap-icons";
+import {
+  List,
+  ArrowLeft,
+  HouseDoorFill,
+  Wallet2,
+  PeopleFill,
+  GeoAlt,
+  Wifi,
+  WalletFill,
+  GraphUpArrow,
+  Messenger,
+  PersonLinesFill,
+  PersonBoundingBox,
+  Cash,
+} from "react-bootstrap-icons";
 // internal imports
 import "./header.css";
 // import { logOut } from "../../../features/authSlice";
@@ -43,6 +57,12 @@ export default function Header(props) {
       <FourGround>
         <div className="container-fluied">
           <header className="headerBar">
+            {(pathName==="/login" || pathName==="/register" ) ? <NavLink  to={"/landing"}>
+              <div className="homediv" >
+                <HouseDoor className="homeicon"></HouseDoor>
+              </div>
+            </NavLink>:""}
+
             <div className="logoSide">{/* <h2>Bayanno pay</h2> */}</div>
             <div className="headerLinks">
               <div className="darkLight" onClick={changeTHeme}>
@@ -88,7 +108,7 @@ export default function Header(props) {
                     </li>
                   </ul>
                 </div>
-              ) : (pathName === "/register" || pathName === "/landing")  ? (
+              ) : pathName === "/register" || pathName === "/landing" ? (
                 <NavLink to="/login">
                   <p className="goToLoginPage">লগইন</p>
                 </NavLink>

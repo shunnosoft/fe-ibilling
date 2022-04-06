@@ -9,13 +9,15 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import SmsParchase from "./smsParchaseModal";
+import { ArrowClockwise, RecordFill } from "react-bootstrap-icons";
+import Loader from "../../components/common/Loader";
 
 export default function Message() {
   const userRole = useSelector((state) => state.auth.role);
   const [isChecked, setisChecked] = useState(false);
   const [status, setStatus] = useState("")
   const [payment, setPayment] = useState("")
-
+  const [isRefrsh,setIsrefresh] =useState(false)
   const area = useSelector((state) => state.area.area);
   // const [areaIds, setAreaIds] = useState([]);
   const userData = useSelector((state) => state.auth.userData);
@@ -62,8 +64,16 @@ console.log(status,payment)
                 <div className="collectorWrapper">
                   <div className="profileWrapper uiChange">
                     <div className="smsbal">
-                      <div>
-                        এসএমএস ব্যালান্সঃ <strong>{userData.smsBalance}</strong>{" "}
+                      <div className="refreshDiv">
+                        
+                        <div className="balancetext">
+                        এসএমএস ব্যালান্সঃ<strong className="mainsmsbalance">{1000000}</strong>
+
+                        </div>
+                        <div  title="রিফ্রেশ করুন" className="refreshIcon">
+                       { isRefrsh ? <Loader></Loader> : <ArrowClockwise></ArrowClockwise>}
+                        </div >
+                       
                       </div>
 
                       {userRole === "ispOwner" && (
