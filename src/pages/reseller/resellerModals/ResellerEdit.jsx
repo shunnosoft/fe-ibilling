@@ -46,8 +46,12 @@ export default function ResellerEdit({ reseller }) {
     nid: Yup.string(),
     website: Yup.string(),
     address: Yup.string(),
-
     status: Yup.string().required("স্ট্যাটাস সিলেক্ট করুন"),
+    commissionRate: Yup.number()
+      .integer()
+      .min(1, "সর্বনিম্ন শেয়ার ১% ")
+      .max(99, "সর্বোচ্চ শেয়ার ৯৯%")
+      .required("রিসেলার শেয়ার দিন"),
   });
 
   // const handleChange = (e) => {
@@ -66,6 +70,7 @@ export default function ResellerEdit({ reseller }) {
 
   // edit Reseller
   const resellerHandler = async (data) => {
+    let commision = data.commissionRate;
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
@@ -76,6 +81,12 @@ export default function ResellerEdit({ reseller }) {
 
         mikrotiks: mikrotikIds_Edit,
       };
+
+      sendingData.commissionRate = {
+        reseller: commision,
+        isp: 100 - commision,
+      };
+
       editReseller(dispatch, sendingData, setIsLoading);
     }
   };
@@ -135,11 +146,11 @@ export default function ResellerEdit({ reseller }) {
                   nid: reseller.nid || "", //*
                   website: reseller.website || "",
                   address: reseller.address || "",
-                  // ['prepaid', 'postpaid', 'both'], /*
+                  commissionRate: reseller?.commissionRate?.reseller || 1, //number
                   status: reseller.status || "", //['new', 'active', 'inactive', 'banned', 'deleted'],
+                  // ['prepaid', 'postpaid', 'both'], /*
                   // rechargeBalance: "", //number
                   // smsRate: "", //number
-                  // commissionRate: "", //number
                   // commissionType: "", //['global', 'individual'],
                   // refName: "",
                   // refMobile: "",
@@ -253,6 +264,19 @@ export default function ResellerEdit({ reseller }) {
                               />
                             </div>
                           ))}
+                        </div>
+
+                        <div className="form-check ">
+                          <p className="radioTitle">শেয়ার (%)</p>
+
+                          <FtextField
+                            key={"reseller"}
+                            type="number"
+                            label="রিসেলার"
+                            name="commissionRate"
+                            // value={reseller.commissionRate}
+                            min={0}
+                          />
                         </div>
                       </div>
                     </div>
