@@ -115,8 +115,17 @@
 }
 
 .homediv{
-  margin-left: 20px;
+  
+  width: 200px;
+  height: 40px;
+  height: inherit;
+  padding: 5px;
  
+}
+.newLogo{
+  width: inherit;
+  height: 40px;
+  object-fit: cover;
 }
 .homeicon{
   width: 33px;

@@ -52,7 +52,7 @@ import { getUnpaidInvoice } from "./features/apiCalls";
 import { useEffect } from "react";
 
 function App() {
-  const invoice = useSelector((state) => state.invoice.invoice);
+  // const invoice = useSelector((state) => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);

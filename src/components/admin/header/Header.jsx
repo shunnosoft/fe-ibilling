@@ -4,21 +4,7 @@ import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import { BoxArrowLeft, HouseDoor } from "react-bootstrap-icons";
-import {
-  List,
-  ArrowLeft,
-  HouseDoorFill,
-  Wallet2,
-  PeopleFill,
-  GeoAlt,
-  Wifi,
-  WalletFill,
-  GraphUpArrow,
-  Messenger,
-  PersonLinesFill,
-  PersonBoundingBox,
-  Cash,
-} from "react-bootstrap-icons";
+ 
 // internal imports
 import "./header.css";
 // import { logOut } from "../../../features/authSlice";
@@ -60,7 +46,12 @@ export default function Header(props) {
             {pathName === "/login" || pathName === "/register" ? (
               <NavLink to={"/netfee"}>
                 <div className="homediv">
-                  <HouseDoor className="homeicon"></HouseDoor>
+                <img
+                    className="newLogo"
+                    src="/assets/img/NetFee.png"
+                    alt=""
+                    
+                  />
                 </div>
               </NavLink>
             ) : (
