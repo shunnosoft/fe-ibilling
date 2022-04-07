@@ -121,6 +121,7 @@ export default function Landing() {
                 src="./assets/img/ssl.png"
                 height="120px"
                 width="600px"
+                alt="netfeeLogo"
               ></img>
             </div>
           </div>
