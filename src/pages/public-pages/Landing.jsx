@@ -16,12 +16,20 @@ export default function Landing() {
           {/* <video src="img/v3.mp4" muted loop autoplay type="mp4"></video> */}
           <div className="textBox">
             <div className="landingMain">
-              <img className="landingLogo" src="./assets/img/logo.png" alt="" />
-              <p className="landingText"></p>
+              <div className="landinglogodiv">
+              <img className="landingLogonew" src="./assets/img/NetFee.png" alt="" />
 
-              <NavLink to="/register">
+              </div>
+               
+              <div className="buttons">
+
+              <NavLink   to="/register">
                 <p className="goToLoginPage custom-btn"> সাইন আপ</p>
               </NavLink>
+              <NavLink  to="/login">
+                <p className="goToLoginPage custom-btn">লগইন</p>
+              </NavLink>
+              </div>
               {/* <h2 className="LandingTitle">নেটফি</h2> */}
             </div>
           </div>

@@ -1,8 +1,8 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+// import { NavLink } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import "./netfee.css";
-import FooterLink from "./FooterLink";
+// import FooterLink from "./FooterLink";
 
 export default function Privacy() {
   // const currentUser = useSelector((state) => state.auth.currentUser);
