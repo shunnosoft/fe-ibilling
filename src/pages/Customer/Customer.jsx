@@ -126,11 +126,11 @@ export default function Customer() {
   }, [dispatch, ispOwner]);
 
   const [isSorted, setSorted] = useState(false);
-
   const toggleSort = (item) => {
-    setCustomers(arraySort(Customers, item, { reverse: isSorted }));
+    setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
+  
   // console.log(permission)
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});

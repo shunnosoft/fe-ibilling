@@ -144,7 +144,7 @@ export default function Customer() {
   const [isSorted, setSorted] = useState(false);
 
   const toggleSort = (item) => {
-    setCustomers(arraySort(Customers, item, { reverse: isSorted }));
+    setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
   // console.log(permission)
