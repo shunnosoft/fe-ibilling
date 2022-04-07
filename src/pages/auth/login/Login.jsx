@@ -51,12 +51,12 @@ export default function Login() {
             >
               {(formik) => (
                 <div>
-                  <img
+                  {/* <img
                     className="mb-5 login-Logo"
-                    src="/assets/img/logo.png"
+                    src="/assets/img/NetFee.png"
                     alt=""
                     width="200"
-                  />
+                  /> */}
                   {/* <h1 className="h3 mb-3 fw-normal">
                     <FontColor>লগইন</FontColor>
                   </h1> */}

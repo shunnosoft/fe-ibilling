@@ -112,12 +112,12 @@ export default function Register() {
             >
               {(formik) => (
                 <div className="formStyle">
-                  <img
+                  {/* <img
                     className="mb-4 login-Logo"
                     src="/assets/img/logo.png"
                     alt=""
                     width="150"
-                  />
+                  /> */}
                   <h3 className="mb-4">রেজিস্ট্রেশন করুন </h3>
                   <Form>
                     <TextField

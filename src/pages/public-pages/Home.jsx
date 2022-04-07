@@ -1,39 +1,18 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+// import { NavLink } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import "./netfee.css";
+// import FooterLink from "./FooterLink";
 
-export default function Landing() {
+export default function Privacy() {
   // const currentUser = useSelector((state) => state.auth.currentUser);
 
   // console.log("From Landing: ", currentUser);
 
   // const currentUser = false;
   return (
-    <div className="mainlanding">
-      <div className="landingWrapper">
-        <div className="container-fluide">
-          {/* <video src="img/v3.mp4" muted loop autoplay type="mp4"></video> */}
-          <div className="textBox">
-            <div className="landingMain">
-              <div className="landinglogodiv">
-              <img className="landingLogonew" src="./assets/img/NetFee.png" alt="" />
-
-              </div>
-               
-              <div className="buttons">
-
-              <NavLink   to="/register">
-                <p className="goToLoginPage custom-btn"> সাইন আপ</p>
-              </NavLink>
-              <NavLink  to="/login">
-                <p className="goToLoginPage custom-btn">লগইন</p>
-              </NavLink>
-              </div>
-              {/* <h2 className="LandingTitle">নেটফি</h2> */}
-            </div>
-          </div>
-          <div className="textBox2">
+     <div>
+           <div className="textBox2">
             <p className="intro1">
               বর্তমান বিশ্বে যোগাযোগ ব্যবস্থার উন্নতি ও অগ্রগতিতে অন্যতম অবদান
               হিসেবে ইন্টারনেট এর ভূমিকা অপরিসীম। সঠিক চ্যানেল ও ডিস্ট্রিবিউশন
@@ -133,8 +112,6 @@ export default function Landing() {
               ></img>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+     </div>
   );
 }

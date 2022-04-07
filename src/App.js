@@ -2,7 +2,7 @@ import { useState } from "react";
 // external imports
 import { ThemeProvider } from "styled-components";
 import { themes, GlobalStyles } from "./themes";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
@@ -52,7 +52,7 @@ import { getUnpaidInvoice } from "./features/apiCalls";
 import { useEffect } from "react";
 
 function App() {
-  const invoice = useSelector((state) => state.invoice.invoice);
+  // const invoice = useSelector((state) => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
   const user = useSelector((state) => state.auth.currentUser);
   const userRole = useSelector((state) => state.auth.role);
@@ -67,12 +67,12 @@ function App() {
   useEffect(() => {
     getUnpaidInvoice(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch]);
-
+  const pathName = useLocation().pathname;
   return (
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
       <div className="App">
-        <Header theme={theme} setTheme={setTheme} />
+       {( pathName==="/login" || pathName==="/register" || user)? <Header theme={theme} setTheme={setTheme} />:""}
         {userRole === "reseller" ||
         (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
@@ -80,11 +80,11 @@ function App() {
             <Route path="/" element={<Navigate to="/netfee" />} />
             <Route
               path="/login"
-              element={!user ? <Login /> : <Navigate to={"/home"} />}
+              element={!user ? <Login /> : <Navigate to={"/reseller/home"} />}
             />
             <Route
               path="/netfee"
-              element={!user ? <Landing></Landing> : <Navigate to={"/home"} />}
+              element={!user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />}
             />
 
             <Route
