@@ -25,18 +25,21 @@ export default function Register() {
   const [isLoading, setLoading] = useState(false);
   const validate = Yup.object({
     company: Yup.string()
-      .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে ")
+      .min(3, "সর্বনিম্ন ৩ অক্ষর থাকতে হবে ")
       .required("প্রতিষ্ঠান এর নাম দিন"),
     name: Yup.string()
-      .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
+      .min(3, "সর্বনিম্ন ৩ অক্ষর থাকতে হবে")
       .required("এডমিনের নাম দিন"),
+    address: Yup.string()
+      .min(3, "সর্বনিম্ন ৩ অক্ষর থাকতে হবে")
+      .max(100, "সর্বোচ্চ ১০০ অক্ষর থাকতে হবে")
+      .required("আপনার ঠিকানা দিন"),
     mobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে  ")
       .required("আপনার মোবাইল নম্বর দিন "),
-    email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("আপনার ইমেইল দিতে হবে"),
+    email: Yup.string().email("ইমেইল সঠিক নয় ").required("আপনার ইমেইল দিন"),
+
     refName: Yup.string().min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে"),
     refMobile: Yup.string()
       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
@@ -118,13 +121,14 @@ export default function Register() {
                   <h3 className="mb-4">রেজিস্ট্রেশন করুন </h3>
                   <Form>
                     <TextField
-                      label="প্রতিষ্ঠান এর নাম"
+                      label="*প্রতিষ্ঠান এর নাম"
                       name="company"
                       type="text"
                     />
-                    <TextField label="এডমিনের নাম" name="name" type="text" />
-                    <TextField label="মোবাইল" name="mobile" type="text" />
-                    <TextField label="ইমেইল" name="email" type="email" />
+                    <TextField label="*এডমিনের নাম" name="name" type="text" />
+                    <TextField label="*মোবাইল" name="mobile" type="text" />
+                    <TextField label="*ইমেইল" name="email" type="email" />
+                    <TextField label="*ঠিকানা" name="address" type="text" />
 
                     {/* Options */}
                     <label className="form-label mt-2">
