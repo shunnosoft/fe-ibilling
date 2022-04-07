@@ -51,6 +51,8 @@ export default function About() {
               আমরা প্রদর্শনী প্রদান করি। এটি একটি উদ্ভাবনী, বিশ্বস্ত এবং সক্ষম
               সফ্টওয়্যার কোম্পানি যার একটি একক দৃষ্টিভঙ্গি রয়েছে - তথ্য
               প্রযুক্তির শক্তিকে কাজে লাগানো।
+              <br /> <br />
+              আমাদের ট্রেড লাইসেন্স নম্বর: 06/B - 0135
             </p>
 
             <p className="intro1 mt-5">
@@ -74,6 +76,8 @@ export default function About() {
               software we develop. It is an innovative, trusted and competent
               software company with a single-minded vision -Empowering
               Enterprises to Leverage the Power of Information Technology.
+              <br /> <br />
+              Our Trade Licsence Number is: 06/B - 0135
             </p>
             <br />
 
