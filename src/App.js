@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/admin/header/Header";
 import PrivateRoute from "./PrivateRoute";
 import PrivateOutlet from "./PrivateOutlet";
-// import Landing from "./pages/landing/Landing";
 
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
@@ -43,7 +42,11 @@ import Invoice from "./pages/invoice/Invoice";
 import CollectorReport from "./pages/report/CollectorReport";
 import Reseller from "./pages/reseller/Reseller";
 import RechargeHistoryofReseller from "./pages/recharge/Diposit";
-import Landing from "./pages/landing/Landing";
+import Landing from "./pages/public-pages/Landing";
+import About from "./pages/public-pages/About";
+import Privacy from "./pages/public-pages/Privacy";
+import Terms from "./pages/public-pages/Terms";
+import Refund from "./pages/public-pages/Refund";
 
 import { getUnpaidInvoice } from "./features/apiCalls";
 import { useEffect } from "react";
@@ -74,13 +77,13 @@ function App() {
         (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
           <Routes>
-            <Route path="/" element={<Navigate to="/landing" />} />
+            <Route path="/" element={<Navigate to="/netfee" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/home"} />}
             />
             <Route
-              path="/landing"
+              path="/netfee"
               element={!user ? <Landing></Landing> : <Navigate to={"/home"} />}
             />
 
@@ -111,14 +114,30 @@ function App() {
           //NOt for reseller
 
           <Routes>
-            <Route path="/" element={<Navigate to="/landing" />} />
+            <Route path="/" element={<Navigate to="/netfee" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/home"} />}
             />
             <Route
-              path="/landing"
+              path="/netfee"
               element={!user ? <Landing></Landing> : <Navigate to={"/home"} />}
+            />
+            <Route
+              path="/about"
+              element={!user ? <About></About> : <Navigate to={"/home"} />}
+            />
+            <Route
+              path="/privacy-policy"
+              element={!user ? <Privacy></Privacy> : <Navigate to={"/home"} />}
+            />
+            <Route
+              path="/terms-conditions"
+              element={!user ? <Terms></Terms> : <Navigate to={"/home"} />}
+            />
+            <Route
+              path="/return-and-refund-policy"
+              element={!user ? <Refund></Refund> : <Navigate to={"/home"} />}
             />
 
             <Route

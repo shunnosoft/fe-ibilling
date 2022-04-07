@@ -119,6 +119,25 @@ a {
   margin-bottom: 100px;
 }
 
+/* unvisited link */
+a:link {
+  color: blue;
+}
+
+/* visited link */
+a:visited {
+  color: green;
+}
+
+/* mouse over link */
+a:hover {
+  color: hotpink;
+}
+
+/* selected link */
+a:active {
+  color: purple;
+}
 @media screen and (max-width: 1024px) {
   .LandingTitle {
     font-size: 4rem;

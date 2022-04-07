@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <div>
       <div className="footer">
-        <p>কপিরাইট © ২০২২ . শূন্য সফটওয়্যার</p>
+        <p> &copy; শূন্য সফটওয়ার - {new Date().getFullYear()}</p>
       </div>
     </div>
   );

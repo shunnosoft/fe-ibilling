@@ -57,11 +57,15 @@ export default function Header(props) {
       <FourGround>
         <div className="container-fluied">
           <header className="headerBar">
-            {(pathName==="/login" || pathName==="/register" ) ? <NavLink  to={"/landing"}>
-              <div className="homediv" >
-                <HouseDoor className="homeicon"></HouseDoor>
-              </div>
-            </NavLink>:""}
+            {pathName === "/login" || pathName === "/register" ? (
+              <NavLink to={"/netfee"}>
+                <div className="homediv">
+                  <HouseDoor className="homeicon"></HouseDoor>
+                </div>
+              </NavLink>
+            ) : (
+              ""
+            )}
 
             <div className="logoSide">{/* <h2>Bayanno pay</h2> */}</div>
             <div className="headerLinks">
@@ -108,7 +112,12 @@ export default function Header(props) {
                     </li>
                   </ul>
                 </div>
-              ) : pathName === "/register" || pathName === "/landing" ? (
+              ) : pathName === "/register" ||
+                pathName === "/netfee" ||
+                pathName === "/terms-conditions" ||
+                pathName === "/privacy-policy" ||
+                pathName === "/about" ||
+                pathName === "/return-and-refund-policy" ? (
                 <NavLink to="/login">
                   <p className="goToLoginPage">লগইন</p>
                 </NavLink>
