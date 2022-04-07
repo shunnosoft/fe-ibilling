@@ -12,7 +12,7 @@ export default function Landing() {
   return (
     <div className="mainlanding">
       <div className="landingWrapper">
-        <div className="container-fluide">
+        <div className="container-fluide landingContainer">
           {/* <video src="img/v3.mp4" muted loop autoplay type="mp4"></video> */}
           <div className="textBox">
             <div className="landingMain">
@@ -126,6 +126,7 @@ export default function Landing() {
               </a>
               <br />
               <img
+                className="sslCommerz"
                 src="./assets/img/ssl.png"
                 height="120px"
                 width="600px"

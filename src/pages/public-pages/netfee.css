@@ -3,18 +3,18 @@
   min-height: 100vh;
   text-align: center;
   position: relative;
-  
-  background-color: #F3E9DD;
+
+  background-color: #f3e9dd;
   /* url(https://images.hdqwalls.com/wallpapers/formation-abstract-colors-4k-1e.jpg); */
 
-  background-size: cover;
+  /* background-size: cover; */
   text-align: center;
 }
 .landingWrapper:after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+  /* content: ""; */
+  /* position: absolute; */
+  /* top: 0;
+  left: 0; */
   width: 100%;
   height: 100%;
   /* background: linear-gradient(45deg, #009688, #ff68f2); */
@@ -31,7 +31,7 @@
   -webkit-clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 0% 100%);
   clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 0% 100%);
   justify-content: center;
-  background: #FFD124;
+  background: #ffd124;
   align-items: center;
   flex-direction: column;
   color: #f5f5f5;
@@ -42,7 +42,8 @@
   right: 0px;
 
   height: 100%;
-  padding-top: 80px;
+  /* padding-top: 80px; */
+  padding: 20px;
   display: flex;
   /* -webkit-backdrop-filter: blur(80px); */
   /* backdrop-filter: blur(10px); */
@@ -59,7 +60,7 @@
   padding: 10px;
   font-weight: 600;
 }
-.landingMain{
+.landingMain {
   display: flex;
   align-items: center;
   /* justify-content:space-between; */
@@ -79,7 +80,6 @@
   padding: 10px 0px;
 }
 .landingSubscribeBtn {
-  
   padding: 10px 42px !important;
   font-size: 18px;
   font-weight: 500;
@@ -98,7 +98,7 @@
 
   font-weight: bolder;
   height: 50px;
-  width:240px;
+  width: 240px;
   margin-left: 10px;
   margin-top: 10px;
   display: flex;
@@ -106,17 +106,16 @@
   justify-content: center;
   border-radius: 10px;
   border: none;
-   
 }
- .buttons{
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 100%;
-   margin-top: 100px;
-   font-weight: bold;
-   flex-direction: column;
- }
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 100px;
+  font-weight: bold;
+  flex-direction: column;
+}
 .custom-btn:hover {
   box-shadow: 0px 0px 10px rgb(59, 55, 55);
 }
@@ -134,17 +133,14 @@ a {
 .bulletul2 {
   list-style-type: circle;
 }
-.landinglogodiv{
+.landinglogodiv {
   height: 90px;
-  width:fit-content ;
-   
+  width: fit-content;
 }
 .landingLogonew {
   height: 80px;
-  width: 300px;
+  width: 320px;
   object-fit: cover;
-
- 
 }
 
 /* unvisited link */
@@ -166,18 +162,81 @@ a:hover {
 a:active {
   color: purple;
 }
-@media screen and (max-width: 1024px) {
-  .LandingTitle {
-    font-size: 4rem;
+
+.sslCommerz {
+  width: 100%;
+  object-fit: contain;
+  height: 120px;
+}
+@media screen and (max-width: 900px) {
+  .landingWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    min-height: 0px;
+    margin: 0;
   }
-  .landingText {
-    margin: 20px 0;
-    font-size: 1.2rem;
+  .landingContainer{
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin:0;
+    position: inherit;
+  }
+  .landingMain{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .textBox {
+    margin: 0;
+    position:inherit;
+    width: inherit;
+    flex: 1;
+    height: 100vh;
+    display: flex;
+    -webkit-backdrop-filter:none;
+    backdrop-filter: none;
+    -webkit-clip-path:  none;
+    clip-path:  none;
+    padding: 20px;
+    justify-content: center;
+    background: #ffd124;
+    align-items: center;
+    flex-direction: column;
+    color: #f5f5f5;
+  }
+  .buttons{
+     
+   margin-top: 20px;
+   
+  }
+   
+  .landinglogodiv {
+      margin-bottom: 100px;
+      margin-left: 20px;
+  }
+  .textBox2 {
+    width: 100%;
+    flex: 1;
+    height: 100vh;
+    height: max-content;
+    /* padding-top: 80px; */
+    padding: 10px;
+    overflow-y: hidden;
+    display: flex;
+
+    text-align: start;
+
+    flex-direction: column;
+    color: #525e75;
   }
 }
 
 @media screen and (max-width: 481px) {
-  .textBox {
-    display: none;
-  }
 }
