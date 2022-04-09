@@ -10,7 +10,9 @@ import Loader from "../../../components/common/Loader";
 import { editArea } from "../../../features/apiCalls";
 
 export default function AreaEdit({ oneArea }) {
-  const  ispOwnerId =useSelector(state=>state.auth.ispOwnerId)
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   // const area = useSelector((state) => state.area.area);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -28,15 +30,13 @@ export default function AreaEdit({ oneArea }) {
         ispOwner: ispOwnerId,
         id: oneArea ? oneArea.id : "",
       };
-      editArea(dispatch,sendingData, setIsLoading)
-     
-      
+      editArea(dispatch, sendingData, setIsLoading);
     }
   };
 
   return (
     <div>
-      <div  
+      <div
         className="modal fade modal-dialog-scrollable "
         id="areaEditModal"
         tabIndex="-1"

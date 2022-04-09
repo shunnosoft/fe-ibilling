@@ -51,7 +51,7 @@ export default function Diposit() {
   });
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  // const balance = useSelector(state=>state.payment.balance)
+  // const balance = useSelector(state=>state.persistedReducer.payment.balance)
 
   // bill amount
   const billDipositHandler = (data) => {
@@ -280,27 +280,30 @@ export default function Diposit() {
               )}
 
               {/* table */}
-              {userRole==="collector"?<div className="table-responsive-lg">
-
-                <table className="table table-striped ">
-                  <thead>
-                    <tr>
-                      <td>পরিমান</td>
-                      <td className="textAlignCenter">স্টেটাস</td>
-                      <td>তারিখ</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ownDeposits?.map((item, key) => (
-                      <tr key={key}>
-                        <td>৳ {item.amount}</td>
-                        <td>{item.status}</td>
-                        <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+              {userRole === "collector" ? (
+                <div className="table-responsive-lg">
+                  <table className="table table-striped ">
+                    <thead>
+                      <tr>
+                        <td>পরিমান</td>
+                        <td className="textAlignCenter">স্টেটাস</td>
+                        <td>তারিখ</td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>:""}
+                    </thead>
+                    <tbody>
+                      {ownDeposits?.map((item, key) => (
+                        <tr key={key}>
+                          <td>৳ {item.amount}</td>
+                          <td>{item.status}</td>
+                          <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                ""
+              )}
               {userRole !== "collector" ? (
                 <FourGround>
                   <div className="collectorWrapper">
@@ -414,12 +417,9 @@ export default function Diposit() {
                               <td>
                                 {item.status === "pending" ? (
                                   acceptLoading ? (
-                                    <div
-                                      className="loaderDiv"
-                                    >
+                                    <div className="loaderDiv">
                                       <Loader />
                                     </div>
-                                    
                                   ) : (
                                     <div className="AcceptRejectBtn">
                                       <button

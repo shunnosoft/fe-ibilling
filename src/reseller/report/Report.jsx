@@ -4,7 +4,7 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
- 
+
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
@@ -32,10 +32,10 @@ export default function Report() {
   const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state.payment.allBills);
-  const userData=useSelector(state=>state.auth.userData)
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
   // const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
-  const userRole =useSelector(state=>state.auth.role)
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [mainData, setMainData] = useState(allBills);
   const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
@@ -51,21 +51,20 @@ export default function Report() {
   const firstIndex = lastIndex - customerPerPage;
 
   const currentCustomers = mainData.slice(firstIndex, lastIndex);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  useEffect(()=>{
-    getAllBills(dispatch,userData.id)
-    setSubArea(subAreas.map(i=>i.id))
+  useEffect(() => {
+    getAllBills(dispatch, userData.id);
+    setSubArea(subAreas.map((i) => i.id));
 
     if (collectors.length === allCollector.length) {
-      const { user, name, id } =userData;
+      const { user, name, id } = userData;
       collectors.unshift({ name, user, id });
     }
-  },[dispatch,userData,subAreas,allCollector,collectors])
-
+  }, [dispatch, userData, subAreas, allCollector, collectors]);
 
   useEffect(() => {
     let collectors = [];
@@ -74,16 +73,12 @@ export default function Report() {
       collectors.push({ name: item.name, user: item.user, id: item.id })
     );
 
-    
-
     setCollectors(collectors);
 
     let collectorUserIdsArr = [];
     collectors.map((item) => collectorUserIdsArr.push(item.user));
     setCollectorIds(collectorUserIdsArr);
   }, [allCollector]);
-
-   
 
   useEffect(() => {
     var initialToday = new Date();
@@ -125,21 +120,15 @@ export default function Report() {
     }
   };
 
- 
-
   const onChangeSubArea = (id) => {
     if (!id) {
-     
-      
-
-      setSubArea(subAreas.map(i=>i.id));
+      setSubArea(subAreas.map((i) => i.id));
     } else {
       setSubArea([id]);
     }
   };
 
   const onClickFilter = () => {
-
     let arr = allBills;
 
     if (subAreaIds.length) {
@@ -156,7 +145,6 @@ export default function Report() {
         Date.parse(item.createdAt) >= Date.parse(dateStart) &&
         Date.parse(item.createdAt) <= Date.parse(dateEnd)
     );
-
 
     setMainData(arr);
     setMainData2(arr);
@@ -230,7 +218,6 @@ export default function Report() {
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">
-                      
                       <select
                         className="form-select"
                         onChange={(e) => onChangeSubArea(e.target.value)}
@@ -244,19 +231,23 @@ export default function Report() {
                           </option>
                         ))}
                       </select>
-                     { userRole!=="collector"? <select
-                        className="form-select"
-                        onChange={(e) => onChangeCollector(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          সকল কালেক্টর{" "}
-                        </option>
-                        {collectors?.map((c, key) => (
-                          <option key={key} value={c.user}>
-                            {c.name}
+                      {userRole !== "collector" ? (
+                        <select
+                          className="form-select"
+                          onChange={(e) => onChangeCollector(e.target.value)}
+                        >
+                          <option value="" defaultValue>
+                            সকল কালেক্টর{" "}
                           </option>
-                        ))}
-                      </select>:""}
+                          {collectors?.map((c, key) => (
+                            <option key={key} value={c.user}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        ""
+                      )}
 
                       <div className="dateDiv  ">
                         <input
@@ -374,8 +365,6 @@ export default function Report() {
                               <td>
                                 {moment(val?.createdAt).format("DD-MM-YYYY")}
                               </td>
-
-                              
                             </tr>
                           ))
                         )}
@@ -396,9 +385,9 @@ export default function Report() {
                         <option value="1000">১০০০</option>
                       </select>
                       <Pagination
-                      customerPerPage={customerPerPage}
-                      totalCustomers={allBills?.length}
-                      paginate={paginate}
+                        customerPerPage={customerPerPage}
+                        totalCustomers={allBills?.length}
+                        paginate={paginate}
                       />
                     </div>
                   </div>

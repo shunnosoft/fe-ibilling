@@ -1,29 +1,29 @@
 import React, { useState } from "react";
 import { useRef } from "react";
-import {useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { recharge } from "../../../features/apiCalls";
 
 import "../../message/message.css";
 
-function Recharge({reseller}) {
-  console.log(reseller)
-  const  rechargeRef =useRef(Number)
-  const dispatch =useDispatch()
-  const [isLoading,setIsloading] = useState(false)
-  const ispOwnerId=useSelector(state=>state.auth.userData.id)
-  const rechargeHandler =()=>{
+function Recharge({ reseller }) {
+  console.log(reseller);
+  const rechargeRef = useRef(Number);
+  const dispatch = useDispatch();
+  const [isLoading, setIsloading] = useState(false);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.userData.id
+  );
+  const rechargeHandler = () => {
     // window.alert("are you sure?")
     // console.log(rechargeRef.current.value)
     const data = {
-      amount:parseInt(rechargeRef.current.value),
-      ispOwner:ispOwnerId , 
-      reseller:reseller.id, 
-
-    }
-    recharge(data,setIsloading,dispatch)
-
-  }
+      amount: parseInt(rechargeRef.current.value),
+      ispOwner: ispOwnerId,
+      reseller: reseller.id,
+    };
+    recharge(data, setIsloading, dispatch);
+  };
   return (
     <>
       <div>
@@ -52,7 +52,12 @@ function Recharge({reseller}) {
                   <div className="smsbuy">
                     <div className="numsms">
                       <span className="smsspan">রিচার্জের পরিমানঃ</span>
-                      <input ref={rechargeRef} className="smsinput" type="number" min={0} />
+                      <input
+                        ref={rechargeRef}
+                        className="smsinput"
+                        type="number"
+                        min={0}
+                      />
                     </div>
                   </div>
                   <div className="smsbutton">
@@ -63,12 +68,10 @@ function Recharge({reseller}) {
                       বাতিল করুন
                     </button>
                     <button
-                      
-                      
                       className="smsparchasebtn button1"
                       onClick={rechargeHandler}
                     >
-                   { isLoading? <Loader></Loader> : " রিচার্জ করুন"}
+                      {isLoading ? <Loader></Loader> : " রিচার্জ করুন"}
                     </button>
                   </div>
                 </div>

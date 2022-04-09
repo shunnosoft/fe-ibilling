@@ -33,12 +33,13 @@ const rootReducer = combineReducers({
   chart: chartsSlice,
   recharge: rechargeSlice,
   invoice: invoiceSlice,
-  ui:uiSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: {persistedReducer,
+    ui:uiSlice
+  },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

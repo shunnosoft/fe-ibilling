@@ -16,7 +16,9 @@ import apiLink from "../../../api/apiLink";
 import moment from "moment";
 export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector((state) => state.auth.userData.ispOwner);
-  const resellerId =useSelector(state=>state.auth.userData.id)
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.userData.id
+  );
   const area = useSelector((state) => state.area.area);
   const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
   // const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
@@ -39,7 +41,7 @@ export default function CustomerEdit({ single }) {
   const [billTime, setBilltime] = useState();
 
   useEffect(() => {
-    setSubArea(single.subArea)
+    setSubArea(single.subArea);
     setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"));
     setBilltime(moment(single.billingCycle).format("hh:mm"));
     const temp = Getmikrotik?.find((val) => val.id === single.mikrotik);
@@ -120,7 +122,7 @@ export default function CustomerEdit({ single }) {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      reseller:resellerId,
+      reseller: resellerId,
       billingCycle: moment(billDate + " " + billTime).format(
         "YYYY-MM-DDTHH:mm:ss.ms[Z]"
       ),

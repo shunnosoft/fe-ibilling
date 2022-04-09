@@ -4,7 +4,7 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
- 
+
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
@@ -35,7 +35,7 @@ export default function Report() {
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
-  const userRole =useSelector(state=>state.auth.role)
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [mainData, setMainData] = useState(allBills);
   const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
@@ -188,7 +188,6 @@ export default function Report() {
         Date.parse(item.createdAt) <= Date.parse(dateEnd)
     );
 
-
     setMainData(arr);
     setMainData2(arr);
   };
@@ -287,19 +286,23 @@ export default function Report() {
                           </option>
                         ))}
                       </select>
-                     { userRole!=="collector"? <select
-                        className="form-select"
-                        onChange={(e) => onChangeCollector(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          সকল কালেক্টর{" "}
-                        </option>
-                        {collectors?.map((c, key) => (
-                          <option key={key} value={c.user}>
-                            {c.name}
+                      {userRole !== "collector" ? (
+                        <select
+                          className="form-select"
+                          onChange={(e) => onChangeCollector(e.target.value)}
+                        >
+                          <option value="" defaultValue>
+                            সকল কালেক্টর{" "}
                           </option>
-                        ))}
-                      </select>:""}
+                          {collectors?.map((c, key) => (
+                            <option key={key} value={c.user}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        ""
+                      )}
 
                       <div className="dateDiv  ">
                         <input
@@ -417,8 +420,6 @@ export default function Report() {
                               <td>
                                 {moment(val?.createdAt).format("DD-MM-YYYY")}
                               </td>
-
-                              
                             </tr>
                           ))
                         )}
@@ -439,9 +440,9 @@ export default function Report() {
                         <option value="1000">১০০০</option>
                       </select>
                       <Pagination
-                      customerPerPage={customerPerPage}
-                      totalCustomers={allBills?.length}
-                      paginate={paginate}
+                        customerPerPage={customerPerPage}
+                        totalCustomers={allBills?.length}
+                        paginate={paginate}
                       />
                     </div>
                   </div>

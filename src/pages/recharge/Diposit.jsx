@@ -14,10 +14,8 @@ import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import { useCallback, useEffect } from "react";
 import {
-  
- rechargeHistoryfunc,
+  rechargeHistoryfunc,
   // getMyDeposit,
-   
 } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import moment from "moment";
@@ -29,7 +27,9 @@ export default function RechargeHistoryofReseller() {
   // const allDeposit = useSelector((state) => state.payment.allDeposit);
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-  const rechargeHistory = useSelector(state=>state.recharge.rechargeHistory)
+  const rechargeHistory = useSelector(
+    (state) => state.persistedReducer.recharge.rechargeHistory
+  );
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
@@ -39,7 +39,7 @@ export default function RechargeHistoryofReseller() {
   const collectors = useSelector((state) => state.reseller.reseller);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const [cusSearch, setCusSearch] = useState("");
-const userData = useSelector(state =>state.auth.userData)
+  const userData = useSelector((state) => state.auth.userData);
   // const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
   const [collectorIds, setCollectorIds] = useState([]);
@@ -47,10 +47,10 @@ const userData = useSelector(state =>state.auth.userData)
   const [mainData2, setMainData2] = useState(rechargeHistory);
   const userRole = useSelector((state) => state.auth.role);
   // const [depositAccepted, setDepositAccepet] = useState("")
-  
+
   // const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  // const balance = useSelector(state=>state.payment.balance)
+  // const balance = useSelector(state=>state.persistedReducer.payment.balance)
 
   // bill amount
   // const allCollector = useSelector((state) => state.reseller.reseller);
@@ -70,8 +70,7 @@ const userData = useSelector(state =>state.auth.userData)
   //   setMainData2(arr)
   // },[allCollector,allDeposit,userRole,manager])
 
-  
-//todo 
+  //todo
   const getTotalRecharge = useCallback(() => {
     const initialValue = 0;
     const sumWithInitial = mainData.reduce(
@@ -81,37 +80,34 @@ const userData = useSelector(state =>state.auth.userData)
     return sumWithInitial.toString();
   }, [mainData]);
 
-   
-
-   
-
-   
-
   useEffect(() => {
-    const keys = [
-       "amount",
-       "createdAt",
-       "reseller+name"
-    ];
+    const keys = ["amount", "createdAt", "reseller+name"];
     setMainData(
-       mainData2.filter((item) =>
-        (keys.some((key) =>
-          key.split("+")[1]?
-         (typeof item[key.split("+")[0]][key.split("+")[1]] === "string"
-            ? item[key.split("+")[0]][key.split("+")[1]]?.toLowerCase().includes(cusSearch)
-            : item[key.split("+")[0]][key.split("+")[1]]?.toString().includes(cusSearch)):
-            ((typeof item[key] === "string")
-            ?( item[key]==="createdAt"?( moment(item[key]).format("YYYY-MM-DD").includes(cusSearch)): (item[key].toLowerCase().includes(cusSearch)))
-            : item[key].toString().includes(cusSearch))
-        ))
+      mainData2.filter((item) =>
+        keys.some((key) =>
+          key.split("+")[1]
+            ? typeof item[key.split("+")[0]][key.split("+")[1]] === "string"
+              ? item[key.split("+")[0]][key.split("+")[1]]
+                  ?.toLowerCase()
+                  .includes(cusSearch)
+              : item[key.split("+")[0]][key.split("+")[1]]
+                  ?.toString()
+                  .includes(cusSearch)
+            : typeof item[key] === "string"
+            ? item[key] === "createdAt"
+              ? moment(item[key]).format("YYYY-MM-DD").includes(cusSearch)
+              : item[key].toLowerCase().includes(cusSearch)
+            : item[key].toString().includes(cusSearch)
+        )
       )
     );
-  }, [cusSearch,mainData2]);
+  }, [cusSearch, mainData2]);
 
-useEffect(()=>{
-  userRole==="reseller"?rechargeHistoryfuncR(dispatch,userData.id):
-  rechargeHistoryfunc(dispatch,ispOwner) 
-},[dispatch,ispOwner,userRole,userData])
+  useEffect(() => {
+    userRole === "reseller"
+      ? rechargeHistoryfuncR(dispatch, userData.id)
+      : rechargeHistoryfunc(dispatch, ispOwner);
+  }, [dispatch, ispOwner, userRole, userData]);
 
   useEffect(() => {
     var initialToday = new Date();
@@ -130,8 +126,6 @@ useEffect(()=>{
           Date.parse(item.createdAt) <= Date.parse(initialToday)
       )
     );
-
-     
   }, [rechargeHistory]);
 
   // useEffect(() => {
@@ -158,12 +152,13 @@ useEffect(()=>{
     }
   };
 
-   
   const onClickFilter = () => {
     // let arr = getNames();
-    let arr =rechargeHistory
+    let arr = rechargeHistory;
     if (collectorIds.length) {
-      arr = rechargeHistory.filter((recharge) =>(collectorIds.includes(recharge.reseller.id)));
+      arr = rechargeHistory.filter((recharge) =>
+        collectorIds.includes(recharge.reseller.id)
+      );
     }
     arr = arr.filter(
       (item) =>
@@ -256,7 +251,7 @@ useEffect(()=>{
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                        মোট রিচার্জঃ  <span>{getTotalRecharge()}</span>
+                          মোট রিচার্জঃ <span>{getTotalRecharge()}</span>
                         </h4>
                       </div>
 
@@ -277,16 +272,20 @@ useEffect(()=>{
                       <table className="table table-striped ">
                         <thead>
                           <tr>
-                         { userRole!=="reseller" ?  <td>নাম</td>:<td></td>}
+                            {userRole !== "reseller" ? <td>নাম</td> : <td></td>}
                             <td>পরিমান</td>
-                             
+
                             <td>তারিখ</td>
                           </tr>
                         </thead>
                         <tbody>
                           {mainData?.map((item, key) => (
                             <tr key={key}>
-                             {userRole!=="reseller"? <td>{item.reseller?.name}</td>:<td></td>}
+                              {userRole !== "reseller" ? (
+                                <td>{item.reseller?.name}</td>
+                              ) : (
+                                <td></td>
+                              )}
                               <td>৳ {item.amount}</td>
 
                               <td>

@@ -62,7 +62,9 @@ function App() {
     (state) => state.auth.userData?.bpSettings?.hasReseller
   );
   // const hasReseller= true
-  const isModalShowing= useSelector(state=>state.ui.alertModalShow)
+  const isModalShowing = useSelector(
+    (state) => state.persistedReducer.ui.alertModalShow
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -73,8 +75,12 @@ function App() {
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
       <div className="App">
-       {isModalShowing && <ReactModal></ReactModal>}
-       {( pathName==="/login" || pathName==="/register" || user)? <Header theme={theme} setTheme={setTheme} />:""}
+        {isModalShowing && <ReactModal></ReactModal>}
+        {pathName === "/login" || pathName === "/register" || user ? (
+          <Header theme={theme} setTheme={setTheme} />
+        ) : (
+          ""
+        )}
         {userRole === "reseller" ||
         (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
@@ -86,7 +92,9 @@ function App() {
             />
             <Route
               path="/netfee"
-              element={!user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />}
+              element={
+                !user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />
+              }
             />
 
             <Route

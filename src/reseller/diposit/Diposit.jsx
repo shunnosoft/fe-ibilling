@@ -28,7 +28,7 @@ import Loader from "../../components/common/Loader";
 export default function Diposit() {
   const balancee = useSelector((state) => state.payment.balance);
   const allDeposit = useSelector((state) => state.payment.allDeposit);
-   
+
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -39,12 +39,14 @@ export default function Diposit() {
   const [dateEnd, setEndDate] = useState(today);
   const manager = useSelector((state) => state.manager.manager);
   const collectors = useSelector((state) => state.collector.collector);
-  console.log(collectors)
+  console.log(collectors);
   const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
   const currentUser = useSelector((state) => state.auth?.currentUser);
   //To do after api impliment
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
-const userData =useSelector(state=>state.auth.currentUser)
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
   const [mainData2, setMainData2] = useState(allDeposit);
@@ -55,8 +57,8 @@ const userData =useSelector(state=>state.auth.currentUser)
   });
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  // const balance = useSelector(state=>state.payment.balance)
- 
+  // const balance = useSelector(state=>state.persistedReducer.payment.balance)
+
   // bill amount
   const billDipositHandler = (data) => {
     const sendingData = {
@@ -65,7 +67,7 @@ const userData =useSelector(state=>state.auth.currentUser)
       balance: data.balance,
       user: currentUser?.user.id,
       ispOwner: ispOwner,
-      reseller:userData.collector.reseller
+      reseller: userData.collector.reseller,
     };
     addDeposit(dispatch, sendingData, setLoading);
   };
@@ -77,20 +79,18 @@ const userData =useSelector(state=>state.auth.currentUser)
   };
   const allCollector = useSelector((state) => state.collector.collector);
 
-  useEffect(()=>{
+  useEffect(() => {
+    var arr = [];
+    allDeposit.forEach((item) => {
+      var match = allCollector.find((c) => c.user === item.user);
 
-    var arr = []
-    allDeposit.forEach((item)=>{
-      var match =  ( allCollector.find((c) => c.user === item.user))
-
-      if(match) {
-        arr.push({...item,name:match.name})
+      if (match) {
+        arr.push({ ...item, name: match.name });
       }
-
-    })
-    setMainData(arr)
-    setMainData2(arr)
-  },[allCollector,allDeposit,userRole,manager])
+    });
+    setMainData(arr);
+    setMainData2(arr);
+  }, [allCollector, allDeposit, userRole, manager]);
 
   const getTotalDeposit = useCallback(() => {
     const initialValue = 0;
@@ -163,12 +163,10 @@ const userData =useSelector(state=>state.auth.currentUser)
   }, [getNames]);
 
   useEffect(() => {
-    if (userData.user.role==="collector")
-      getDeposit(dispatch)
-    else if (userData.user.role==="reseller")
-    getDepositforReseller(dispatch,userData.reseller.id)
-    
-  }, [dispatch,userData]);
+    if (userData.user.role === "collector") getDeposit(dispatch);
+    else if (userData.user.role === "reseller")
+      getDepositforReseller(dispatch, userData.reseller.id);
+  }, [dispatch, userData]);
 
   const onChangeCollector = (userId) => {
     if (userId) {
@@ -253,7 +251,6 @@ const userData =useSelector(state=>state.auth.currentUser)
                 ""
               )}
 
-               
               {userRole === "collector" ? (
                 <div className="row searchCollector">
                   <div className="col-sm-8">
@@ -279,27 +276,30 @@ const userData =useSelector(state=>state.auth.currentUser)
               )}
 
               {/* table */}
-              {userRole==="collector"?<div className="table-responsive-lg">
-
-                <table className="table table-striped ">
-                  <thead>
-                    <tr>
-                      <td>পরিমান</td>
-                      <td className="textAlignCenter">স্টেটাস</td>
-                      <td>তারিখ</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ownDeposits?.map((item, key) => (
-                      <tr key={key}>
-                        <td>৳ {item.amount}</td>
-                        <td>{item.status}</td>
-                        <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+              {userRole === "collector" ? (
+                <div className="table-responsive-lg">
+                  <table className="table table-striped ">
+                    <thead>
+                      <tr>
+                        <td>পরিমান</td>
+                        <td className="textAlignCenter">স্টেটাস</td>
+                        <td>তারিখ</td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>:""}
+                    </thead>
+                    <tbody>
+                      {ownDeposits?.map((item, key) => (
+                        <tr key={key}>
+                          <td>৳ {item.amount}</td>
+                          <td>{item.status}</td>
+                          <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                ""
+              )}
               {userRole !== "collector" ? (
                 <FourGround>
                   <div className="collectorWrapper">
@@ -410,18 +410,13 @@ const userData =useSelector(state=>state.auth.currentUser)
                             <tr key={key}>
                               <td>{item.name}</td>
                               <td>৳ {item.amount}</td>
-                              
 
-                            
                               <td>
                                 {item.status === "pending" ? (
                                   acceptLoading ? (
-                                    <div
-                                      className="loaderDiv"
-                                    >
+                                    <div className="loaderDiv">
                                       <Loader />
                                     </div>
-                                    
                                   ) : (
                                     <div className="AcceptRejectBtn">
                                       <button
@@ -452,7 +447,7 @@ const userData =useSelector(state=>state.auth.currentUser)
                                   </span>
                                 )}
                               </td>
- 
+
                               <td>
                                 {moment(item.createdAt).format("DD-MM-YYYY")}
                               </td>
@@ -461,9 +456,6 @@ const userData =useSelector(state=>state.auth.currentUser)
                         </tbody>
                       </table>
                     </div>
-                    
-
-                   
                   </div>
                 </FourGround>
               ) : (
