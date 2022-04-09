@@ -896,13 +896,15 @@ export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
   }
 };
 
-export const initiatePayment = async (invoice) => {
+export const initiatePayment = async (invoice,setIsloading) => {
+  setIsloading(true)
   try {
     const res = await apiLink.post(`/payment/generate-payment-url`, invoice);
-
     window.location.href = res.data.paymentUrl;
+    setIsloading(false)
   } catch (err) {
     console.log("Invoice error: ", err);
+    setIsloading(false)
   }
 };
 

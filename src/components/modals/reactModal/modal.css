@@ -65,8 +65,15 @@
     font-size: 20px;
     cursor: pointer;
   }
-  
-  
+  .rmbody{
+    overflow-y: scroll;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+
+  }  
   #cancelBtn {
     background-color: crimson;
   }
@@ -77,6 +84,18 @@
     justify-content: center;
     width: 100%;
 
+  }
+  .agreelabel{
+    width: 100%;
+    text-align: center;
+  }
+  .navnew{
+    font-weight: bold;
+   
+  }
+  .newLink{
+    color: darkblue;
+    text-decoration:underline;
   }
 
   .agreebox{

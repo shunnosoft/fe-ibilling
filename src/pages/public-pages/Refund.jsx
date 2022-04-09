@@ -1,16 +1,18 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import FooterLink from "./FooterLink";
 import "./netfee.css";
 
 export default function Landing() {
+  const currentUser = useSelector(state=>state.persistedReducer.auth.currentUser)
  
   return (
     <div className="mainlanding">
       <div className="landingWrapper">
         <div className="container-fluide landingContainer">
           {/* <video src="img/v3.mp4" muted loop autoplay type="mp4"></video> */}
-          <div className="textBox">
+         {!currentUser ?<div className="textBox">
             <div className="landingMain">
               <div className="landinglogodiv">
                 <img
@@ -30,8 +32,9 @@ export default function Landing() {
               </div>
               {/* <h2 className="LandingTitle">নেটফি</h2> */}
             </div>
-          </div>
-          <div className="textBox2">
+          </div>:""}
+          <div   className={currentUser?"textboxwithUser": "textBox2"}
+>
             <p style={{ height: "50px" }}></p>
 
             <div class="intro1">

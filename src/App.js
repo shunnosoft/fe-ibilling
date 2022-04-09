@@ -66,11 +66,9 @@ function App() {
     (state) => state.persistedReducer.auth.userData?.bpSettings?.hasReseller
   );
   // const hasReseller= true
-  const isModalShowing = useSelector(
-    (state) => state.ui.alertModalShow
-  );
+  const isModalShowing = useSelector((state) => state.ui.alertModalShow);
   const dispatch = useDispatch();
- 
+
   useEffect(() => {
     getUnpaidInvoice(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch]);
@@ -143,17 +141,11 @@ function App() {
               path="/about"
               element={!user ? <About></About> : <Navigate to={"/home"} />}
             />
-            <Route
-              path="/privacy-policy"
-              element={!user ? <Privacy></Privacy> : <Navigate to={"/home"} />}
-            />
-            <Route
-              path="/terms-conditions"
-              element={!user ? <Terms></Terms> : <Navigate to={"/home"} />}
-            />
+            <Route path="/privacy-policy" element={<Privacy></Privacy>} />
+            <Route path="/terms-conditions" element={<Terms></Terms>} />
             <Route
               path="/return-and-refund-policy"
-              element={!user ? <Refund></Refund> : <Navigate to={"/home"} />}
+              element={<Refund></Refund>}
             />
 
             <Route

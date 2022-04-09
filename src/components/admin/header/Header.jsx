@@ -40,7 +40,12 @@ export default function Header(props) {
       <i className="fas fa-sun"></i>
     );
 
-  return (
+  return ( pathName === "/terms-conditions" ||
+  pathName === "/privacy-policy" ||
+  
+  pathName === "/return-and-refund-policy") ? <div>
+  </div>:
+   (
     <div className="header">
       <FourGround>
         <div className="container-fluied">

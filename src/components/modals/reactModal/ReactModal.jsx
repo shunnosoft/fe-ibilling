@@ -3,20 +3,30 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { initiatePayment } from "../../../features/apiCalls";
 import { hideModal } from "../../../features/uiSlice";
-import "./modal.css";
+import Loader from "../../common/Loader";
 
+
+import "./modal.css";
+import { NavLink } from "react-router-dom";
+import moment from "moment";
 function ReactModal() {
+  const [isLoading,setIsloading] =useState(false)
+  const invoice = useSelector(
+    (state) => state.persistedReducer?.invoice?.invoice
+  );
   const dispatch = useDispatch();
-  const [isAgreed,setAgreed] = useState(false)
-  console.log(isAgreed)
+  const [isAgreed, setAgreed] = useState(false);
+  console.log(isAgreed);
 
   const alertModalData = useSelector((state) => state.ui.alertModalData);
   console.log(alertModalData);
   const modalHandle = () => {
     if (alertModalData.paymentUrl) {
+      setIsloading(true)
       window.location.href = alertModalData.paymentUrl;
+      setIsloading(false)
     } else {
-      initiatePayment(alertModalData);
+      initiatePayment(alertModalData,setIsloading);
     }
   };
   return (
@@ -33,15 +43,59 @@ function ReactModal() {
           </button>
         </div>
         <div className="title">
-          <h1>Are You Sure You Want to Continue?</h1>
+          <h1 style={{color:"green"}}>{`নেটফি রেজিস্ট্রেশন  ফিঃ ${invoice?.amount} `}</h1>
+          <h1 style={{color:"orangered"}}>
+            {`পরিশোধের শেষ সময়ঃ ${moment(invoice?.dueDate).format(
+                  "DD-MM-YYYY hh:mm:ss A"
+                )}`}
+          </h1>
         </div>
-        <div className="body">
-          <p>The next page looks amazing. Hope you want to go there!</p>
+        <div className="rmbody">
+          <img
+            className="sslimg"
+            alt="ssl"
+            src="./assets/img/ssl.png"
+            height="120px"
+            width="600px"
+          ></img>
         </div>
 
         <div className="agree">
-          <input className="agreebox" onChange={() => setAgreed(!isAgreed)} type="checkbox" id="vehicle1" name="vehicle1"/>
-          <label  htmlFor="vehicle1"> I agree with the terms and conditions</label>
+          <input
+            className="agreebox"
+            onChange={() => setAgreed(!isAgreed)}
+            type="checkbox"
+            id="vehicle1"
+            name="vehicle1"
+          />
+          {/* <label className="agreelabel"  htmlFor="vehicle1"></label> */}
+          <span>I read and agree to the </span>
+          <NavLink
+            target="_blank"
+            style={{ margin: "1px" }}
+            className={"navnew"}
+            to={"/terms-conditions"}
+          >
+            <p className="newLink">Terms & Conditions</p>
+          </NavLink>
+          ,
+          <NavLink
+            target="_blank"
+            style={{ marginRight: "5px" }}
+            className={"navnew"}
+            to={"/privacy-policy"}
+          >
+            <p className="newLink">privacy Policy</p>
+          </NavLink>
+          and
+          <NavLink
+            target="_blank"
+            style={{ marginLeft: "5px" }}
+            className={"navnew"}
+            to={"/return-and-refund-policy"}
+          >
+            <p className="newLink">Return & Refund Policy</p>
+          </NavLink>
         </div>
 
         <div className="footer">
@@ -53,7 +107,13 @@ function ReactModal() {
           >
             Cancel
           </button>
-          <button disabled={!isAgreed} style={{ cursor: !isAgreed? "not-allowed":"pointer"   }} onClick={modalHandle}>Continue</button>
+          <button
+            disabled={!isAgreed}
+            style={{ cursor: !isAgreed ? "not-allowed" : "pointer" }}
+            onClick={modalHandle}
+          >
+           {isLoading?< Loader></Loader> : "Continue"}
+          </button>
         </div>
       </div>
     </div>
