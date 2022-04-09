@@ -122,10 +122,11 @@
   padding: 5px;
  
 }
-.newLogo{
-  width: inherit;
+.newLogoo{
   height: 40px;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 3px;
+  margin-left: 10px;
 }
 .homeicon{
   width: 33px;

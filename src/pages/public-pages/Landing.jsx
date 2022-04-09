@@ -1,14 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-// import { useSelector } from "react-redux";
+import FooterLink from "./FooterLink";
 import "./netfee.css";
 
 export default function Landing() {
-  // const currentUser = useSelector(state => state.auth.currentUser);
-
-  // console.log("From Landing: ", currentUser);
-
-  // const currentUser = false;
+ 
   return (
     <div className="mainlanding">
       <div className="landingWrapper">
@@ -19,17 +15,17 @@ export default function Landing() {
               <div className="landinglogodiv">
                 <img
                   className="landingLogonew"
-                  src="./assets/img/NetFee.png"
+                  src="./assets/img/logo.png"
                   alt=""
                 />
               </div>
 
               <div className="buttons">
-                <NavLink to="/register">
-                  <p className="goToLoginPage custom-btn"> সাইন আপ</p>
-                </NavLink>
                 <NavLink to="/login">
                   <p className="goToLoginPage custom-btn">লগইন</p>
+                </NavLink>
+                <NavLink to="/register">
+                  <p className="goToLoginPage custom-btn"> সাইন আপ</p>
                 </NavLink>
               </div>
               {/* <h2 className="LandingTitle">নেটফি</h2> */}
@@ -106,35 +102,7 @@ export default function Landing() {
               </li>
             </ul>
 
-            <div className="text-center">
-              <a className="footerLink" href="/netfee">
-                Home
-              </a>{" "}
-              |{" "}
-              <a className="footerLink" href="/about">
-                About Us
-              </a>{" "}
-              |{" "}
-              <a className="footerLink" href="/privacy-policy">
-                Privacy Policy
-              </a>{" "}
-              |{" "}
-              <a className="footerLink" href="/terms-conditions">
-                Terms & Conditions
-              </a>{" "}
-              |{" "}
-              <a className="footerLink" href="/return-and-refund-policy">
-                Return & Refund Policy
-              </a>
-              <br />
-              <img
-                className="sslCommerz"
-                src="./assets/img/ssl.png"
-                height="120px"
-                width="600px"
-                alt="netfeeLogo"
-              ></img>
-            </div>
+             <FooterLink></FooterLink>
           </div>
         </div>
       </div>

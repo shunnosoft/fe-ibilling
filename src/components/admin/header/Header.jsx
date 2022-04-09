@@ -49,8 +49,8 @@ export default function Header(props) {
               <NavLink to={"/netfee"}>
                 <div className="homediv">
                   <img
-                    className="newLogo"
-                    src="/assets/img/NetFee.png"
+                    className="newLogoo"
+                    src="/assets/img/logo.png"
                     alt=""
                   />
                 </div>

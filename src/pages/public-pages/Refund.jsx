@@ -1,28 +1,33 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-// import { useSelector } from "react-redux";
 import FooterLink from "./FooterLink";
 import "./netfee.css";
 
-export default function Terms() {
-  // const currentUser = useSelector(state => state.auth.currentUser);
-
-  // console.log("From Landing: ", currentUser);
-
-  // const currentUser = false;
+export default function Landing() {
+ 
   return (
     <div className="mainlanding">
       <div className="landingWrapper">
-        <div className="container-fluide">
+        <div className="container-fluide landingContainer">
           {/* <video src="img/v3.mp4" muted loop autoplay type="mp4"></video> */}
           <div className="textBox">
             <div className="landingMain">
-              <img className="landingLogo" src="./assets/img/logo.png" alt="" />
-              <p className="landingText"></p>
+              <div className="landinglogodiv">
+                <img
+                  className="landingLogonew"
+                  src="./assets/img/logo.png"
+                  alt=""
+                />
+              </div>
 
-              <NavLink to="/register">
-                <p className="goToLoginPage custom-btn"> সাইন আপ</p>
-              </NavLink>
+              <div className="buttons">
+                <NavLink to="/login">
+                  <p className="goToLoginPage custom-btn">লগইন</p>
+                </NavLink>
+                <NavLink to="/register">
+                  <p className="goToLoginPage custom-btn"> সাইন আপ</p>
+                </NavLink>
+              </div>
               {/* <h2 className="LandingTitle">নেটফি</h2> */}
             </div>
           </div>

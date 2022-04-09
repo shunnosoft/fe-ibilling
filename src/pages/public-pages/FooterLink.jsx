@@ -1,27 +1,37 @@
+import { NavLink } from "react-router-dom";
+import "./netfee.css";
 export default function FooterLink() {
   return (
-    <div className="text-center">
-      <a className="footerLink" href="/netfee">
-        Home
-      </a>{" "}
-      |{" "}
-      <a className="footerLink" href="/about">
-        About Us
-      </a>{" "}
-      |{" "}
-      <a className="footerLink" href="/privacy-policy">
-        Privacy Policy
-      </a>{" "}
-      |{" "}
-      <a className="footerLink" href="/terms-conditions">
-        Terms & Conditions
-      </a>{" "}
-      |{" "}
-      <a className="footerLink" href="/return-and-refund-policy">
-        Return & Refund Policy
-      </a>
+    <div className="textnew">
+      <div className="alllinks">
+        <NavLink className={"navnew"} to={"/netfee"}>
+          <p className="newLink">Home</p>
+        </NavLink>
+        |
+        <NavLink className={"navnew"} to={"/about"}>
+          <p className="newLink">About</p>
+        </NavLink>
+        |
+        <NavLink className={"navnew"} to={"/privacy-policy"}>
+          <p className="newLink">privacy Policy</p>
+        </NavLink>
+        |
+        <NavLink className={"navnew"} to={"/terms-conditions"}>
+          <p className="newLink">Terms and Conditions</p>
+        </NavLink>
+        |
+        <NavLink className={"navnew"} to={"/return-and-refund-policy"}>
+          <p className="newLink"> Return & Refund Policy</p>
+        </NavLink>
+      </div>
       <br />
-      <img src="./assets/img/ssl.png" height="120px" width="600px"></img>
+      <img
+      className="sslimg"
+        alt="ssl"
+        src="./assets/img/ssl.png"
+        height="120px"
+        width="600px"
+      ></img>
     </div>
   );
 }

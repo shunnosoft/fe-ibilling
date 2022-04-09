@@ -119,9 +119,7 @@
 .custom-btn:hover {
   box-shadow: 0px 0px 10px rgb(59, 55, 55);
 }
-a {
-  text-decoration: none;
-}
+
 .landingFooter {
   width: 100%;
   padding: 10px 0;
@@ -138,37 +136,55 @@ a {
   width: fit-content;
 }
 .landingLogonew {
-  height: 80px;
-  width: 320px;
+  height: 100px;
+  /* width: 300px; */
   object-fit: cover;
 }
 
-/* unvisited link */
-a:link {
-  color: blue;
-}
-
-/* visited link */
-a:visited {
-  color: green;
-}
-
-/* mouse over link */
-a:hover {
-  color: hotpink;
-}
-
-/* selected link */
-a:active {
-  color: purple;
-}
-
+ 
 .sslCommerz {
+ 
+}
+
+.textnew{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+
+}
+
+.alllinks{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  
+
+}
+.navnew{
+  margin:0 10px;
+  
+}
+
+ .newLink:hover{
+   text-decoration: underline;
+   color: goldenrod;
+
+ }
+ .sslimg{
   width: 100%;
   object-fit: contain;
-  height: 120px;
-}
+  /* height: 10px; */
+  height: fit-content;
+ }
 @media screen and (max-width: 900px) {
+  .alllinks{
+    flex-wrap: wrap;
+
+  }.navnew{
+    margin: 15px;
+  }
   .landingWrapper {
     display: flex;
     flex-direction: column;
@@ -178,14 +194,14 @@ a:active {
     min-height: 0px;
     margin: 0;
   }
-  .landingContainer{
+  .landingContainer {
     width: 100%;
     height: 100%;
     padding: 0;
-    margin:0;
+    margin: 0;
     position: inherit;
   }
-  .landingMain{
+  .landingMain {
     width: 100%;
     height: 100%;
     display: flex;
@@ -195,15 +211,15 @@ a:active {
   }
   .textBox {
     margin: 0;
-    position:inherit;
+    position: inherit;
     width: inherit;
     flex: 1;
     height: 100vh;
     display: flex;
-    -webkit-backdrop-filter:none;
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    -webkit-clip-path:  none;
-    clip-path:  none;
+    -webkit-clip-path: none;
+    clip-path: none;
     padding: 20px;
     justify-content: center;
     background: #ffd124;
@@ -211,15 +227,13 @@ a:active {
     flex-direction: column;
     color: #f5f5f5;
   }
-  .buttons{
-     
-   margin-top: 20px;
-   
+  .buttons {
+    margin-top: 20px;
   }
-   
+
   .landinglogodiv {
-      margin-bottom: 100px;
-      margin-left: 20px;
+    margin-bottom: 100px;
+    margin-left: 20px;
   }
   .textBox2 {
     width: 100%;
@@ -238,5 +252,24 @@ a:active {
   }
 }
 
-@media screen and (max-width: 481px) {
+@media screen and (max-width: 937px) {
+  .alllinks{
+    flex-wrap: wrap;
+  }
+  .navnew{
+    margin: 10px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .landingLogonew{
+    object-fit: contain;
+    width: 70%;
+  }
+  .sslimg{
+    /* width: 100%; */
+
+    object-fit: cover;
+    /* height: 10px; */
+    overflow:hidden;
+   }
 }
