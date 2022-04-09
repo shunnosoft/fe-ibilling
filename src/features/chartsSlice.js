@@ -9,11 +9,11 @@ const chartsSlice = createSlice({
     getChartSuccess: (state, { payload }) => {
       state.charts = payload;
     },
-    clearChart:(state) =>{
-      state.charts=[]
-    }
+    clearChart: (state) => {
+      state.charts = [];
+    },
   },
 });
 
-export const { getChartSuccess , clearChart} = chartsSlice.actions;
+export const { getChartSuccess, clearChart } = chartsSlice.actions;
 export default chartsSlice.reducer;

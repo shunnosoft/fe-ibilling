@@ -26,8 +26,7 @@ const customerSliec = createSlice({
     updateBalance: (state, action) => {
       state.customer.find(
         (item) => item.id === action.payload.customer
-      ).balance +=
-        action.payload.amount;
+      ).balance += action.payload.amount;
     },
     deleteCustomerSuccess: (state, action) => {
       // Example
@@ -52,7 +51,7 @@ export const {
   addCustomerSuccess,
   editCustomerSuccess,
   deleteCustomerSuccess,
-  updateBalance
+  updateBalance,
 } = customerSliec.actions;
 
 export default customerSliec.reducer;

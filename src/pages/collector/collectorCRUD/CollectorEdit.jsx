@@ -17,12 +17,11 @@ import { collectorPermission } from "./collectorPermission";
 
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.area.area);
+  const area = useSelector((state) => state.persistedReducer.area.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);
-   
 
   useEffect(() => {
     if (single) {
@@ -73,7 +72,7 @@ export default function CollectorEdit({ single }) {
         ispOwner: single.ispOwner,
         ispOwnerId: single.ispOwner,
         collectorId: single.id,
-        permissions: newP
+        permissions: newP,
       };
       editCollector(dispatch, sendingData, setIsLoading);
     }
@@ -206,13 +205,6 @@ export default function CollectorEdit({ single }) {
                       ))}
                     </div>
                     {/* area */}
-
-
-                        
-
-
-
-
 
                     <div className="modal-footer">
                       <button

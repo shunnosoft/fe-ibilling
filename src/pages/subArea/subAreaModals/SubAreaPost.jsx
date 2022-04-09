@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,11 +7,11 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
- 
+
 import { addSubArea } from "../../../features/apiCalls";
 
 export default function SubAreaPost({ name, id }) {
-  const auth = useSelector((state) => state.auth.currentUser);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
 
   //validator
@@ -20,7 +20,6 @@ export default function SubAreaPost({ name, id }) {
   });
 
   const dispatch = useDispatch();
-   
 
   const subAreaHandler = async (data) => {
     setIsLoading(true);
@@ -32,7 +31,6 @@ export default function SubAreaPost({ name, id }) {
         ispOwner: auth.ispOwner.id,
       };
       addSubArea(dispatch, sendingData, setIsLoading);
-     
     }
   };
 

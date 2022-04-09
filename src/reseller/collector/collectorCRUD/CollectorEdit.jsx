@@ -17,12 +17,14 @@ import { collectorPermission } from "./collectorPermission";
 
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.area.area);
+  const area = useSelector((state) => state.persistedReducer.area.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);
-  const resellerId = useSelector((state) => state.auth?.userData.id);
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth?.userData.id
+  );
 
   useEffect(() => {
     if (single) {
@@ -132,7 +134,7 @@ export default function CollectorEdit({ single }) {
                     <div className="collectorInputs">
                       {collectorData.map((val, key) => (
                         <FtextField
-                        disabled={val.name==="mobile"}
+                          disabled={val.name === "mobile"}
                           key={key}
                           type={val.type}
                           label={val.label}
@@ -170,20 +172,18 @@ export default function CollectorEdit({ single }) {
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
                         <div key={key}>
-                           
-                            <div key={key} className="displayFlex">
-                              <input
-                                type="checkbox"
-                                className="getValueUsingClass_Edit"
-                                value={val.id}
-                                checked={
-                                  allowedAreas?.includes(val.id) ? true : false
-                                }
-                                onChange={setAreaHandler}
-                              />
-                              <label>{val.name}</label>
-                            </div>
-                         
+                          <div key={key} className="displayFlex">
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClass_Edit"
+                              value={val.id}
+                              checked={
+                                allowedAreas?.includes(val.id) ? true : false
+                              }
+                              onChange={setAreaHandler}
+                            />
+                            <label>{val.name}</label>
+                          </div>
                         </div>
                       ))}
                     </div>

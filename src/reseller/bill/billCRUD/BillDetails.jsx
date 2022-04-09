@@ -2,7 +2,7 @@ import React from "react";
 import "../../Customer/customer.css";
 
 export default function CustomerDetails({ single }) {
-  // const single = useSelector((state) => state.customer.singleCustomer);
+  // const single = useSelector(state => state.customer.singleCustomer);
 
   return (
     <div>

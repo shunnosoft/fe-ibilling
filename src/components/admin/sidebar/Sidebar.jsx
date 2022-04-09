@@ -23,10 +23,10 @@ import { billData } from "./billData";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {
-  const userRole = useSelector((state) => state.auth.role);
-  const user = useSelector((state) => state.auth.currentUser);
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const user = useSelector((state) => state.persistedReducer.auth.currentUser);
   const hasReseller = useSelector(
-    (state) => state.auth.userData?.bpSettings?.hasReseller
+    (state) => state.persistedReducer.auth.userData?.bpSettings?.hasReseller
   );
   // const hasReseller= true
   // addSidebar
@@ -417,8 +417,6 @@ export default function Sidebar() {
               ) : (
                 ""
               )}
-
-              
 
               {/* bill sub links */}
               {/* <div id="toggleSubBilling">

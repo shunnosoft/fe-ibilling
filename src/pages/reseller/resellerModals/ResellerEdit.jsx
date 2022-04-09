@@ -14,9 +14,11 @@ import { editReseller } from "../../../features/apiCalls";
 
 export default function ResellerEdit({ reseller }) {
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth.currentUser);
-  const area = useSelector((state) => state.area.area);
-  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const area = useSelector((state) => state.persistedReducer.area.area);
+  const mikrotik = useSelector(
+    (state) => state.persistedReducer.mikrotik.mikrotik
+  );
   const dispatch = useDispatch();
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);

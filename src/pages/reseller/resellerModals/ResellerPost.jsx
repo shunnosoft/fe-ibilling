@@ -15,10 +15,12 @@ import { postReseller } from "../../../features/apiCalls";
 export default function ResellerPost() {
   // const [Check, setCheck] = useState(RBD);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth.currentUser);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.area.area);
-  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
+  const area = useSelector((state) => state.persistedReducer.area.area);
+  const mikrotik = useSelector(
+    (state) => state.persistedReducer.mikrotik.mikrotik
+  );
 
   const [areaIds, setAreaIds] = useState([]);
   const [mikrotikIds, setMikrotikIds] = useState([]);

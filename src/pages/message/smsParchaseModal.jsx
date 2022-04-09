@@ -6,8 +6,8 @@ import "./message.css";
 import { purchaseSms } from "../../features/apiCalls";
 
 function SmsParchase() {
-  const userRole = useSelector((state) => state.auth.role);
-  const userData = useSelector((state) => state.auth.userData);
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setIsloading] = useState(false);
   console.log(userRole, userData);
 

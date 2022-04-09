@@ -23,8 +23,8 @@ import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 // import Loader from "../../components/common/Loader";
 
 export default function RechargeHistoryofReseller() {
-  // const balancee = useSelector((state) => state.payment.balance);
-  // const allDeposit = useSelector((state) => state.payment.allDeposit);
+  // const balancee = useSelector(state => state.payment.balance);
+  // const allDeposit = useSelector(state => state.payment.allDeposit);
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   const rechargeHistory = useSelector(
@@ -35,17 +35,21 @@ export default function RechargeHistoryofReseller() {
   today.setHours(23, 59, 59, 999);
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
-  // const manager = useSelector((state) => state.manager.manager);
-  const collectors = useSelector((state) => state.reseller.reseller);
-  const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
+  // const manager = useSelector(state => state.manager.manager);
+  const collectors = useSelector(
+    (state) => state.persistedReducer.reseller.reseller
+  );
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
   const [cusSearch, setCusSearch] = useState("");
-  const userData = useSelector((state) => state.auth.userData);
-  // const currentUser = useSelector((state) => state.auth?.currentUser);
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  // const currentUser = useSelector(state => state.auth?.currentUser);
   //To do after api impliment
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(rechargeHistory);
   const [mainData2, setMainData2] = useState(rechargeHistory);
-  const userRole = useSelector((state) => state.auth.role);
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
   // const [depositAccepted, setDepositAccepet] = useState("")
 
   // const [isLoading, setLoading] = useState(false);
@@ -53,7 +57,7 @@ export default function RechargeHistoryofReseller() {
   // const balance = useSelector(state=>state.persistedReducer.payment.balance)
 
   // bill amount
-  // const allCollector = useSelector((state) => state.reseller.reseller);
+  // const allCollector = useSelector(state => state.reseller.reseller);
 
   // useEffect(()=>{
 

@@ -7,11 +7,13 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
- 
+
 import { addArea } from "../../../features/apiCalls";
 
 export default function AreaPost() {
-  const ispOwnerId= useSelector((state) => state.auth.ispOwnerId);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -28,9 +30,7 @@ export default function AreaPost() {
         name: data.name,
         ispOwner: ispOwnerId,
       };
-      addArea(dispatch,sendingData,setIsLoading)
-     
-       
+      addArea(dispatch, sendingData, setIsLoading);
     }
   };
 

@@ -18,10 +18,10 @@ import { addCollector } from "../../../features/apiCallReseller";
 
 export default function CollectorPost() {
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.area.area);
+  const area = useSelector((state) => state.persistedReducer.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.auth.currentUser);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
 
   //validator
   const collectorValidator = Yup.object({
@@ -32,7 +32,7 @@ export default function CollectorPost() {
       .required("মোবাইল নম্বর *** "),
     address: Yup.string(),
     email: Yup.string().email("ইমেইল সঠিক নয় "),
-    nid: Yup.string() ,
+    nid: Yup.string(),
     status: Yup.string(),
 
     // refName: Yup.string().required("রেফারেন্স নাম"),
@@ -41,10 +41,7 @@ export default function CollectorPost() {
     //   .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
     //   .required("মোবাইল নম্বর দিন "),
   });
-  
-  
- 
-  
+
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
     let IDS_temp = [];
@@ -56,18 +53,16 @@ export default function CollectorPost() {
     // console.log("IDS: ", IDS_temp);
     setAreaIds(IDS_temp);
   };
- 
+
   const collectorPostHandler = async (data) => {
-    console.log(data)
-    
-   
-      const sendingData = {
-        ...data,
-        areas: areaIds,
-        reseller: auth.reseller.id,
-      };
-      addCollector(dispatch, sendingData, setIsLoading);
-    
+    console.log(data);
+
+    const sendingData = {
+      ...data,
+      areas: areaIds,
+      reseller: auth.reseller.id,
+    };
+    addCollector(dispatch, sendingData, setIsLoading);
   };
 
   return (
@@ -151,18 +146,15 @@ export default function CollectorPost() {
                     <b className="mt-2">এরিয়া সিলেক্ট</b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
-                        
-                           
-                            <div key={key} className="displayFlex">
-                              <input
-                                type="checkbox"
-                                className="getValueUsingClass"
-                                value={val.id}
-                                onChange={setAreaHandler}
-                              />
-                              <label>{val.name}</label>
-                            </div>
-                         
+                        <div key={key} className="displayFlex">
+                          <input
+                            type="checkbox"
+                            className="getValueUsingClass"
+                            value={val.id}
+                            onChange={setAreaHandler}
+                          />
+                          <label>{val.name}</label>
+                        </div>
                       ))}
                     </div>
                     {/* area */}

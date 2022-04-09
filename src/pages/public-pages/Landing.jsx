@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import "./netfee.css";
 
 export default function Landing() {
-  // const currentUser = useSelector((state) => state.auth.currentUser);
+  // const currentUser = useSelector(state => state.auth.currentUser);
 
   // console.log("From Landing: ", currentUser);
 
@@ -17,18 +17,20 @@ export default function Landing() {
           <div className="textBox">
             <div className="landingMain">
               <div className="landinglogodiv">
-              <img className="landingLogonew" src="./assets/img/NetFee.png" alt="" />
-
+                <img
+                  className="landingLogonew"
+                  src="./assets/img/NetFee.png"
+                  alt=""
+                />
               </div>
-               
-              <div className="buttons">
 
-              <NavLink   to="/register">
-                <p className="goToLoginPage custom-btn"> সাইন আপ</p>
-              </NavLink>
-              <NavLink  to="/login">
-                <p className="goToLoginPage custom-btn">লগইন</p>
-              </NavLink>
+              <div className="buttons">
+                <NavLink to="/register">
+                  <p className="goToLoginPage custom-btn"> সাইন আপ</p>
+                </NavLink>
+                <NavLink to="/login">
+                  <p className="goToLoginPage custom-btn">লগইন</p>
+                </NavLink>
               </div>
               {/* <h2 className="LandingTitle">নেটফি</h2> */}
             </div>

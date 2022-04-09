@@ -39,15 +39,19 @@ import CustomerReport from "./customerCRUD/showCustomerReport";
 import { FetchAreaSuccess } from "../../features/areaSlice";
 
 export default function Customer() {
-  const cus = useSelector((state) => state.customer.customer);
-  const role = useSelector((state) => state.auth.role);
+  const cus = useSelector((state) => state.persistedReducer.customer.customer);
+  const role = useSelector((state) => state.persistedReducer.auth.role);
   const dispatch = useDispatch();
-  const resellerId = useSelector((state) => state.auth.userData.id);
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.userData.id
+  );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  const permission = useSelector((state) => state.auth?.userData?.permission);
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
@@ -61,8 +65,10 @@ export default function Customer() {
   const firstIndex = lastIndex - customerPerPage;
 
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
-  const subAreas = useSelector((state) => state.area.area);
-  const userData = useSelector((state) => state.auth.currentUser);
+  const subAreas = useSelector((state) => state.persistedReducer.area.area);
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
 
   // paginate call Back function -> response from paginate component
   const paginate = (pageNumber) => {

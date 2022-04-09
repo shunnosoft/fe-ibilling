@@ -12,7 +12,9 @@ import Loader from "../common/Loader";
 export default function WriteModals(props) {
   const { manager } = props;
   const dispatch = useDispatch();
-  const ispOwner = useSelector((state) => state.auth.currentUser?.ispOwner?.id);
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
+  );
 
   // mangager validator
   const managerValidate = Yup.object({

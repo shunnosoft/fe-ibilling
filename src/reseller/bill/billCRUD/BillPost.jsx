@@ -11,10 +11,14 @@ import Loader from "../../../components/common/Loader";
 import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
 
 export default function CustomerModal() {
-  const auth = useSelector((state) => state.auth.currentUser);
-  const area = useSelector((state) => state.area.area);
-  const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
-  const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const area = useSelector((state) => state.persistedReducer.area.area);
+  const Getmikrotik = useSelector(
+    (state) => state.persistedReducer.mikrotik.mikrotik
+  );
+  const ppPackage = useSelector(
+    (state) => state.persistedReducer.mikrotik.pppoePackage
+  );
   const [isLoading, setIsloading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const [singleMikrotik, setSingleMikrotik] = useState("");

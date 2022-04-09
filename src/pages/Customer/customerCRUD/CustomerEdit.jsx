@@ -15,10 +15,14 @@ import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
 export default function CustomerEdit({ single }) {
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
-  const area = useSelector((state) => state.area.area);
-  const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
-  // const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const area = useSelector((state) => state.persistedReducer.area.area);
+  const Getmikrotik = useSelector(
+    (state) => state.persistedReducer.mikrotik.mikrotik
+  );
+  // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
   const [ppPackage, setppPackage] = useState([]);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);

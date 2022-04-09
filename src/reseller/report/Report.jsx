@@ -17,11 +17,13 @@ import { ArrowDownUp } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCallReseller";
 
 export default function Report() {
-  // const cus = useSelector((state) => state.customer.customer);
+  // const cus = useSelector(state => state.customer.customer);
   // console.log(cus.length)
 
-  const subAreas = useSelector((state) => state.area.area);
-  const allCollector = useSelector((state) => state.collector.collector);
+  const subAreas = useSelector((state) => state.persistedReducer.area.area);
+  const allCollector = useSelector(
+    (state) => state.persistedReducer.collector.collector
+  );
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -31,7 +33,9 @@ export default function Report() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const allBills = useSelector((state) => state.payment.allBills);
+  const allBills = useSelector(
+    (state) => state.persistedReducer.payment.allBills
+  );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   // const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
@@ -41,7 +45,7 @@ export default function Report() {
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
   // const [cusSearch, setCusSearch] = useState("");
-  // const ispOwnerId = useSelector((state) => state.auth?.ispOwnerId);
+  // const ispOwnerId = useSelector(state => state.auth?.ispOwnerId);
   const [isSorted, setSorted] = useState(false);
   // const [totalBill,setTotalBill]= useState("")
   const [currentPage, setCurrentPage] = useState(1);

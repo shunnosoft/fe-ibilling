@@ -30,7 +30,7 @@ import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
 export default function SubArea() {
   const navigate = useNavigate();
   const { areaId } = useParams();
-  const area = useSelector((state) => state.area.area);
+  const area = useSelector((state) => state.persistedReducer.area.area);
   const [search, setSearch] = useState("");
   const [subAreas, setSubAreas] = useState("");
   const [subAreaName, setSubAreaName] = useState("");
@@ -47,8 +47,10 @@ export default function SubArea() {
 
   const dispatch = useDispatch();
 
-  // const user = useSelector((state) => state.auth.currentUser);
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  // const user = useSelector(state => state.auth.currentUser);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   useEffect(() => {
     getArea(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId]);

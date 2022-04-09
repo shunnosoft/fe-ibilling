@@ -13,7 +13,7 @@ export default function AreaEdit({ oneArea }) {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  // const area = useSelector((state) => state.area.area);
+  // const area = useSelector(state => state.area.area);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 

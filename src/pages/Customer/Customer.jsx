@@ -33,14 +33,18 @@ import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 
 export default function Customer() {
-  const cus = useSelector((state) => state.customer.customer);
-  const role = useSelector((state) => state.auth.role);
+  const cus = useSelector((state) => state.persistedReducer.customer.customer);
+  const role = useSelector((state) => state.persistedReducer.auth.role);
   const dispatch = useDispatch();
-  const ispOwner = useSelector((state) => state.auth.ispOwnerId);
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  const permission = useSelector((state) => state.auth?.userData?.permissions);
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permissions
+  );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
@@ -52,9 +56,9 @@ export default function Customer() {
   const [customerPerPage, setCustomerPerPage] = useState(50);
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
-  
+
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
-  const areas = useSelector((state) => state.area.area);
+  const areas = useSelector((state) => state.persistedReducer.area.area);
 
   // paginate call Back function -> response from paginate component
   const paginate = (pageNumber) => {
@@ -70,7 +74,7 @@ export default function Customer() {
       "paymentStatus",
       "status",
       "balance",
-      "subArea"
+      "subArea",
     ];
     setCustomers(
       (isFilterRunning ? filterdCus : cus).filter((item) =>
@@ -130,7 +134,7 @@ export default function Customer() {
     setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
-  
+
   // console.log(permission)
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});

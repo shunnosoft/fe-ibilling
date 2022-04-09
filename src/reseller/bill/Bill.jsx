@@ -36,13 +36,17 @@ import { deleteACustomer, getCustomer } from "../../features/apiCalls";
 
 export default function Bill() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth.currentUser);
-  const ispOwner = useSelector((state) => state.auth.ispOwnerId);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
 
-  const Customers = useSelector((state) => state.customer.customer);
+  const Customers = useSelector(
+    (state) => state.persistedReducer.customer.customer
+  );
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");

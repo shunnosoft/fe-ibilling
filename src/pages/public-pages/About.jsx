@@ -5,7 +5,7 @@ import FooterLink from "./FooterLink";
 import "./netfee.css";
 
 export default function About() {
-  // const currentUser = useSelector((state) => state.auth.currentUser);
+  // const currentUser = useSelector(state => state.auth.currentUser);
 
   // console.log("From Landing: ", currentUser);
 

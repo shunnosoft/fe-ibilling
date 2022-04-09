@@ -1,11 +1,10 @@
-import {createSlice } from "@reduxjs/toolkit";
- 
+import { createSlice } from "@reduxjs/toolkit";
 
 const collectorSlice = createSlice({
   name: "collector",
   initialState: {
     collector: [],
-    collectorBill:[]
+    collectorBill: [],
   },
   reducers: {
     getCollectorSuccess: (state, action) => {
@@ -15,7 +14,6 @@ const collectorSlice = createSlice({
       state.collector.push(action.payload);
     },
     editCollectorSuccess: (state, action) => {
-       
       state.collector[
         state.collector.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
@@ -26,13 +24,13 @@ const collectorSlice = createSlice({
         1
       );
     },
-    getCollectorBills:(state,action) =>{
-      state.collectorBill=action.payload
+    getCollectorBills: (state, action) => {
+      state.collectorBill = action.payload;
     },
-    clearCollector:(state)=>{
-      state.collector=[]
-      state.collectorBill=[]
-    }
+    clearCollector: (state) => {
+      state.collector = [];
+      state.collectorBill = [];
+    },
   },
 });
 

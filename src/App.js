@@ -53,17 +53,19 @@ import { useEffect } from "react";
 import ReactModal from "./components/modals/reactModal/ReactModal";
 
 function App() {
-  // const invoice = useSelector((state) => state.invoice.invoice);
+  // const invoice = useSelector(state => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
-  const user = useSelector((state) => state.auth.currentUser);
-  const userRole = useSelector((state) => state.auth.role);
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const user = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   const hasReseller = useSelector(
-    (state) => state.auth.userData?.bpSettings?.hasReseller
+    (state) => state.persistedReducer.auth.userData?.bpSettings?.hasReseller
   );
   // const hasReseller= true
   const isModalShowing = useSelector(
-    (state) => state.persistedReducer.ui.alertModalShow
+    (state) => state.ui.alertModalShow
   );
   const dispatch = useDispatch();
 

@@ -11,10 +11,16 @@ import Loader from "../../../components/common/Loader";
 import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
 import moment from "moment";
 export default function CustomerModal() {
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
-  const area = useSelector((state) => state.area.area);
-  const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
-  const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const area = useSelector((state) => state.persistedReducer.area.area);
+  const Getmikrotik = useSelector(
+    (state) => state.persistedReducer.mikrotik.mikrotik
+  );
+  const ppPackage = useSelector(
+    (state) => state.persistedReducer.mikrotik.pppoePackage
+  );
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -89,7 +95,6 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data) => {
-    
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);

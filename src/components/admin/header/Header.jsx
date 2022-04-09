@@ -4,7 +4,7 @@ import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import { BoxArrowLeft, HouseDoor } from "react-bootstrap-icons";
- 
+
 // internal imports
 import "./header.css";
 // import { logOut } from "../../../features/authSlice";
@@ -12,9 +12,11 @@ import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 
 export default function Header(props) {
-  // const userRole = useSelector((state) => state.auth.role);
-  const currentUser = useSelector((state) => state.auth.currentUser);
-  const userData = useSelector((state) => state.auth.userData);
+  // const userRole = useSelector(state => state.auth.role);
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const dispatch = useDispatch();
   // const navigate = useNavigate();
   const pathName = useLocation().pathname;
@@ -46,11 +48,10 @@ export default function Header(props) {
             {pathName === "/login" || pathName === "/register" ? (
               <NavLink to={"/netfee"}>
                 <div className="homediv">
-                <img
+                  <img
                     className="newLogo"
                     src="/assets/img/NetFee.png"
                     alt=""
-                    
                   />
                 </div>
               </NavLink>

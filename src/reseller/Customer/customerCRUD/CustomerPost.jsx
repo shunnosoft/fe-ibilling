@@ -8,14 +8,21 @@ import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { addCustomer, fetchpppoePackage } from "../../../features/apiCallReseller";
+import {
+  addCustomer,
+  fetchpppoePackage,
+} from "../../../features/apiCallReseller";
 import moment from "moment";
 export default function CustomerModal() {
-  const userData = useSelector((state) => state.auth.userData);
-  const area = useSelector((state) => state.area.area);
-  
-  const Getmikrotik = useSelector((state) => state.mikrotik.mikrotik);
-  const ppPackage = useSelector((state) => state.mikrotik.pppoePackage);
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const area = useSelector((state) => state.persistedReducer.area.area);
+
+  const Getmikrotik = useSelector(
+    (state) => state.persistedReducer.mikrotik.mikrotik
+  );
+  const ppPackage = useSelector(
+    (state) => state.persistedReducer.mikrotik.pppoePackage
+  );
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -85,16 +92,14 @@ export default function CustomerModal() {
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
-const [subAreaId,setsubAreaId]= useState("")
+  const [subAreaId, setsubAreaId] = useState("");
   // sending data to backed
   const customerHandler = async (data) => {
-    
-     
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
       paymentStatus: "unpaid",
-      ispOwner:userData.ispOwner,
+      ispOwner: userData.ispOwner,
       subArea: subAreaId,
       reseller: userData.id,
       mikrotik: singleMikrotik,
@@ -110,7 +115,6 @@ const [subAreaId,setsubAreaId]= useState("")
         service: "pppoe",
         comment: Pcomment,
         profile: Pprofile,
-         
       },
       ...rest,
     };
@@ -121,9 +125,9 @@ const [subAreaId,setsubAreaId]= useState("")
     setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
     setBilltime(moment().endOf("day").format("HH:mm"));
   }, []);
-  const selectArea =(e)=>{
-    setsubAreaId(e)
-  }
+  const selectArea = (e) => {
+    setsubAreaId(e);
+  };
   return (
     <div>
       <div
@@ -233,7 +237,7 @@ const [subAreaId,setsubAreaId]= useState("")
                         <select
                           className="form-select"
                           aria-label="Default select example"
-                          onChange={(e)=>selectArea(e.target.value)}
+                          onChange={(e) => selectArea(e.target.value)}
                         >
                           <option value="">...</option>
                           {area?.length === undefined
@@ -245,7 +249,6 @@ const [subAreaId,setsubAreaId]= useState("")
                               ))}
                         </select>
                       </div>
- 
 
                       <FtextField
                         type="text"

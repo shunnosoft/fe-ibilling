@@ -5,7 +5,7 @@ import "./netfee.css";
 import FooterLink from "./FooterLink";
 
 export default function Privacy() {
-  // const currentUser = useSelector((state) => state.auth.currentUser);
+  // const currentUser = useSelector(state => state.auth.currentUser);
 
   // console.log("From Landing: ", currentUser);
 

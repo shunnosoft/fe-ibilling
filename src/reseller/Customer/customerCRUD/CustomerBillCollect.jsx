@@ -13,11 +13,17 @@ export default function CustomerBillCollect({ single }) {
   const [billType, setBillType] = useState("bill");
 
   // const [defaultAmount, setDefault] = useState(single.monthlyFee);
-  const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
-  
-  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
 
-  const currentUserId = useSelector((state) => state.auth.userData.id);
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser
+  );
+
+  const currentUserId = useSelector(
+    (state) => state.persistedReducer.auth.userData.id
+  );
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
   const BillValidatoin = Yup.object({

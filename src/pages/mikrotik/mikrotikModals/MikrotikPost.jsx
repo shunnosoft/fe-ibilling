@@ -12,7 +12,7 @@ import { postMikrotik } from "../../../features/apiCalls";
 // import { fetchMikrotik } from "../../../features/mikrotikSlice";
 
 export default function MikrotikPost() {
-  const auth = useSelector((state) => state.auth.currentUser);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -26,15 +26,13 @@ export default function MikrotikPost() {
   });
 
   // mikrotik handler
-  const mikrotikHandler =  (data) => {
-   
+  const mikrotikHandler = (data) => {
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
         ispOwner: auth.ispOwner.id,
       };
-      postMikrotik(dispatch,sendingData, setIsLoading)
-       
+      postMikrotik(dispatch, sendingData, setIsLoading);
     }
   };
 

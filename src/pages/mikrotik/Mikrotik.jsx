@@ -19,11 +19,13 @@ import { fetchMikrotik } from "../../features/apiCalls";
 
 export default function Mikrotik() {
   let serial = 0;
-  const auth = useSelector((state) => state.auth.currentUser);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const [msearch, setMsearch] = useState("");
   const dispatch = useDispatch();
   let allmikrotiks = [];
-  allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
+  allmikrotiks = useSelector(
+    (state) => state.persistedReducer.mikrotik.mikrotik
+  );
 
   useEffect(() => {
     const { ispOwner } = auth;

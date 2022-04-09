@@ -14,7 +14,7 @@ import { editSingleMikrotik } from "../../../features/apiCalls";
 // } from "../../../features/mikrotikSlice";
 
 export default function ConfigMikrotikModal(props) {
-  // const auth = useSelector((state) => state.auth.currentUser);
+  // const auth = useSelector(state => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { mik } = props;
@@ -38,10 +38,8 @@ export default function ConfigMikrotikModal(props) {
         ispId: mik.ispOwner,
       };
 
-       editSingleMikrotik(dispatch,sendingData)
-    setIsLoading(false);
-
-      
+      editSingleMikrotik(dispatch, sendingData);
+      setIsLoading(false);
     }
   };
 

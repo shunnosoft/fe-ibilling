@@ -39,9 +39,9 @@ const managerSlice = createSlice({
       state.isPending = false;
       state.manager = {};
     },
-    clearManager:(state)=>{
-      state.manager={}
-    }
+    clearManager: (state) => {
+      state.manager = {};
+    },
   },
 });
 
@@ -52,7 +52,7 @@ export const {
   managerFetchFailure,
   managerFetchStart,
   managerFetchSuccess,
-  clearManager
+  clearManager,
 } = managerSlice.actions;
 
 export default managerSlice.reducer;

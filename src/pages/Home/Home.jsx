@@ -23,13 +23,23 @@ import { managerFetchSuccess } from "../../features/managerSlice";
 
 export default function Home() {
   const [isLoading, setIsloading] = useState(false);
-  const role = useSelector((state) => state.auth.role);
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
-  const allCollector = useSelector((state) => state.collector.collector);
-  const manager = useSelector((state) => state.manager.manager);
-  const userData = useSelector((state) => state.auth.userData);
-  const ChartsData = useSelector((state) => state.chart.charts);
-  const invoice = useSelector((state) => state.invoice.invoice);
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const allCollector = useSelector(
+    (state) => state.persistedReducer.collector.collector
+  );
+  const manager = useSelector(
+    (state) => state.persistedReducer.manager.manager
+  );
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const ChartsData = useSelector(
+    (state) => state.persistedReducer.chart.charts
+  );
+  const invoice = useSelector(
+    (state) => state.persistedReducer.invoice.invoice
+  );
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);

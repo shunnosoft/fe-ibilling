@@ -32,8 +32,12 @@ import { getInvoices, initiatePayment } from "../../features/apiCalls";
 function Invoice() {
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
-  const invoices = useSelector((state) => state.invoice.invoices);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const invoices = useSelector(
+    (state) => state.persistedReducer.invoice.invoices
+  );
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);

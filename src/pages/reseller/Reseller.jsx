@@ -7,7 +7,6 @@ import {
   ArchiveFill,
   PersonFill,
   Wallet,
-  
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -33,11 +32,13 @@ import Recharge from "./resellerModals/recharge";
 
 export default function Reseller() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth.currentUser);
+  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const [singleUser, setSingleUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
-  const reseller = useSelector((state) => state.reseller.reseller);
+  const reseller = useSelector(
+    (state) => state.persistedReducer.reseller.reseller
+  );
   let serial = 0;
   useEffect(() => {
     if (auth.ispOwner) {
@@ -47,14 +48,10 @@ export default function Reseller() {
 
   // get Single reseller
   const getSpecificReseller = (rid) => {
-
-
-   
-      const singleReseller = reseller.find((val) => {
-        return val.id === rid;
-      });
-      setSingleUser(singleReseller);
-    
+    const singleReseller = reseller.find((val) => {
+      return val.id === rid;
+    });
+    setSingleUser(singleReseller);
   };
 
   // delete reseller
@@ -76,7 +73,7 @@ export default function Reseller() {
               {/* <ResellerRecharge reseller={singleUser}></ResellerRecharge> */}
               <ResellerEdit reseller={singleUser} />
               <ResellerDetails reseller={singleUser} />
-              <Recharge reseller={singleUser} ></Recharge>
+              <Recharge reseller={singleUser}></Recharge>
               {/* modals */}
               <FourGround>
                 <h2 className="collectorTitle">রি-সেলার</h2>
@@ -190,7 +187,6 @@ export default function Reseller() {
                                       onClick={() => {
                                         getSpecificReseller(val.id);
                                       }}
-                                       
                                     >
                                       <div className="dropdown-item">
                                         <div className="customerAction">

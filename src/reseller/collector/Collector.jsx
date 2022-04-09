@@ -26,8 +26,10 @@ import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 export default function Collector() {
   const dispatch = useDispatch();
   const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector((state) => state.collector.collector);
-  const userData=useSelector((state)=>state.auth.userData)
+  const collector = useSelector(
+    (state) => state.persistedReducer.collector.collector
+  );
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
   let serial = 0;
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,16 +38,17 @@ export default function Collector() {
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
   const [allCollector, setCollector] = useState(currentCollector);
-  const permission = useSelector((state) => state.auth?.userData?.permission);
-  const role = useSelector((state) => state.auth.role);
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
+  const role = useSelector((state) => state.persistedReducer.auth.role);
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
     getCollector(dispatch, userData.id);
-    getSubAreas(dispatch,userData.id)
-
+    getSubAreas(dispatch, userData.id);
   }, [userData, dispatch]);
 
   const [singleCollector, setSingleCollector] = useState("");
@@ -65,7 +68,6 @@ export default function Collector() {
   // };
   // console.log(allCollector)
 
-  
   useEffect(() => {
     const keys = ["name", "mobile", "email"];
     if (collSearch !== "") {
@@ -81,10 +83,10 @@ export default function Collector() {
     } else {
       setCollector(collector);
     }
-  }, [collSearch,collector]);
+  }, [collSearch, collector]);
 
   const searchHandler = (e) => {
-    setCollSearch(e.toLowerCase())
+    setCollSearch(e.toLowerCase());
   };
   return (
     <>
@@ -107,7 +109,8 @@ export default function Collector() {
                     <div className="addNewCollector">
                       <div className="displexFlexSys">
                         <div className="addAndSettingIcon">
-                          {userData.permission?.customerAdd || role === "ispOwner" ? (
+                          {userData.permission?.customerAdd ||
+                          role === "ispOwner" ? (
                             <PersonPlusFill
                               className="addcutmButton"
                               data-bs-toggle="modal"
@@ -144,7 +147,6 @@ export default function Collector() {
                         </div>
                       </div>
                     </div>
-                    
                   </div>
                   {/* table */}
                   <div className="table-responsive-lg">
@@ -251,7 +253,6 @@ export default function Collector() {
                       <option value="100">১০০ জন</option>
                     </select>
                     <Pagination
-                      
                       customerPerPage={collectorPerPage}
                       totalCustomers={collector.length}
                       paginate={paginate}

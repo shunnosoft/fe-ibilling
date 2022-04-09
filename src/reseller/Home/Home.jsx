@@ -15,12 +15,22 @@ import { FetchAreaSuccess } from "../../features/areaSlice";
 // import { managerFetchSuccess } from "../../features/managerSlice";
 
 export default function Home() {
-  const role = useSelector((state) => state.auth.role);
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
-  const allCollector = useSelector((state) => state.collector.collector);
-  const manager = useSelector((state) => state.manager.manager);
-  const userData = useSelector((state) => state.auth.currentUser);
-  const ChartsData = useSelector((state) => state.chart.charts);
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const allCollector = useSelector(
+    (state) => state.persistedReducer.collector.collector
+  );
+  const manager = useSelector(
+    (state) => state.persistedReducer.manager.manager
+  );
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
+  const ChartsData = useSelector(
+    (state) => state.persistedReducer.chart.charts
+  );
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
@@ -60,21 +70,20 @@ export default function Home() {
     ],
   };
 
-   useEffect(()=>{
-     if(role==="collector") {
+  useEffect(() => {
+    if (role === "collector") {
+      const areas = [];
+      userData.collector?.areas.map((i) => {
+        const arr = {
+          name: i.name,
+          id: i.id,
+        };
+        return areas.push(arr);
+      });
 
-       const areas = [] ; 
-       userData.collector?.areas.map((i)=>{
-         const arr = {
-           name:i.name,id:i.id
-           
-          }
-       return   areas.push(arr)
-        })
-        
-        dispatch(FetchAreaSuccess(areas))
-      }
-   },[dispatch,userData,role])
+      dispatch(FetchAreaSuccess(areas));
+    }
+  }, [dispatch, userData, role]);
 
   useEffect(() => {
     let collectors = [];
@@ -136,7 +145,7 @@ export default function Home() {
     if (role === "collector") {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
     } else {
-      getCollector(dispatch, userData?.reseller.id)
+      getCollector(dispatch, userData?.reseller.id);
       getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
     }
   };

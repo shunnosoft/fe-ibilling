@@ -8,8 +8,12 @@ import "../../Customer/customer.css";
 
 export default function CustomerBillCollect({ singleCustomer }) {
   const [billType, setBillType] = useState("bill");
-  const ispOwner = useSelector((state) => state.auth?.ispOwnerId);
-  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser
+  );
 
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
@@ -24,7 +28,6 @@ export default function CustomerBillCollect({ singleCustomer }) {
       ispOwner: ispOwner,
       collectorId: currentUser?.collector?.id, //when collector is logged in
     };
-
   };
 
   return (

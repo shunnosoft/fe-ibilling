@@ -23,23 +23,23 @@ import arraySort from "array-sort";
 import { getCollectorBill } from "../../features/apiCalls";
 
 export default function CollectorReport() {
-  //   const allArea = useSelector((state) => state.area.area);
+  //   const allArea = useSelector(state => state.area.area);
   const [allArea, setAreas] = useState([]);
   const collectorArea = useSelector(
-    (state) => state.auth.currentUser?.collector.areas
+    (state) => state.persistedReducer.auth.currentUser?.collector.areas
   );
-  
-  
+
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const allBills = useSelector((state) => state.collector.collectorBill);
+  const allBills = useSelector(
+    (state) => state.persistedReducer.collector.collectorBill
+  );
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);

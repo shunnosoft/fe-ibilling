@@ -29,10 +29,12 @@ const authSlice = createSlice({
         ? (state.ispOwnerId = action.payload.manager.ispOwner) &&
           (state.userData = action.payload?.manager)
         : action.payload?.user.role === "collector"
-        ?(state.userData = action.payload?.collector) && (state.ispOwnerId = action.payload.collector.ispOwner) 
-          
-        :action.payload?.user.role==="reseller"? (state.ispOwnerId = action.payload?.reseller?.ispOwner) &&
-        (state.userData = action.payload?.reseller) : (state.ispOwnerId = "")
+        ? (state.userData = action.payload?.collector) &&
+          (state.ispOwnerId = action.payload.collector.ispOwner)
+        : action.payload?.user.role === "reseller"
+        ? (state.ispOwnerId = action.payload?.reseller?.ispOwner) &&
+          (state.userData = action.payload?.reseller)
+        : (state.ispOwnerId = "");
     },
     loginFailure: (state) => {
       state.isFetching = false;

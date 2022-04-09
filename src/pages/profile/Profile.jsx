@@ -18,9 +18,13 @@ import { useState } from "react";
 
 export default function Profile() {
   // const role = useSelector(state=>state.persistedReducer.auth.currentUser?.user.role);
-  const currentUser = useSelector((state) => state.auth.userData);
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
 
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingpass, setIsLoadingpass] = useState(false);
 

@@ -25,9 +25,13 @@ import { getCollector } from "../../features/apiCalls";
 
 export default function Collector() {
   const dispatch = useDispatch();
-  const ispOwnerId = useSelector((state) => state.auth.ispOwnerId);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
   const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector((state) => state.collector.collector);
+  const collector = useSelector(
+    (state) => state.persistedReducer.collector.collector
+  );
 
   let serial = 0;
   // pagination
@@ -37,8 +41,10 @@ export default function Collector() {
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
   const [allCollector, setCollector] = useState(currentCollector);
-  const permission = useSelector((state) => state.auth?.userData?.permissions);
-  const role = useSelector((state) => state.auth.role);
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permissions
+  );
+  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -65,7 +71,6 @@ export default function Collector() {
   // };
   // console.log(allCollector)
 
-  
   useEffect(() => {
     const keys = ["name", "mobile", "email"];
     if (collSearch !== "") {
@@ -81,10 +86,10 @@ export default function Collector() {
     } else {
       setCollector(collector);
     }
-  }, [collSearch,collector]);
+  }, [collSearch, collector]);
 
   const searchHandler = (e) => {
-    setCollSearch(e.toLowerCase())
+    setCollSearch(e.toLowerCase());
   };
   return (
     <>
@@ -144,7 +149,6 @@ export default function Collector() {
                         </div>
                       </div>
                     </div>
-                    
                   </div>
                   {/* table */}
                   <div className="table-responsive-lg">
@@ -251,7 +255,6 @@ export default function Collector() {
                       <option value="100">১০০ জন</option>
                     </select>
                     <Pagination
-                      
                       customerPerPage={collectorPerPage}
                       totalCustomers={collector.length}
                       paginate={paginate}
