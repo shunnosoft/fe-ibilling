@@ -10,6 +10,7 @@ import managerSlice from "../features/managerSlice";
 import chartsSlice from "../features/chartsSlice";
 import rechargeSlice from "../features/rechargeSlice";
 import invoiceSlice from "../features/invoiceSlice";
+import uiSlice from "../features/uiSlice";
 
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   chart: chartsSlice,
   recharge: rechargeSlice,
   invoice: invoiceSlice,
+  ui:uiSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

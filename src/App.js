@@ -50,6 +50,7 @@ import Refund from "./pages/public-pages/Refund";
 
 import { getUnpaidInvoice } from "./features/apiCalls";
 import { useEffect } from "react";
+import ReactModal from "./components/modals/reactModal/ReactModal";
 
 function App() {
   // const invoice = useSelector((state) => state.invoice.invoice);
@@ -61,7 +62,7 @@ function App() {
     (state) => state.auth.userData?.bpSettings?.hasReseller
   );
   // const hasReseller= true
-
+  const isModalShowing= useSelector(state=>state.ui.alertModalShow)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -72,6 +73,7 @@ function App() {
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
       <div className="App">
+       {isModalShowing && <ReactModal></ReactModal>}
        {( pathName==="/login" || pathName==="/register" || user)? <Header theme={theme} setTheme={setTheme} />:""}
         {userRole === "reseller" ||
         (userRole === "collector" && user.collector.reseller) ? (

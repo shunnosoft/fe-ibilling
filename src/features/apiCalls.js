@@ -64,6 +64,7 @@ import {
 import { getChartSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
 import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
+import { showModal } from "./uiSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -946,7 +947,8 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
           invoice
         );
 
-        window.location.href = res.data.paymentUrl;
+        dispatch(showModal())
+        // window.location.href = res.data.paymentUrl;
       }
     }
 
