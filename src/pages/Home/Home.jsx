@@ -20,6 +20,7 @@ import {
 import { getCharts, initiatePayment } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
+import { showModal } from "../../features/uiSlice";
 
 export default function Home() {
   const [isLoading, setIsloading] = useState(false);
@@ -156,9 +157,9 @@ export default function Home() {
     }
   }
 
-  const payNowHandler = (invoice) => {
-    initiatePayment(invoice);
-  };
+  // const payNowHandler = (invoice) => {
+  //   initiatePayment(invoice);
+  // };
 
   return (
     <div className="container homeWrapper">
@@ -181,7 +182,7 @@ export default function Home() {
                   type="button"
                   className="btn btn-success fs-5 text"
                   onClick={() => {
-                    payNowHandler(invoice);
+                     dispatch(showModal(invoice))
                   }}
                 >
                   পেমেন্ট

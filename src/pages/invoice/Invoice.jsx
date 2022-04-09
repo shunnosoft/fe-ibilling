@@ -28,6 +28,7 @@ import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 
 import { getInvoices, initiatePayment } from "../../features/apiCalls";
+import { showModal } from "../../features/uiSlice";
 
 function Invoice() {
   const [isLoading, setIsloading] = useState(false);
@@ -53,9 +54,9 @@ function Invoice() {
     getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
 
-  const payNowHandler = (invoice) => {
-    initiatePayment(invoice);
-  };
+  // const payNowHandler = (invoice) => {
+  //   initiatePayment(invoice);
+  // };
 
   return (
     <>
@@ -156,7 +157,8 @@ function Invoice() {
                                   <div className="AcceptRejectBtn">
                                     <button
                                       onClick={() => {
-                                        payNowHandler(val);
+                                        dispatch(showModal(val))
+                                        // payNowHandler(val);
                                       }}
                                     >
                                       <strong>Pay Now</strong>

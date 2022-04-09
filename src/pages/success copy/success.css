@@ -4,13 +4,14 @@
   text-align: center;
   padding-top: 200px;
 }
-.successTitle {
-  color: #53af50;
+.successTitle2 {
+  color: #ff7b00;
 }
 .successText {
   color: gray;
   font-size: 19px;
   margin-bottom: 20px;
+
 }
 .successButton {
   text-decoration: none;

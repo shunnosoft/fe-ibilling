@@ -51,6 +51,8 @@ import Refund from "./pages/public-pages/Refund";
 import { getUnpaidInvoice } from "./features/apiCalls";
 import { useEffect } from "react";
 import ReactModal from "./components/modals/reactModal/ReactModal";
+import Cancel from "./pages/success copy/Success";
+import Failed from "./pages/success copy 2/Success";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -68,7 +70,7 @@ function App() {
     (state) => state.ui.alertModalShow
   );
   const dispatch = useDispatch();
-
+ 
   useEffect(() => {
     getUnpaidInvoice(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch]);
@@ -83,6 +85,8 @@ function App() {
         ) : (
           ""
         )}
+
+        {/* for reseller route */}
         {userRole === "reseller" ||
         (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
@@ -123,7 +127,7 @@ function App() {
             </Route>
           </Routes>
         ) : (
-          //NOt for reseller
+          //NOt for reseller routes
 
           <Routes>
             <Route path="/" element={<Navigate to="/netfee" />} />
@@ -162,6 +166,8 @@ function App() {
             />
 
             <Route path="/payment/success" element={<Success />} />
+            <Route path="/payment/cancel" element={<Cancel />} />
+            <Route path="/payment/failed" element={<Failed />} />
             {/* <Route
             path="/bill"
             element={

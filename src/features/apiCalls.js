@@ -947,7 +947,7 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
           invoice
         );
 
-        dispatch(showModal())
+        dispatch(showModal(res.data))
         // window.location.href = res.data.paymentUrl;
       }
     }

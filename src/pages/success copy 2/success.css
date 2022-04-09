@@ -4,8 +4,8 @@
   text-align: center;
   padding-top: 200px;
 }
-.successTitle {
-  color: #53af50;
+.successTitle3 {
+  color: rgb(255, 0, 0);
 }
 .successText {
   color: gray;
@@ -19,7 +19,7 @@
   border-radius: 9px;
   color: white;
   font-weight: 500;
-  margin-top: 20px;
+   
 }
 .successButton:hover {
   background: #51cc55;
