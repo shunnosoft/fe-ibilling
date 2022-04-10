@@ -28,9 +28,9 @@ export default function FooterLink() {
       <img
         className="sslimg"
         alt="ssl"
-        src="./assets/img/ssl.png"
-        height="120px"
-        width="600px"
+        src="./assets/img/ssl2.png"
+        height="130px"
+        width="650px"
       ></img>
     </div>
   );

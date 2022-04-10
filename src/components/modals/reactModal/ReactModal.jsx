@@ -55,7 +55,7 @@ function ReactModal() {
           <img
             className="sslimg"
             alt="ssl"
-            src="./assets/img/ssl.png"
+            src="./assets/img/ssl2.png"
             height="120px"
             width="600px"
           ></img>
