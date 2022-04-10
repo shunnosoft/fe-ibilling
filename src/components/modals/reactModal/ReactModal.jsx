@@ -5,12 +5,11 @@ import { initiatePayment } from "../../../features/apiCalls";
 import { hideModal } from "../../../features/uiSlice";
 import Loader from "../../common/Loader";
 
-
 import "./modal.css";
 import { NavLink } from "react-router-dom";
 import moment from "moment";
 function ReactModal() {
-  const [isLoading,setIsloading] =useState(false)
+  const [isLoading, setIsloading] = useState(false);
   const invoice = useSelector(
     (state) => state.persistedReducer?.invoice?.invoice
   );
@@ -22,11 +21,11 @@ function ReactModal() {
   console.log(alertModalData);
   const modalHandle = () => {
     if (alertModalData.paymentUrl) {
-      setIsloading(true)
+      setIsloading(true);
       window.location.href = alertModalData.paymentUrl;
-      setIsloading(false)
+      setIsloading(false);
     } else {
-      initiatePayment(alertModalData,setIsloading);
+      initiatePayment(alertModalData, setIsloading);
     }
   };
   return (
@@ -43,11 +42,13 @@ function ReactModal() {
           </button>
         </div>
         <div className="title">
-          <h1 style={{color:"green"}}>{`নেটফি রেজিস্ট্রেশন  ফিঃ ${invoice?.amount} `}</h1>
-          <h1 style={{color:"orangered"}}>
+          <h1
+            style={{ color: "green" }}
+          >{`নেটফি রেজিস্ট্রেশন  ফিঃ ${invoice?.amount} Tk`}</h1>
+          <h1 style={{ color: "orangered" }}>
             {`পরিশোধের শেষ সময়ঃ ${moment(invoice?.dueDate).format(
-                  "DD-MM-YYYY hh:mm:ss A"
-                )}`}
+              "DD-MM-YYYY hh:mm:ss A"
+            )}`}
           </h1>
         </div>
         <div className="rmbody">
@@ -85,7 +86,7 @@ function ReactModal() {
             className={"navnew"}
             to={"/privacy-policy"}
           >
-            <p className="newLink">privacy Policy</p>
+            <p className="newLink">Privacy Policy</p>
           </NavLink>
           and
           <NavLink
@@ -112,7 +113,7 @@ function ReactModal() {
             style={{ cursor: !isAgreed ? "not-allowed" : "pointer" }}
             onClick={modalHandle}
           >
-           {isLoading?< Loader></Loader> : "Continue"}
+            {isLoading ? <Loader></Loader> : "Continue"}
           </button>
         </div>
       </div>

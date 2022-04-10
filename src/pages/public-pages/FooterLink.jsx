@@ -13,7 +13,7 @@ export default function FooterLink() {
         </NavLink>
         |
         <NavLink className={"navnew"} to={"/privacy-policy"}>
-          <p className="newLink">privacy Policy</p>
+          <p className="newLink">Privacy Policy</p>
         </NavLink>
         |
         <NavLink className={"navnew"} to={"/terms-conditions"}>
@@ -26,7 +26,7 @@ export default function FooterLink() {
       </div>
       <br />
       <img
-      className="sslimg"
+        className="sslimg"
         alt="ssl"
         src="./assets/img/ssl.png"
         height="120px"
