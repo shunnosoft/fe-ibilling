@@ -12,6 +12,7 @@ const packageSlice = createSlice({
       state.packages = action.payload;
     },
     editPackageSuccess: (state, action) => {
+      console.log(action.payload)
       state.packages[
         state.packages.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;

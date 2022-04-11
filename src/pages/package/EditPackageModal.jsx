@@ -9,14 +9,12 @@ import "../Customer/customer.css";
 // import { FtextField } from "../../../components/common/FtextField";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
-import { addPackagewithoutmikrotik } from "../../features/apiCalls";
+import {  editPackagewithoutmikrotik } from "../../features/apiCalls";
 
-export default function EditPackage() {
+export default function EditPackage(props) {
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.persistedReducer.area.area);
-  const [areaIds, setAreaIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const ispOwnerId =useSelector(state=>state.persistedReducer.auth.ispOwnerId)
 
   //validator
   const collectorValidator = Yup.object({
@@ -34,13 +32,16 @@ export default function EditPackage() {
     //   .required("মোবাইল নম্বর দিন "),
   });
 
-  const packageAddHandler = (data) => {
+  const packageEditHandler = (data) => {
 
     const sendingData = {
       ...data,
+      id:props.package.id,
+      ispOwner:ispOwnerId
     };
+    console.log(sendingData)
 
-    addPackagewithoutmikrotik(sendingData,dispatch,setIsLoading)
+    editPackagewithoutmikrotik(sendingData,dispatch,setIsLoading)
 
   };
 
@@ -70,12 +71,12 @@ export default function EditPackage() {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: "",
-                  rate: 1,
+                  name: props.package.name,
+                  rate: props.package.rate,
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
-                  packageAddHandler(values);
+                  packageEditHandler(values);
                 }}
                 enableReinitialize
               >

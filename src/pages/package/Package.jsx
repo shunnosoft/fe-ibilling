@@ -42,16 +42,13 @@ export default function Package() {
     getPackagewithoutmikrotik(ispOwnerId, dispatch);
   }, [ispOwnerId, dispatch]);
 
-  const [singleCollector, setSingleCollector] = useState("");
+  const [singlePackage, setSinglePackage] = useState("");
 
-  const getSpecificPackage = (id) => {
-    if (collector.length !== undefined) {
-      const temp = collector.find((val) => {
-        return val.id === id;
-      });
-      setSingleCollector(temp);
+  const getSpecificPackage = (val) => {
+    console.log(val)
+    setSinglePackage(val)
     }
-  };
+  
 
   // DELETE collector
   // const deleteCollectorHandler = async (ID) => {
@@ -83,7 +80,7 @@ export default function Package() {
   return (
     <>
       <CreatePackage></CreatePackage>
-      <EditPackage></EditPackage>
+      <EditPackage package={singlePackage}></EditPackage>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
@@ -173,7 +170,7 @@ export default function Package() {
                                       data-bs-target="#editPackage"
                                       
                                       onClick={() => {
-                                        getSpecificPackage(val.id);
+                                        getSpecificPackage(val);
                                       }}
                                     >
                                       <div className="dropdown-item">
