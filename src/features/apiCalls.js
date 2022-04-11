@@ -65,6 +65,7 @@ import { getChartSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
 import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
 import { showModal } from "./uiSlice";
+import { addPackageSuccess, getpackageSuccess } from "./packageSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -973,3 +974,33 @@ export const getIspownerwitSMS =async (ispOwnerId)=>{
   }
 
 }
+
+//mikrotik packages without mikrotik access
+
+export const getPackagewithoutmikrotik = async (ispOwnerId,dispatch) =>{
+
+  try {
+      const res =await apiLink.get(`/mikrotik/package/${ispOwnerId}`)
+      console.log(res.data.packages)
+      dispatch(getpackageSuccess(res.data.packages))
+  } catch (error) {
+    console.log(error.response?.data.message)
+    
+  }
+
+}
+export const addPackagewithoutmikrotik = async ( data,dispatch,setIsLoading) =>{
+  setIsLoading(true)
+  try {
+      const res =await apiLink.post(`/mikrotik/package`,data)
+      console.log(res.data.newPackage)
+      dispatch(addPackageSuccess(res.data.newPackage))
+      setIsLoading(false)
+  } catch (error) {
+    console.log(error.response?.data.message)
+    setIsLoading(false)
+    
+  }
+
+}
+

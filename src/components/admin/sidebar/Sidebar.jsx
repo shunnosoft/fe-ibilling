@@ -257,6 +257,29 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
+              {( !bpSettings?.hasMikrotik) ? (
+                <NavLink
+                  key={55}
+                  to={"/package"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/package" ? "active" : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<Wifi />}</div>
+                      <span className="sidebarLinksName">{"প্যাকেজ"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
               {(userRole === "ispOwner" && bpSettings?.hasMikrotik) ? (
                 <NavLink
                   key={5}

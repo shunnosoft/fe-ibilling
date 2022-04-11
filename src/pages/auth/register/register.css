@@ -136,9 +136,34 @@
 .mainfeecross{
   text-decoration:line-through; 
   margin-right: 5px;
-  text-decoration-thickness: 2px;
+  text-decoration-thickness: 1px;
   text-decoration-color:red;
+  font-size: 17px;
 
+}
+
+.strikethrough {
+  position: relative;
+ 
+  margin-right: 5px;
+  
+  font-size: 17px;
+}
+.strikethrough:before {
+  position: absolute;
+  content: "";
+  left: 0;
+  top: 50%;
+  color: red;
+  right: 0;
+  border-top: 1px solid;
+  border-color: inherit;
+  
+  -webkit-transform:rotate(+7deg);
+  -moz-transform:rotate(+7deg);
+  -ms-transform:rotate(+7deg);
+  -o-transform:rotate(+7deg);
+  transform:rotate(+7deg);
 }
 .discount{
   width: 100%;
