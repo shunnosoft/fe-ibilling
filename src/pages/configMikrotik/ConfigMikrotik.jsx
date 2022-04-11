@@ -141,12 +141,12 @@ export default function ConfigMikrotik() {
     })
       .then(() => {
         setIsChecking(false);
-        toast("মাইক্রোটিক কানেকশন ঠিক আছে");
+        toast.success("মাইক্রোটিক কানেকশন ঠিক আছে");
       })
       .catch(() => {
         setIsChecking(false);
 
-        toast("Error - মাইক্রোটিক কানেকশন !");
+        toast.error("দুঃখিত, মাইক্রোটিক কানেকশন ঠিক নেই!");
       });
   };
 
@@ -206,14 +206,14 @@ export default function ConfigMikrotik() {
                         )}
                         <div className="addAndSettingIcon">
                           <button
-                            title="Check Connection"
+                            title="কানেকশন চেক"
                             className="addcutmButton  btnbyEnamul"
                             onClick={MikrotikConnectionTest}
                           >
                             <PlugFill className="rotating" />
                           </button>
                           <button
-                            title="Edit Mikrotik"
+                            title="মাইক্রোটিক এডিট"
                             data-bs-toggle="modal"
                             data-bs-target="#configMikrotikModal"
                             className="btnbyEnamul addcutmButton"
@@ -233,7 +233,7 @@ export default function ConfigMikrotik() {
                           ) : (
                             <button
                               onClick={syncPackage}
-                              title="Sync Package"
+                              title="প্যাকেজ সিংক"
                               className="addcutmButton btn-info btnbyEnamul"
                             >
                               <ArrowClockwise />
@@ -247,7 +247,7 @@ export default function ConfigMikrotik() {
                           ) : (
                             <button
                               onClick={syncCustomer}
-                              title="Sync Customer"
+                              title="গ্রাহক সিংক"
                               className="addcutmButton btn-primary btnbyEnamul"
                             >
                               <ArrowClockwise />
@@ -287,10 +287,10 @@ export default function ConfigMikrotik() {
                           <option value="showMikrotikPackage">
                             PPPoE প্যাকেজ
                           </option>
-                          <option value="showMikrotikActiveUser">
-                            PPPoE গ্রাহক
+                          <option value="showAllMikrotikUser">
+                            সকল গ্রাহক
                           </option>
-                          <option value="showMikrotikUser">
+                          <option value="showActiveMikrotikUser">
                             এক্টিভ গ্রাহক
                           </option>
                         </select>
@@ -429,13 +429,13 @@ export default function ConfigMikrotik() {
                     )}
 
                     {/* PPPoE users */}
-                    {whatYouWantToShow === "showMikrotikUser" ? (
+                    {whatYouWantToShow === "showActiveMikrotikUser" ? (
                       <>
-                        <h2 className="secondaryTitle">PPPoE গ্রাহক</h2>
+                        <h2 className="secondaryTitle">এক্টিভ গ্রাহক</h2>
                         <div className="row searchCollector">
                           <div className="col-sm-8">
                             <h4 className="allCollector">
-                              PPPoE গ্রাহক :{" "}
+                              এক্টিভ গ্রাহক :{" "}
                               <span>{pppoeUser.length || "NULL"}</span>
                             </h4>
                           </div>
@@ -508,19 +508,19 @@ export default function ConfigMikrotik() {
                     )}
 
                     {/* Active PPPoE users */}
-                    {whatYouWantToShow === "showMikrotikActiveUser" ? (
+                    {whatYouWantToShow === "showAllMikrotikUser" ? (
                       <>
-                        <h2 className="secondaryTitle">এক্টিভ গ্রাহক</h2>
+                        <h2 className="secondaryTitle">সকল গ্রাহক</h2>
                         <div className="row searchCollector">
                           <div className="col-sm-8">
                             <h4 className="allCollector">
-                              এক্টিভ গ্রাহক :{" "}
+                              সকল গ্রাহক :{" "}
                               <span>
                                 {" "}
                                 {isLoadingCus ? (
                                   <Loader />
                                 ) : (
-                                  pppoePackage?.length
+                                  activeUser?.length
                                 )}{" "}
                               </span>
                             </h4>

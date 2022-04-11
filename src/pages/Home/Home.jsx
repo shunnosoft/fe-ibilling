@@ -182,7 +182,7 @@ export default function Home() {
                   type="button"
                   className="btn btn-success fs-5 text"
                   onClick={() => {
-                     dispatch(showModal(invoice))
+                    dispatch(showModal(invoice));
                   }}
                 >
                   পেমেন্ট
@@ -190,7 +190,7 @@ export default function Home() {
               </div>
             )}
 
-            {cardData.map((val, key) => {
+            {/* {cardData.map((val, key) => {
               return (
                 <div className="col-md-3" key={key}>
                   <div id={val.classnam} className="dataCard">
@@ -203,7 +203,7 @@ export default function Home() {
                   </div>
                 </div>
               );
-            })}
+            })} */}
           </div>
 
           {/* chart section */}
