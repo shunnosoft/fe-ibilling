@@ -165,6 +165,7 @@ export const getArea = async (dispatch, ispOwnerId) => {
 };
 
 export const addArea = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true)
   try {
     const res = await apiLink.post("/ispOwner/area", data);
 

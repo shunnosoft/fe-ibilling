@@ -83,7 +83,7 @@ export default function MikrotikPost() {
                       name="host"
                     />
                     <FtextField type="text" label="পোর্ট" name="port" />
-                    <FtextField type="text" label="পাসওয়ার্ড" name="password" />
+                    <FtextField type="password" label="পাসওয়ার্ড" name="password" />
 
                     <div className="modal-footer">
                       <button

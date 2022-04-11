@@ -137,78 +137,78 @@ const pakage = [
       },
     ],
   },
-  {
-    packageName: "Premium",
-    packageNameBangla: "প্রিমিয়াম",
-    subPakage: [
-      {
-        id: "18",
-        subPackageName: "P1",
-        customer: "300",
+  // {
+  //   packageName: "Premium",
+  //   packageNameBangla: "প্রিমিয়াম",
+  //   subPakage: [
+  //     {
+  //       id: "18",
+  //       subPackageName: "P1",
+  //       customer: "300",
 
-        installation: "8000",
-        monthly: "2000",
-      },
-      {
-        id: "19",
-        subPackageName: "P2",
-        customer: "500",
+  //       installation: "8000",
+  //       monthly: "2000",
+  //     },
+  //     {
+  //       id: "19",
+  //       subPackageName: "P2",
+  //       customer: "500",
 
-        installation: "10000",
-        monthly: "3000",
-      },
-      {
-        id: "20",
-        subPackageName: "P3",
-        customer: "700",
+  //       installation: "10000",
+  //       monthly: "3000",
+  //     },
+  //     {
+  //       id: "20",
+  //       subPackageName: "P3",
+  //       customer: "700",
 
-        installation: "12000",
-        monthly: "4000",
-      },
-      {
-        id: "21",
-        subPackageName: "P4",
-        customer: "1000",
-        installation: "14000",
-        monthly: "5000",
-      },
-      {
-        id: "22",
-        subPackageName: "P5",
-        customer: "1250",
-        installation: "16000",
-        monthly: "6000",
-      },
-      {
-        id: "23",
-        subPackageName: "P6",
-        customer: "1500",
-        installation: "20000",
-        monthly: "7000",
-      },
-      {
-        id: "24",
-        subPackageName: "P7",
-        customer: "2000",
-        installation: "25000",
-        monthly: "8000",
-      },
-      {
-        id: "25",
-        subPackageName: "P8",
-        customer: "2500",
-        installation: "30000",
-        monthly: "9600",
-      },
-      {
-        id: "26",
-        subPackageName: "P9",
-        customer: "3000",
-        installation: "36000",
-        monthly: "11000",
-      },
-    ],
-  },
+  //       installation: "12000",
+  //       monthly: "4000",
+  //     },
+  //     {
+  //       id: "21",
+  //       subPackageName: "P4",
+  //       customer: "1000",
+  //       installation: "14000",
+  //       monthly: "5000",
+  //     },
+  //     {
+  //       id: "22",
+  //       subPackageName: "P5",
+  //       customer: "1250",
+  //       installation: "16000",
+  //       monthly: "6000",
+  //     },
+  //     {
+  //       id: "23",
+  //       subPackageName: "P6",
+  //       customer: "1500",
+  //       installation: "20000",
+  //       monthly: "7000",
+  //     },
+  //     {
+  //       id: "24",
+  //       subPackageName: "P7",
+  //       customer: "2000",
+  //       installation: "25000",
+  //       monthly: "8000",
+  //     },
+  //     {
+  //       id: "25",
+  //       subPackageName: "P8",
+  //       customer: "2500",
+  //       installation: "30000",
+  //       monthly: "9600",
+  //     },
+  //     {
+  //       id: "26",
+  //       subPackageName: "P9",
+  //       customer: "3000",
+  //       installation: "36000",
+  //       monthly: "11000",
+  //     },
+  //   ],
+  // },
 ];
 
 export default pakage;

@@ -16,7 +16,7 @@ import Loader from "../../../components/common/Loader";
 
 export default function Register() {
   // const [packValue, setPackValue] = useState("");
-
+  const [discount, setDiscount] = useState(50);
   const [pakage, setPakage] = useState(allpakage[0]);
   const [subpakage, setsubPakage] = useState(allpakage[0]["subPakage"]);
   const [singlePakage, setSinglePakage] = useState([
@@ -58,8 +58,8 @@ export default function Register() {
       pack: singlePakage[0].subPackageName,
       packType: pakage.packageName,
       reference: {
-        name: refName || "আব্দুর রাজ্জাক",
-        mobile: refMobile || "01321141789",
+        name: refName || "",
+        mobile: refMobile || "",
       },
     };
 
@@ -131,6 +131,12 @@ export default function Register() {
                     <TextField label="*ঠিকানা" name="address" type="text" />
 
                     {/* Options */}
+                    <div className="discount">
+                      <span className="disspan">
+                        {" "}
+                        <strong className="disStrong">{discount}%</strong> ডিসকাউন্ট  
+                      </span>
+                    </div>
                     <label className="form-label mt-2">
                       আপনার পছন্দের প্যাকেজ সিলেক্ট করুন
                     </label>
@@ -183,7 +189,15 @@ export default function Register() {
 
                     <div className="pakinfo mt-2">
                       <span>কাস্টমারঃ {singlePakage[0].customer}</span>
-                      <span>ইনস্টলেশন ফিঃ {singlePakage[0].installation}</span>
+                      <span className="insFeespan">
+                        ইনস্টলেশন ফিঃ{" "}
+                        <span className={discount>0 ? "mainfeecross" :"mainfee"}>
+                          {singlePakage[0].installation}
+                        </span>
+                        <span className="mainfee">
+                          {(singlePakage[0].installation)-((singlePakage[0].installation * discount) / 100)}
+                        </span>
+                      </span>
                       <span>মাসিক ফিঃ {singlePakage[0].monthly}</span>
                     </div>
 
