@@ -16,7 +16,7 @@ import Loader from "../../../components/common/Loader";
 
 export default function Register() {
   // const [packValue, setPackValue] = useState("");
-  const [discount, setDiscount] = useState(50);
+  const discount=50
   const [pakage, setPakage] = useState(allpakage[0]);
   const [subpakage, setsubPakage] = useState(allpakage[0]["subPakage"]);
   const [singlePakage, setSinglePakage] = useState([
@@ -191,9 +191,9 @@ export default function Register() {
                       <span>কাস্টমারঃ {singlePakage[0].customer}</span>
                       <span className="insFeespan">
                         ইনস্টলেশন ফিঃ{" "}
-                        <span className={discount>0 ? "mainfeecross" :"mainfee"}>
+                        {discount>0 ?<span className={discount>0 ? "strikethrough" :"mainfee"}>
                           {singlePakage[0].installation}
-                        </span>
+                        </span>:""}
                         <span className="mainfee">
                           {(singlePakage[0].installation)-((singlePakage[0].installation * discount) / 100)}
                         </span>
