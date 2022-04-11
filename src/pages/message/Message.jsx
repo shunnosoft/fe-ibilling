@@ -11,9 +11,13 @@ import useDash from "../../assets/css/dash.module.css";
 import SmsParchase from "./smsParchaseModal";
 import { ArrowClockwise, RecordFill } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
+import { getIspownerwitSMS } from "../../features/apiCalls";
+import apiLink from "../../api/apiLink";
+import { useCallback } from "react";
 
 export default function Message() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const [sms,setSms] =useState("")
   const [isChecked, setisChecked] = useState(false);
   const [status, setStatus] = useState("");
   const [payment, setPayment] = useState("");
@@ -21,10 +25,31 @@ export default function Message() {
   const area = useSelector((state) => state.persistedReducer.area.area);
   // const [areaIds, setAreaIds] = useState([]);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
+  const ispOwnerId =useSelector(state=>state.persistedReducer.auth?.ispOwnerId)
   const handleMessageCheckBox = (e) => {
     setisChecked(e.target.checked);
   };
+
+  const getIspownerwitSMS =useCallback( async() =>{
+    setIsrefresh(true)
+    try {
+      const res = await apiLink.get(`/ispOwner/${ispOwnerId}`)
+       setSms(res.data.smsBalance)
+      setIsrefresh(false)
+      
+    } catch (error) {
+      console.log(error.response?.data.message)
+      setIsrefresh(false)
+      
+    }
+  },[ispOwnerId])
+
+  useEffect(()=>{
+    if (userRole==="ispOwner" || userRole==="manager") {
+      getIspownerwitSMS()
+
+    }
+  },[userRole,getIspownerwitSMS])
 
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
@@ -44,7 +69,6 @@ export default function Message() {
   const handlePaymentSelect = (e) => {
     setPayment(e);
   };
-  console.log(status, payment);
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -65,13 +89,13 @@ export default function Message() {
                       <div className="refreshDiv">
                         <div className="balancetext">
                           এসএমএস ব্যালান্সঃ
-                          <strong className="mainsmsbalance">{1000000}</strong>
+                          <strong className="mainsmsbalance">{sms}</strong>
                         </div>
                         <div title="রিফ্রেশ করুন" className="refreshIcon">
                           {isRefrsh ? (
                             <Loader></Loader>
                           ) : (
-                            <ArrowClockwise></ArrowClockwise>
+                            <ArrowClockwise onClick={()=>getIspownerwitSMS()}></ArrowClockwise>
                           )}
                         </div>
                       </div>

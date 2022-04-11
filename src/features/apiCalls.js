@@ -960,3 +960,16 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
     console.log("unpaid invoice error: ", err);
   }
 };
+
+//get ispwoner with 
+export const getIspownerwitSMS =async (ispOwnerId)=>{
+  try {
+    const res = await apiLink.get(`/ispOwner/${ispOwnerId}`)
+    console.log(res.data)
+    
+  } catch (error) {
+    console.log(error.response?.data.message)
+    
+  }
+
+}
