@@ -152,8 +152,23 @@ export default function ConfigMikrotik() {
 
   const selectMikrotikOptionsHandler = (e) => {
     const val = e.target.value;
-    // console.log(val);
-    setWhatYouWantToShow(val);
+    console.log(val);
+    const IDs = {
+      ispOwner: ispOwner,
+      mikrotikId: mikrotikId,
+    };
+
+    if (val==="showActiveMikrotikUser"){
+      fetchActivepppoeUser(dispatch, IDs);
+
+    } else if (val==="showAllMikrotikUser"){
+      fetchpppoeUser(dispatch, IDs);
+
+    } else if (val==="showMikrotikPackage"){
+      fetchpppoePackage(dispatch,IDs)
+    }
+
+    // setWhatYouWantToShow(val);
   };
 
   const syncCustomer = () => {
