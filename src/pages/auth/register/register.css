@@ -136,8 +136,9 @@
 .mainfeecross{
   text-decoration:line-through; 
   margin-right: 5px;
-  text-decoration-thickness: 2px;
+  text-decoration-thickness: 1px;
   text-decoration-color:red;
+  font-size: 17px;
 
 }
 .discount{
