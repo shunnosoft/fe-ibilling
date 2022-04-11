@@ -16,7 +16,7 @@ import Loader from "../../../components/common/Loader";
 
 export default function Register() {
   // const [packValue, setPackValue] = useState("");
-  const discount=50
+  const discount = 50;
   const [pakage, setPakage] = useState(allpakage[0]);
   const [subpakage, setsubPakage] = useState(allpakage[0]["subPakage"]);
   const [singlePakage, setSinglePakage] = useState([
@@ -58,8 +58,8 @@ export default function Register() {
       pack: singlePakage[0].subPackageName,
       packType: pakage.packageName,
       reference: {
-        name: refName || "",
-        mobile: refMobile || "",
+        name: refName || "আব্দুর রাজ্জাক",
+        mobile: refMobile || "01321141790",
       },
     };
 
@@ -134,7 +134,8 @@ export default function Register() {
                     <div className="discount">
                       <span className="disspan">
                         {" "}
-                        <strong className="disStrong">{discount}%</strong> ডিসকাউন্ট  
+                        <strong className="disStrong">{discount}%</strong>{" "}
+                        ডিসকাউন্ট
                       </span>
                     </div>
                     <label className="form-label mt-2">
@@ -191,11 +192,20 @@ export default function Register() {
                       <span>কাস্টমারঃ {singlePakage[0].customer}</span>
                       <span className="insFeespan">
                         ইনস্টলেশন ফিঃ{" "}
-                        {discount>0 ?<span className={discount>0 ? "strikethrough" :"mainfee"}>
-                          {singlePakage[0].installation}
-                        </span>:""}
+                        {discount > 0 ? (
+                          <span
+                            className={
+                              discount > 0 ? "strikethrough" : "mainfee"
+                            }
+                          >
+                            {singlePakage[0].installation}
+                          </span>
+                        ) : (
+                          ""
+                        )}
                         <span className="mainfee">
-                          {(singlePakage[0].installation)-((singlePakage[0].installation * discount) / 100)}
+                          {singlePakage[0].installation -
+                            (singlePakage[0].installation * discount) / 100}
                         </span>
                       </span>
                       <span>মাসিক ফিঃ {singlePakage[0].monthly}</span>
