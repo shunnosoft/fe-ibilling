@@ -53,6 +53,7 @@ import { useEffect } from "react";
 import ReactModal from "./components/modals/reactModal/ReactModal";
 import Cancel from "./pages/success copy/Success";
 import Failed from "./pages/success copy 2/Success";
+import Package from "./pages/package/Package";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -198,6 +199,16 @@ function App() {
               element={
                 userRole === "ispOwner" && user && bpSettings?.hasMikrotik ? (
                   <Mikrotik />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+            <Route
+              path="package"
+              element={
+                user && !bpSettings?.hasMikrotik ? (
+                  <Package />
                 ) : (
                   <Navigate to={"/home"} />
                 )

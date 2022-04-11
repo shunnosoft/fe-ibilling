@@ -10,6 +10,7 @@ import managerSlice from "../features/managerSlice";
 import chartsSlice from "../features/chartsSlice";
 import rechargeSlice from "../features/rechargeSlice";
 import invoiceSlice from "../features/invoiceSlice";
+import packageSlice from "../features/packageSlice";
 import uiSlice from "../features/uiSlice";
 
 import { persistStore, persistReducer } from "redux-persist";
@@ -38,7 +39,8 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: {persistedReducer,
-    ui:uiSlice
+    ui:uiSlice,
+    package:packageSlice
   },
 
   middleware: (getDefaultMiddleware) =>
