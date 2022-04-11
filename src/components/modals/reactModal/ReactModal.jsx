@@ -44,9 +44,9 @@ function ReactModal() {
         <div className="title">
           <h1
             style={{ color: "green" }}
-          >{`নেটফি রেজিস্ট্রেশন  ফিঃ ${invoice?.amount} Tk`}</h1>
+          >{`ফিঃ ${!alertModalData.paymentUrl?(alertModalData?.amount):(invoice?.amount)} Tk`}</h1>
           <h1 style={{ color: "orangered" }}>
-            {`পরিশোধের শেষ সময়ঃ ${moment(invoice?.dueDate).format(
+            {`পরিশোধের শেষ সময়ঃ ${moment(alertModalData?.dueDate).format(
               "DD-MM-YYYY hh:mm:ss A"
             )}`}
           </h1>
