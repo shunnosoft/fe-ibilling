@@ -62,8 +62,8 @@ function App() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  const hasReseller = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings?.hasReseller
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings
   );
   // const hasReseller= true
   const isModalShowing = useSelector((state) => state.ui.alertModalShow);
@@ -196,7 +196,7 @@ function App() {
             <Route
               path="mikrotik"
               element={
-                userRole === "ispOwner" && user ? (
+                userRole === "ispOwner" && user && bpSettings?.hasMikrotik ? (
                   <Mikrotik />
                 ) : (
                   <Navigate to={"/home"} />
@@ -220,12 +220,21 @@ function App() {
               {/* <Route path="bill" element={<Bill />} /> */}
               <Route path="diposit" element={<Diposit />} />
               <Route path="invoice" element={<Invoice />} />
-              <Route path="recharge" element={<RechargeHistoryofReseller />} />
+              <Route
+                path="recharge"
+                element={
+                  bpSettings?.hasReseller ? (
+                    <RechargeHistoryofReseller />
+                  ) : (
+                    <Navigate to={"/"}></Navigate>
+                  )
+                }
+              />
 
               <Route
                 path="reseller"
                 element={
-                  hasReseller ? (
+                  bpSettings?.hasReseller ? (
                     <Reseller />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
@@ -250,9 +259,13 @@ function App() {
             <Route
               path="/mikrotik/:ispOwner/:mikrotikId"
               element={
-                <PrivateRoute user={user}>
-                  <ConfigMikrotik />
-                </PrivateRoute>
+                bpSettings?.hasMikrotik ? (
+                  <PrivateRoute user={user}>
+                    <ConfigMikrotik />
+                  </PrivateRoute>
+                ) : (
+                  <Navigate to={"/home"}></Navigate>
+                )
               }
             />
           </Routes>

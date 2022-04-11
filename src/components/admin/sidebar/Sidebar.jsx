@@ -25,8 +25,8 @@ import { useSelector } from "react-redux";
 export default function Sidebar() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const user = useSelector((state) => state.persistedReducer.auth.currentUser);
-  const hasReseller = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings?.hasReseller
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings
   );
   // const hasReseller= true
   // addSidebar
@@ -117,7 +117,7 @@ export default function Sidebar() {
                 </NavLink>
               )}
 
-              {hasReseller ? (
+              {bpSettings?.hasReseller ? (
                 <NavLink
                   key={33}
                   to={"/reseller"}
@@ -257,7 +257,7 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              {userRole === "ispOwner" ? (
+              {(userRole === "ispOwner" && bpSettings?.hasMikrotik) ? (
                 <NavLink
                   key={5}
                   to={"/mikrotik"}
@@ -337,7 +337,7 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              {userRole === "ispOwner" || userRole === "reseller" ? (
+              {(userRole === "ispOwner" && bpSettings?.hasReseller) || userRole === "reseller" ? (
                 <NavLink
                   key={70}
                   to={
