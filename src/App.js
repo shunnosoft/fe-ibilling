@@ -208,7 +208,7 @@ function App() {
             <Route
               path="package"
               element={
-                (user && !bpSettings?.hasMikrotik && userRole==="ispOwner" && userRole==="manager" )? (
+                (user && (!bpSettings?.hasMikrotik)&&( userRole==="ispOwner" || userRole==="manager" ))? (
                   <Package />
                 ) : (
                   <Navigate to={"/home"} />

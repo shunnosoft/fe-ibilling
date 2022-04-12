@@ -146,9 +146,9 @@ export default function Diposit() {
     return arr;
   }, [allCollector, userRole, manager, allDeposit]);
 
-  useEffect(() => {
-    if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
-  }, [dispatch, userRole]);
+  // useEffect(() => {
+  //   if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
+  // }, [dispatch, userRole]);
 
   useEffect(() => {
     var initialToday = new Date();

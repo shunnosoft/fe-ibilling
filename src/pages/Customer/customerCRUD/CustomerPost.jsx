@@ -11,6 +11,14 @@ import Loader from "../../../components/common/Loader";
 import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
 import moment from "moment";
 export default function CustomerModal() {
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings
+  );
+  const role = useSelector(
+    (state) => state.persistedReducer.auth?.role
+  );
+  // const packages= useSelector(state=>state.package.packages)
+  // console.log( packages)
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -21,6 +29,7 @@ export default function CustomerModal() {
   const ppPackage = useSelector(
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
+  console.log(ppPackage)
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -88,6 +97,7 @@ export default function CustomerModal() {
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
+    console.log(e.target.value)
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
@@ -123,12 +133,14 @@ export default function CustomerModal() {
       ...rest,
     };
     addCustomer(dispatch, mainData, setIsloading);
+    console.log(mainData)
   };
 
   useEffect(() => {
+   
     setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
     setBilltime(moment().endOf("day").format("HH:mm"));
-  }, []);
+  }, [bpSettings,role]);
   return (
     <div>
       <div
@@ -170,12 +182,12 @@ export default function CustomerModal() {
                 onSubmit={(values) => {
                   customerHandler(values);
                 }}
-                enableReinitialize
+                // enableReinitialize
               >
                 {(formik) => (
                   <Form>
                     <div className="mikrotikSection">
-                      <div>
+                     {bpSettings.hasMikrotik? <div>
                         <p className="comstomerFieldsTitle">
                           মাইক্রোটিক সিলেক্ট করুন
                         </p>
@@ -193,7 +205,7 @@ export default function CustomerModal() {
                                 </option>
                               ))}
                         </select>
-                      </div>
+                      </div>:""}
 
                       {/* pppoe package */}
                       <div>
@@ -206,7 +218,7 @@ export default function CustomerModal() {
                           onChange={selectMikrotikPackage}
                         >
                           <option value="">...</option>
-                          {ppPackage.length === undefined
+                          {ppPackage?.length === undefined
                             ? ""
                             : ppPackage.map((val, key) => (
                                 <option key={key} value={val.id}>

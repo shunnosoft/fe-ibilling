@@ -28,7 +28,7 @@ import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
-import { deleteACustomer, getCustomer } from "../../features/apiCalls";
+import { deleteACustomer, getCustomer, getPackagewithoutmikrotik } from "../../features/apiCalls";
 import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 
@@ -59,6 +59,9 @@ export default function Customer() {
 
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
   const areas = useSelector((state) => state.persistedReducer.area.area);
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings
+  );
 
   // paginate call Back function -> response from paginate component
   const paginate = (pageNumber) => {
@@ -126,8 +129,16 @@ export default function Customer() {
   };
 
   useEffect(() => {
+    if (
+      !bpSettings.hasMikrotik &&
+      (role === "manager" || role === "ispOwner")
+    ) {
+
+
+      getPackagewithoutmikrotik(ispOwner,dispatch)
+    }
     getCustomer(dispatch, ispOwner, setIsloading);
-  }, [dispatch, ispOwner]);
+  }, [dispatch, ispOwner, role, bpSettings]);
 
   const [isSorted, setSorted] = useState(false);
   const toggleSort = (item) => {

@@ -257,7 +257,7 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              {( (!bpSettings?.hasMikrotik) && userRole==="ispOwner" && userRole==="manager") ? (
+              {( (!bpSettings?.hasMikrotik) &&( userRole==="ispOwner" || userRole==="manager")) ? (
                 <NavLink
                   key={55}
                   to={"/package"}

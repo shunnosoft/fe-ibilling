@@ -994,6 +994,7 @@ export const getPackagewithoutmikrotik = async (ispOwnerId, dispatch) => {
     const res = await apiLink.get(`/mikrotik/package/${ispOwnerId}`);
     console.log(res.data.packages);
     dispatch(getpackageSuccess(res.data.packages));
+    dispatch(getpppoePackageSuccess(res.data.packages))
   } catch (error) {
     console.log(error.response?.data.message);
   }

@@ -84,9 +84,9 @@ export default function Login() {
                     <br />
                     <br />
 
-                    <NavLink to="/" className="FotGetPassword">
+                    {/* <NavLink to="/" className="FotGetPassword">
                       পাসওয়ার্ড ভুলে গেছেন?
-                    </NavLink>
+                    </NavLink> */}
                     <p className="mt-5 mb-3 text-muted">
                       &copy; শূন্য সফটওয়ার - {new Date().getFullYear()}
                     </p>
