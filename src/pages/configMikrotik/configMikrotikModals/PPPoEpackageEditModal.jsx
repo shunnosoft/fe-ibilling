@@ -19,23 +19,21 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
 
   //validator
   const pppoeValidator = Yup.object({
-    name: Yup.string(),
+    rate: Yup.number(),
   });
 
-  const pppoeEditHandler = async (data) => {
-    setIsLoading(true);
+  const pppoeEditHandler = async (data,resetForm) => {
     if (singlePackage) {
       // const IDs = {
       //   ispOwner: singlePackage.ispOwner,
       //   mikrotikId: singlePackage.mikrotik,
       // };
       const sendingData = {
-        rate: data.name,
+        rate: data.rate.toString(),
         mikrotikId: singlePackage.mikrotik,
         pppPackageId: singlePackage.id,
       };
-      editPPPoEpackageRate(dispatch, sendingData);
-      setIsLoading(false);
+      editPPPoEpackageRate(dispatch, sendingData,setIsLoading,resetForm);
     }
   };
 
@@ -64,17 +62,17 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: "",
+                  rate: singlePackage.rate|| "",
                 }}
                 validationSchema={pppoeValidator}
-                onSubmit={(values) => {
-                  pppoeEditHandler(values);
+                onSubmit={(values, { resetForm }) => {
+                  pppoeEditHandler(values,resetForm);
                 }}
                 enableReinitialize
               >
                 {() => (
                   <Form>
-                    <FtextField type="text" label="রেট এডিট করুন" name="name" />
+                    <FtextField min={0} type="number" label="রেট এডিট করুন" name="rate" />
 
                     <div className="modal-footer">
                       <button

@@ -93,6 +93,8 @@ export default function ConfigMikrotik() {
     // fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
     // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     fetchActivepppoeUser(dispatch, IDs);
+    fetchpppoePackage(dispatch,IDs)
+
   }, [ispOwner, mikrotikId, dispatch, refresh]);
 
   // get single pppoe package

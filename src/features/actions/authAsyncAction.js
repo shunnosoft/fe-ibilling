@@ -23,7 +23,7 @@ export const asyncRegister = async (userData, setLoading) => {
     );
     setLoading(false);
     // window.location.href = res.data.paymentUrl;
-    toast.success(res.data.message);
+    toast.success(res.data?.message);
     console.log(res);
     setTimeout(() => {
       // window.location.href("https://netfeebd.com/login");
@@ -32,7 +32,7 @@ export const asyncRegister = async (userData, setLoading) => {
   } catch (err) {
     setLoading(false);
     if (err.response) {
-      toast.error(err.response.data.message);
+      toast.error(err.response?.data.message);
     }
   }
 };
@@ -49,7 +49,7 @@ export const asyncLogin = async (dispatch, loginData) => {
     dispatch(logInSuccess(res.data));
   } catch (error) {
     document.querySelector(".Loader").style.display = "none";
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data.message);
   }
 };
 // export const asyncLogin = async (dispatch, loginData) => {

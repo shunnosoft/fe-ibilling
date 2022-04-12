@@ -66,7 +66,6 @@ export default function Manager() {
       .email("ইমেইল সঠিক নয় ")
       .required("ম্যানেজার এর ইমেইল দিতে হবে"),
     nid: Yup.string().required("ম্যানেজার এর NID দিন"),
-    image: Yup.string(),
   });
 
   const addManagerHandle = (data) => {
@@ -200,11 +199,7 @@ export default function Manager() {
                               label="ম্যানেজার এর NID নম্বর"
                               name="nid"
                             />
-                            <FtextField
-                              type="file"
-                              label="ম্যানেজার এর ছবি "
-                              name="photo"
-                            />
+                           
 
                             {/* Button */}
                             <div className="submitSection">

@@ -71,8 +71,9 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (userRole==="ispOwner")
     getUnpaidInvoice(dispatch, ispOwnerId);
-  }, [ispOwnerId, dispatch]);
+  }, [ispOwnerId, dispatch,userRole]);
   const pathName = useLocation().pathname;
   return (
     <ThemeProvider theme={themes[theme]}>
@@ -207,7 +208,7 @@ function App() {
             <Route
               path="package"
               element={
-                user && !bpSettings?.hasMikrotik ? (
+                (user && !bpSettings?.hasMikrotik && userRole==="ispOwner" && userRole==="manager" )? (
                   <Package />
                 ) : (
                   <Navigate to={"/home"} />

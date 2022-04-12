@@ -65,7 +65,11 @@ import { getChartSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
 import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
 import { showModal } from "./uiSlice";
-import { addPackageSuccess, editPackageSuccess, getpackageSuccess } from "./packageSlice";
+import {
+  addPackageSuccess,
+  editPackageSuccess,
+  getpackageSuccess,
+} from "./packageSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -166,7 +170,7 @@ export const getArea = async (dispatch, ispOwnerId) => {
 };
 
 export const addArea = async (dispatch, data, setIsLoading) => {
-  setIsLoading(true)
+  setIsLoading(true);
   try {
     const res = await apiLink.post("/ispOwner/area", data);
 
@@ -550,6 +554,7 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/PPPactiveUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
+    console.log(res.data);
     dispatch(getpppoeActiveUserSuccess(res.data));
   } catch (error) {
     toast.error("এক্টিভ গ্রাহক পাওয়া যায়নি!");
@@ -571,7 +576,13 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
 };
 
 // Edit pppoe Package
-export const editPPPoEpackageRate = async (dispatch, data) => {
+export const editPPPoEpackageRate = async (
+  dispatch,
+  data,
+  setLoading,
+  resetForm
+) => {
+  setLoading(true);
   const { mikrotikId, pppPackageId, ...rest } = data;
   await apiLink({
     method: "PATCH",
@@ -585,10 +596,14 @@ export const editPPPoEpackageRate = async (dispatch, data) => {
       dispatch(editpppoePackageSuccess(res.data));
       document.querySelector("#pppoePackageEditModal").click();
       toast.success("PPPoE প্যাকেজ রেট এডিট সফল হয়েছে!");
+      resetForm();
+      setLoading(false);
     })
     .catch((err) => {
       if (err.response) {
-        toast.error("Error! ", err.response.message);
+        toast.error("Error! ", err.response?.data?.message);
+        resetForm();
+        setLoading(false);
       }
     });
 };
@@ -898,15 +913,15 @@ export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
   }
 };
 
-export const initiatePayment = async (invoice,setIsloading) => {
-  setIsloading(true)
+export const initiatePayment = async (invoice, setIsloading) => {
+  setIsloading(true);
   try {
     const res = await apiLink.post(`/payment/generate-payment-url`, invoice);
     window.location.href = res.data.paymentUrl;
-    setIsloading(false)
+    setIsloading(false);
   } catch (err) {
     console.log("Invoice error: ", err);
-    setIsloading(false)
+    setIsloading(false);
   }
 };
 
@@ -951,7 +966,7 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
           invoice
         );
 
-        dispatch(showModal(res.data))
+        dispatch(showModal(res.data));
         // window.location.href = res.data.paymentUrl;
       }
     }
@@ -962,59 +977,57 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
   }
 };
 
-//get ispwoner with 
-export const getIspownerwitSMS =async (ispOwnerId)=>{
+//get ispwoner with
+export const getIspownerwitSMS = async (ispOwnerId) => {
   try {
-    const res = await apiLink.get(`/ispOwner/${ispOwnerId}`)
-    console.log(res.data)
-    
+    const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+    console.log(res.data);
   } catch (error) {
-    console.log(error.response?.data.message)
-    
+    console.log(error.response?.data.message);
   }
-
-}
+};
 
 //mikrotik packages without mikrotik access
 
-export const getPackagewithoutmikrotik = async (ispOwnerId,dispatch) =>{
-
+export const getPackagewithoutmikrotik = async (ispOwnerId, dispatch) => {
   try {
-      const res =await apiLink.get(`/mikrotik/package/${ispOwnerId}`)
-      console.log(res.data.packages)
-      dispatch(getpackageSuccess(res.data.packages))
+    const res = await apiLink.get(`/mikrotik/package/${ispOwnerId}`);
+    console.log(res.data.packages);
+    dispatch(getpackageSuccess(res.data.packages));
   } catch (error) {
-    console.log(error.response?.data.message)
-    
+    console.log(error.response?.data.message);
   }
-
-}
-export const addPackagewithoutmikrotik = async ( data,dispatch,setIsLoading) =>{
-  setIsLoading(true)
+};
+export const addPackagewithoutmikrotik = async (
+  data,
+  dispatch,
+  setIsLoading
+) => {
+  setIsLoading(true);
   try {
-      const res =await apiLink.post(`/mikrotik/package`,data)
-      console.log(res.data.newPackage)
-      dispatch(addPackageSuccess(res.data.newPackage))
-      setIsLoading(false)
+    const res = await apiLink.post(`/mikrotik/package`, data);
+    console.log(res.data.newPackage);
+    dispatch(addPackageSuccess(res.data.newPackage));
+    setIsLoading(false);
   } catch (error) {
-    console.log(error.response?.data.message)
-    setIsLoading(false)
-    
+    console.log(error.response?.data.message);
+    setIsLoading(false);
   }
-
-}
-export const editPackagewithoutmikrotik = async ( data,dispatch,setIsLoading,packageId) =>{
-  setIsLoading(true)
+};
+export const editPackagewithoutmikrotik = async (
+  data,
+  dispatch,
+  setIsLoading,
+  packageId
+) => {
+  setIsLoading(true);
   try {
-      const res =await apiLink.patch(`/mikrotik/package/${data?.id}`,data)
-      console.log(res.data.updatedPackage)
-      dispatch(editPackageSuccess(res.data.updatedPackage))
-      setIsLoading(false)
+    const res = await apiLink.patch(`/mikrotik/package/${data?.id}`, data);
+    console.log(res.data.updatedPackage);
+    dispatch(editPackageSuccess(res.data.updatedPackage));
+    setIsLoading(false);
   } catch (error) {
-    console.log(error.response?.data.message)
-    setIsLoading(false)
-    
+    console.log(error.response?.data.message);
+    setIsLoading(false);
   }
-
-}
-
+};
