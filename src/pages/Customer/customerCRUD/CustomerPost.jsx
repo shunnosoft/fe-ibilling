@@ -29,8 +29,7 @@ export default function CustomerModal() {
   const ppPackage = useSelector(
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
-  console.log(ppPackage)
-  const [packageRate, setPackageRate] = useState("");
+  const [packageRate, setPackageRate] = useState({rate:0});
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
@@ -51,12 +50,16 @@ export default function CustomerModal() {
     address: Yup.string(),
     email: Yup.string().email("ইমেইল সঠিক নয়"),
     nid: Yup.string(),
-    monthlyFee: Yup.string().required("মাসিক ফি লিখুন"),
+    monthlyFee: Yup.number()
+    .integer()
+    .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
+    .required("প্যাকেজ রেট দিন"),
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
   });
 
+  
   // select subArea
   // const selectSubArea = (data) => {
   //   const areaId = data.target.value;
@@ -97,14 +100,21 @@ export default function CustomerModal() {
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
-    console.log(e.target.value)
-    setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
-    setPackageRate(temp);
+    console.log(mikrotikPackageId)
+    if(mikrotikPackageId==="0") {
+      setPackageRate({rate:0})
+    } else{
+      console.log(e.target.value)
+      setMikrotikPackage(mikrotikPackageId);
+      const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
+      setPackageRate(temp);
+
+    }
+   
   };
 
   // sending data to backed
-  const customerHandler = async (data) => {
+  const customerHandler = async (data,resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
@@ -132,8 +142,12 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    addCustomer(dispatch, mainData, setIsloading);
+    if(!bpSettings.hasMikrotik){
+      delete mainData.mikrotik; 
+
+    }
     console.log(mainData)
+    addCustomer(dispatch, mainData, setIsloading,resetForm);
   };
 
   useEffect(() => {
@@ -172,17 +186,17 @@ export default function CustomerModal() {
                   address: "",
                   email: "",
                   nid: "",
-                  monthlyFee: packageRate?.rate || "",
+                  monthlyFee: packageRate?.rate || 0,
                   Pname: "",
                   Pprofile: packageRate?.name || "",
                   Ppassword: "",
                   Pcomment: "",
                 }}
                 validationSchema={customerValidator}
-                onSubmit={(values) => {
-                  customerHandler(values);
+                onSubmit={(values ,{ resetForm }) => {
+                  customerHandler(values,resetForm);
                 }}
-                // enableReinitialize
+               
               >
                 {(formik) => (
                   <Form>
@@ -210,17 +224,15 @@ export default function CustomerModal() {
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
-                          PPPoE প্যাকেজ সিলেক্ট করুন
+                          প্যাকেজ সিলেক্ট করুন
                         </p>
                         <select
                           className="form-select mb-3"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                         >
-                          <option value="">...</option>
-                          {ppPackage?.length === undefined
-                            ? ""
-                            : ppPackage.map((val, key) => (
+                          <option value={"0"}>...</option>
+                          {ppPackage.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>
@@ -228,9 +240,21 @@ export default function CustomerModal() {
                         </select>
                       </div>
                       <FtextField
-                        type="text"
+                        type="number"
                         label="মাসিক ফি"
                         name="monthlyFee"
+                        min={0}
+                        value={packageRate?.rate}
+                        onChange={(e)=>{
+                          setPackageRate((preval)=>{
+                            return {
+                              ...preval,rate:e.target.value
+                            }
+                          })
+                        }}
+                       
+                         
+                        
                       />
                     </div>
 

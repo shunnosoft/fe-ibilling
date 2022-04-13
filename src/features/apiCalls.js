@@ -355,7 +355,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   }
 };
 
-export const addCustomer = async (dispatch, data, setIsloading) => {
+export const addCustomer = async (dispatch, data, setIsloading,resetForm) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/ispOwner/customer", data);
@@ -363,10 +363,12 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
     setIsloading(false);
     toast.success("কাস্টমার সংযুক্ত সফল হয়েছে! ");
     document.querySelector("#customerModal").click();
+    resetForm()
   } catch (err) {
     if (err.response) {
       setIsloading(false);
       toast.error(err.response.data.message);
+      resetForm()
     }
   }
 };

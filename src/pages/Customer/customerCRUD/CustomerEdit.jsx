@@ -93,7 +93,10 @@ export default function CustomerEdit(props) {
     address: Yup.string(),
     email: Yup.string().email("ইমেইল সঠিক নয়"),
     nid: Yup.string(),
-    monthlyFee: Yup.string().required("মাসিক ফি লিখুন"),
+    monthlyFee: Yup.number()
+    .integer()
+    .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
+    .required("প্যাকেজ রেট দিন"),
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
@@ -208,7 +211,7 @@ export default function CustomerEdit(props) {
                   email: props?.single?.email || "",
                   nid: props?.single?.nid || "",
                   Pcomment: props?.single?.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || props?.single?.monthlyFee || "",
+                  monthlyFee: packageRate?.rate || props?.single?.monthlyFee || 0,
                   Pname: props?.single?.pppoe?.name || "",
                   Pprofile: packageRate?.name || props?.single?.pppoe?.profile || "",
                   Ppassword: props?.single.pppoe?.password || "",
@@ -249,7 +252,7 @@ export default function CustomerEdit(props) {
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
-                          PPPoE প্যাকেজ সিলেক্ট করুন
+                           প্যাকেজ সিলেক্ট করুন
                         </p>
                         <select
                           className="form-select mb-3"
@@ -261,14 +264,16 @@ export default function CustomerEdit(props) {
                             {props?.single?.pppoe?.profile || "..."}
                           </option> */}
                           {ppPackage?.map((val, key) => (
-                            <option key={key} value={val.id || ""}>
+                            <option 
+                            selected={props.single?.pppoe?.profile===val.name} key={key} value={val.id || ""}>
                               {val.name}
                             </option>
                           ))}
                         </select>
                       </div>
                       <FtextField
-                        type="text"
+                        type="number"
+                        min={0}
                         label="মাসিক ফি"
                         name="monthlyFee"
                       />
