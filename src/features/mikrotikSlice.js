@@ -29,7 +29,7 @@ export const mikroTikSlice = createSlice({
     },
     //pppoeUser
     getpppoeUserSuccess: (state, action) => {
-      state.pppoeActiveUser = action.payload;
+      state.pppoeUser = action.payload;
     },
     //syncuser
     fetchMikrotikSyncUserSuccess: (state, action) => {
@@ -37,7 +37,7 @@ export const mikroTikSlice = createSlice({
     },
     //pppoeActiveUser
     getpppoeActiveUserSuccess: (state, action) => {
-      state.pppoeUser = action.payload;
+      state.pppoeActiveUser = action.payload;
     },
     //pppoePackage
     getpppoePackageSuccess: (state, action) => {

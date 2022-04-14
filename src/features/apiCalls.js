@@ -543,6 +543,7 @@ export const fetchpppoeUser = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
+    console.log(res.data);
     dispatch(getpppoeUserSuccess(res.data));
   } catch (error) {
     toast.error("PPPoE গ্রাহক পাওয়া যায়নি!");
@@ -556,8 +557,23 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/PPPactiveUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
-    console.log(res.data);
-    dispatch(getpppoeActiveUserSuccess(res.data));
+    const activeUsers=res.data?.activeUsers
+    const interfaaceList=res.data?.interfaceList
+    const temp =[]
+     
+    interfaaceList.forEach((i)=>{
+      activeUsers.forEach(j=>{
+        if(i.name===("<pppoe-"+j.name+">")){
+          
+
+          temp.push({
+            ...i,...j
+          })
+        }
+      })
+    })
+    console.log(temp)
+    dispatch(getpppoeActiveUserSuccess(temp));
   } catch (error) {
     toast.error("এক্টিভ গ্রাহক পাওয়া যায়নি!");
   }
@@ -570,8 +586,9 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
+    console.log(res.data);
     dispatch(getpppoePackageSuccess(res.data));
-    toast.success("PPPoE প্যাকেজ fetch success");
+    // toast.success("PPPoE প্যাকেজ fetch success");
   } catch (error) {
     toast.error("PPPoE প্যাকেজ পাওয়া যায়নি!");
   }

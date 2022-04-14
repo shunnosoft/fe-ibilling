@@ -52,16 +52,96 @@ export default function ConfigMikrotik() {
   const [search, setSearch] = useState("");
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
-  const pppoeUser = useSelector(
+  const allMikrotikUsers =
+  //  [
+  //   {
+  //     $$path: "/ppp/secret",
+  //     callerId: "",
+  //     disabled: true,
+  //     id: "*1",
+  //     ipv6Routes: "",
+  //     lastLoggedOut: "jul/10/2021 14:16:16",
+  //     limitBytesIn: 0,
+  //     limitBytesOut: 0,
+  //     name: "emran",
+  //     password: "emran1234",
+  //     profile: "10Mbps",
+  //     routes: "",
+  //     service: "pppoe",
+  //   },
+  // ];
+
+  useSelector(
     (state) => state.persistedReducer.mikrotik.pppoeUser
   );
-  const activeUser = useSelector(
+
+  const activeUser =
+  //  [
+  //   {
+  //     $$path: "/ppp/active",
+  //     actualMtu: 1480,
+  //     address: "10.13.0.253",
+  //     callerId: "BC:62:CE:53:A6:0D",
+  //     disabled: false,
+  //     dynamic: true,
+  //     encoding: "",
+  //     fpRxByte: 0,
+  //     fpRxPacket: 0,
+  //     fpTxByte: 0,
+  //     fpTxPacket: 0,
+  //     id: "*80000000",
+  //     lastLinkUpTime: "apr/13/2022 21:59:42",
+  //     limitBytesIn: 0,
+  //     limitBytesOut: 0,
+  //     linkDowns: 0,
+  //     mtu: 1480,
+  //     name: "mshahriar",
+  //     radius: false,
+  //     running: true,
+  //     rxByte: 1089023,
+  //     rxDrop: 0,
+  //     rxError: 0,
+  //     rxPacket: 4840,
+  //     service: "pppoe",
+  //     sessionId: "0x81300000",
+  //     txByte: 2993154,
+  //     txDrop: 0,
+  //     txError: 0,
+  //     txPacket: 5241,
+  //     txQueueDrop: 0,
+  //     type: "pppoe-in",
+  //     uptime: "1m9s",
+  //   },
+  // ];
+   useSelector(
     (state) => state.persistedReducer.mikrotik.pppoeActiveUser
   );
-  const pppoePackage = useSelector(
+  const pppoePackage =
+  //  [
+  //   {
+  //     createdAt: "2022-03-16T09:04:24.022Z",
+  //     id: "6231a81801ecfbb3db55312d",
+  //     ispOwner: "61bda8f10b21707f77b5dfc9",
+  //     mikrotik: "621a6a2ed4b9057021f01682",
+  //     name: "default",
+  //     rate: 0,
+  //     type: "ispOwner",
+  //   },
+  //   {
+  //     createdAt: "2022-03-16T09:04:24.022Z",
+  //     id: "6231a81801ecfbb3db55312d",
+  //     ispOwner: "61bda8f10b21707f77b5dfc9",
+  //     mikrotik: "621a6a2ed4b9057021f01682",
+  //     name: "test",
+  //     rate: 0,
+  //     type: "ispOwner",
+  //   },
+  // ];
+ 
+ 
+  useSelector(
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
-
   // const mikrotikSyncUser = useSelector(
   //   state => state.mikrotik.mikrotikSyncUser
   // );
@@ -83,6 +163,12 @@ export default function ConfigMikrotik() {
   // fetch single mikrotik
 
   useEffect(() => {
+    const zeroRate=pppoePackage.filter((i)=>i.rate===0)
+    if(zeroRate.length!==0){
+      toast.warn(`${zeroRate[0].name} প্যাকেজ
+      এর রেট আপডেট করুন`)
+
+    }
     const IDs = {
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
@@ -93,8 +179,7 @@ export default function ConfigMikrotik() {
     // fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
     // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     fetchActivepppoeUser(dispatch, IDs);
-    fetchpppoePackage(dispatch,IDs)
-
+    fetchpppoePackage(dispatch, IDs);
   }, [ispOwner, mikrotikId, dispatch, refresh]);
 
   // get single pppoe package
@@ -160,14 +245,15 @@ export default function ConfigMikrotik() {
       mikrotikId: mikrotikId,
     };
 
-    if (val==="showActiveMikrotikUser"){
+    if (val === "showActiveMikrotikUser") {
       fetchActivepppoeUser(dispatch, IDs);
-
-    } else if (val==="showAllMikrotikUser"){
+      setWhatYouWantToShow("showActiveMikrotikUser");
+    } else if (val === "showAllMikrotikUser") {
       fetchpppoeUser(dispatch, IDs);
-
-    } else if (val==="showMikrotikPackage"){
-      fetchpppoePackage(dispatch,IDs)
+      setWhatYouWantToShow("showAllMikrotikUser");
+    } else if (val === "showMikrotikPackage") {
+      fetchpppoePackage(dispatch, IDs);
+      setWhatYouWantToShow("showMikrotikPackage");
     }
 
     // setWhatYouWantToShow(val);
@@ -249,6 +335,7 @@ export default function ConfigMikrotik() {
                             </span>
                           ) : (
                             <button
+                            disabled={pppoePackage.some(i=>i.rate===0)}
                               onClick={syncPackage}
                               title="প্যাকেজ সিংক"
                               className="addcutmButton btn-info btnbyEnamul"
@@ -453,17 +540,14 @@ export default function ConfigMikrotik() {
                           <div className="col-sm-8">
                             <h4 className="allCollector">
                               এক্টিভ গ্রাহক :{" "}
-                              <span>{pppoeUser.length || "NULL"}</span>
+                              <span>{activeUser.length || "NULL"}</span>
                             </h4>
                           </div>
 
                           <div className="col-sm-4">
                             <div className="pppoeRefresh">
                               {/* Refresh: {refresh} */}
-                              <ArrowClockwise
-                                className="addcutmButton"
-                                onClick={() => setRefresh(refresh + 1)}
-                              />
+
                               <div className=" collectorSearch">
                                 <input
                                   type="text"
@@ -482,20 +566,20 @@ export default function ConfigMikrotik() {
                               <tr>
                                 <th scope="col">সিরিয়াল</th>
                                 <th scope="col">নাম</th>
-                                <th scope="col">প্যাকেজ</th>
-                                <th scope="col">সার্ভিস</th>
+                                <th scope="col">rxByte</th>
+                                <th scope="col">txByte</th>
                                 {/* <th scope="col" style={{ textAlign: "center" }}>
                               অ্যাকশন
                             </th> */}
                               </tr>
                             </thead>
                             <tbody>
-                              {pppoeUser.length === undefined ? (
+                              {activeUser.length === undefined ? (
                                 <tr>
                                   <TdLoader colspan={4} />
                                 </tr>
                               ) : (
-                                pppoeUser
+                                activeUser
                                   .filter((val) => {
                                     return val.name
                                       .toLowerCase()
@@ -507,8 +591,8 @@ export default function ConfigMikrotik() {
                                         {++serial}
                                       </td>
                                       <td>{val.name}</td>
-                                      <td>{val.profile}</td>
-                                      <td>{val.service}</td>
+                                      <td>{(((val.rxByte / 1024)/1024)).toFixed(2)+" MB/s"}</td>
+                                      <td>{(((val.txByte / 1024)/1024)).toFixed(2)+" MB/s"}</td>
                                       {/* <td style={{ textAlign: "center" }}>
                                     <ThreeDots className="dropdown-toggle ActionDots" />
                                   </td> */}
@@ -537,7 +621,7 @@ export default function ConfigMikrotik() {
                                 {isLoadingCus ? (
                                   <Loader />
                                 ) : (
-                                  activeUser?.length
+                                  allMikrotikUsers?.length
                                 )}{" "}
                               </span>
                             </h4>
@@ -546,10 +630,7 @@ export default function ConfigMikrotik() {
                           <div className="col-sm-4">
                             <div className="pppoeRefresh">
                               {/* Refresh: {refresh} */}
-                              <ArrowClockwise
-                                className="addcutmButton"
-                                onClick={() => setRefresh2(refresh2 + 1)}
-                              />
+
                               <div className=" collectorSearch">
                                 <input
                                   type="text"
@@ -568,20 +649,20 @@ export default function ConfigMikrotik() {
                               <tr>
                                 <th scope="col">সিরিয়াল</th>
                                 <th scope="col">নাম</th>
-                                <th scope="col">কলার ID</th>
-                                <th scope="col">এড্রেস</th>
+                                <th scope="col">কলার আইডি</th>
+                                <th scope="col">প্যাকেজ</th>
                                 {/* <th scope="col" style={{ textAlign: "center" }}>
                               অ্যাকশন
                             </th> */}
                               </tr>
                             </thead>
                             <tbody>
-                              {activeUser.length === undefined ? (
+                              {allMikrotikUsers.length === undefined ? (
                                 <tr>
                                   <TdLoader colspan={4} />
                                 </tr>
                               ) : (
-                                activeUser
+                                allMikrotikUsers
                                   .filter((val) => {
                                     return val.name
                                       .toLowerCase()
@@ -594,7 +675,7 @@ export default function ConfigMikrotik() {
                                       </td>
                                       <td>{val.name}</td>
                                       <td>{val.callerId}</td>
-                                      <td>{val.address}</td>
+                                      <td>{val.profile}</td>
                                     </tr>
                                   ))
                               )}
