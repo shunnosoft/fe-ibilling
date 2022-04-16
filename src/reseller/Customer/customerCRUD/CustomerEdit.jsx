@@ -43,8 +43,10 @@ export default function CustomerEdit({ single }) {
   // const [subAreaId, setSubAreaId] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
+    setStatus(single?.status);
     setAutoDisable(single?.autoDisable);
 
     setSubArea(single.subArea);
