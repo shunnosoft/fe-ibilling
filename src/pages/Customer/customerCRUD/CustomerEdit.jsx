@@ -16,7 +16,7 @@ import apiLink from "../../../api/apiLink";
 import moment from "moment";
 import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
-  console.log(props)
+   
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -50,8 +50,8 @@ export default function CustomerEdit(props) {
   const [subAreaId, setSubAreaId] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
-  
-console.log(bpSettings)
+  const [status,setStatus] =useState("")
+console.log(status)
   useEffect(()=>{
        const IDs = {
       ispOwner: ispOwnerId,
@@ -197,6 +197,7 @@ console.log(bpSettings)
         disabled: activeStatus,
       },
       ...rest,
+       status
     };
     console.log(mainData)
 
@@ -239,6 +240,7 @@ console.log(bpSettings)
                   Pname: props?.single?.pppoe?.name || "",
                   Pprofile: packageRate?.name || props?.single?.pppoe?.profile || "",
                   Ppassword: props?.single.pppoe?.password || "",
+                  status:props?.single.status || ""
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -406,9 +408,11 @@ console.log(bpSettings)
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
-                          onChange={() => setActiveStatus(false)}
-                          defaultChecked={!activeStatus}
+                          name="staus"
+                            value={"active"}
+                          onChange={(e)=>setStatus(e.target.value)}
+                          checked={status==="active"}
+                          
                         />
                         <label
                           className="form-check-label"
@@ -421,10 +425,11 @@ console.log(bpSettings)
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
                           id="inlineRadio2"
-                          onChange={() => setActiveStatus(true)}
-                          defaultChecked={activeStatus}
+                          value={"inactive"}
+                          onChange={(e)=> setStatus(e.target.value)}
+                              checked={status==="inactive"}
+                           
                         />
                         <label
                           className="form-check-label"

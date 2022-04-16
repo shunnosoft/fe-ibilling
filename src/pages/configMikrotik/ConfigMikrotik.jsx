@@ -33,6 +33,7 @@ import {
 } from "../../features/apiCalls";
 import apiLink from "../../api/apiLink";
 import { clearMikrotik } from "../../features/mikrotikSlice";
+import { useLayoutEffect } from "react";
 // import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
@@ -53,93 +54,19 @@ export default function ConfigMikrotik() {
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
   const allMikrotikUsers =
-  //  [
-  //   {
-  //     $$path: "/ppp/secret",
-  //     callerId: "",
-  //     disabled: true,
-  //     id: "*1",
-  //     ipv6Routes: "",
-  //     lastLoggedOut: "jul/10/2021 14:16:16",
-  //     limitBytesIn: 0,
-  //     limitBytesOut: 0,
-  //     name: "emran",
-  //     password: "emran1234",
-  //     profile: "10Mbps",
-  //     routes: "",
-  //     service: "pppoe",
-  //   },
-  // ];
+   
 
   useSelector(
     (state) => state.persistedReducer.mikrotik.pppoeUser
   );
 
   const activeUser =
-  //  [
-  //   {
-  //     $$path: "/ppp/active",
-  //     actualMtu: 1480,
-  //     address: "10.13.0.253",
-  //     callerId: "BC:62:CE:53:A6:0D",
-  //     disabled: false,
-  //     dynamic: true,
-  //     encoding: "",
-  //     fpRxByte: 0,
-  //     fpRxPacket: 0,
-  //     fpTxByte: 0,
-  //     fpTxPacket: 0,
-  //     id: "*80000000",
-  //     lastLinkUpTime: "apr/13/2022 21:59:42",
-  //     limitBytesIn: 0,
-  //     limitBytesOut: 0,
-  //     linkDowns: 0,
-  //     mtu: 1480,
-  //     name: "mshahriar",
-  //     radius: false,
-  //     running: true,
-  //     rxByte: 1089023,
-  //     rxDrop: 0,
-  //     rxError: 0,
-  //     rxPacket: 4840,
-  //     service: "pppoe",
-  //     sessionId: "0x81300000",
-  //     txByte: 2993154,
-  //     txDrop: 0,
-  //     txError: 0,
-  //     txPacket: 5241,
-  //     txQueueDrop: 0,
-  //     type: "pppoe-in",
-  //     uptime: "1m9s",
-  //   },
-  // ];
+ 
+ 
    useSelector(
     (state) => state.persistedReducer.mikrotik.pppoeActiveUser
   );
-  const pppoePackage =
-  //  [
-  //   {
-  //     createdAt: "2022-03-16T09:04:24.022Z",
-  //     id: "6231a81801ecfbb3db55312d",
-  //     ispOwner: "61bda8f10b21707f77b5dfc9",
-  //     mikrotik: "621a6a2ed4b9057021f01682",
-  //     name: "default",
-  //     rate: 0,
-  //     type: "ispOwner",
-  //   },
-  //   {
-  //     createdAt: "2022-03-16T09:04:24.022Z",
-  //     id: "6231a81801ecfbb3db55312d",
-  //     ispOwner: "61bda8f10b21707f77b5dfc9",
-  //     mikrotik: "621a6a2ed4b9057021f01682",
-  //     name: "test",
-  //     rate: 0,
-  //     type: "ispOwner",
-  //   },
-  // ];
- 
- 
-  useSelector(
+  const pppoePackage =useSelector(
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
   // const mikrotikSyncUser = useSelector(
@@ -169,18 +96,23 @@ export default function ConfigMikrotik() {
       এর রেট আপডেট করুন`)
 
     }
+   
+  }, [pppoePackage]);
+
+  useLayoutEffect(()=>{
     const IDs = {
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
     };
-    dispatch(clearMikrotik());
-    fetchMikrotik(dispatch, ispOwner);
-    fetchpppoeUser(dispatch, IDs);
+    // dispatch(clearMikrotik());
+    // fetchMikrotik(dispatch, ispOwner);
+
+    // fetchpppoeUser(dispatch, IDs);
     // fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
     // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
-    fetchActivepppoeUser(dispatch, IDs);
+    // fetchActivepppoeUser(dispatch, IDs);
     fetchpppoePackage(dispatch, IDs);
-  }, [ispOwner, mikrotikId, dispatch, refresh]);
+  },[ispOwner,mikrotikId,dispatch])
 
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
@@ -409,11 +341,11 @@ export default function ConfigMikrotik() {
                     {/* PPPoE Package */}
                     {whatYouWantToShow === "showMikrotikPackage" ? (
                       <>
-                        <h2 className="secondaryTitle">PPPoE প্যাকেজ</h2>
+                        <h2 className="secondaryTitle">প্যাকেজ</h2>
                         <div className="row searchCollector">
                           <div className="col-sm-8">
                             <h4 className="allCollector">
-                              PPPoE প্যাকেজ:{" "}
+                              প্যাকেজ:{" "}
                               <span>
                                 {pppoePackage?.length
                                   ? pppoePackage?.length
