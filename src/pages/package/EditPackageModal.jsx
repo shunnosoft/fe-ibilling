@@ -59,7 +59,7 @@ export default function EditPackage(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন প্যাকেজ অ্যাড
+               প্যাকেজ ইডিট
               </h5>
               <button
                 type="button"

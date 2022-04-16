@@ -10,11 +10,13 @@ import { FtextField } from "../../../components/common/FtextField";
 // import { editCustomer } from "../../../features/customerSlice";
 // import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
-import { editCustomer } from "../../../features/apiCalls";
+import { editCustomer, fetchPackagefromDatabase } from "../../../features/apiCalls";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
+import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
+  console.log(props)
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -23,13 +25,20 @@ export default function CustomerEdit(props) {
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
   // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
-  const [ppPackage, setppPackage] = useState([]);
+  // const [ppPackage, setppPackage] = useState([]);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   // const [singleMikrotik, setSingleMikrotik] = useState(props?.single?.mikrotik);
   const [mikrotikPackage, setMikrotikPackage] = useState(
     props?.single?.mikrotikPackage
   );
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings
+  );
+  const ppPackage = useSelector(
+    (state) => bpSettings.hasMikrotik? state.persistedReducer.mikrotik.packagefromDatabase : state.package.packages
+  );
+   
   const [autoDisable, setAutoDisable] = useState(props?.single?.autoDisable);
    
   const [subArea, setSubArea] = useState("");
@@ -41,7 +50,22 @@ export default function CustomerEdit(props) {
   const [subAreaId, setSubAreaId] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
+  
+console.log(bpSettings)
+  useEffect(()=>{
+       const IDs = {
+      ispOwner: ispOwnerId,
+      mikrotikId: props.single.mikrotik,
+    };
 
+    //todo 
+    if(bpSettings?.hasMikrotik){
+      fetchPackagefromDatabase(dispatch,IDs)
+
+    }  
+    // get the packages  not from mikrotik
+
+  },[bpSettings,ispOwnerId,dispatch, props?.single?.mikrotik])
   useEffect(() => {
     setAutoDisable(props.single?.autoDisable)
     setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
@@ -65,23 +89,23 @@ export default function CustomerEdit(props) {
     // setPppoePacakage(filterPPPoEpacakage);
   }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
 
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: props?.single?.mikrotik,
-    };
-    const fetchPac = async () => {
-      try {
-        const res = await apiLink.get(
-          `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
-        );
-        setppPackage(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    props?.single?.mikrotik && fetchPac();
-  }, [ispOwnerId, props?.single]);
+  // useEffect(() => {
+  //   const IDs = {
+  //     ispOwner: ispOwnerId,
+  //     mikrotikId: props?.single?.mikrotik,
+  //   };
+  //   const fetchPac = async () => {
+  //     try {
+  //       const res = await apiLink.get(
+  //         `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
+  //       );
+  //       setppPackage(res.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   props?.single?.mikrotik && fetchPac();
+  // }, [ispOwnerId, props?.single]);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -225,7 +249,7 @@ export default function CustomerEdit(props) {
                 {() => (
                   <Form>
                     <div className="mikrotikSection">
-                      <div>
+                     { bpSettings.hasMikrotik? <div>
                         <p className="comstomerFieldsTitle">
                           মাইক্রোটিক সিলেক্ট করুন
                         </p>
@@ -247,7 +271,7 @@ export default function CustomerEdit(props) {
                                 </option>
                               ))} */}
                         </select>
-                      </div>
+                      </div>:""}
 
                       {/* pppoe package */}
                       <div>

@@ -8,7 +8,7 @@ import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
+import { addCustomer, fetchPackagefromDatabase, fetchpppoePackage } from "../../../features/apiCalls";
 import moment from "moment";
 export default function CustomerModal() {
   const bpSettings = useSelector(
@@ -27,7 +27,7 @@ export default function CustomerModal() {
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
   const ppPackage = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoePackage
+    (state) => bpSettings.hasMikrotik? state.persistedReducer.mikrotik.packagefromDatabase : state.package.packages
   );
   const [packageRate, setPackageRate] = useState({rate:0});
   const [isLoading, setIsloading] = useState(false);
@@ -81,7 +81,8 @@ export default function CustomerModal() {
         ispOwner: ispOwnerId,
         mikrotikId: id,
       };
-      fetchpppoePackage(dispatch, IDs);
+      //ToDo
+      fetchPackagefromDatabase(dispatch, IDs);
     }
     setSingleMikrotik(id);
   };
@@ -196,6 +197,7 @@ export default function CustomerModal() {
                 onSubmit={(values ,{ resetForm }) => {
                   customerHandler(values,resetForm);
                 }}
+                enableReinitialize
                
               >
                 {(formik) => (
@@ -244,14 +246,14 @@ export default function CustomerModal() {
                         label="মাসিক ফি"
                         name="monthlyFee"
                         min={0}
-                        value={packageRate?.rate}
-                        onChange={(e)=>{
-                          setPackageRate((preval)=>{
-                            return {
-                              ...preval,rate:e.target.value
-                            }
-                          })
-                        }}
+                        // value={packageRate?.rate}
+                        // onChange={(e)=>{
+                        //   setPackageRate((preval)=>{
+                        //     return {
+                        //       ...preval,rate:e.target.value
+                        //     }
+                        //   })
+                        // }}
                        
                          
                         

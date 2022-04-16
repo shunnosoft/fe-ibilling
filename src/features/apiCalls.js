@@ -42,6 +42,7 @@ import {
   editpppoePackageSuccess,
   fetchMikrotikSyncUserSuccess,
   getMikrotikSuccess,
+  getPackagefromDatabaseSuccess,
   getpppoeActiveUserSuccess,
   getpppoePackageSuccess,
   getpppoeUserSuccess,
@@ -368,7 +369,7 @@ export const addCustomer = async (dispatch, data, setIsloading,resetForm) => {
     if (err.response) {
       setIsloading(false);
       toast.error(err.response.data.message);
-      resetForm()
+      // resetForm()
     }
   }
 };
@@ -593,6 +594,23 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
     toast.error("PPPoE প্যাকেজ পাওয়া যায়নি!");
   }
 };
+
+
+export const fetchPackagefromDatabase = async (dispatch, IDs) => {
+  try {
+    const res =await apiLink.get(`/mikrotik/ppp/package/${IDs.mikrotikId}`)
+    
+
+    console.log(res.data);
+    dispatch(getPackagefromDatabaseSuccess(res.data));
+    // toast.success("PPPoE প্যাকেজ fetch success");
+  } catch (error) {
+    // toast.error("প্যাকেজ পাওয়া যায়নি!");
+    console.log(error.response)
+  }
+};
+
+
 
 // Edit pppoe Package
 export const editPPPoEpackageRate = async (
@@ -1029,9 +1047,12 @@ export const addPackagewithoutmikrotik = async (
     console.log(res.data.newPackage);
     dispatch(addPackageSuccess(res.data.newPackage));
     setIsLoading(false);
+    document.querySelector("#createPackage").click();
+      toast.success("প্যাকেজ সফলভাবে যুক্ত হয়েছে!");
   } catch (error) {
     console.log(error.response?.data.message);
     setIsLoading(false);
+    toast.error("প্যাকেজ অ্যাড ব্যর্থ হয়েছে!");
   }
 };
 export const editPackagewithoutmikrotik = async (
@@ -1046,8 +1067,12 @@ export const editPackagewithoutmikrotik = async (
     console.log(res.data.updatedPackage);
     dispatch(editPackageSuccess(res.data.updatedPackage));
     setIsLoading(false);
+    document.querySelector("#editPackage").click();
+    toast.success("প্যাকেজ এডিট সফল  হয়েছে");
+
   } catch (error) {
     console.log(error.response?.data.message);
     setIsLoading(false);
+    toast.success("প্যাকেজ এডিট ব্যার্থ হয়েছে");
   }
 };

@@ -8,6 +8,7 @@ export const mikroTikSlice = createSlice({
     pppoeActiveUser: [],
     pppoePackage: [],
     mikrotikSyncUser: [],
+    packagefromDatabase:[]
   },
   reducers: {
     //mikrotik
@@ -42,6 +43,9 @@ export const mikroTikSlice = createSlice({
     //pppoePackage
     getpppoePackageSuccess: (state, action) => {
       state.pppoePackage = action.payload;
+    },
+    getPackagefromDatabaseSuccess: (state, action) => {
+      state.packagefromDatabase = action.payload;
     },
     editpppoePackageSuccess: (state, action) => {
       state.pppoePackage[
@@ -79,6 +83,7 @@ export const {
   deletepppoePackageSuccess,
   getpppoeActiveUserSuccess,
   fetchMikrotikSyncUserSuccess,
+  getPackagefromDatabaseSuccess,
 } = mikroTikSlice.actions;
 
 export default mikroTikSlice.reducer;
