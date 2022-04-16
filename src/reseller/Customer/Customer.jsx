@@ -134,10 +134,13 @@ export default function Customer() {
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
-
+console.log(userData)
   useEffect(() => {
     console.log(role);
+    if (role ==="collector") {
+      getMikrotik(dispatch,  userData.collector.reseller);
 
+    }
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);
       getCustomer(dispatch, userData?.reseller.id, setIsloading);
@@ -243,7 +246,7 @@ export default function Customer() {
                           <option value="paymentStatus.paid">পরিশোধ</option>
                         </select>
                       </div>
-                      {permission?.customerAdd || role === "ispOwner" ? (
+                       
                         <div className="addNewCollector">
                           <div className="addAndSettingIcon">
                             <PersonPlusFill
@@ -253,9 +256,7 @@ export default function Customer() {
                             />
                           </div>
                         </div>
-                      ) : (
-                        ""
-                      )}
+                      
                     </div>
 
                     <div className="row searchCollector">
@@ -412,7 +413,7 @@ export default function Customer() {
                                   </li>
 
                                   {permission?.customerEdit ||
-                                  role === "ispOwner" ? (
+                                  role === "reseller" ? (
                                     <li
                                       data-bs-toggle="modal"
                                       data-bs-target="#customerEditModal"
@@ -447,7 +448,7 @@ export default function Customer() {
                                   </li>
 
                                   {permission?.customerDelete ||
-                                  role === "ispOwner" ? (
+                                  role === "reseller" ? (
                                     <li
                                       onClick={() => {
                                         let con = window.confirm(

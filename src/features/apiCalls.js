@@ -54,7 +54,7 @@ import {
   editResellerSuccess,
   getResellerrSuccess,
 } from "./resellerSlice";
-import { updateProfile } from "./authSlice";
+import { setBpsetting, updateProfile } from "./authSlice";
 import {
   getAllBillsSuccess,
   getDepositSuccess,
@@ -1076,3 +1076,17 @@ export const editPackagewithoutmikrotik = async (
     toast.success("প্যাকেজ এডিট ব্যার্থ হয়েছে");
   }
 };
+
+// get ispOwner
+
+export const getIspOwnerData = async (dispatch, ispOwnerId) =>{
+  try {
+    const res = await apiLink.get(`/ispOwner/${ispOwnerId}`)
+    dispatch(setBpsetting(res.data.bpSettings))
+  } catch (error) {
+    console.log(error.response?.data.message)
+    
+  }
+
+}
+

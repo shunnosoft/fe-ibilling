@@ -117,7 +117,7 @@ export default function Sidebar() {
                 </NavLink>
               )}
 
-              {(bpSettings?.hasReseller && bpSettings?.hasMikrotik) ? (
+              {(bpSettings?.hasReseller && bpSettings?.hasMikrotik && userRole==="ispOwner") ? (
                 <NavLink
                   key={33}
                   to={"/reseller"}

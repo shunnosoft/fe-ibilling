@@ -22,7 +22,7 @@ export default function CollectorPost() {
   const [areaIds, setAreaIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
-
+const ispOwnerId = useSelector(state=>state.persistedReducer.auth.ispOwnerId)
   //validator
   const collectorValidator = Yup.object({
     name: Yup.string().required("নাম ***"),
@@ -61,6 +61,7 @@ export default function CollectorPost() {
       ...data,
       areas: areaIds,
       reseller: auth.reseller.id,
+      ispOwner:ispOwnerId
     };
     addCollector(dispatch, sendingData, setIsLoading);
   };

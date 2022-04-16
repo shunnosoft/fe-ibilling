@@ -15,6 +15,7 @@ import {
   getAllBills,
   getArea,
   getCollector,
+  getIspOwnerData,
   getManger,
 } from "../../features/apiCalls";
 import { getCharts, initiatePayment } from "../../features/apiCalls";
@@ -104,6 +105,8 @@ export default function Home() {
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
+      getIspOwnerData(dispatch,ispOwnerId)
+
     }
 
     if (role === "ispOwner" || role === "manager" || role === "reseller") {
@@ -117,12 +120,14 @@ export default function Home() {
     // getArea(dispatch, IDBOpenDBRequest)
     if (role === "collector") {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
+      fetchMikrotik(dispatch, ispOwnerId);
+
+      getIspOwnerData(dispatch,ispOwnerId)
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
     }
-
     // if (!invoice) getUnpaidInvoice(dispatch, ispOwnerId, setIsloading);
-  }, [dispatch, ispOwnerId, role, userData, Month, Year]);
+  }, []);
 
   useEffect(() => {
     let tempArr = [],

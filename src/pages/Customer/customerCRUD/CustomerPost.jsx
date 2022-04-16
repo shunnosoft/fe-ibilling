@@ -27,7 +27,7 @@ export default function CustomerModal() {
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
   const ppPackage = useSelector(
-    (state) => bpSettings.hasMikrotik? state.persistedReducer.mikrotik.packagefromDatabase : state.package.packages
+    (state) => bpSettings?.hasMikrotik? state.persistedReducer.mikrotik.packagefromDatabase : state.package.packages
   );
   const [packageRate, setPackageRate] = useState({rate:0});
   const [isLoading, setIsloading] = useState(false);

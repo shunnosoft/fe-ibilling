@@ -55,6 +55,12 @@ const authSlice = createSlice({
     updateTokenSuccess: (state, action) => {
       state.accessToken = action.payload;
     },
+    setBpsetting:(state,action)=>{
+      state.userData={
+        ...state.userData,
+        bpSettings: action.payload
+      }
+    },
 
     logOut: (state) => {
       state.currentUser = null;
@@ -73,6 +79,7 @@ export const {
   logInSuccess,
   loginFailure,
   logOut,
+  setBpsetting
 } = authSlice.actions;
 
 export default authSlice.reducer;

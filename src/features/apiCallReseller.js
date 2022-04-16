@@ -357,6 +357,7 @@ export const getSubAreas = async (dispatch, resellerId) => {
 export const getMikrotik = async (dispatch, resellerId) => {
   try {
     const res = await apiLink.get(`/reseller/mikrotik/${resellerId}`);
+    console.log(res.data)
     dispatch(getMikrotikSuccess(res.data));
   } catch (error) {
     console.log(error);

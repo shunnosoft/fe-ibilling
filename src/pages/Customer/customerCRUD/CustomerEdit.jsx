@@ -53,6 +53,7 @@ export default function CustomerEdit(props) {
   const [status,setStatus] =useState("")
 console.log(status)
   useEffect(()=>{
+    setStatus(props?.single?.status)
        const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: props.single.mikrotik,
@@ -65,7 +66,7 @@ console.log(status)
     }  
     // get the packages  not from mikrotik
 
-  },[bpSettings,ispOwnerId,dispatch, props?.single?.mikrotik])
+  },[bpSettings,ispOwnerId,dispatch, props?.single])
   useEffect(() => {
     setAutoDisable(props.single?.autoDisable)
     setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
@@ -240,7 +241,7 @@ console.log(status)
                   Pname: props?.single?.pppoe?.name || "",
                   Pprofile: packageRate?.name || props?.single?.pppoe?.profile || "",
                   Ppassword: props?.single.pppoe?.password || "",
-                  status:props?.single.status || ""
+                  status: status || ""
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
