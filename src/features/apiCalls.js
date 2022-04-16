@@ -356,7 +356,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   }
 };
 
-export const addCustomer = async (dispatch, data, setIsloading,resetForm) => {
+export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/ispOwner/customer", data);
@@ -364,7 +364,7 @@ export const addCustomer = async (dispatch, data, setIsloading,resetForm) => {
     setIsloading(false);
     toast.success("কাস্টমার সংযুক্ত সফল হয়েছে! ");
     document.querySelector("#customerModal").click();
-    resetForm()
+    resetForm();
   } catch (err) {
     if (err.response) {
       setIsloading(false);
@@ -375,7 +375,7 @@ export const addCustomer = async (dispatch, data, setIsloading,resetForm) => {
 };
 
 export const editCustomer = async (dispatch, data, setIsloading) => {
-  console.log("Edit Data: ", data);
+  // console.log("Edit Data: ", data);
   const { singleCustomerID, ispOwner, ...sendingData } = data;
   try {
     const res = await apiLink.patch(
@@ -544,7 +544,7 @@ export const fetchpppoeUser = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getpppoeUserSuccess(res.data));
   } catch (error) {
     toast.error("PPPoE গ্রাহক পাওয়া যায়নি!");
@@ -558,22 +558,21 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/PPPactiveUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
-    const activeUsers=res.data?.activeUsers
-    const interfaaceList=res.data?.interfaceList
-    const temp =[]
-     
-    interfaaceList.forEach((i)=>{
-      activeUsers.forEach(j=>{
-        if(i.name===("<pppoe-"+j.name+">")){
-          
+    const activeUsers = res.data?.activeUsers;
+    const interfaaceList = res.data?.interfaceList;
+    const temp = [];
 
+    interfaaceList.forEach((i) => {
+      activeUsers.forEach((j) => {
+        if (i.name === "<pppoe-" + j.name + ">") {
           temp.push({
-            ...i,...j
-          })
+            ...i,
+            ...j,
+          });
         }
-      })
-    })
-    console.log(temp)
+      });
+    });
+    // console.log(temp)
     dispatch(getpppoeActiveUserSuccess(temp));
   } catch (error) {
     toast.error("এক্টিভ গ্রাহক পাওয়া যায়নি!");
@@ -587,7 +586,7 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getpppoePackageSuccess(res.data));
     // toast.success("PPPoE প্যাকেজ fetch success");
   } catch (error) {
@@ -595,22 +594,18 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
   }
 };
 
-
 export const fetchPackagefromDatabase = async (dispatch, IDs) => {
   try {
-    const res =await apiLink.get(`/mikrotik/ppp/package/${IDs.mikrotikId}`)
-    
+    const res = await apiLink.get(`/mikrotik/ppp/package/${IDs.mikrotikId}`);
 
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getPackagefromDatabaseSuccess(res.data));
     // toast.success("PPPoE প্যাকেজ fetch success");
   } catch (error) {
     // toast.error("প্যাকেজ পাওয়া যায়নি!");
-    console.log(error.response)
+    console.log(error.response);
   }
 };
-
-
 
 // Edit pppoe Package
 export const editPPPoEpackageRate = async (
@@ -783,7 +778,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 
   try {
     const res = await apiLink.patch(`/ispOwner/${id}`, data);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(updateProfile(res.data));
     setIsLoading(false);
     toast.success("প্রোফাইল আপডেট সফল হয়েছে");
@@ -839,7 +834,7 @@ export const getTotalbal = async (dispatch, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.get(`bill/monthlyBill/balance`);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getTotalBalanceSuccess(res.data));
     setLoading(false);
   } catch (error) {
@@ -866,7 +861,7 @@ export const depositAcceptReject = async (
   id,
   setAccLoading
 ) => {
-  console.log(status, id);
+  // console.log(status, id);
   setAccLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
@@ -1018,7 +1013,7 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
 export const getIspownerwitSMS = async (ispOwnerId) => {
   try {
     const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-    console.log(res.data);
+    // console.log(res.data);
   } catch (error) {
     console.log(error.response?.data.message);
   }
@@ -1029,9 +1024,9 @@ export const getIspownerwitSMS = async (ispOwnerId) => {
 export const getPackagewithoutmikrotik = async (ispOwnerId, dispatch) => {
   try {
     const res = await apiLink.get(`/mikrotik/package/${ispOwnerId}`);
-    console.log(res.data.packages);
+    // console.log(res.data.packages);
     dispatch(getpackageSuccess(res.data.packages));
-    dispatch(getpppoePackageSuccess(res.data.packages))
+    dispatch(getpppoePackageSuccess(res.data.packages));
   } catch (error) {
     console.log(error.response?.data.message);
   }
@@ -1044,11 +1039,11 @@ export const addPackagewithoutmikrotik = async (
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/mikrotik/package`, data);
-    console.log(res.data.newPackage);
+    // console.log(res.data.newPackage);
     dispatch(addPackageSuccess(res.data.newPackage));
     setIsLoading(false);
     document.querySelector("#createPackage").click();
-      toast.success("প্যাকেজ সফলভাবে যুক্ত হয়েছে!");
+    toast.success("প্যাকেজ সফলভাবে যুক্ত হয়েছে!");
   } catch (error) {
     console.log(error.response?.data.message);
     setIsLoading(false);
@@ -1064,12 +1059,11 @@ export const editPackagewithoutmikrotik = async (
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`/mikrotik/package/${data?.id}`, data);
-    console.log(res.data.updatedPackage);
+    // console.log(res.data.updatedPackage);
     dispatch(editPackageSuccess(res.data.updatedPackage));
     setIsLoading(false);
     document.querySelector("#editPackage").click();
     toast.success("প্যাকেজ এডিট সফল  হয়েছে");
-
   } catch (error) {
     console.log(error.response?.data.message);
     setIsLoading(false);
@@ -1079,14 +1073,11 @@ export const editPackagewithoutmikrotik = async (
 
 // get ispOwner
 
-export const getIspOwnerData = async (dispatch, ispOwnerId) =>{
+export const getIspOwnerData = async (dispatch, ispOwnerId) => {
   try {
-    const res = await apiLink.get(`/ispOwner/${ispOwnerId}`)
-    dispatch(setBpsetting(res.data.bpSettings))
+    const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+    dispatch(setBpsetting(res.data.bpSettings));
   } catch (error) {
-    console.log(error.response?.data.message)
-    
+    console.log(error.response?.data.message);
   }
-
-}
-
+};

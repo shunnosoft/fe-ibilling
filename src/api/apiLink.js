@@ -3,7 +3,7 @@ import jwt_decode from "jwt-decode";
 import { userLogout } from "../features/actions/authAsyncAction";
 
 // PRODUCTION
-// const BASE_URL = "https://netfeebd.net/api/v1/";
+const BASE_URL = "https://netfeebd.net/api/v1/";
 
 // DEVELOPMENT
 // const BASE_URL = "http://137.184.69.182/api/v1/";

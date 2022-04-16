@@ -8,15 +8,17 @@ import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { addCustomer, fetchPackagefromDatabase, fetchpppoePackage } from "../../../features/apiCalls";
+import {
+  addCustomer,
+  fetchPackagefromDatabase,
+  fetchpppoePackage,
+} from "../../../features/apiCalls";
 import moment from "moment";
 export default function CustomerModal() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
-  const role = useSelector(
-    (state) => state.persistedReducer.auth?.role
-  );
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
   // const packages= useSelector(state=>state.package.packages)
   // console.log( packages)
   const ispOwnerId = useSelector(
@@ -26,10 +28,12 @@ export default function CustomerModal() {
   const Getmikrotik = useSelector(
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
-  const ppPackage = useSelector(
-    (state) => bpSettings?.hasMikrotik? state.persistedReducer.mikrotik.packagefromDatabase : state.package.packages
+  const ppPackage = useSelector((state) =>
+    bpSettings?.hasMikrotik
+      ? state.persistedReducer.mikrotik.packagefromDatabase
+      : state.package.packages
   );
-  const [packageRate, setPackageRate] = useState({rate:0});
+  const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
@@ -51,15 +55,14 @@ export default function CustomerModal() {
     email: Yup.string().email("ইমেইল সঠিক নয়"),
     nid: Yup.string(),
     monthlyFee: Yup.number()
-    .integer()
-    .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-    .required("প্যাকেজ রেট দিন"),
+      .integer()
+      .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
+      .required("প্যাকেজ রেট দিন"),
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
   });
 
-  
   // select subArea
   // const selectSubArea = (data) => {
   //   const areaId = data.target.value;
@@ -101,21 +104,19 @@ export default function CustomerModal() {
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
-    console.log(mikrotikPackageId)
-    if(mikrotikPackageId==="0") {
-      setPackageRate({rate:0})
-    } else{
-      console.log(e.target.value)
+    // console.log(mikrotikPackageId)
+    if (mikrotikPackageId === "0") {
+      setPackageRate({ rate: 0 });
+    } else {
+      // console.log(e.target.value)
       setMikrotikPackage(mikrotikPackageId);
       const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
       setPackageRate(temp);
-
     }
-   
   };
 
   // sending data to backed
-  const customerHandler = async (data,resetForm) => {
+  const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
@@ -143,19 +144,17 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    if(!bpSettings.hasMikrotik){
-      delete mainData.mikrotik; 
-
+    if (!bpSettings.hasMikrotik) {
+      delete mainData.mikrotik;
     }
-    console.log(mainData)
-    addCustomer(dispatch, mainData, setIsloading,resetForm);
+    // console.log(mainData)
+    addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
   useEffect(() => {
-   
     setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
     setBilltime(moment().endOf("day").format("HH:mm"));
-  }, [bpSettings,role]);
+  }, [bpSettings, role]);
   return (
     <div>
       <div
@@ -194,34 +193,37 @@ export default function CustomerModal() {
                   Pcomment: "",
                 }}
                 validationSchema={customerValidator}
-                onSubmit={(values ,{ resetForm }) => {
-                  customerHandler(values,resetForm);
+                onSubmit={(values, { resetForm }) => {
+                  customerHandler(values, resetForm);
                 }}
                 enableReinitialize
-               
               >
                 {(formik) => (
                   <Form>
                     <div className="mikrotikSection">
-                     {bpSettings.hasMikrotik? <div>
-                        <p className="comstomerFieldsTitle">
-                          মাইক্রোটিক সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          onChange={selectMikrotik}
-                        >
-                          <option value="">...</option>
-                          {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-                      </div>:""}
+                      {bpSettings.hasMikrotik ? (
+                        <div>
+                          <p className="comstomerFieldsTitle">
+                            মাইক্রোটিক সিলেক্ট করুন
+                          </p>
+                          <select
+                            className="form-select"
+                            aria-label="Default select example"
+                            onChange={selectMikrotik}
+                          >
+                            <option value="">...</option>
+                            {Getmikrotik.length === undefined
+                              ? ""
+                              : Getmikrotik.map((val, key) => (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                          </select>
+                        </div>
+                      ) : (
+                        ""
+                      )}
 
                       {/* pppoe package */}
                       <div>
@@ -235,10 +237,10 @@ export default function CustomerModal() {
                         >
                           <option value={"0"}>...</option>
                           {ppPackage.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <FtextField
@@ -254,9 +256,6 @@ export default function CustomerModal() {
                         //     }
                         //   })
                         // }}
-                       
-                         
-                        
                       />
                     </div>
 

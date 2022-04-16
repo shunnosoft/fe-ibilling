@@ -197,7 +197,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 
   try {
     const res = await apiLink.patch(`/reseller/${id}`, data);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(updateProfile(res.data));
     setIsLoading(false);
     toast.success("প্রোফাইল আপডেট সফল হয়েছে");
@@ -253,7 +253,7 @@ export const getTotalbal = async (dispatch, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.get(`bill/monthlyBill/balance`);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getTotalBalanceSuccess(res.data));
     setLoading(false);
   } catch (error) {
@@ -273,21 +273,14 @@ export const getDeposit = async (dispatch) => {
   }
 };
 
-
-export const getDepositforReseller = async (dispatch, resellerId) =>{
+export const getDepositforReseller = async (dispatch, resellerId) => {
   try {
-    const res = await apiLink.get(`/deposit/reseller/collector/${resellerId}`)
-    dispatch(getDepositSuccess(res.data))
+    const res = await apiLink.get(`/deposit/reseller/collector/${resellerId}`);
+    dispatch(getDepositSuccess(res.data));
   } catch (error) {
-    console.log(error)
-    
+    console.log(error);
   }
-
-}
- 
-
-
-
+};
 
 export const depositAcceptReject = async (
   dispatch,
@@ -295,7 +288,7 @@ export const depositAcceptReject = async (
   id,
   setAccLoading
 ) => {
-  console.log(status, id);
+  // console.log(status, id);
   setAccLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
@@ -357,7 +350,7 @@ export const getSubAreas = async (dispatch, resellerId) => {
 export const getMikrotik = async (dispatch, resellerId) => {
   try {
     const res = await apiLink.get(`/reseller/mikrotik/${resellerId}`);
-    console.log(res.data)
+    // console.log(res.data);
     dispatch(getMikrotikSuccess(res.data));
   } catch (error) {
     console.log(error);

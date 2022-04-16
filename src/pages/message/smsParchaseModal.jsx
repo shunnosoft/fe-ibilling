@@ -9,7 +9,7 @@ function SmsParchase() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setIsloading] = useState(false);
-  console.log(userRole, userData);
+  // console.log(userRole, userData);
 
   const [amount, setAmount] = useState(100);
   const [count, setCount] = useState(Number(amount) / userData.smsRate);
@@ -21,7 +21,7 @@ function SmsParchase() {
   };
 
   const submitHandler = (e) => {
-    console.log(amount, count);
+    // console.log(amount, count);
     if (count * userData.smsRate < 100) {
       alert("দুঃখিত, ১০০ টাকার নিচে এসএমএস ক্রয় করা সম্ভব নয়।");
     } else {

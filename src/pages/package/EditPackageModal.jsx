@@ -9,12 +9,14 @@ import "../Customer/customer.css";
 // import { FtextField } from "../../../components/common/FtextField";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
-import {  editPackagewithoutmikrotik } from "../../features/apiCalls";
+import { editPackagewithoutmikrotik } from "../../features/apiCalls";
 
 export default function EditPackage(props) {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const ispOwnerId =useSelector(state=>state.persistedReducer.auth.ispOwnerId)
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
 
   //validator
   const collectorValidator = Yup.object({
@@ -33,16 +35,14 @@ export default function EditPackage(props) {
   });
 
   const packageEditHandler = (data) => {
-
     const sendingData = {
       ...data,
-      id:props.package.id,
-      ispOwner:ispOwnerId
+      id: props.package.id,
+      ispOwner: ispOwnerId,
     };
-    console.log(sendingData)
+    // console.log(sendingData)
 
-    editPackagewithoutmikrotik(sendingData,dispatch,setIsLoading)
-
+    editPackagewithoutmikrotik(sendingData, dispatch, setIsLoading);
   };
 
   return (
@@ -59,7 +59,7 @@ export default function EditPackage(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-               প্যাকেজ ইডিট
+                প্যাকেজ ইডিট
               </h5>
               <button
                 type="button"

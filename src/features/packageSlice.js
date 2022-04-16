@@ -12,7 +12,7 @@ const packageSlice = createSlice({
       state.packages = action.payload;
     },
     editPackageSuccess: (state, action) => {
-      console.log(action.payload)
+      // console.log(action.payload)
       state.packages[
         state.packages.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
@@ -23,7 +23,10 @@ const packageSlice = createSlice({
   },
 });
 
-export const { getpackageSuccess, editPackageSuccess, addPackageSuccess } =
-  packageSlice.actions;
+export const {
+  getpackageSuccess,
+  editPackageSuccess,
+  addPackageSuccess,
+} = packageSlice.actions;
 
 export default packageSlice.reducer;

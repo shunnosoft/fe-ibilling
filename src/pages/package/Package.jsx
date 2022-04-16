@@ -20,8 +20,8 @@ import EditPackage from "./EditPackageModal";
 // import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 
 export default function Package() {
-  const packages=useSelector(state=>state.package.packages)
-  console.log(packages)
+  const packages = useSelector((state) => state.package.packages);
+  // console.log(packages)
   const dispatch = useDispatch();
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector(
@@ -32,11 +32,8 @@ export default function Package() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
   let serial = 0;
- 
-  
-  
+
   const role = useSelector((state) => state.persistedReducer.auth.role);
-  
 
   useEffect(() => {
     getPackagewithoutmikrotik(ispOwnerId, dispatch);
@@ -45,10 +42,9 @@ export default function Package() {
   const [singlePackage, setSinglePackage] = useState("");
 
   const getSpecificPackage = (val) => {
-    console.log(val)
-    setSinglePackage(val)
-    }
-  
+    // console.log(val)
+    setSinglePackage(val);
+  };
 
   // DELETE collector
   // const deleteCollectorHandler = async (ID) => {
@@ -134,7 +130,7 @@ export default function Package() {
                           <th>সিরিয়াল</th>
                           <th>নাম</th>
                           <th>প্যাকেজ রেট</th>
-                          
+
                           <th className="centeringTD">অ্যাকশন</th>
                         </tr>
                       </thead>
@@ -149,7 +145,7 @@ export default function Package() {
                               <td>{++serial}</td>
                               <td>{val.name}</td>
                               <td>{val.rate}</td>
-                               
+
                               <td className="centeringTD">
                                 <ThreeDots
                                   className="dropdown-toggle ActionDots"
@@ -168,7 +164,6 @@ export default function Package() {
                                     <li
                                       data-bs-toggle="modal"
                                       data-bs-target="#editPackage"
-                                      
                                       onClick={() => {
                                         getSpecificPackage(val);
                                       }}

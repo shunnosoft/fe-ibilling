@@ -175,7 +175,7 @@ export default function Report() {
   };
 
   const onClickFilter = () => {
-    console.log("filter data");
+    // console.log("filter data");
 
     let arr = allBills;
 

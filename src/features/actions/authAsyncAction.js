@@ -24,7 +24,7 @@ export const asyncRegister = async (userData, setLoading) => {
     setLoading(false);
     // window.location.href = res.data.paymentUrl;
     toast.success(res.data?.message);
-    console.log(res);
+    // console.log(res);
     setTimeout(() => {
       // window.location.href("https://netfeebd.com/login");
       window.location.href = "/login";

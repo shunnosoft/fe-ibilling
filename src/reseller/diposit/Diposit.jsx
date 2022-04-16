@@ -47,7 +47,7 @@ export default function Diposit() {
   const collectors = useSelector(
     (state) => state.persistedReducer.collector.collector
   );
-  console.log(collectors);
+  // console.log(collectors);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );

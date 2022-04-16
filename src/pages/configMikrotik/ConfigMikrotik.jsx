@@ -53,20 +53,14 @@ export default function ConfigMikrotik() {
   const [search, setSearch] = useState("");
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
-  const allMikrotikUsers =
-   
-
-  useSelector(
+  const allMikrotikUsers = useSelector(
     (state) => state.persistedReducer.mikrotik.pppoeUser
   );
 
-  const activeUser =
- 
- 
-   useSelector(
+  const activeUser = useSelector(
     (state) => state.persistedReducer.mikrotik.pppoeActiveUser
   );
-  const pppoePackage =useSelector(
+  const pppoePackage = useSelector(
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
   // const mikrotikSyncUser = useSelector(
@@ -90,16 +84,14 @@ export default function ConfigMikrotik() {
   // fetch single mikrotik
 
   useEffect(() => {
-    const zeroRate=pppoePackage.filter((i)=>i.rate===0)
-    if(zeroRate.length!==0){
+    const zeroRate = pppoePackage.filter((i) => i.rate === 0);
+    if (zeroRate.length !== 0) {
       toast.warn(`${zeroRate[0].name} প্যাকেজ
-      এর রেট আপডেট করুন`)
-
+      এর রেট আপডেট করুন`);
     }
-   
   }, [pppoePackage]);
 
-  useLayoutEffect(()=>{
+  useLayoutEffect(() => {
     const IDs = {
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
@@ -112,7 +104,7 @@ export default function ConfigMikrotik() {
     // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     // fetchActivepppoeUser(dispatch, IDs);
     fetchpppoePackage(dispatch, IDs);
-  },[ispOwner,mikrotikId,dispatch])
+  }, [ispOwner, mikrotikId, dispatch]);
 
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
@@ -171,7 +163,7 @@ export default function ConfigMikrotik() {
 
   const selectMikrotikOptionsHandler = (e) => {
     const val = e.target.value;
-    console.log(val);
+    // console.log(val);
     const IDs = {
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
@@ -267,7 +259,7 @@ export default function ConfigMikrotik() {
                             </span>
                           ) : (
                             <button
-                            disabled={pppoePackage.some(i=>i.rate===0)}
+                              disabled={pppoePackage.some((i) => i.rate === 0)}
                               onClick={syncPackage}
                               title="প্যাকেজ সিংক"
                               className="addcutmButton btn-info btnbyEnamul"
@@ -523,8 +515,14 @@ export default function ConfigMikrotik() {
                                         {++serial}
                                       </td>
                                       <td>{val.name}</td>
-                                      <td>{(((val.rxByte / 1024)/1024)).toFixed(2)+" MB/s"}</td>
-                                      <td>{(((val.txByte / 1024)/1024)).toFixed(2)+" MB/s"}</td>
+                                      <td>
+                                        {(val.rxByte / 1024 / 1024).toFixed(2) +
+                                          " MB/s"}
+                                      </td>
+                                      <td>
+                                        {(val.txByte / 1024 / 1024).toFixed(2) +
+                                          " MB/s"}
+                                      </td>
                                       {/* <td style={{ textAlign: "center" }}>
                                     <ThreeDots className="dropdown-toggle ActionDots" />
                                   </td> */}

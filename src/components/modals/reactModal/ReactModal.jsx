@@ -15,10 +15,10 @@ function ReactModal() {
   );
   const dispatch = useDispatch();
   const [isAgreed, setAgreed] = useState(false);
-  console.log(isAgreed);
+  // console.log(isAgreed);
 
   const alertModalData = useSelector((state) => state.ui.alertModalData);
-  console.log(alertModalData);
+  // console.log(alertModalData);
   const modalHandle = () => {
     if (alertModalData.paymentUrl) {
       setIsloading(true);
@@ -42,9 +42,11 @@ function ReactModal() {
           </button>
         </div>
         <div className="title">
-          <h1
-            style={{ color: "green" }}
-          >{`ফিঃ ${!alertModalData.paymentUrl?(alertModalData?.amount):(invoice?.amount)} Tk`}</h1>
+          <h1 style={{ color: "green" }}>{`ফিঃ ${
+            !alertModalData.paymentUrl
+              ? alertModalData?.amount
+              : invoice?.amount
+          } Tk`}</h1>
           <h1 style={{ color: "orangered" }}>
             {`পরিশোধের শেষ সময়ঃ ${moment(alertModalData?.dueDate).format(
               "DD-MM-YYYY hh:mm:ss A"

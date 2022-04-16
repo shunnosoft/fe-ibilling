@@ -26,7 +26,7 @@ import { showModal } from "../../features/uiSlice";
 export default function Home() {
   const [isLoading, setIsloading] = useState(false);
   const role = useSelector((state) => state.persistedReducer.auth.role);
-  console.log(role)
+  // console.log(role)
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -105,8 +105,7 @@ export default function Home() {
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
-      getIspOwnerData(dispatch,ispOwnerId)
-
+      getIspOwnerData(dispatch, ispOwnerId);
     }
 
     if (role === "ispOwner" || role === "manager" || role === "reseller") {
@@ -122,7 +121,7 @@ export default function Home() {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
       fetchMikrotik(dispatch, ispOwnerId);
 
-      getIspOwnerData(dispatch,ispOwnerId)
+      getIspOwnerData(dispatch, ispOwnerId);
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
     }

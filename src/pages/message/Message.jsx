@@ -80,14 +80,12 @@ export default function Message() {
     } else {
       sendingData = {
         sms: smsRef.current.value,
-        status:status,
-        payment:payment,
-        subAreas:areaIds
-        
-
+        status: status,
+        payment: payment,
+        subAreas: areaIds,
       };
     }
-    console.log(sendingData);
+    // console.log(sendingData);
   };
   return (
     <>

@@ -10,13 +10,15 @@ import { FtextField } from "../../../components/common/FtextField";
 // import { editCustomer } from "../../../features/customerSlice";
 // import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
-import { editCustomer, fetchPackagefromDatabase } from "../../../features/apiCalls";
+import {
+  editCustomer,
+  fetchPackagefromDatabase,
+} from "../../../features/apiCalls";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
 import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
-   
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -35,40 +37,42 @@ export default function CustomerEdit(props) {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
-  const ppPackage = useSelector(
-    (state) => bpSettings.hasMikrotik? state.persistedReducer.mikrotik.packagefromDatabase : state.package.packages
+  const ppPackage = useSelector((state) =>
+    bpSettings.hasMikrotik
+      ? state.persistedReducer.mikrotik.packagefromDatabase
+      : state.package.packages
   );
-   
+
   const [autoDisable, setAutoDisable] = useState(props?.single?.autoDisable);
-   
+
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(props?.single?.pppoe?.disabled);
+  const [activeStatus, setActiveStatus] = useState(
+    props?.single?.pppoe?.disabled
+  );
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
-  const [status,setStatus] =useState("")
-console.log(status)
-  useEffect(()=>{
-    setStatus(props?.single?.status)
-       const IDs = {
+  const [status, setStatus] = useState("");
+  // console.log(status)
+  useEffect(() => {
+    setStatus(props?.single?.status);
+    const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: props.single.mikrotik,
     };
 
-    //todo 
-    if(bpSettings?.hasMikrotik){
-      fetchPackagefromDatabase(dispatch,IDs)
-
-    }  
+    //todo
+    if (bpSettings?.hasMikrotik) {
+      fetchPackagefromDatabase(dispatch, IDs);
+    }
     // get the packages  not from mikrotik
-
-  },[bpSettings,ispOwnerId,dispatch, props?.single])
+  }, [bpSettings, ispOwnerId, dispatch, props?.single]);
   useEffect(() => {
-    setAutoDisable(props.single?.autoDisable)
+    setAutoDisable(props.single?.autoDisable);
     setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
     setBilltime(moment(props?.single.billingCycle).format("hh:mm"));
     const temp = Getmikrotik.find((val) => val.id === props?.single.mikrotik);
@@ -119,9 +123,9 @@ console.log(status)
     email: Yup.string().email("ইমেইল সঠিক নয়"),
     nid: Yup.string(),
     monthlyFee: Yup.number()
-    .integer()
-    .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-    .required("প্যাকেজ রেট দিন"),
+      .integer()
+      .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
+      .required("প্যাকেজ রেট দিন"),
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
@@ -198,9 +202,9 @@ console.log(status)
         disabled: activeStatus,
       },
       ...rest,
-       status
+      status,
     };
-    console.log(mainData)
+    // console.log(mainData)
 
     editCustomer(dispatch, mainData, setIsloading);
   };
@@ -237,11 +241,13 @@ console.log(status)
                   email: props?.single?.email || "",
                   nid: props?.single?.nid || "",
                   Pcomment: props?.single?.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || props?.single?.monthlyFee || 0,
+                  monthlyFee:
+                    packageRate?.rate || props?.single?.monthlyFee || 0,
                   Pname: props?.single?.pppoe?.name || "",
-                  Pprofile: packageRate?.name || props?.single?.pppoe?.profile || "",
+                  Pprofile:
+                    packageRate?.name || props?.single?.pppoe?.profile || "",
                   Ppassword: props?.single.pppoe?.password || "",
-                  status: status || ""
+                  status: status || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -252,34 +258,38 @@ console.log(status)
                 {() => (
                   <Form>
                     <div className="mikrotikSection">
-                     { bpSettings.hasMikrotik? <div>
-                        <p className="comstomerFieldsTitle">
-                          মাইক্রোটিক সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          // onChange={selectMikrotik}
-                          disabled
-                          value={props?.single?.mikrotik || ""}
-                        >
-                          <option value={mikrotikName?.id || ""}>
-                            {mikrotikName?.name || ""}
-                          </option>
-                          {/* {Getmikrotik.length === undefined
+                      {bpSettings.hasMikrotik ? (
+                        <div>
+                          <p className="comstomerFieldsTitle">
+                            মাইক্রোটিক সিলেক্ট করুন
+                          </p>
+                          <select
+                            className="form-select"
+                            aria-label="Default select example"
+                            // onChange={selectMikrotik}
+                            disabled
+                            value={props?.single?.mikrotik || ""}
+                          >
+                            <option value={mikrotikName?.id || ""}>
+                              {mikrotikName?.name || ""}
+                            </option>
+                            {/* {Getmikrotik.length === undefined
                             ? ""
                             : Getmikrotik.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>
                               ))} */}
-                        </select>
-                      </div>:""}
+                          </select>
+                        </div>
+                      ) : (
+                        ""
+                      )}
 
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
-                           প্যাকেজ সিলেক্ট করুন
+                          প্যাকেজ সিলেক্ট করুন
                         </p>
                         <select
                           className="form-select mb-3"
@@ -291,8 +301,13 @@ console.log(status)
                             {props?.single?.pppoe?.profile || "..."}
                           </option> */}
                           {ppPackage?.map((val, key) => (
-                            <option 
-                            selected={props.single?.pppoe?.profile===val.name} key={key} value={val.id || ""}>
+                            <option
+                              selected={
+                                props.single?.pppoe?.profile === val.name
+                              }
+                              key={key}
+                              value={val.id || ""}
+                            >
                               {val.name}
                             </option>
                           ))}
@@ -410,10 +425,9 @@ console.log(status)
                           className="form-check-input"
                           type="radio"
                           name="staus"
-                            value={"active"}
-                          onChange={(e)=>setStatus(e.target.value)}
-                          checked={status==="active"}
-                          
+                          value={"active"}
+                          onChange={(e) => setStatus(e.target.value)}
+                          checked={status === "active"}
                         />
                         <label
                           className="form-check-label"
@@ -428,9 +442,8 @@ console.log(status)
                           type="radio"
                           id="inlineRadio2"
                           value={"inactive"}
-                          onChange={(e)=> setStatus(e.target.value)}
-                              checked={status==="inactive"}
-                           
+                          onChange={(e) => setStatus(e.target.value)}
+                          checked={status === "inactive"}
                         />
                         <label
                           className="form-check-label"
