@@ -300,17 +300,18 @@ export default function CustomerEdit(props) {
                           {/* <option value={props?.single?.pppoe?.profile || "..."}>
                             {props?.single?.pppoe?.profile || "..."}
                           </option> */}
-                          {ppPackage?.map((val, key) => (
-                            <option
-                              selected={
-                                props.single?.pppoe?.profile === val.name
-                              }
-                              key={key}
-                              value={val.id || ""}
-                            >
-                              {val.name}
-                            </option>
-                          ))}
+                          {ppPackage &&
+                            ppPackage?.map((val, key) => (
+                              <option
+                                selected={
+                                  props.single?.pppoe?.profile === val.name
+                                }
+                                key={key}
+                                value={val.id || ""}
+                              >
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
                       <FtextField

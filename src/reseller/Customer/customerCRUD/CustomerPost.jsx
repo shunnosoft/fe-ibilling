@@ -208,7 +208,7 @@ export default function CustomerModal() {
                           <option value="">...</option>
                           {ppPackage.length === undefined
                             ? ""
-                            : ppPackage.map((val, key) => (
+                            : ppPackage?.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>

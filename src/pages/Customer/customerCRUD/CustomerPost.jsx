@@ -33,6 +33,9 @@ export default function CustomerModal() {
       ? state.persistedReducer.mikrotik.packagefromDatabase
       : state.package.packages
   );
+
+  console.log(ppPackage);
+
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -236,11 +239,12 @@ export default function CustomerModal() {
                           onChange={selectMikrotikPackage}
                         >
                           <option value={"0"}>...</option>
-                          {ppPackage.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
-                          ))}
+                          {ppPackage &&
+                            ppPackage?.map((val, key) => (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
                       <FtextField

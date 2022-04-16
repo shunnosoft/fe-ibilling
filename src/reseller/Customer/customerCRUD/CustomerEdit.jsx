@@ -233,11 +233,12 @@ export default function CustomerEdit({ single }) {
                           {/* <option value={single?.pppoe?.profile || "..."}>
                             {single?.pppoe?.profile || "..."}
                           </option> */}
-                          {ppPackage?.map((val, key) => (
-                            <option key={key} value={val.id || ""}>
-                              {val.name}
-                            </option>
-                          ))}
+                          {ppPackage &&
+                            ppPackage?.map((val, key) => (
+                              <option key={key} value={val.id || ""}>
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
                       <FtextField
