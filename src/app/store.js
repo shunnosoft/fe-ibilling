@@ -11,6 +11,7 @@ import chartsSlice from "../features/chartsSlice";
 import rechargeSlice from "../features/rechargeSlice";
 import invoiceSlice from "../features/invoiceSlice";
 import packageSlice from "../features/packageSlice";
+import adminSlice from "../features/adminSlice";
 import uiSlice from "../features/uiSlice";
 
 import { persistStore, persistReducer } from "redux-persist";
@@ -38,9 +39,11 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: {persistedReducer,
-    ui:uiSlice,
-    package:packageSlice
+  reducer: {
+    persistedReducer,
+    ui: uiSlice,
+    package: packageSlice,
+    admin: adminSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

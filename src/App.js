@@ -27,6 +27,9 @@ import RReport from "./reseller/report/Report";
 import RProfile from "./reseller/profile/Profile";
 import RCollectorReport from "./reseller/report/CollectorReport";
 
+// for admin
+import AdminDashboard from "./admin/dashboard/AdminDashboard";
+
 import NotFound from "./pages/NotFound/NotFound";
 import Success from "./pages/success/Success";
 import Manager from "./pages/manager/Manager";
@@ -71,9 +74,8 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userRole==="ispOwner")
-    getUnpaidInvoice(dispatch, ispOwnerId);
-  }, [ispOwnerId, dispatch,userRole]);
+    if (userRole === "ispOwner") getUnpaidInvoice(dispatch, ispOwnerId);
+  }, [ispOwnerId, dispatch, userRole]);
   const pathName = useLocation().pathname;
   return (
     <ThemeProvider theme={themes[theme]}>
@@ -122,6 +124,25 @@ function App() {
 
               <Route path="reseller/diposit" element={<RDiposit />} />
               <Route path="reseller/customer" element={<RCustomer />} />
+
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        ) : userRole === "admin" ? (
+          <Routes>
+            <Route path="/" element={<Navigate to="/netfee" />} />
+            <Route
+              path="/login"
+              element={!user ? <Login /> : <Navigate to={"/admin/home"} />}
+            />
+            <Route
+              path="/netfee"
+              element={
+                !user ? <Landing></Landing> : <Navigate to={"/admin/home"} />
+              }
+            />
+            <Route path="/*" element={<PrivateOutlet />}>
+              <Route path="admin/home" element={<AdminDashboard />} />
 
               <Route path="*" element={<NotFound />} />
             </Route>
@@ -208,7 +229,9 @@ function App() {
             <Route
               path="package"
               element={
-                (user && (!bpSettings?.hasMikrotik)&&( userRole==="ispOwner" || userRole==="manager" ))? (
+                user &&
+                !bpSettings?.hasMikrotik &&
+                (userRole === "ispOwner" || userRole === "manager") ? (
                   <Package />
                 ) : (
                   <Navigate to={"/home"} />
@@ -235,7 +258,7 @@ function App() {
               <Route
                 path="recharge"
                 element={
-                 ( bpSettings?.hasReseller && bpSettings?.hasMikrotik) ? (
+                  bpSettings?.hasReseller && bpSettings?.hasMikrotik ? (
                     <RechargeHistoryofReseller />
                   ) : (
                     <Navigate to={"/"}></Navigate>
@@ -246,7 +269,9 @@ function App() {
               <Route
                 path="reseller"
                 element={
-                  (bpSettings?.hasReseller && bpSettings?.hasMikrotik && userRole==="ispOwner") ? (
+                  bpSettings?.hasReseller &&
+                  bpSettings?.hasMikrotik &&
+                  userRole === "ispOwner" ? (
                     <Reseller />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
