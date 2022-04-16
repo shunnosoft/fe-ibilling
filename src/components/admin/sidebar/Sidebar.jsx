@@ -28,6 +28,9 @@ export default function Sidebar() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
+  const getIspOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData
+  );
   // const hasReseller= true
   // addSidebar
   const addSidebar = () => {
@@ -55,7 +58,7 @@ export default function Sidebar() {
         </div>
         <div className="sidebar">
           <FourGround>
-            <h2 className="name">
+            <div className="name companyDiv">
               <NavLink to="/" className="adminDashboardTitle">
                 <ArrowLeft className="GotoHomeFromDashboard" />
                 নেট ফি {userRole === "manager" ? " (ম্যানেজার)" : ""}
@@ -63,8 +66,10 @@ export default function Sidebar() {
                 {userRole === "ispOwner" ? " (এডমিন)" : ""}
                 {userRole === "reseller" ? " (রিসেলার)" : ""}
               </NavLink>
+              <br />
+              <div className="companyName">{getIspOwnerData?.company}</div>
               <span className="HideSidebar" onClick={removeSidebar}></span>
-            </h2>
+            </div>
 
             <ul className="sidebarUl">
               <NavLink
@@ -117,7 +122,9 @@ export default function Sidebar() {
                 </NavLink>
               )}
 
-              {(bpSettings?.hasReseller && bpSettings?.hasMikrotik && userRole==="ispOwner") ? (
+              {bpSettings?.hasReseller &&
+              bpSettings?.hasMikrotik &&
+              userRole === "ispOwner" ? (
                 <NavLink
                   key={33}
                   to={"/reseller"}
@@ -257,7 +264,8 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              {( (!bpSettings?.hasMikrotik) &&( userRole==="ispOwner" || userRole==="manager")) ? (
+              {!bpSettings?.hasMikrotik &&
+              (userRole === "ispOwner" || userRole === "manager") ? (
                 <NavLink
                   key={55}
                   to={"/package"}
@@ -280,7 +288,7 @@ export default function Sidebar() {
               ) : (
                 ""
               )}
-              {(userRole === "ispOwner" && bpSettings?.hasMikrotik) ? (
+              {userRole === "ispOwner" && bpSettings?.hasMikrotik ? (
                 <NavLink
                   key={5}
                   to={"/mikrotik"}
@@ -360,7 +368,8 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              {(userRole === "ispOwner" && bpSettings?.hasReseller) || userRole === "reseller" ? (
+              {(userRole === "ispOwner" && bpSettings?.hasReseller) ||
+              userRole === "reseller" ? (
                 <NavLink
                   key={70}
                   to={

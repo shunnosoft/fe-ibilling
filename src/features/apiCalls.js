@@ -54,7 +54,7 @@ import {
   editResellerSuccess,
   getResellerrSuccess,
 } from "./resellerSlice";
-import { setBpsetting, updateProfile } from "./authSlice";
+import { setBpsetting, updateProfile, setIspOwnerData } from "./authSlice";
 import {
   getAllBillsSuccess,
   getDepositSuccess,
@@ -1077,6 +1077,7 @@ export const getIspOwnerData = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
     dispatch(setBpsetting(res.data.bpSettings));
+    dispatch(setIspOwnerData(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }

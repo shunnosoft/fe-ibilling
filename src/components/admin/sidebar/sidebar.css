@@ -105,6 +105,21 @@ a {
   background: rgb(148 73 245 / 12%);
   padding: 7px 0;
 }
+
+/* .companyDiv {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+} */
+.companyName {
+  font-size: medium;
+  text-align: center;
+
+  font-weight: bold;
+  color: gray;
+}
+
 @media screen and (max-width: 1024px) {
   .sidebar {
     display: none;
@@ -138,5 +153,3 @@ a {
     margin-left: 20px;
   }
 }
-
- 

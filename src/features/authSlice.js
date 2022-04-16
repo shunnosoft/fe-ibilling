@@ -8,6 +8,7 @@ const initialState = {
   isFetching: false,
   error: false,
   accessToken: null,
+  ispOwnerData: {},
 };
 
 const authSlice = createSlice({
@@ -55,11 +56,15 @@ const authSlice = createSlice({
     updateTokenSuccess: (state, action) => {
       state.accessToken = action.payload;
     },
-    setBpsetting:(state,action)=>{
-      state.userData={
+    setBpsetting: (state, action) => {
+      state.userData = {
         ...state.userData,
-        bpSettings: action.payload
-      }
+        bpSettings: action.payload,
+      };
+    },
+
+    setIspOwnerData: (state, action) => {
+      state.ispOwnerData = action.payload;
     },
 
     logOut: (state) => {
@@ -79,7 +84,8 @@ export const {
   logInSuccess,
   loginFailure,
   logOut,
-  setBpsetting
+  setBpsetting,
+  setIspOwnerData,
 } = authSlice.actions;
 
 export default authSlice.reducer;

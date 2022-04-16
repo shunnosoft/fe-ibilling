@@ -120,11 +120,11 @@ export default function Home() {
     if (role === "collector") {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
       fetchMikrotik(dispatch, ispOwnerId);
-
-      getIspOwnerData(dispatch, ispOwnerId);
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
     }
+
+    getIspOwnerData(dispatch, ispOwnerId);
     // if (!invoice) getUnpaidInvoice(dispatch, ispOwnerId, setIsloading);
   }, []);
 
