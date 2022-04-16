@@ -33,7 +33,7 @@ export default function CustomerEdit({ single }) {
   const [mikrotikPackage, setMikrotikPackage] = useState(
     single?.mikrotikPackage
   );
-  const [autoDisable, setAutoDisable] = useState( single?.autoDisable);
+  const [autoDisable, setAutoDisable] = useState(single?.autoDisable);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
@@ -45,8 +45,7 @@ export default function CustomerEdit({ single }) {
   const [billTime, setBilltime] = useState();
 
   useEffect(() => {
-    
-    setAutoDisable(single?.autoDisable)
+    setAutoDisable(single?.autoDisable);
 
     setSubArea(single.subArea);
     setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"));
@@ -142,6 +141,7 @@ export default function CustomerEdit({ single }) {
         disabled: activeStatus,
       },
       ...rest,
+      status,
     };
 
     editCustomer(dispatch, mainData, setIsloading);
