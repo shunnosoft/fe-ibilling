@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -17,39 +17,39 @@ import { useCallback } from "react";
 
 export default function Message() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  const [sms,setSms] =useState("")
+  const [sms, setSms] = useState("");
   const [isChecked, setisChecked] = useState(false);
   const [status, setStatus] = useState("");
   const [payment, setPayment] = useState("");
   const [isRefrsh, setIsrefresh] = useState(false);
   const area = useSelector((state) => state.persistedReducer.area.area);
-  // const [areaIds, setAreaIds] = useState([]);
+  const [areaIds, setAreaIds] = useState([]);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const ispOwnerId =useSelector(state=>state.persistedReducer.auth?.ispOwnerId)
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
   const handleMessageCheckBox = (e) => {
     setisChecked(e.target.checked);
   };
-
-  const getIspownerwitSMS =useCallback( async() =>{
-    setIsrefresh(true)
+  const mobileNumRef = useRef();
+  const smsRef = useRef();
+  const getIspownerwitSMS = useCallback(async () => {
+    setIsrefresh(true);
     try {
-      const res = await apiLink.get(`/ispOwner/${ispOwnerId}`)
-       setSms(res.data.smsBalance)
-      setIsrefresh(false)
-      
+      const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+      setSms(res.data.smsBalance);
+      setIsrefresh(false);
     } catch (error) {
-      console.log(error.response?.data.message)
-      setIsrefresh(false)
-      
+      console.log(error.response?.data.message);
+      setIsrefresh(false);
     }
-  },[ispOwnerId])
+  }, [ispOwnerId]);
 
-  useEffect(()=>{
-    if (userRole==="ispOwner" || userRole==="manager") {
-      getIspownerwitSMS()
-
+  useEffect(() => {
+    if (userRole === "ispOwner" || userRole === "manager") {
+      getIspownerwitSMS();
     }
-  },[userRole,getIspownerwitSMS])
+  }, [userRole, getIspownerwitSMS]);
 
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
@@ -59,7 +59,7 @@ export default function Message() {
         IDS_temp.push(temp[i].value);
       }
     }
-    // setAreaIds(IDS_temp);
+    setAreaIds(IDS_temp);
   };
 
   // WE GOT ALL AREA_IDS ON -> areaIds;
@@ -68,6 +68,26 @@ export default function Message() {
   };
   const handlePaymentSelect = (e) => {
     setPayment(e);
+  };
+
+  const handleSendMessage = () => {
+    let sendingData = {};
+    if (isChecked) {
+      sendingData = {
+        mobile: mobileNumRef.current.value,
+        sms: smsRef.current.value,
+      };
+    } else {
+      sendingData = {
+        sms: smsRef.current.value,
+        status:status,
+        payment:payment,
+        subAreas:areaIds
+        
+
+      };
+    }
+    console.log(sendingData);
   };
   return (
     <>
@@ -95,7 +115,9 @@ export default function Message() {
                           {isRefrsh ? (
                             <Loader></Loader>
                           ) : (
-                            <ArrowClockwise onClick={()=>getIspownerwitSMS()}></ArrowClockwise>
+                            <ArrowClockwise
+                              onClick={() => getIspownerwitSMS()}
+                            ></ArrowClockwise>
                           )}
                         </div>
                       </div>
@@ -161,6 +183,7 @@ export default function Message() {
                             type="text"
                             placeholder="মোবাইল নম্বর"
                             className="form-control"
+                            ref={mobileNumRef}
                           />
                         </div>
                       ) : (
@@ -227,9 +250,15 @@ export default function Message() {
                         rows="6"
                         className="form-control mt-4"
                         placeholder="মেসেজ লিখুন..."
+                        ref={smsRef}
                       ></textarea>
                       <hr />
-                      <button className="btn btn-success">সেন্ড মেসেজ</button>
+                      <button
+                        onClick={handleSendMessage}
+                        className="btn btn-success"
+                      >
+                        সেন্ড মেসেজ
+                      </button>
                     </div>
                   </div>
                 </div>

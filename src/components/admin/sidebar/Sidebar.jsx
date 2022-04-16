@@ -117,7 +117,7 @@ export default function Sidebar() {
                 </NavLink>
               )}
 
-              {bpSettings?.hasReseller ? (
+              {(bpSettings?.hasReseller && bpSettings?.hasMikrotik) ? (
                 <NavLink
                   key={33}
                   to={"/reseller"}
@@ -405,7 +405,7 @@ export default function Sidebar() {
                     <li
                       className="sidebarItems"
                       id={
-                        window.location.pathname === "/customer" ? "active" : ""
+                        window.location.pathname === "/message" ? "active" : ""
                       }
                     >
                       <div className="sidebarIcon">{<Messenger />}</div>
