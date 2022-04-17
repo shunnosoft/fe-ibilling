@@ -45,7 +45,7 @@ export default function CustomerEdit(props) {
 
   const [autoDisable, setAutoDisable] = useState(props?.single?.autoDisable);
 
-  const [subArea, setSubArea] = useState("");
+  const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
   const [activeStatus, setActiveStatus] = useState(
@@ -79,19 +79,38 @@ export default function CustomerEdit(props) {
     setmikrotikName(temp);
 
     // findout area id by sub area id
-    const areaIDTemp = area.find((areaItem) => {
-      return areaItem.subAreas.find((val) => {
-        if (props?.single.subArea === val.id) {
-          setSubAreaId(val);
+    // console.log(area)
+    // console.log(props.single.subArea)
+     
+   area.map(a=>{
+      a.subAreas.map((sub)=>{
+        if(sub.id===props.single.subArea){
+           setAreaID(a)
+          setSubAreaId(sub)
+          setSubArea(a.subAreas)
+           
         }
-        return areaItem;
-      });
-    });
-    setAreaID(areaIDTemp);
-
-    // props?.single?.mikrotik && fetchpppoePackage(dispatch, IDs);
-    // const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
-    // setPppoePacakage(filterPPPoEpacakage);
+        return sub
+      })
+      return a
+    })
+    
+    
+    // area.find((areaItem) => {
+    //   areaItem.subAreas.filter(val=>val.id===props.single.subArea)
+    //   // return areaItem.subAreas.find((val) => {
+    //   //   if (props.single.subArea === val.id) {
+    //   //     setSubAreaId(val);
+    //   //     console.log(val)
+    //   //   }
+    //   //   console.log(areaItem)
+    //   //   return areaItem;
+    //   // });
+    // });
+    // setAreaID(areaIDTemp);
+    // console.log(areaIDTemp)
+    
+    
   }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
 
   // useEffect(() => {
@@ -167,7 +186,7 @@ export default function CustomerEdit(props) {
       const temp = area.find((val) => {
         return val.id === areaId;
       });
-      setSubArea(temp);
+      setSubArea(temp.subAreas);
     }
   };
 
@@ -340,13 +359,13 @@ export default function CustomerEdit(props) {
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
-                          <option value={areaID?.id || ""}>
+                          {/* <option value={areaID?.id || ""}>
                             {areaID?.name || ""}
-                          </option>
+                          </option> */}
                           {area.length === undefined
                             ? ""
                             : area.map((val, key) => (
-                                <option key={key} value={val.id || ""}>
+                                <option selected={areaID?.id===val.id} key={key} value={val.id || ""}>
                                   {val.name}
                                 </option>
                               ))}
@@ -355,7 +374,7 @@ export default function CustomerEdit(props) {
 
                       <div>
                         <p>
-                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
+                            সাব-এরিয়া
                           সিলেক্ট করুন
                         </p>
                         <select
@@ -364,16 +383,15 @@ export default function CustomerEdit(props) {
                           name="subArea"
                           id="subAreaIdFromEdit"
                         >
-                          <option value={subAreaId?.id || ""}>
+                          {/* <option value={subAreaId?.id || ""}>
                             {subAreaId?.name || ""}
-                          </option>
-                          {subArea?.subAreas
-                            ? subArea.subAreas.map((val, key) => (
-                                <option key={key} value={val.id || ""}>
+                          </option> */}
+                          {  subArea?.map((val, key) => (
+                                <option  key={key} value={val.id || ""}>
                                   {val.name}
                                 </option>
                               ))
-                            : ""}
+                            }
                         </select>
                       </div>
 

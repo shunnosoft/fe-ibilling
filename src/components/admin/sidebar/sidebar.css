@@ -106,18 +106,15 @@ a {
   padding: 7px 0;
 }
 
-/* .companyDiv {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  flex-direction: column;
-} */
+ 
 .companyName {
   font-size: medium;
   text-align: center;
 
   font-weight: bold;
   color: gray;
+  transition: all 2s ease-in-out;
+
 }
 
 @media screen and (max-width: 1024px) {
