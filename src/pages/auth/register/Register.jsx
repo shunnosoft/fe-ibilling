@@ -66,7 +66,7 @@ export default function Register() {
     // send user data to async function
     console.log(userData);
 
-    // asyncRegister(userData, setLoading);
+    asyncRegister(userData, setLoading);
   };
 
   // show customer field
