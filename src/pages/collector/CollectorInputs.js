@@ -10,6 +10,7 @@ export const collectorData = [
     name: "mobile",
     label: "মোবাইল",
     type: "text",
+    disabled: true,
   },
   {
     id: 3,

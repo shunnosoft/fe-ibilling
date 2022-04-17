@@ -34,7 +34,6 @@ export default function CustomerModal() {
       : state.package.packages
   );
 
-
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -136,9 +135,9 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime).format(
-        "YYYY-MM-DDTHH:mm:ss.ms[Z]"
-      ),
+      billingCycle: moment(billDate + " " + billTime)
+        .subtract({ hours: 6 })
+        .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -347,16 +346,18 @@ export default function CustomerModal() {
                           />
                         </div>
                       </div>
-                      <div className="displayGrid3">
-                        <div className="autoDisable">
-                          <label>অটোমেটিক সংযোগ বন্ধ</label>
-                          <input
-                            type="checkBox"
-                            checked={autoDisable}
-                            onChange={(e) => setAutoDisable(e.target.checked)}
-                          />
+                      {bpSettings.hasMikrotik && (
+                        <div className="displayGrid3">
+                          <div className="autoDisable">
+                            <label>অটোমেটিক সংযোগ বন্ধ</label>
+                            <input
+                              type="checkBox"
+                              checked={autoDisable}
+                              onChange={(e) => setAutoDisable(e.target.checked)}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

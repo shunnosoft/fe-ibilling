@@ -139,6 +139,7 @@ export default function CollectorEdit({ single }) {
                           type={val.type}
                           label={val.label}
                           name={val.name}
+                          disabled={val.disabled}
                         />
                       ))}
 

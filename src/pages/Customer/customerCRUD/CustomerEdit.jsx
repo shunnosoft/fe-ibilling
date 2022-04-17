@@ -19,7 +19,7 @@ import apiLink from "../../../api/apiLink";
 import moment from "moment";
 import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
-  const [user,setUser] =useState(props?.single)
+  const [user, setUser] = useState(props?.single);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -49,9 +49,7 @@ export default function CustomerEdit(props) {
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(
-    user.pppoe?.disabled
-  );
+  const [activeStatus, setActiveStatus] = useState(user.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState();
@@ -59,19 +57,18 @@ export default function CustomerEdit(props) {
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
   useEffect(() => {
-    setUser(props.single)
+    setUser(props.single);
     setStatus(user.status);
     const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: props.single.mikrotik,
     };
 
-    
     if (bpSettings?.hasMikrotik) {
       fetchPackagefromDatabase(dispatch, IDs);
     }
     // get the packages  not from mikrotik
-  }, [bpSettings, ispOwnerId, dispatch, props?.single,user]);
+  }, [bpSettings, ispOwnerId, dispatch, props?.single, user]);
   useEffect(() => {
     setAutoDisable(props.single?.autoDisable);
     setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
@@ -166,15 +163,14 @@ export default function CustomerEdit(props) {
   // };
 
   // select Mikrotik Package
-  useEffect(()=>{
+  useEffect(() => {
     //todo
     const mikrotikPackageId = user.pppoe?.profile;
     // setPackageId(user?.mikrotikPackage)
     setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.name ===mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
     setPackageRate(temp);
-    
-  },[user,ppPackage])
+  }, [user, ppPackage]);
 
   const selectMikrotikPackage = (e) => {
     // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
@@ -217,9 +213,9 @@ export default function CustomerEdit(props) {
       mikrotikPackage: packageId,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime).format(
-        "YYYY-MM-DDTHH:mm:ss.ms[Z]"
-      ),
+      billingCycle: moment(billDate + " " + billTime)
+        .subtract({ hours: 6 })
+        .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -230,9 +226,8 @@ export default function CustomerEdit(props) {
       },
       ...rest,
       status,
-      
     };
-    // console.log(mainData)
+    console.log(mainData);
 
     editCustomer(dispatch, mainData, setIsloading);
   };
@@ -285,11 +280,9 @@ export default function CustomerEdit(props) {
                   email: user.email || "",
                   nid: user.nid || "",
                   Pcomment: user.pppoe?.comment || "",
-                  monthlyFee:
-                    packageRate?.rate || user.monthlyFee || 0,
+                  monthlyFee: packageRate?.rate || user.monthlyFee || 0,
                   Pname: user.pppoe?.name || "",
-                  Pprofile:
-                    packageRate?.name || user.pppoe?.profile || "",
+                  Pprofile: packageRate?.name || user.pppoe?.profile || "",
                   Ppassword: user?.pppoe?.password || "",
                   status: status || "",
                 }}
@@ -298,9 +291,6 @@ export default function CustomerEdit(props) {
                   customerHandler(values);
                 }}
                 enableReinitialize
-                
-                
-                
               >
                 {() => (
                   <Form>
@@ -363,7 +353,6 @@ export default function CustomerEdit(props) {
                         min={0}
                         label="মাসিক ফি"
                         name="monthlyFee"
-
                       />
                     </div>
 
@@ -391,7 +380,11 @@ export default function CustomerEdit(props) {
                           {area.length === undefined
                             ? ""
                             : area.map((val, key) => (
-                                <option selected={areaID?.id===val.id} key={key} value={val.id || ""}>
+                                <option
+                                  selected={areaID?.id === val.id}
+                                  key={key}
+                                  value={val.id || ""}
+                                >
                                   {val.name}
                                 </option>
                               ))}
@@ -399,10 +392,7 @@ export default function CustomerEdit(props) {
                       </div>
 
                       <div>
-                        <p>
-                            সাব-এরিয়া
-                          সিলেক্ট করুন
-                        </p>
+                        <p>সাব-এরিয়া সিলেক্ট করুন</p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -454,14 +444,16 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
-                      <div className="autoDisable">
-                        <label>অটোমেটিক সংযোগ বন্ধ</label>
-                        <input
-                          type="checkBox"
-                          checked={autoDisable}
-                          onChange={(e) => setAutoDisable(e.target.checked)}
-                        />
-                      </div>
+                      {bpSettings.hasMikrotik && (
+                        <div className="autoDisable">
+                          <label>অটোমেটিক সংযোগ বন্ধ</label>
+                          <input
+                            type="checkBox"
+                            checked={autoDisable}
+                            onChange={(e) => setAutoDisable(e.target.checked)}
+                          />
+                        </div>
+                      )}
                     </div>
 
                     <div className="pppoeStatus">

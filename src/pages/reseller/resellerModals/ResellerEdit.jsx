@@ -193,6 +193,7 @@ export default function ResellerEdit({ reseller }) {
                             type={val.type}
                             label={val.label}
                             name={val.name}
+                            disabled={val.disabled}
                           />
                         ))}
                       </div>
