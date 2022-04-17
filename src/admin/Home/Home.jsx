@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
+import moment from "moment";
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -33,18 +34,20 @@ export default function Home() {
           </div>
           <br />
           <div className="table-responsive-lg">
-            <table className="table table-striped ">
+            <table className="table table-striped table-responsive">
               <thead>
                 <tr>
-                  <th>সিরিয়াল</th>
-                  <th>নাম</th>
-                  <th>মোবাইল</th>
-                  <th>ইমেইল</th>
-                  <th>কোম্পানি</th>
-                  <th>ঠিকানা</th>
-                  <th>প্যাকেজ</th>
-                  <th>রিসেলার</th>
-                  <th>মাইক্রোটিক</th>
+                  <th width="5%">সিরিয়াল</th>
+                  <th width="10%">নাম</th>
+                  <th width="10%">মোবাইল</th>
+                  <th width="10%">ইমেইল</th>
+                  <th width="10%">কোম্পানি</th>
+                  <th width="10%">ঠিকানা</th>
+                  <th width="10%">প্যাকেজ</th>
+                  <th width="10%">রিসেলার</th>
+                  <th width="10%">মাইক্রোটিক</th>
+                  <th width="10%">তারিখ</th>
+                  <th width="5%"></th>
                 </tr>
               </thead>
               <tbody>
@@ -64,6 +67,10 @@ export default function Home() {
                       </td>
                       <td>{val.bpSettings.hasReseller ? "YES" : "NO"}</td>
                       <td>{val.bpSettings.hasMikrotik ? "YES" : "NO"}</td>
+                      <td>
+                        {moment(val.createdAt).format("DD-MM-YYYY hh:mm A")}
+                      </td>
+                      <td>...</td>
                     </tr>
                   ))
                 )}
