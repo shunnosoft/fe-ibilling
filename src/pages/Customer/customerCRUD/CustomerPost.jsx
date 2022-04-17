@@ -34,7 +34,6 @@ export default function CustomerModal() {
       : state.package.packages
   );
 
-  console.log(ppPackage);
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
