@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import "../customer.css";
 
 export default function CustomerDetails({ single }) {
@@ -34,47 +35,68 @@ export default function CustomerDetails({ single }) {
               <h2 className="ProfileName">{single.name}</h2>
               <div className="profileMain">
                 <div>
-                  <h5>User Details</h5>
+                  <h5>গ্রাহক</h5>
                   <hr />
                   <h6>
-                    Name: <b>{single?.name}</b>
+                    গ্রাহক আইডি: <b>{single?.customerId}</b>
                   </h6>
                   <h6>
-                    email: <b> {single?.email}</b>
+                    নাম: <b>{single?.name}</b>
                   </h6>
                   <h6>
-                    mobile: <b>{single?.mobile}</b>
+                    মোবাইল: <b>{single?.mobile}</b>
                   </h6>
                   <h6>
-                    NID: <b>{single?.nid}</b>
+                    ঠিকানা: <b>{single?.address}</b>
                   </h6>
                   <h6>
-                    billPayType: <b>{single?.billPayType}</b>
+                    ইমেইল: <b> {single?.email}</b>
                   </h6>
                   <h6>
-                    monthlyFee:<b> {single?.monthlyFee}</b>
+                    জাতীয় পরিচয়পত্র: <b>{single?.nid}</b>
                   </h6>
                   <h6>
-                    customerId: <b>{single?.customerId}</b>
+                    ব্যাল্যান্স:<b> {single?.balance}</b>
                   </h6>
                   <h6>
-                    password: <b>{single?.password}</b>
+                    মাসিক ফি:<b> {single?.monthlyFee}</b>
                   </h6>
                   <h6>
-                    paymentStatus: <b>{single?.paymentStatus}</b>
+                    স্ট্যাটাস: <b>{single?.status}</b>
+                  </h6>
+                  <h6>
+                    পেমেন্ট: <b>{single?.paymentStatus}</b>
+                  </h6>
+                  <h6>
+                    বিলিং সাইকেল:{" "}
+                    <b>
+                      {moment(single?.billingCycle).format(
+                        "DD-MM-YYYY hh:mm A"
+                      )}
+                    </b>
+                  </h6>
+                  <h6>
+                    অটোমেটিক সংযোগ বন্ধ:{" "}
+                    <b>{single?.autoDisable ? "YES" : "NO"}</b>
                   </h6>
                 </div>
                 <div>
-                  <h5>PPPoE Details</h5>
+                  <h5>PPPoE</h5>
                   <hr />
                   <h6>
-                    name: <b>{single?.pppoe?.name}</b>
+                    ইউজারনেম: <b>{single?.pppoe?.name}</b>
                   </h6>
                   <h6>
-                    Profile: <b> {single?.pppoe?.profile}</b>
+                    <h6>
+                      পাসওয়ার্ড: <b>{single?.password}</b>
+                    </h6>
+                    প্রোফাইল: <b> {single?.pppoe?.profile}</b>
                   </h6>
                   <h6>
-                    service: <b>{single?.pppoe?.service}</b>
+                    সার্ভিস: <b>{single?.pppoe?.service}</b>
+                  </h6>
+                  <h6>
+                    কমেন্ট: <b>{single?.pppoe?.comment}</b>
                   </h6>
                 </div>
               </div>
