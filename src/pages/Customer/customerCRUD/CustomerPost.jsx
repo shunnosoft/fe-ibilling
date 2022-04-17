@@ -11,7 +11,7 @@ import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
   fetchPackagefromDatabase,
-  fetchpppoePackage,
+   
 } from "../../../features/apiCalls";
 import moment from "moment";
 export default function CustomerModal() {
@@ -86,7 +86,9 @@ export default function CustomerModal() {
         mikrotikId: id,
       };
       //ToDo
-      fetchPackagefromDatabase(dispatch, IDs);
+      if (bpSettings?.hasMikrotik) {
+        fetchPackagefromDatabase(dispatch, IDs);
+      }
     }
     setSingleMikrotik(id);
   };
