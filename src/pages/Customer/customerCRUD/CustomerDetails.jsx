@@ -1,10 +1,14 @@
 import React from "react";
 import moment from "moment";
+import { useSelector, useDispatch } from "react-redux";
 import "../customer.css";
 
 export default function CustomerDetails({ single }) {
   // const single = useSelector(state => state.customer.singleCustomer);
   // console.log("Single: ", single);
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings
+  );
   return (
     <div>
       <div
@@ -75,10 +79,12 @@ export default function CustomerDetails({ single }) {
                       )}
                     </b>
                   </h6>
-                  <h6>
-                    অটোমেটিক সংযোগ বন্ধ:{" "}
-                    <b>{single?.autoDisable ? "YES" : "NO"}</b>
-                  </h6>
+                  {bpSettings.hasMikrotik && (
+                    <h6>
+                      অটোমেটিক সংযোগ বন্ধ:{" "}
+                      <b>{single?.autoDisable ? "YES" : "NO"}</b>
+                    </h6>
+                  )}
                 </div>
                 <div>
                   <h5>PPPoE</h5>

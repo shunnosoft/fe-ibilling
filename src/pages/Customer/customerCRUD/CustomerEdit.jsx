@@ -81,21 +81,19 @@ export default function CustomerEdit(props) {
     // findout area id by sub area id
     // console.log(area)
     // console.log(props.single.subArea)
-     
-   area.map(a=>{
-      a.subAreas.map((sub)=>{
-        if(sub.id===props.single.subArea){
-           setAreaID(a)
-          setSubAreaId(sub)
-          setSubArea(a.subAreas)
-           
+
+    area.map((a) => {
+      a.subAreas.map((sub) => {
+        if (sub.id === props.single.subArea) {
+          setAreaID(a);
+          setSubAreaId(sub);
+          setSubArea(a.subAreas);
         }
-        return sub
-      })
-      return a
-    })
-    
-    
+        return sub;
+      });
+      return a;
+    });
+
     // area.find((areaItem) => {
     //   areaItem.subAreas.filter(val=>val.id===props.single.subArea)
     //   // return areaItem.subAreas.find((val) => {
@@ -109,8 +107,6 @@ export default function CustomerEdit(props) {
     // });
     // setAreaID(areaIDTemp);
     // console.log(areaIDTemp)
-    
-    
   }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
 
   // useEffect(() => {
@@ -209,9 +205,9 @@ export default function CustomerEdit(props) {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime).format(
-        "YYYY-MM-DDTHH:mm:ss.ms[Z]"
-      ),
+      billingCycle: moment(billDate + " " + billTime)
+        .subtract({ hours: 6 })
+        .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -223,7 +219,7 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-    // console.log(mainData)
+    console.log(mainData);
 
     editCustomer(dispatch, mainData, setIsloading);
   };
@@ -365,7 +361,11 @@ export default function CustomerEdit(props) {
                           {area.length === undefined
                             ? ""
                             : area.map((val, key) => (
-                                <option selected={areaID?.id===val.id} key={key} value={val.id || ""}>
+                                <option
+                                  selected={areaID?.id === val.id}
+                                  key={key}
+                                  value={val.id || ""}
+                                >
                                   {val.name}
                                 </option>
                               ))}
@@ -373,10 +373,7 @@ export default function CustomerEdit(props) {
                       </div>
 
                       <div>
-                        <p>
-                            সাব-এরিয়া
-                          সিলেক্ট করুন
-                        </p>
+                        <p>সাব-এরিয়া সিলেক্ট করুন</p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -386,12 +383,11 @@ export default function CustomerEdit(props) {
                           {/* <option value={subAreaId?.id || ""}>
                             {subAreaId?.name || ""}
                           </option> */}
-                          {  subArea?.map((val, key) => (
-                                <option  key={key} value={val.id || ""}>
-                                  {val.name}
-                                </option>
-                              ))
-                            }
+                          {subArea?.map((val, key) => (
+                            <option key={key} value={val.id || ""}>
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
@@ -427,14 +423,16 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
-                      <div className="autoDisable">
-                        <label>অটোমেটিক সংযোগ বন্ধ</label>
-                        <input
-                          type="checkBox"
-                          checked={autoDisable}
-                          onChange={(e) => setAutoDisable(e.target.checked)}
-                        />
-                      </div>
+                      {bpSettings.hasMikrotik && (
+                        <div className="autoDisable">
+                          <label>অটোমেটিক সংযোগ বন্ধ</label>
+                          <input
+                            type="checkBox"
+                            checked={autoDisable}
+                            onChange={(e) => setAutoDisable(e.target.checked)}
+                          />
+                        </div>
+                      )}
                     </div>
 
                     <div className="pppoeStatus">

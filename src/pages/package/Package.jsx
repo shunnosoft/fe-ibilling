@@ -88,19 +88,21 @@ export default function Package() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector">
-                      <div className="displexFlexSys">
-                        <div className="addAndSettingIcon">
-                          {
-                            <PlusLg
-                              className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#createPackage"
-                            />
-                          }
+                    {role === "ispOwner" && (
+                      <div className="addNewCollector">
+                        <div className="displexFlexSys">
+                          <div className="addAndSettingIcon">
+                            {
+                              <PlusLg
+                                className="addcutmButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#createPackage"
+                              />
+                            }
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
                     <div className="row searchCollector">
                       <div className="col-sm-8">
@@ -131,7 +133,9 @@ export default function Package() {
                           <th>নাম</th>
                           <th>প্যাকেজ রেট</th>
 
-                          <th className="centeringTD">অ্যাকশন</th>
+                          {role === "ispOwner" && (
+                            <th className="centeringTD">অ্যাকশন</th>
+                          )}
                         </tr>
                       </thead>
                       <tbody>
@@ -146,37 +150,39 @@ export default function Package() {
                               <td>{val.name}</td>
                               <td>{val.rate}</td>
 
-                              <td className="centeringTD">
-                                <ThreeDots
-                                  className="dropdown-toggle ActionDots"
-                                  id="customerDrop"
-                                  type="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                />
+                              {role === "ispOwner" && (
+                                <td className="centeringTD">
+                                  <ThreeDots
+                                    className="dropdown-toggle ActionDots"
+                                    id="customerDrop"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  />
 
-                                {/* modal */}
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="customerDrop"
-                                >
-                                  {
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#editPackage"
-                                      onClick={() => {
-                                        getSpecificPackage(val);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PenFill />
-                                          <p className="actionP">এডিট</p>
+                                  {/* modal */}
+
+                                  <ul
+                                    className="dropdown-menu"
+                                    aria-labelledby="customerDrop"
+                                  >
+                                    {
+                                      <li
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editPackage"
+                                        onClick={() => {
+                                          getSpecificPackage(val);
+                                        }}
+                                      >
+                                        <div className="dropdown-item">
+                                          <div className="customerAction">
+                                            <PenFill />
+                                            <p className="actionP">এডিট</p>
+                                          </div>
                                         </div>
-                                      </div>
-                                    </li>
-                                  }
-                                  {/* {role==="ispOwner"? <li
+                                      </li>
+                                    }
+                                    {/* {role==="ispOwner"? <li
                                       onClick={() => {
                                         deleteCollectorHandler(val.id);
                                       }}
@@ -188,10 +194,11 @@ export default function Package() {
                                         </div>
                                       </div>
                                     </li>:""} */}
-                                </ul>
+                                  </ul>
 
-                                {/* end */}
-                              </td>
+                                  {/* end */}
+                                </td>
+                              )}
                             </tr>
                           ))
                         )}

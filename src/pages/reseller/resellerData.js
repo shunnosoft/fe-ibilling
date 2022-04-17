@@ -1,6 +1,6 @@
 export const RPD = [
   { id: 1, type: "text", label: "নাম", name: "name" },
-  { id: 1, type: "text", label: "মোবাইল", name: "mobile" },
+  { id: 1, type: "text", label: "মোবাইল", name: "mobile", disabled: true },
   { id: 1, type: "text", label: "এড্রেস", name: "address" },
   { id: 1, type: "email", label: "ইমেইল", name: "email" },
   { id: 1, type: "text", label: "NID নম্বর", name: "nid" },
@@ -13,10 +13,8 @@ export const RPD = [
 ];
 
 export const RADIO = [
-   
   { id: 2, label: "এক্টিভ", value: "active" },
   { id: 3, label: "ইনএক্টিভ", value: "inactive" },
-  
 ];
 
 export const RBD = [
