@@ -88,7 +88,7 @@ export default function Login() {
                       পাসওয়ার্ড ভুলে গেছেন?
                     </NavLink> */}
                     <p className="mt-5 mb-3 text-muted">
-                      &copy; শূন্য সফটওয়ার - {new Date().getFullYear()}
+                      &copy; শূন্য আইটি - {new Date().getFullYear()}
                     </p>
                   </Form>
                 </div>
