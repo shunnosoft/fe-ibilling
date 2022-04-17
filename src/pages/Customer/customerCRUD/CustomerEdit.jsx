@@ -19,6 +19,7 @@ import apiLink from "../../../api/apiLink";
 import moment from "moment";
 import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
+  const [user,setUser] =useState(props?.single)
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -30,9 +31,9 @@ export default function CustomerEdit(props) {
   // const [ppPackage, setppPackage] = useState([]);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  // const [singleMikrotik, setSingleMikrotik] = useState(props?.single?.mikrotik);
+  // const [singleMikrotik, setSingleMikrotik] = useState(user.mikrotik);
   const [mikrotikPackage, setMikrotikPackage] = useState(
-    props?.single?.mikrotikPackage
+    props?.single?.pppoe?.profile
   );
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
@@ -43,13 +44,13 @@ export default function CustomerEdit(props) {
       : state.package.packages
   );
 
-  const [autoDisable, setAutoDisable] = useState(props?.single?.autoDisable);
+  const [autoDisable, setAutoDisable] = useState(user.autoDisable);
 
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
   const [activeStatus, setActiveStatus] = useState(
-    props?.single?.pppoe?.disabled
+    user.pppoe?.disabled
   );
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
@@ -57,20 +58,20 @@ export default function CustomerEdit(props) {
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
-  // console.log(status)
   useEffect(() => {
-    setStatus(props?.single?.status);
+    setUser(props.single)
+    setStatus(user.status);
     const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: props.single.mikrotik,
     };
 
-    //todo
+    
     if (bpSettings?.hasMikrotik) {
       fetchPackagefromDatabase(dispatch, IDs);
     }
     // get the packages  not from mikrotik
-  }, [bpSettings, ispOwnerId, dispatch, props?.single]);
+  }, [bpSettings, ispOwnerId, dispatch, props?.single,user]);
   useEffect(() => {
     setAutoDisable(props.single?.autoDisable);
     setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
@@ -79,8 +80,7 @@ export default function CustomerEdit(props) {
     setmikrotikName(temp);
 
     // findout area id by sub area id
-    // console.log(area)
-    // console.log(props.single.subArea)
+     
      
    area.map(a=>{
       a.subAreas.map((sub)=>{
@@ -116,7 +116,7 @@ export default function CustomerEdit(props) {
   // useEffect(() => {
   //   const IDs = {
   //     ispOwner: ispOwnerId,
-  //     mikrotikId: props?.single?.mikrotik,
+  //     mikrotikId: user.mikrotik,
   //   };
   //   const fetchPac = async () => {
   //     try {
@@ -128,7 +128,7 @@ export default function CustomerEdit(props) {
   //       console.log(error);
   //     }
   //   };
-  //   props?.single?.mikrotik && fetchPac();
+  //   user.mikrotik && fetchPac();
   // }, [ispOwnerId, props?.single]);
 
   // customer validator
@@ -172,10 +172,20 @@ export default function CustomerEdit(props) {
   // };
 
   // select Mikrotik Package
+  useEffect(()=>{
+    //todo
+    const mikrotikPackageId = user.pppoe?.profile;
+
+    setMikrotikPackage(mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.name ===mikrotikPackageId);
+    setPackageRate(temp);
+    
+  },[user,ppPackage])
+
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
     setPackageRate(temp);
   };
 
@@ -202,10 +212,10 @@ export default function CustomerEdit(props) {
     const mainData = {
       // customerId: "randon123",
       paymentStatus: "unpaid",
-      singleCustomerID: props?.single?.id,
+      singleCustomerID: user?.id,
       subArea: subArea2,
       ispOwner: ispOwnerId,
-      mikrotik: props?.single?.mikrotik,
+      mikrotik: user?.mikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
@@ -222,12 +232,13 @@ export default function CustomerEdit(props) {
       },
       ...rest,
       status,
+      
     };
     // console.log(mainData)
 
     editCustomer(dispatch, mainData, setIsloading);
   };
-
+ 
   return (
     <div>
       <div
@@ -241,7 +252,7 @@ export default function CustomerEdit(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {props?.single?.name} - এর প্রোফাইল এডিট করুন
+                {user.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -254,18 +265,18 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: props?.single?.name || "",
-                  mobile: props?.single?.mobile || "",
-                  address: props?.single?.address || "",
-                  email: props?.single?.email || "",
-                  nid: props?.single?.nid || "",
-                  Pcomment: props?.single?.pppoe?.comment || "",
+                  name: user.name || "",
+                  mobile: user.mobile || "",
+                  address: user.address || "",
+                  email: user.email || "",
+                  nid: user.nid || "",
+                  Pcomment: user.pppoe?.comment || "",
                   monthlyFee:
-                    packageRate?.rate || props?.single?.monthlyFee || 0,
-                  Pname: props?.single?.pppoe?.name || "",
+                    packageRate?.rate || user.monthlyFee || 0,
+                  Pname: user.pppoe?.name || "",
                   Pprofile:
-                    packageRate?.name || props?.single?.pppoe?.profile || "",
-                  Ppassword: props?.single.pppoe?.password || "",
+                    packageRate?.name || user.pppoe?.profile || "",
+                  Ppassword: user?.pppoe?.password || "",
                   status: status || "",
                 }}
                 validationSchema={customerValidator}
@@ -273,6 +284,9 @@ export default function CustomerEdit(props) {
                   customerHandler(values);
                 }}
                 enableReinitialize
+                
+                
+                
               >
                 {() => (
                   <Form>
@@ -287,7 +301,7 @@ export default function CustomerEdit(props) {
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
                             disabled
-                            value={props?.single?.mikrotik || ""}
+                            value={user.mikrotik || ""}
                           >
                             <option value={mikrotikName?.id || ""}>
                               {mikrotikName?.name || ""}
@@ -316,17 +330,13 @@ export default function CustomerEdit(props) {
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
                         >
-                          {/* <option value={props?.single?.pppoe?.profile || "..."}>
-                            {props?.single?.pppoe?.profile || "..."}
-                          </option> */}
-                          {ppPackage &&
+                           
+                          { 
                             ppPackage?.map((val, key) => (
                               <option
-                                selected={
-                                  props.single?.pppoe?.profile === val.name
-                                }
+                              selected={ user?.pppoe?.profile===val?.name}
                                 key={key}
-                                value={val.id || ""}
+                                value={val.name || ""}
                               >
                                 {val.name}
                               </option>
@@ -338,6 +348,7 @@ export default function CustomerEdit(props) {
                         min={0}
                         label="মাসিক ফি"
                         name="monthlyFee"
+
                       />
                     </div>
 
