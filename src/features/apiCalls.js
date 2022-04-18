@@ -62,7 +62,7 @@ import {
   getTotalBalanceSuccess,
   updateDepositSuccess,
 } from "./paymentSlice";
-import { getChartSuccess } from "./chartsSlice";
+import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
 import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
 import { showModal } from "./uiSlice";
@@ -91,6 +91,24 @@ export const getCharts = async (dispatch, ispOwnerId, Year, Month, User) => {
     dispatch(getChartSuccess(res.data));
   } catch (err) {
     console.log("Charts error: ", err);
+  }
+};
+
+export const getDashboardCardData = async (
+  dispatch,
+  ispOwnerId,
+  resellerId
+) => {
+  let link = resellerId
+    ? `/dashboard/reseller/card/${resellerId}`
+    : `/dashboard/card/${ispOwnerId}`;
+
+  try {
+    const res = await apiLink(link);
+    console.log(res.data);
+    dispatch(getCardDataSuccess(res.data));
+  } catch (err) {
+    console.log("Card data error: ", err);
   }
 };
 

@@ -210,7 +210,7 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">রিসেলার বিল রিপোর্ট </h2>
+                <h2 className="collectorTitle">বিল রিপোর্ট </h2>
               </FourGround>
 
               {/* Model start */}

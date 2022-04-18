@@ -4,10 +4,14 @@ const chartsSlice = createSlice({
   name: "chart",
   initialState: {
     charts: [],
+    customerStat: {},
   },
   reducers: {
     getChartSuccess: (state, { payload }) => {
       state.charts = payload;
+    },
+    getCardDataSuccess: (state, { payload }) => {
+      state.customerStat = payload;
     },
     clearChart: (state) => {
       state.charts = [];
@@ -15,5 +19,9 @@ const chartsSlice = createSlice({
   },
 });
 
-export const { getChartSuccess, clearChart } = chartsSlice.actions;
+export const {
+  getChartSuccess,
+  clearChart,
+  getCardDataSuccess,
+} = chartsSlice.actions;
 export default chartsSlice.reducer;

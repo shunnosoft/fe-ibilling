@@ -3,7 +3,14 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
-import { ThreeDotsVertical } from "react-bootstrap-icons";
+
+import {
+  People,
+  ThreeDotsVertical,
+  BarChartFill,
+  PersonCheckFill,
+  Coin,
+} from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
 import "./home.css";
@@ -18,7 +25,11 @@ import {
   getIspOwnerData,
   getManger,
 } from "../../features/apiCalls";
-import { getCharts, initiatePayment } from "../../features/apiCalls";
+import {
+  getCharts,
+  initiatePayment,
+  getDashboardCardData,
+} from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import { showModal } from "../../features/uiSlice";
@@ -40,6 +51,11 @@ export default function Home() {
   const ChartsData = useSelector(
     (state) => state.persistedReducer.chart.charts
   );
+
+  const customerStat = useSelector(
+    (state) => state.persistedReducer.chart.customerStat
+  );
+
   const invoice = useSelector(
     (state) => state.persistedReducer.invoice.invoice
   );
@@ -122,6 +138,7 @@ export default function Home() {
       fetchMikrotik(dispatch, ispOwnerId);
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
+      getDashboardCardData(dispatch, ispOwnerId);
     }
 
     getIspOwnerData(dispatch, ispOwnerId);
@@ -161,6 +178,17 @@ export default function Home() {
       invoiceFlag = "UNPAID";
     }
   }
+
+  let totalCollection = 0,
+    totalCount = 0,
+    todayCollection = 0;
+  ChartsData.map((item) => {
+    totalCollection += item.total;
+    totalCount += item.count;
+    if (item.id === new Date().getDate()) {
+      todayCollection = item.total;
+    }
+  });
 
   // const payNowHandler = (invoice) => {
   //   initiatePayment(invoice);
@@ -209,6 +237,74 @@ export default function Home() {
                 </div>
               );
             })} */}
+
+            <div className="col-md-3" key={1}>
+              <div id="card1" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <People />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>মোট গ্রাহক</p>
+                  <h2>{customerStat.total}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    নতুন গ্রাহকঃ {customerStat.newCustomer}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3" key={2}>
+              <div id="card2" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <PersonCheckFill />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>একটিভ</p>
+                  <h2>{customerStat.active}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    ইন-একটিভঃ {customerStat.inactive}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3" key={3}>
+              <div id="card3" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <BarChartFill />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>পরিশোধ</p>
+                  <h2>{customerStat.paid}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    বকেয়াঃ {customerStat.unpaid}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3" key={4}>
+              <div id="card4" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <Coin />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>মোট আদায়</p>
+                  <h2>৳ {totalCollection}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    আজঃ ৳ {todayCollection}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* chart section */}

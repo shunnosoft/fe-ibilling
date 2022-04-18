@@ -3,19 +3,28 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
-import { ThreeDotsVertical } from "react-bootstrap-icons";
+import {
+  People,
+  ThreeDotsVertical,
+  BarChartFill,
+  PersonCheckFill,
+  Coin,
+} from "react-bootstrap-icons";
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData, monthsName } from "./homeData";
 import { getCollector } from "../../features/apiCallReseller";
-import { getCharts } from "../../features/apiCalls";
+import { getCharts, getDashboardCardData } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchAreaSuccess } from "../../features/areaSlice";
 // import { managerFetchSuccess } from "../../features/managerSlice";
 
 export default function Home() {
   const role = useSelector((state) => state.persistedReducer.auth.role);
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.userData.id
+  );
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -31,6 +40,12 @@ export default function Home() {
   const ChartsData = useSelector(
     (state) => state.persistedReducer.chart.charts
   );
+  const customerStat = useSelector(
+    (state) => state.persistedReducer.chart.customerStat
+  );
+
+  console.log(ChartsData, customerStat);
+
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
@@ -97,8 +112,10 @@ export default function Home() {
       collectors.unshift({ name, user, id });
     }
 
+    getDashboardCardData(dispatch, ispOwnerId, resellerId);
+
     setCollectors(collectors);
-  }, [allCollector, manager]);
+  }, [allCollector, manager, dispatch, ispOwnerId, resellerId]);
 
   // useEffect(() => {
   //   if (role === "ispOwner") {
@@ -150,6 +167,17 @@ export default function Home() {
     }
   };
 
+  let totalCollection = 0,
+    totalCount = 0,
+    todayCollection = 0;
+  ChartsData.map((item) => {
+    totalCollection += item.total;
+    totalCount += item.count;
+    if (item.id === new Date().getDate()) {
+      todayCollection = item.total;
+    }
+  });
+
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
@@ -157,21 +185,74 @@ export default function Home() {
         <div className="home">
           {/* card section */}
           <div className="row">
-            <h2 className="dashboardTitle">Reseller ড্যাশবোর্ড</h2>
-            {cardData.map((val, key) => {
-              return (
-                <div className="col-md-3" key={key}>
-                  <div id={val.classnam} className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">{val.icon}</div>
-                    <div className="chartSection">
-                      <p>{val.title}</p>
-                      <h2>{val.balance}</h2>
-                    </div>
-                  </div>
+            <h2 className="dashboardTitle">ড্যাশবোর্ড</h2>
+            <div className="col-md-3" key={1}>
+              <div id="card1" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <People />
                 </div>
-              );
-            })}
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>মোট গ্রাহক</p>
+                  <h2>{customerStat.total}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    নতুন গ্রাহকঃ {customerStat.newCustomer}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3" key={2}>
+              <div id="card2" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <PersonCheckFill />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>একটিভ</p>
+                  <h2>{customerStat.active}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    ইন-একটিভঃ {customerStat.inactive}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3" key={3}>
+              <div id="card3" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <BarChartFill />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>পরিশোধ</p>
+                  <h2>{customerStat.paid}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    বকেয়াঃ {customerStat.unpaid}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3" key={4}>
+              <div id="card4" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <Coin />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>মোট আদায়</p>
+                  <h2>৳ {totalCollection}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    আজঃ ৳ {todayCollection}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* chart section */}

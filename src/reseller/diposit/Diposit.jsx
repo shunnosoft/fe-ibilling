@@ -220,7 +220,7 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">রিসেলার ডিপোজিট</h2>
+                <h2 className="collectorTitle">ডিপোজিট</h2>
               </FourGround>
 
               {userRole !== "reseller" ? (

@@ -134,12 +134,11 @@ export default function Customer() {
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
-console.log(userData)
+  console.log(userData);
   useEffect(() => {
     console.log(role);
-    if (role ==="collector") {
-      getMikrotik(dispatch,  userData.collector.reseller);
-
+    if (role === "collector") {
+      getMikrotik(dispatch, userData.collector.reseller);
     }
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);
@@ -193,7 +192,7 @@ console.log(userData)
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">Reseller গ্রাহক </h2>
+                <h2 className="collectorTitle">গ্রাহক </h2>
               </FourGround>
 
               {/* Model start */}
@@ -246,17 +245,16 @@ console.log(userData)
                           <option value="paymentStatus.paid">পরিশোধ</option>
                         </select>
                       </div>
-                       
-                        <div className="addNewCollector">
-                          <div className="addAndSettingIcon">
-                            <PersonPlusFill
-                              className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#customerModal"
-                            />
-                          </div>
+
+                      <div className="addNewCollector">
+                        <div className="addAndSettingIcon">
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#customerModal"
+                          />
                         </div>
-                      
+                      </div>
                     </div>
 
                     <div className="row searchCollector">

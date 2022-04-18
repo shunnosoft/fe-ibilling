@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 35px 0px;
+  padding: 30px 0px;
   border-radius: 5px;
   box-shadow: 2px 2px 3px rgb(0 0 0 / 11%);
   color: rgb(228, 228, 228);
@@ -71,10 +71,10 @@
   color: #1b975e;
 }
 #card1 {
-  background: linear-gradient(17deg, #d53040, #c2505b);
+  background: linear-gradient(17deg, #364f6b, #5083bd);
 }
 #card2 {
-  background: linear-gradient(17deg, #ff7500, #df8a41);
+  background: linear-gradient(17deg, #9d5c0d, #d4892d);
 }
 
 #card3 {
@@ -82,7 +82,7 @@
 }
 
 #card4 {
-  background: linear-gradient(17deg, #5d0ac9, #8447d4);
+  background: linear-gradient(17deg, #11999e, #34ccd1);
 }
 
 .chartTitle {

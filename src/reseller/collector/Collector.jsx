@@ -96,7 +96,7 @@ export default function Collector() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">Reseller কালেক্টর</h2>
+              <h2 className="collectorTitle">কালেক্টর</h2>
 
               {/* modals */}
               <CollectorPost />
