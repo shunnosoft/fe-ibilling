@@ -15,9 +15,9 @@ import {
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
-import apiLink from "../../../api/apiLink";
+// import apiLink from "../../../api/apiLink";
 import moment from "moment";
-import { useLayoutEffect } from "react";
+// import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
   const [user, setUser] = useState(props?.single);
   const ispOwnerId = useSelector(
@@ -56,7 +56,11 @@ export default function CustomerEdit(props) {
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
+
+  const [packageId, setPackageId] = useState("");
+
   useEffect(() => {
+    setPackageId(props.single?.mikrotikPackage);
     setUser(props.single);
     setStatus(user.status);
     const IDs = {
@@ -164,6 +168,7 @@ export default function CustomerEdit(props) {
     // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
+    // setPackageId()
     // setPackageId(packageIdOnSelect)
     // console.log(mikrotikPackageId,packageIdOnSelect)
     const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
@@ -180,7 +185,6 @@ export default function CustomerEdit(props) {
     setAreaID(temp);
     setSubArea(temp.subAreas);
   };
-  const [packageId, setPackageId] = useState("");
   // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
@@ -197,7 +201,7 @@ export default function CustomerEdit(props) {
       subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: user?.mikrotik,
-      mikrotikPackage: packageId,
+      // mikrotikPackage: packageId,
       billPayType: "prepaid",
       autoDisable: autoDisable,
       billingCycle: moment(billDate + " " + billTime)
@@ -214,7 +218,7 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-
+    // console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
