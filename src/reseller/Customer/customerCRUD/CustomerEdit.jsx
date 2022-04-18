@@ -44,8 +44,8 @@ export default function CustomerEdit({ single }) {
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
-
   useEffect(() => {
+    setAreaID(single?.subArea);
     setStatus(single?.status);
     setAutoDisable(single?.autoDisable);
 
@@ -109,13 +109,23 @@ export default function CustomerEdit({ single }) {
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
     setPackageRate(temp);
   };
+  useEffect(() => {
+    //todo
+    const mikrotikPackageId = single.pppoe?.profile;
+    // setPackageId(single?.mikrotikPackage)
+    setMikrotikPackage(mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
+    setPackageRate(temp);
+  }, [single, ppPackage]);
 
   // select subArea
   const selectSubArea = (data) => {
     setSubArea(data.target.value);
+    setAreaID(data.target.value);
+    // setAreaID(single?.subArea);
   };
   // sending data to backed
   const customerHandler = async (data) => {
@@ -145,7 +155,6 @@ export default function CustomerEdit({ single }) {
       ...rest,
       status,
     };
-
     editCustomer(dispatch, mainData, setIsloading);
   };
 
@@ -235,7 +244,11 @@ export default function CustomerEdit({ single }) {
                           </option> */}
                           {ppPackage &&
                             ppPackage?.map((val, key) => (
-                              <option key={key} value={val.id || ""}>
+                              <option
+                                selected={val.name === packageRate?.name}
+                                key={key}
+                                value={val.name || ""}
+                              >
                                 {val.name}
                               </option>
                             ))}
@@ -266,13 +279,14 @@ export default function CustomerEdit({ single }) {
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
-                          <option value={areaID?.id || ""}>
-                            {areaID?.name || ""}
-                          </option>
                           {area?.length === undefined
                             ? ""
                             : area?.map((val, key) => (
-                                <option key={key} value={val.id || ""}>
+                                <option
+                                  selected={val.id === areaID}
+                                  key={key}
+                                  value={val.id || ""}
+                                >
                                   {val.name}
                                 </option>
                               ))}

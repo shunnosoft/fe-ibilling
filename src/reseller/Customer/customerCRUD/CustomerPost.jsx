@@ -118,7 +118,7 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    // console.log(mainData)
+    console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading);
   };
 
