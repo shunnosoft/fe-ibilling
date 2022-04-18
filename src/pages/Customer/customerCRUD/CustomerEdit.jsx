@@ -32,9 +32,7 @@ export default function CustomerEdit(props) {
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   // const [singleMikrotik, setSingleMikrotik] = useState(user.mikrotik);
-  const [mikrotikPackage, setMikrotikPackage] = useState(
-    props?.single?.pppoe?.profile
-  );
+  const [mikrotikPackage, setMikrotikPackage] = useState("");
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
@@ -157,7 +155,7 @@ export default function CustomerEdit(props) {
   // select Mikrotik Package
   useEffect(() => {
     //todo
-    const mikrotikPackageId = user.pppoe?.profile;
+    const mikrotikPackageId = user.mikrotikPackage;
     // setPackageId(user?.mikrotikPackage)
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
@@ -168,10 +166,10 @@ export default function CustomerEdit(props) {
     // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
-    // setPackageId()
+    setPackageId(mikrotikPackageId);
     // setPackageId(packageIdOnSelect)
     // console.log(mikrotikPackageId,packageIdOnSelect)
-    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
 
@@ -201,7 +199,7 @@ export default function CustomerEdit(props) {
       subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: user?.mikrotik,
-      // mikrotikPackage: packageId,
+      mikrotikPackage: packageId,
       billPayType: "prepaid",
       autoDisable: autoDisable,
       billingCycle: moment(billDate + " " + billTime)
@@ -218,7 +216,7 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-    // console.log(mainData);
+    console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -323,10 +321,10 @@ export default function CustomerEdit(props) {
                         >
                           {ppPackage?.map((val, key) => (
                             <option
-                              selected={user?.pppoe?.profile === val?.name}
+                              selected={user?.mikrotikPackage === val?.id}
                               key={key}
                               // value={JSON.stringify({ mikrotikPackageId:val.name , packageIdOnSelect:val.id})}
-                              value={val.name}
+                              value={val.id}
                             >
                               {val.name}
                             </option>

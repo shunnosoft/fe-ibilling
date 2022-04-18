@@ -109,15 +109,15 @@ export default function CustomerEdit({ single }) {
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
   useEffect(() => {
     //todo
-    const mikrotikPackageId = single.pppoe?.profile;
+    const mikrotikPackageId = single?.mikrotikPackage;
     // setPackageId(single?.mikrotikPackage)
     setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   }, [single, ppPackage]);
 
@@ -137,7 +137,7 @@ export default function CustomerEdit({ single }) {
       subArea: subArea,
       ispOwner: ispOwnerId,
       mikrotik: single?.mikrotik,
-      mikrotikPackage: mikrotikPackage,
+      mikrotikPackage: packageRate?.id,
       billPayType: "prepaid",
       autoDisable: autoDisable,
       reseller: resellerId,
@@ -231,7 +231,7 @@ export default function CustomerEdit({ single }) {
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
-                          PPPoE প্যাকেজ সিলেক্ট করুন
+                          প্যাকেজ সিলেক্ট করুন
                         </p>
                         <select
                           className="form-select mb-3"
@@ -245,9 +245,9 @@ export default function CustomerEdit({ single }) {
                           {ppPackage &&
                             ppPackage?.map((val, key) => (
                               <option
-                                selected={val.name === packageRate?.name}
+                                selected={val.id === packageRate?.id}
                                 key={key}
-                                value={val.name || ""}
+                                value={val.id || ""}
                               >
                                 {val.name}
                               </option>

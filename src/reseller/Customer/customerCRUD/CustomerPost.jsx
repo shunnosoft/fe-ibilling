@@ -94,7 +94,7 @@ export default function CustomerModal() {
   };
   const [subAreaId, setsubAreaId] = useState("");
   // sending data to backed
-  const customerHandler = async (data) => {
+  const customerHandler = async (data, resetForm) => {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
@@ -119,7 +119,7 @@ export default function CustomerModal() {
       ...rest,
     };
     console.log(mainData);
-    addCustomer(dispatch, mainData, setIsloading);
+    addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
   useEffect(() => {
@@ -167,8 +167,8 @@ export default function CustomerModal() {
                   Pcomment: "",
                 }}
                 validationSchema={customerValidator}
-                onSubmit={(values) => {
-                  customerHandler(values);
+                onSubmit={(values, { resetForm }) => {
+                  customerHandler(values, resetForm);
                 }}
                 enableReinitialize
               >
