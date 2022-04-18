@@ -80,11 +80,9 @@ export default function CustomerEdit(props) {
   }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
 
   useEffect(() => {
-    console.log(props);
     area.map((a) => {
       a.subAreas.map((sub) => {
         if (sub.id === props.single.subArea) {
-          console.log(a, sub);
           setAreaID(a);
           setSubAreaId(sub);
           setSubArea(a.subAreas);
@@ -216,7 +214,6 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-    console.log(mainData);
 
     editCustomer(dispatch, mainData, setIsloading);
   };
@@ -225,7 +222,6 @@ export default function CustomerEdit(props) {
     area.map((a) => {
       a.subAreas.map((sub) => {
         if (sub.id === subArea) {
-          console.log(a, sub, a.subAreas);
           setAreaID(a);
           setSubAreaId(sub);
           setSubArea(a.subAreas);

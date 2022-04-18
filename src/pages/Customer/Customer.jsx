@@ -63,7 +63,6 @@ export default function Customer() {
 
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
   const allareas = useSelector((state) => state.persistedReducer.area.area);
-  console.log(allareas);
   const collectorArea = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth.currentUser?.collector.areas
@@ -71,7 +70,6 @@ export default function Customer() {
   );
   const [allArea, setAreas] = useState([]);
 
-  console.log(allArea);
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );

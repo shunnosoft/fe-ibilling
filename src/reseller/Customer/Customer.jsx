@@ -134,9 +134,7 @@ export default function Customer() {
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
-  console.log(userData);
   useEffect(() => {
-    console.log(role);
     if (role === "collector") {
       getMikrotik(dispatch, userData.collector.reseller);
     }

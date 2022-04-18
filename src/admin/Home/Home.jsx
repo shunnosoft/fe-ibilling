@@ -21,8 +21,6 @@ export default function Home() {
     getIspOwners(dispatch);
   }, [dispatch]);
 
-  console.log(ispOwners);
-
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
