@@ -8,7 +8,7 @@ export const mikroTikSlice = createSlice({
     pppoeActiveUser: [],
     pppoePackage: [],
     mikrotikSyncUser: [],
-    packagefromDatabase:[]
+    packagefromDatabase: [],
   },
   reducers: {
     //mikrotik

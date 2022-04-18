@@ -169,11 +169,10 @@
 @media only screen and (max-width: 700px) {
   .form-select {
     max-width: 100% !important;
-  
+
     margin-top: 10px !important;
   }
   .dateDiv {
-   
-    width:inherit !important;
+    width: inherit !important;
   }
 }

@@ -15,7 +15,11 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData, monthsName } from "./homeData";
 import { getCollector } from "../../features/apiCallReseller";
-import { getCharts, getDashboardCardData } from "../../features/apiCalls";
+import {
+  getCharts,
+  getDashboardCardData,
+  getIspOwnerData,
+} from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchAreaSuccess } from "../../features/areaSlice";
 // import { managerFetchSuccess } from "../../features/managerSlice";
@@ -86,6 +90,8 @@ export default function Home() {
   };
 
   useEffect(() => {
+    getIspOwnerData(dispatch, ispOwnerId);
+
     if (role === "collector") {
       const areas = [];
       userData.collector?.areas.map((i) => {
@@ -98,7 +104,7 @@ export default function Home() {
 
       dispatch(FetchAreaSuccess(areas));
     }
-  }, [dispatch, userData, role]);
+  }, [dispatch, userData, role, ispOwnerId]);
 
   useEffect(() => {
     let collectors = [];

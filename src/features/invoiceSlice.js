@@ -15,8 +15,6 @@ export const invoiceSlice = createSlice({
   },
 });
 
-export const {
-  getInvoiceListSuccess,
-  getUnpaidInvoiceSuccess,
-} = invoiceSlice.actions;
+export const { getInvoiceListSuccess, getUnpaidInvoiceSuccess } =
+  invoiceSlice.actions;
 export default invoiceSlice.reducer;

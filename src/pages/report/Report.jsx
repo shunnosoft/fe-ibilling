@@ -20,6 +20,7 @@ export default function Report() {
   // console.log(cus.length)
 
   const allArea = useSelector((state) => state.persistedReducer.area.area);
+
   const allCollector = useSelector(
     (state) => state.persistedReducer.collector.collector
   );
@@ -254,7 +255,7 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">বিল রিপোর্ট </h2>
+                <h2 className="collectorTitle">বিল রিপোর্ট</h2>
               </FourGround>
 
               {/* Model start */}

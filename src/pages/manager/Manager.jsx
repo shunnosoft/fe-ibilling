@@ -199,7 +199,6 @@ export default function Manager() {
                               label="ম্যানেজার এর NID নম্বর"
                               name="nid"
                             />
-                           
 
                             {/* Button */}
                             <div className="submitSection">

@@ -4,7 +4,6 @@ import FooterLink from "./FooterLink";
 import "./netfee.css";
 
 export default function Landing() {
- 
   return (
     <div className="mainlanding">
       <div className="landingWrapper">
@@ -32,7 +31,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="textBox2">
-          <p className="intro1 mt-5">
+            <p className="intro1 mt-5">
               শূন্য আইটি (Shunno Software) প্রধানত একটি সফ্টওয়্যার ডেভেলপমেন্ট
               কোম্পানি যেটি উৎসাহী প্রকৌশলী এবং ব্যবসা পরিচালকদের একটি ছোট গ্রুপ
               থেকে বেড়ে উঠেছে। এখন আমরা বিভিন্ন পরিষেবা সহ একটি পূর্ণ-স্কেল
@@ -58,7 +57,7 @@ export default function Landing() {
               <br /> <br />
               আমাদের ট্রেড লাইসেন্স নম্বর: 06/B - 0135
             </p>
-            
+
             <p className="intro1 mt-5">
               Shunno Software is mainly a software development company that has
               grown from a small group of passionate engineers and business
@@ -85,8 +84,7 @@ export default function Landing() {
             </p>
             <br />
 
-
-             <FooterLink></FooterLink>
+            <FooterLink></FooterLink>
           </div>
         </div>
       </div>

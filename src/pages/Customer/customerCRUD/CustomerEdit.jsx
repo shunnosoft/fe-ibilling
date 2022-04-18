@@ -77,33 +77,23 @@ export default function CustomerEdit(props) {
     setmikrotikName(temp);
 
     // findout area id by sub area id
-     
-     
-  
-    
-    
- 
-    
-    
   }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
 
-  useEffect(()=>{
-    console.log(props)
-    area.map(a=>{
-
-      a.subAreas.map((sub)=>{
-        if(sub.id===props.single.subArea){
-          console.log(a,sub)
-           setAreaID(a)
-          setSubAreaId(sub)
-          setSubArea(a.subAreas)
-           
+  useEffect(() => {
+    console.log(props);
+    area.map((a) => {
+      a.subAreas.map((sub) => {
+        if (sub.id === props.single.subArea) {
+          console.log(a, sub);
+          setAreaID(a);
+          setSubAreaId(sub);
+          setSubArea(a.subAreas);
         }
-        return sub
-      })
-      return a
-    })
-  },[area,props])
+        return sub;
+      });
+      return a;
+    });
+  }, [area, props]);
   // useEffect(() => {
   //   const IDs = {
   //     ispOwner: ispOwnerId,
@@ -174,7 +164,7 @@ export default function CustomerEdit(props) {
 
   const selectMikrotikPackage = (e) => {
     // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
-    const mikrotikPackageId = e.target.value
+    const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
     // setPackageId(packageIdOnSelect)
     // console.log(mikrotikPackageId,packageIdOnSelect)
@@ -185,15 +175,14 @@ export default function CustomerEdit(props) {
   // select subArea
   const selectSubArea = (data) => {
     const areaId = data.target.value;
-     
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setAreaID(temp)
-      setSubArea(temp.subAreas);
-    
+
+    const temp = area.find((val) => {
+      return val.id === areaId;
+    });
+    setAreaID(temp);
+    setSubArea(temp.subAreas);
   };
-  const [packageId, setPackageId] = useState("")
+  const [packageId, setPackageId] = useState("");
   // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
@@ -231,23 +220,21 @@ export default function CustomerEdit(props) {
 
     editCustomer(dispatch, mainData, setIsloading);
   };
- const selectedSubArea = (e)=>{
-   var subArea = e.target.value
-   area.map(a=>{
-    a.subAreas.map((sub)=>{
-      if(sub.id=== subArea){
-        console.log( a,sub,a.subAreas)
-         setAreaID(a)
-        setSubAreaId(sub)
-        setSubArea(a.subAreas)
-         
-      }
-      return sub
-    })
-    return a
-  })
-
- }
+  const selectedSubArea = (e) => {
+    var subArea = e.target.value;
+    area.map((a) => {
+      a.subAreas.map((sub) => {
+        if (sub.id === subArea) {
+          console.log(a, sub, a.subAreas);
+          setAreaID(a);
+          setSubAreaId(sub);
+          setSubArea(a.subAreas);
+        }
+        return sub;
+      });
+      return a;
+    });
+  };
   return (
     <div>
       <div
@@ -334,18 +321,16 @@ export default function CustomerEdit(props) {
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
                         >
-                           
-                          { 
-                            ppPackage?.map((val, key) => (
-                              <option
-                              selected={ user?.pppoe?.profile===val?.name}
-                                key={key}
-                                // value={JSON.stringify({ mikrotikPackageId:val.name , packageIdOnSelect:val.id})}
-                                value={val.name}
-                              >
-                                {val.name}
-                              </option>
-                            ))}
+                          {ppPackage?.map((val, key) => (
+                            <option
+                              selected={user?.pppoe?.profile === val?.name}
+                              key={key}
+                              // value={JSON.stringify({ mikrotikPackageId:val.name , packageIdOnSelect:val.id})}
+                              value={val.name}
+                            >
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <FtextField
@@ -397,18 +382,21 @@ export default function CustomerEdit(props) {
                           className="form-select"
                           aria-label="Default select example"
                           name="subArea"
-                          id="subAreaIdFromEdit" 
+                          id="subAreaIdFromEdit"
                           onChange={selectedSubArea}
                         >
                           {/* <option value={subAreaId?.id || ""}>
                             {subAreaId?.name || ""}
                           </option> */}
-                          {  subArea?.map((val, key) => (
-                                <option selected={val.id===subAreaId.id}  key={key} value={val.id || ""}>
-                                  {val.name}
-                                </option>
-                              ))
-                            }
+                          {subArea?.map((val, key) => (
+                            <option
+                              selected={val.id === subAreaId.id}
+                              key={key}
+                              value={val.id || ""}
+                            >
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
 

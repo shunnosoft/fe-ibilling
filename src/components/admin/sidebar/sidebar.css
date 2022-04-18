@@ -106,7 +106,6 @@ a {
   padding: 7px 0;
 }
 
- 
 .companyName {
   font-size: medium;
   text-align: center;
@@ -114,7 +113,6 @@ a {
   font-weight: bold;
   color: gray;
   transition: all 2s ease-in-out;
-
 }
 
 @media screen and (max-width: 1024px) {

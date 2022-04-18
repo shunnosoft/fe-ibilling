@@ -125,28 +125,25 @@
 .pakinfo > span {
   font-weight: bold;
   margin-left: 5px;
-  
 }
-
 
 /* .mainfee{
   
 } */
 
-.mainfeecross{
-  text-decoration:line-through; 
+.mainfeecross {
+  text-decoration: line-through;
   margin-right: 5px;
   text-decoration-thickness: 1px;
-  text-decoration-color:red;
+  text-decoration-color: red;
   font-size: 17px;
-
 }
 
 .strikethrough {
   position: relative;
- 
+
   margin-right: 5px;
-  
+
   font-size: 17px;
 }
 .strikethrough:before {
@@ -158,14 +155,14 @@
   right: 0;
   border-top: 1px solid;
   border-color: inherit;
-  
-  -webkit-transform:rotate(+7deg);
-  -moz-transform:rotate(+7deg);
-  -ms-transform:rotate(+7deg);
-  -o-transform:rotate(+7deg);
-  transform:rotate(+7deg);
+
+  -webkit-transform: rotate(+7deg);
+  -moz-transform: rotate(+7deg);
+  -ms-transform: rotate(+7deg);
+  -o-transform: rotate(+7deg);
+  transform: rotate(+7deg);
 }
-.discount{
+.discount {
   width: 100%;
   height: 50px;
   display: flex;
@@ -173,25 +170,20 @@
   justify-content: center;
   /* border: 2px solid  purple; */
   color: whitesmoke;
-  background-color:crimson;
+  background-color: crimson;
   border-radius: 5px;
-
 }
- 
-.disStrong{
+
+.disStrong {
   font-weight: bold;
   font-size: 30px;
   margin-right: 20px;
-   
- 
-
 }
 
-.disspan{
+.disspan {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
   font-weight: bold;
-  
 }

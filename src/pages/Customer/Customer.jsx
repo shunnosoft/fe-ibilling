@@ -28,7 +28,11 @@ import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
-import { deleteACustomer, getCustomer, getPackagewithoutmikrotik } from "../../features/apiCalls";
+import {
+  deleteACustomer,
+  getCustomer,
+  getPackagewithoutmikrotik,
+} from "../../features/apiCalls";
 import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 
@@ -58,7 +62,16 @@ export default function Customer() {
   const firstIndex = lastIndex - customerPerPage;
 
   const currentCustomers = Customers.slice(firstIndex, lastIndex);
-  const areas = useSelector((state) => state.persistedReducer.area.area);
+  const allareas = useSelector((state) => state.persistedReducer.area.area);
+  console.log(allareas);
+  const collectorArea = useSelector((state) =>
+    role === "collector"
+      ? state.persistedReducer.auth.currentUser?.collector.areas
+      : []
+  );
+  const [allArea, setAreas] = useState([]);
+
+  console.log(allArea);
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
@@ -67,6 +80,37 @@ export default function Customer() {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  useEffect(() => {
+    if (role === "collector") {
+      let areas = [];
+
+      collectorArea?.map((item) => {
+        let area = {
+          id: item.area.id,
+          name: item.area.name,
+          subAreas: [
+            {
+              id: item.id,
+              name: item.name,
+            },
+          ],
+        };
+
+        let found = areas?.find((area) => area.id === item.area.id);
+        if (found) {
+          found.subAreas.push({ id: item.id, name: item.name });
+
+          return (areas[areas.findIndex((item) => item.id === found.id)] =
+            found);
+        } else {
+          return areas.push(area);
+        }
+      });
+      setAreas(areas);
+    }
+  }, [collectorArea, role]);
+
   useEffect(() => {
     const keys = [
       "monthlyFee",
@@ -133,9 +177,7 @@ export default function Customer() {
       !bpSettings.hasMikrotik &&
       (role === "manager" || role === "ispOwner")
     ) {
-
-
-      getPackagewithoutmikrotik(ispOwner,dispatch)
+      getPackagewithoutmikrotik(ispOwner, dispatch);
     }
     getCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
@@ -227,13 +269,15 @@ export default function Customer() {
                           <option value={JSON.stringify({})} defaultValue>
                             সকল এরিয়া
                           </option>
-                          {areas?.map((area, key) => {
-                            return (
-                              <option key={key} value={JSON.stringify(area)}>
-                                {area.name}
-                              </option>
-                            );
-                          })}
+                          {(role === "collector" ? allArea : allareas)?.map(
+                            (area, key) => {
+                              return (
+                                <option key={key} value={JSON.stringify(area)}>
+                                  {area.name}
+                                </option>
+                              );
+                            }
+                          )}
                         </select>
 
                         {/* //Todo */}

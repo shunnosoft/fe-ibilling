@@ -10,7 +10,7 @@ export default function Cancel() {
         বাংলাদেশের অন্যতম ISP বিলিং সফটওয়্যার নেটফির সাথে থাকার জন্য আপনাকে
         আন্তরিক ধন্যবাদ।
       </p>
-      
+
       <NavLink to="/" className="successButton">
         হোম এ যান
       </NavLink>

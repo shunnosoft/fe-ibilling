@@ -23,10 +23,7 @@ const packageSlice = createSlice({
   },
 });
 
-export const {
-  getpackageSuccess,
-  editPackageSuccess,
-  addPackageSuccess,
-} = packageSlice.actions;
+export const { getpackageSuccess, editPackageSuccess, addPackageSuccess } =
+  packageSlice.actions;
 
 export default packageSlice.reducer;

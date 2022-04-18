@@ -157,7 +157,7 @@ function Invoice() {
                                   <div className="AcceptRejectBtn">
                                     <button
                                       onClick={() => {
-                                        dispatch(showModal(val))
+                                        dispatch(showModal(val));
                                         // payNowHandler(val);
                                       }}
                                     >

@@ -114,27 +114,25 @@
   color: rgb(251 173 143) !important;
 }
 
-.homediv{
-  
+.homediv {
   width: 200px;
   height: 40px;
   height: inherit;
   padding: 5px;
- 
 }
-.newLogoo{
+.newLogoo {
   height: 40px;
   object-fit: contain;
   padding: 3px;
   margin-left: 10px;
 }
-.homeicon{
+.homeicon {
   width: 33px;
   height: 33px;
 }
 
-.homeicon:hover{
-  color: #2666CF;
+.homeicon:hover {
+  color: #2666cf;
 }
 
 @media only screen and (max-width: 720px) {

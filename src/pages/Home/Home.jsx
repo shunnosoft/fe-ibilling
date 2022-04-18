@@ -33,6 +33,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import { showModal } from "../../features/uiSlice";
+import { FetchAreaSuccess } from "../../features/areaSlice";
 
 export default function Home() {
   const [isLoading, setIsloading] = useState(false);
@@ -71,7 +72,11 @@ export default function Home() {
   const [currentCollector, setCurrentCollector] = useState("");
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
-
+  const collectorArea = useSelector((state) =>
+    role === "collector"
+      ? state.persistedReducer.auth.currentUser?.collector.areas
+      : []
+  );
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
     labels: collection,
@@ -115,6 +120,8 @@ export default function Home() {
   }, [allCollector, manager]);
 
   useEffect(() => {
+    getIspOwnerData(dispatch, ispOwnerId);
+
     if (role === "ispOwner") {
       getManger(dispatch, ispOwnerId);
       fetchReseller(dispatch, ispOwnerId);
@@ -128,20 +135,45 @@ export default function Home() {
       getCollector(dispatch, ispOwnerId);
       getAllBills(dispatch, ispOwnerId);
       fetchMikrotik(dispatch, ispOwnerId);
+      getArea(dispatch, ispOwnerId);
     }
 
     //for all roles
-    getArea(dispatch, ispOwnerId);
     // getArea(dispatch, IDBOpenDBRequest)
     if (role === "collector") {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
       fetchMikrotik(dispatch, ispOwnerId);
+
+      let areas = [];
+
+      collectorArea?.map((item) => {
+        let area = {
+          id: item.area.id,
+          name: item.area.name,
+          subAreas: [
+            {
+              id: item.id,
+              name: item.name,
+            },
+          ],
+        };
+
+        let found = areas?.find((area) => area.id === item.area.id);
+        if (found) {
+          found.subAreas.push({ id: item.id, name: item.name });
+
+          return (areas[areas.findIndex((item) => item.id === found.id)] =
+            found);
+        } else {
+          return areas.push(area);
+        }
+      });
+      dispatch(FetchAreaSuccess(areas));
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
       getDashboardCardData(dispatch, ispOwnerId);
     }
 
-    getIspOwnerData(dispatch, ispOwnerId);
     // if (!invoice) getUnpaidInvoice(dispatch, ispOwnerId, setIsloading);
   }, []);
 

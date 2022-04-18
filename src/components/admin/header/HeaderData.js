@@ -1,6 +1,6 @@
 import {
   PersonFill,
-   
+
   // Cash,
 } from "react-bootstrap-icons";
 
@@ -11,6 +11,7 @@ export const HeaderData = [
     icon: <PersonFill />,
     name: "প্রোফাইল",
     link: "/profile",
+    resellerLink: "/reseller/profile",
   },
   // {
   //   icon: <HouseDoorFill />,

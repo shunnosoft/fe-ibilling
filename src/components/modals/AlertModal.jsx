@@ -1,6 +1,6 @@
 import React from "react";
 
-function AlertModal({redirectLink , invoice}) {
+function AlertModal({ redirectLink, invoice }) {
   return (
     <div className="modal fade" id="alertModal" tabindex="-1">
       <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -89,7 +89,13 @@ function AlertModal({redirectLink , invoice}) {
             >
               Close
             </button>
-            <button onClick={()=>{redirectLink(invoice)}} type="button" className="btn btn-primary">
+            <button
+              onClick={() => {
+                redirectLink(invoice);
+              }}
+              type="button"
+              className="btn btn-primary"
+            >
               Save changes
             </button>
           </div>

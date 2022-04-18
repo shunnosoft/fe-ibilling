@@ -17,7 +17,9 @@ export default function CreatePackage() {
   const [areaIds, setAreaIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
-  const ispOwnerId =useSelector(state=>state.persistedReducer.auth.ispOwnerId)
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
 
   //validator
   const collectorValidator = Yup.object({
@@ -36,15 +38,12 @@ export default function CreatePackage() {
   });
 
   const packageAddHandler = (data) => {
-
     const sendingData = {
       ...data,
-      ispOwner:ispOwnerId
-
+      ispOwner: ispOwnerId,
     };
 
-    addPackagewithoutmikrotik(sendingData,dispatch,setIsLoading)
-
+    addPackagewithoutmikrotik(sendingData, dispatch, setIsLoading);
   };
 
   return (

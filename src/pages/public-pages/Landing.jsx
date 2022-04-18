@@ -4,7 +4,6 @@ import FooterLink from "./FooterLink";
 import "./netfee.css";
 
 export default function Landing() {
- 
   return (
     <div className="mainlanding">
       <div className="landingWrapper">
@@ -102,7 +101,7 @@ export default function Landing() {
               </li>
             </ul>
 
-             <FooterLink></FooterLink>
+            <FooterLink></FooterLink>
           </div>
         </div>
       </div>

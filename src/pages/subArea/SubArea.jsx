@@ -256,7 +256,8 @@ export default function SubArea() {
                         ) : (
                           subAreas
                             ?.filter((val) => {
-                              return val.name?.toLowerCase()
+                              return val.name
+                                ?.toLowerCase()
                                 .includes(search.toLowerCase());
                             })
                             .map((val, key) => (

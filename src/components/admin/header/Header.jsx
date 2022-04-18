@@ -1,21 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
-import { BoxArrowLeft, HouseDoor } from "react-bootstrap-icons";
+import { ArrowClockwise, BoxArrowLeft } from "react-bootstrap-icons";
 
 // internal imports
 import "./header.css";
 // import { logOut } from "../../../features/authSlice";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
+import Loader from "../../common/Loader";
+import { getResellerBalance } from "../../../features/apiCalls";
 
 export default function Header(props) {
   // const userRole = useSelector(state => state.auth.role);
+  const [isRefrsh, setIsrefresh] = useState(false);
+  const [rechargeBalnace, setRechargeBalance] = useState(0);
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const dispatch = useDispatch();
   // const navigate = useNavigate();
@@ -28,6 +33,10 @@ export default function Header(props) {
     }
   };
 
+  useEffect(() => {
+    if (userRole === "reseller")
+      getResellerBalance(userData.id, setRechargeBalance, setIsrefresh);
+  }, [userRole, userData]);
   // logout
   const handleLogOut = async () => {
     userLogout(dispatch);
@@ -40,12 +49,14 @@ export default function Header(props) {
       <i className="fas fa-sun"></i>
     );
 
-  return ( pathName === "/terms-conditions" ||
-  pathName === "/privacy-policy" ||
-  
-  pathName === "/return-and-refund-policy") ? <div>
-  </div>:
-   (
+  // const getResellerBalance = ()=>{
+  //   setIsrefresh(true)
+  // }
+  return pathName === "/terms-conditions" ||
+    pathName === "/privacy-policy" ||
+    pathName === "/return-and-refund-policy" ? (
+    <div></div>
+  ) : (
     <div className="header">
       <FourGround>
         <div className="container-fluied">
@@ -53,22 +64,54 @@ export default function Header(props) {
             {pathName === "/login" || pathName === "/register" ? (
               <NavLink to={"/netfee"}>
                 <div className="homediv">
-                  <img
-                    className="newLogoo"
-                    src="/assets/img/logo.png"
-                    alt=""
-                  />
+                  <img className="newLogoo" src="/assets/img/logo.png" alt="" />
                 </div>
               </NavLink>
             ) : (
               ""
             )}
 
-            <div className="logoSide">{/* <h2>Bayanno pay</h2> */}</div>
+            <div className="logoSide"></div>
             <div className="headerLinks">
+              {currentUser && userRole === "reseller" ? (
+                <div style={{ marginRight: "20px" }} className="refreshDiv">
+                  <div
+                    style={{ backgroundColor: "inherit" }}
+                    className="balancetext"
+                  >
+                    ব্যালান্সঃ
+                    <strong className="mainsmsbalance">
+                      {rechargeBalnace}
+                    </strong>
+                  </div>
+                  <div
+                    title="রিফ্রেশ করুন"
+                    style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
+                    className="refreshIcon"
+                  >
+                    {isRefrsh ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() =>
+                          getResellerBalance(
+                            userData.id,
+                            setRechargeBalance,
+                            setIsrefresh
+                          )
+                        }
+                      ></ArrowClockwise>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
               <div className="darkLight" onClick={changeTHeme}>
                 {icon}
               </div>
+
               {currentUser ? (
                 <div className="dropdown">
                   <button
@@ -92,7 +135,14 @@ export default function Header(props) {
                     {HeaderData.map((val, key) => {
                       return (
                         <li key={key} className="profileList">
-                          <NavLink to={val.link} className="dropdown-item">
+                          <NavLink
+                            to={
+                              userRole === "reseller"
+                                ? val.resellerLink
+                                : val.link
+                            }
+                            className="dropdown-item"
+                          >
                             <span className="dropdownIcon">{val.icon}</span>
                             {val.name}
                           </NavLink>

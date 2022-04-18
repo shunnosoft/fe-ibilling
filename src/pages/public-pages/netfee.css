@@ -141,48 +141,41 @@
   object-fit: cover;
 }
 
- 
 .sslCommerz {
- 
 }
 
-.textnew{
+.textnew {
   display: flex;
   align-items: center;
   width: 100%;
   flex-direction: column;
-
 }
 
-.alllinks{
+.alllinks {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  
-
 }
-.navnew{
-  margin:0 10px;
-  
+.navnew {
+  margin: 0 10px;
 }
 
- .newLink:hover{
-   text-decoration: underline;
-   color: goldenrod;
-
- }
- .sslimg{
+.newLink:hover {
+  text-decoration: underline;
+  color: goldenrod;
+}
+.sslimg {
   width: 100%;
   object-fit: contain;
   /* height: 10px; */
   height: fit-content;
- }
+}
 @media screen and (max-width: 900px) {
-  .alllinks{
+  .alllinks {
     flex-wrap: wrap;
-
-  }.navnew{
+  }
+  .navnew {
     margin: 15px;
   }
   .landingWrapper {
@@ -252,29 +245,28 @@
   }
 }
 
-.textboxwithUser{
+.textboxwithUser {
   padding: 20px;
-  
 }
 
 @media screen and (max-width: 937px) {
-  .alllinks{
+  .alllinks {
     flex-wrap: wrap;
   }
-  .navnew{
+  .navnew {
     margin: 10px;
   }
 }
 @media screen and (max-width: 500px) {
-  .landingLogonew{
+  .landingLogonew {
     object-fit: contain;
     width: 70%;
   }
-  .sslimg{
+  .sslimg {
     /* width: 100%; */
 
     object-fit: cover;
     /* height: 10px; */
-    overflow:hidden;
-   }
+    overflow: hidden;
+  }
 }

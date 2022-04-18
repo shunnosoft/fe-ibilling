@@ -1100,3 +1100,19 @@ export const getIspOwnerData = async (dispatch, ispOwnerId) => {
     console.log(error.response?.data.message);
   }
 };
+
+export const getResellerBalance = async (
+  resellerId,
+  setRechargeBalance,
+  setIsrefresh
+) => {
+  setIsrefresh(true);
+  try {
+    const res = await apiLink.get(`/reseller/recharge/balance/${resellerId}`);
+    setRechargeBalance(res.data.rechargeBalance);
+    setIsrefresh(false);
+  } catch (error) {
+    console.log(error);
+    setIsrefresh(false);
+  }
+};

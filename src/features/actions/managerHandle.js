@@ -1,8 +1,5 @@
 // import apiLink from "../../api/apiLink";
 // import { toast } from "react-toastify";
- 
-
-
 
 export const hideModal = () => {
   // const alertData = document.getElementById("successAlert");
@@ -16,5 +13,3 @@ export const hideModal = () => {
   //   alertData.classList.remove("alertShow");
   // }, 5000);
 };
- 
- 

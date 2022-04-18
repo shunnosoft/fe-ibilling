@@ -11,7 +11,6 @@ import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
   fetchPackagefromDatabase,
-   
 } from "../../../features/apiCalls";
 import moment from "moment";
 export default function CustomerModal() {

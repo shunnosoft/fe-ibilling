@@ -19,9 +19,6 @@ const chartsSlice = createSlice({
   },
 });
 
-export const {
-  getChartSuccess,
-  clearChart,
-  getCardDataSuccess,
-} = chartsSlice.actions;
+export const { getChartSuccess, clearChart, getCardDataSuccess } =
+  chartsSlice.actions;
 export default chartsSlice.reducer;

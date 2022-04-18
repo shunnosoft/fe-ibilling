@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./message.css"
+import "./message.css";
 
 function SmsParchase() {
   return (
@@ -16,7 +16,7 @@ function SmsParchase() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-              এসএমএস পার্চেজ বোর্ড
+                এসএমএস পার্চেজ বোর্ড
               </h5>
               <button
                 type="button"
@@ -28,27 +28,25 @@ function SmsParchase() {
             <div className="modal-body">
               <div className="smsPerchase">
                 <div className="smsbuy">
-
-                
-                <div className="amountsms">
+                  <div className="amountsms">
                     <span className="kroymullo">ক্রয়মূল্যঃ </span>
                     <span className="price">
                       <strong> {`250৳`}</strong>
                     </span>
                   </div>
 
-
                   <div className="numsms">
                     <span className="smsspan">এসএমএস সংখ্যাঃ </span>
                     <input className="smsinput" type="number" min={0} />
                   </div>
-
-
-
-
                 </div>
                 <div className="smsbutton">
-                  <button data-bs-dismiss="modal" className="smsparchasebtn button2">বাতিল করুন</button>
+                  <button
+                    data-bs-dismiss="modal"
+                    className="smsparchasebtn button2"
+                  >
+                    বাতিল করুন
+                  </button>
                   <button className="smsparchasebtn button1">কিনুন</button>
                 </div>
               </div>

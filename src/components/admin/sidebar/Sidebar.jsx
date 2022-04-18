@@ -19,7 +19,7 @@ import {
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
-import { billData } from "./billData";
+// import { billData } from "./billData";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {

@@ -139,7 +139,7 @@
 .refreshIcon {
   height: 45.3px;
   width: 50px;
-  background-color: #FFCA03;
+  background-color: #b5fe83;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,21 +147,20 @@
 
   font-size: 20px;
   font-weight: bold;
-  
 }
-.refreshIcon:hover{
-  background-color: #ffc803a6;
+.refreshIcon:hover {
+  background-color: #9dda74;
 }
 
 .balancetext {
-  background-color: #49ff00;
+  background-color: #40dfef;
   height: inherit;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.mainsmsbalance{
+.mainsmsbalance {
   margin-left: 10px;
   margin-right: 10px;
 }

@@ -4,19 +4,19 @@ const uiSlice = createSlice({
   name: "ui",
   initialState: {
     alertModalShow: false,
-    alertModalData:null,
-    paymentUrl :""
+    alertModalData: null,
+    paymentUrl: "",
   },
   reducers: {
-    showModal: (state,action) => {
+    showModal: (state, action) => {
       state.alertModalShow = true;
-      state.alertModalData=action.payload
-      state.paymentUrl=action.payload?.paymentUrl
+      state.alertModalData = action.payload;
+      state.paymentUrl = action.payload?.paymentUrl;
     },
     hideModal: (state) => {
       state.alertModalShow = false;
-      state.alertModalData=null
-      state.paymentUrl=null
+      state.alertModalData = null;
+      state.paymentUrl = null;
     },
   },
 });
