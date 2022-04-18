@@ -16,7 +16,7 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData, monthsName } from "./homeData";
 import { getCollector } from "../../features/apiCallReseller";
 import {
-  getCharts,
+  getChartsReseller,
   getDashboardCardData,
   getIspOwnerData,
 } from "../../features/apiCalls";
@@ -118,35 +118,30 @@ export default function Home() {
       collectors.unshift({ name, user, id });
     }
 
-    getDashboardCardData(dispatch, ispOwnerId, resellerId);
-
     setCollectors(collectors);
   }, [allCollector, manager, dispatch, ispOwnerId, resellerId]);
 
-  // useEffect(() => {
-  //   if (role === "ispOwner") {
-  //     getManger(dispatch, ispOwnerId);
-  //     fetchReseller(dispatch, ispOwnerId);
-  //   }
-  //   if (role === "manager") {
-  //     dispatch(managerFetchSuccess(userData));
-  //   }
-
-  //   if (role === "ispOwner" || role === "manager") {
-  //     getCollector(dispatch, ispOwnerId);
-  //     getAllBills(dispatch, ispOwnerId);
-  //     fetchMikrotik(dispatch, ispOwnerId);
-  //   }
-
-  //   //for all roles
-  //   getArea(dispatch, ispOwnerId);
-  //   // getArea(dispatch, IDBOpenDBRequest)
-  //   if (role === "collector") {
-  //     getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
-  //   } else {
-  //     getCharts(dispatch, ispOwnerId, Year, Month);
-  //   }
-  // }, [dispatch, ispOwnerId, role, userData, Month, Year]);
+  useEffect(() => {
+    //for all roles
+    if (role === "collector") {
+      getChartsReseller(
+        dispatch,
+        userData.collector.reseller,
+        Year,
+        Month,
+        userData?.collector.user
+      );
+      getDashboardCardData(
+        dispatch,
+        ispOwnerId,
+        userData.collector.reseller,
+        userData.collector.id
+      );
+    } else {
+      getChartsReseller(dispatch, resellerId, Year, Month);
+      getDashboardCardData(dispatch, ispOwnerId, resellerId);
+    }
+  }, [dispatch, resellerId, role, userData, Month, Year]);
 
   useEffect(() => {
     let tempArr = [],
@@ -166,10 +161,22 @@ export default function Home() {
 
   const handleFilterHandler = () => {
     if (role === "collector") {
-      getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
+      getChartsReseller(
+        dispatch,
+        userData?.reseller.id,
+        Year,
+        Month,
+        userData?.user
+      );
     } else {
       getCollector(dispatch, userData?.reseller.id);
-      getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
+      getChartsReseller(
+        dispatch,
+        userData?.reseller.id,
+        Year,
+        Month,
+        currentCollector
+      );
     }
   };
 
