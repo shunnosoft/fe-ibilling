@@ -82,11 +82,29 @@ export const getManger = async (dispatch, ispWonerId) => {
   }
 };
 
-export const getCharts = async (dispatch, ispOwnerId, Year, Month, User) => {
+export const getCharts = async (dispatch, ispOwnerId, year, month, user) => {
   try {
-    let link = `/dashboard/${ispOwnerId}?year=${Year}&month=${Month}`;
-    if (User)
-      link = `/dashboard/${ispOwnerId}?year=${Year}&month=${Month}&user=${User}`;
+    let link = `/dashboard/${ispOwnerId}?year=${year}&month=${month}`;
+    if (user)
+      link = `/dashboard/${ispOwnerId}?year=${year}&month=${month}&user=${user}`;
+    const res = await apiLink(link);
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    console.log("Charts error: ", err);
+  }
+};
+
+export const getChartsReseller = async (
+  dispatch,
+  resellerId,
+  year,
+  month,
+  user
+) => {
+  try {
+    let link = `/dashboard/reseller/${resellerId}?year=${year}&month=${month}`;
+    if (user)
+      link = `/dashboard/reseller/${resellerId}?year=${year}&month=${month}&user=${user}`;
     const res = await apiLink(link);
     dispatch(getChartSuccess(res.data));
   } catch (err) {
@@ -97,11 +115,13 @@ export const getCharts = async (dispatch, ispOwnerId, Year, Month, User) => {
 export const getDashboardCardData = async (
   dispatch,
   ispOwnerId,
-  resellerId
+  resellerId,
+  collector
 ) => {
+  if (!collector) collector = "";
   let link = resellerId
-    ? `/dashboard/reseller/card/${resellerId}`
-    : `/dashboard/card/${ispOwnerId}`;
+    ? `/dashboard/reseller/card/${resellerId}?collector=${collector}`
+    : `/dashboard/card/${ispOwnerId}?collector=${collector}`;
 
   try {
     const res = await apiLink(link);

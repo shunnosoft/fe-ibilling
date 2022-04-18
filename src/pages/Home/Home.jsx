@@ -162,13 +162,15 @@ export default function Home() {
         if (found) {
           found.subAreas.push({ id: item.id, name: item.name });
 
-          return (areas[areas.findIndex((item) => item.id === found.id)] =
-            found);
+          return (areas[
+            areas.findIndex((item) => item.id === found.id)
+          ] = found);
         } else {
           return areas.push(area);
         }
       });
       dispatch(FetchAreaSuccess(areas));
+      getDashboardCardData(dispatch, ispOwnerId, null, userData?.id);
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
       getDashboardCardData(dispatch, ispOwnerId);
