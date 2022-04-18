@@ -54,12 +54,23 @@
   align-items: center;
 }
 
-.modalContainer .footer button {
+.continue {
   width: 150px;
   height: 45px;
   margin: 10px;
   border: none;
   background-color: cornflowerblue;
+  color: white;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.continue1 {
+  width: 150px;
+  height: 45px;
+  margin: 10px;
+  border: none;
+  background-color: rgb(50, 96, 180);
   color: white;
   border-radius: 8px;
   font-size: 20px;
