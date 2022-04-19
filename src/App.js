@@ -14,6 +14,7 @@ import Register from "./pages/auth/register/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Collector from "./pages/collector/Collector";
 import Customer from "./pages/Customer/Customer";
+import ActiveCustomer from "./pages/activeustomer/ActiveCustomer";
 import Diposit from "./pages/diposit/Diposit";
 import Report from "./pages/report/Report";
 import Profile from "./pages/profile/Profile";
@@ -281,6 +282,7 @@ function App() {
                 }
               />
               <Route path="customer" element={<Customer />} />
+              <Route path="activeCustomer" element={<ActiveCustomer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
 
               <Route path="*" element={<NotFound />} />

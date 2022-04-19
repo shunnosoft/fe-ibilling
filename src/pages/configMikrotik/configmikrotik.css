@@ -78,3 +78,15 @@
   margin-right: 10px;
   margin-top: 6px;
 }
+
+.activeuserselection {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.rightSideMikrotik {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
