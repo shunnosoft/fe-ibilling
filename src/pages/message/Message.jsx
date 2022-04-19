@@ -131,7 +131,7 @@ export default function Message() {
         ) {
           const msg = `আইডি: ${customer.customerId}\nগ্রাহক: ${
             customer.name
-          }\nবিলঃ ${customer.monthlyFee}\nতারিখঃ ${moment(
+          }\nবিলঃ ${customer.monthlyFee} Tk\nতারিখঃ ${moment(
             customer.billingCycle
           ).format("DD-MM-YYYY")}\n\n${smsRef.current.value}`;
 
@@ -152,12 +152,12 @@ export default function Message() {
           items.push(sms);
         }
       });
-
+      alert(`স্যাম্পল SMS:\n\n${items[0].message}`);
       if (owner.data.smsBalance >= totalSmsCount) {
         let con = window.confirm(
           `${items.length} জন গ্রাহক মেসেজ পাবে। ${totalSmsCount} টি SMS খরচ হবে।`
         );
-        if (con) {
+        if (con && items.length) {
           // post
           const res = await apiLink.post(`sms/bulk/${ispOwnerId}`, {
             items,
