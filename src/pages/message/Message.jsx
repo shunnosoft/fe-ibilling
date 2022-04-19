@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import moment from "moment";
 
 // internal import
 import "./message.css";
@@ -11,11 +12,26 @@ import useDash from "../../assets/css/dash.module.css";
 import SmsParchase from "./smsParchaseModal";
 import { ArrowClockwise, RecordFill } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
-import { getIspownerwitSMS } from "../../features/apiCalls";
+import { getCustomer } from "../../features/apiCalls";
 import apiLink from "../../api/apiLink";
 import { useCallback } from "react";
 
+const isBangla = (str) => {
+  for (var i = 0, n = str.length; i < n; i++) {
+    if (str.charCodeAt(i) > 255) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const useForceUpdate = () => {
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue((value) => value + 1); // update the state to force render
+};
+
 export default function Message() {
+  const reset = useForceUpdate();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [sms, setSms] = useState("");
   const [isChecked, setisChecked] = useState(false);
@@ -24,6 +40,8 @@ export default function Message() {
   const [isRefrsh, setIsrefresh] = useState(false);
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [areaIds, setAreaIds] = useState([]);
+  const [days, setDays] = useState([]);
+
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -31,8 +49,10 @@ export default function Message() {
   const handleMessageCheckBox = (e) => {
     setisChecked(e.target.checked);
   };
+  const dispatch = useDispatch();
   const mobileNumRef = useRef();
   const smsRef = useRef();
+
   const getIspownerwitSMS = useCallback(async () => {
     setIsrefresh(true);
     try {
@@ -70,23 +90,98 @@ export default function Message() {
     setPayment(e);
   };
 
-  const handleSendMessage = () => {
-    let sendingData = {};
-    if (isChecked) {
-      sendingData = {
-        mobile: mobileNumRef.current.value,
-        sms: smsRef.current.value,
-      };
+  // day checkbox select
+  const daySettingHandler = (e) => {
+    let item = Number(e);
+    if (days.includes(item)) {
+      const index = days.indexOf(item);
+      if (index > -1) {
+        days.splice(index, 1);
+      }
     } else {
-      sendingData = {
-        sms: smsRef.current.value,
-        status: status,
-        payment: payment,
-        subAreas: areaIds,
-      };
+      days.push(item);
     }
-    // console.log(sendingData);
+
+    setDays(days);
   };
+
+  const customers = useSelector(
+    (state) => state.persistedReducer.customer.customer
+  );
+
+  const [loading, setIsLoading] = useState(false);
+
+  const handleSendMessage = async () => {
+    const now = moment();
+    try {
+      const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+      // setSms(owner.data.smsBalance);
+      const res = await apiLink.get(`/ispOwner/customer/${ispOwnerId}`);
+
+      let items = [],
+        totalSmsCount = 0;
+
+      res.data.map((customer) => {
+        var dueDate = moment(customer.billingCycle);
+        if (
+          customer.mobile &&
+          customer.paymentStatus === "unpaid" &&
+          areaIds.includes(customer.subArea) &&
+          days.includes(dueDate.diff(now, "days"))
+        ) {
+          const msg = `আইডি: ${customer.customerId}\nগ্রাহক: ${
+            customer.name
+          }\nবিলঃ ${customer.monthlyFee}\nতারিখঃ ${moment(
+            customer.billingCycle
+          ).format("DD-MM-YYYY")}\n\n${smsRef.current.value}`;
+
+          const isBanglaFlag = isBangla(msg);
+          const singleSms = isBanglaFlag ? 67 : 160;
+          const smsCount = Math.ceil([...msg].length / singleSms);
+          totalSmsCount += smsCount;
+
+          const sms = {
+            app: "netfee",
+            senderId: ispOwnerId,
+            message: msg,
+            type: "bulk",
+            mobile: customer.mobile,
+            count: smsCount,
+          };
+
+          items.push(sms);
+        }
+      });
+
+      if (owner.data.smsBalance >= totalSmsCount) {
+        let con = window.confirm(
+          `${items.length} জন গ্রাহক মেসেজ পাবে। ${totalSmsCount} টি SMS খরচ হবে।`
+        );
+        if (con) {
+          // post
+          const res = await apiLink.post(`sms/bulk/${ispOwnerId}`, {
+            items,
+            totalSmsCount,
+          });
+
+          if (res.data.status) {
+            setAreaIds([]);
+            setDays([]);
+            smsRef.current.value = "";
+            toast.success("সফলভাবে SMS পাঠানো হয়েছে।");
+            window.location.reload();
+          }
+        }
+      } else {
+        toast.error(
+          "দুঃখিত, আপনার পর্যাপ্ত SMS ব্যাল্যান্স নেই। দয়া করে SMS রিচার্জ করুন।"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -131,7 +226,7 @@ export default function Message() {
                       )}
                     </div>
 
-                    <div className="messageGuide">
+                    {/* <div className="messageGuide">
                       <h4>যেভাবে আপনি গ্রাহকদের মোবাইলে মেসেজ দিবেনঃ</h4>
                       <p>
                         ১। যে গ্রাহকদের মেসেজ দিতে চান ড্রপডাউন মেনু থেকে
@@ -160,11 +255,11 @@ export default function Message() {
                         সময়ের মধ্যে আপনার সম্মানিত গ্রাহকদের মোবাইলে মেসেজ পৌঁছে
                         যাবে।
                       </p>
-                    </div>
+                    </div> */}
                     <div className="writeMessageSection">
-                      <h4>মেসেজ লিখুন</h4>
-                      <hr />
-                      <div className="oneElementInput">
+                      {/* <h4>মেসেজ লিখুন</h4>
+                      <hr /> */}
+                      {/* <div className="oneElementInput">
                         <input
                           type="checkbox"
                           className="marginRight"
@@ -173,7 +268,7 @@ export default function Message() {
                         <h6 className="mb-4">
                           একটি নির্দিষ্ট মোবাইল নম্বরে মেসেজ সেন্ড
                         </h6>
-                      </div>
+                      </div> */}
                       {isChecked ? (
                         <div className="ifCheckedBox">
                           <p></p>
@@ -186,7 +281,7 @@ export default function Message() {
                         </div>
                       ) : (
                         <div className="ifNotCheckBox">
-                          <div className="cusSelect">
+                          {/* <div className="cusSelect">
                             <select
                               id="selectCustomerID1"
                               className="form-select mb-4"
@@ -194,7 +289,7 @@ export default function Message() {
                                 handleStatusSelect(e.target.value)
                               }
                             >
-                              <option value="">স্ট্যাটাস</option>
+                              <option value="">সকল গ্রাহক</option>
                               <option value="active">একটিভ</option>
                               <option value="inactive">ইনক্টিভ</option>
                             </select>
@@ -205,11 +300,11 @@ export default function Message() {
                                 handlePaymentSelect(e.target.value)
                               }
                             >
-                              <option value="">পেমেন্ট</option>
+                              <option value="">সকল গ্রাহক</option>
                               <option value="paid">পরিশোধ</option>
                               <option value="unpaid">বকেয়া </option>
                             </select>
-                          </div>
+                          </div> */}
                           {/* area */}
                           {/* area section*/}
                           <b className="mt-4">এরিয়া সিলেক্ট</b>
@@ -231,6 +326,54 @@ export default function Message() {
                               </div>
                             ))}
                           </div>
+                          <p>বিল ডেট শেষ হতে বাকিঃ</p>
+                          <div className="displayFlex">
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClass"
+                              value={"1"}
+                              onChange={(e) => {
+                                daySettingHandler(e.target.value);
+                              }}
+                            />
+                            <label className="mx-3">{"এক দিন"}</label>
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClass"
+                              value={"2"}
+                              onChange={(e) => {
+                                daySettingHandler(e.target.value);
+                              }}
+                            />
+                            <label className="mx-3">{"দুই দিন"}</label>
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClass"
+                              value={"3"}
+                              onChange={(e) => {
+                                daySettingHandler(e.target.value);
+                              }}
+                            />
+                            <label className="mx-3">{"তিন দিন"}</label>
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClass"
+                              value={"5"}
+                              onChange={(e) => {
+                                daySettingHandler(e.target.value);
+                              }}
+                            />
+                            <label className="mx-3">{"পাঁচ দিন"}</label>
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClass"
+                              value={"7"}
+                              onChange={(e) => {
+                                daySettingHandler(e.target.value);
+                              }}
+                            />
+                            <label className="mx-3">{"সাত দিন"}</label>
+                          </div>
                           {/* area */}
                           {/* <select
                             id="selectCustomerID3"
@@ -243,12 +386,25 @@ export default function Message() {
                         </div>
                       )}
 
+                      <br />
+                      <p>
+                        আইডিঃ ID
+                        <br />
+                        গ্রাহকঃ NAME
+                        <br />
+                        বিলঃ AMOUNT Tk
+                        <br />
+                        তারিখঃ DATE
+                        <br />
+                      </p>
+
                       <textarea
                         id="messageTextArea"
                         rows="6"
                         className="form-control mt-4"
                         placeholder="মেসেজ লিখুন..."
                         ref={smsRef}
+                        // onChange={handleMessageChange}
                       ></textarea>
                       <hr />
                       <button
