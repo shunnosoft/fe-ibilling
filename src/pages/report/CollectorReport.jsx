@@ -319,7 +319,7 @@ export default function CollectorReport() {
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("amount")} scope="col">
-                            bill
+                            বিল
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
 
@@ -346,86 +346,9 @@ export default function CollectorReport() {
                               <td>{val?.customer?.name}</td>
                               <td>{val?.amount}</td>
                               <td>
-                                {moment(val?.createdAt).format("DD-MM-YYYY")}
-                              </td>
-
-                              <td className="centeringTD">
-                                <ThreeDots
-                                  className="dropdown-toggle ActionDots"
-                                  id="customerDrop"
-                                  type="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                />
-
-                                {/* modal */}
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="customerDrop"
-                                >
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerDetails"
-                                    onClick={() => {
-                                      //   getSpecificCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PersonFill />
-                                        <p className="actionP">প্রোফাইল</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  {7 === "ispOwner" ? (
-                                    ""
-                                  ) : (
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#collectCustomerBillModal"
-                                      onClick={() => {
-                                        // getSpecificCustomer(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Wallet />
-                                          <p className="actionP">বিল গ্রহণ</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  )}
-
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#customerEditModal"
-                                    onClick={() => {
-                                      //   getSpecificCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PenFill />
-                                        <p className="actionP">এডিট</p>
-                                      </div>
-                                    </div>
-                                  </li>
-
-                                  <li
-                                    onClick={() => {
-                                      //   deleteCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item actionManager">
-                                      <div className="customerAction">
-                                        <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                </ul>
-
-                                {/* end */}
+                                {moment(val?.createdAt).format(
+                                  "DD-MM-YYYY hh:mm:ss A"
+                                )}
                               </td>
                             </tr>
                           ))

@@ -398,7 +398,7 @@ export default function Report() {
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th onClick={() => toggleSort("amount")} scope="col">
-                            bill
+                            বিল
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
 
@@ -425,7 +425,9 @@ export default function Report() {
                               <td>{val?.customer?.name}</td>
                               <td>{val?.amount}</td>
                               <td>
-                                {moment(val?.createdAt).format("DD-MM-YYYY")}
+                                {moment(val?.createdAt).format(
+                                  "DD-MM-YYYY hh:mm:ss A"
+                                )}
                               </td>
                             </tr>
                           ))
