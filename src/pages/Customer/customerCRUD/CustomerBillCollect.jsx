@@ -73,7 +73,10 @@ export default function CustomerBillCollect({ single }) {
               <div className="modal-body">
                 <Formik
                   initialValues={{
-                    amount: single?.monthlyFee,
+                    amount:
+                      single?.balance < single?.monthlyFee
+                        ? single.monthlyFee - single.balance
+                        : single.monthlyFee,
                     // collectorId,customer,ispOwner
                   }}
                   validationSchema={BillValidatoin}

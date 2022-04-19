@@ -24,9 +24,18 @@ const customerSliec = createSlice({
       ] = action.payload;
     },
     updateBalance: (state, action) => {
-      state.customer.find(
+      const customer = state.customer.find(
         (item) => item.id === action.payload.customer
-      ).balance += action.payload.amount;
+      );
+
+      customer.balance += action.payload.amount;
+      if (customer.balance >= customer.monthlyFee) {
+        customer.paymentStatus = "paid";
+      }
+
+      state.customer[
+        state.customer.findIndex((item) => item.id === customer.id)
+      ] = customer;
     },
     deleteCustomerSuccess: (state, action) => {
       // Example
