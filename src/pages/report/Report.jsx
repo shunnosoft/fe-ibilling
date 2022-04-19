@@ -101,12 +101,12 @@ export default function Report() {
         // const { user, name, id } = manager;
         const manager1 = {
           user: manager.user,
-          name: manager.name + "(Manager)",
+          name: manager.name + " (ম্যানেজার)",
           id: manager.id,
         };
         const isp = {
           user: currentUser.user.id,
-          name: currentUser.ispOwner.name + "(Admin)",
+          name: currentUser.ispOwner.name + " (এডমিন)",
           id: currentUser.ispOwner.id,
         };
 
@@ -388,6 +388,10 @@ export default function Report() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
+                          মোটঃ
+                          <span className="allCollectorSpan">
+                            {mainData?.length} টি
+                          </span>
                           বিলঃ
                           <span className="allCollectorSpan">
                             {addAllBills()} টাকা

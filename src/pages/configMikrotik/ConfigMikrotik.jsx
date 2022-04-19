@@ -84,7 +84,10 @@ export default function ConfigMikrotik() {
   // fetch single mikrotik
 
   useEffect(() => {
-    const zeroRate = pppoePackage.filter((i) => i.rate === 0);
+    const zeroRate = pppoePackage.filter(
+      (i) =>
+        i.rate === 0 && i.name !== "default-encryption" && i.name !== "default"
+    );
     if (zeroRate.length !== 0) {
       toast.warn(`${zeroRate[0].name} প্যাকেজ
       এর রেট আপডেট করুন`);
@@ -259,7 +262,12 @@ export default function ConfigMikrotik() {
                             </span>
                           ) : (
                             <button
-                              disabled={pppoePackage.some((i) => i.rate === 0)}
+                              disabled={pppoePackage.some(
+                                (i) =>
+                                  i.rate === 0 &&
+                                  i.name !== "default-encryption" &&
+                                  i.name !== "default"
+                              )}
                               onClick={syncPackage}
                               title="প্যাকেজ সিংক"
                               className="addcutmButton btn-info btnbyEnamul"

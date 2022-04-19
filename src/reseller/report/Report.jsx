@@ -300,6 +300,10 @@ export default function Report() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
+                          মোটঃ
+                          <span className="allCollectorSpan">
+                            {mainData?.length} টি
+                          </span>
                           বিলঃ
                           <span className="allCollectorSpan">
                             {addAllBills()} টাকা
