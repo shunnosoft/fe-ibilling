@@ -19,7 +19,6 @@ import { cardData, monthsName } from "./homeData";
 import {
   fetchMikrotik,
   fetchReseller,
-  getAllBills,
   getArea,
   getCollector,
   getIspOwnerData,
@@ -133,7 +132,7 @@ export default function Home() {
 
     if (role === "ispOwner" || role === "manager" || role === "reseller") {
       getCollector(dispatch, ispOwnerId);
-      getAllBills(dispatch, ispOwnerId);
+
       fetchMikrotik(dispatch, ispOwnerId);
       getArea(dispatch, ispOwnerId);
     }
@@ -162,9 +161,8 @@ export default function Home() {
         if (found) {
           found.subAreas.push({ id: item.id, name: item.name });
 
-          return (areas[
-            areas.findIndex((item) => item.id === found.id)
-          ] = found);
+          return (areas[areas.findIndex((item) => item.id === found.id)] =
+            found);
         } else {
           return areas.push(area);
         }

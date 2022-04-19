@@ -50,7 +50,7 @@ export default function CustomerEdit(props) {
   const [activeStatus, setActiveStatus] = useState(user.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
-  const [subAreaId, setSubAreaId] = useState();
+  const [subAreaId, setSubAreaId] = useState({});
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
@@ -388,11 +388,11 @@ export default function CustomerEdit(props) {
                           </option> */}
                           {subArea?.map((val, key) => (
                             <option
-                              selected={val.id === subAreaId.id}
+                              selected={val?.id === subAreaId?.id}
                               key={key}
-                              value={val.id || ""}
+                              value={val?.id || ""}
                             >
-                              {val.name}
+                              {val?.name}
                             </option>
                           ))}
                         </select>

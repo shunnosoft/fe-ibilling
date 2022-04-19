@@ -17,8 +17,9 @@ export default function Settings() {
   };
 
   const [cursorPosition, setPosition] = useState(0);
+  const [totalText, setTotaltext] = useState("hello world");
 
-  const textRef = useRef("hello world");
+  const textRef = useRef();
 
   const insertMyText = (e) => {
     console.log(textRef.current.value);
@@ -26,15 +27,29 @@ export default function Settings() {
     let cp = e.target.selectionStart;
     // console.log(cp);
     setPosition(cp);
-    // let textBeforeCursorPosition = e.target.value.substring(0, cursorPosition);
-    // let textAfterCursorPosition = e.target.value.substring(
-    //   cursorPosition,
-    //   e.target.value.length
-    // );
-    // e.target.value =
-    //   textBeforeCursorPosition + textToInsert + textAfterCursorPosition;
   };
 
+  const handletextAdd = (e) => {
+    let textBeforeCursorPosition = totalText.substring(0, cursorPosition);
+    let textAfterCursorPosition = totalText.substring(
+      cursorPosition,
+      totalText.length
+    );
+    var index = totalText.indexOf("Name");
+    if (index !== -1) {
+      const endIndex = index + totalText.length - 1;
+      console.log(index, endIndex);
+    }
+    console.log(textAfterCursorPosition);
+    setTotaltext(textBeforeCursorPosition + e + textAfterCursorPosition);
+  };
+  const keyDown = (e) => {
+    if (e.keyCode === 8) console.log("hello");
+  };
+  const ssref = useRef();
+  const handle = () => {
+    console.log(ssref.current);
+  };
   return (
     <>
       <Sidebar />
@@ -84,13 +99,11 @@ export default function Settings() {
                           />
                           <label>{"তিনদিন"}</label>
                           <input
+                            ref={ssref}
                             type="checkbox"
-                            checked={day === "5"}
                             className="getValueUsingClass"
                             value={"5"}
-                            onChange={(e) => {
-                              daySettingHandler(e.target.value);
-                            }}
+                            onChange={handle}
                           />
                           <label>{"পাঁচদিন"}</label>
                           <input
@@ -106,7 +119,12 @@ export default function Settings() {
                           <button>submit</button>
                         </div>
                         <div>
-                          <button>Name</button>
+                          <button
+                            value={" Name "}
+                            onClick={(e) => handletextAdd(e.target.value)}
+                          >
+                            Name
+                          </button>
                           <button>Amount</button>
                           <button>Date</button>
                         </div>
@@ -116,8 +134,13 @@ export default function Settings() {
                           className="form-control mt-4"
                           placeholder="মেসেজ লিখুন..."
                           ref={textRef}
+                          value={totalText}
                           onClick={insertMyText}
-                        ></textarea>
+                          onChange={(e) => setTotaltext(e.target.value)}
+                          onKeyDown={keyDown}
+                        >
+                          {" "}
+                        </textarea>
                         <hr />
                         <button
                           // onClick={handleSendMessage}

@@ -465,9 +465,8 @@ export default function Customer() {
                                       </div>
                                     </div>
                                   </li>
-                                  {role === "ispOwner" ? (
-                                    ""
-                                  ) : permission?.billPosting ? (
+                                  {permission?.billPosting ||
+                                  role === "ispOwner" ? (
                                     <li
                                       data-bs-toggle="modal"
                                       data-bs-target="#collectCustomerBillModal"

@@ -11,14 +11,18 @@ import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
 // import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
 import { ArrowDownUp } from "react-bootstrap-icons";
+import { getAllBills } from "../../features/apiCalls";
 
 export default function Report() {
   // const cus = useSelector(state => state.customer.customer);
   // console.log(cus.length)
-
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const dispatch = useDispatch();
   const allArea = useSelector((state) => state.persistedReducer.area.area);
 
   const allCollector = useSelector(
@@ -27,7 +31,9 @@ export default function Report() {
   const manager = useSelector(
     (state) => state.persistedReducer.manager.manager
   );
-
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -83,15 +89,39 @@ export default function Report() {
   // }, [cusSearch, allBills]);
 
   useEffect(() => {
+    getAllBills(dispatch, ispOwnerId);
     let collectors = [];
 
     allCollector.map((item) =>
       collectors.push({ name: item.name, user: item.user, id: item.id })
     );
-
+    console.log(manager);
     if (collectors.length === allCollector.length) {
-      const { user, name, id } = manager;
-      collectors.unshift({ name, user, id });
+      if (userRole === "ispOwner") {
+        // const { user, name, id } = manager;
+        const manager1 = {
+          user: manager.user,
+          name: manager.name + "(Manager)",
+          id: manager.id,
+        };
+        const isp = {
+          user: currentUser.user.id,
+          name: currentUser.ispOwner.name + "(Admin)",
+          id: currentUser.ispOwner.id,
+        };
+
+        collectors.unshift(manager1);
+        collectors.unshift(isp);
+      } else {
+        // const { user, name, id } = manager;
+        const manager1 = {
+          user: manager.user,
+          name: manager.name + "(Manager)",
+          id: manager.id,
+        };
+
+        collectors.unshift(manager1);
+      }
     }
 
     setCollectors(collectors);
