@@ -57,6 +57,7 @@ import ReactModal from "./components/modals/reactModal/ReactModal";
 import Cancel from "./pages/success copy/Success";
 import Failed from "./pages/success copy 2/Success";
 import Package from "./pages/package/Package";
+import Settings from "./pages/settings/Settings";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -250,6 +251,7 @@ function App() {
               />
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
+              <Route path="settings" element={<Settings />} />
               <Route path="home" element={<Dashboard />} />
               <Route path="area" element={<Area />} />
               {/* <Route path="bill" element={<Bill />} /> */}

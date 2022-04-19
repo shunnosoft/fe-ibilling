@@ -259,6 +259,7 @@ export default function ConfigMikrotik() {
                             </span>
                           ) : (
                             <button
+                              disabled={pppoePackage.some((i) => i.rate === 0)}
                               onClick={syncPackage}
                               title="প্যাকেজ সিংক"
                               className="addcutmButton btn-info btnbyEnamul"
@@ -273,7 +274,6 @@ export default function ConfigMikrotik() {
                             </span>
                           ) : (
                             <button
-                              disabled={pppoePackage.some((i) => i.rate === 0)}
                               onClick={syncCustomer}
                               title="গ্রাহক সিংক"
                               className="addcutmButton btn-primary btnbyEnamul"
