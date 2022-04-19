@@ -38,6 +38,17 @@ import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { FetchAreaSuccess } from "../../features/areaSlice";
 
+const badge = {
+  paid: "success",
+  unpaid: "warning text-dark",
+  expired: "danger",
+};
+
+const statusBadge = {
+  active: "light text-dark",
+  inactive: "secondary",
+};
+
 export default function Customer() {
   const cus = useSelector((state) => state.persistedReducer.customer.customer);
   const role = useSelector((state) => state.persistedReducer.auth.role);
@@ -227,10 +238,10 @@ export default function Customer() {
                           onChange={handleActiveFilter}
                         >
                           <option value="" defaultValue>
-                            PPPoE স্ট্যাটাস
+                            স্ট্যাটাস
                           </option>
-                          <option value="status.active">PPPoE একটিভ</option>
-                          <option value="status.inactive">PPPoE ইনএকটিভ</option>
+                          <option value="status.active">একটিভ</option>
+                          <option value="status.inactive">ইনএকটিভ</option>
                         </select>
                         <select
                           className="form-select"
@@ -241,6 +252,9 @@ export default function Customer() {
                           </option>
                           <option value="paymentStatus.unpaid">বকেয়া</option>
                           <option value="paymentStatus.paid">পরিশোধ</option>
+                          <option value="paymentStatus.expired">
+                            মেয়াদোত্তীর্ণ
+                          </option>
                         </select>
                       </div>
 
@@ -302,15 +316,16 @@ export default function Customer() {
                             মোবাইল
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
+
+                          <th onClick={() => toggleSort("status")} scope="col">
+                            স্ট্যাটাস
+                            <ArrowDownUp className="arrowDownUp" />
+                          </th>
                           <th
                             onClick={() => toggleSort("paymentStatus")}
                             scope="col"
                           >
-                            পেমেন্ট স্ট্যাটাস
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th onClick={() => toggleSort("status")} scope="col">
-                            স্ট্যাটাস
+                            পেমেন্ট
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th
@@ -320,10 +335,6 @@ export default function Customer() {
                             প্যাকেজ
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
-                          <th onClick={() => toggleSort("balance")} scope="col">
-                            ব্যালান্স
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
                           <th
                             onClick={() => toggleSort("monthlyFee")}
                             scope="col"
@@ -331,11 +342,16 @@ export default function Customer() {
                             মাসিক ফি
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
+                          <th onClick={() => toggleSort("balance")} scope="col">
+                            ব্যালান্স
+                            <ArrowDownUp className="arrowDownUp" />
+                          </th>
+
                           <th
                             onClick={() => toggleSort("billingCycle")}
                             scope="col"
                           >
-                            বিল ডেট
+                            বিল সাইকেল
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th scope="col" className="centeringTD">
@@ -356,11 +372,30 @@ export default function Customer() {
                               <td>{val.customerId}</td>
                               <td>{val.name}</td>
                               <td>{val.mobile}</td>
-                              <td>{val.paymentStatus}</td>
-                              <td>{val.status}</td>
+                              <td>
+                                {" "}
+                                <span
+                                  className={`badge rounded-pill bg-${
+                                    statusBadge[val.status]
+                                  }`}
+                                >
+                                  {val.status}
+                                </span>
+                              </td>
+                              <td>
+                                <span
+                                  className={`badge rounded-pill bg-${
+                                    badge[val.paymentStatus]
+                                  }`}
+                                >
+                                  {val.paymentStatus}
+                                </span>
+                              </td>
                               <td>{val.pppoe.profile}</td>
-                              <td>{val.balance}</td>
                               <td>{val.monthlyFee}</td>
+                              <td>
+                                <strong>{val.balance}</strong>
+                              </td>
                               <td>
                                 {moment(val.billingCycle).format("DD-MM-YYYY")}
                               </td>
