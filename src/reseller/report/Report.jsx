@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
 import { ArrowDownUp } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCallReseller";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Report() {
   // const cus = useSelector(state => state.customer.customer);
@@ -302,11 +303,11 @@ export default function Report() {
                         <h4 className="allCollector">
                           মোটঃ
                           <span className="allCollectorSpan">
-                            {mainData?.length} টি
+                            {FormatNumber(mainData?.length)} টি
                           </span>
                           বিলঃ
                           <span className="allCollectorSpan">
-                            {addAllBills()} টাকা
+                            {FormatNumber(addAllBills())} টাকা
                           </span>
                         </h4>
                       </div>
@@ -369,7 +370,7 @@ export default function Report() {
                             <tr key={key} id={val?.id}>
                               <td>{val?.customer?.customerId}</td>
                               <td>{val?.customer?.name}</td>
-                              <td>{val?.amount}</td>
+                              <td>{FormatNumber(val?.amount)}</td>
                               <td>
                                 {moment(val?.createdAt).format(
                                   "DD-MM-YYYY hh:mm:ss A"

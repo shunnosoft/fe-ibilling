@@ -2,6 +2,8 @@ import React from "react";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import "../customer.css";
+import FormatNumber from "../../../components/common/NumberFormat";
+import { badge } from "../../../components/common/Utils";
 
 export default function CustomerDetails({ single }) {
   // const single = useSelector(state => state.customer.singleCustomer);
@@ -60,16 +62,16 @@ export default function CustomerDetails({ single }) {
                     জাতীয় পরিচয়পত্র: <b>{single?.nid}</b>
                   </h6>
                   <h6>
-                    ব্যাল্যান্স:<b> {single?.balance}</b>
+                    স্ট্যাটাস: <b>{badge(single?.status)}</b>
                   </h6>
                   <h6>
-                    মাসিক ফি:<b> {single?.monthlyFee}</b>
+                    পেমেন্ট: <b>{badge(single?.paymentStatus)}</b>
                   </h6>
                   <h6>
-                    স্ট্যাটাস: <b>{single?.status}</b>
+                    মাসিক ফি:<b> {FormatNumber(single?.monthlyFee)}</b>
                   </h6>
                   <h6>
-                    পেমেন্ট: <b>{single?.paymentStatus}</b>
+                    ব্যাল্যান্স:<b> {FormatNumber(single?.balance)}</b>
                   </h6>
                   <h6>
                     বিলিং সাইকেল:{" "}

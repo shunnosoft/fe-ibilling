@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
+
 // import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -35,17 +36,8 @@ import {
 } from "../../features/apiCalls";
 import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
-
-const badge = {
-  paid: "success",
-  unpaid: "warning text-dark",
-  expired: "danger",
-};
-
-const statusBadge = {
-  active: "light text-dark",
-  inactive: "secondary",
-};
+import FormatNumber from "../../components/common/NumberFormat";
+import { badge } from "../../components/common/Utils";
 
 export default function Customer() {
   const cus = useSelector((state) => state.persistedReducer.customer.customer);
@@ -346,7 +338,8 @@ export default function Customer() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক : <span>{Customers?.length || "0"}</span>
+                          মোট গ্রাহক :{" "}
+                          <span>{FormatNumber(Customers?.length) || "0"}</span>
                         </h4>
                       </div>
 
@@ -412,12 +405,17 @@ export default function Customer() {
                           <th
                             onClick={() => toggleSort("monthlyFee")}
                             scope="col"
+                            className="text-end"
                           >
                             মাসিক ফি
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
 
-                          <th onClick={() => toggleSort("balance")} scope="col">
+                          <th
+                            onClick={() => toggleSort("balance")}
+                            scope="col"
+                            className="text-end"
+                          >
                             ব্যালান্স
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
@@ -425,6 +423,7 @@ export default function Customer() {
                           <th
                             onClick={() => toggleSort("billingCycle")}
                             scope="col"
+                            className="text-end"
                           >
                             বিল সাইকেল
                             <ArrowDownUp className="arrowDownUp" />
@@ -447,31 +446,16 @@ export default function Customer() {
                               <td>{val.customerId}</td>
                               <td>{val.name}</td>
                               <td>{val.mobile}</td>
-                              <td>
-                                {" "}
-                                <span
-                                  className={`badge rounded-pill bg-${
-                                    statusBadge[val.status]
-                                  }`}
-                                >
-                                  {val.status}
-                                </span>
-                              </td>
-                              <td>
-                                <span
-                                  className={`badge rounded-pill bg-${
-                                    badge[val.paymentStatus]
-                                  }`}
-                                >
-                                  {val.paymentStatus}
-                                </span>
-                              </td>
+                              <td>{badge(val.status)}</td>
+                              <td>{badge(val.paymentStatus)}</td>
                               <td>{val.pppoe.profile}</td>
-                              <td>{val.monthlyFee}</td>
-                              <td>
-                                <strong>{val.balance}</strong>
+                              <td align="right">
+                                {FormatNumber(val.monthlyFee)}
                               </td>
-                              <td>
+                              <td align="right">
+                                <strong>{FormatNumber(val.balance)}</strong>
+                              </td>
+                              <td align="right">
                                 {moment(val.billingCycle).format("DD-MM-YYYY")}
                               </td>
                               <td className="centeringTD">
