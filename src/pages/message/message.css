@@ -164,3 +164,54 @@
   margin-left: 10px;
   margin-right: 10px;
 }
+
+.displayFlexx {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  flex-direction: column;
+  flex: 1;
+}
+
+.templatelabel {
+  margin-left: 8px;
+  font-weight: normal;
+}
+.radioselect {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+}
+.radioselect > input {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.billconfirm {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  flex-direction: column-reverse;
+}
+.showthesequence {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: start;
+  font-weight: normal;
+  font-size: 14px;
+  border: 2px rgb(34, 178, 189) solid;
+  height: 200px;
+  width: 100%;
+  margin-top: 20px;
+
+  border-radius: 5px;
+  flex-direction: column;
+  padding: 5px;
+  overflow: scroll;
+}
+.endingtext {
+  text-align: start;
+}

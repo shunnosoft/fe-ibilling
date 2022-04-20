@@ -10,24 +10,42 @@ import useDash from "../../assets/css/dash.module.css";
 import "../message/message.css";
 import { useRef, useState } from "react";
 export default function Settings() {
-  const [day, setDay] = useState(0);
-  const daySettingHandler = (e) => {
-    setDay(e);
-    console.log(e);
-  };
-
   const [cursorPosition, setPosition] = useState(0);
-  const [totalText, setTotaltext] = useState("hello world");
-
+  const [totalText, setTotaltext] = useState("");
+  const [initialText, setinitialtext] = useState("");
+  console.log(initialText);
   const textRef = useRef();
+  const formRef = useRef();
+  console.log(textRef.current?.value);
+  const [billconfarmationparametres, setbillconparametres] = useState([]);
 
-  const insertMyText = (e) => {
-    console.log(textRef.current.value);
-    // let textToInsert = " this is the inserted text ";
-    let cp = e.target.selectionStart;
-    // console.log(cp);
-    setPosition(cp);
+  const daySettingHandler = (item) => {
+    if (billconfarmationparametres.includes(item)) {
+      const index = billconfarmationparametres.indexOf(item);
+      if (index > -1) {
+        billconfarmationparametres.splice(index, 1);
+      }
+    } else {
+      billconfarmationparametres.push(item);
+    }
+    console.log(billconfarmationparametres);
+
+    var theText = "";
+    billconfarmationparametres.map((i) => {
+      return (theText = theText + "\n" + i + "\n ");
+    });
+    console.log(theText);
+    setinitialtext(theText);
+    setbillconparametres(billconfarmationparametres);
   };
+
+  // const insertMyText = (e) => {
+  //   console.log(textRef.current.value);
+  //   // let textToInsert = " this is the inserted text ";
+  //   let cp = e.target.selectionStart;
+  //   // console.log(cp);
+  //   setPosition(cp);
+  // };
 
   const handletextAdd = (e) => {
     let textBeforeCursorPosition = totalText.substring(0, cursorPosition);
@@ -47,8 +65,11 @@ export default function Settings() {
     if (e.keyCode === 8) console.log("hello");
   };
   const ssref = useRef();
-  const handle = () => {
-    console.log(ssref.current);
+  const handlesubmitform = (e) => {
+    e.preventDefault();
+    // console.log(ssref.current);
+    console.log("hello");
+    formRef.current.reset();
   };
   return (
     <>
@@ -59,96 +80,133 @@ export default function Settings() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">বিলিং সাইকেল এর মেসেজ সেটিং</h2>
+                <h2 className="collectorTitle">এস এম এস টেমপ্লেট</h2>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="profileWrapper uiChange">
                     <div className="AllAreaClass mb-4">
-                      <div className="writeMessageSection">
-                        <div className="displayFlex">
-                          <input
-                            checked={day === "1"}
-                            type="checkbox"
-                            className="getValueUsingClass"
-                            value={"1"}
-                            onChange={(e) => {
-                              daySettingHandler(e.target.value);
-                            }}
-                          />
-                          <label>{"একদিন"}</label>
-                          <input
-                            checked={day === "2"}
-                            type="checkbox"
-                            className="getValueUsingClass"
-                            value={"2"}
-                            onChange={(e) => {
-                              daySettingHandler(e.target.value);
-                            }}
-                          />
-                          <label>{"দুইদিন"}</label>
-                          <input
-                            type="checkbox"
-                            checked={day === "3"}
-                            className="getValueUsingClass"
-                            value={"3"}
-                            onChange={(e) => {
-                              daySettingHandler(e.target.value);
-                            }}
-                          />
-                          <label>{"তিনদিন"}</label>
-                          <input
-                            ref={ssref}
-                            type="checkbox"
-                            className="getValueUsingClass"
-                            value={"5"}
-                            onChange={handle}
-                          />
-                          <label>{"পাঁচদিন"}</label>
-                          <input
-                            type="checkbox"
-                            checked={day === "7"}
-                            className="getValueUsingClass"
-                            value={"7"}
-                            onChange={(e) => {
-                              daySettingHandler(e.target.value);
-                            }}
-                          />
-                          <label>{"সাতদিন"}</label>
-                          <button>submit</button>
-                        </div>
-                        <div>
-                          <button
-                            value={" Name "}
-                            onClick={(e) => handletextAdd(e.target.value)}
+                      <form
+                        ref={formRef}
+                        onSubmit={handlesubmitform}
+                        action=""
+                        className="settingForm"
+                      >
+                        <div className="writeMessageSection">
+                          <h4>
+                            বিল কনফার্মেশন এস এম এস{" "}
+                            <div>
+                              <input type="checkbox" />
+                              <input type="checkbox" />
+                            </div>
+                          </h4>
+                          <div className="billconfirm">
+                            <div className="showthesequence">
+                              {billconfarmationparametres.map((item, key) => {
+                                return <p key={key}>{item}</p>;
+                              })}
+
+                              <p className="endingtext">
+                                {textRef.current?.value}
+                              </p>
+                            </div>
+                            <div className="displayFlexx">
+                              <div className="radioselect">
+                                <input
+                                  id="1"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={"ইউজারনেমঃ USERNAME"}
+                                  onChange={(e) => {
+                                    daySettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="1">
+                                  {"ইউজারনেমঃ USERNAME"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="2"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={"ইউজার আইডিঃ USERID"}
+                                  onChange={(e) => {
+                                    daySettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="2">
+                                  {"ইউজার আইডিঃ USERID"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="3"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={"গ্রাহকঃ NAME"}
+                                  onChange={(e) => {
+                                    daySettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="3">
+                                  {"গ্রাহকঃ NAME"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="4"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={"বিলঃ AMOUNT"}
+                                  onChange={(e) => {
+                                    daySettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="4">
+                                  {"বিলঃ AMOUNT"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="5"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={"তারিখঃ DATE"}
+                                  onChange={(e) => {
+                                    daySettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="5">
+                                  {"তারিখঃ DATE"}
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          <textarea
+                            id="messageTextArea"
+                            rows="6"
+                            className="form-control mt-4"
+                            placeholder="মেসেজ লিখুন..."
+                            ref={textRef}
+                            value={totalText}
+                            // onClick={insertMyText}
+                            onChange={(e) => setTotaltext(e.target.value)}
+                            onKeyDown={keyDown}
                           >
-                            Name
+                            {" "}
+                          </textarea>
+                          <hr />
+                          <button
+                            type="submit"
+                            // onClick={handleSendMessage}
+                            className="btn btn-success"
+                          >
+                            সেভ
                           </button>
-                          <button>Amount</button>
-                          <button>Date</button>
                         </div>
-                        <textarea
-                          id="messageTextArea"
-                          rows="6"
-                          className="form-control mt-4"
-                          placeholder="মেসেজ লিখুন..."
-                          ref={textRef}
-                          value={totalText}
-                          onClick={insertMyText}
-                          onChange={(e) => setTotaltext(e.target.value)}
-                          onKeyDown={keyDown}
-                        >
-                          {" "}
-                        </textarea>
-                        <hr />
-                        <button
-                          // onClick={handleSendMessage}
-                          className="btn btn-success"
-                        >
-                          সেন্ড মেসেজ
-                        </button>
-                      </div>
+                      </form>
                     </div>
                   </div>
                 </div>
