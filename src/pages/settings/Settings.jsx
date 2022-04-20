@@ -1,9 +1,7 @@
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
-// internal import
-// import "../../pages/message/message.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
@@ -13,24 +11,26 @@ import apiLink from "../../api/apiLink";
 import { useDispatch, useSelector } from "react-redux";
 import { smsSettingUpdateIsp } from "../../features/authSlice";
 export default function Settings() {
+  const [totalText, setTotalText] = useState("");
+
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
   const dispatch = useDispatch();
-  const [cursorPosition, setPosition] = useState(0);
-  const [totalText, setTotaltext] = useState("");
-  const [initialText, setinitialtext] = useState("");
-  console.log(initialText);
+  const [bottomText, setBottomText] = useState("");
+  const [upperText, setUpperText] = useState("");
+
+  const [billConfirmation, setBillConfirmation] = useState("");
+  const [billconfarmationparametres, setbillconparametres] = useState([]);
+  const [matchFound, setMatchFound] = useState([]);
+
   const textRef = useRef();
   const formRef = useRef();
-  console.log(textRef.current?.value);
-  const [billconfarmationparametres, setbillconparametres] = useState([]);
 
-  const daySettingHandler = (item) => {
+  const itemSettingHandler = (item) => {
     if (billconfarmationparametres.includes(item)) {
       const index = billconfarmationparametres.indexOf(item);
       if (index > -1) {
@@ -39,52 +39,45 @@ export default function Settings() {
     } else {
       billconfarmationparametres.push(item);
     }
-    console.log(billconfarmationparametres);
+
+    if (matchFound.includes(item)) {
+      const index = matchFound.indexOf(item);
+      if (index > -1) {
+        matchFound.splice(index, 1);
+      }
+    } else {
+      if (totalText.length + item.length > 334) {
+        toast.warn("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        return;
+      }
+      matchFound.push(item);
+    }
+
+    setMatchFound(matchFound);
 
     var theText = "";
-    billconfarmationparametres.map((i) => {
+    matchFound.map((i) => {
       return (theText = theText + "\n" + i);
     });
-    console.log(theText);
-    setinitialtext(theText);
+
+    setUpperText(theText);
+
     setbillconparametres(billconfarmationparametres);
   };
 
-  // const insertMyText = (e) => {
-  //   console.log(textRef.current.value);
-  //   // let textToInsert = " this is the inserted text ";
-  //   let cp = e.target.selectionStart;
-  //   // console.log(cp);
-  //   setPosition(cp);
-  // };
-
-  const handletextAdd = (e) => {
-    let textBeforeCursorPosition = totalText.substring(0, cursorPosition);
-    let textAfterCursorPosition = totalText.substring(
-      cursorPosition,
-      totalText.length
-    );
-    var index = totalText.indexOf("Name");
-    if (index !== -1) {
-      const endIndex = index + totalText.length - 1;
-      console.log(index, endIndex);
-    }
-    console.log(textAfterCursorPosition);
-    setTotaltext(textBeforeCursorPosition + e + textAfterCursorPosition);
-  };
-  const keyDown = (e) => {
-    if (e.keyCode === 8) console.log("hello");
-  };
-  const ssref = useRef();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(initialText + "\n" + totalText);
-    console.log(billConfirmation);
 
     let data = {
-      billConfirmation: billConfirmation,
+      ...settings.sms,
+      billConfirmation:
+        billConfirmation === "on"
+          ? true
+          : billConfirmation === "off"
+          ? false
+          : null,
       template: {
-        billConfirmation: initialText + "\n" + totalText,
+        billConfirmation: upperText + "\n" + bottomText,
       },
     };
 
@@ -94,25 +87,57 @@ export default function Settings() {
         data
       );
       dispatch(smsSettingUpdateIsp(res.data));
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
 
     // formRef.current.reset();
   };
-
-  const [billConfirmation, setBillConfirmation] = useState(
-    settings.sms.billConfirmation
-  );
-
   useEffect(() => {
-    // console.log(settings.sms.billConfirmation);
-    // setBillConfirmation(settings.sms.billConfirmation);
+    var theText = "";
+    matchFound.map((i) => {
+      return (theText = theText + "\n" + i);
+    });
+
+    setUpperText(theText);
+    setTotalText(upperText + bottomText);
+  }, [matchFound, bottomText, upperText]);
+  useEffect(() => {
+    const fixedvalues = [
+      "ইউজারনেমঃ USERNAME",
+      "ইউজার আইডিঃ USERID",
+      "গ্রাহকঃ NAME",
+      "বিলঃ AMOUNT",
+      "তারিখঃ DATE",
+    ];
+    var found = [];
+
+    let messageBoxStr = settings.sms.template.billConfirmation
+      .replace("ইউজারনেমঃ USERNAME", "")
+      .replace("ইউজার আইডিঃ USERID", "")
+      .replace("গ্রাহকঃ NAME", "")
+      .replace("বিলঃ AMOUNT", "")
+      .replace("তারিখঃ DATE", "");
+
+    setBottomText(messageBoxStr.trim());
+
+    fixedvalues.map((i) => {
+      if (settings.sms.template.billConfirmation.includes(i)) {
+        found.push(i);
+      }
+      return found;
+    });
+    setMatchFound(found);
+    // setbillconparametres(found);
+
+    if (settings.sms.billConfirmation) {
+      setBillConfirmation("on");
+    } else {
+      setBillConfirmation("off");
+    }
   }, [settings]);
 
   const radioCheckHandler = (e) => {
-    console.log(e.target.value);
     setBillConfirmation(e.target.value);
   };
 
@@ -125,7 +150,7 @@ export default function Settings() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">এস এম এস টেমপ্লেট</h2>
+                <h2 className="collectorTitle">সেটিংস</h2>
               </FourGround>
 
               <FourGround>
@@ -144,29 +169,27 @@ export default function Settings() {
                             <input
                               name="billConfirmation"
                               type="radio"
-                              checked={billConfirmation === true}
-                              value={true}
+                              checked={billConfirmation === "on"}
+                              value={"on"}
                               onChange={radioCheckHandler}
                             />{" "}
                             অন {"              "}
                             <input
                               name="billConfirmation"
                               type="radio"
-                              checked={billConfirmation === false}
-                              value={false}
+                              checked={billConfirmation === "off"}
+                              value={"off"}
                               onChange={radioCheckHandler}
                             />{" "}
                             অফ
                           </div>
                           <div className="billconfirm">
                             <div className="showthesequence">
-                              {billconfarmationparametres.map((item, key) => {
+                              {matchFound.map((item, key) => {
                                 return <p key={key}>{item}</p>;
                               })}
 
-                              <p className="endingtext">
-                                {textRef.current?.value}
-                              </p>
+                              <p className="endingtext">{bottomText}</p>
                             </div>
                             <div className="displayFlexx">
                               <div className="radioselect">
@@ -175,8 +198,11 @@ export default function Settings() {
                                   type="checkbox"
                                   className="getValueUsingClass"
                                   value={"ইউজারনেমঃ USERNAME"}
+                                  checked={matchFound.includes(
+                                    "ইউজারনেমঃ USERNAME"
+                                  )}
                                   onChange={(e) => {
-                                    daySettingHandler(e.target.value);
+                                    itemSettingHandler(e.target.value);
                                   }}
                                 />
                                 <label className="templatelabel" htmlFor="1">
@@ -188,9 +214,12 @@ export default function Settings() {
                                   id="2"
                                   type="checkbox"
                                   className="getValueUsingClass"
+                                  checked={matchFound.includes(
+                                    "ইউজার আইডিঃ USERID"
+                                  )}
                                   value={"ইউজার আইডিঃ USERID"}
                                   onChange={(e) => {
-                                    daySettingHandler(e.target.value);
+                                    itemSettingHandler(e.target.value);
                                   }}
                                 />
                                 <label className="templatelabel" htmlFor="2">
@@ -202,9 +231,10 @@ export default function Settings() {
                                   id="3"
                                   type="checkbox"
                                   className="getValueUsingClass"
+                                  checked={matchFound.includes("গ্রাহকঃ NAME")}
                                   value={"গ্রাহকঃ NAME"}
                                   onChange={(e) => {
-                                    daySettingHandler(e.target.value);
+                                    itemSettingHandler(e.target.value);
                                   }}
                                 />
                                 <label className="templatelabel" htmlFor="3">
@@ -216,9 +246,10 @@ export default function Settings() {
                                   id="4"
                                   type="checkbox"
                                   className="getValueUsingClass"
+                                  checked={matchFound.includes("বিলঃ AMOUNT")}
                                   value={"বিলঃ AMOUNT"}
                                   onChange={(e) => {
-                                    daySettingHandler(e.target.value);
+                                    itemSettingHandler(e.target.value);
                                   }}
                                 />
                                 <label className="templatelabel" htmlFor="4">
@@ -230,9 +261,10 @@ export default function Settings() {
                                   id="5"
                                   type="checkbox"
                                   className="getValueUsingClass"
+                                  checked={matchFound.includes("তারিখঃ DATE")}
                                   value={"তারিখঃ DATE"}
                                   onChange={(e) => {
-                                    daySettingHandler(e.target.value);
+                                    itemSettingHandler(e.target.value);
                                   }}
                                 />
                                 <label className="templatelabel" htmlFor="5">
@@ -241,16 +273,28 @@ export default function Settings() {
                               </div>
                             </div>
                           </div>
+                          <div className="smsCount">
+                            <span className="smsLength">
+                              অক্ষরঃ{(matchFound + bottomText).length}
+                            </span>
+                            <span>
+                              SMS:
+                              {Math.ceil(
+                                [...(matchFound + bottomText)].length / 67
+                              )}
+                            </span>
+                          </div>
+
                           <textarea
                             id="messageTextArea"
                             rows="6"
                             className="form-control mt-4"
                             placeholder="মেসেজ লিখুন..."
                             ref={textRef}
-                            value={totalText}
+                            value={bottomText}
                             // onClick={insertMyText}
-                            onChange={(e) => setTotaltext(e.target.value)}
-                            onKeyDown={keyDown}
+                            maxLength={335 - upperText.length}
+                            onChange={(e) => setBottomText(e.target.value)}
                           >
                             {" "}
                           </textarea>

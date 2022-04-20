@@ -215,3 +215,15 @@
 .endingtext {
   text-align: start;
 }
+
+.onoff {
+  border-radius: 0%;
+}
+.smsCount {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.smsLength {
+  margin-right: 10px;
+}
