@@ -8,8 +8,19 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import "../message/message.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import apiLink from "../../api/apiLink";
+import { useDispatch, useSelector } from "react-redux";
+import { smsSettingUpdateIsp } from "../../features/authSlice";
 export default function Settings() {
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const settings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.settings
+  );
+  console.log(settings);
+  const dispatch = useDispatch();
   const [cursorPosition, setPosition] = useState(0);
   const [totalText, setTotaltext] = useState("");
   const [initialText, setinitialtext] = useState("");
@@ -32,7 +43,7 @@ export default function Settings() {
 
     var theText = "";
     billconfarmationparametres.map((i) => {
-      return (theText = theText + "\n" + i + "\n ");
+      return (theText = theText + "\n" + i);
     });
     console.log(theText);
     setinitialtext(theText);
@@ -65,12 +76,46 @@ export default function Settings() {
     if (e.keyCode === 8) console.log("hello");
   };
   const ssref = useRef();
-  const handlesubmitform = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(ssref.current);
-    console.log("hello");
-    formRef.current.reset();
+    console.log(initialText + "\n" + totalText);
+    console.log(billConfirmation);
+
+    let data = {
+      billConfirmation: billConfirmation,
+      template: {
+        billConfirmation: initialText + "\n" + totalText,
+      },
+    };
+
+    try {
+      const res = await apiLink.patch(
+        `/ispOwner/settings/sms/${ispOwnerId}`,
+        data
+      );
+      dispatch(smsSettingUpdateIsp(res.data));
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // formRef.current.reset();
   };
+
+  const [billConfirmation, setBillConfirmation] = useState(
+    settings.sms.billConfirmation
+  );
+
+  useEffect(() => {
+    // console.log(settings.sms.billConfirmation);
+    // setBillConfirmation(settings.sms.billConfirmation);
+  }, [settings]);
+
+  const radioCheckHandler = (e) => {
+    console.log(e.target.value);
+    setBillConfirmation(e.target.value);
+  };
+
   return (
     <>
       <Sidebar />
@@ -89,18 +134,30 @@ export default function Settings() {
                     <div className="AllAreaClass mb-4">
                       <form
                         ref={formRef}
-                        onSubmit={handlesubmitform}
+                        onSubmit={handleSubmit}
                         action=""
                         className="settingForm"
                       >
                         <div className="writeMessageSection">
-                          <h4>
-                            বিল কনফার্মেশন এস এম এস{" "}
-                            <div>
-                              <input type="checkbox" />
-                              <input type="checkbox" />
-                            </div>
-                          </h4>
+                          <h4>বিল কনফার্মেশন এস এম এস </h4>
+                          <div>
+                            <input
+                              name="billConfirmation"
+                              type="radio"
+                              checked={billConfirmation === true}
+                              value={true}
+                              onChange={radioCheckHandler}
+                            />{" "}
+                            অন {"              "}
+                            <input
+                              name="billConfirmation"
+                              type="radio"
+                              checked={billConfirmation === false}
+                              value={false}
+                              onChange={radioCheckHandler}
+                            />{" "}
+                            অফ
+                          </div>
                           <div className="billconfirm">
                             <div className="showthesequence">
                               {billconfarmationparametres.map((item, key) => {

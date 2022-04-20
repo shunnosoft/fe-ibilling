@@ -53,6 +53,14 @@ const authSlice = createSlice({
         state.userData = action.payload;
       }
     },
+    smsSettingUpdateIsp: (state, action) => {
+      if (state.role === "ispOwner") {
+        state.userData = action.payload;
+      } else if (state.role === "manager") {
+        // state.currentUser.manager = action.payload;
+        // state.userData = action.payload;
+      }
+    },
     updateTokenSuccess: (state, action) => {
       state.accessToken = action.payload;
     },
@@ -86,6 +94,7 @@ export const {
   logOut,
   setBpsetting,
   setIspOwnerData,
+  smsSettingUpdateIsp,
 } = authSlice.actions;
 
 export default authSlice.reducer;
