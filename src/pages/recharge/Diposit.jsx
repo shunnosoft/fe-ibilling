@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 // import Loader from "../../components/common/Loader";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function RechargeHistoryofReseller() {
   // const balancee = useSelector(state => state.payment.balance);
@@ -255,7 +256,10 @@ export default function RechargeHistoryofReseller() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট রিচার্জঃ <span>{getTotalRecharge()}</span>
+                          মোট রিচার্জঃ{" "}
+                          <span>{FormatNumber(mainData.length)} টি</span>
+                          পরিমাণঃ{" "}
+                          <span>{FormatNumber(getTotalRecharge())}</span>
                         </h4>
                       </div>
 
@@ -278,7 +282,6 @@ export default function RechargeHistoryofReseller() {
                           <tr>
                             {userRole !== "reseller" ? <td>নাম</td> : <td></td>}
                             <td>পরিমান</td>
-
                             <td>তারিখ</td>
                           </tr>
                         </thead>
@@ -290,10 +293,12 @@ export default function RechargeHistoryofReseller() {
                               ) : (
                                 <td></td>
                               )}
-                              <td>৳ {item.amount}</td>
+                              <td>৳ {FormatNumber(item.amount)}</td>
 
                               <td>
-                                {moment(item.createdAt).format("DD-MM-YYYY")}
+                                {moment(item.createdAt).format(
+                                  "DD-MM-YYYY hh:mm:ss A"
+                                )}
                               </td>
                             </tr>
                           ))}

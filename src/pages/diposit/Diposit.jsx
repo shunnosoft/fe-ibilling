@@ -23,6 +23,7 @@ import {
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import Loader from "../../components/common/Loader";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Diposit() {
   const balancee = useSelector(
@@ -275,7 +276,10 @@ export default function Diposit() {
                 <div className="row searchCollector">
                   <div className="col-sm-8">
                     <h4 className="allCollector">
-                      নিজ ডিপোজিট (মোট): <span>{getTotalOwnDeposit()}</span>
+                      নিজ ডিপোজিটঃ{" "}
+                      <span>{FormatNumber(ownDeposits.length)} টি</span>
+                      পরিমাণঃ{" "}
+                      <span>{FormatNumber(getTotalOwnDeposit())} টাকা </span>
                     </h4>
                   </div>
 
@@ -309,9 +313,22 @@ export default function Diposit() {
                     <tbody>
                       {ownDeposits?.map((item, key) => (
                         <tr key={key}>
-                          <td>৳ {item.amount}</td>
-                          <td>{item.status}</td>
-                          <td>{moment(item.createdAt).format("DD-MM-YYYY")}</td>
+                          <td>৳ {FormatNumber(item.amount)}</td>
+                          <td>
+                            {item.status === "accepted" && (
+                              <span className="statusClass">
+                                গ্রহণ করা হয়েছে
+                              </span>
+                            )}
+                            {item.status === "rejected" && (
+                              <span className="rejectClass">বাতিল হয়েছে</span>
+                            )}
+                          </td>
+                          <td>
+                            {moment(item.createdAt).format(
+                              "DD-MM-YYYY hh:mm:ss A"
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -389,7 +406,10 @@ export default function Diposit() {
                       <div className="row searchCollector">
                         <div className="col-sm-8">
                           <h4 className="allCollector">
-                            কালেক্টর ডিপোজিট: <span>{getTotalDeposit()}</span>
+                            কালেক্টর ডিপোজিটঃ{" "}
+                            <span>{FormatNumber(mainData.length)} টি</span>
+                            পরিমাণঃ{" "}
+                            <span>{FormatNumber(getTotalDeposit())} টাকা</span>
                           </h4>
                         </div>
 
@@ -429,7 +449,7 @@ export default function Diposit() {
                           {mainData?.map((item, key) => (
                             <tr key={key}>
                               <td>{item.name}</td>
-                              <td>৳ {item.amount}</td>
+                              <td>৳ {FormatNumber(item.amount)}</td>
                               <td>
                                 {item.status === "pending" ? (
                                   acceptLoading ? (
@@ -446,7 +466,7 @@ export default function Diposit() {
                                           );
                                         }}
                                       >
-                                        Accept
+                                        গ্রহণ
                                       </button>
                                       <button
                                         onClick={() => {
@@ -456,18 +476,29 @@ export default function Diposit() {
                                           );
                                         }}
                                       >
-                                        Reject
+                                        বাতিল
                                       </button>
                                     </div>
                                   )
                                 ) : (
-                                  <span className="statusClass">
-                                    {item.status}
-                                  </span>
+                                  <>
+                                    {item.status === "accepted" && (
+                                      <span className="statusClass">
+                                        গ্রহণ করা হয়েছে
+                                      </span>
+                                    )}
+                                    {item.status === "rejected" && (
+                                      <span className="rejectClass">
+                                        বাতিল হয়েছে
+                                      </span>
+                                    )}
+                                  </>
                                 )}
                               </td>
                               <td>
-                                {moment(item.createdAt).format("DD-MM-YYYY")}
+                                {moment(item.createdAt).format(
+                                  "DD-MM-YYYY hh:mm:ss A"
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -478,7 +509,12 @@ export default function Diposit() {
                       <div className="row searchCollector">
                         <div className="col-sm-8">
                           <h4 className="allCollector">
-                            নিজ ডিপোজিট: <span>{getTotalOwnDeposit()}</span>
+                            নিজ ডিপোজিটঃ{" "}
+                            <span>{FormatNumber(ownDeposits.length)} টি</span>
+                            পরিমাণঃ{" "}
+                            <span>
+                              {FormatNumber(getTotalOwnDeposit())} টাকা
+                            </span>
                           </h4>
                         </div>
 
@@ -512,10 +548,23 @@ export default function Diposit() {
                           <tbody>
                             {ownDeposits?.map((item, key) => (
                               <tr key={key}>
-                                <td>৳ {item.amount}</td>
-                                <td>{item.status}</td>
+                                <td>৳ {FormatNumber(item.amount)}</td>
                                 <td>
-                                  {moment(item.createdAt).format("DD-MM-YYYY")}
+                                  {item.status === "accepted" && (
+                                    <span className="statusClass">
+                                      গ্রহণ করা হয়েছে
+                                    </span>
+                                  )}
+                                  {item.status === "rejected" && (
+                                    <span className="rejectClass">
+                                      বাতিল হয়েছে
+                                    </span>
+                                  )}
+                                </td>
+                                <td>
+                                  {moment(item.createdAt).format(
+                                    "DD-MM-YYYY hh:mm:ss A"
+                                  )}
                                 </td>
                               </tr>
                             ))}

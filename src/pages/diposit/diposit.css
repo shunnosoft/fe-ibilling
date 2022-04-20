@@ -75,7 +75,9 @@
 }
 .statusClass {
   color: #29b32d;
-  font-weight: bold;
+}
+.rejectClass {
+  color: #d63200;
 }
 .acceptBtn {
   background: #29b32d;
