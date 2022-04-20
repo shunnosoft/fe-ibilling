@@ -138,6 +138,7 @@ export default function ConfigMikrotik() {
                           id="selectMikrotikOption"
                           onChange={mikrotiSelectionHandler}
                           className="form-select"
+                          style={{ marginBottom: "-10px" }}
                         >
                           {mikrotik.map((m) => {
                             return <option value={m.id}>{m.name}</option>;
