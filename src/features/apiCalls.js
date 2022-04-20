@@ -905,7 +905,11 @@ export const depositAcceptReject = async (
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
     dispatch(updateDepositSuccess(res.data));
     setAccLoading(false);
-    toast.success("ডিপোজিট গ্রহণ সফল হয়েছে।");
+    if (res.data.status === "accepted") {
+      toast.success("ডিপোজিট গ্রহণ সফল হয়েছে।");
+    } else if (res.data.status === "rejected") {
+      toast.success("ডিপোজিট বাতিল সফল হয়েছে।");
+    }
   } catch (error) {
     setAccLoading(false);
 

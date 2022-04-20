@@ -37,17 +37,8 @@ import {
 import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { FetchAreaSuccess } from "../../features/areaSlice";
-
-const badge = {
-  paid: "success",
-  unpaid: "warning text-dark",
-  expired: "danger",
-};
-
-const statusBadge = {
-  active: "light text-dark",
-  inactive: "secondary",
-};
+import { badge } from "../../components/common/Utils";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Customer() {
   const cus = useSelector((state) => state.persistedReducer.customer.customer);
@@ -272,7 +263,8 @@ export default function Customer() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক : <span>{Customers?.length || "0"}</span>
+                          মোট গ্রাহক :{" "}
+                          <span>{FormatNumber(Customers?.length) || "0"}</span>
                         </h4>
                       </div>
 
@@ -372,29 +364,12 @@ export default function Customer() {
                               <td>{val.customerId}</td>
                               <td>{val.name}</td>
                               <td>{val.mobile}</td>
-                              <td>
-                                {" "}
-                                <span
-                                  className={`badge rounded-pill bg-${
-                                    statusBadge[val.status]
-                                  }`}
-                                >
-                                  {val.status}
-                                </span>
-                              </td>
-                              <td>
-                                <span
-                                  className={`badge rounded-pill bg-${
-                                    badge[val.paymentStatus]
-                                  }`}
-                                >
-                                  {val.paymentStatus}
-                                </span>
-                              </td>
+                              <td>{badge(val.status)}</td>
+                              <td>{badge(val.paymentStatus)}</td>
                               <td>{val.pppoe.profile}</td>
-                              <td>{val.monthlyFee}</td>
+                              <td>{FormatNumber(val.monthlyFee)}</td>
                               <td>
-                                <strong>{val.balance}</strong>
+                                <strong>{FormatNumber(val.balance)}</strong>
                               </td>
                               <td>
                                 {moment(val.billingCycle).format("DD-MM-YYYY")}

@@ -26,7 +26,7 @@
 }
 .loaderDiv {
   display: flex;
-  align-item: center;
+  align-items: center;
   justify-content: flex-start;
   margin-left: 18px;
 }
@@ -75,7 +75,9 @@
 }
 .statusClass {
   color: #29b32d;
-  font-weight: bold;
+}
+.rejectClass {
+  color: #d63200;
 }
 .acceptBtn {
   background: #29b32d;

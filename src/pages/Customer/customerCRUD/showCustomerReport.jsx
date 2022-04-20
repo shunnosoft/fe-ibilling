@@ -5,6 +5,7 @@ import apiLink from "../../../api/apiLink";
 // import Pagination from "../../../components/Pagination";
 // import TdLoader from "../../../components/common/TdLoader";
 import "../customer.css";
+import FormatNumber from "../../../components/common/NumberFormat";
 
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
@@ -61,9 +62,9 @@ export default function CustomerReport({ single }) {
                   <tbody>
                     {customerReport?.map((val, index) => (
                       <tr className="spetialSortingRow" key={index}>
-                        <td>{val.amount}</td>
+                        <td>{FormatNumber(val.amount)}</td>
                         <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
-                        <td>{moment(val.createdAt).format("hh:mm")}</td>
+                        <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
                       </tr>
                     ))}
                   </tbody>

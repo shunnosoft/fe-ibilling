@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import { showModal } from "../../features/uiSlice";
 import { FetchAreaSuccess } from "../../features/areaSlice";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Home() {
   const [isLoading, setIsloading] = useState(false);
@@ -161,8 +162,9 @@ export default function Home() {
         if (found) {
           found.subAreas.push({ id: item.id, name: item.name });
 
-          return (areas[areas.findIndex((item) => item.id === found.id)] =
-            found);
+          return (areas[
+            areas.findIndex((item) => item.id === found.id)
+          ] = found);
         } else {
           return areas.push(area);
         }
@@ -278,10 +280,10 @@ export default function Home() {
                 </div>
                 <div className="chartSection">
                   <p style={{ fontSize: "18px" }}>মোট গ্রাহক</p>
-                  <h2>{customerStat.total}</h2>
+                  <h2>{FormatNumber(customerStat.total)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    নতুন গ্রাহকঃ {customerStat.newCustomer}
+                    নতুন গ্রাহকঃ {FormatNumber(customerStat.newCustomer)}
                   </p>
                 </div>
               </div>
@@ -295,10 +297,10 @@ export default function Home() {
                 </div>
                 <div className="chartSection">
                   <p style={{ fontSize: "18px" }}>একটিভ</p>
-                  <h2>{customerStat.active}</h2>
+                  <h2>{FormatNumber(customerStat.active)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    ইন-একটিভঃ {customerStat.inactive}
+                    ইন-একটিভঃ {FormatNumber(customerStat.inactive)}
                   </p>
                 </div>
               </div>
@@ -312,10 +314,10 @@ export default function Home() {
                 </div>
                 <div className="chartSection">
                   <p style={{ fontSize: "18px" }}>পরিশোধ</p>
-                  <h2>{customerStat.paid}</h2>
+                  <h2>{FormatNumber(customerStat.paid)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    বকেয়াঃ {customerStat.unpaid}
+                    বকেয়াঃ {FormatNumber(customerStat.unpaid)}
                   </p>
                 </div>
               </div>
@@ -329,10 +331,10 @@ export default function Home() {
                 </div>
                 <div className="chartSection">
                   <p style={{ fontSize: "18px" }}>মোট আদায়</p>
-                  <h2>৳ {totalCollection}</h2>
+                  <h2>৳ {FormatNumber(totalCollection)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    আজঃ ৳ {todayCollection}
+                    আজঃ ৳ {FormatNumber(todayCollection)}
                   </p>
                 </div>
               </div>
