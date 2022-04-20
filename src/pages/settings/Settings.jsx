@@ -6,10 +6,12 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import "../message/message.css";
+
 import { useEffect, useRef, useState } from "react";
 import apiLink from "../../api/apiLink";
 import { useDispatch, useSelector } from "react-redux";
 import { smsSettingUpdateIsp } from "../../features/authSlice";
+import BillConfirmationSmsTemplate from "./template/BillConfirmationSmsTemplate";
 export default function Settings() {
   const [totalText, setTotalText] = useState("");
 
@@ -156,159 +158,21 @@ export default function Settings() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="profileWrapper uiChange">
-                    <div className="AllAreaClass mb-4">
-                      <form
-                        ref={formRef}
-                        onSubmit={handleSubmit}
-                        action=""
-                        className="settingForm"
-                      >
-                        <div className="writeMessageSection">
-                          <h4>বিল কনফার্মেশন এস এম এস </h4>
-                          <div>
-                            <input
-                              name="billConfirmation"
-                              type="radio"
-                              checked={billConfirmation === "on"}
-                              value={"on"}
-                              onChange={radioCheckHandler}
-                            />{" "}
-                            অন {"              "}
-                            <input
-                              name="billConfirmation"
-                              type="radio"
-                              checked={billConfirmation === "off"}
-                              value={"off"}
-                              onChange={radioCheckHandler}
-                            />{" "}
-                            অফ
-                          </div>
-                          <div className="billconfirm">
-                            <div className="showthesequence">
-                              {matchFound.map((item, key) => {
-                                return <p key={key}>{item}</p>;
-                              })}
-
-                              <p className="endingtext">{bottomText}</p>
-                            </div>
-                            <div className="displayFlexx">
-                              <div className="radioselect">
-                                <input
-                                  id="1"
-                                  type="checkbox"
-                                  className="getValueUsingClass"
-                                  value={"ইউজারনেমঃ USERNAME"}
-                                  checked={matchFound.includes(
-                                    "ইউজারনেমঃ USERNAME"
-                                  )}
-                                  onChange={(e) => {
-                                    itemSettingHandler(e.target.value);
-                                  }}
-                                />
-                                <label className="templatelabel" htmlFor="1">
-                                  {"ইউজারনেমঃ USERNAME"}
-                                </label>
-                              </div>
-                              <div className="radioselect">
-                                <input
-                                  id="2"
-                                  type="checkbox"
-                                  className="getValueUsingClass"
-                                  checked={matchFound.includes(
-                                    "ইউজার আইডিঃ USERID"
-                                  )}
-                                  value={"ইউজার আইডিঃ USERID"}
-                                  onChange={(e) => {
-                                    itemSettingHandler(e.target.value);
-                                  }}
-                                />
-                                <label className="templatelabel" htmlFor="2">
-                                  {"ইউজার আইডিঃ USERID"}
-                                </label>
-                              </div>
-                              <div className="radioselect">
-                                <input
-                                  id="3"
-                                  type="checkbox"
-                                  className="getValueUsingClass"
-                                  checked={matchFound.includes("গ্রাহকঃ NAME")}
-                                  value={"গ্রাহকঃ NAME"}
-                                  onChange={(e) => {
-                                    itemSettingHandler(e.target.value);
-                                  }}
-                                />
-                                <label className="templatelabel" htmlFor="3">
-                                  {"গ্রাহকঃ NAME"}
-                                </label>
-                              </div>
-                              <div className="radioselect">
-                                <input
-                                  id="4"
-                                  type="checkbox"
-                                  className="getValueUsingClass"
-                                  checked={matchFound.includes("বিলঃ AMOUNT")}
-                                  value={"বিলঃ AMOUNT"}
-                                  onChange={(e) => {
-                                    itemSettingHandler(e.target.value);
-                                  }}
-                                />
-                                <label className="templatelabel" htmlFor="4">
-                                  {"বিলঃ AMOUNT"}
-                                </label>
-                              </div>
-                              <div className="radioselect">
-                                <input
-                                  id="5"
-                                  type="checkbox"
-                                  className="getValueUsingClass"
-                                  checked={matchFound.includes("তারিখঃ DATE")}
-                                  value={"তারিখঃ DATE"}
-                                  onChange={(e) => {
-                                    itemSettingHandler(e.target.value);
-                                  }}
-                                />
-                                <label className="templatelabel" htmlFor="5">
-                                  {"তারিখঃ DATE"}
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="smsCount">
-                            <span className="smsLength">
-                              অক্ষরঃ{(matchFound + bottomText).length}
-                            </span>
-                            <span>
-                              SMS:
-                              {Math.ceil(
-                                [...(matchFound + bottomText)].length / 67
-                              )}
-                            </span>
-                          </div>
-
-                          <textarea
-                            id="messageTextArea"
-                            rows="6"
-                            className="form-control mt-4"
-                            placeholder="মেসেজ লিখুন..."
-                            ref={textRef}
-                            value={bottomText}
-                            // onClick={insertMyText}
-                            maxLength={335 - upperText.length}
-                            onChange={(e) => setBottomText(e.target.value)}
-                          >
-                            {" "}
-                          </textarea>
-                          <hr />
-                          <button
-                            type="submit"
-                            // onClick={handleSendMessage}
-                            className="btn btn-success"
-                          >
-                            সেভ
-                          </button>
-                        </div>
-                      </form>
+                    <div className="settingMainDiv  mb-4">
+                      <BillConfirmationSmsTemplate />
                     </div>
+
+                    {/* <div className="settingMainDiv  mb-4">
+                      <AlertSmsTemplate />
+                    </div>
+
+                    <div className="settingMainDiv  mb-4">
+                      <CreateCustomerSmsTemplate />
+                    </div>
+
+                    <div className="settingMainDiv  mb-4">
+                      <CustomerInactiveSmsTemplate />
+                    </div> */}
                   </div>
                 </div>
               </FourGround>
