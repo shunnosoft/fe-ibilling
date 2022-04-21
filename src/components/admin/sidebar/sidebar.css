@@ -67,7 +67,7 @@ a {
 }
 .sidebarUl {
   padding: 0px;
-  height: 100vh;
+  /* height: 100vh; */
   padding-top: 10px;
 }
 .sidebarItems {
