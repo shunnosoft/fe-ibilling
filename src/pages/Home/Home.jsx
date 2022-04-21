@@ -296,11 +296,11 @@ export default function Home() {
                   <PersonCheckFill />
                 </div>
                 <div className="chartSection">
-                  <p style={{ fontSize: "18px" }}>একটিভ</p>
+                  <p style={{ fontSize: "18px" }}>এক্টিভ</p>
                   <h2>{FormatNumber(customerStat.active)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    ইন-একটিভঃ {FormatNumber(customerStat.inactive)}
+                    ইন-এক্টিভ {FormatNumber(customerStat.inactive)}
                   </p>
                 </div>
               </div>

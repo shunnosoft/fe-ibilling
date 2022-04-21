@@ -125,7 +125,7 @@ export default function ConfigMikrotik() {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">একটিভ গ্রাহক</h2>
+                <h2 className="collectorTitle">এক্টিভ গ্রাহক</h2>
               </FourGround>
 
               <FourGround>

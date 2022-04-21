@@ -9,6 +9,9 @@ import {
   ThreeDots,
   PenFill,
   ArchiveFill,
+  PersonSquare,
+  PersonCheckFill,
+  BagCheckFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -274,9 +277,9 @@ export default function ConfigMikrotik() {
                               )}
                               onClick={syncPackage}
                               title="প্যাকেজ সিংক"
-                              className="addcutmButton btn-info btnbyEnamul"
+                              className="addcutmButton btnbyEnamul"
                             >
-                              <ArrowClockwise />
+                              <BagCheckFill />
                             </button>
                           )}
 
@@ -288,9 +291,9 @@ export default function ConfigMikrotik() {
                             <button
                               onClick={syncCustomer}
                               title="গ্রাহক সিংক"
-                              className="addcutmButton btn-primary btnbyEnamul"
+                              className="addcutmButton btnbyEnamul"
                             >
-                              <ArrowClockwise />
+                              <PersonCheckFill />
                             </button>
                           )}
 

@@ -132,7 +132,7 @@ export default function Message() {
                               }
                             >
                               <option value="">স্ট্যাটাস</option>
-                              <option value="active">একটিভ</option>
+                              <option value="active">এক্টিভ</option>
                               <option value="inactive">ইনক্টিভ</option>
                             </select>
                             <select

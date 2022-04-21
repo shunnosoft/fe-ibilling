@@ -109,8 +109,9 @@ export default function Customer() {
         if (found) {
           found.subAreas.push({ id: item.id, name: item.name });
 
-          return (areas[areas.findIndex((item) => item.id === found.id)] =
-            found);
+          return (areas[
+            areas.findIndex((item) => item.id === found.id)
+          ] = found);
         } else {
           return areas.push(area);
         }
@@ -354,8 +355,8 @@ export default function Customer() {
                           <option value="" defaultValue>
                             স্ট্যাটাস
                           </option>
-                          <option value="status.active">একটিভ</option>
-                          <option value="status.inactive">ইন-একটিভ</option>
+                          <option value="status.active">এক্টিভ</option>
+                          <option value="status.inactive">ইন-এক্টিভ</option>
                         </select>
                         <select
                           className="form-select"
@@ -379,7 +380,7 @@ export default function Customer() {
                                 data={customerForCsV}
                                 filename={ispOwnerData.company}
                                 headers={headers}
-                                title="Export Data"
+                                title="BTRC রিপোর্ট ডাউনলোড"
                               >
                                 <FileExcelFill className="addcutmButton" />
                               </CSVLink>
@@ -391,6 +392,7 @@ export default function Customer() {
                                 className="addcutmButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#customerModal"
+                                title="নতুন গ্রাহক"
                               />
                             </div>
                           </div>

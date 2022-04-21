@@ -231,8 +231,8 @@ export default function Customer() {
                           <option value="" defaultValue>
                             স্ট্যাটাস
                           </option>
-                          <option value="status.active">একটিভ</option>
-                          <option value="status.inactive">ইনএকটিভ</option>
+                          <option value="status.active">এক্টিভ</option>
+                          <option value="status.inactive">ইনএক্টিভ</option>
                         </select>
                         <select
                           className="form-select"

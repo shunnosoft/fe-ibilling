@@ -239,7 +239,8 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              {userRole === "ispOwner" ? (
+              {bpSettings?.hasMikrotik &&
+              (userRole === "ispOwner" || userRole === "manager") ? (
                 <NavLink
                   key={66}
                   to={"/activeCustomer"}
@@ -257,7 +258,9 @@ export default function Sidebar() {
                       }
                     >
                       <div className="sidebarIcon">{<PersonCheck />}</div>
-                      <span className="sidebarLinksName">{"একটিভ গ্রাহক"}</span>
+                      <span className="sidebarLinksName">
+                        {"এক্টিভ গ্রাহক"}
+                      </span>
                     </li>
                   </FontColor>
                 </NavLink>

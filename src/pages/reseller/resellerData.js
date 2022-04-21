@@ -36,7 +36,7 @@ export const RBD = [
   { id: 12, label: "সেন্ড SMS", value: "sendSMS", isChecked: false },
   {
     id: 13,
-    label: "কাস্টমার একটিভ",
+    label: "কাস্টমার এক্টিভ",
     value: "customerActivate",
     isChecked: false,
   },
