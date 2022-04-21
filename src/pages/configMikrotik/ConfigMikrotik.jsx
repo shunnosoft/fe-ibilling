@@ -8,6 +8,7 @@ import {
   ArrowLeftShort,
   ThreeDots,
   PenFill,
+  ArchiveFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -22,7 +23,7 @@ import Footer from "../../components/admin/footer/Footer";
 import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
 import TdLoader from "../../components/common/TdLoader";
 import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal";
-
+import { deletePPPoEpackage } from "../../features/apiCalls";
 import Loader from "../../components/common/Loader";
 import {
   fetchActivepppoeUser,
@@ -70,7 +71,7 @@ export default function ConfigMikrotik() {
   // const [isLoading, setIsloading] = useState(false);
   const [isLoadingPac, setIsLoadingPac] = useState(false);
   const [isLoadingCus, setIsLoadingCus] = useState(false);
-  // const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
@@ -120,15 +121,18 @@ export default function ConfigMikrotik() {
   };
 
   // delete single pppoe package
-  // const deleteSinglePPPoEpackage = async (mikrotikID, Id) => {
-  //   setIsDeleting(true);
-  //   const IDs = {
-  //     mikrotikId: mikrotikID,
-  //     pppPackageId: Id,
-  //   };
+  const deleteSinglePPPoEpackage = async (mikrotikID, Id) => {
+    const con = window.confirm("আপনি কি প্যাকেজ ডিলিট করতে চান?");
+    if (con) {
+      setIsDeleting(true);
+      const IDs = {
+        mikrotikId: mikrotikID,
+        pppPackageId: Id,
+      };
 
-  //   deletePPPoEpackage(dispatch, IDs);
-  // };
+      deletePPPoEpackage(dispatch, IDs);
+    }
+  };
 
   // fetch Active user
 
@@ -436,7 +440,7 @@ export default function ConfigMikrotik() {
                                             </div>
                                           </li>
 
-                                          {/* <li
+                                          <li
                                             onClick={() => {
                                               deleteSinglePPPoEpackage(
                                                 val.mikrotik,
@@ -450,7 +454,7 @@ export default function ConfigMikrotik() {
                                                 <p className="actionP">ডিলিট</p>
                                               </div>
                                             </div>
-                                          </li> */}
+                                          </li>
                                         </ul>
                                       </td>
                                     </tr>
