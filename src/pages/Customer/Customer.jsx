@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
+import { CSVLink } from "react-csv";
 
 // import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
@@ -14,6 +15,7 @@ import {
   PersonFill,
   ArrowDownUp,
   CashStack,
+  FileExcelFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -46,6 +48,11 @@ export default function Customer() {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
+
+  console.log(ispOwnerData);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
@@ -102,9 +109,8 @@ export default function Customer() {
         if (found) {
           found.subAreas.push({ id: item.id, name: item.name });
 
-          return (areas[
-            areas.findIndex((item) => item.id === found.id)
-          ] = found);
+          return (areas[areas.findIndex((item) => item.id === found.id)] =
+            found);
         } else {
           return areas.push(area);
         }
@@ -173,6 +179,51 @@ export default function Customer() {
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
+  //export customer data
+
+  console.log(currentCustomers);
+
+  let customerForCsV = currentCustomers.map((customer) => {
+    return {
+      companyName: ispOwnerData.company,
+      home: "Home",
+      companyAddress: ispOwnerData.address,
+      name: customer.name,
+      connectionType: "Wired",
+      connectivity: "Dedicated",
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      ip: "",
+      road: ispOwnerData.address,
+      address: ispOwnerData.address,
+      area: ispOwnerData?.fullAddress?.area || "",
+      district: ispOwnerData?.fullAddress?.district || "",
+      thana: ispOwnerData?.fullAddress?.thana || "",
+      mobile: customer?.mobile.slice(1) || "",
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+    };
+  });
+
+  const headers = [
+    { label: "name_operator", key: "companyName" },
+    { label: "type_of_client", key: "home" },
+    { label: "distribution Location point", key: "companyAddress" },
+    { label: "name_of_client", key: "name" },
+    { label: "type_of_connection", key: "connectionType" },
+    { label: "type_of_connectivity", key: "connectivity" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "allowcated_ip", key: "ip" },
+    { label: "house_no", key: "address" },
+    { label: "road_no", key: "road" },
+    { label: "area", key: "area" },
+    { label: "district", key: "district" },
+    { label: "thana", key: "thana" },
+    { label: "client_phone", key: "mobile" },
+    { label: "mail", key: "email" },
+    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
+  ];
 
   useEffect(() => {
     if (
@@ -321,15 +372,29 @@ export default function Customer() {
                         </select>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
-                        <div className="addNewCollector">
-                          <div className="addAndSettingIcon">
-                            <PersonPlusFill
-                              className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#customerModal"
-                            />
+                        <>
+                          <div className="addNewCollector">
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={customerForCsV}
+                                filename={ispOwnerData.company}
+                                headers={headers}
+                                title="Export Data"
+                              >
+                                <FileExcelFill className="addcutmButton" />
+                              </CSVLink>
+                            </div>
                           </div>
-                        </div>
+                          <div className="addNewCollector">
+                            <div className="addAndSettingIcon">
+                              <PersonPlusFill
+                                className="addcutmButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#customerModal"
+                              />
+                            </div>
+                          </div>
+                        </>
                       ) : (
                         ""
                       )}
