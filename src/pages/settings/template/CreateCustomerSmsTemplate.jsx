@@ -65,14 +65,15 @@ function CreateCustomerSmsTemplate() {
 
     let data = {
       ...settings.sms,
-      billConfirmation:
+      createCustomer:
         billConfirmation === "on"
           ? true
           : billConfirmation === "off"
           ? false
           : null,
       template: {
-        billConfirmation: upperText + "\n" + bottomText,
+        ...settings.sms.template,
+        createCustomer: upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -109,17 +110,17 @@ function CreateCustomerSmsTemplate() {
     ];
     var found = [];
 
-    let messageBoxStr = settings.sms.template.billConfirmation
-      .replace("ইউজারনেমঃ USERNAME", "")
+    let messageBoxStr = settings?.sms?.template?.createCustomer
+      ?.replace("ইউজারনেমঃ USERNAME", "")
       .replace("ইউজার আইডিঃ USERID", "")
       .replace("গ্রাহকঃ NAME", "")
       .replace("বিলঃ AMOUNT", "")
       .replace("তারিখঃ DATE", "");
 
-    setBottomText(messageBoxStr.trim());
+    setBottomText(messageBoxStr?.trim());
 
     fixedvalues.map((i) => {
-      if (settings.sms.template.billConfirmation.includes(i)) {
+      if (settings?.sms?.template?.createCustomer?.includes(i)) {
         found.push(i);
       }
       return found;

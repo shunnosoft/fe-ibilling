@@ -62,36 +62,6 @@ function AlertSmsTemplate() {
     setbillconparametres(billconfarmationparametres);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    let data = {
-      ...settings.sms,
-      billConfirmation:
-        billConfirmation === "on"
-          ? true
-          : billConfirmation === "off"
-          ? false
-          : null,
-      template: {
-        billConfirmation: upperText + "\n" + bottomText,
-      },
-    };
-    setLoading(true);
-    try {
-      const res = await apiLink.patch(
-        `/ispOwner/settings/sms/${ispOwnerId}`,
-        data
-      );
-      dispatch(smsSettingUpdateIsp(res.data));
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-
-    // formRef.current.reset();
-  };
   useEffect(() => {
     var theText = "";
     matchFound.map((i) => {
@@ -111,17 +81,17 @@ function AlertSmsTemplate() {
     ];
     var found = [];
 
-    let messageBoxStr = settings.sms.template.billConfirmation
-      .replace("ইউজারনেমঃ USERNAME", "")
+    let messageBoxStr = settings?.sms?.template?.alert
+      ?.replace("ইউজারনেমঃ USERNAME", "")
       .replace("ইউজার আইডিঃ USERID", "")
       .replace("গ্রাহকঃ NAME", "")
       .replace("বিলঃ AMOUNT", "")
       .replace("তারিখঃ DATE", "");
 
-    setBottomText(messageBoxStr.trim());
+    setBottomText(messageBoxStr?.trim());
 
     fixedvalues.map((i) => {
-      if (settings.sms.template.billConfirmation.includes(i)) {
+      if (settings?.sms?.template?.alert?.includes(i)) {
         found.push(i);
       }
       return found;
@@ -129,7 +99,7 @@ function AlertSmsTemplate() {
     setMatchFound(found);
     // setbillconparametres(found);
 
-    if (settings.sms.billConfirmation) {
+    if (settings.sms.alert) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");
@@ -152,8 +122,45 @@ function AlertSmsTemplate() {
       days.push(item);
     }
 
-    setDays(days);
+    setDays([...days]);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let data = {
+      ...settings.sms,
+      alert:
+        billConfirmation === "on"
+          ? true
+          : billConfirmation === "off"
+          ? false
+          : null,
+      alertDays: days,
+      template: {
+        ...settings.sms.template,
+        alert: upperText + "\n" + bottomText,
+      },
+    };
+    setLoading(true);
+
+    console.log(data);
+
+    try {
+      const res = await apiLink.patch(
+        `/ispOwner/settings/sms/${ispOwnerId}`,
+        data
+      );
+      dispatch(smsSettingUpdateIsp(res.data));
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+
+    // formRef.current.reset();
+  };
+
   return (
     <div>
       <form

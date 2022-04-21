@@ -65,14 +65,15 @@ function CustomerInactiveSmsTemplate() {
 
     let data = {
       ...settings.sms,
-      billConfirmation:
+      customerInactive:
         billConfirmation === "on"
           ? true
           : billConfirmation === "off"
           ? false
           : null,
       template: {
-        billConfirmation: upperText + "\n" + bottomText,
+        ...settings.sms.template,
+        customerInactive: upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -109,17 +110,17 @@ function CustomerInactiveSmsTemplate() {
     ];
     var found = [];
 
-    let messageBoxStr = settings.sms.template.billConfirmation
-      .replace("ইউজারনেমঃ USERNAME", "")
+    let messageBoxStr = settings?.sms?.template?.customerInactive
+      ?.replace("ইউজারনেমঃ USERNAME", "")
       .replace("ইউজার আইডিঃ USERID", "")
       .replace("গ্রাহকঃ NAME", "")
       .replace("বিলঃ AMOUNT", "")
       .replace("তারিখঃ DATE", "");
 
-    setBottomText(messageBoxStr.trim());
+    setBottomText(messageBoxStr?.trim());
 
     fixedvalues.map((i) => {
-      if (settings.sms.template.billConfirmation.includes(i)) {
+      if (settings?.sms?.template?.customerInactive?.includes(i)) {
         found.push(i);
       }
       return found;

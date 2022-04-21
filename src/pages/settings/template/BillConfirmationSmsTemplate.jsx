@@ -14,6 +14,7 @@ function BillConfirmationSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+  console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -72,6 +73,7 @@ function BillConfirmationSmsTemplate() {
           ? false
           : null,
       template: {
+        ...settings.sms.template,
         billConfirmation: upperText + "\n" + bottomText,
       },
     };
@@ -109,17 +111,17 @@ function BillConfirmationSmsTemplate() {
     ];
     var found = [];
 
-    let messageBoxStr = settings.sms.template.billConfirmation
-      .replace("ইউজারনেমঃ USERNAME", "")
+    let messageBoxStr = settings?.sms?.template?.billConfirmation
+      ?.replace("ইউজারনেমঃ USERNAME", "")
       .replace("ইউজার আইডিঃ USERID", "")
       .replace("গ্রাহকঃ NAME", "")
       .replace("বিলঃ AMOUNT", "")
       .replace("তারিখঃ DATE", "");
 
-    setBottomText(messageBoxStr.trim());
+    setBottomText(messageBoxStr?.trim());
 
     fixedvalues.map((i) => {
-      if (settings.sms.template.billConfirmation.includes(i)) {
+      if (settings?.sms?.template?.billConfirmation?.includes(i)) {
         found.push(i);
       }
       return found;
