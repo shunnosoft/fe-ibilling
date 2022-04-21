@@ -51,7 +51,7 @@ export default function CustomerEdit({ single }) {
 
     setSubArea(single.subArea);
     setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(single.billingCycle).format("hh:mm"));
+    setBilltime(moment(single.billingCycle).format("HH:mm"));
     const temp = Getmikrotik?.find((val) => val.id === single.mikrotik);
     setmikrotikName(temp);
 

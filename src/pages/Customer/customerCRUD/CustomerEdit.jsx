@@ -74,7 +74,7 @@ export default function CustomerEdit(props) {
   useEffect(() => {
     setAutoDisable(props.single?.autoDisable);
     setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(props?.single.billingCycle).format("hh:mm"));
+    setBilltime(moment(props?.single.billingCycle).format("HH:mm"));
     const temp = Getmikrotik.find((val) => val.id === props?.single.mikrotik);
     setmikrotikName(temp);
 
