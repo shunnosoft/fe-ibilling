@@ -44,7 +44,7 @@ function AlertSmsTemplate() {
       }
     } else {
       if (totalText.length + item.length > 334) {
-        toast.warn("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
         return;
       }
       matchFound.push(item);
@@ -62,6 +62,8 @@ function AlertSmsTemplate() {
     setbillconparametres(billconfarmationparametres);
   };
 
+  console.log(days);
+
   useEffect(() => {
     var theText = "";
     matchFound.map((i) => {
@@ -72,6 +74,8 @@ function AlertSmsTemplate() {
     setTotalText(upperText + bottomText);
   }, [matchFound, bottomText, upperText]);
   useEffect(() => {
+    setDays(settings.sms.alertDays);
+
     const fixedvalues = [
       "ইউজারনেমঃ USERNAME",
       "ইউজার আইডিঃ USERID",
@@ -144,8 +148,6 @@ function AlertSmsTemplate() {
     };
     setLoading(true);
 
-    console.log(data);
-
     try {
       const res = await apiLink.patch(
         `/ispOwner/settings/sms/${ispOwnerId}`,
@@ -153,6 +155,7 @@ function AlertSmsTemplate() {
       );
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
+      toast.success("এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে");
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -170,7 +173,7 @@ function AlertSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4>এলার্ট SMS </h4>
+          <h4>এলার্ট SMS টেমপ্লেট</h4>
           <div>
             <input
               name="billConfirmation"
@@ -279,6 +282,7 @@ function AlertSmsTemplate() {
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"1"}
+                checked={days.includes(1)}
                 onChange={(e) => {
                   daySettingHandler(e.target.value);
                 }}
@@ -288,6 +292,7 @@ function AlertSmsTemplate() {
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"2"}
+                checked={days.includes(2)}
                 onChange={(e) => {
                   daySettingHandler(e.target.value);
                 }}
@@ -297,6 +302,7 @@ function AlertSmsTemplate() {
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"3"}
+                checked={days.includes(3)}
                 onChange={(e) => {
                   daySettingHandler(e.target.value);
                 }}
@@ -306,6 +312,7 @@ function AlertSmsTemplate() {
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"4"}
+                checked={days.includes(4)}
                 onChange={(e) => {
                   daySettingHandler(e.target.value);
                 }}
@@ -315,6 +322,7 @@ function AlertSmsTemplate() {
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"5"}
+                checked={days.includes(5)}
                 onChange={(e) => {
                   daySettingHandler(e.target.value);
                 }}
@@ -324,6 +332,7 @@ function AlertSmsTemplate() {
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"6"}
+                checked={days.includes(6)}
                 onChange={(e) => {
                   daySettingHandler(e.target.value);
                 }}
@@ -333,21 +342,21 @@ function AlertSmsTemplate() {
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"7"}
+                checked={days.includes(7)}
                 onChange={(e) => {
                   daySettingHandler(e.target.value);
                 }}
               />
               <label className="mx-3">{"সাত দিন"}</label>
             </div>
-            <p style={{ marginTop: "20px" }}>বিল ডেট শেষ হতে বাকিঃ</p>
+            <p style={{ marginTop: "20px" }}>বিল সাইকেল শেষ হতে বাকিঃ</p>
           </div>
           <div className="smsCount">
             <span className="smsLength">
-              অক্ষরঃ{(matchFound + bottomText).length}
+              অক্ষরঃ {(matchFound + bottomText).length}
             </span>
             <span>
-              SMS:
-              {Math.ceil([...(matchFound + bottomText)].length / 67)}
+              SMS: {Math.ceil([...(matchFound + bottomText)].length / 67)}
             </span>
           </div>
 

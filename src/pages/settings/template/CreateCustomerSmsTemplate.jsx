@@ -42,7 +42,7 @@ function CreateCustomerSmsTemplate() {
       }
     } else {
       if (totalText.length + item.length > 334) {
-        toast.warn("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
         return;
       }
       matchFound.push(item);
@@ -84,6 +84,7 @@ function CreateCustomerSmsTemplate() {
       );
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
+      toast.success("নতুন গ্রাহক SMS টেমপ্লেট সেভ সফল হয়েছে");
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -147,7 +148,7 @@ function CreateCustomerSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4>নতুন গ্রাহক কনফার্মেশন SMS </h4>
+          <h4>নতুন গ্রাহক SMS টেমপ্লেট</h4>
           <div>
             <input
               name="billConfirmation"
@@ -254,11 +255,10 @@ function CreateCustomerSmsTemplate() {
           </div>
           <div className="smsCount">
             <span className="smsLength">
-              অক্ষরঃ{(matchFound + bottomText).length}
+              অক্ষরঃ {(matchFound + bottomText).length}
             </span>
             <span>
-              SMS:
-              {Math.ceil([...(matchFound + bottomText)].length / 67)}
+              SMS: {Math.ceil([...(matchFound + bottomText)].length / 67)}
             </span>
           </div>
 

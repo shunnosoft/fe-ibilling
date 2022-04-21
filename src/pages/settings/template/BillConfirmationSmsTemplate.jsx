@@ -43,7 +43,7 @@ function BillConfirmationSmsTemplate() {
       }
     } else {
       if (totalText.length + item.length > 334) {
-        toast.warn("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
         return;
       }
       matchFound.push(item);
@@ -85,6 +85,7 @@ function BillConfirmationSmsTemplate() {
       );
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
+      toast.success("বিল কনফার্মেশন SMS টেমপ্লেট সেভ সফল হয়েছে");
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -148,7 +149,7 @@ function BillConfirmationSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4>বিল কনফার্মেশন SMS </h4>
+          <h4>বিল কনফার্মেশন SMS টেমপ্লেট</h4>
           <div>
             <input
               name="billConfirmation"
@@ -236,7 +237,7 @@ function BillConfirmationSmsTemplate() {
                   {"বিলঃ AMOUNT"}
                 </label>
               </div>
-              <div className="radioselect">
+              {/* <div className="radioselect">
                 <input
                   id="5"
                   type="checkbox"
@@ -250,16 +251,15 @@ function BillConfirmationSmsTemplate() {
                 <label className="templatelabel" htmlFor="5">
                   {"তারিখঃ DATE"}
                 </label>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="smsCount">
             <span className="smsLength">
-              অক্ষরঃ{(matchFound + bottomText).length}
+              অক্ষরঃ {(matchFound + bottomText).length}
             </span>
             <span>
-              SMS:
-              {Math.ceil([...(matchFound + bottomText)].length / 67)}
+              SMS: {Math.ceil([...(matchFound + bottomText)].length / 67)}
             </span>
           </div>
 

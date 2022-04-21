@@ -31,8 +31,18 @@ export default function Settings() {
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="rightSideMikrotik">
-                    <h4>সেটিং সিলেক্ট করুন</h4>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    className="rightSideMikrotik"
+                  >
+                    <h4 style={{ marginTop: "20px", marginRight: "30px" }}>
+                      SMS টেমপ্লেট সিলেক্ট করুন
+                    </h4>{" "}
                     <select
                       id="selectMikrotikOption"
                       onChange={selectSettingHandler}
@@ -40,11 +50,9 @@ export default function Settings() {
                     >
                       <option value="confirmation">বিল কনফার্মেশন SMS</option>
                       <option value="alert">এলার্ট SMS</option>
-                      <option value="newCustomer">
-                        নতুন গ্রাহক কনফার্মেশন SMS
-                      </option>
+                      <option value="newCustomer">নতুন গ্রাহক SMS</option>
                       <option value="inactiveCustomer">
-                        ইন এক্টিভ গ্রাহক SMS
+                        গ্রাহক ইন-এক্টিভ SMS
                       </option>
                     </select>
                   </div>
