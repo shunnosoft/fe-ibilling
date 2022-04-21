@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
+
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
 import {
@@ -210,8 +212,10 @@ export default function ConfigMikrotik() {
                               <tr>
                                 <th scope="col">সিরিয়াল</th>
                                 <th scope="col">নাম</th>
-                                <th scope="col">rxByte</th>
-                                <th scope="col">txByte</th>
+                                <th scope="col">এড্রেস</th>
+                                <th scope="col">RX</th>
+                                <th scope="col">TX</th>
+                                <th scope="col">আপ টাইম</th>
                                 {/* <th scope="col" style={{ textAlign: "center" }}>
                               অ্যাকশন
                             </th> */}
@@ -234,14 +238,52 @@ export default function ConfigMikrotik() {
                                       <td style={{ paddingLeft: "30px" }}>
                                         {++serial}
                                       </td>
-                                      <td>{val.name}</td>
-                                      <td>
+                                      <td
+                                        style={{
+                                          padding:
+                                            "15px 15px 15px 0 !important",
+                                        }}
+                                      >
+                                        {val.name}
+                                      </td>
+                                      <td
+                                        style={{
+                                          padding:
+                                            "15px 15px 15px 0 !important",
+                                        }}
+                                      >
+                                        {val.address}
+                                      </td>
+                                      <td
+                                        style={{
+                                          padding:
+                                            "15px 15px 15px 0 !important",
+                                        }}
+                                      >
                                         {(val.rxByte / 1024 / 1024).toFixed(2) +
                                           " MB/s"}
                                       </td>
-                                      <td>
+                                      <td
+                                        style={{
+                                          padding:
+                                            "15px 15px 15px 0 !important",
+                                        }}
+                                      >
                                         {(val.txByte / 1024 / 1024).toFixed(2) +
                                           " MB/s"}
+                                      </td>
+                                      <td
+                                        style={{
+                                          padding:
+                                            "15px 15px 15px 0 !important",
+                                        }}
+                                      >
+                                        {val.uptime
+                                          .replace("w", "w ")
+                                          .replace("d", "d ")
+                                          .replace("h", "h ")
+                                          .replace("m", "m ")
+                                          .replace("s", "s")}
                                       </td>
                                       {/* <td style={{ textAlign: "center" }}>
                                     <ThreeDots className="dropdown-toggle ActionDots" />
