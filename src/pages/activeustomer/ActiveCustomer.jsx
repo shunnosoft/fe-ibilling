@@ -3,14 +3,7 @@ import moment from "moment";
 
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
-import {
-  PlugFill,
-  ArrowClockwise,
-  PencilFill,
-  ArrowLeftShort,
-  ThreeDots,
-  PenFill,
-} from "react-bootstrap-icons";
+import { ArrowClockwise } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
 // import { Link } from "react-router-dom";
@@ -24,14 +17,10 @@ import Footer from "../../components/admin/footer/Footer";
 import TdLoader from "../../components/common/TdLoader";
 
 import Loader from "../../components/common/Loader";
-import {
-  fetchActivepppoeUser,
-  fetchMikrotik,
-  fetchMikrotikSyncUser,
-  fetchpppoePackage,
-  fetchpppoeUser,
-} from "../../features/apiCalls";
-import apiLink from "../../api/apiLink";
+import { fetchActivepppoeUser, fetchpppoeUser } from "../../features/apiCalls";
+
+import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
+
 import { useLayoutEffect } from "react";
 // import TdLoader from "../../components/common/TdLoader";
 
@@ -44,6 +33,13 @@ export default function ConfigMikrotik() {
   const mikrotik = useSelector(
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
+  const mtkIsLoading = useSelector(
+    (state) => state.persistedReducer.mikrotik.isLoading
+  );
+  const [selectedMikrotikId, setMikrotikId] = useState();
+  const singleMik = mikrotik.find((item) => item.id === selectedMikrotikId)
+    ? mikrotik.find((item) => item.id === selectedMikrotikId)
+    : {};
 
   const [search, setSearch] = useState("");
   const [search2, setSearch2] = useState("");
@@ -59,9 +55,9 @@ export default function ConfigMikrotik() {
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
 
-  const [isLoadingCus, setIsLoadingCus] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   // const [isDeleting, setIsDeleting] = useState(false);
-  const [selectedMikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
     "showActiveMikrotikUser"
   );
@@ -72,29 +68,35 @@ export default function ConfigMikrotik() {
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
-    setMikrotikId(mikrotik[0]?.id);
+    const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
+    const name = mtkId ? singleMik?.name : "";
+    setMikrotikId(mtkId);
     const IDs = {
       ispOwner: ispOwnerId,
-      mikrotikId: selectedMikrotikId,
+      mikrotikId: mtkId,
     };
-    fetchActivepppoeUser(dispatch, IDs);
 
-    // fetchpppoePackage(dispatch, IDs);
+    if (mtkId) {
+      dispatch(resetMikrotikUserAndPackage());
+      fetchActivepppoeUser(dispatch, IDs, name);
+    }
   }, [ispOwnerId, selectedMikrotikId, dispatch, mikrotik]);
 
   const selectMikrotikOptionsHandler = (e) => {
     const val = e.target.value;
-    // console.log(val);
+
     const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: selectedMikrotikId,
     };
 
+    dispatch(resetMikrotikUserAndPackage());
+
     if (val === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs);
+      fetchActivepppoeUser(dispatch, IDs, singleMik.name);
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (val === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs);
+      fetchpppoeUser(dispatch, IDs, singleMik.name);
       setWhatYouWantToShow("showAllMikrotikUser");
     }
 
@@ -110,10 +112,12 @@ export default function ConfigMikrotik() {
       ispOwner: ispOwnerId,
       mikrotikId: selectedMikrotikId,
     };
+
+    dispatch(resetMikrotikUserAndPackage());
     if (whatYouWantToShow === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs);
+      fetchActivepppoeUser(dispatch, IDs, singleMik.name);
     } else if (whatYouWantToShow === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs);
+      fetchpppoeUser(dispatch, IDs, singleMik.name);
     }
   };
 
@@ -222,9 +226,9 @@ export default function ConfigMikrotik() {
                               </tr>
                             </thead>
                             <tbody>
-                              {activeUser.length === undefined ? (
+                              {mtkIsLoading ? (
                                 <tr>
-                                  <TdLoader colspan={4} />
+                                  <TdLoader colspan={6} />
                                 </tr>
                               ) : (
                                 activeUser
@@ -310,7 +314,7 @@ export default function ConfigMikrotik() {
                               সকল গ্রাহক :{" "}
                               <span>
                                 {" "}
-                                {isLoadingCus ? (
+                                {mtkIsLoading ? (
                                   <Loader />
                                 ) : (
                                   allMikrotikUsers?.length
@@ -349,7 +353,7 @@ export default function ConfigMikrotik() {
                               </tr>
                             </thead>
                             <tbody>
-                              {allMikrotikUsers.length === undefined ? (
+                              {mtkIsLoading ? (
                                 <tr>
                                   <TdLoader colspan={4} />
                                 </tr>

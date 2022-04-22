@@ -37,6 +37,7 @@ import {
   fetchPackagefromDatabase,
   deletePPPoEpackage,
 } from "../../features/apiCalls";
+import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 import apiLink from "../../api/apiLink";
 import { clearMikrotik } from "../../features/mikrotikSlice";
 import { useLayoutEffect } from "react";
@@ -69,7 +70,9 @@ export default function ConfigMikrotik() {
   const pppoePackage = useSelector(
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
-
+  const mtkIsLoading = useSelector(
+    (state) => state.persistedReducer.mikrotik.isLoading
+  );
   // const mikrotikSyncUser = useSelector(
   //   state => state.mikrotik.mikrotikSyncUser
   // );
@@ -113,7 +116,8 @@ export default function ConfigMikrotik() {
     // fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
     // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     // fetchActivepppoeUser(dispatch, IDs);
-    fetchPackagefromDatabase(dispatch, IDs);
+    dispatch(resetMikrotikUserAndPackage());
+    fetchPackagefromDatabase(dispatch, IDs, singleMik?.name);
   }, [ispOwner, mikrotikId, dispatch]);
 
   // get single pppoe package
@@ -136,7 +140,7 @@ export default function ConfigMikrotik() {
         pppPackageId: Id,
       };
 
-      deletePPPoEpackage(dispatch, IDs);
+      deletePPPoEpackage(dispatch, IDs, singleMik?.name);
     }
   };
 
@@ -165,31 +169,33 @@ export default function ConfigMikrotik() {
     })
       .then(() => {
         setIsChecking(false);
-        toast.success("মাইক্রোটিক কানেকশন ঠিক আছে");
+        toast.success(`${singleMik?.name} এর কানেকশন ঠিক আছে`);
       })
       .catch(() => {
         setIsChecking(false);
 
-        toast.error("দুঃখিত, মাইক্রোটিক কানেকশন ঠিক নেই!");
+        toast.error(`দুঃখিত, ${singleMik?.name} এর কানেকশন ঠিক নেই!`);
       });
   };
 
   const selectMikrotikOptionsHandler = (e) => {
     const val = e.target.value;
-    // console.log(val);
+
     const IDs = {
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
     };
 
+    dispatch(resetMikrotikUserAndPackage());
+
     if (val === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs);
+      fetchActivepppoeUser(dispatch, IDs, singleMik?.name);
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (val === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs);
+      fetchpppoeUser(dispatch, IDs, singleMik?.name);
       setWhatYouWantToShow("showAllMikrotikUser");
     } else if (val === "showMikrotikPackage") {
-      fetchPackagefromDatabase(dispatch, IDs);
+      fetchPackagefromDatabase(dispatch, IDs, singleMik?.name);
       setWhatYouWantToShow("showMikrotikPackage");
     }
 
@@ -202,7 +208,7 @@ export default function ConfigMikrotik() {
         ispOwner: ispOwner,
         mikrotikId: mikrotikId,
       };
-      fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
+      fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
     }
   };
   const syncPackage = () => {
@@ -211,7 +217,7 @@ export default function ConfigMikrotik() {
         ispOwner: ispOwner,
         mikrotikId: mikrotikId,
       };
-      fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
+      fetchpppoePackage(dispatch, IDs, setIsLoadingPac, singleMik?.name);
     }
   };
   return (
@@ -270,7 +276,7 @@ export default function ConfigMikrotik() {
                             // onClick={deleteSingleMKHandler}
                           /> */}
 
-                          {isLoadingPac ? (
+                          {mtkIsLoading ? (
                             <span>
                               <Loader />
                             </span>
@@ -290,7 +296,7 @@ export default function ConfigMikrotik() {
                             </button>
                           )}
 
-                          {isLoadingCus ? (
+                          {mtkIsLoading ? (
                             <span>
                               <Loader />
                             </span>
@@ -314,7 +320,7 @@ export default function ConfigMikrotik() {
                         </div>
                         <div className="mikrotikDetails mt-5">
                           <p>
-                            নামঃ <b>{singleMik.name || "..."}</b>
+                            নামঃ <b>{singleMik?.name || "..."}</b>
                           </p>
                           <p>
                             আইপিঃ <b>{singleMik.host || "..."}</b>
@@ -361,9 +367,12 @@ export default function ConfigMikrotik() {
                             <h4 className="allCollector">
                               প্যাকেজ:{" "}
                               <span>
-                                {pppoePackage?.length
-                                  ? pppoePackage?.length
-                                  : "0"}
+                                {" "}
+                                {mtkIsLoading ? (
+                                  <Loader />
+                                ) : (
+                                  pppoePackage?.length
+                                )}{" "}
                               </span>
                             </h4>
                           </div>
@@ -403,7 +412,7 @@ export default function ConfigMikrotik() {
                               </tr>
                             </thead>
                             <tbody>
-                              {pppoePackage.length === undefined ? (
+                              {mtkIsLoading ? (
                                 <tr>
                                   <TdLoader colspan={4} />
                                 </tr>
@@ -486,7 +495,14 @@ export default function ConfigMikrotik() {
                           <div className="col-sm-8">
                             <h4 className="allCollector">
                               এক্টিভ গ্রাহক :{" "}
-                              <span>{activeUser.length || "NULL"}</span>
+                              <span>
+                                {" "}
+                                {mtkIsLoading ? (
+                                  <Loader />
+                                ) : (
+                                  activeUser?.length
+                                )}{" "}
+                              </span>
                             </h4>
                           </div>
 
@@ -522,9 +538,9 @@ export default function ConfigMikrotik() {
                               </tr>
                             </thead>
                             <tbody>
-                              {activeUser.length === undefined ? (
+                              {mtkIsLoading ? (
                                 <tr>
-                                  <TdLoader colspan={4} />
+                                  <TdLoader colspan={6} />
                                 </tr>
                               ) : (
                                 activeUser
@@ -610,7 +626,7 @@ export default function ConfigMikrotik() {
                               সকল গ্রাহক :{" "}
                               <span>
                                 {" "}
-                                {isLoadingCus ? (
+                                {mtkIsLoading ? (
                                   <Loader />
                                 ) : (
                                   allMikrotikUsers?.length
@@ -649,7 +665,7 @@ export default function ConfigMikrotik() {
                               </tr>
                             </thead>
                             <tbody>
-                              {allMikrotikUsers.length === undefined ? (
+                              {mtkIsLoading ? (
                                 <tr>
                                   <TdLoader colspan={4} />
                                 </tr>

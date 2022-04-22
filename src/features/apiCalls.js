@@ -35,6 +35,7 @@ import {
   updateBalance,
 } from "./customerSlice";
 import {
+  mtkIsLoading,
   addMikrotikSuccess,
   deleteMikrotikSuccess,
   deletepppoePackageSuccess,
@@ -46,6 +47,10 @@ import {
   getpppoeActiveUserSuccess,
   getpppoePackageSuccess,
   getpppoeUserSuccess,
+  resetPackagefromDatabase,
+  resetpppoeActiveUser,
+  resetpppoePackage,
+  resetpppoeUser,
 } from "./mikrotikSlice";
 import {
   addResellerSuccess,
@@ -125,7 +130,7 @@ export const getDashboardCardData = async (
 
   try {
     const res = await apiLink(link);
-    console.log(res.data);
+
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {
     console.log("Card data error: ", err);
@@ -576,7 +581,9 @@ export const mikrotikTesting = async (IDs) => {
 };
 
 // get PPPoE user
-export const fetchpppoeUser = async (dispatch, IDs) => {
+export const fetchpppoeUser = async (dispatch, IDs, mtkName) => {
+  dispatch(resetpppoeUser());
+  dispatch(mtkIsLoading(true));
   try {
     const res = await apiLink({
       method: "GET",
@@ -584,13 +591,17 @@ export const fetchpppoeUser = async (dispatch, IDs) => {
     });
     // console.log(res.data);
     dispatch(getpppoeUserSuccess(res.data));
+    dispatch(mtkIsLoading(false));
   } catch (error) {
-    toast.error("PPPoE গ্রাহক পাওয়া যায়নি!");
+    dispatch(mtkIsLoading(false));
+    toast.error(`${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`);
   }
 };
 
 // get PPPoE Active user
-export const fetchActivepppoeUser = async (dispatch, IDs) => {
+export const fetchActivepppoeUser = async (dispatch, IDs, mtkName) => {
+  dispatch(resetpppoeActiveUser());
+  dispatch(mtkIsLoading(true));
   try {
     const res = await apiLink({
       method: "GET",
@@ -610,37 +621,48 @@ export const fetchActivepppoeUser = async (dispatch, IDs) => {
         }
       });
     });
-    // console.log(temp)
+
+    // console.log(temp);
     dispatch(getpppoeActiveUserSuccess(temp));
+    dispatch(mtkIsLoading(false));
   } catch (error) {
-    toast.error("এক্টিভ গ্রাহক পাওয়া যায়নি!");
+    dispatch(mtkIsLoading(false));
+    toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
   }
 };
 
 // get pppoe Package
-export const fetchpppoePackage = async (dispatch, IDs) => {
+export const fetchpppoePackage = async (dispatch, IDs, mtkName) => {
+  dispatch(resetpppoePackage());
+  dispatch(mtkIsLoading(true));
   try {
     const res = await apiLink({
       method: "GET",
       url: `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
-    // console.log(res.data);
+
     dispatch(getpppoePackageSuccess(res.data));
+    dispatch(mtkIsLoading(false));
     // toast.success("PPPoE প্যাকেজ fetch success");
   } catch (error) {
-    toast.error("PPPoE প্যাকেজ পাওয়া যায়নি!");
+    dispatch(mtkIsLoading(false));
+    toast.error(`${mtkName} মাইক্রোটিকের PPPoE প্যাকেজ পাওয়া যায়নি!`);
   }
 };
 
 export const fetchPackagefromDatabase = async (dispatch, IDs) => {
+  dispatch(resetPackagefromDatabase());
+  dispatch(mtkIsLoading(true));
   try {
     const res = await apiLink.get(`/mikrotik/ppp/package/${IDs.mikrotikId}`);
 
     // console.log(res.data);
     dispatch(getPackagefromDatabaseSuccess(res.data));
+    dispatch(mtkIsLoading(false));
     // toast.success("PPPoE প্যাকেজ fetch success");
   } catch (error) {
     // toast.error("প্যাকেজ পাওয়া যায়নি!");
+    dispatch(mtkIsLoading(false));
     console.log(error.response);
   }
 };

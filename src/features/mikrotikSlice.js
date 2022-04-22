@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const mikroTikSlice = createSlice({
   name: "mikrotik",
   initialState: {
+    isLoading: false,
     mikrotik: [],
     pppoeUser: [],
     pppoeActiveUser: [],
@@ -11,6 +12,9 @@ export const mikroTikSlice = createSlice({
     packagefromDatabase: [],
   },
   reducers: {
+    mtkIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
     //mikrotik
     getMikrotikSuccess: (state, action) => {
       state.mikrotik = action.payload;
@@ -32,6 +36,9 @@ export const mikroTikSlice = createSlice({
     getpppoeUserSuccess: (state, action) => {
       state.pppoeUser = action.payload;
     },
+    resetpppoeUser: (state, action) => {
+      state.pppoeUser = [];
+    },
     //syncuser
     fetchMikrotikSyncUserSuccess: (state, action) => {
       state.mikrotikSyncUser = action.payload;
@@ -40,13 +47,23 @@ export const mikroTikSlice = createSlice({
     getpppoeActiveUserSuccess: (state, action) => {
       state.pppoeActiveUser = action.payload;
     },
+    resetpppoeActiveUser: (state, action) => {
+      state.pppoeActiveUser = [];
+    },
     //pppoePackage
     getpppoePackageSuccess: (state, action) => {
       state.pppoePackage = action.payload;
     },
+    resetpppoePackage: (state, action) => {
+      state.pppoePackage = [];
+    },
     getPackagefromDatabaseSuccess: (state, action) => {
       state.packagefromDatabase = action.payload;
       state.pppoePackage = action.payload;
+    },
+    resetPackagefromDatabase: (state, action) => {
+      state.packagefromDatabase = [];
+      state.pppoePackage = [];
     },
     editpppoePackageSuccess: (state, action) => {
       state.pppoePackage[
@@ -68,23 +85,35 @@ export const mikroTikSlice = createSlice({
       state.pppoeUser = [];
       state.mikrotikSyncUser = [];
     },
+    resetMikrotikUserAndPackage: (state) => {
+      state.pppoeActiveUser = [];
+      state.pppoePackage = [];
+      state.pppoeUser = [];
+      state.packagefromDatabase = [];
+    },
   },
 });
 
 export const {
+  mtkIsLoading,
   clearMikrotik,
   getMikrotikSuccess,
   addMikrotikSuccess,
   editMikrotikSuccess,
   getpppoeUserSuccess,
+  resetpppoeUser,
   deleteMikrotikSuccess,
   getpppoePackageSuccess,
+  resetpppoePackage,
   addpppoePackageSuccess,
   editpppoePackageSuccess,
   deletepppoePackageSuccess,
   getpppoeActiveUserSuccess,
+  resetpppoeActiveUser,
   fetchMikrotikSyncUserSuccess,
   getPackagefromDatabaseSuccess,
+  resetPackagefromDatabase,
+  resetMikrotikUserAndPackage,
 } = mikroTikSlice.actions;
 
 export default mikroTikSlice.reducer;

@@ -52,7 +52,6 @@ export default function Customer() {
     (state) => state.persistedReducer.auth.userData
   );
 
-  console.log(ispOwnerData);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
@@ -182,8 +181,6 @@ export default function Customer() {
   };
   //export customer data
 
-  console.log(currentCustomers);
-
   let customerForCsV = currentCustomers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
@@ -242,12 +239,10 @@ export default function Customer() {
     setSorted(!isSorted);
   };
 
-  // console.log(permission)
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
 
   const onChangeArea = (param) => {
-    // console.log(JSON.parse(param))
     let area = JSON.parse(param);
 
     setArea(area);
