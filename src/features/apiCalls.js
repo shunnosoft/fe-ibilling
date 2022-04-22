@@ -590,9 +590,33 @@ export const fetchpppoeUser = async (dispatch, IDs, mtkName) => {
       url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
     // console.log(res.data);
-    dispatch(getpppoeUserSuccess(res.data));
+
+    const pppsecretUsers = res.data?.pppsecretUsers;
+    const interfaaceList = res.data?.interfaceList;
+    const temp = [];
+
+    // console.log(interfaaceList);
+
+    // pppsecretUsers.forEach((i) => {
+    //   let match = false;
+    //   interfaaceList.forEach((j) => {
+    //     if (j.name === "<pppoe-" + i.name + ">") {
+    //       match = true;
+    //       temp.push({
+    //         ...i,
+    //         ...j,
+    //       });
+    //     }
+    //   });
+    //   if (!match) temp.push(i);
+    // });
+
+    // console.log(temp);
+
+    dispatch(getpppoeUserSuccess(pppsecretUsers));
     dispatch(mtkIsLoading(false));
   } catch (error) {
+    console.log(error);
     dispatch(mtkIsLoading(false));
     toast.error(`${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`);
   }
