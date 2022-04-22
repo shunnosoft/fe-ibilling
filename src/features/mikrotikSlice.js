@@ -46,6 +46,7 @@ export const mikroTikSlice = createSlice({
     },
     getPackagefromDatabaseSuccess: (state, action) => {
       state.packagefromDatabase = action.payload;
+      state.pppoePackage = action.payload;
     },
     editpppoePackageSuccess: (state, action) => {
       state.pppoePackage[

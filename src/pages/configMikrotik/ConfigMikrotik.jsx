@@ -26,7 +26,7 @@ import Footer from "../../components/admin/footer/Footer";
 import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
 import TdLoader from "../../components/common/TdLoader";
 import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal";
-import { deletePPPoEpackage } from "../../features/apiCalls";
+
 import Loader from "../../components/common/Loader";
 import {
   fetchActivepppoeUser,
@@ -34,6 +34,8 @@ import {
   fetchMikrotikSyncUser,
   fetchpppoePackage,
   fetchpppoeUser,
+  fetchPackagefromDatabase,
+  deletePPPoEpackage,
 } from "../../features/apiCalls";
 import apiLink from "../../api/apiLink";
 import { clearMikrotik } from "../../features/mikrotikSlice";
@@ -67,6 +69,7 @@ export default function ConfigMikrotik() {
   const pppoePackage = useSelector(
     (state) => state.persistedReducer.mikrotik.pppoePackage
   );
+
   // const mikrotikSyncUser = useSelector(
   //   state => state.mikrotik.mikrotikSyncUser
   // );
@@ -110,7 +113,7 @@ export default function ConfigMikrotik() {
     // fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
     // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     // fetchActivepppoeUser(dispatch, IDs);
-    fetchpppoePackage(dispatch, IDs);
+    fetchPackagefromDatabase(dispatch, IDs);
   }, [ispOwner, mikrotikId, dispatch]);
 
   // get single pppoe package
@@ -186,7 +189,7 @@ export default function ConfigMikrotik() {
       fetchpppoeUser(dispatch, IDs);
       setWhatYouWantToShow("showAllMikrotikUser");
     } else if (val === "showMikrotikPackage") {
-      fetchpppoePackage(dispatch, IDs);
+      fetchPackagefromDatabase(dispatch, IDs);
       setWhatYouWantToShow("showMikrotikPackage");
     }
 
@@ -194,18 +197,22 @@ export default function ConfigMikrotik() {
   };
 
   const syncCustomer = () => {
-    const IDs = {
-      ispOwner: ispOwner,
-      mikrotikId: mikrotikId,
-    };
-    fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
+    if (window.confirm("আপনি কি মাইক্রোটিকের গ্রাহক সিংক করতে চান?")) {
+      const IDs = {
+        ispOwner: ispOwner,
+        mikrotikId: mikrotikId,
+      };
+      fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
+    }
   };
   const syncPackage = () => {
-    const IDs = {
-      ispOwner: ispOwner,
-      mikrotikId: mikrotikId,
-    };
-    fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
+    if (window.confirm("আপনি কি মাইক্রোটিকের প্যাকেজ সিংক করতে চান?")) {
+      const IDs = {
+        ispOwner: ispOwner,
+        mikrotikId: mikrotikId,
+      };
+      fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
+    }
   };
   return (
     <>
