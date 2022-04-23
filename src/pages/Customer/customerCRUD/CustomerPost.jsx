@@ -33,6 +33,8 @@ export default function CustomerModal() {
       : state.package.packages
   );
 
+  console.log(bpSettings);
+
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -61,6 +63,7 @@ export default function CustomerModal() {
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
+    balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
 
   // select subArea
@@ -124,7 +127,7 @@ export default function CustomerModal() {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
+    const { Pname, Ppassword, Pprofile, Pcomment, balance, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
       paymentStatus: "unpaid",
@@ -144,6 +147,7 @@ export default function CustomerModal() {
         comment: Pcomment,
         profile: Pprofile,
       },
+      balance: -balance,
       ...rest,
     };
     if (!bpSettings.hasMikrotik) {
@@ -151,6 +155,7 @@ export default function CustomerModal() {
     }
     // console.log(mainData)
     addCustomer(dispatch, mainData, setIsloading, resetForm);
+    console.log(data);
   };
 
   useEffect(() => {
@@ -193,6 +198,7 @@ export default function CustomerModal() {
                   Pprofile: packageRate?.name || "",
                   Ppassword: "",
                   Pcomment: "",
+                  balance: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -260,6 +266,15 @@ export default function CustomerModal() {
                         //   })
                         // }}
                       />
+                      {bpSettings.hasMikrotik ? (
+                        ""
+                      ) : (
+                        <FtextField
+                          type="number"
+                          label="পূর্বের বকেয়া"
+                          name="balance"
+                        />
+                      )}
                     </div>
 
                     <div className="pppoeSection2">
