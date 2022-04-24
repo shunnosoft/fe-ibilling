@@ -59,6 +59,7 @@ import Cancel from "./pages/success copy/Success";
 import Failed from "./pages/success copy 2/Success";
 import Package from "./pages/package/Package";
 import Settings from "./pages/settings/Settings";
+import Expenditure from "./pages/expenditure/Expenditure";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -119,6 +120,7 @@ function App() {
               <Route path="reseller/profile" element={<RProfile />} />
               <Route path="reseller/home" element={<RDashboard />} />
               <Route path="reseller/collector" element={<RCollector />} />
+              <Route path="expenditure" element={<Expenditure />} />
               <Route
                 path="reseller/recharge"
                 element={<RechargeHistoryofReseller />}
@@ -252,6 +254,8 @@ function App() {
               />
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
+              <Route path="expenditure" element={<Expenditure />} />
+
               <Route path="settings" element={<Settings />} />
               <Route path="home" element={<Dashboard />} />
               <Route path="area" element={<Area />} />

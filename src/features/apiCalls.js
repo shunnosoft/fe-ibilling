@@ -76,6 +76,7 @@ import {
   editPackageSuccess,
   getpackageSuccess,
 } from "./packageSlice";
+import { getExpenditureSectorsSuccess, getExpenditureSuccess } from "./expenditureSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -1186,3 +1187,33 @@ export const getResellerBalance = async (
     setIsrefresh(false);
   }
 };
+
+
+//expenditure
+export const getAllExpenditure=async (dispatch,ispOwnerId) =>{
+
+  try {
+    const res =await apiLink.get(`/expenditure/${ispOwnerId}`)
+    
+
+    getExpenditureSuccess(res.data)
+    
+  } catch (error) {
+    console.log(error)
+    
+  }
+   
+}
+export const getExpenditureSectors=async (dispatch,ispOwnerId) =>{
+
+  try {
+    const res =await apiLink.get(`/expenditureSectors/${ispOwnerId}`)
+    getExpenditureSectorsSuccess(res.data)
+     
+    
+  } catch (error) {
+    console.log(error)
+    
+  }
+   
+}

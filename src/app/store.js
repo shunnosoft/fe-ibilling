@@ -13,6 +13,7 @@ import invoiceSlice from "../features/invoiceSlice";
 import packageSlice from "../features/packageSlice";
 import adminSlice from "../features/adminSlice";
 import uiSlice from "../features/uiSlice";
+import expenditureSlice from "../features/expenditureSlice";
 
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -44,6 +45,7 @@ const store = configureStore({
     ui: uiSlice,
     package: packageSlice,
     admin: adminSlice,
+    expenditure:expenditureSlice
   },
 
   middleware: (getDefaultMiddleware) =>

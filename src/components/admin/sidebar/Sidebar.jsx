@@ -19,6 +19,7 @@ import {
   Gear,
   PersonBadge,
   PersonCheck,
+  CashStack,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -475,6 +476,30 @@ export default function Sidebar() {
                     >
                       <div className="sidebarIcon">{<PersonBoundingBox />}</div>
                       <span className="sidebarLinksName">{"ইনভয়েস"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
+              {(userRole === "ispOwner" ||userRole === "reseller") ? (
+                <NavLink
+                  key={309}
+                  to={"/expenditure"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/expenditure" ? "active" : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<CashStack />}</div>
+                      <span className="sidebarLinksName">{"খরচ"}</span>
                     </li>
                   </FontColor>
                 </NavLink>
