@@ -129,6 +129,7 @@ export default function CustomerEdit(props) {
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
+    balance: Yup.number().integer(),
   });
 
   // const [loadingPac, setLoadingPac] = useState(false);
@@ -270,6 +271,7 @@ export default function CustomerEdit(props) {
                   Pprofile: packageRate?.name || user.pppoe?.profile || "",
                   Ppassword: user?.pppoe?.password || "",
                   status: status || "",
+                  balance: user.balance || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -337,6 +339,16 @@ export default function CustomerEdit(props) {
                         label="মাসিক ফি"
                         name="monthlyFee"
                       />
+
+                      {bpSettings.hasMikrotik ? (
+                        ""
+                      ) : (
+                        <FtextField
+                          type="number"
+                          label="পূর্বের বকেয়া"
+                          name="balance"
+                        />
+                      )}
                     </div>
 
                     <div className="pppoeSection2">
