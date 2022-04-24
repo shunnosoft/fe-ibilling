@@ -8,15 +8,18 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { Card } from "react-bootstrap";
-import { addStaff } from "../../../features/apiCallStaff";
+import { addStaff, updateStaffApi } from "../../../features/apiCallStaff";
 
-export default function StaffPost() {
-  // const [Check, setCheck] = useState(RBD);
+export default function StaffEdit({ staffId }) {
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
+  const staffData = useSelector((state) =>
+    state.persistedReducer.staff.staff.find((item) => item.id === staffId)
   );
 
   //validator
@@ -43,6 +46,7 @@ export default function StaffPost() {
       nid: data.nid,
       district: data.district,
       website: data.website,
+      status: data.status,
       reference: {
         name: data.refName,
         mobile: data.refMobile,
@@ -51,17 +55,16 @@ export default function StaffPost() {
         relation: data.refRelation,
         nid: data.refNid,
       },
-      ispOwner,
-      user: auth.user.id,
     };
-    addStaff(dispatch, sendingData, setIsLoading);
+    updateStaffApi(dispatch, staffId, sendingData, setIsLoading);
   };
+  const status = ["new", "active", "inactive", "banned", "deleted"];
 
   return (
     <div>
       <div
         className="modal fade modal-dialog-scrollable "
-        id="staffModal"
+        id="staffEditModal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -70,7 +73,7 @@ export default function StaffPost() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                কর্মচারী অ্যাড করুন
+                কর্মচারী আপডেট করুন
               </h5>
               <button
                 type="button"
@@ -83,21 +86,22 @@ export default function StaffPost() {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: "",
-                  mobile: "",
-                  email: "",
-                  fatherName: "",
-                  nid: "",
-                  address: "",
-                  district: "",
-                  thana: "",
-                  website: "",
-                  refName: "",
-                  refMobile: "",
-                  refEmail: "",
-                  refAddress: "",
-                  refRelation: "",
-                  refNid: "",
+                  name: staffData?.name || "",
+                  mobile: staffData?.mobile || "",
+                  email: staffData?.email || "",
+                  fatherName: staffData?.name || "",
+                  nid: staffData?.nid || "",
+                  address: staffData?.address || "",
+                  district: staffData?.district || "",
+                  thana: staffData?.thana || "",
+                  website: staffData?.website || "",
+                  refName: staffData?.reference.name || "",
+                  refMobile: staffData?.reference.mobile || "",
+                  refEmail: staffData?.reference.email || "",
+                  refAddress: staffData?.reference.address || "",
+                  refRelation: staffData?.reference.relation || "",
+                  refNid: staffData?.reference.data || "",
+                  status: staffData?.status,
                 }}
                 validationSchema={resellerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -133,6 +137,22 @@ export default function StaffPost() {
                         name="website"
                       />
                     </div>
+
+                    <p className="radioTitle">স্ট্যাটাস</p>
+                    <div className="form-check d-flex">
+                      {status.map((value, key) => (
+                        <div key={key} className="form-check">
+                          <FtextField
+                            label={value}
+                            className="form-check-input"
+                            type="radio"
+                            name="status"
+                            value={value}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
                     <Card>
                       <Card.Body>
                         <Card.Title>রেফারেন্সকারীর তথ্য দিন</Card.Title>

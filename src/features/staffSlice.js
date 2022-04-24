@@ -12,17 +12,12 @@ const staffSlice = createSlice({
     addStaffSuccess: (state, action) => {
       state.staff.push(action.payload);
     },
-    // editCustomerSuccess: (state, action) => {
-    //   //example
-    //   // const array1 = [5, 12, 8, 130, 44];
-    //   // array1[array1.findIndex(item=>item===12)]=120
-    //   // console.log(array1)
-    //   //[5, 120, 8, 130, 44]
-
-    //   state.customer[
-    //     state.customer.findIndex((item) => item.id === action.payload.id)
-    //   ] = action.payload;
-    // },
+    editStaff: (state, action) => {
+      console.log(action.payload);
+      state.staff[
+        state.staff.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
+    },
     // updateBalance: (state, action) => {
     //   const customer = state.customer.find(
     //     (item) => item.id === action.payload.customer
@@ -54,6 +49,7 @@ const staffSlice = createSlice({
   },
 });
 
-export const { getStaffSuccess, addStaffSuccess } = staffSlice.actions;
+export const { getStaffSuccess, addStaffSuccess, editStaff } =
+  staffSlice.actions;
 
 export default staffSlice.reducer;
