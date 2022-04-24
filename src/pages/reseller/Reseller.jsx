@@ -20,6 +20,7 @@ import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./resellerModals/ResellerPost";
 import ResellerEdit from "./resellerModals/ResellerEdit";
 import Loader from "../../components/common/Loader";
+import { getMikrotikPackages } from "../../features/apiCallReseller";
 // import {
 //   fetchReseller,
 //   getReseller,
@@ -33,6 +34,10 @@ import Recharge from "./resellerModals/recharge";
 export default function Reseller() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
   const [singleUser, setSingleUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
@@ -59,6 +64,12 @@ export default function Reseller() {
     const IDs = { ispId: ispId, resellerId: resellerId };
     deleteReseller(dispatch, IDs, setIsLoading);
   };
+
+  useEffect(() => {
+    if (ispOwnerId !== undefined) {
+      getMikrotikPackages(dispatch, ispOwnerId);
+    }
+  }, [dispatch, ispOwnerId]);
 
   return (
     <>
@@ -89,11 +100,6 @@ export default function Reseller() {
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#resellerModal"
-                        />
-                        <GearFill
-                          className="addcutmButton"
-                          //   data-bs-toggle="modal"
-                          //   data-bs-target="#exampleModal"
                         />
                       </div>
                     </div>

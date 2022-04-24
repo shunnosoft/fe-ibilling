@@ -29,7 +29,7 @@ import {
 import { getChartSuccess } from "./chartsSlice";
 import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
-
+import { getAllMikrotikPakages } from "./resellerSlice";
 export const getCharts = async (dispatch, resellerId, Year, Month, User) => {
   try {
     let link = `/dashboard/${resellerId}?year=${Year}&month=${Month}`;
@@ -375,6 +375,17 @@ export const rechargeHistoryfuncR = async (dispatch, resellerId) => {
   try {
     const res = await apiLink.get(`/reseller/recharge/${resellerId}`);
     dispatch(getAllRechargeHistory(res.data));
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+};
+
+export const getMikrotikPackages = async (dispatch, ispOwnerId) => {
+  try {
+    const res = await apiLink.get(
+      "/mikrotik/ppp/mikrotik/package/" + ispOwnerId
+    );
+    dispatch(getAllMikrotikPakages(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }
