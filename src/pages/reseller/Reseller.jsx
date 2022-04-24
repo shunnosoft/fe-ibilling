@@ -87,14 +87,14 @@ export default function Reseller() {
               <Recharge reseller={singleUser}></Recharge>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">রি-সেলার</h2>
+                <h2 className="collectorTitle">রিসেলার</h2>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>অ্যাড রি-সেলার</p>
+                      <p>অ্যাড রিসেলার</p>
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
                           className="addcutmButton"
@@ -106,8 +106,7 @@ export default function Reseller() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট রি-সেলার :{" "}
-                          <span>{reseller.length || "NULL"}</span>
+                          মোট রিসেলার : <span>{reseller.length || "NULL"}</span>
                         </h4>
                       </div>
 

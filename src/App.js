@@ -59,6 +59,7 @@ import Cancel from "./pages/success copy/Success";
 import Failed from "./pages/success copy 2/Success";
 import Package from "./pages/package/Package";
 import Settings from "./pages/settings/Settings";
+import Staff from "./pages/staff/Staff";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -308,7 +309,9 @@ function App() {
                   <Navigate to={"/home"}></Navigate>
                 )
               }
-            />
+                />
+                
+                <Route path="/staff" element={<Staff/>}/>
           </Routes>
         )}
       </div>

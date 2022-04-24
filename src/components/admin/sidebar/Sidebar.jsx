@@ -17,8 +17,8 @@ import {
   PersonBoundingBox,
   Cash,
   Gear,
-  PersonBadge,
   PersonCheck,
+  PersonFill,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -503,6 +503,26 @@ export default function Sidebar() {
                 </NavLink>
               ) : (
                 ""
+              )}
+
+              {userRole === "ispOwner" && (
+                <NavLink
+                  key={330}
+                  to={"/staff"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={window.location.pathname === "/staff" ? "active" : ""}
+                    >
+                      <div className="sidebarIcon">{<PeopleFill />}</div>
+                      <span className="sidebarLinksName">{"কর্মী"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
               )}
 
               {/* bill sub links */}

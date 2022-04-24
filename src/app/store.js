@@ -13,6 +13,7 @@ import invoiceSlice from "../features/invoiceSlice";
 import packageSlice from "../features/packageSlice";
 import adminSlice from "../features/adminSlice";
 import uiSlice from "../features/uiSlice";
+import staffSlice from "../features/staffSlice";
 
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   chart: chartsSlice,
   recharge: rechargeSlice,
   invoice: invoiceSlice,
+  staff:staffSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
