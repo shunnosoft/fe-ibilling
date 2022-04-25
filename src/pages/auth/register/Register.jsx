@@ -13,6 +13,7 @@ import { initialValues, TextField } from "./TextField";
 import { asyncRegister } from "../../../features/actions/authAsyncAction";
 import allpakage from "./pakageData";
 import Loader from "../../../components/common/Loader";
+import FormatNumber from "../../../components/common/NumberFormat";
 
 export default function Register() {
   // const [packValue, setPackValue] = useState("");
@@ -20,7 +21,8 @@ export default function Register() {
   const [pakage, setPakage] = useState(allpakage[0]);
   const [subpakage, setsubPakage] = useState(allpakage[0]["subPakage"]);
   const [singlePakage, setSinglePakage] = useState([
-    allpakage[0]["subPakage"][0],
+    // allpakage[0]["subPakage"][0],
+    "Standard",
   ]);
   const [isLoading, setLoading] = useState(false);
   const validate = Yup.object({
@@ -135,7 +137,7 @@ export default function Register() {
                       <span className="disspan">
                         {" "}
                         <strong className="disStrong">{discount}%</strong>{" "}
-                        ডিসকাউন্ট
+                        ডিসকাউন্ট (সাইন আপ ফি)
                       </span>
                     </div>
                     <label className="form-label mt-2">
@@ -143,7 +145,7 @@ export default function Register() {
                     </label>
 
                     {/* <option value="">প্যাকেজ সিলেক্ট করুন</option> */}
-                    <div className="radiopak">
+                    {/* <div className="radiopak">
                       {allpakage.map((pak, index) => {
                         return (
                           <div className="singlePak" key={index}>
@@ -163,7 +165,7 @@ export default function Register() {
                           </div>
                         );
                       })}
-                    </div>
+                    </div> */}
 
                     <select
                       name="package"
@@ -189,26 +191,32 @@ export default function Register() {
                     </select>
 
                     <div className="pakinfo mt-2">
-                      <span>কাস্টমারঃ {singlePakage[0].customer}</span>
+                      <span>
+                        গ্রাহকঃ {FormatNumber(singlePakage[0].customer)}
+                      </span>
                       <span className="insFeespan">
-                        ইনস্টলেশন ফিঃ{" "}
+                        সাইন আপ ফিঃ{" "}
                         {discount > 0 ? (
                           <span
                             className={
                               discount > 0 ? "strikethrough" : "mainfee"
                             }
                           >
-                            {singlePakage[0].installation}
+                            {FormatNumber(singlePakage[0].installation)}
                           </span>
                         ) : (
                           ""
                         )}
                         <span className="mainfee">
-                          {singlePakage[0].installation -
-                            (singlePakage[0].installation * discount) / 100}
+                          {FormatNumber(
+                            singlePakage[0].installation -
+                              (singlePakage[0].installation * discount) / 100
+                          )}
                         </span>
                       </span>
-                      <span>মাসিক ফিঃ {singlePakage[0].monthly}</span>
+                      <span>
+                        মাসিক ফিঃ {FormatNumber(singlePakage[0].monthly)}
+                      </span>
                     </div>
 
                     {/* <div className="form-outline" id="get_customer">
