@@ -20,6 +20,7 @@ import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./resellerModals/ResellerPost";
 import ResellerEdit from "./resellerModals/ResellerEdit";
 import Loader from "../../components/common/Loader";
+import { getMikrotikPackages } from "../../features/apiCallReseller";
 // import {
 //   fetchReseller,
 //   getReseller,
@@ -33,6 +34,10 @@ import Recharge from "./resellerModals/recharge";
 export default function Reseller() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
   const [singleUser, setSingleUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
@@ -60,6 +65,12 @@ export default function Reseller() {
     deleteReseller(dispatch, IDs, setIsLoading);
   };
 
+  useEffect(() => {
+    if (ispOwnerId !== undefined) {
+      getMikrotikPackages(dispatch, ispOwnerId);
+    }
+  }, [dispatch, ispOwnerId]);
+
   return (
     <>
       <Sidebar />
@@ -76,32 +87,26 @@ export default function Reseller() {
               <Recharge reseller={singleUser}></Recharge>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">রি-সেলার</h2>
+                <h2 className="collectorTitle">রিসেলার</h2>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>অ্যাড রি-সেলার</p>
+                      <p>অ্যাড রিসেলার</p>
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#resellerModal"
                         />
-                        <GearFill
-                          className="addcutmButton"
-                          //   data-bs-toggle="modal"
-                          //   data-bs-target="#exampleModal"
-                        />
                       </div>
                     </div>
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট রি-সেলার :{" "}
-                          <span>{reseller.length || "NULL"}</span>
+                          মোট রিসেলার : <span>{reseller.length || "NULL"}</span>
                         </h4>
                       </div>
 

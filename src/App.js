@@ -60,6 +60,8 @@ import Failed from "./pages/success copy 2/Success";
 import Package from "./pages/package/Package";
 import Settings from "./pages/settings/Settings";
 import Expenditure from "./pages/expenditure/Expenditure";
+import Staff from "./pages/staff/Staff";
+import StaffSalary from "./pages/staff/Salary/StaffSalary";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -313,6 +315,9 @@ function App() {
                 )
               }
             />
+
+            <Route path="/staff" element={<Staff />} />
+            <Route path="/staff/:staffId" element={<StaffSalary />} />
           </Routes>
         )}
       </div>

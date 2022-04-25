@@ -129,11 +129,13 @@ export default function Message() {
           areaIds.includes(customer.subArea) &&
           days.includes(dueDate.diff(now, "days"))
         ) {
-          const msg = `আইডি: ${customer.customerId}\nগ্রাহক: ${
-            customer.name
-          }\nবিলঃ ${customer.monthlyFee} Tk\nতারিখঃ ${moment(
-            customer.billingCycle
-          ).format("DD-MM-YYYY")}\n\n${smsRef.current.value}`;
+          const msg = `আইডিঃ ${customer.customerId}\nইউজারনেমঃ ${
+            customer?.pppoe?.name
+          }\nগ্রাহকঃ ${customer.name}\nবিলঃ ${
+            customer.monthlyFee
+          } Tk\nতারিখঃ ${moment(customer.billingCycle).format(
+            "DD-MM-YYYY"
+          )}\n\n${smsRef.current.value}`;
 
           const isBanglaFlag = isBangla(msg);
           const singleSms = isBanglaFlag ? 67 : 160;

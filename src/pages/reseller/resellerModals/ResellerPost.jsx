@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
@@ -21,9 +21,12 @@ export default function ResellerPost() {
   const mikrotik = useSelector(
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
-
+  const mikrotikpakages = useSelector(
+    (state) => state.persistedReducer.reseller.allMikrotikPakages
+  );
   const [areaIds, setAreaIds] = useState([]);
   const [mikrotikIds, setMikrotikIds] = useState([]);
+  const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
 
   //validator
   const resellerValidator = Yup.object({
@@ -69,6 +72,7 @@ export default function ResellerPost() {
         //todo backend
         mikrotiks: mikrotikIds,
         billCollectionType: "prepaid",
+        mikrotikPackages: mikroTikPackagesId,
       };
 
       sendingData.commissionRate = {
@@ -103,6 +107,15 @@ export default function ResellerPost() {
 
     setMikrotikIds(IDS_temp);
   };
+
+  const handelMikrotikPakages = (e) => {
+    let newArray = [...mikroTikPackagesId, e.target.value];
+    if (mikroTikPackagesId.includes(e.target.value)) {
+      newArray = newArray.filter((item) => item !== e.target.value);
+    }
+    setmikroTikPackagesId(newArray);
+  };
+
   return (
     <div>
       <div
@@ -271,7 +284,7 @@ export default function ResellerPost() {
 
                     <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
                     <div className="AllAreaClass">
-                      {mikrotik?.map((val, key) => (
+                      {/* {mikrotik?.map((val, key) => (
                         <div key={key} className="displayFlex">
                           <input
                             type="checkbox"
@@ -280,6 +293,37 @@ export default function ResellerPost() {
                             onChange={(e) => setMikrotikHandler(e.target.value)}
                           />
                           <label>{val.name}</label>
+                        </div>
+                      ))} */}
+
+                      {mikrotikpakages.mikrotiks?.map((item) => (
+                        <div key={item.id}>
+                          <h6 className="areaParent ">
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClasses"
+                              value={item.id}
+                              onChange={(e) =>
+                                setMikrotikHandler(e.target.value)
+                              }
+                            />{" "}
+                            <label>
+                              <b className="h5">{item.name}</b>
+                            </label>
+                          </h6>
+                          {mikrotikpakages.packages.map(
+                            (p) =>
+                              p.mikrotik === item.id && (
+                                <div key={p.id} className="displayFlex">
+                                  <input
+                                    type="checkbox"
+                                    value={p.id}
+                                    onChange={handelMikrotikPakages}
+                                  />
+                                  <label>{p.name}</label>
+                                </div>
+                              )
+                          )}
                         </div>
                       ))}
                     </div>
