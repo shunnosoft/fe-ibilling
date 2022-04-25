@@ -1,12 +1,11 @@
 import {
-  PersonPlusFill,
-  GearFill,
   ThreeDots,
   PenFill,
   ArchiveFill,
   PersonFill,
-  Wallet,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 
 const ActionButton = ({ data, deleteStaff, editHandler }) => {
   return (
@@ -48,7 +47,20 @@ const ActionButton = ({ data, deleteStaff, editHandler }) => {
             </div>
           </div>
         </li>
-
+        <Link to={"/staff/" + data.id}>
+          <li
+            onClick={() => {
+              deleteStaff(data.id);
+            }}
+          >
+            <div className="dropdown-item actionManager">
+              <div className="customerAction">
+                <CurrencyDollar />
+                <p className="actionP">স্যালারি</p>
+              </div>
+            </div>
+          </li>
+        </Link>
         <li
           onClick={() => {
             deleteStaff(data.id);

@@ -38,11 +38,8 @@ export default function StaffPost() {
       mobile: data.mobile,
       email: data.email,
       fatherName: data.fatherName,
-      thana: data.thana,
       address: data.address,
       nid: data.nid,
-      district: data.district,
-      website: data.website,
       reference: {
         name: data.refName,
         mobile: data.refMobile,
@@ -89,9 +86,6 @@ export default function StaffPost() {
                   fatherName: "",
                   nid: "",
                   address: "",
-                  district: "",
-                  thana: "",
-                  website: "",
                   refName: "",
                   refMobile: "",
                   refEmail: "",
@@ -124,15 +118,7 @@ export default function StaffPost() {
                       <FtextField type="text" label="NID নম্বর" name="nid" />
                       <FtextField type="text" label="ঠিকানা" name="address" />
                     </div>
-                    <div className="displayGrid3">
-                      <FtextField type="text" label="জেলা" name="district" />
-                      <FtextField type="text" label="থানা" name="thana" />
-                      <FtextField
-                        type="text"
-                        label="ওয়েবসাইট"
-                        name="website"
-                      />
-                    </div>
+
                     <Card>
                       <Card.Body>
                         <Card.Title>রেফারেন্সকারীর তথ্য দিন</Card.Title>

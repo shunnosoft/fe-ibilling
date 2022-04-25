@@ -41,11 +41,8 @@ export default function StaffEdit({ staffId }) {
       mobile: data.mobile,
       email: data.email,
       fatherName: data.fatherName,
-      thana: data.thana,
       address: data.address,
       nid: data.nid,
-      district: data.district,
-      website: data.website,
       status: data.status,
       reference: {
         name: data.refName,
@@ -92,9 +89,6 @@ export default function StaffEdit({ staffId }) {
                   fatherName: staffData?.name || "",
                   nid: staffData?.nid || "",
                   address: staffData?.address || "",
-                  district: staffData?.district || "",
-                  thana: staffData?.thana || "",
-                  website: staffData?.website || "",
                   refName: staffData?.reference.name || "",
                   refMobile: staffData?.reference.mobile || "",
                   refEmail: staffData?.reference.email || "",
@@ -128,16 +122,6 @@ export default function StaffEdit({ staffId }) {
                       <FtextField type="text" label="NID নম্বর" name="nid" />
                       <FtextField type="text" label="ঠিকানা" name="address" />
                     </div>
-                    <div className="displayGrid3">
-                      <FtextField type="text" label="জেলা" name="district" />
-                      <FtextField type="text" label="থানা" name="thana" />
-                      <FtextField
-                        type="text"
-                        label="ওয়েবসাইট"
-                        name="website"
-                      />
-                    </div>
-
                     <p className="radioTitle">স্ট্যাটাস</p>
                     <div className="form-check d-flex">
                       {status.map((value, key) => (

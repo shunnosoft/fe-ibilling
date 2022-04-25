@@ -1,15 +1,55 @@
+import { Button } from "react-bootstrap";
 import React from "react";
-import { useTable } from "react-table";
+import { useTable, useGlobalFilter, usePagination } from "react-table";
 
-const StaffTable = ({ columns, data }) => {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({
+const GlobalFilter = ({ filter, setFilter }) => {
+  return (
+    <div className=" collectorSearch w-50 m-auto mb-2">
+      <input
+        value={filter || ""}
+        onChange={(e) => setFilter(e.target.value)}
+        type="text"
+        className="search p-2 h-10"
+        placeholder="Search this table"
+        style={{ background: "none", border: "2px solid #ddd", color: "#000" }}
+      />
+    </div>
+  );
+};
+
+const StaffTable = ({ columns, data, searchInput }) => {
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state,
+    setGlobalFilter,
+    page,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+  } = useTable(
+    {
       columns,
       data,
-    });
+    },
+    useGlobalFilter,
+    usePagination
+  );
+
+  const { globalFilter, pageIndex } = state;
 
   return (
     <div className="table-responsive-lg">
+      <GlobalFilter
+        searchInput={searchInput}
+        filter={globalFilter}
+        setFilter={setGlobalFilter}
+      />
       <table className="table table-striped " {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -21,7 +61,7 @@ const StaffTable = ({ columns, data }) => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {page.map((row, i) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
@@ -35,6 +75,27 @@ const StaffTable = ({ columns, data }) => {
           })}
         </tbody>
       </table>
+      <div className="text-end">
+        <span>
+          {" Page "} <strong> {pageIndex + 1}</strong>
+          {" of "} <strong> {pageOptions.length}</strong>
+        </span>
+        <Button
+          className="mx-2"
+          disabled={!canPreviousPage}
+          onClick={() => previousPage()}
+          variant="outline-primary"
+        >
+          Previous
+        </Button>
+        <Button
+          disabled={!canNextPage}
+          onClick={() => nextPage()}
+          variant="outline-primary"
+        >
+          Next
+        </Button>
+      </div>
     </div>
     //     <div className="table-responsive-lg">
     //     <table className="table table-striped ">

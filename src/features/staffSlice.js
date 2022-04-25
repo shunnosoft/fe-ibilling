@@ -4,6 +4,7 @@ const staffSlice = createSlice({
   name: "staff",
   initialState: {
     staff: [],
+    salary: [],
   },
   reducers: {
     getStaffSuccess: (state, action) => {
@@ -18,34 +19,13 @@ const staffSlice = createSlice({
         state.staff.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
     },
-    // updateBalance: (state, action) => {
-    //   const customer = state.customer.find(
-    //     (item) => item.id === action.payload.customer
-    //   );
 
-    //   customer.balance += action.payload.amount;
-    //   if (customer.balance >= customer.monthlyFee) {
-    //     customer.paymentStatus = "paid";
-    //   }
-
-    //   state.customer[
-    //     state.customer.findIndex((item) => item.id === customer.id)
-    //   ] = customer;
-    // },
-    // deleteCustomerSuccess: (state, action) => {
-    //   // Example
-    //   // const months = ['Jan', 'March', 'April', 'June'];
-    //   // months.splice(1,1);
-    //   // console.log(months);
-    //   // ["Jan", "April", "June"]
-    //   state.customer.splice(
-    //     state.customer.findIndex((item) => item.id === action.payload),
-    //     1
-    //   );
-    // },
-    // clearCustomer: (state) => {
-    //   state.customer = [];
-    // },
+    getSalarySuccess: (state, action) => {
+      console.log(action.payload);
+    },
+    addSalarySuccess: (state, action) => {
+      state.salary = action.payload;
+    },
   },
 });
 

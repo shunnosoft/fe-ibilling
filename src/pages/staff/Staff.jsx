@@ -44,6 +44,11 @@ const Staff = () => {
   const columns = React.useMemo(
     () => [
       {
+        Header: "#",
+        id: "row",
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
         Header: "Name",
         accessor: "name",
       },
@@ -105,7 +110,7 @@ const Staff = () => {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector ms-auto">
+                    {/* <div className="addNewCollector text-end">
                       <p>অ্যাড কর্মচারী</p>
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
@@ -114,15 +119,22 @@ const Staff = () => {
                           data-bs-target="#staffModal"
                         />
                       </div>
-                    </div>
+                    </div> */}
                     <div className="row searchCollector">
-                      <div className="col-sm-8">
+                      <div className="col-sm-6">
                         <h4 className="allCollector">
-                          মোট কর্মচারী : <span>{"0"}</span>
+                          মোট কর্মচারী : <span>{getAllStaffs.length}</span>
                         </h4>
                       </div>
-
-                      <div className="col-sm-4">
+                      <div className="addAndSettingIcon col-sm-6 text-end">
+                        <PersonPlusFill
+                          style={{ background: "#fff", color: "#328eea" }}
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#staffModal"
+                        />
+                      </div>
+                      {/* <div className="col-sm-4">
                         <div className=" collectorSearch">
                           <input
                             type="text"
@@ -130,7 +142,7 @@ const Staff = () => {
                             placeholder="Search"
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     {isLoading ? (
@@ -143,7 +155,7 @@ const Staff = () => {
                       ""
                     )}
                   </div>
-                  <StaffTable columns={columns} data={data} />
+                  <StaffTable columns={columns} data={getAllStaffs} />
                 </div>
               </FourGround>
             </FontColor>
