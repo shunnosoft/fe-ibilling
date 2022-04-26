@@ -296,7 +296,7 @@ export default function ResellerPost() {
                         </div>
                       ))} */}
 
-                      {mikrotikpakages.mikrotiks?.map((item) => (
+                      {mikrotikpakages?.mikrotiks?.map((item) => (
                         <div key={item.id}>
                           <h6 className="areaParent ">
                             <input
