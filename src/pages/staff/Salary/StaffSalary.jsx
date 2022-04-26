@@ -21,6 +21,7 @@ import Footer from "../../../components/admin/footer/Footer";
 import Loader from "../../../components/common/Loader";
 import { useParams } from "react-router-dom";
 import StaffSalaryPostModal from "./StaffSalaryPostModal";
+import StaffSalaryEditModal from "./StaffSalaryEditModal";
 
 export default function StaffSalary() {
   const dispatch = useDispatch();
@@ -106,12 +107,12 @@ export default function StaffSalary() {
                               </li>
                               <li
                                 data-bs-toggle="modal"
-                                data-bs-target="#editSalaryModal"
+                                data-bs-target="#editSalaryPostModal"
                               >
                                 <div className="dropdown-item">
                                   <div className="ManagerAactionLi">
                                     <PenFill />
-                                    <p className="actionP">এডিট</p>
+                                    <p className="actionP">এডিট স্যালারি</p>
                                   </div>
                                 </div>
                               </li>
@@ -133,6 +134,7 @@ export default function StaffSalary() {
                     )}
                   </div>
                   <StaffSalaryPostModal staffId={staffId} />
+                  {/* <StaffSalaryEditModal staffId={staffId} /> */}
                 </div>
               </FourGround>
               <Footer />
