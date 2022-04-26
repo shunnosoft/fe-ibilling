@@ -44,9 +44,9 @@ a {
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 /* Optional: show position indicator in red */
-::-webkit-scrollbar-thumb {
+/* ::-webkit-scrollbar-thumb {
   background: #ff0000;
-}
+} */
 #active {
   box-shadow: 6px 0px 0px #297fd4 inset;
   filter: contrast(5);

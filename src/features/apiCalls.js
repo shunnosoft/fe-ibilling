@@ -1229,7 +1229,12 @@ export const editExpenditure = async (dispatch, data, setLoading) => {
   try {
     const res = await apiLink.patch(`/staff/expenditure`, data);
     dispatch(editExpenditureSuccess(res.data));
-  } catch (error) {}
+    toast.success();
+    setLoading(false);
+  } catch (error) {
+    toast.error();
+    setLoading(false);
+  }
 };
 
 // expenditure pourpose
@@ -1267,11 +1272,11 @@ export const addExpenditurePourpose = async (
 export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   try {
-    const res = await apiLink.post(`/staff/expenditurePurpose`, data);
+    const res = await apiLink.patch(`/staff/expenditurePurpose`, data);
     dispatch(editExpenditureSectorsSuccess(res.data));
     console.log(res.data);
     setIsloading(false);
-    document.querySelector("#editPourpose").click();
+    document.querySelector("#editPurpose").click();
 
     toast.success("সফল হয়েছে");
   } catch (error) {
