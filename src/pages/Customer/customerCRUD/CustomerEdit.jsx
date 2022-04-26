@@ -129,7 +129,7 @@ export default function CustomerEdit(props) {
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
-    balance: Yup.number().integer(),
+    // balance: Yup.number().integer(),
   });
 
   // const [loadingPac, setLoadingPac] = useState(false);
@@ -345,7 +345,7 @@ export default function CustomerEdit(props) {
                       ) : (
                         <FtextField
                           type="number"
-                          label="পূর্বের বকেয়া"
+                          label="ব্যাল্যান্স"
                           name="balance"
                         />
                       )}
