@@ -1,25 +1,55 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Loader from "../../components/common/Loader";
 import * as Yup from "yup";
 import "./expenditure.css";
 import { FtextField } from "../../components/common/FtextField";
 import { Plus, PlusSquare } from "react-bootstrap-icons";
-import { useSelector } from "react-redux";
-import { TextField } from "../auth/register/TextField";
+import { useDispatch, useSelector } from "react-redux";
+import { addExpenditure, getExpenditureSectors } from "../../features/apiCalls";
 export default function CreateExpenditure() {
   const [isLoading, setIsLoading] = useState(false);
+  const [pourpose, setPourpose] = useState("");
   const expSectors = useSelector(
-    (state) => state.expenditure.expenditureSectors
+    (state) => state.expenditure.expenditurePourposes
   );
-
+  const dispatch = useDispatch();
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const desRef = useRef("");
   const collectorValidator = Yup.object({
     amount: Yup.number().required("***"),
     newExp: Yup.string(),
+    description: Yup.string(),
   });
-  useEffect(() => {
-    //call getExppourpose here
-  }, []);
+
+  // useEffect(() => {
+  // }, [ispOwnerId, dispatch]);
+  const handleSelect = (e) => {
+    console.log(e.target.value);
+    setPourpose(e.target.value);
+  };
+  const expenditureHandler = async (formdata, resetForm) => {
+    if (pourpose !== "") {
+      const data = {
+        amount: formdata.amount,
+        description: desRef.current.value,
+        expenditurePurpose: pourpose,
+      };
+      userRole === "ispOwner"
+        ? (data.ispOwner = userData.id)
+        : userRole === "reseller"
+        ? (data.reseller = userData.id)
+        : (data.staff = userData.id);
+
+      await addExpenditure(dispatch, data, setIsLoading, resetForm);
+      setPourpose("");
+      desRef.current.value = "";
+    }
+  };
   return (
     <div>
       <div
@@ -47,17 +77,45 @@ export default function CreateExpenditure() {
                 initialValues={{
                   newExp: "",
                   amount: 0,
+                  description: "",
                 }}
                 validationSchema={collectorValidator}
-                onSubmit={(values) => {
-                  //   collectorPostHandler(values);
+                onSubmit={(values, { resetForm }) => {
+                  expenditureHandler(values, resetForm);
                 }}
                 enableReinitialize
               >
                 {() => (
                   <Form>
+                    <div style={{ marginBottom: "20px" }}>
+                      <select
+                        style={{
+                          width: "300px",
+                          marginTop: "10px",
+                          border: "2px solid skyblue",
+                          height: "40px",
+                          borderRadius: "5px",
+                        }}
+                        name=""
+                        id=""
+                        onChange={handleSelect}
+                      >
+                        <option value="">খরচ খাত সিলেক্ট করুন</option>
+                        {expSectors?.map((exp, key) => {
+                          return (
+                            <option
+                              selected={pourpose === exp.id}
+                              key={key}
+                              value={exp.id}
+                            >
+                              {exp.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
                     <div className="newexp">
-                      <div
+                      {/* <div
                         style={{
                           display: "flex",
                           alignItems: "center",
@@ -74,7 +132,7 @@ export default function CreateExpenditure() {
                           style={{ marginLeft: "3px", marginTop: "6px" }}
                           className="addcutmButton"
                         ></Plus>
-                      </div>
+                      </div> */}
                       <FtextField
                         style={{ marginRight: "10px" }}
                         type="number"
@@ -82,31 +140,12 @@ export default function CreateExpenditure() {
                         name="amount"
                       ></FtextField>
                     </div>
-                    <h6 className="mt-2">পূর্বের খাতসমূহ থেকে সিলেক্ট করুন</h6>
-                    <div style={{ marginBottom: "20px" }}>
-                      <select
-                        style={{
-                          width: "300px",
-                          marginTop: "10px",
-                          border: "2px solid skyblue",
-                          height: "40px",
-                          borderRadius: "5px",
-                        }}
-                        name=""
-                        id=""
-                        // onSelect={}
-                      >
-                        {expSectors?.map((exp) => {
-                          return <option value={exp.name}>{exp.name}</option>;
-                        })}
-                      </select>
-                    </div>
 
                     <div>
                       <h6>খরচের বিবরণ </h6>
                       <textarea
-                        name=""
-                        id=""
+                        name="description"
+                        ref={desRef}
                         style={{
                           width: "100%",
                           height: "100px",
