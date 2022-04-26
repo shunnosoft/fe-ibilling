@@ -4,6 +4,7 @@ export const resellerSlice = createSlice({
   name: "reseller",
   initialState: {
     reseller: [],
+    allMikrotikPakages: [],
   },
   reducers: {
     getResellerrSuccess: (state, action) => {
@@ -38,6 +39,10 @@ export const resellerSlice = createSlice({
     clearReseller: (state) => {
       state.reseller = [];
     },
+    getAllMikrotikPakages: (state, action) => {
+      console.log(action.payload);
+      state.allMikrotikPakages = action.payload;
+    },
   },
 });
 export const {
@@ -47,5 +52,6 @@ export const {
   deleteResellerSuccess,
   editResellerforRecharge,
   clearReseller,
+  getAllMikrotikPakages,
 } = resellerSlice.actions;
 export default resellerSlice.reducer;
