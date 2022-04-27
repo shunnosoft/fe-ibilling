@@ -69,14 +69,6 @@ const Staff = () => {
         accessor: "salary",
       },
       {
-        Header: "Due",
-        accessor: "due",
-      },
-      {
-        Header: "Reference",
-        accessor: "reference.name",
-      },
-      {
         Header: "Action",
         accessor: "id",
 

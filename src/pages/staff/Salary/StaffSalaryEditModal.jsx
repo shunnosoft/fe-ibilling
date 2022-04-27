@@ -7,39 +7,34 @@ import * as Yup from "yup";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { addSalaryApi } from "../../../features/apiCallStaff";
+import { updateSalary } from "../../../features/apiCallStaff";
 
-export default function StaffSalaryEditModal({ staffId }) {
-  // const [Check, setCheck] = useState(RBD);
+export default function StaffSalaryEditModal({ salaryId }) {
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+  const salaryInfo = useSelector((state) =>
+    state.persistedReducer.staff.salary.find((item) => item.id === salaryId)
   );
 
   //validator
   const salaryValidaiton = Yup.object({
     amount: Yup.string().required("এমাউন্ট দিন"),
-    due: Yup.string().required("বকেয়া উল্লেখ করুন না থাকলে 0 দিন"),
   });
 
   const staffSalaryEditHandler = (data, resetForm) => {
-    const { amount, due, remark } = data;
+    const { amount, due, remarks } = data;
     const date = data.date.split("-");
     const year = date[0];
     const month = date[1];
     const sendingData = {
       amount,
       due,
-      remark,
+      remarks,
       year,
       month,
-      ispOwner,
-      staff: staffId,
     };
     console.log(sendingData);
-    // addSalaryApi(dispatch, sendingData, setIsLoading);
+    updateSalary(dispatch, salaryId, sendingData, setIsLoading);
   };
 
   return (
@@ -55,7 +50,7 @@ export default function StaffSalaryEditModal({ staffId }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                কর্মচারী অ্যাড করুন
+                স্যালারি আপডেট করুন
               </h5>
               <button
                 type="button"
@@ -68,10 +63,10 @@ export default function StaffSalaryEditModal({ staffId }) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  amount: "",
-                  due: "",
-                  date: "",
-                  remark: "",
+                  amount: salaryInfo?.amount || "",
+                  due: salaryInfo?.due || "",
+                  date: salaryInfo?.year + "-0" + salaryInfo?.month || "",
+                  remarks: salaryInfo?.remarks || "",
                 }}
                 validationSchema={salaryValidaiton}
                 onSubmit={(values, { resetForm }) => {
@@ -87,13 +82,13 @@ export default function StaffSalaryEditModal({ staffId }) {
                       <FtextField type="text" label="এমাউন্ট" name="amount" />
                       <FtextField type="text" label="বকেয়া" name="due" />
                       <FtextField
-                        type="date"
+                        type="month"
                         label="মাস এবং বছর সিলেক্ট করুন"
                         name="date"
                       />
                     </div>
 
-                    <FtextField type="text" label="মন্তব্য" name="remark" />
+                    <FtextField type="text" label="মন্তব্য" name="remarks" />
 
                     <div className="modal-footer modalFooterEdit">
                       <button

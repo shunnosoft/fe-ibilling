@@ -1,13 +1,19 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
 
-import { addStaffSuccess, editStaff, getStaffSuccess } from "./staffSlice";
+import {
+  addStaffSuccess,
+  editStaff,
+  getStaffSuccess,
+  addSalarySuccess,
+  getSalarySuccess,
+  updateSalarySuccess,
+} from "./staffSlice";
 
 // get all staff
 export const getStaffs = async (dispatch, ownerId) => {
   try {
     const res = await apiLink.get("/staff/staffs/" + ownerId);
-    console.log(res.data);
     dispatch(getStaffSuccess(res.data));
   } catch (err) {
     if (err.response) {
@@ -62,15 +68,15 @@ export const deleteStaffApi = async (dispatch, staffId, setIsLoading) => {
   }
 };
 
-export const addSalaryApi = async (dispatch, data, setIsLoading) => {
+export const addSalaryApi = async (dispatch, data, resetForm, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff/salary", data);
-    // dispatch(addStaffSuccess(res.data));
+    dispatch(addSalarySuccess(res.data));
     setIsLoading(false);
-    console.log(res.data);
     document.querySelector("#addSalaryPostModal").click();
     toast.success("স্যালারি অ্যাড সফল হয়েছে");
+    resetForm();
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
@@ -81,12 +87,29 @@ export const addSalaryApi = async (dispatch, data, setIsLoading) => {
 
 export const getSalaryApi = async (dispatch, staffId) => {
   try {
-    const res = await apiLink.get("/staff/salary/" + staffId);
-    console.log(res.data);
-    // dispatch(getStaffSuccess(res.data));
+    const res = await apiLink.get("/staff/staffs/salary/" + staffId);
+    dispatch(getSalarySuccess(res.data));
   } catch (err) {
     if (err.response) {
-      // toast.error(err.response.data.message);
+      toast.error(err.response.data.message);
+      console.log(err.response);
     }
+  }
+};
+
+export const updateSalary = async (dispatch, salaryId, data, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch("/staff/salary/" + salaryId, data);
+    console.log(res.data);
+    dispatch(updateSalarySuccess(res.data));
+    document.querySelector("#editSalaryPostModal").click();
+    setIsLoading(false);
+  } catch (err) {
+    if (err.response) {
+      toast.error(err.response.data.message);
+      console.log(err.response);
+    }
+    setIsLoading(false);
   }
 };

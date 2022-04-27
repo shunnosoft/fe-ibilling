@@ -10,7 +10,6 @@ import Loader from "../../../components/common/Loader";
 import { addSalaryApi } from "../../../features/apiCallStaff";
 
 export default function StaffSalaryPostModal({ staffId }) {
-  // const [Check, setCheck] = useState(RBD);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
@@ -25,21 +24,21 @@ export default function StaffSalaryPostModal({ staffId }) {
   });
 
   const staffSalaryHandler = (data, resetForm) => {
-    const { amount, due, remark } = data;
+    const { amount, due, remarks } = data;
     const date = data.date.split("-");
     const year = date[0];
     const month = date[1];
     const sendingData = {
       amount,
       due,
-      remark,
+      remarks,
       year,
       month,
       ispOwner,
       staff: staffId,
     };
     console.log(sendingData);
-    addSalaryApi(dispatch, sendingData, setIsLoading);
+    addSalaryApi(dispatch, sendingData,resetForm, setIsLoading);
   };
 
   return (
@@ -55,7 +54,7 @@ export default function StaffSalaryPostModal({ staffId }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                কর্মচারী অ্যাড করুন
+                স্যালারি অ্যাড করুন
               </h5>
               <button
                 type="button"
@@ -71,7 +70,7 @@ export default function StaffSalaryPostModal({ staffId }) {
                   amount: "",
                   due: "",
                   date: "",
-                  remark: "",
+                  remarks: "",
                 }}
                 validationSchema={salaryValidaiton}
                 onSubmit={(values, { resetForm }) => {
@@ -93,7 +92,7 @@ export default function StaffSalaryPostModal({ staffId }) {
                       />
                     </div>
 
-                    <FtextField type="text" label="মন্তব্য" name="remark" />
+                    <FtextField type="text" label="মন্তব্য" name="remarks" />
 
                     <div className="modal-footer modalFooterEdit">
                       <button
