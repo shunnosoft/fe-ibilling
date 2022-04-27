@@ -75,7 +75,7 @@ export default function Collector() {
         collector.filter((item) =>
           keys.some((key) =>
             typeof item[key] === "string"
-              ? item[key].toLowerCase().includes(collSearch)
+              ? item[key]?.toString().toLowerCase().includes(collSearch)
               : item[key].toString().includes(collSearch)
           )
         )
@@ -86,7 +86,7 @@ export default function Collector() {
   }, [collSearch, collector]);
 
   const searchHandler = (e) => {
-    setCollSearch(e.toLowerCase());
+    setCollSearch(e.toString().toLowerCase());
   };
   return (
     <>

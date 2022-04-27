@@ -420,8 +420,11 @@ export default function ConfigMikrotik() {
                                 pppoePackage
                                   .filter((val) => {
                                     return val.name
+                                      .toString()
                                       .toLowerCase()
-                                      .includes(search3.toLowerCase());
+                                      .includes(
+                                        search3.toString().toLowerCase()
+                                      );
                                   })
                                   .map((val, key) => (
                                     <tr key={key}>
@@ -545,9 +548,12 @@ export default function ConfigMikrotik() {
                               ) : (
                                 activeUser
                                   .filter((val) => {
-                                    return val.name
-                                      .toLowerCase()
-                                      .includes(search2.toLowerCase());
+                                    return val?.name
+                                      ?.toString()
+                                      ?.toLowerCase()
+                                      ?.includes(
+                                        search2.toString()?.toLowerCase()
+                                      );
                                   })
                                   .map((val, key) => (
                                     <tr key={key}>
@@ -673,6 +679,7 @@ export default function ConfigMikrotik() {
                                 allMikrotikUsers
                                   .filter((val) => {
                                     return val.name
+                                      .toString()
                                       .toLowerCase()
                                       .includes(search.toLowerCase());
                                   })

@@ -231,11 +231,13 @@ export default function ConfigMikrotik() {
                                   <TdLoader colspan={6} />
                                 </tr>
                               ) : (
+                                activeUser.length &&
                                 activeUser
                                   .filter((val) => {
-                                    return val.name
-                                      .toLowerCase()
-                                      .includes(search2.toLowerCase());
+                                    return val?.name
+                                      ?.toString()
+                                      ?.toLowerCase()
+                                      ?.includes(search2?.toLowerCase());
                                   })
                                   .map((val, key) => (
                                     <tr key={key}>
@@ -265,7 +267,7 @@ export default function ConfigMikrotik() {
                                         }}
                                       >
                                         {(val.rxByte / 1024 / 1024).toFixed(2) +
-                                          " MB/s"}
+                                          " MB"}
                                       </td>
                                       <td
                                         style={{
@@ -274,7 +276,7 @@ export default function ConfigMikrotik() {
                                         }}
                                       >
                                         {(val.txByte / 1024 / 1024).toFixed(2) +
-                                          " MB/s"}
+                                          " MB"}
                                       </td>
                                       <td
                                         style={{
@@ -361,8 +363,11 @@ export default function ConfigMikrotik() {
                                 allMikrotikUsers
                                   .filter((val) => {
                                     return val.name
+                                      .toString()
                                       .toLowerCase()
-                                      .includes(search.toLowerCase());
+                                      .includes(
+                                        search.toString().toLowerCase()
+                                      );
                                   })
                                   .map((val, key) => (
                                     <tr key={key}>

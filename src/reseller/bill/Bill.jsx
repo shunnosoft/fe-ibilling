@@ -186,8 +186,9 @@ export default function Bill() {
                         ) : (
                           Customers.filter((val) => {
                             return val.name
+                              .toString()
                               .toLowerCase()
-                              .includes(cusSearch.toLowerCase());
+                              .includes(cusSearch.toString().toLowerCase());
                           }).map((val, key) => (
                             <tr key={key} id={val.id}>
                               <td>{val.customerId}</td>

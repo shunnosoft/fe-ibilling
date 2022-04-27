@@ -105,8 +105,9 @@ export default function Mikrotik() {
                           allmikrotiks
                             .filter((val) => {
                               return val.name
+                                .toString()
                                 .toLowerCase()
-                                .includes(msearch.toLowerCase());
+                                .includes(msearch.toString().toLowerCase());
                             })
                             .map((val, key) => (
                               <tr key={key}>

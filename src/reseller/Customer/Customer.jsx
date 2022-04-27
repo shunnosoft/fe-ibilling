@@ -92,7 +92,7 @@ export default function Customer() {
       (isFilterRunning ? filterdCus : cus).filter((item) =>
         keys.some((key) =>
           typeof item[key] === "string"
-            ? item[key].toLowerCase().includes(cusSearch)
+            ? item[key].toString().toLowerCase().includes(cusSearch)
             : item[key].toString().includes(cusSearch)
         )
       )

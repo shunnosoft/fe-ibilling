@@ -257,8 +257,9 @@ export default function SubArea() {
                           subAreas
                             ?.filter((val) => {
                               return val.name
+                                ?.toString()
                                 ?.toLowerCase()
-                                .includes(search.toLowerCase());
+                                .includes(search.toString().toLowerCase());
                             })
                             .map((val, key) => (
                               <tr key={key}>
