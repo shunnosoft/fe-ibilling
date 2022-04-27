@@ -6,10 +6,16 @@ import "./expenditure.css";
 import { FtextField } from "../../components/common/FtextField";
 import { Plus, PlusSquare } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { addExpenditure, getExpenditureSectors } from "../../features/apiCalls";
-export default function CreateExpenditure() {
+import {
+  addExpenditure,
+  editExpenditure,
+  getExpenditureSectors,
+} from "../../features/apiCalls";
+export default function EditExpenditure({ singleExp }) {
+  console.log(singleExp);
   const [isLoading, setIsLoading] = useState(false);
   const [pourpose, setPourpose] = useState("");
+  const [des, setDes] = useState(singleExp.description);
   const expSectors = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );
@@ -19,15 +25,16 @@ export default function CreateExpenditure() {
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  const desRef = useRef("");
+  const desRef = useRef();
   const collectorValidator = Yup.object({
     amount: Yup.number().required("***"),
     newExp: Yup.string(),
     description: Yup.string(),
   });
 
-  // useEffect(() => {
-  // }, [ispOwnerId, dispatch]);
+  useEffect(() => {
+    setPourpose(singleExp.expenditurePurpose);
+  }, [singleExp]);
   const handleSelect = (e) => {
     console.log(e.target.value);
     setPourpose(e.target.value);
@@ -35,26 +42,26 @@ export default function CreateExpenditure() {
   const expenditureHandler = async (formdata, resetForm) => {
     if (pourpose !== "") {
       const data = {
+        ...singleExp,
         amount: formdata.amount,
         description: desRef.current.value,
         expenditurePurpose: pourpose,
       };
-      userRole === "ispOwner"
-        ? (data.ispOwner = userData.id)
-        : userRole === "reseller"
-        ? (data.reseller = userData.id)
-        : (data.staff = userData.id);
+      //   userRole === "ispOwner"
+      //     ? (data.ispOwner = userData.id)
+      //     : userRole === "reseller"
+      //     ? (data.reseller = userData.id)
+      //     : (data.staff = userData.id);
+      console.log(data);
 
-      await addExpenditure(dispatch, data, setIsLoading, resetForm);
-      setPourpose("");
-      desRef.current.value = "";
+      await editExpenditure(dispatch, data, setIsLoading, resetForm);
     }
   };
   return (
     <div>
       <div
         className="modal fade modal-dialog-scrollable "
-        id="createExpenditure"
+        id="editExpenditure"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -63,7 +70,7 @@ export default function CreateExpenditure() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন খরচ অ্যাড
+                খরচ এডিট
               </h5>
               <button
                 type="button"
@@ -76,7 +83,7 @@ export default function CreateExpenditure() {
               <Formik
                 initialValues={{
                   newExp: "",
-                  amount: 0,
+                  amount: singleExp.amount,
                   description: "",
                 }}
                 validationSchema={collectorValidator}
@@ -146,6 +153,8 @@ export default function CreateExpenditure() {
                       <textarea
                         name="description"
                         ref={desRef}
+                        value={des}
+                        onChange={(e) => setDes(e.target.value)}
                         style={{
                           width: "100%",
                           height: "100px",

@@ -61,10 +61,10 @@ export default function Home() {
                       <td>{val.company}</td>
                       <td>{val.address}</td>
                       <td>
-                        {val.bpSettings.pack} - {val.bpSettings.packType}
+                        {val?.bpSettings?.pack} - {val?.bpSettings?.packType}
                       </td>
-                      <td>{val.bpSettings.hasReseller ? "YES" : "NO"}</td>
-                      <td>{val.bpSettings.hasMikrotik ? "YES" : "NO"}</td>
+                      <td>{val?.bpSettings?.hasReseller ? "YES" : "NO"}</td>
+                      <td>{val?.bpSettings?.hasMikrotik ? "YES" : "NO"}</td>
                       <td>
                         {moment(val.createdAt).format("DD-MM-YYYY hh:mm A")}
                       </td>

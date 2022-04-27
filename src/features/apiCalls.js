@@ -76,7 +76,14 @@ import {
   editPackageSuccess,
   getpackageSuccess,
 } from "./packageSlice";
-import { getExpenditureSectorsSuccess, getExpenditureSuccess } from "./expenditureSlice";
+import {
+  addExpenditureSectorsSuccess,
+  addExpenditureSuccess,
+  editExpenditureSectorsSuccess,
+  editExpenditureSuccess,
+  getExpenditureSectorsSuccess,
+  getExpenditureSuccess,
+} from "./expenditureSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -1188,32 +1195,92 @@ export const getResellerBalance = async (
   }
 };
 
-
 //expenditure
-export const getAllExpenditure=async (dispatch,ispOwnerId) =>{
-
+export const getAllExpenditure = async (dispatch, ispOwnerId) => {
   try {
-    const res =await apiLink.get(`/expenditure/${ispOwnerId}`)
-    
-
-    getExpenditureSuccess(res.data)
-    
+    const res = await apiLink.get(`/staff/expenditures/${ispOwnerId}`);
+    dispatch(getExpenditureSuccess(res.data));
   } catch (error) {
-    console.log(error)
-    
+    console.log(error);
   }
-   
-}
-export const getExpenditureSectors=async (dispatch,ispOwnerId) =>{
+};
 
+export const addExpenditure = async (dispatch, data, setLoading, resetForm) => {
+  setLoading(true);
   try {
-    const res =await apiLink.get(`/expenditureSectors/${ispOwnerId}`)
-    getExpenditureSectorsSuccess(res.data)
-     
-    
+    const res = await apiLink.post(`/staff/expenditure`, data);
+    dispatch(addExpenditureSuccess(res.data));
+    toast.success("সফল হয়েছে");
+    resetForm();
+    setLoading(false);
+
+    document.querySelector("#createExpenditure").click();
   } catch (error) {
-    console.log(error)
-    
+    console.log(error.response?.data?.message);
+    toast.error("ব্যার্থ হয়েছে");
+    document.querySelector("#createExpenditure").click();
+    resetForm();
+    setLoading(false);
   }
-   
-}
+};
+
+export const editExpenditure = async (dispatch, data, setLoading) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.patch(`/staff/expenditure`, data);
+    dispatch(editExpenditureSuccess(res.data));
+    toast.success();
+    setLoading(false);
+  } catch (error) {
+    toast.error();
+    setLoading(false);
+  }
+};
+
+// expenditure pourpose
+export const getExpenditureSectors = async (dispatch, ispOwnerId) => {
+  try {
+    const res = await apiLink.get(`/staff/expenditurePurposes/${ispOwnerId}`);
+    dispatch(getExpenditureSectorsSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addExpenditurePourpose = async (
+  dispatch,
+  data,
+  setIsloading,
+  resetForm
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.post(`/staff/expenditurePurpose`, data);
+    dispatch(addExpenditureSectorsSuccess(res.data));
+    console.log(res.data);
+    setIsloading(false);
+    document.querySelector("#createPourpose").click();
+
+    toast.success("সফল হয়েছে");
+    resetForm();
+  } catch (error) {
+    setIsloading(false);
+    toast.error("ব্যার্থ হয়েছে");
+    resetForm();
+  }
+};
+export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.patch(`/staff/expenditurePurpose`, data);
+    dispatch(editExpenditureSectorsSuccess(res.data));
+    console.log(res.data);
+    setIsloading(false);
+    document.querySelector("#editPurpose").click();
+
+    toast.success("সফল হয়েছে");
+  } catch (error) {
+    setIsloading(false);
+    toast.error("ব্যার্থ হয়েছে");
+  }
+};

@@ -63,7 +63,7 @@ export default function CustomerModal() {
     Pname: Yup.string().required("PPPoE নাম লিখুন"),
     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
     Pcomment: Yup.string(),
-    balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
+    // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
 
   // select subArea
@@ -122,6 +122,7 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
+    console.log(data);
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
@@ -153,9 +154,9 @@ export default function CustomerModal() {
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
     }
-    // console.log(mainData)
+    console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
-    console.log(data);
+    // console.log(data);
   };
 
   useEffect(() => {
