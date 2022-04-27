@@ -4,20 +4,40 @@ const expenditureSlice = createSlice({
   name: "expenditure",
   initialState: {
     allExpenditures: [],
-    expenditureSectors:[]
-     
+    expenditurePourposes: [],
   },
   reducers: {
     getExpenditureSuccess: (state, { payload }) => {
       state.allExpenditures = payload;
     },
-    getExpenditureSectorsSuccess: (state, { payload }) => {
-      state.expenditureSectors = payload;
+    addExpenditureSuccess: (state, { payload }) => {
+      state.allExpenditures.push(payload);
     },
-     
+    editExpenditureSuccess: (state, { payload }) => {
+      state.allExpenditures[
+        state.allExpenditures.findIndex((item) => item.id === payload.id)
+      ] = payload;
+    },
+    getExpenditureSectorsSuccess: (state, { payload }) => {
+      state.expenditurePourposes = payload;
+    },
+    addExpenditureSectorsSuccess: (state, { payload }) => {
+      state.expenditurePourposes.push(payload);
+    },
+    editExpenditureSectorsSuccess: (state, { payload }) => {
+      state.expenditurePourposes[
+        state.expenditurePourposes.findIndex((item) => item.id === payload.id)
+      ] = payload;
+    },
   },
 });
 
-export const { getExpenditureSuccess ,getExpenditureSectorsSuccess } =
-  expenditureSlice.actions;
+export const {
+  getExpenditureSuccess,
+  addExpenditureSuccess,
+  editExpenditureSuccess,
+  editExpenditureSectorsSuccess,
+  getExpenditureSectorsSuccess,
+  addExpenditureSectorsSuccess,
+} = expenditureSlice.actions;
 export default expenditureSlice.reducer;
