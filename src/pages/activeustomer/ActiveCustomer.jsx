@@ -233,9 +233,12 @@ export default function ConfigMikrotik() {
                               ) : (
                                 activeUser
                                   .filter((val) => {
-                                    return val.name
+                                    return val?.name
+                                      .toString()
                                       .toLowerCase()
-                                      .includes(search2.toLowerCase());
+                                      .includes(
+                                        search2.toString().toLowerCase()
+                                      );
                                   })
                                   .map((val, key) => (
                                     <tr key={key}>
@@ -248,7 +251,7 @@ export default function ConfigMikrotik() {
                                             "15px 15px 15px 0 !important",
                                         }}
                                       >
-                                        {val.name}
+                                        {val?.name}
                                       </td>
                                       <td
                                         style={{
@@ -265,7 +268,7 @@ export default function ConfigMikrotik() {
                                         }}
                                       >
                                         {(val.rxByte / 1024 / 1024).toFixed(2) +
-                                          " MB/s"}
+                                          " MB"}
                                       </td>
                                       <td
                                         style={{
@@ -274,7 +277,7 @@ export default function ConfigMikrotik() {
                                         }}
                                       >
                                         {(val.txByte / 1024 / 1024).toFixed(2) +
-                                          " MB/s"}
+                                          " MB"}
                                       </td>
                                       <td
                                         style={{
@@ -360,16 +363,19 @@ export default function ConfigMikrotik() {
                               ) : (
                                 allMikrotikUsers
                                   .filter((val) => {
-                                    return val.name
+                                    return val?.name
+                                      .toString()
                                       .toLowerCase()
-                                      .includes(search.toLowerCase());
+                                      .includes(
+                                        search.toString().toLowerCase()
+                                      );
                                   })
                                   .map((val, key) => (
                                     <tr key={key}>
                                       <td style={{ paddingLeft: "30px" }}>
                                         {++serial2}
                                       </td>
-                                      <td>{val.name}</td>
+                                      <td>{val?.name}</td>
                                       <td>{val.callerId}</td>
                                       <td>{val.profile}</td>
                                     </tr>
