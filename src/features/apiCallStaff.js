@@ -27,11 +27,13 @@ export const addStaff = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff", data);
+    console.log("Clicked");
     dispatch(addStaffSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#staffModal").click();
     toast.success("কর্মচারী আড সফল হয়েছে");
   } catch (err) {
+    console.log(err);
     if (err.response) {
       setIsLoading(false);
       toast.error(err.response.data.message);
