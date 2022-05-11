@@ -42,12 +42,13 @@ const refreshToken = async () => {
     const res = await publicRequest.post("auth/refresh-tokens");
     // console.log(res.data)
     localStorage.setItem("netFeeToken", JSON.stringify(res.data?.access.token));
-
     return res.data?.access.token;
   } catch (err) {
     // console.log(err)
     // console.log("logged OUt for refresh route")
-    userLogout();
+    if (err) {
+      userLogout();
+    }
   }
 };
 
@@ -72,6 +73,22 @@ apiLink.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
+  }
+);
+
+apiLink.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (err) {
+    // console.log(err?.response);
+    // console.log(err.response?.status);
+    // userLogout();
+    if (err.response?.status === 401) {
+      userLogout();
+    }
+
+    return Promise.reject(err);
   }
 );
 
