@@ -29,6 +29,7 @@ import Pagination from "../../components/Pagination";
 
 import { getInvoices, initiatePayment } from "../../features/apiCalls";
 import { showModal } from "../../features/uiSlice";
+import { badge } from "../../components/common/Utils";
 
 function Invoice() {
   const [isLoading, setIsloading] = useState(false);
@@ -108,7 +109,9 @@ function Invoice() {
                             পেমেন্টের শেষ তারিখ
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
-                          <th scope="col">অ্যাকশন</th>
+                          <th className="text-center" scope="col">
+                            অ্যাকশন
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -133,13 +136,9 @@ function Invoice() {
                               <td>{val.amount} Tk</td>
                               <td>
                                 {val.status === "unpaid" ? (
-                                  <span className="p-1 mb-1 bg-danger text-white">
-                                    {val.status}
-                                  </span>
+                                  <> {badge(val.status)}</>
                                 ) : (
-                                  <span className="p-1 mb-1 bg-success text-white">
-                                    {val.status}{" "}
-                                  </span>
+                                  <>{badge(val.status)}</>
                                 )}
                               </td>
                               <td>
@@ -152,21 +151,37 @@ function Invoice() {
                                   "DD-MM-YYYY hh:mm:ss A"
                                 )}
                               </td>
-                              <td>
-                                {val.status === "unpaid" ? (
-                                  <div className="AcceptRejectBtn">
-                                    <button
-                                      onClick={() => {
-                                        dispatch(showModal(val));
-                                        // payNowHandler(val);
-                                      }}
-                                    >
-                                      <strong>Pay Now</strong>
-                                    </button>
-                                  </div>
-                                ) : (
-                                  ""
+                              <td className="centeringTD">
+                                {val.status === "unpaid" && (
+                                  <ThreeDots
+                                    className="dropdown-toggle ActionDots"
+                                    id="customerDrop"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  />
                                 )}
+                                {/* modal */}
+                                <ul
+                                  className="dropdown-menu"
+                                  aria-labelledby="customerDrop"
+                                >
+                                  <li
+                                    onClick={() => {
+                                      dispatch(showModal(val));
+                                      // payNowHandler(val);
+                                    }}
+                                  >
+                                    <div className="dropdown-item">
+                                      <div className="customerAction">
+                                        <CashStack />
+                                        <p className="actionP">Pay Now</p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+
+                                {/* end */}
                               </td>
                             </tr>
                           ))

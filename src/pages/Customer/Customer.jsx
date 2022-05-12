@@ -432,7 +432,7 @@ export default function Customer() {
                           <div className="addNewCollector">
                             <div className="addAndSettingIcon">
                               <ReactToPrint
-                                documentTitle="customer-list"
+                                documentTitle="গ্রাহক লিস্ট"
                                 trigger={() => (
                                   <PrinterFill
                                     title="প্রিন্ট "

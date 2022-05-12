@@ -402,8 +402,7 @@ export default function Report() {
                         ফিল্টার
                       </button>
                       <ReactToPrint
-                        documentTitle="report"
-                        onBeforePrint={() => <h1>Shunno software</h1>}
+                        documentTitle="বিল রিপোর্ট"
                         trigger={() => (
                           <button
                             className="btn fs-5 btn-primary"

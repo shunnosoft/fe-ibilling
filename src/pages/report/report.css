@@ -159,8 +159,6 @@
   margin: 18px 0;
 }
 
-/* pdf footer line  */
-
 /* css added by enamul end  */
 
 @media only screen and (max-width: 980px) {
@@ -178,13 +176,6 @@
     width: inherit !important;
   }
 }
-.pdf_footer_line {
-  width: 90%;
-  margin: auto;
-  position: absolute;
-  bottom: 9rem;
-  border-bottom: 1px solid grey;
-}
 
 .signature_wraper {
   display: flex;
@@ -201,13 +192,63 @@
   width: 90%;
   margin: "auto";
   position: absolute;
-  bottom: 2rem;
+  bottom: 0.5rem;
 }
 
 .signature_text {
   width: 90%;
   text-align: center;
   position: absolute;
-  bottom: 7rem;
+  bottom: 6rem;
   font-size: 10px;
+}
+
+.company_logo img {
+  width: 4rem;
+}
+
+.company_name {
+  font-size: 7px;
+}
+
+.details_side p {
+  font-size: 12px;
+}
+
+.letter_header {
+  margin-bottom: 2rem;
+  border-bottom: 0.5px solid #ddd;
+  padding: 0px 1rem;
+}
+
+.page-header,
+.page-header-space {
+  height: 100px;
+}
+
+.page-footer,
+.page-footer-space {
+  height: 50px;
+  margin-top: 2rem;
+}
+
+.page-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  border-bottom: 1px solid #000;
+}
+
+.page-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.page {
+  page-break-after: always;
+}
+
+@page {
+  margin: 15mm;
 }

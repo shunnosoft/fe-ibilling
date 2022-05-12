@@ -1,14 +1,10 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  PersonPlusFill,
   ThreeDots,
-  PersonFill,
-  PenFill,
-  GearFill,
   PlusCircleDotted,
   PlusCircleFill,
-  GearWide,
   Tools,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,8 +31,11 @@ import CreatePourpose from "./Createpourpose";
 import moment from "moment";
 import EditExpenditure from "./ExpenditureEdit";
 import EditPourpose from "./EditPourpose";
+import PrintExpenditure from "./expenditurePDF";
+import ReactToPrint from "react-to-print";
 
 export default function Expenditure() {
+  const componentRef = useRef();
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -162,10 +161,7 @@ export default function Expenditure() {
                   <div className="addCollector">
                     <div className="addNewCollector">
                       <div className="displexFlexSys">
-                        <div
-                          style={{ display: "flex" }}
-                          className="addAndSettingIcon"
-                        >
+                        <div className="addAndSettingIcon d-flex justify-content-end">
                           <div title="খরচ অ্যাড ">
                             <PlusCircleDotted
                               className="addcutmButton"
@@ -179,6 +175,18 @@ export default function Expenditure() {
                               className="addcutmButton"
                               data-bs-toggle="modal"
                               data-bs-target="#createPourpose"
+                            />
+                          </div>
+                          <div title="প্রিন্ট">
+                            <ReactToPrint
+                              documentTitle="খরচ রিপোর্ট"
+                              trigger={() => (
+                                <PrinterFill
+                                  title="প্রিন্ট "
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => componentRef.current}
                             />
                           </div>
                         </div>
@@ -206,8 +214,17 @@ export default function Expenditure() {
                     </div>
                   </div>
                   {/* table */}
+
+                  {/* print report */}
+                  <div style={{ display: "none" }}>
+                    <PrintExpenditure
+                      allExpenditures={allExpenditures}
+                      ref={componentRef}
+                    />
+                  </div>
+                  {/* print report end*/}
                   <div
-                    style={{ height: "500px", overflow: "scroll" }}
+                    style={{ height: "500px", overflowY: "auto" }}
                     className="table-responsive-lg"
                   >
                     <table className="table table-striped ">
@@ -295,8 +312,6 @@ export default function Expenditure() {
                                       </div>
                                     </li>:""} */}
                                 </ul>
-
-                                {/* end */}
                               </td>
                             </tr>
                           ))
@@ -324,7 +339,7 @@ export default function Expenditure() {
                     </div>
                   </div>
                   <div
-                    style={{ height: "500px", overflow: "scroll" }}
+                    style={{ height: "500px", overflow: "auto" }}
                     className="table-responsive-lg"
                   >
                     <table className="table table-striped ">
