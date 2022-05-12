@@ -173,10 +173,10 @@ export default function CollectorReport() {
       keys.some((key) =>
         item[key]
           ? typeof item[key] === "string"
-            ? item[key]?.toLowerCase().includes(e)
+            ? item[key]?.toString()?.toLowerCase().includes(e)
             : item[key]?.toString().includes(e)
           : typeof item["customer"][key] === "string"
-          ? item["customer"][key]?.toLowerCase().includes(e)
+          ? item["customer"][key]?.toString()?.toLowerCase().includes(e)
           : item["customer"][key]?.toString().includes(e)
       )
     );

@@ -93,6 +93,7 @@ export default function RechargeHistoryofReseller() {
           key.split("+")[1]
             ? typeof item[key.split("+")[0]][key.split("+")[1]] === "string"
               ? item[key.split("+")[0]][key.split("+")[1]]
+                  ?.toString()
                   ?.toLowerCase()
                   .includes(cusSearch)
               : item[key.split("+")[0]][key.split("+")[1]]
@@ -101,7 +102,11 @@ export default function RechargeHistoryofReseller() {
             : typeof item[key] === "string"
             ? item[key] === "createdAt"
               ? moment(item[key]).format("YYYY-MM-DD").includes(cusSearch)
-              : item[key].toLowerCase().includes(cusSearch)
+              : item[key]
+                  .toString()
+                  .toString()
+                  .toLowerCase()
+                  .includes(cusSearch)
             : item[key].toString().includes(cusSearch)
         )
       )

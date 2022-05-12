@@ -231,6 +231,7 @@ export default function ConfigMikrotik() {
                                   <TdLoader colspan={6} />
                                 </tr>
                               ) : (
+                                activeUser.length &&
                                 activeUser
                                   .filter((val) => {
                                     return val?.name

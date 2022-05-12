@@ -71,7 +71,7 @@ export default function Package() {
   // }, [collSearch, collector]);
 
   const searchHandler = (e) => {
-    setCollSearch(e.toLowerCase());
+    setCollSearch(e.toString().toLowerCase());
   };
   return (
     <>

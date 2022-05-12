@@ -158,8 +158,9 @@ export default function Reseller() {
                           reseller
                             .filter((val) => {
                               return val.name
+                                .toString()
                                 .toLowerCase()
-                                .includes(rsearch.toLowerCase());
+                                .includes(rsearch.toString().toLowerCase());
                             })
                             .map((val, key) => (
                               <tr key={key}>

@@ -100,7 +100,7 @@ export default function Expenditure() {
         initialExp?.filter((item) =>
           keys.some((key) =>
             typeof item[key] === "string"
-              ? item[key].toLowerCase().includes(collSearch)
+              ? item[key].toString().toLowerCase().includes(collSearch)
               : item[key].toString().includes(collSearch)
           )
         )
@@ -117,7 +117,7 @@ export default function Expenditure() {
         expenditurePurpose?.filter((item) =>
           keys.some((key) =>
             typeof item[key] === "string"
-              ? item[key].toLowerCase().includes(e)
+              ? item[key].toString().toLowerCase().includes(e)
               : item[key].toString().includes(e)
           )
         )
@@ -128,7 +128,7 @@ export default function Expenditure() {
   };
 
   const searchHandler = (e) => {
-    setCollSearch(e.toLowerCase());
+    setCollSearch(e.toString().toLowerCase());
   };
 
   const getTotalExpenditure = () => {
