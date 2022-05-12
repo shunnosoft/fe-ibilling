@@ -41,6 +41,7 @@ export default function Message() {
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [days, setDays] = useState([]);
+  const [smsReceiverType, setsmsReceiverType] = useState("");
 
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const ispOwnerId = useSelector(
@@ -183,7 +184,10 @@ export default function Message() {
       console.log(error);
     }
   };
-
+  const handleSMSreceiver = (e) => {
+    console.log(e.target.value);
+    setsmsReceiverType(e.target.value);
+  };
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -328,54 +332,173 @@ export default function Message() {
                               </div>
                             ))}
                           </div>
-                          <p>বিল ডেট শেষ হতে বাকিঃ</p>
-                          <div className="displayFlex">
-                            <input
-                              type="checkbox"
-                              className="getValueUsingClass"
-                              value={"1"}
-                              onChange={(e) => {
-                                daySettingHandler(e.target.value);
-                              }}
-                            />
-                            <label className="mx-3">{"এক দিন"}</label>
-                            <input
-                              type="checkbox"
-                              className="getValueUsingClass"
-                              value={"2"}
-                              onChange={(e) => {
-                                daySettingHandler(e.target.value);
-                              }}
-                            />
-                            <label className="mx-3">{"দুই দিন"}</label>
-                            <input
-                              type="checkbox"
-                              className="getValueUsingClass"
-                              value={"3"}
-                              onChange={(e) => {
-                                daySettingHandler(e.target.value);
-                              }}
-                            />
-                            <label className="mx-3">{"তিন দিন"}</label>
-                            <input
-                              type="checkbox"
-                              className="getValueUsingClass"
-                              value={"5"}
-                              onChange={(e) => {
-                                daySettingHandler(e.target.value);
-                              }}
-                            />
-                            <label className="mx-3">{"পাঁচ দিন"}</label>
-                            <input
-                              type="checkbox"
-                              className="getValueUsingClass"
-                              value={"7"}
-                              onChange={(e) => {
-                                daySettingHandler(e.target.value);
-                              }}
-                            />
-                            <label className="mx-3">{"সাত দিন"}</label>
+                          <div className="radio-buttons">
+                            <div>
+                              <input
+                                id="bilDateEnd"
+                                value="bilDate"
+                                name="platform"
+                                type="radio"
+                                className="form-check-input"
+                                onChange={(e) => handleSMSreceiver(e)}
+                              />
+                              <label
+                                className="form-check-lebel ms-2"
+                                htmlFor="bilDateEnd"
+                              >
+                                বিল ডেট শেষ হতে বাকিঃ
+                              </label>
+                              {smsReceiverType === "bilDate" ? (
+                                <div className="displayFlex">
+                                  <input
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={"1"}
+                                    onChange={(e) => {
+                                      daySettingHandler(e.target.value);
+                                    }}
+                                  />
+                                  <label className="mx-3">{"এক দিন"}</label>
+                                  <input
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={"2"}
+                                    onChange={(e) => {
+                                      daySettingHandler(e.target.value);
+                                    }}
+                                  />
+                                  <label className="mx-3">{"দুই দিন"}</label>
+                                  <input
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={"3"}
+                                    onChange={(e) => {
+                                      daySettingHandler(e.target.value);
+                                    }}
+                                  />
+                                  <label className="mx-3">{"তিন দিন"}</label>
+                                  <input
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={"5"}
+                                    onChange={(e) => {
+                                      daySettingHandler(e.target.value);
+                                    }}
+                                  />
+                                  <label className="mx-3">{"পাঁচ দিন"}</label>
+                                  <input
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={"7"}
+                                    onChange={(e) => {
+                                      daySettingHandler(e.target.value);
+                                    }}
+                                  />
+                                  <label className="mx-3">{"সাত দিন"}</label>
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                            <div>
+                              <input
+                                id="allCustomer"
+                                value="allCustomer"
+                                name="platform"
+                                type="radio"
+                                className="form-check-input"
+                                onChange={(e) => handleSMSreceiver(e)}
+                              />
+                              <label
+                                className="form-check-lebel ms-2"
+                                htmlFor="allCustomer"
+                              >
+                                সকল গ্রাহক
+                              </label>
+                            </div>
+                            <div>
+                              <input
+                                id="paid"
+                                value="paid"
+                                name="platform"
+                                type="radio"
+                                className="form-check-input"
+                                onChange={(e) => handleSMSreceiver(e)}
+                              />
+                              <label
+                                className="form-check-lebel ms-2"
+                                htmlFor="paid"
+                              >
+                                পেইড
+                              </label>
+                            </div>
+                            <div>
+                              <input
+                                id="unpaid"
+                                value="unpaid"
+                                name="platform"
+                                className="form-check-input"
+                                type="radio"
+                                onChange={(e) => handleSMSreceiver(e)}
+                              />
+                              <label
+                                className="form-check-lebel ms-2"
+                                htmlFor="unpaid"
+                              >
+                                বকেয়া
+                              </label>
+                            </div>
+
+                            <div>
+                              <input
+                                id="activee"
+                                value="active"
+                                name="platform"
+                                type="radio"
+                                className="form-check-input"
+                                onChange={(e) => handleSMSreceiver(e)}
+                              />
+                              <label
+                                className="form-check-lebel ms-2"
+                                htmlFor="activee"
+                              >
+                                এক্টিভ
+                              </label>
+                            </div>
+                            <div>
+                              <input
+                                id="inactive"
+                                value="inactive"
+                                name="platform"
+                                type="radio"
+                                className="form-check-input"
+                                onChange={(e) => handleSMSreceiver(e)}
+                              />
+                              <label
+                                className="form-check-lebel ms-2"
+                                htmlFor="inactive"
+                              >
+                                ইন-একটিভ
+                              </label>
+                            </div>
+                            <div>
+                              <input
+                                id="expire"
+                                value="expire"
+                                name="platform"
+                                type="radio"
+                                className="form-check-input"
+                                onChange={(e) => handleSMSreceiver(e)}
+                              />
+                              <label
+                                className="form-check-lebel ms-2"
+                                htmlFor="expire"
+                              >
+                                Expire
+                              </label>
+                            </div>
                           </div>
+
                           {/* area */}
                           {/* <select
                             id="selectCustomerID3"
