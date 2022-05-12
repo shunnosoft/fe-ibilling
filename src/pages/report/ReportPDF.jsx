@@ -27,7 +27,7 @@ const PrintReport = React.forwardRef((props, ref) => {
           </div>
         </div>
 
-        <ul className="d-flex justify-content-around">
+        <ul className="d-flex justify-content-around filter_list">
           <li>এরিয়াঃ {filterData.area}</li>
           <li>সাবএরিয়াঃ {filterData.subArea}</li>
           <li>কালেক্টরঃ {filterData.collector}</li>

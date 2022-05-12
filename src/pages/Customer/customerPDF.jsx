@@ -15,19 +15,17 @@ const PrintCustomer = React.forwardRef((props, ref) => {
       <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
         <div className="logo_side">
           <div className="company_logo">
-            <img src="/assets/img/logo.png" alt="" />
+            <img src="/assets/img/logo.png" alt="Company Logo" />
           </div>
           <div className="company_name">{ispOwnerData.company}</div>
         </div>
         <div className="details_side">
           <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
-          {ispOwnerData.address && (
-            <p>এড্রেসঃ {ispOwnerData?.address}</p>
-          )}
+          {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
         </div>
       </div>
 
-      <ul className="d-flex justify-content-evenly">
+      <ul className="d-flex justify-content-evenly filter_list">
         <li>এরিয়াঃ {filterData.area}</li>
         <li>সাবএরিয়াঃ {filterData.subArea}</li>
         <li>স্টাটাসঃ {filterData.status}</li>

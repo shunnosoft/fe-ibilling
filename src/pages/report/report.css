@@ -215,6 +215,11 @@
   font-size: 12px;
 }
 
+.filter_list {
+  list-style-type: none;
+  display: flex;
+}
+
 .letter_header {
   margin-bottom: 2rem;
   border-bottom: 0.5px solid #ddd;
