@@ -21,15 +21,26 @@ const staffSlice = createSlice({
     },
 
     getSalarySuccess: (state, action) => {
-      console.log(action.payload);
+      state.salary = action.payload;
     },
     addSalarySuccess: (state, action) => {
-      state.salary = action.payload;
+      state.salary.push(action.payload);
+    },
+    updateSalarySuccess: (state, action) => {
+      state.salary[
+        state.salary.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
     },
   },
 });
 
-export const { getStaffSuccess, addStaffSuccess, editStaff } =
-  staffSlice.actions;
+export const {
+  getStaffSuccess,
+  addStaffSuccess,
+  editStaff,
+  getSalarySuccess,
+  addSalarySuccess,
+  updateSalarySuccess,
+} = staffSlice.actions;
 
 export default staffSlice.reducer;

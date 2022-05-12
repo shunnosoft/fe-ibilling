@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, createRef, useRef } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
+import ReactToPrint from "react-to-print";
+import PrintReport from "./ReportPDF";
 
 import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
@@ -13,11 +15,12 @@ import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
-import { ArrowDownUp } from "react-bootstrap-icons";
+import { ArrowDownUp, PrinterFill } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
-
 export default function Report() {
+  const componentRef = useRef();
+
   // const cus = useSelector(state => state.customer.customer);
   // console.log(cus.length)
   const ispOwnerId = useSelector(
@@ -59,13 +62,11 @@ export default function Report() {
   const [isSorted, setSorted] = useState(false);
   // const [totalBill,setTotalBill]= useState("")
   const [currentPage, setCurrentPage] = useState(1);
-
   const [customerPerPage, setCustomerPerPage] = useState(50);
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
 
   const currentCustomers = mainData.slice(firstIndex, lastIndex);
-
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -96,7 +97,6 @@ export default function Report() {
     allCollector.map((item) =>
       collectors.push({ name: item.name, user: item.user, id: item.id })
     );
-    console.log(manager);
     if (collectors.length === allCollector.length) {
       if (userRole === "ispOwner") {
         // const { user, name, id } = manager;
@@ -276,6 +276,23 @@ export default function Report() {
     setSorted(!isSorted);
   };
 
+  let subArea, collector;
+  if (singleArea && subAreaIds.length === 1) {
+    subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
+  }
+
+  if (collectorIds.length === 1 && collectors.length > 0) {
+    collector = collectors.find((item) => item.user === collectorIds[0]);
+  }
+
+  const filterData = {
+    area: singleArea?.name ? singleArea.name : "সকল",
+    subArea: subArea ? subArea.name : "সকল",
+    collector: collector?.name ? collector.name : "সকল",
+    startDate: dateStart,
+    endDate: dateEnd,
+  };
+
   return (
     <>
       <Sidebar />
@@ -376,14 +393,38 @@ export default function Report() {
                         />
                       </div>
                     </div>
-                    <div className="submitdiv d-grid gap-2">
+                    <div className="submitdiv d-flex justify-content-between">
                       <button
-                        className="btn fs-5 btn-success w-100"
+                        className="btn fs-5 btn-success w-25"
                         type="button"
                         onClick={onClickFilter}
                       >
                         ফিল্টার
                       </button>
+                      <ReactToPrint
+                        documentTitle="report"
+                        onBeforePrint={() => <h1>Shunno software</h1>}
+                        trigger={() => (
+                          <button
+                            className="btn fs-5 btn-primary"
+                            type="button"
+                            title="ডাউনলোড পিডিএফ"
+                          >
+                            প্রিন্ট {`   `}
+                            <PrinterFill />
+                          </button>
+                        )}
+                        content={() => componentRef.current}
+                      />
+                      {/* print report */}
+                      <div style={{ display: "none" }}>
+                        <PrintReport
+                          filterData={filterData}
+                          currentCustomers={currentCustomers}
+                          ref={componentRef}
+                        />
+                      </div>
+                      {/* print report end*/}
                     </div>
 
                     <div className="row searchCollector">
@@ -415,10 +456,11 @@ export default function Report() {
                   </div>
                   {/* table */}
                   <div className="table-responsive-lg">
-                    <table className="table table-striped ">
+                    <table className="table table-striped">
                       <thead>
                         <tr className="spetialSortingRow">
                           <th
+                            style={{ fontFamily: "sans-serif" }}
                             onClick={() => toggleSort("customer.customerId")}
                             scope="col"
                           >
@@ -426,18 +468,24 @@ export default function Report() {
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
                           <th
+                            style={{ fontFamily: "sans-serif" }}
                             onClick={() => toggleSort("customer.name")}
                             scope="col"
                           >
                             গ্রাহক
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
-                          <th onClick={() => toggleSort("amount")} scope="col">
+                          <th
+                            style={{ fontFamily: "sans-serif" }}
+                            onClick={() => toggleSort("amount")}
+                            scope="col"
+                          >
                             বিল
                             <ArrowDownUp className="arrowDownUp" />
                           </th>
 
                           <th
+                            style={{ fontFamily: "sans-serif" }}
                             onClick={() => toggleSort("createdAt")}
                             scope="col"
                           >

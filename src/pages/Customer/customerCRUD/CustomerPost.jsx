@@ -32,9 +32,7 @@ export default function CustomerModal() {
       ? state.persistedReducer.mikrotik.packagefromDatabase
       : state.package.packages
   );
-
-  console.log(bpSettings);
-
+  
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");

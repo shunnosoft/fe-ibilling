@@ -1,26 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
-  PersonPlusFill,
   ThreeDots,
-  // ArchiveFill,
   PenFill,
-  PersonFill,
+  ArchiveFill,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
-import { Formik, Form } from "formik";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
+import { Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 
 // internal imports
 import useDash from "../../../assets/css/dash.module.css";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../../assets/js/theme";
-import { FtextField } from "../../../components/common/FtextField";
 import Footer from "../../../components/admin/footer/Footer";
-import Loader from "../../../components/common/Loader";
-import { useParams } from "react-router-dom";
 import StaffSalaryPostModal from "./StaffSalaryPostModal";
+import StaffSalaryEditModal from "./StaffSalaryEditModal";
+import { getSalaryApi } from "../../../features/apiCallStaff";
+import StaffTable from "../staffModal/staffTable";
 
 export default function StaffSalary() {
   const dispatch = useDispatch();
@@ -34,20 +33,93 @@ export default function StaffSalary() {
     state.persistedReducer.staff.staff.find((item) => item.id == staffId)
   );
 
-  //   const managerValidate = Yup.object({
-  //     name: Yup.string()
-  //       .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
-  //       .required("ম্যানেজার এর নাম দিন"),
-  //     mobile: Yup.string()
-  //       .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-  //       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-  //       .required("ম্যানেজার এর মোবাইল নম্বর দিন "),
-  //     address: Yup.string().required("ম্যানেজার এর  এড্রেস দিন "),
-  //     email: Yup.string()
-  //       .email("ইমেইল সঠিক নয় ")
-  //       .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-  //     nid: Yup.string().required("ম্যানেজার এর NID দিন"),
-  //   });
+  const getSalaries = useSelector(
+    (state) => state.persistedReducer.staff?.salary
+  );
+
+  const [salaryId, setSalaryId] = useState(null);
+  //editHandler
+  const editHandler = (id) => {
+    console.log(id);
+    setSalaryId(id);
+  };
+
+  useEffect(() => {
+    getSalaryApi(dispatch, staffId);
+  }, [staffId]);
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: "#",
+        id: "row",
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "Year",
+        accessor: "year",
+      },
+      {
+        Header: "Month",
+        accessor: "month",
+      },
+      {
+        Header: "Amount",
+        accessor: "amount",
+      },
+      {
+        Header: "Due",
+        accessor: "due",
+      },
+
+      {
+        Header: "Action",
+        accessor: "id",
+
+        Cell: ({ row: { original } }) => (
+          <>
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="resellerDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+
+            <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#editSalaryPostModal"
+                onClick={() => {
+                  editHandler(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PenFill />
+                    <p className="actionP">এডিট</p>
+                  </div>
+                </div>
+              </li>
+              <li
+              // onClick={() => {
+              //   deleteStaff(data.id);
+              // }}
+              >
+                <div className="dropdown-item actionManager">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">ডিলিট</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -59,7 +131,7 @@ export default function StaffSalary() {
             <FontColor>
               <FourGround>
                 <h2 className="collectorTitle">
-                  ({staff.name}) কর্মচারীর প্রোফাইল
+                  ({staff?.name}) কর্মচারীর প্রোফাইল
                 </h2>
               </FourGround>
               {/* edit manager */}
@@ -78,61 +150,24 @@ export default function StaffSalary() {
                       </div>
                     )}
 
-                    {staff ? (
-                      <div className="">
-                        <div className="actionsManager">
-                          <div className="dropdown">
-                            <ThreeDots
-                              className="dropdown-toggle ActionDots managerAction"
-                              id="ManagerDropdownMenu"
-                              type="button"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                            />
-                            <ul
-                              className="dropdown-menu"
-                              aria-labelledby="ManagerDropdownMenu"
-                            >
-                              <li
-                                data-bs-toggle="modal"
-                                data-bs-target="#addSalaryPostModal"
-                              >
-                                <div className="dropdown-item">
-                                  <div className="ManagerAactionLi">
-                                    <PersonPlusFill />
-                                    <p className="actionP">আড স্যালারি</p>
-                                  </div>
-                                </div>
-                              </li>
-                              <li
-                                data-bs-toggle="modal"
-                                data-bs-target="#editSalaryModal"
-                              >
-                                <div className="dropdown-item">
-                                  <div className="ManagerAactionLi">
-                                    <PenFill />
-                                    <p className="actionP">এডিট</p>
-                                  </div>
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="addNewCollector">
-                        <p>অ্যাড ম্যানেজার</p>
-                        <div className="addAndSettingIcon">
-                          <PersonPlusFill
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                          />
-                        </div>
-                      </div>
+                    {staff && (
+                      <Button
+                        data-bs-toggle="modal"
+                        data-bs-target="#addSalaryPostModal"
+                        style={{ height: "50px" }}
+                        variant="primary"
+                      >
+                        পে স্যালারি
+                      </Button>
                     )}
                   </div>
+                  {getSalaries.length > 0 ? (
+                    <StaffTable columns={columns} data={getSalaries} />
+                  ) : (
+                    "No Record to show"
+                  )}
                   <StaffSalaryPostModal staffId={staffId} />
+                  <StaffSalaryEditModal salaryId={salaryId} />
                 </div>
               </FourGround>
               <Footer />

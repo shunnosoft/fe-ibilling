@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -16,10 +16,12 @@ import {
   ArrowDownUp,
   CashStack,
   FileExcelFill,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
+import ReactToPrint from "react-to-print";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -40,8 +42,10 @@ import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
+import PrintCustomer from "./customerPDF";
 
 export default function Customer() {
+  const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector((state) => state.persistedReducer.customer.customer);
   const role = useSelector((state) => state.persistedReducer.auth.role);
   const dispatch = useDispatch();
@@ -108,9 +112,8 @@ export default function Customer() {
         if (found) {
           found.subAreas.push({ id: item.id, name: item.name });
 
-          return (areas[
-            areas.findIndex((item) => item.id === found.id)
-          ] = found);
+          return (areas[areas.findIndex((item) => item.id === found.id)] =
+            found);
         } else {
           return areas.push(area);
         }
@@ -142,8 +145,11 @@ export default function Customer() {
     );
   }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [status, setStatus] = useState("");
   //   filter
   const handleActiveFilter = (e) => {
+    setPaymentStatus(e.target.value);
     setRunning(true);
     let fvalue = e.target.value;
     const field = fvalue.split(".")[0];
@@ -283,6 +289,45 @@ export default function Customer() {
     //   setSubArea([id]);
     // }
   };
+  // console.log(filterdCus);
+
+  const handleChangeStatus = (e) => {
+    setStatus(e.target.value);
+  };
+
+  let subArea, customerStatus, customerPaymentStatus;
+  if (singleArea && cusSearch) {
+    subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
+  }
+
+  if (status) {
+    const splitStatus = status.split(".")[1];
+    if (splitStatus === "active") {
+      customerStatus = "এক্টিভ";
+    } else if (splitStatus === "inactive") {
+      customerStatus = "ইনএক্টিভ";
+    }
+  }
+  console.log({ customerStatus, paymentStatus });
+
+  if (paymentStatus) {
+    const splitStatus = paymentStatus.split(".")[1];
+    if (splitStatus === "unpaid") {
+      customerPaymentStatus = "বকেয়া";
+    } else if (splitStatus === "paid") {
+      customerPaymentStatus = "পরিশোধ";
+    } else if (splitStatus === "expired") {
+      customerPaymentStatus = "মেয়াদোত্তীর্ণ";
+    }
+  }
+
+  const filterData = {
+    area: singleArea?.name ? singleArea.name : "সকল এরিয়া",
+    subArea: subArea ? subArea.name : "সকল সাবএরিয়া",
+    status: customerStatus ? customerStatus : "সকল গ্রাহক",
+    payment: customerPaymentStatus ? customerPaymentStatus : "সকল গ্রাহক",
+  };
+
   return (
     <>
       <Sidebar />
@@ -345,7 +390,10 @@ export default function Customer() {
                         </select>
                         <select
                           className="form-select"
-                          onChange={handleActiveFilter}
+                          onChange={(e) => {
+                            handleActiveFilter(e);
+                            handleChangeStatus(e);
+                          }}
                         >
                           <option value="" defaultValue>
                             স্ট্যাটাস
@@ -379,6 +427,20 @@ export default function Customer() {
                               >
                                 <FileExcelFill className="addcutmButton" />
                               </CSVLink>
+                            </div>
+                          </div>
+                          <div className="addNewCollector">
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle="customer-list"
+                                trigger={() => (
+                                  <PrinterFill
+                                    title="প্রিন্ট "
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
                             </div>
                           </div>
                           <div className="addNewCollector">
@@ -426,6 +488,15 @@ export default function Customer() {
                     )}
                   </div>
                   {/* table */}
+                  {/* print report */}
+                  <div style={{ display: "none" }}>
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={currentCustomers}
+                      ref={componentRef}
+                    />
+                  </div>
+                  {/* print report end*/}
                   <div className="table-responsive-lg">
                     <table className="table table-striped ">
                       <thead>

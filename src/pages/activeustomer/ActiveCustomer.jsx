@@ -235,9 +235,11 @@ export default function ConfigMikrotik() {
                                 activeUser
                                   .filter((val) => {
                                     return val?.name
-                                      ?.toString()
-                                      ?.toLowerCase()
-                                      ?.includes(search2?.toLowerCase());
+                                      .toString()
+                                      .toLowerCase()
+                                      .includes(
+                                        search2.toString().toLowerCase()
+                                      );
                                   })
                                   .map((val, key) => (
                                     <tr key={key}>
@@ -250,7 +252,7 @@ export default function ConfigMikrotik() {
                                             "15px 15px 15px 0 !important",
                                         }}
                                       >
-                                        {val.name}
+                                        {val?.name}
                                       </td>
                                       <td
                                         style={{
@@ -362,7 +364,7 @@ export default function ConfigMikrotik() {
                               ) : (
                                 allMikrotikUsers
                                   .filter((val) => {
-                                    return val.name
+                                    return val?.name
                                       .toString()
                                       .toLowerCase()
                                       .includes(
@@ -374,7 +376,7 @@ export default function ConfigMikrotik() {
                                       <td style={{ paddingLeft: "30px" }}>
                                         {++serial2}
                                       </td>
-                                      <td>{val.name}</td>
+                                      <td>{val?.name}</td>
                                       <td>{val.callerId}</td>
                                       <td>{val.profile}</td>
                                     </tr>
