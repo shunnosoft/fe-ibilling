@@ -349,7 +349,7 @@ export default function Message() {
                                 বিল ডেট শেষ হতে বাকিঃ
                               </label>
                               {smsReceiverType === "bilDate" ? (
-                                <div className="displayFlex">
+                                <div style={{}} className="displayFlex">
                                   <input
                                     type="checkbox"
                                     className="getValueUsingClass"
