@@ -13,7 +13,6 @@ import {
   PersonFill,
   ArrowDownUp,
   CashStack,
-  Table,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -40,6 +39,7 @@ import CustomerReport from "./customerCRUD/showCustomerReport";
 import { FetchAreaSuccess } from "../../features/areaSlice";
 import { badge } from "../../components/common/Utils";
 import FormatNumber from "../../components/common/NumberFormat";
+import Table from "../../components/table/Table";
 
 export default function Customer() {
   const cus = useSelector((state) => state.persistedReducer.customer.customer);

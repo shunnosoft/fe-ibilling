@@ -230,10 +230,10 @@ export default function Diposit() {
         accessor: "status",
         Cell: ({ row: { item } }) => (
           <div>
-            {item.status === "accepted" && (
+            {item?.status === "accepted" && (
               <span className="statusClass">গ্রহণ করা হয়েছে</span>
             )}
-            {item.status === "rejected" && (
+            {item?.status === "rejected" && (
               <span className="rejectClass">বাতিল হয়েছে</span>
             )}
           </div>
@@ -385,33 +385,6 @@ export default function Diposit() {
                     </Formik>
                   </div>
                 </FourGround>
-              ) : (
-                ""
-              )}
-
-              {userRole === "collector" ? (
-                <div className="row searchCollector">
-                  <div className="col-sm-8">
-                    <h4 className="allCollector">
-                      নিজ ডিপোজিটঃ{" "}
-                      <span>{FormatNumber(ownDeposits.length)} টি</span>
-                      পরিমাণঃ{" "}
-                      <span>{FormatNumber(getTotalOwnDeposit())} টাকা </span>
-                    </h4>
-                  </div>
-
-                  <div className="col-sm-4">
-                    <div className=" collectorSearch">
-                      {/* <Search className="serchingIcon" /> */}
-                      <input
-                        type="text"
-                        className="search"
-                        placeholder="সার্চ"
-                        // onChange={(e) => setCusSearch(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
               ) : (
                 ""
               )}
