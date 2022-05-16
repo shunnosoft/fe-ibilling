@@ -336,44 +336,7 @@ export default function Diposit() {
     ],
     []
   );
-  const columns3 = React.useMemo(
-    () => [
-      {
-        Header: "সিরিয়াল",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        Header: "পরিমান",
-        accessor: "amount",
-        Cell: ({ row: { val } }) => <div>৳ {FormatNumber(val)}</div>,
-      },
-      {
-        Header: "স্টেটাস",
-        accessor: "status",
-        Cell: ({ row: { item } }) => (
-          <div>
-            {item.status === "accepted" && (
-              <span className="statusClass">গ্রহণ করা হয়েছে</span>
-            )}
-            {item.status === "rejected" && (
-              <span className="rejectClass">বাতিল হয়েছে</span>
-            )}
-          </div>
-        ),
-      },
 
-      {
-        Header: "তারিখ",
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
-        },
-      },
-    ],
-    []
-  );
   return (
     <>
       <Sidebar />

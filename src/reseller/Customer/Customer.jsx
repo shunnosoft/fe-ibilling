@@ -77,28 +77,6 @@ export default function Customer() {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  useEffect(() => {
-    const keys = [
-      "monthlyFee",
-      "customerId",
-      "name",
-      "mobile",
-      "address",
-      "paymentStatus",
-      "status",
-      "balance",
-      "subArea",
-    ];
-    setCustomers(
-      (isFilterRunning ? filterdCus : cus).filter((item) =>
-        keys.some((key) =>
-          typeof item[key] === "string"
-            ? item[key].toString().toLowerCase().includes(cusSearch)
-            : item[key].toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
   //   filter
   const handleActiveFilter = (e) => {
@@ -183,6 +161,7 @@ export default function Customer() {
     //   setSubArea([id]);
     // }
   };
+
   const columns = React.useMemo(
     () => [
       {

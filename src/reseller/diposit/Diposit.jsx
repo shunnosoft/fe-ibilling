@@ -118,7 +118,8 @@ export default function Diposit() {
     );
     return sumWithInitial.toString();
   }, [mainData]);
-
+  console.log(mainData);
+  console.log(ownDeposits);
   // useEffect(() => {
   //   getMyDeposit(dispatch);
   // }, [dispatch]);
@@ -391,7 +392,7 @@ export default function Diposit() {
 
               {/* table */}
               {userRole === "collector" ? (
-                <Table data={ownDeposits} columns={columns2}></Table>
+                <Table data={mainData} columns={columns2}></Table>
               ) : (
                 ""
               )}
@@ -461,7 +462,7 @@ export default function Diposit() {
                     </div>
 
                     {/* table */}
-                    <Table data={mainData} columns={columns}></Table>
+                    <Table data={ownDeposits} columns={columns}></Table>
                   </div>
                 </FourGround>
               ) : (
