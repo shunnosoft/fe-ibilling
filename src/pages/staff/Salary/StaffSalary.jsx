@@ -19,7 +19,7 @@ import Footer from "../../../components/admin/footer/Footer";
 import StaffSalaryPostModal from "./StaffSalaryPostModal";
 import StaffSalaryEditModal from "./StaffSalaryEditModal";
 import { getSalaryApi } from "../../../features/apiCallStaff";
-import StaffTable from "../staffModal/staffTable";
+import Table from "../../../components/table/Table";
 
 export default function StaffSalary() {
   const dispatch = useDispatch();
@@ -51,30 +51,31 @@ export default function StaffSalary() {
   const columns = useMemo(
     () => [
       {
-        Header: "#",
+        Header: "সিরিয়াল",
         id: "row",
+        accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "Year",
+        Header: "বছর",
         accessor: "year",
       },
       {
-        Header: "Month",
+        Header: "মাস",
         accessor: "month",
       },
       {
-        Header: "Amount",
+        Header: "পরিমাণ",
         accessor: "amount",
       },
       {
-        Header: "Due",
+        Header: "বকেয়া",
         accessor: "due",
       },
 
       {
-        Header: "Action",
-        accessor: "id",
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
 
         Cell: ({ row: { original } }) => (
           <>
@@ -162,7 +163,7 @@ export default function StaffSalary() {
                     )}
                   </div>
                   {getSalaries.length > 0 ? (
-                    <StaffTable columns={columns} data={getSalaries} />
+                    <Table columns={columns} data={getSalaries} />
                   ) : (
                     "No Record to show"
                   )}

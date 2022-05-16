@@ -30,6 +30,7 @@ import TdLoader from "../../components/common/TdLoader";
 import ResellerDetails from "./resellerModals/ResellerDetails";
 import { deleteReseller, fetchReseller } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
+import Table from "../../components/table/Table";
 
 export default function Reseller() {
   const dispatch = useDispatch();
@@ -71,6 +72,131 @@ export default function Reseller() {
     }
   }, [dispatch, ispOwnerId]);
 
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+      },
+      {
+        Header: "এড্রেস",
+        accessor: "address",
+      },
+      {
+        Header: "মোবাইল",
+        accessor: "mobile",
+      },
+      {
+        Header: "ইমেইল",
+        accessor: "email",
+      },
+      {
+        Header: "রিচার্জ ব্যালান্স",
+        accessor: "rechargeBalance",
+      },
+      {
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
+              <li
+                data-bs-toggle="modal"
+                href="#resellerRechargeModal"
+                role="button"
+                onClick={() => {
+                  getSpecificReseller(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <Wallet />
+                    <p className="actionP">রিচার্জ</p>
+                  </div>
+                </div>
+              </li>
+              {/* <li
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#resellerrechargehistory"
+                                      role="button"
+                                       
+                                    >
+                                      <div className="dropdown-item">
+                                        <div className="customerAction">
+                                          <Cash />
+                                          <p className="actionP">রিচার্জ হিস্ট্রি</p>
+                                        </div>
+                                      </div>
+                                    </li> */}
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#resellerDetailsModal"
+                onClick={() => {
+                  getSpecificReseller(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PersonFill />
+                    <p className="actionP">প্রোফাইল</p>
+                  </div>
+                </div>
+              </li>
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#resellerModalEdit"
+                onClick={() => {
+                  getSpecificReseller(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PenFill />
+                    <p className="actionP">এডিট</p>
+                  </div>
+                </div>
+              </li>
+
+              <li
+                onClick={() => {
+                  deleteSingleReseller(original.ispOwner, original.id);
+                }}
+              >
+                <div className="dropdown-item actionManager">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">ডিলিট</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
   return (
     <>
       <Sidebar />
@@ -103,24 +229,6 @@ export default function Reseller() {
                         />
                       </div>
                     </div>
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট রিসেলার : <span>{reseller.length || "NULL"}</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="Search"
-                            onChange={(e) => setRsearch(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
 
                     {isLoading ? (
                       <div className="deleteReseller">
@@ -133,140 +241,7 @@ export default function Reseller() {
                     )}
                   </div>
 
-                  {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <th scope="col">Serial</th>
-                          <th scope="col">নাম</th>
-                          <th scope="col">এড্রেস</th>
-                          <th scope="col">মোবাইল</th>
-                          <th scope="col">ইমেইল</th>
-                          <th scope="col">রিচার্জ ব্যালান্স</th>
-                          <th scope="col" style={{ textAlign: "center" }}>
-                            অ্যাকশন
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {reseller.length === undefined ? (
-                          <tr>
-                            <TdLoader colspan={6} />
-                          </tr>
-                        ) : (
-                          reseller
-                            .filter((val) => {
-                              return val.name
-                                .toString()
-                                .toLowerCase()
-                                .includes(rsearch.toString().toLowerCase());
-                            })
-                            .map((val, key) => (
-                              <tr key={key}>
-                                <td>{++serial}</td>
-                                <td>{val.name}</td>
-                                <td>{val.address}</td>
-                                <td>{val.mobile}</td>
-                                <td>{val.email}</td>
-                                <td>{val.rechargeBalance}</td>
-                                <td style={{ textAlign: "center" }}>
-                                  {/* dropdown */}
-
-                                  <ThreeDots
-                                    className="dropdown-toggle ActionDots"
-                                    id="resellerDropdown"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  />
-
-                                  {/* modal */}
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="resellerDropdown"
-                                  >
-                                    <li
-                                      data-bs-toggle="modal"
-                                      href="#resellerRechargeModal"
-                                      role="button"
-                                      onClick={() => {
-                                        getSpecificReseller(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Wallet />
-                                          <p className="actionP">রিচার্জ</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                    {/* <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#resellerrechargehistory"
-                                      role="button"
-                                       
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Cash />
-                                          <p className="actionP">রিচার্জ হিস্ট্রি</p>
-                                        </div>
-                                      </div>
-                                    </li> */}
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#resellerDetailsModal"
-                                      onClick={() => {
-                                        getSpecificReseller(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PersonFill />
-                                          <p className="actionP">প্রোফাইল</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#resellerModalEdit"
-                                      onClick={() => {
-                                        getSpecificReseller(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PenFill />
-                                          <p className="actionP">এডিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-
-                                    <li
-                                      onClick={() => {
-                                        deleteSingleReseller(
-                                          val.ispOwner,
-                                          val.id
-                                        );
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  </ul>
-                                  {/* dropdown */}
-                                </td>
-                              </tr>
-                            ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                  <Table columns={columns} data={reseller}></Table>
                 </div>
               </FourGround>
               <Footer />

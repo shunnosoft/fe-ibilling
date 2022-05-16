@@ -11,9 +11,9 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Loader from "../../components/common/Loader";
 import StaffPost from "./staffModal/staffPost";
 import { getStaffs, deleteStaffApi } from "../../features/apiCallStaff";
-import StaffTable from "./staffModal/staffTable";
 import ActionButton from "./ActionButton";
 import StaffEdit from "./staffModal/staffEdit";
+import Table from "../../components/table/Table";
 
 const Staff = () => {
   const dispatch = useDispatch();
@@ -44,47 +44,55 @@ const Staff = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "#",
+        Header: "সিরিয়াল",
         id: "row",
+        accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "Name",
+        Header: "নাম",
         accessor: "name",
       },
+      // {
+      //   Header: "ঠিকানা",
+      //   accessor: "address",
+      // },
       {
-        Header: "Address",
-        accessor: "address",
-      },
-      {
-        Header: "Mobile",
+        Header: "মোবাইল",
         accessor: "mobile",
       },
       {
-        Header: "Status",
+        Header: "স্টেটাস",
         accessor: "status",
       },
       {
-        Header: "Salary",
+        Header: "স্যালারি",
         accessor: "salary",
       },
       {
-        Header: "Action",
-        accessor: "id",
-
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
         Cell: ({ row: { original } }) => (
-          <ActionButton
-            deleteStaff={deleteStaff}
-            editHandler={editHandler}
-            data={original}
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ActionButton
+              deleteStaff={deleteStaff}
+              editHandler={editHandler}
+              data={original}
+            />
+          </div>
         ),
       },
     ],
     []
   );
 
-  const data = useMemo(() => getAllStaffs, []);
+  // const data = useMemo(() => getAllStaffs, []);
 
   return (
     <>
@@ -101,7 +109,14 @@ const Staff = () => {
               </FourGround>
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                    className="addCollector"
+                  >
                     {/* <div className="addNewCollector text-end">
                       <p>অ্যাড কর্মচারী</p>
                       <div className="addAndSettingIcon">
@@ -112,29 +127,13 @@ const Staff = () => {
                         />
                       </div>
                     </div> */}
-                    <div className="row searchCollector">
-                      <div className="col-sm-6">
-                        <h4 className="allCollector">
-                          মোট কর্মচারী : <span>{getAllStaffs.length}</span>
-                        </h4>
-                      </div>
-                      <div className="addAndSettingIcon col-sm-6 text-end">
-                        <PersonPlusFill
-                          style={{ background: "#fff", color: "#328eea" }}
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#staffModal"
-                        />
-                      </div>
-                      {/* <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="Search"
-                          />
-                        </div>
-                      </div> */}
+                    <div className="addAndSettingIcon col-sm-6 text-end">
+                      <PersonPlusFill
+                        style={{ background: "#328eea", color: "#fff" }}
+                        className="addcutmButton"
+                        data-bs-toggle="modal"
+                        data-bs-target="#staffModal"
+                      />
                     </div>
 
                     {isLoading ? (
@@ -147,7 +146,7 @@ const Staff = () => {
                       ""
                     )}
                   </div>
-                  <StaffTable columns={columns} data={getAllStaffs} />
+                  <Table columns={columns} data={getAllStaffs} />
                 </div>
               </FourGround>
             </FontColor>

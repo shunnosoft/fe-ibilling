@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import apiLink from "../../../api/apiLink";
@@ -18,6 +18,7 @@ function AlertSmsTemplate() {
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
+  const [numberOfDay, setnumberOfDay] = useState();
   const [days, setDays] = useState([]);
 
   const [billConfirmation, setBillConfirmation] = useState("");
@@ -113,10 +114,14 @@ function AlertSmsTemplate() {
   const radioCheckHandler = (e) => {
     setBillConfirmation(e.target.value);
   };
-
+  useEffect(() => {
+    setnumberOfDay(Math.max(...days));
+    console.log(Math.max(...days));
+  }, [days]);
   // day checkbox select
   const daySettingHandler = (e) => {
     let item = Number(e);
+
     if (days.includes(item)) {
       const index = days.indexOf(item);
       if (index > -1) {
@@ -163,6 +168,42 @@ function AlertSmsTemplate() {
 
     // formRef.current.reset();
   };
+  const smstempletDay = useMemo(() => {
+    return [
+      {
+        name: "এক দিনের টেমপ্লেট",
+        value: 1,
+      },
+      {
+        name: "দুই দিনের টেমপ্লেট",
+        value: 2,
+      },
+      {
+        name: "তিন দিনের টেমপ্লেট",
+        value: 3,
+      },
+      {
+        name: "চার দিনের টেমপ্লেট",
+        value: 4,
+      },
+      {
+        name: "পাঁচ দিনের টেমপ্লেট",
+        value: 5,
+      },
+      {
+        name: "ছয় দিনের টেমপ্লেট",
+        value: 6,
+      },
+      {
+        name: "সাত দিনের টেমপ্লেট",
+        value: 7,
+      },
+    ];
+  }, []);
+
+  const dayTempletHandler = (e) => {
+    console.log(e.target.value);
+  };
 
   return (
     <div>
@@ -200,81 +241,113 @@ function AlertSmsTemplate() {
 
               <p className="endingtext">{bottomText}</p>
             </div>
-            <div className="displayFlexx">
-              <div className="radioselect">
-                <input
-                  id="1"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"ইউজারনেমঃ USERNAME"}
-                  checked={matchFound.includes("ইউজারনেমঃ USERNAME")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="1">
-                  {"ইউজারনেমঃ USERNAME"}
-                </label>
+            <div
+              style={{
+                display: "flex",
+
+                justifyContent: "space-between",
+                flexDirection: "row",
+                width: "100%",
+                marginTop: "20px",
+              }}
+              className="displayFlexx"
+            >
+              <div>
+                <div className="radioselect">
+                  <input
+                    id="1"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={"ইউজারনেমঃ USERNAME"}
+                    checked={matchFound.includes("ইউজারনেমঃ USERNAME")}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="1">
+                    {"ইউজারনেমঃ USERNAME"}
+                  </label>
+                </div>
+                <div className="radioselect">
+                  <input
+                    id="2"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    checked={matchFound.includes("ইউজার আইডিঃ USERID")}
+                    value={"ইউজার আইডিঃ USERID"}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="2">
+                    {"ইউজার আইডিঃ USERID"}
+                  </label>
+                </div>
+                <div className="radioselect">
+                  <input
+                    id="3"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    checked={matchFound.includes("গ্রাহকঃ NAME")}
+                    value={"গ্রাহকঃ NAME"}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="3">
+                    {"গ্রাহকঃ NAME"}
+                  </label>
+                </div>
+                <div className="radioselect">
+                  <input
+                    id="4"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    checked={matchFound.includes("বিলঃ AMOUNT")}
+                    value={"বিলঃ AMOUNT"}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="4">
+                    {"বিলঃ AMOUNT"}
+                  </label>
+                </div>
+                <div className="radioselect">
+                  <input
+                    id="5"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    checked={matchFound.includes("তারিখঃ DATE")}
+                    value={"তারিখঃ DATE"}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="5">
+                    {"তারিখঃ DATE"}
+                  </label>
+                </div>
               </div>
-              <div className="radioselect">
-                <input
-                  id="2"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  checked={matchFound.includes("ইউজার আইডিঃ USERID")}
-                  value={"ইউজার আইডিঃ USERID"}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
+
+              {/* //working */}
+              <div className="templateSelect">
+                <select
+                  style={{
+                    width: "150px",
+                    border: "2px solid grey",
+                    fontWeight: "600",
+                    borderRadius: "5px",
                   }}
-                />
-                <label className="templatelabel" htmlFor="2">
-                  {"ইউজার আইডিঃ USERID"}
-                </label>
-              </div>
-              <div className="radioselect">
-                <input
-                  id="3"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  checked={matchFound.includes("গ্রাহকঃ NAME")}
-                  value={"গ্রাহকঃ NAME"}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="3">
-                  {"গ্রাহকঃ NAME"}
-                </label>
-              </div>
-              <div className="radioselect">
-                <input
-                  id="4"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  checked={matchFound.includes("বিলঃ AMOUNT")}
-                  value={"বিলঃ AMOUNT"}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="4">
-                  {"বিলঃ AMOUNT"}
-                </label>
-              </div>
-              <div className="radioselect">
-                <input
-                  id="5"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  checked={matchFound.includes("তারিখঃ DATE")}
-                  value={"তারিখঃ DATE"}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="5">
-                  {"তারিখঃ DATE"}
-                </label>
+                  onChange={(e) => dayTempletHandler(e)}
+                  name=""
+                  id=""
+                >
+                  <option value="">Please Select</option>
+                  {smstempletDay.slice(0, numberOfDay).map((item) => {
+                    return <option value={item.value}>{item.name}</option>;
+                  })}
+                </select>
               </div>
             </div>
             <div style={{ marginBotton: "20px" }} className="displayFlex">

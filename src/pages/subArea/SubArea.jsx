@@ -26,13 +26,15 @@ import SubAreaPost from "./subAreaModals/SubAreaPost";
 // import { deleteSubArea, editSubArea } from "../../features/subAreaSlice";
 import { FtextField } from "../../components/common/FtextField";
 import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
+import ActionButton from "../area/ActionButton";
+import Table from "../../components/table/Table";
 
 export default function SubArea() {
   const navigate = useNavigate();
   const { areaId } = useParams();
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [search, setSearch] = useState("");
-  const [subAreas, setSubAreas] = useState("");
+  const [subAreas, setSubAreas] = useState([]);
   const [subAreaName, setSubAreaName] = useState("");
   const [ispId, setIspId] = useState("");
   const [subAreaID, setSubAreaID] = useState("");
@@ -103,6 +105,75 @@ export default function SubArea() {
     };
     deleteSubArea(dispatch, IDs, setIsLoading);
   };
+  //create column of table
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "সাব-এরিয়া",
+        accessor: "name",
+      },
+      {
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#subAreaEditModal"
+                onClick={() => {
+                  setSubAreaID(original.id);
+                  setSubAreaName(original.name);
+                  setIspId(original.ispOwner);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PenFill />
+                    <p className="actionP">এডিট</p>
+                  </div>
+                </div>
+              </li>
+
+              <li
+                onClick={() => {
+                  deleteSingleSubAarea(original.id, original.ispOwner);
+                }}
+              >
+                <div className="dropdown-item actionManager">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">ডিলিট</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -203,25 +274,6 @@ export default function SubArea() {
                       <span style={{ marginLeft: "3px" }}>এরিয়া</span>
                     </div>
 
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট সাব-এরিয়া:{" "}
-                          <span> {subAreas?.length || "NULL"}</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ এর জন্য সাব-এরিয়া নাম টাইপ করুন "
-                            onChange={(e) => setSearch(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
                     <div>
                       {isLoading ? (
                         <div className="deletingAction">
@@ -234,7 +286,7 @@ export default function SubArea() {
                   </div>
 
                   {/* table */}
-                  <div className="table-responsive-lg">
+                  {/* <div className="table-responsive-lg">
                     <table className="table table-striped ">
                       <thead>
                         <tr>
@@ -275,51 +327,14 @@ export default function SubArea() {
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
                                   />
-
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="areaDropdown"
-                                  >
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#subAreaEditModal"
-                                      onClick={() => {
-                                        setSubAreaID(val.id);
-                                        setSubAreaName(val.name);
-                                        setIspId(val.ispOwner);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PenFill />
-                                          <p className="actionP">এডিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-
-                                    <li
-                                      onClick={() => {
-                                        deleteSingleSubAarea(
-                                          val.id,
-                                          val.ispOwner
-                                        );
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  </ul>
                                 </td>
                               </tr>
                             ))
                         )}
                       </tbody>
                     </table>
-                  </div>
+                  </div> */}
+                  <Table columns={columns} data={subAreas}></Table>
                 </div>
               </FourGround>
               <Footer />

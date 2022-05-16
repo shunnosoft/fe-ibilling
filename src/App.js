@@ -257,6 +257,8 @@ function App() {
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
               <Route path="expenditure" element={<Expenditure />} />
+              <Route path="staff" element={<Staff />} />
+              <Route path="staff/:staffId" element={<StaffSalary />} />
 
               <Route path="settings" element={<Settings />} />
               <Route path="home" element={<Dashboard />} />
@@ -315,9 +317,6 @@ function App() {
                 )
               }
             />
-
-            <Route path="/staff" element={<Staff />} />
-            <Route path="/staff/:staffId" element={<StaffSalary />} />
           </Routes>
         )}
       </div>
