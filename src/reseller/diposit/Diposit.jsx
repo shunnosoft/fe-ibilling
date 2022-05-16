@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 // import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
+import Table from "../../components/table/Table";
 
 export default function Diposit() {
   const balancee = useSelector(
@@ -211,7 +212,127 @@ export default function Diposit() {
     setMainData(arr);
     // setMainData2(arr);
   };
+  const columns2 = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "পরিমান",
+        accessor: "amount",
+        Cell: ({ row: { val } }) => <div>৳ {FormatNumber(val)}</div>,
+      },
+      {
+        Header: "স্টেটাস",
+        accessor: "status",
+        Cell: ({ row: { item } }) => (
+          <div>
+            {item.status === "accepted" && (
+              <span className="statusClass">গ্রহণ করা হয়েছে</span>
+            )}
+            {item.status === "rejected" && (
+              <span className="rejectClass">বাতিল হয়েছে</span>
+            )}
+          </div>
+        ),
+      },
 
+      {
+        Header: "তারিখ",
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY");
+        },
+      },
+    ],
+    []
+  );
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+        Cell: ({ row: { val } }) => (
+          <div>
+            নাম {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
+          </div>
+        ),
+      },
+      {
+        Header: "মোট",
+        accessor: "amount",
+        Cell: ({ row: { val } }) => <div>৳ {FormatNumber(val)}</div>,
+      },
+
+      {
+        Header: <div className="text-center">অ্যাকশন</div>,
+        id: "option1",
+
+        Cell: ({ row: { item } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div>
+              {item.status === "pending" ? (
+                acceptLoading ? (
+                  <div className="loaderDiv">
+                    <Loader />
+                  </div>
+                ) : (
+                  <div className="AcceptRejectBtn">
+                    <button
+                      onClick={() => {
+                        depositAcceptRejectHandler("accepted", item.id);
+                      }}
+                    >
+                      গ্রহণ
+                    </button>
+                    <button
+                      onClick={() => {
+                        depositAcceptRejectHandler("rejected", item.id);
+                      }}
+                    >
+                      বাতিল
+                    </button>
+                  </div>
+                )
+              ) : (
+                <>
+                  {item.status === "accepted" && (
+                    <span className="statusClass">গ্রহণ করা হয়েছে</span>
+                  )}
+                  {item.status === "rejected" && (
+                    <span className="rejectClass">বাতিল হয়েছে</span>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        ),
+      },
+      {
+        Header: "তারিখ",
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY");
+        },
+      },
+    ],
+    []
+  );
   return (
     <>
       <Sidebar />
@@ -297,39 +418,7 @@ export default function Diposit() {
 
               {/* table */}
               {userRole === "collector" ? (
-                <div className="table-responsive-lg">
-                  <table className="table table-striped ">
-                    <thead>
-                      <tr>
-                        <td>পরিমান</td>
-                        <td className="textAlignCenter">স্টেটাস</td>
-                        <td>তারিখ</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ownDeposits?.map((item, key) => (
-                        <tr key={key}>
-                          <td>৳ {FormatNumber(item.amount)}</td>
-                          <td>
-                            {item.status === "accepted" && (
-                              <span className="statusClass">
-                                গ্রহণ করা হয়েছে
-                              </span>
-                            )}
-                            {item.status === "rejected" && (
-                              <span className="rejectClass">বাতিল হয়েছে</span>
-                            )}
-                          </td>
-                          <td>
-                            {moment(item.createdAt).format(
-                              "DD-MM-YYYY hh:mm:ss A"
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <Table data={ownDeposits} columns={columns2}></Table>
               ) : (
                 ""
               )}
@@ -398,111 +487,8 @@ export default function Diposit() {
                       </button>
                     </div>
 
-                    {userRole === "reseller" ? (
-                      <div className="row searchCollector">
-                        <div className="col-sm-8">
-                          <h4 className="allCollector">
-                            কালেক্টর ডিপোজিটঃ{" "}
-                            <span>{FormatNumber(mainData.length)} টি</span>
-                            পরিমাণঃ{" "}
-                            <span>{FormatNumber(getTotalDeposit())} টাকা</span>
-                          </h4>
-                        </div>
-
-                        <div className="col-sm-4">
-                          <div className=" collectorSearch">
-                            {/* <Search className="serchingIcon" /> */}
-                            <input
-                              type="text"
-                              className="search"
-                              placeholder="সার্চ"
-                              // onChange={(e) => setCusSearch(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-
                     {/* table */}
-                    <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                            <td>
-                              নাম{" "}
-                              {userRole === "ispOwner"
-                                ? "(ম্যানেজার)"
-                                : "(কালেক্টর)"}
-                            </td>
-                            <td>মোট</td>
-                            <td>অ্যাকশন</td>
-                            <td>তারিখ</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {mainData?.map((item, key) => (
-                            <tr key={key}>
-                              <td>{item.name}</td>
-                              <td>৳ {FormatNumber(item.amount)}</td>
-
-                              <td>
-                                {item.status === "pending" ? (
-                                  acceptLoading ? (
-                                    <div className="loaderDiv">
-                                      <Loader />
-                                    </div>
-                                  ) : (
-                                    <div className="AcceptRejectBtn">
-                                      <button
-                                        onClick={() => {
-                                          depositAcceptRejectHandler(
-                                            "accepted",
-                                            item.id
-                                          );
-                                        }}
-                                      >
-                                        গ্রহণ
-                                      </button>
-                                      <button
-                                        onClick={() => {
-                                          depositAcceptRejectHandler(
-                                            "rejected",
-                                            item.id
-                                          );
-                                        }}
-                                      >
-                                        বাতিল
-                                      </button>
-                                    </div>
-                                  )
-                                ) : (
-                                  <>
-                                    {item.status === "accepted" && (
-                                      <span className="statusClass">
-                                        গ্রহণ করা হয়েছে
-                                      </span>
-                                    )}
-                                    {item.status === "rejected" && (
-                                      <span className="rejectClass">
-                                        বাতিল হয়েছে
-                                      </span>
-                                    )}
-                                  </>
-                                )}
-                              </td>
-
-                              <td>
-                                {moment(item.createdAt).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    <Table data={mainData} columns={columns}></Table>
                   </div>
                 </FourGround>
               ) : (
