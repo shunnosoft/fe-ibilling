@@ -9,6 +9,7 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import { badge } from "../common/Utils";
 import GlobalFilter from "./GlobalFilter";
 const Table = (props) => {
   const { columns, data } = props;
@@ -64,6 +65,7 @@ const Table = (props) => {
           <tbody {...getTableBodyProps()}>
             {page.map((row) => {
               prepareRow(row);
+
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell, i) => {

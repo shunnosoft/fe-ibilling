@@ -43,6 +43,7 @@ import CustomerReport from "./customerCRUD/showCustomerReport";
 import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
+import Table from "../../components/table/Table";
 
 export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
@@ -162,8 +163,8 @@ export default function Customer() {
   // get specific customer
   const getSpecificCustomer = (id) => {
     if (cus.length !== undefined) {
-      const temp = cus.find((val) => {
-        return val.id === id;
+      const temp = cus.find((original) => {
+        return original.id === id;
       });
       setSingleCustomer(temp);
     }
@@ -328,6 +329,166 @@ export default function Customer() {
     payment: customerPaymentStatus ? customerPaymentStatus : "সকল গ্রাহক",
   };
 
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "আইডি",
+        accessor: "customerId",
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+      },
+      {
+        Header: "মোবাইল",
+        accessor: "mobile",
+      },
+
+      {
+        Header: "স্ট্যাটাস",
+        accessor: "status",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
+      },
+      {
+        Header: "পেমেন্ট",
+        accessor: "paymentStatus",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
+      },
+      {
+        Header: "	প্যাকেজ",
+        accessor: "pppoe.profile",
+      },
+      {
+        Header: "মাসিক ফি",
+        accessor: "monthlyFee",
+      },
+      {
+        Header: "ব্যালান্স",
+        accessor: "balance",
+      },
+      {
+        Header: "বিল সাইকেল",
+        accessor: "billingCycle",
+      },
+
+      {
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#showCustomerDetails"
+                onClick={() => {
+                  getSpecificCustomer(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PersonFill />
+                    <p className="actionP">প্রোফাইল</p>
+                  </div>
+                </div>
+              </li>
+              {permission?.billPosting || role === "ispOwner" ? (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#collectCustomerBillModal"
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <Wallet />
+                      <p className="actionP">বিল গ্রহণ</p>
+                    </div>
+                  </div>
+                </li>
+              ) : (
+                ""
+              )}
+
+              {permission?.customerEdit || role === "ispOwner" ? (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerEditModal"
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">এডিট</p>
+                    </div>
+                  </div>
+                </li>
+              ) : (
+                ""
+              )}
+
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#showCustomerReport"
+                onClick={() => {
+                  getSpecificCustomerReport(original);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <CashStack />
+                    <p className="actionP">রিপোর্ট</p>
+                  </div>
+                </div>
+              </li>
+
+              {permission?.customerDelete || role === "ispOwner" ? (
+                <li
+                  onClick={() => {
+                    let con = window.confirm(
+                      `${original.name} গ্রাহক ডিলিট করতে চান?`
+                    );
+                    con && deleteCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">ডিলিট</p>
+                    </div>
+                  </div>
+                </li>
+              ) : (
+                ""
+              )}
+            </ul>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
   return (
     <>
       <Sidebar />
@@ -459,26 +620,6 @@ export default function Customer() {
                       )}
                     </div>
 
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট গ্রাহক :{" "}
-                          <span>{FormatNumber(Customers?.length) || "0"}</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          {/* <Search className="serchingIcon" /> */}
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ"
-                            onChange={(e) => setCusSearch(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
                     {isDeleting ? (
                       <div className="deletingAction">
                         <Loader /> <b>Deleting...</b>
@@ -496,234 +637,8 @@ export default function Customer() {
                       ref={componentRef}
                     />
                   </div>
-                  {/* print report end*/}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr className="spetialSortingRow">
-                          <th
-                            onClick={() => toggleSort("customerId")}
-                            scope="col"
-                          >
-                            আইডি
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th onClick={() => toggleSort("name")} scope="col">
-                            নাম
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th onClick={() => toggleSort("mobile")} scope="col">
-                            মোবাইল
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
 
-                          <th onClick={() => toggleSort("status")} scope="col">
-                            স্ট্যাটাস
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th
-                            onClick={() => toggleSort("paymentStatus")}
-                            scope="col"
-                          >
-                            পেমেন্ট
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th
-                            onClick={() => toggleSort("pppoe.profile")}
-                            scope="col"
-                          >
-                            প্যাকেজ
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th
-                            onClick={() => toggleSort("monthlyFee")}
-                            scope="col"
-                            className="text-end"
-                          >
-                            মাসিক ফি
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-
-                          <th
-                            onClick={() => toggleSort("balance")}
-                            scope="col"
-                            className="text-end"
-                          >
-                            ব্যালান্স
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-
-                          <th
-                            onClick={() => toggleSort("billingCycle")}
-                            scope="col"
-                            className="text-end"
-                          >
-                            বিল সাইকেল
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th scope="col" className="centeringTD">
-                            অ্যাকশন
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {isLoading ? (
-                          <tr>
-                            <TdLoader colspan={10} />
-                          </tr>
-                        ) : Customers?.length === undefined ? (
-                          ""
-                        ) : (
-                          currentCustomers.map((val, key) => (
-                            <tr key={key} id={val.id}>
-                              <td>{val.customerId}</td>
-                              <td>{val.name}</td>
-                              <td>{val.mobile}</td>
-                              <td>{badge(val.status)}</td>
-                              <td>{badge(val.paymentStatus)}</td>
-                              <td>{val.pppoe.profile}</td>
-                              <td align="right">
-                                {FormatNumber(val.monthlyFee)}
-                              </td>
-                              <td align="right">
-                                <strong>{FormatNumber(val.balance)}</strong>
-                              </td>
-                              <td align="right">
-                                {moment(val.billingCycle).format("DD-MM-YYYY")}
-                              </td>
-                              <td className="centeringTD">
-                                <ThreeDots
-                                  className="dropdown-toggle ActionDots"
-                                  id="customerDrop"
-                                  type="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                />
-
-                                {/* modal */}
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="customerDrop"
-                                >
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerDetails"
-                                    onClick={() => {
-                                      getSpecificCustomer(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PersonFill />
-                                        <p className="actionP">প্রোফাইল</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  {permission?.billPosting ||
-                                  role === "ispOwner" ? (
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#collectCustomerBillModal"
-                                      onClick={() => {
-                                        getSpecificCustomer(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Wallet />
-                                          <p className="actionP">বিল গ্রহণ</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  ) : (
-                                    ""
-                                  )}
-
-                                  {permission?.customerEdit ||
-                                  role === "ispOwner" ? (
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#customerEditModal"
-                                      onClick={() => {
-                                        getSpecificCustomer(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PenFill />
-                                          <p className="actionP">এডিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  ) : (
-                                    ""
-                                  )}
-
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#showCustomerReport"
-                                    onClick={() => {
-                                      getSpecificCustomerReport(val);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <CashStack />
-                                        <p className="actionP">রিপোর্ট</p>
-                                      </div>
-                                    </div>
-                                  </li>
-
-                                  {permission?.customerDelete ||
-                                  role === "ispOwner" ? (
-                                    <li
-                                      onClick={() => {
-                                        let con = window.confirm(
-                                          `${val.name} গ্রাহক ডিলিট করতে চান?`
-                                        );
-                                        con && deleteCustomer(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  ) : (
-                                    ""
-                                  )}
-                                </ul>
-
-                                {/* end */}
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-
-                    {/* Pagination */}
-                    <div className="paginationSection">
-                      <select
-                        className="form-select paginationFormSelect"
-                        aria-label="Default select example"
-                        onChange={(e) => setCustomerPerPage(e.target.value)}
-                      >
-                        <option value="50">৫০ জন</option>
-                        <option value="100">১০০ জন</option>
-                        <option value="200">২০০ জন</option>
-                        <option value="500">৫০০ জন</option>
-                        <option value="1000">১০০০ জন</option>
-                      </select>
-                      <Pagination
-                        customerPerPage={customerPerPage}
-                        totalCustomers={Customers.length}
-                        paginate={paginate}
-                      />
-                    </div>
-                  </div>
+                  <Table columns={columns} data={currentCustomers}></Table>
                 </div>
               </FourGround>
               <Footer />

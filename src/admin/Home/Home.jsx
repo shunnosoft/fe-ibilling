@@ -1,9 +1,9 @@
 // external imports
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
-import { ThreeDotsVertical } from "react-bootstrap-icons";
+// import { ThreeDotsVertical } from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
 import "./home.css";
