@@ -10,11 +10,10 @@ const adminSlice = createSlice({
       state.ispOwners = action.payload;
     },
     editOwner: (state, actions) => {
-
-      state.Owner[
-        state.Owner.findIndex((item) => item.id === actions.payload.id)
+      state.ispOwners[
+        state.ispOwners.findIndex((item) => item.id === actions.payload.id)
       ] = actions.payload;
-      state.updateOwnerSuccess = true;
+      state.updateAdminSuccess = true;
     },
   },
 });

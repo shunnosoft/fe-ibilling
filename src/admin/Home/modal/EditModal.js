@@ -4,18 +4,32 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
+import Loader from "../../../components/common/Loader";
 
-const EditModal = ({ ownerId }) => {
+const ISPOwnerEditModal = ({ ownerId }) => {
+  //  get all isp owner
   const data = useSelector((state) => state.admin.ispOwners);
+
+  // get editable owner
   const ispOwner = data.find((item) => item.id === ownerId);
 
+  //  loading local state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // import dispatch from react redux
+  const dispatch = useDispatch();
+
+  //  set payment status paid or unpain in local state
   const [paymentStatus, setPaymentStatus] = useState(
     ispOwner?.bpSettings?.paymentStatus
   );
+
+  //  set mickrotik status true or flase
   const [hasMikrotik, setHasMikrotik] = useState(
     ispOwner?.bpSettings?.hasMikrotik
   );
 
+  //  set payment status & mikrotik
   useEffect(() => {
     if (ispOwner) {
       setPaymentStatus(ispOwner?.bpSettings?.paymentStatus);
@@ -23,22 +37,35 @@ const EditModal = ({ ownerId }) => {
     }
   }, [ispOwner]);
 
-  //   const customerValidator = Yup.object({
-  //     name: Yup.string().required("গ্রাহকের নাম লিখুন"),
-  //     mobile: Yup.string()
-  //       // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-  //       .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-  //       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
-  //     address: Yup.string(),
-  //     Pname: Yup.string().required("PPPoE নাম লিখুন"),
-  //     Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
-  //     Pcomment: Yup.string(),
-  //     // balance: Yup.number().integer(),
-  //   });
+  //  isp owner form validation
+  const ispOwnerValidator = Yup.object({
+    name: Yup.string().required("আই এস পি ওনারের নাম দিন"),
+    mobile: Yup.string()
+      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+    company: Yup.string().required("কোম্পানির নাম দিন"),
+    address: Yup.string().required("ঠিকানা দিন"),
+    smsBalance: Yup.string().required("এস এম এস এর পরিমান দিন "),
+    referenceName: Yup.string().required("রেফারেন্স এর নাম দিন "),
+    referenceMobile: Yup.string()
+      .required("মোবাইল নাম্বার দিন")
+      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+    paymentStatus: Yup.string().required("পেমেন্ট স্ট্যাটাস দিন"),
+    packType: Yup.string().required("প্যাকেজ টাইপ দিন"),
+    pack: Yup.string().required("প্যাকেজ দিন"),
+    customerLimit: Yup.string().required("কাস্টমার লিমিট দিন"),
+    packageRate: Yup.string().required("প্যাকেজ রেট দিন"),
+    hasMikrotik: Yup.string(),
+  });
 
+  //  set initial form values
   let initialValues;
   if (ispOwner) {
     initialValues = {
+      ispOwnerId: ispOwner?.id,
       name: ispOwner?.name,
       mobile: ispOwner?.mobile,
       company: ispOwner?.company,
@@ -47,42 +74,68 @@ const EditModal = ({ ownerId }) => {
       referenceName: ispOwner?.reference?.name,
       referenceMobile: ispOwner?.reference?.mobile,
       paymentStatus: ispOwner?.bpSettings?.paymentStatus,
-      packageType: ispOwner?.bpSettings?.packType,
-      package: ispOwner?.bpSettings?.pack,
+      packType: ispOwner?.bpSettings?.packType,
+      pack: ispOwner?.bpSettings?.pack,
       packageRate: ispOwner?.bpSettings?.packageRate,
       customerLimit: ispOwner?.bpSettings?.customerLimit,
       hasMikrotik: ispOwner?.bpSettings?.hasMikrotik,
     };
   }
 
+  //  checked mikrotik
   const handleHasMikrotikChange = (e) => {
-    const { name, checked } = e.target;
+    //  check mikrotik
+    const { checked } = e.target;
     setHasMikrotik(checked);
   };
 
+  //  checked payment status
   const handlePaymentStatusChange = (e) => {
     setPaymentStatus(e.target.value);
   };
 
-  const dispatch = useDispatch();
-
+  //  handle submit
   const ownerHandler = (values) => {
+    //  delete id & mobile from value
+    delete values.id;
+    delete values.mobile;
+
+    //  set bpSetting & references
     const bpSettings = { ...ispOwner.bpSettings };
     const reference = { ...ispOwner.reference };
+
+    //  convert package rate string to int
     if (values.packageRate)
       bpSettings.packageRate = Number.parseInt(values.packageRate);
+
+    //  convert customer limit string to int
     if (values.customerLimit)
       bpSettings.customerLimit = Number.parseInt(values.customerLimit);
+
+    //  set package type to bpSetting
+    if (values.packType) bpSettings.packType = values.packType;
+
+    //  set pack to bpSetting
+    if (values.pack) bpSettings.pack = values.pack;
+
+    //  set payment status to bpSetting
     if (paymentStatus) bpSettings.paymentStatus = paymentStatus;
+
+    //  set mikrotik status for bpSetting
     bpSettings.hasMikrotik = hasMikrotik;
 
+    //  set references mobile
     if (values.referenceMobile) reference.mobile = values.referenceMobile;
+
+    //  set references name
     if (values.referenceName) reference.name = values.referenceName;
 
+    //  update bpSetting & references
     values.bpSettings = bpSettings;
     values.reference = reference;
 
-    updateOwner(ownerId, values, dispatch);
+    // api call
+    updateOwner(ownerId, values, setIsLoading, dispatch);
   };
 
   return (
@@ -98,7 +151,8 @@ const EditModal = ({ ownerId }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                এর প্রোফাইল এডিট করুন
+                Edit Profile
+                <span className="text-success"> {ispOwner?.name}</span>
               </h5>
               <button
                 type="button"
@@ -111,7 +165,7 @@ const EditModal = ({ ownerId }) => {
               {/* model body here */}
               <Formik
                 initialValues={initialValues}
-                // validationSchema={customerValidator}
+                validationSchema={ispOwnerValidator}
                 onSubmit={(values) => {
                   ownerHandler(values);
                 }}
@@ -136,16 +190,31 @@ const EditModal = ({ ownerId }) => {
                     </div> */}
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label="নাম" name="name" />
-                      <FtextField type="text" label="মোবাইল" name="mobile" />
-                      <FtextField type="text" label="company" name="company" />
-                      <FtextField type="text" label="ঠিকানা" name="address" />
+                      <FtextField
+                        type="text"
+                        label="ISP Owner Id"
+                        name="ispOwnerId"
+                        disabled
+                      />
+                      <FtextField type="text" label="Name" name="name" />
+                      <FtextField
+                        type="text"
+                        label="Mobile"
+                        name="mobile"
+                        disabled
+                      />
+                    </div>
+
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="Company" name="company" />
+                      <FtextField type="text" label="Adress" name="address" />
                       <FtextField
                         type="text"
                         label="Package Rate"
                         name="packageRate"
                       />
-
+                    </div>
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label="Customar Limit"
@@ -157,22 +226,19 @@ const EditModal = ({ ownerId }) => {
                         label="SMS Balance"
                         name="smsBalance"
                       />
-
-                      <div className="CheckboxContainer">
-                        <input
-                          type="checkbox"
-                          className="CheckBox"
-                          name="hasMikrotik"
-                          checked={hasMikrotik}
-                          onChange={handleHasMikrotikChange}
-                        />
-                        <label className="checkboxLabel">Has Mikrotik</label>
-                      </div>
+                      <FtextField
+                        type="text"
+                        label="Package Type"
+                        name="packType"
+                      />
+                    </div>
+                    <div className="displayGrid3">
+                      <FtextField type="text" label="Package" name="pack" />
 
                       <div>
-                        <p>paid status</p>
+                        <h6 className="mb-0">Paid status</h6>
                         <select
-                          className="form-select"
+                          className="form-select mt-1 mb-4"
                           aria-label="Default select example"
                           onChange={handlePaymentStatusChange}
                         >
@@ -190,12 +256,32 @@ const EditModal = ({ ownerId }) => {
                           </option>
                         </select>
                       </div>
-                      <FtextField
-                        type="text"
-                        label="Package Type"
-                        name="packageType"
-                      />
-                      <FtextField type="text" label="Package" name="package" />
+
+                      <div class="form-check mt-4">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="flexCheckChecked"
+                          name="hasMikrotik"
+                          checked={hasMikrotik}
+                          onChange={handleHasMikrotikChange}
+                        />
+                        <label class="form-check-label" for="flexCheckChecked">
+                          Has Microtik
+                        </label>
+                      </div>
+                    </div>
+                    <div className="displayGrid3">
+                      {/* <div className="CheckboxContainer">
+                        <input
+                          type="checkbox"
+                          className="CheckBox"
+                          name="hasMikrotik"
+                          checked={hasMikrotik}
+                          onChange={handleHasMikrotikChange}
+                        />
+                        <label className="checkboxLabel">Has Mikrotik</label>
+                      </div> */}
 
                       {/* <div>
                         <p>Package Type</p>
@@ -322,6 +408,8 @@ const EditModal = ({ ownerId }) => {
                           </option>
                         </select>
                       </div> */}
+                    </div>
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label="Reference Name"
@@ -349,14 +437,19 @@ const EditModal = ({ ownerId }) => {
 
                     <div className="modal-footer" style={{ border: "none" }}>
                       <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? <Loader /> : "Submit"}
+                      </button>
+                      <button
                         type="button"
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
+                        disabled={isLoading}
                       >
-                        বাতিল করুন
-                      </button>
-                      <button type="submit" className="btn btn-success">
-                        সেভ করুন
+                        Cnacel
                       </button>
                     </div>
                   </Form>
@@ -370,4 +463,4 @@ const EditModal = ({ ownerId }) => {
   );
 };
 
-export default EditModal;
+export default ISPOwnerEditModal;

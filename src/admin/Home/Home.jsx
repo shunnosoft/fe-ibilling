@@ -3,12 +3,11 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
-import { ThreeDotsVertical } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 import moment from "moment";
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
-import { cardData, monthsName } from "./homeData";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getIspOwners } from "../../features/apiCallAdmin";
@@ -77,33 +76,7 @@ export default function Home() {
           </div>
         ),
       },
-      // accessor: "bpSetting.paymentStatus",
 
-      // {
-      //   accessor: "email",
-      //   Header: "ইমেইল",
-      // },
-      // ,
-
-      // {
-      //   accessor: "nid",
-      //   Header: "প্যাকেজ",
-      // },
-
-      // {
-      //   Header: "রিসেলার",
-      //   Cell: ({ row: { original } }) =>
-      //     original?.bpSettings?.hasReseller ? "YES" : "NO",
-      // },
-      // {
-      //   Header: "মাইক্রোটিক",
-      //   Cell: ({ row: { original } }) =>
-      //     original?.bpSettings?.hasMikrotik ? "YES" : "NO",
-      // },
-      // {
-      //   accessor: "createdAt",
-      //   Header: "তারিখ",
-      // },
       {
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
@@ -135,7 +108,22 @@ export default function Home() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">Edit</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li
+                // onClick={() => {
+                //   editModal(original.id);
+                // }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <Link to={"/admin/isp-owner/invoice-list/" + original.id}>
+                        <p className="actionP">Invoice</p>
+                      </Link>
                     </div>
                   </div>
                 </li>
