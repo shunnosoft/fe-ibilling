@@ -22,6 +22,7 @@ import { fetchActivepppoeUser, fetchpppoeUser } from "../../features/apiCalls";
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 
 import { useLayoutEffect } from "react";
+import Table from "../../components/table/Table";
 // import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
@@ -120,7 +121,94 @@ export default function ConfigMikrotik() {
       fetchpppoeUser(dispatch, IDs, singleMik.name);
     }
   };
+  const columns2 = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+      },
+      {
+        Header: "এড্রেস",
+        accessor: "address",
+      },
+      {
+        Header: "RX",
+        accessor: "rxByte",
+        Cell: ({ row: { val } }) => (
+          <div
+            style={{
+              padding: "15px 15px 15px 0 !important",
+            }}
+          >
+            {(val.rxByte / 1024 / 1024).toFixed(2) + " MB"}
+          </div>
+        ),
+      },
+      {
+        Header: "TX",
+        accessor: "txByte",
+        Cell: ({ row: { val } }) => (
+          <div
+            style={{
+              padding: "15px 15px 15px 0 !important",
+            }}
+          >
+            {(val.txByte / 1024 / 1024).toFixed(2) + " MB"}
+          </div>
+        ),
+      },
 
+      {
+        Header: "আপ টাইম",
+        accessor: "uptime",
+
+        Cell: ({ row: { val } }) => (
+          <div
+            style={{
+              padding: "15px 15px 15px 0 !important",
+            }}
+          >
+            {val.uptime
+              .replace("w", "w ")
+              .replace("d", "d ")
+              .replace("h", "h ")
+              .replace("m", "m ")
+              .replace("s", "s")}
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+  const columns3 = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+      },
+      {
+        Header: "কলার আইডি",
+        accessor: "callerId",
+      },
+      {
+        Header: "প্যাকেজ",
+        accessor: "profile",
+      },
+    ],
+    []
+  );
   return (
     <>
       <Sidebar />
@@ -184,125 +272,16 @@ export default function ConfigMikrotik() {
                     {/* PPPoE users */}
                     {whatYouWantToShow === "showActiveMikrotikUser" ? (
                       <>
-                        <h2 className="secondaryTitle">এক্টিভ গ্রাহক</h2>
-
-                        <div className="row searchCollector">
-                          <div className="col-sm-8">
-                            <h4 className="allCollector">
-                              এক্টিভ গ্রাহক :{" "}
-                              <span>{activeUser.length || "0"}</span>
-                            </h4>
-                          </div>
-
-                          <div className="col-sm-4">
-                            <div className="pppoeRefresh">
-                              {/* Refresh: {refresh} */}
-
-                              <div className=" collectorSearch">
-                                <input
-                                  type="text"
-                                  className="search"
-                                  placeholder="সার্চ"
-                                  onChange={(e) => setSearch2(e.target.value)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="table-responsive-lg">
-                          <table className="table table-striped ">
-                            <thead>
-                              <tr>
-                                <th scope="col">সিরিয়াল</th>
-                                <th scope="col">নাম</th>
-                                <th scope="col">এড্রেস</th>
-                                <th scope="col">RX</th>
-                                <th scope="col">TX</th>
-                                <th scope="col">আপ টাইম</th>
-                                {/* <th scope="col" style={{ textAlign: "center" }}>
-                              অ্যাকশন
-                            </th> */}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {mtkIsLoading ? (
-                                <tr>
-                                  <TdLoader colspan={6} />
-                                </tr>
-                              ) : (
-                                activeUser.length &&
-                                activeUser
-                                  .filter((val) => {
-                                    return val?.name
-                                      .toString()
-                                      .toLowerCase()
-                                      .includes(
-                                        search2.toString().toLowerCase()
-                                      );
-                                  })
-                                  .map((val, key) => (
-                                    <tr key={key}>
-                                      <td style={{ paddingLeft: "30px" }}>
-                                        {++serial}
-                                      </td>
-                                      <td
-                                        style={{
-                                          padding:
-                                            "15px 15px 15px 0 !important",
-                                        }}
-                                      >
-                                        {val?.name}
-                                      </td>
-                                      <td
-                                        style={{
-                                          padding:
-                                            "15px 15px 15px 0 !important",
-                                        }}
-                                      >
-                                        {val.address}
-                                      </td>
-                                      <td
-                                        style={{
-                                          padding:
-                                            "15px 15px 15px 0 !important",
-                                        }}
-                                      >
-                                        {(val.rxByte / 1024 / 1024).toFixed(2) +
-                                          " MB"}
-                                      </td>
-                                      <td
-                                        style={{
-                                          padding:
-                                            "15px 15px 15px 0 !important",
-                                        }}
-                                      >
-                                        {(val.txByte / 1024 / 1024).toFixed(2) +
-                                          " MB"}
-                                      </td>
-                                      <td
-                                        style={{
-                                          padding:
-                                            "15px 15px 15px 0 !important",
-                                        }}
-                                      >
-                                        {val.uptime
-                                          .replace("w", "w ")
-                                          .replace("d", "d ")
-                                          .replace("h", "h ")
-                                          .replace("m", "m ")
-                                          .replace("s", "s")}
-                                      </td>
-                                      {/* <td style={{ textAlign: "center" }}>
-                                    <ThreeDots className="dropdown-toggle ActionDots" />
-                                  </td> */}
-                                    </tr>
-                                  ))
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                        <br />
+                        <h2
+                          style={{
+                            width: "100%",
+                            textAlign: "center",
+                            marginTop: "50px",
+                          }}
+                        >
+                          এক্টিভ গ্রাহক
+                        </h2>
+                        <Table columns={columns2} data={activeUser}></Table>
                       </>
                     ) : (
                       ""
@@ -311,80 +290,19 @@ export default function ConfigMikrotik() {
                     {/* Active PPPoE users */}
                     {whatYouWantToShow === "showAllMikrotikUser" ? (
                       <>
-                        <h2 className="secondaryTitle">সকল গ্রাহক</h2>
-                        <div className="row searchCollector">
-                          <div className="col-sm-8">
-                            <h4 className="allCollector">
-                              সকল গ্রাহক :{" "}
-                              <span>
-                                {" "}
-                                {mtkIsLoading ? (
-                                  <Loader />
-                                ) : (
-                                  allMikrotikUsers?.length
-                                )}{" "}
-                              </span>
-                            </h4>
-                          </div>
-
-                          <div className="col-sm-4">
-                            <div className="pppoeRefresh">
-                              {/* Refresh: {refresh} */}
-
-                              <div className=" collectorSearch">
-                                <input
-                                  type="text"
-                                  className="search"
-                                  placeholder="সার্চ"
-                                  onChange={(e) => setSearch(e.target.value)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="table-responsive-lg">
-                          <table className="table table-striped ">
-                            <thead>
-                              <tr>
-                                <th scope="col">সিরিয়াল</th>
-                                <th scope="col">নাম</th>
-                                <th scope="col">কলার আইডি</th>
-                                <th scope="col">প্যাকেজ</th>
-                                {/* <th scope="col" style={{ textAlign: "center" }}>
-                              অ্যাকশন
-                            </th> */}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {mtkIsLoading ? (
-                                <tr>
-                                  <TdLoader colspan={4} />
-                                </tr>
-                              ) : (
-                                allMikrotikUsers
-                                  .filter((val) => {
-                                    return val?.name
-                                      .toString()
-                                      .toLowerCase()
-                                      .includes(
-                                        search.toString().toLowerCase()
-                                      );
-                                  })
-                                  .map((val, key) => (
-                                    <tr key={key}>
-                                      <td style={{ paddingLeft: "30px" }}>
-                                        {++serial2}
-                                      </td>
-                                      <td>{val?.name}</td>
-                                      <td>{val.callerId}</td>
-                                      <td>{val.profile}</td>
-                                    </tr>
-                                  ))
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
+                        <h2
+                          style={{
+                            width: "100%",
+                            textAlign: "center",
+                            marginTop: "50px",
+                          }}
+                        >
+                          সকল গ্রাহক
+                        </h2>
+                        <Table
+                          columns={columns3}
+                          data={allMikrotikUsers}
+                        ></Table>
                       </>
                     ) : (
                       ""
