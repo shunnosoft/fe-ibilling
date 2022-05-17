@@ -889,12 +889,11 @@ export const billCollect = async (dispatch, billData, setLoading) => {
     dispatch(updateBalance(res.data));
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
-
     toast.success("বিল গ্রহণ সফল হয়েছে।");
+    document.querySelector("#billing_invoice_print").click(); //for print
   } catch (error) {
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
-
     toast.error(error.response?.data.message);
   }
 };

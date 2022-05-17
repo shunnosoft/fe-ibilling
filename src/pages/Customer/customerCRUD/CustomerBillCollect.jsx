@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -8,14 +8,22 @@ import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
 import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
+import ReactToPrint from "react-to-print";
+import BillCollectInvoice from "./customerBillCollectInvoicePDF";
 
 export default function CustomerBillCollect({ single }) {
+  const billRef = useRef();
   const [billType, setBillType] = useState("bill");
-
+  const [amount, setAmount] = useState(null);
   // const [defaultAmount, setDefault] = useState(single.monthlyFee);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -39,10 +47,10 @@ export default function CustomerBillCollect({ single }) {
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
     };
+    setAmount(data.amount);
     billCollect(dispatch, sendingData, setLoading);
   };
 
-  // console.log(defaultAmount)
   return (
     <div>
       <div>
@@ -75,8 +83,8 @@ export default function CustomerBillCollect({ single }) {
                   initialValues={{
                     amount:
                       single?.balance < single?.monthlyFee
-                        ? single.monthlyFee - single.balance
-                        : single.monthlyFee,
+                        ? single?.monthlyFee - single.balance
+                        : single?.monthlyFee,
                     // collectorId,customer,ispOwner
                   }}
                   validationSchema={BillValidatoin}
@@ -104,10 +112,30 @@ export default function CustomerBillCollect({ single }) {
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : "সাবমিট"}
                         </button>
+                        {/* for invoice print  */}
+                        <ReactToPrint
+                          documentTitle="বিল ইনভয়েস"
+                          trigger={() => (
+                            <button
+                              style={{ display: "none" }}
+                              id="billing_invoice_print"
+                            ></button>
+                          )}
+                          content={() => billRef.current}
+                        />
                       </div>
                     </Form>
                   )}
                 </Formik>
+              </div>
+              {/* invoice print  */}
+              <div style={{ display: "none" }}>
+                <BillCollectInvoice
+                  ref={billRef}
+                  customerData={single}
+                  billingData={{ amount, billType }}
+                  ispOwnerData={ispOwnerData}
+                />
               </div>
             </div>
           </div>
