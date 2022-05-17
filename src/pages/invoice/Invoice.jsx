@@ -29,7 +29,7 @@ import Pagination from "../../components/Pagination";
 
 import { getInvoices, initiatePayment } from "../../features/apiCalls";
 import { showModal } from "../../features/uiSlice";
-import { badge } from "../../components/common/Utils";
+import Table from "../../components/table/Table";
 
 function Invoice() {
   const [isLoading, setIsloading] = useState(false);
@@ -47,10 +47,6 @@ function Invoice() {
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   useEffect(() => {
     getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
@@ -58,6 +54,108 @@ function Invoice() {
   // const payNowHandler = (invoice) => {
   //   initiatePayment(invoice);
   // };
+
+  const columns2 = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "টাইপ",
+        accessor: "reseller.name",
+        Cell: ({ row: { val } }) => (
+          <td>
+            {val.type === "registration"
+              ? "রেজিস্ট্রেশন"
+              : val.type === "migration"
+              ? "প্যাকেজ মাইগ্রেশন"
+              : val.type === "smsPurchase"
+              ? "এসএমএস"
+              : "মাসিক ফি"}
+          </td>
+        ),
+      },
+      {
+        Header: "	পরিমাণ",
+        accessor: "amount",
+        Cell: ({ row: { val } }) => <td>{val.amount} Tk</td>,
+      },
+      {
+        Header: "স্ট্যাটাস",
+        accessor: "status",
+        Cell: ({ row: { val } }) => (
+          <td>
+            {val.status === "unpaid" ? (
+              <span className="p-1 mb-1 bg-danger text-white">
+                {val.status}
+              </span>
+            ) : (
+              <span className="p-1 mb-1 bg-success text-white">
+                {val.status}{" "}
+              </span>
+            )}
+          </td>
+        ),
+      },
+
+      {
+        Header: "ইনভয়েস তৈরির তারিখ",
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY hh:mm:ss A");
+        },
+      },
+      {
+        Header: "পেমেন্টের শেষ তারিখ",
+        accessor: "dueDate",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY hh:mm:ss A");
+        },
+      },
+      {
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
+
+        Cell: ({ row: { val } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <td>
+              {val.status === "unpaid" ? (
+                <div className="AcceptRejectBtn">
+                  <button
+                    onClick={() => {
+                      dispatch(showModal(val));
+                      // payNowHandler(val);
+                    }}
+                  >
+                    <strong>Pay Now</strong>
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
+            </td>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -74,141 +172,8 @@ function Invoice() {
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট : <span>{invoices?.length || "0"}</span>
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
                   {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr className="spetialSortingRow">
-                          <th scope="col">
-                            টাইপ
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th scope="col">
-                            পরিমাণ
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-
-                          <th scope="col">
-                            স্ট্যাটাস
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th scope="col">
-                            ইনভয়েস তৈরির তারিখ
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th scope="col">
-                            পেমেন্টের শেষ তারিখ
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th className="text-center" scope="col">
-                            অ্যাকশন
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {isLoading ? (
-                          <tr>
-                            <TdLoader colspan={10} />
-                          </tr>
-                        ) : invoices?.length === undefined ? (
-                          ""
-                        ) : (
-                          invoices.map((val, key) => (
-                            <tr key={key} id={val.id}>
-                              <td>
-                                {val.type === "registration"
-                                  ? "রেজিস্ট্রেশন"
-                                  : val.type === "migration"
-                                  ? "প্যাকেজ মাইগ্রেশন"
-                                  : val.type === "smsPurchase"
-                                  ? "এসএমএস"
-                                  : "মাসিক ফি"}
-                              </td>
-                              <td>{val.amount} Tk</td>
-                              <td>
-                                {val.status === "unpaid" ? (
-                                  <> {badge(val.status)}</>
-                                ) : (
-                                  <>{badge(val.status)}</>
-                                )}
-                              </td>
-                              <td>
-                                {moment(val.createdAt).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                              <td>
-                                {moment(val.dueDate).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                              <td className="centeringTD">
-                                {val.status === "unpaid" && (
-                                  <ThreeDots
-                                    className="dropdown-toggle ActionDots"
-                                    id="customerDrop"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  />
-                                )}
-                                {/* modal */}
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="customerDrop"
-                                >
-                                  <li
-                                    onClick={() => {
-                                      dispatch(showModal(val));
-                                      // payNowHandler(val);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <CashStack />
-                                        <p className="actionP">Pay Now</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                </ul>
-
-                                {/* end */}
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-
-                    {/* Pagination */}
-                    <div className="paginationSection">
-                      <select
-                        className="form-select paginationFormSelect"
-                        aria-label="Default select example"
-                        onChange={(e) => setCustomerPerPage(e.target.value)}
-                      >
-                        <option value="50">৫</option>
-                        <option value="100">১০</option>
-                        <option value="200">২০</option>
-                        <option value="500">৫০</option>
-                        <option value="1000">১০০</option>
-                      </select>
-                      <Pagination
-                        customerPerPage={customerPerPage}
-                        totalCustomers={invoices.length}
-                        paginate={paginate}
-                      />
-                    </div>
-                  </div>
+                  <Table data={invoices} columns={columns2}></Table>
                 </div>
               </FourGround>
               <Footer />

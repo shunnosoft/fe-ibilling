@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 // import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -22,6 +22,7 @@ import moment from "moment";
 import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 // import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
+import Table from "../../components/table/Table";
 
 export default function RechargeHistoryofReseller() {
   // const balancee = useSelector(state => state.payment.balance);
@@ -179,6 +180,47 @@ export default function RechargeHistoryofReseller() {
     setMainData2(arr);
   };
 
+  const columns2 = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "reseller.name",
+        Cell: ({ cell: { value } }) => {
+          return <div>{userRole === "ispOwner" ? value : userData?.name}</div>;
+        },
+      },
+      {
+        Header: "পরিমান",
+        accessor: "amount",
+      },
+
+      {
+        Header: "তারিখ",
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY");
+        },
+      },
+    ],
+    []
+  );
+  const customComponent = (
+    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+      {userRole === "ispOwner" ? (
+        <div>মোট রিচার্জঃ {getTotalRecharge()} টাকা</div>
+      ) : (
+        <div style={{ marginRight: "10px" }}>
+          মোট রিচার্জঃ {getTotalRecharge()} টাকা
+        </div>
+      )}
+    </div>
+  );
   return (
     <>
       <Sidebar />
@@ -258,58 +300,11 @@ export default function RechargeHistoryofReseller() {
 
                     {/* table */}
 
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট রিচার্জঃ{" "}
-                          <span>{FormatNumber(mainData.length)} টি</span>
-                          পরিমাণঃ{" "}
-                          <span>{FormatNumber(getTotalRecharge())}</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          {/* <Search className="serchingIcon" /> */}
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ"
-                            onChange={(e) => setCusSearch(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                            {userRole !== "reseller" ? <td>নাম</td> : <td></td>}
-                            <td>পরিমান</td>
-                            <td>তারিখ</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {mainData?.map((item, key) => (
-                            <tr key={key}>
-                              {userRole !== "reseller" ? (
-                                <td>{item.reseller?.name}</td>
-                              ) : (
-                                <td></td>
-                              )}
-                              <td>৳ {FormatNumber(item.amount)}</td>
-
-                              <td>
-                                {moment(item.createdAt).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    <Table
+                      customComponent={customComponent}
+                      data={mainData}
+                      columns={columns2}
+                    ></Table>
                   </div>
                 </FourGround>
               ) : (

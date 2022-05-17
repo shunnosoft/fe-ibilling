@@ -4,7 +4,6 @@ import {
   ThreeDots,
   PersonFill,
   PenFill,
-  Table,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +22,7 @@ import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector, getSubAreas } from "../../features/apiCallReseller";
+import Table from "../../components/table/Table";
 
 export default function Collector() {
   const dispatch = useDispatch();

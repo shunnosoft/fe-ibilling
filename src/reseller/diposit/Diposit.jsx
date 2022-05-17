@@ -118,7 +118,8 @@ export default function Diposit() {
     );
     return sumWithInitial.toString();
   }, [mainData]);
-
+  console.log(mainData);
+  console.log(ownDeposits);
   // useEffect(() => {
   //   getMyDeposit(dispatch);
   // }, [dispatch]);
@@ -333,6 +334,17 @@ export default function Diposit() {
     ],
     []
   );
+  const customComponent = (
+    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+      {userRole !== "reseller" ? (
+        <div>নিজ ডিপোজিটঃ {getTotalOwnDeposit()} টাকা</div>
+      ) : (
+        <div style={{ marginRight: "10px" }}>
+          মোট ডিপোজিটঃ {getTotalDeposit()} টাকা
+        </div>
+      )}
+    </div>
+  );
   return (
     <>
       <Sidebar />
@@ -391,7 +403,11 @@ export default function Diposit() {
 
               {/* table */}
               {userRole === "collector" ? (
-                <Table data={ownDeposits} columns={columns2}></Table>
+                <Table
+                  customComponent={customComponent}
+                  data={mainData}
+                  columns={columns2}
+                ></Table>
               ) : (
                 ""
               )}
@@ -461,7 +477,11 @@ export default function Diposit() {
                     </div>
 
                     {/* table */}
-                    <Table data={mainData} columns={columns}></Table>
+                    <Table
+                      customComponent={customComponent}
+                      data={ownDeposits}
+                      columns={columns}
+                    ></Table>
                   </div>
                 </FourGround>
               ) : (

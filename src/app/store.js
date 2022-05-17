@@ -12,6 +12,7 @@ import rechargeSlice from "../features/rechargeSlice";
 import invoiceSlice from "../features/invoiceSlice";
 import packageSlice from "../features/packageSlice";
 import adminSlice from "../features/adminSlice";
+import ispOwnerInvoiceSlice from "../features/ispOwnerInvoiceSlice";
 import uiSlice from "../features/uiSlice";
 import expenditureSlice from "../features/expenditureSlice";
 import staffSlice from "../features/staffSlice";
@@ -47,6 +48,7 @@ const store = configureStore({
     ui: uiSlice,
     package: packageSlice,
     admin: adminSlice,
+    ownerInvoice: ispOwnerInvoiceSlice,
     expenditure: expenditureSlice,
   },
 
