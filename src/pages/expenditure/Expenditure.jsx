@@ -338,10 +338,12 @@ export default function Expenditure() {
                   ></Table>
                   <Table data={purpose} columns={columns2}></Table>
                   {/* for Print  */}
-                  <PrintExpenditure
-                    ref={componentRef}
-                    allExpenditures={allExpenditures}
-                  />
+                  <div style={{ display: "none" }}>
+                    <PrintExpenditure
+                      ref={componentRef}
+                      allExpenditures={allExpenditures}
+                    />
+                  </div>
                 </div>
               </FourGround>
               <Footer />
