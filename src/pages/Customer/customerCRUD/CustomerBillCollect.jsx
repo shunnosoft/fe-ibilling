@@ -75,8 +75,8 @@ export default function CustomerBillCollect({ single }) {
                   initialValues={{
                     amount:
                       single?.balance < single?.monthlyFee
-                        ? single.monthlyFee - single.balance
-                        : single.monthlyFee,
+                        ? single?.monthlyFee - single.balance
+                        : single?.monthlyFee,
                     // collectorId,customer,ispOwner
                   }}
                   validationSchema={BillValidatoin}

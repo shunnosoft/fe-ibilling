@@ -191,6 +191,9 @@ export default function RechargeHistoryofReseller() {
       {
         Header: "নাম",
         accessor: "reseller.name",
+        Cell: ({ cell: { value } }) => {
+          return <div>{userRole === "ispOwner" ? value : userData?.name}</div>;
+        },
       },
       {
         Header: "পরিমান",
@@ -206,6 +209,17 @@ export default function RechargeHistoryofReseller() {
       },
     ],
     []
+  );
+  const customComponent = (
+    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+      {userRole === "ispOwner" ? (
+        <div>মোট রিচার্জঃ {getTotalRecharge()} টাকা</div>
+      ) : (
+        <div style={{ marginRight: "10px" }}>
+          মোট রিচার্জঃ {getTotalRecharge()} টাকা
+        </div>
+      )}
+    </div>
   );
   return (
     <>
@@ -286,7 +300,11 @@ export default function RechargeHistoryofReseller() {
 
                     {/* table */}
 
-                    <Table data={mainData} columns={columns2}></Table>
+                    <Table
+                      customComponent={customComponent}
+                      data={mainData}
+                      columns={columns2}
+                    ></Table>
                   </div>
                 </FourGround>
               ) : (

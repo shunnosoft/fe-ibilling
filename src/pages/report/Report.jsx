@@ -69,34 +69,6 @@ export default function Report() {
   // const ispOwnerId = useSelector(state => state.auth?.ispOwnerId);
   const [isSorted, setSorted] = useState(false);
   // const [totalBill,setTotalBill]= useState("")
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
-
-  const currentCustomers = mainData.slice(firstIndex, lastIndex);
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const keys = ["amount", "name", "customerId", "createdAt"];
-
-  //   setMainData(
-  //     allBills.filter((item) =>
-  //       keys.some((key) =>
-  //         item[key]
-  //           ? typeof item[key] === "string"
-  //             ? item[key]?.toLowerCase().includes(cusSearch)
-  //             : item[key]?.toString().includes(cusSearch)
-  //           : typeof item["customer"][key] === "string"
-  //           ? item["customer"][key]?.toLowerCase().includes(cusSearch)
-  //           : item["customer"][key]?.toString().includes(cusSearch)
-  //       )
-  //     )
-  //   );
-  // }, [cusSearch, allBills]);
 
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
@@ -300,6 +272,10 @@ export default function Report() {
     []
   );
 
+  const customComponent = (
+    <div style={{ fontSize: "20px" }}>মোট বিলঃ {addAllBills()} টাকা</div>
+  );
+
   return (
     <>
       <Sidebar />
@@ -427,7 +403,7 @@ export default function Report() {
                       <div style={{ display: "none" }}>
                         <PrintReport
                           filterData={filterData}
-                          currentCustomers={currentCustomers}
+                          currentCustomers={mainData}
                           ref={componentRef}
                         />
                       </div>
@@ -436,7 +412,11 @@ export default function Report() {
                   </div>
                   {/* table */}
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table
+                    customComponent={customComponent}
+                    columns={columns}
+                    data={mainData}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

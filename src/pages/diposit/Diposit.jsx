@@ -337,6 +337,22 @@ export default function Diposit() {
     []
   );
 
+  const customComponent = (
+    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+      {userRole === "ispOwner" || userRole === "manager" ? (
+        <div style={{ marginRight: "10px" }}>
+          মোট ডিপোজিটঃ {getTotalDeposit()} টাকা
+        </div>
+      ) : (
+        ""
+      )}
+      {userRole !== "ispOwner" ? (
+        <div>নিজ ডিপোজিটঃ {getTotalOwnDeposit()} টাকা</div>
+      ) : (
+        ""
+      )}
+    </div>
+  );
   return (
     <>
       <Sidebar />
@@ -397,7 +413,11 @@ export default function Diposit() {
 
               {/* table */}
               {userRole === "collector" ? (
-                <Table data={ownDeposits} columns={columns2}></Table>
+                <Table
+                  customComponent={customComponent}
+                  data={ownDeposits}
+                  columns={columns2}
+                ></Table>
               ) : (
                 ""
               )}
@@ -467,11 +487,19 @@ export default function Diposit() {
                     </div>
 
                     {/* table */}
-                    <Table columns={columns} data={mainData}></Table>
+                    <Table
+                      customComponent={customComponent}
+                      columns={columns}
+                      data={mainData}
+                    ></Table>
 
                     {/* table */}
                     {userRole !== "ispOwner" ? (
-                      <Table data={ownDeposits} columns={columns2}></Table>
+                      <Table
+                        customComponent={customComponent}
+                        data={ownDeposits}
+                        columns={columns2}
+                      ></Table>
                     ) : (
                       ""
                     )}

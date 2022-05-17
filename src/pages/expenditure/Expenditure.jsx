@@ -266,6 +266,17 @@ export default function Expenditure() {
     ],
     []
   );
+  const customComponent = (
+    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+      {role === "ispOwner" ? (
+        <div>মোট খরচ {getTotalExpenditure()} টাকা</div>
+      ) : (
+        <div style={{ marginRight: "10px" }}>
+          মোট খরচ {getTotalExpenditure()} টাকা
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -312,7 +323,11 @@ export default function Expenditure() {
                     </div>
                   </div>
                   {/* table */}
-                  <Table data={allExpenditures} columns={columns}></Table>
+                  <Table
+                    customComponent={customComponent}
+                    data={allExpenditures}
+                    columns={columns}
+                  ></Table>
                   <Table data={purpose} columns={columns2}></Table>
                 </div>
               </FourGround>

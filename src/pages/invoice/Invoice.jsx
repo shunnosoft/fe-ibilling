@@ -47,10 +47,6 @@ function Invoice() {
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   useEffect(() => {
     getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
