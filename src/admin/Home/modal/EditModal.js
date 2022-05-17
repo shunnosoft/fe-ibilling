@@ -54,9 +54,9 @@ const ISPOwnerEditModal = ({ ownerId }) => {
     company: Yup.string().required("কোম্পানির নাম দিন"),
     address: Yup.string().required("ঠিকানা দিন"),
     smsBalance: Yup.string().required("এস এম এস এর পরিমান দিন "),
-    referenceName: Yup.string().required("রেফারেন্স এর নাম দিন "),
+    referenceName: Yup.string(),
     referenceMobile: Yup.string()
-      .required("মোবাইল নাম্বার দিন")
+      // .required("মোবাইল নাম্বার দিন")
       // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
       .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
@@ -76,10 +76,10 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       name: ispOwner?.name,
       mobile: ispOwner?.mobile,
       company: ispOwner?.company,
-      address: ispOwner?.address,
+      address: ispOwner?.address || "",
       smsBalance: ispOwner?.smsBalance,
-      referenceName: ispOwner?.reference?.name,
-      referenceMobile: ispOwner?.reference?.mobile,
+      referenceName: ispOwner?.reference?.name || "",
+      referenceMobile: ispOwner?.reference?.mobile || "",
       paymentStatus: ispOwner?.bpSettings?.paymentStatus,
       packType: ispOwner?.bpSettings?.packType,
       pack: ispOwner?.bpSettings?.pack,
@@ -120,10 +120,10 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       bpSettings.customerLimit = Number.parseInt(values.customerLimit);
 
     //  set package type to bpSetting
-    if (values.packType) bpSettings.packType = packageType;
+    if (values.packType) bpSettings.packType = values.packType;
 
     //  set pack to bpSetting
-    if (values.pack) bpSettings.pack = packageStatus;
+    if (values.pack) bpSettings.pack = values.pack;
 
     //  set payment status to bpSetting
     if (paymentStatus) bpSettings.paymentStatus = paymentStatus;
