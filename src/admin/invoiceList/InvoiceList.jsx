@@ -127,20 +127,26 @@ const InvoiceList = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" theme="colored" />
-
       <FontColor>
         <Sidebar />
-        <div className={useDash.dashboardWrapper}>
-          <div className="container-fluied dashboardField">
-            <div className="invoice">
-              <h2 className="dashboardTitle">ISP Owner Invoice</h2>
 
-              <div className="row"></div>
-              <br />
-              {invoiceList.length > 0 && (
-                <Table columns={columns} data={invoiceList} />
-              )}
+        <div className="isp_owner_invoice_list">
+          <div className={useDash.dashboardWrapper}>
+            <div class="card">
+              <div class="card-header">
+                <h2 className="dashboardTitle text-center">
+                  ISP Owner Invoice
+                </h2>
+              </div>
+              <div class="card-body">
+                <div className="dashboardField">
+                  <div className="invoice">
+                    {invoiceList.length > 0 && (
+                      <Table columns={columns} data={invoiceList} />
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

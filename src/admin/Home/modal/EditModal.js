@@ -12,6 +12,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
 
   // get editable owner
   const ispOwner = data.find((item) => item.id === ownerId);
+  console.log(ispOwner);
 
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +29,12 @@ const ISPOwnerEditModal = ({ ownerId }) => {
   const [hasMikrotik, setHasMikrotik] = useState(
     ispOwner?.bpSettings?.hasMikrotik
   );
+
+  //  set package type status
+  const [packageType, setPackageType] = useState();
+
+  //  set package
+  const [packageStatus, setPackageStatus] = useState();
 
   //  set payment status & mikrotik
   useEffect(() => {
@@ -113,10 +120,10 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       bpSettings.customerLimit = Number.parseInt(values.customerLimit);
 
     //  set package type to bpSetting
-    if (values.packType) bpSettings.packType = values.packType;
+    if (values.packType) bpSettings.packType = packageType;
 
     //  set pack to bpSetting
-    if (values.pack) bpSettings.pack = values.pack;
+    if (values.pack) bpSettings.pack = packageStatus;
 
     //  set payment status to bpSetting
     if (paymentStatus) bpSettings.paymentStatus = paymentStatus;
@@ -134,6 +141,8 @@ const ISPOwnerEditModal = ({ ownerId }) => {
     values.bpSettings = bpSettings;
     values.reference = reference;
 
+    console.log(values);
+
     // api call
     updateOwner(ownerId, values, setIsLoading, dispatch);
   };
@@ -150,10 +159,17 @@ const ISPOwnerEditModal = ({ ownerId }) => {
         <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Edit Profile
-                <span className="text-success"> {ispOwner?.name}</span>
-              </h5>
+              <div className="modal-title" id="exampleModalLabel">
+                <div className="d-flex">
+                  <h5>
+                    Id: <span className="text-success"> {ispOwner?.id} </span>
+                  </h5>
+                  <h5 className="ms-5">
+                    Mobile:
+                    <span className="text-success"> {ispOwner?.mobile}</span>
+                  </h5>
+                </div>
+              </div>
               <button
                 type="button"
                 className="btn-close"
@@ -173,48 +189,18 @@ const ISPOwnerEditModal = ({ ownerId }) => {
               >
                 {() => (
                   <Form>
-                    {/* <div className="pppoeSection2">
-                      <FtextField type="text" label="নাম" name="name" />
-                    </div>
-
                     <div className="displayGrid3">
-                      <div>
-                        <p>এরিয়া সিলেক্ট করুন</p>
-                      </div>
-
-                      <FtextField
-                        type="text"
-                        label="জাতীয় পরিচয়পত্র নং"
-                        name="nid"
-                      />
-                    </div> */}
-
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label="ISP Owner Id"
-                        name="ispOwnerId"
-                        disabled
-                      />
                       <FtextField type="text" label="Name" name="name" />
-                      <FtextField
-                        type="text"
-                        label="Mobile"
-                        name="mobile"
-                        disabled
-                      />
-                    </div>
-
-                    <div className="displayGrid3">
                       <FtextField type="text" label="Company" name="company" />
                       <FtextField type="text" label="Adress" name="address" />
+                    </div>
+
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label="Package Rate"
                         name="packageRate"
                       />
-                    </div>
-                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label="Customar Limit"
@@ -226,14 +212,122 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         label="SMS Balance"
                         name="smsBalance"
                       />
-                      <FtextField
-                        type="text"
-                        label="Package Type"
-                        name="packType"
-                      />
                     </div>
                     <div className="displayGrid3">
-                      <FtextField type="text" label="Package" name="pack" />
+                      <div>
+                        <h6 className="mb-0">Package Type</h6>
+                        <select
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                          onChange={(event) =>
+                            setPackageType(event.target.value)
+                          }
+                        >
+                          <option
+                            selected={
+                              ispOwner?.bpSettings?.packType === "Basic"
+                            }
+                          >
+                            Basic
+                          </option>
+                          <option
+                            selected={
+                              ispOwner?.bpSettings?.packType === "Standard"
+                            }
+                          >
+                            Standard
+                          </option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <h6 className="mb-0">Package</h6>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          onChange={(event) =>
+                            setPackageStatus(event.target.value)
+                          }
+                        >
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P1"}
+                          >
+                            P1
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P2"}
+                          >
+                            P2
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P3"}
+                          >
+                            P3
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P4"}
+                          >
+                            P4
+                          </option>
+
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P5"}
+                          >
+                            P5
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P6"}
+                          >
+                            P6
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P7"}
+                          >
+                            P7
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P8"}
+                          >
+                            P8
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P9"}
+                          >
+                            P9
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P10"}
+                          >
+                            P10
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P11"}
+                          >
+                            P11
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P12"}
+                          >
+                            P12
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P13"}
+                          >
+                            P13
+                          </option>
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P14"}
+                          >
+                            P14
+                          </option>
+
+                          <option
+                            selected={ispOwner?.bpSettings?.pack === "P15"}
+                          >
+                            P15
+                          </option>
+                        </select>
+                      </div>
 
                       <div>
                         <h6 className="mb-0">Paid status</h6>
@@ -256,7 +350,19 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                           </option>
                         </select>
                       </div>
+                    </div>
+                    <div className="displayGrid3">
+                      <FtextField
+                        type="text"
+                        label="Reference Name"
+                        name="referenceName"
+                      />
 
+                      <FtextField
+                        type="text"
+                        label="Reference Mobile"
+                        name="referenceMobile"
+                      />
                       <div class="form-check mt-4">
                         <input
                           class="form-check-input"
@@ -271,169 +377,6 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         </label>
                       </div>
                     </div>
-                    <div className="displayGrid3">
-                      {/* <div className="CheckboxContainer">
-                        <input
-                          type="checkbox"
-                          className="CheckBox"
-                          name="hasMikrotik"
-                          checked={hasMikrotik}
-                          onChange={handleHasMikrotikChange}
-                        />
-                        <label className="checkboxLabel">Has Mikrotik</label>
-                      </div> */}
-
-                      {/* <div>
-                        <p>Package Type</p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                        >
-                          <option
-                            value="Basic"
-                            selected={
-                              ispOwner?.bpSettings?.packType === "Basic"
-                            }
-                          >
-                            Basic
-                          </option>
-                          <option
-                            selected={
-                              ispOwner?.bpSettings?.packType === "Standard"
-                            }
-                            value="Standard"
-                          >
-                            Standard
-                          </option>
-                        </select>
-                      </div> */}
-
-                      {/* <div>
-                        <p>Package</p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                        >
-                          <option
-                            value="p1"
-                            selected={ispOwner?.bpSettings?.pack === "p1"}
-                          >
-                            P1
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p2"}
-                            value="p2"
-                          >
-                            P2
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p3"}
-                            value="p3"
-                          >
-                            P3
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p4"}
-                            value="p4"
-                          >
-                            P4
-                          </option>
-
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p5"}
-                            value="p5"
-                          >
-                            P5
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p6"}
-                            value="p6"
-                          >
-                            P6
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p7"}
-                            value="p7"
-                          >
-                            P7
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p8"}
-                            value="p8"
-                          >
-                            P8
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p9"}
-                            value="p9"
-                          >
-                            P9
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p10"}
-                            value="p10"
-                          >
-                            P10
-                          </option>
-                          <option
-                            value="p11"
-                            selected={ispOwner?.bpSettings?.pack === "p11"}
-                          >
-                            P11
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p12"}
-                            value="p12"
-                          >
-                            P12
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p13"}
-                            value="p13"
-                          >
-                            P13
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p14"}
-                            value="p14"
-                          >
-                            P14
-                          </option>
-
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "p15"}
-                            value="p15"
-                          >
-                            P15
-                          </option>
-                        </select>
-                      </div> */}
-                    </div>
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label="Reference Name"
-                        name="referenceName"
-                      />
-
-                      <FtextField
-                        type="text"
-                        label="Reference Mobile"
-                        name="referenceMobile"
-                      />
-                    </div>
-
-                    {/* <div className="newDisplay">
-                      <FtextField type="text" label="ইমেইল" name="email" />
-
-                      <div className="billCycle">
-                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
-                      </div>
-                    </div>
-
-                    <div className="pppoeStatus">
-                      <p>স্ট্যাটাস</p>
-                    </div> */}
 
                     <div className="modal-footer" style={{ border: "none" }}>
                       <button

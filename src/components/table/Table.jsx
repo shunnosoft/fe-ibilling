@@ -37,7 +37,7 @@ const Table = (props) => {
       <GlobalFilter
         filter={globalFilter}
         setFilter={setGlobalFilter}
-        data={page}
+        data={data}
       />
       <div className="table-responsive-lg mt-4">
         <table

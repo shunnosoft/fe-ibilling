@@ -1,23 +1,29 @@
 // external imports
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { Link } from "react-router-dom";
-import moment from "moment";
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getIspOwners } from "../../features/apiCallAdmin";
-import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
 
 export default function Home() {
-  const [ownerId, setOwnerId] = useState("");
-  const ispOwners = useSelector((state) => state.admin.ispOwners);
+  const [ownerId, setOwnerId] = useState();
+  let ispOwners = useSelector((state) => state.admin.ispOwners);
+
+  const [filterStatus, setFilterStatus] = useState(null);
+
+  if (filterStatus && filterStatus !== "Select") {
+    ispOwners = ispOwners.filter(
+      (value) => value.bpSettings.paymentStatus === filterStatus
+    );
+  }
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -113,11 +119,7 @@ export default function Home() {
                   </div>
                 </li>
 
-                <li
-                // onClick={() => {
-                //   editModal(original.id);
-                // }}
-                >
+                <li>
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
@@ -127,19 +129,6 @@ export default function Home() {
                     </div>
                   </div>
                 </li>
-
-                {/* <li
-                  onClick={() => {
-                    deleteSingleArea(data.id, data.ispOwner);
-                  }}
-                >
-                  <div className="dropdown-item actionManager">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">ডিলিট</p>
-                    </div>
-                  </div>
-                </li> */}
               </ul>
             </>
           </div>
@@ -150,20 +139,33 @@ export default function Home() {
   );
 
   return (
-    <div className="container homeWrapper">
-      <ToastContainer position="top-right" theme="colored" />
-      <FontColor>
-        <div className="home">
-          {/* card section */}
-          <div className="row">
-            <h2 className="dashboardTitle">AdMIN ড্যাশবোর্ড</h2>
+    <>
+      <div className="homeWrapper isp_owner_list">
+        <ToastContainer position="top-right" theme="colored" />
+        <div class="card">
+          <div class="card-header">
+            <div className="row">
+              <h2 className="dashboardTitle text-center">Admin Dashborad</h2>
+            </div>
           </div>
-          <br />
-          <Table columns={columns} data={ispOwners}></Table>
+          <div class="card-body">
+            <select
+              class="form-select"
+              aria-label="Default select example"
+              onChange={(event) => setFilterStatus(event.target.value)}
+            >
+              <option selected>Select</option>
+              <option value="paid">Paid</option>
+              <option value="unpaid">Unpaid</option>
+            </select>
+            <FontColor>
+              <Table columns={columns} data={ispOwners}></Table>
 
-          <EditModal ownerId={ownerId} />
+              <EditModal ownerId={ownerId} />
+            </FontColor>
+          </div>
         </div>
-      </FontColor>
-    </div>
+      </div>
+    </>
   );
 }
