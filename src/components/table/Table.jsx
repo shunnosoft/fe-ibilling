@@ -9,9 +9,10 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import { badge } from "../common/Utils";
 import GlobalFilter from "./GlobalFilter";
 const Table = (props) => {
-  const { columns, data } = props;
+  const { columns, data, customComponent } = props;
   const {
     getTableProps,
     getTableBodyProps,
@@ -38,6 +39,7 @@ const Table = (props) => {
         filter={globalFilter}
         setFilter={setGlobalFilter}
         data={page}
+        customComponent={customComponent}
       />
       <div className="table-responsive-lg mt-4">
         <table
@@ -64,6 +66,7 @@ const Table = (props) => {
           <tbody {...getTableBodyProps()}>
             {page.map((row) => {
               prepareRow(row);
+
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell, i) => {

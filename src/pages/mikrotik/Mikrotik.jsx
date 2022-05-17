@@ -16,6 +16,7 @@ import MikrotikPost from "./mikrotikModals/MikrotikPost";
 // import { getMikrotik } from "../../features/mikrotikSlice";
 import TdLoader from "../../components/common/TdLoader";
 import { fetchMikrotik } from "../../features/apiCalls";
+import Table from "../../components/table/Table";
 
 export default function Mikrotik() {
   let serial = 0;
@@ -32,6 +33,50 @@ export default function Mikrotik() {
     fetchMikrotik(dispatch, ispOwner.id);
   }, [auth, dispatch]);
 
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+      },
+      {
+        Header: "হোস্ট",
+        accessor: "host",
+      },
+      {
+        Header: "পোর্ট",
+        accessor: "port",
+      },
+      {
+        Header: <div className="text-center">অ্যাকশন</div>,
+        id: "option1",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Link
+              to={`/mikrotik/${original.ispOwner}/${original.id}`}
+              className="mikrotikConfigureButtom"
+            >
+              কনফিগার <ArrowRightShort style={{ fontSize: "19px" }} />
+            </Link>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
   return (
     <>
       <Sidebar />
@@ -60,80 +105,10 @@ export default function Mikrotik() {
                         />
                       </div>
                     </div>
-
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট মাইক্রোটিক:{" "}
-                          <span>{allmikrotiks.length || "NULL"}</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ এর জন্য নাম টাইপ করুন"
-                            onChange={(e) => setMsearch(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
                   {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <th scope="col">সিরিয়াল</th>
-                          <th scope="col">নাম</th>
-                          <th scope="col">হোস্ট</th>
-                          <th scope="col">পোর্ট</th>
-                          <th scope="col" style={{ textAlign: "center" }}>
-                            অ্যাকশন
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {allmikrotiks.length === undefined ? (
-                          <tr>
-                            <TdLoader colspan={5} />
-                          </tr>
-                        ) : (
-                          allmikrotiks
-                            .filter((val) => {
-                              return val.name
-                                .toString()
-                                .toLowerCase()
-                                .includes(msearch.toString().toLowerCase());
-                            })
-                            .map((val, key) => (
-                              <tr key={key}>
-                                <td style={{ paddingLeft: "30px" }}>
-                                  {++serial}
-                                </td>
-                                <td>{val.name}</td>
-                                <td>{val.host}</td>
-                                <td>{val.port}</td>
-                                <td className="mikrotikConfigure">
-                                  <Link
-                                    to={`/mikrotik/${val.ispOwner}/${val.id}`}
-                                    className="mikrotikConfigureButtom"
-                                  >
-                                    কনফিগার{" "}
-                                    <ArrowRightShort
-                                      style={{ fontSize: "19px" }}
-                                    />
-                                  </Link>
-                                </td>
-                              </tr>
-                            ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                  <Table columns={columns} data={allmikrotiks}></Table>
                 </div>
               </FourGround>
               <Footer />
