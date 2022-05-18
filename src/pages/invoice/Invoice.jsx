@@ -66,13 +66,13 @@ function Invoice() {
       {
         Header: "টাইপ",
         accessor: "reseller.name",
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <td>
-            {val.type === "registration"
+            {original.type === "registration"
               ? "রেজিস্ট্রেশন"
-              : val.type === "migration"
+              : original.type === "migration"
               ? "প্যাকেজ মাইগ্রেশন"
-              : val.type === "smsPurchase"
+              : original.type === "smsPurchase"
               ? "এসএমএস"
               : "মাসিক ফি"}
           </td>
@@ -81,20 +81,20 @@ function Invoice() {
       {
         Header: "	পরিমাণ",
         accessor: "amount",
-        Cell: ({ row: { val } }) => <td>{val.amount} Tk</td>,
+        Cell: ({ row: { original } }) => <td>{original.amount} Tk</td>,
       },
       {
         Header: "স্ট্যাটাস",
         accessor: "status",
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <td>
-            {val.status === "unpaid" ? (
+            {original.status === "unpaid" ? (
               <span className="p-1 mb-1 bg-danger text-white">
-                {val.status}
+                {original.status}
               </span>
             ) : (
               <span className="p-1 mb-1 bg-success text-white">
-                {val.status}{" "}
+                {original.status}{" "}
               </span>
             )}
           </td>
@@ -119,7 +119,7 @@ function Invoice() {
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               display: "flex",
@@ -135,12 +135,12 @@ function Invoice() {
               aria-expanded="false"
             />
             <td>
-              {val.status === "unpaid" ? (
+              {original.status === "unpaid" ? (
                 <div className="AcceptRejectBtn">
                   <button
                     onClick={() => {
-                      dispatch(showModal(val));
-                      // payNowHandler(val);
+                      dispatch(showModal(original));
+                      // payNowHandler(original);
                     }}
                   >
                     <strong>Pay Now</strong>

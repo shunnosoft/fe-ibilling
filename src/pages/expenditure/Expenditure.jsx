@@ -167,7 +167,7 @@ export default function Expenditure() {
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               display: "flex",
@@ -187,7 +187,7 @@ export default function Expenditure() {
                 data-bs-toggle="modal"
                 data-bs-target="#editExpenditure"
                 onClick={() => {
-                  setSingleExp(val);
+                  setSingleExp(original);
                 }}
               >
                 <div className="dropdown-item">
@@ -229,7 +229,7 @@ export default function Expenditure() {
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               display: "flex",
@@ -249,7 +249,7 @@ export default function Expenditure() {
                 data-bs-toggle="modal"
                 data-bs-target="#editPurpose"
                 onClick={() => {
-                  setSinglePurpose(val);
+                  setSinglePurpose(original);
                 }}
               >
                 <div className="dropdown-item">

@@ -93,11 +93,11 @@ export default function Diposit() {
   // useEffect(()=>{
 
   //   var arr = []
-  //   allDeposit.forEach((item)=>{
-  //     var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === item.user))
+  //   allDeposit.forEach((original)=>{
+  //     var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === original.user))
 
   //     if(match) {
-  //       arr.push({...item,name:match.name})
+  //       arr.push({...original,name:match.name})
   //     }
 
   //   })
@@ -129,14 +129,14 @@ export default function Diposit() {
 
   const getNames = useCallback(() => {
     var arr = [];
-    allDeposit.forEach((item) => {
+    allDeposit.forEach((original) => {
       var match =
         userRole === "ispOwner"
           ? manager
-          : allCollector.find((c) => c.user === item.user);
+          : allCollector.find((c) => c.user === original.user);
 
       if (match) {
-        arr.push({ ...item, name: match.name });
+        arr.push({ ...original, name: match.name });
       }
     });
 
@@ -159,18 +159,18 @@ export default function Diposit() {
     initialToday.setHours(23, 59, 59, 999);
     setMainData(
       getNames().filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
+        (original) =>
+          Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
+          Date.parse(original.createdAt) <= Date.parse(initialToday)
       )
     );
 
     // Temp varialbe for search
     // setMainData2(
     //   getNames().filter(
-    //     (item) =>
-    //       Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-    //       Date.parse(item.createdAt) <= Date.parse(initialToday)
+    //     (original) =>
+    //       Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
+    //       Date.parse(original.createdAt) <= Date.parse(initialToday)
     //   )
     // );
   }, [getNames]);
@@ -194,7 +194,7 @@ export default function Diposit() {
       setCollectorIds([userId]);
     } else {
       let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.user));
+      collectors.map((original) => collectorUserIdsArr.push(original.user));
       setCollectorIds(collectorUserIdsArr);
     }
   };
@@ -207,9 +207,9 @@ export default function Diposit() {
     }
 
     arr = arr.filter(
-      (item) =>
-        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+      (original) =>
+        Date.parse(original.createdAt) >= Date.parse(dateStart) &&
+        Date.parse(original.createdAt) <= Date.parse(dateEnd)
     );
 
     setMainData(arr);
@@ -226,7 +226,7 @@ export default function Diposit() {
       {
         Header: "নাম",
         accessor: "name",
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div>
             নাম {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
           </div>
@@ -235,14 +235,14 @@ export default function Diposit() {
       {
         Header: "মোট",
         accessor: "amount",
-        Cell: ({ row: { val } }) => <div>৳ {FormatNumber(val)}</div>,
+        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
 
       {
         Header: <div className="text-center">অ্যাকশন</div>,
         id: "option1",
 
-        Cell: ({ row: { item } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               display: "flex",
@@ -251,7 +251,7 @@ export default function Diposit() {
             }}
           >
             <div>
-              {item.status === "pending" ? (
+              {original.status === "pending" ? (
                 acceptLoading ? (
                   <div className="loaderDiv">
                     <Loader />
@@ -260,14 +260,14 @@ export default function Diposit() {
                   <div className="AcceptRejectBtn">
                     <button
                       onClick={() => {
-                        depositAcceptRejectHandler("accepted", item.id);
+                        depositAcceptRejectHandler("accepted", original.id);
                       }}
                     >
                       গ্রহণ
                     </button>
                     <button
                       onClick={() => {
-                        depositAcceptRejectHandler("rejected", item.id);
+                        depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
                       বাতিল
@@ -276,10 +276,10 @@ export default function Diposit() {
                 )
               ) : (
                 <>
-                  {item.status === "accepted" && (
+                  {original.status === "accepted" && (
                     <span className="statusClass">গ্রহণ করা হয়েছে</span>
                   )}
-                  {item.status === "rejected" && (
+                  {original.status === "rejected" && (
                     <span className="rejectClass">বাতিল হয়েছে</span>
                   )}
                 </>
@@ -309,17 +309,17 @@ export default function Diposit() {
       {
         Header: "পরিমান",
         accessor: "amount",
-        Cell: ({ row: { val } }) => <div>৳ {FormatNumber(val)}</div>,
+        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
         Header: "স্টেটাস",
         accessor: "status",
-        Cell: ({ row: { item } }) => (
+        Cell: ({ row: { original } }) => (
           <div>
-            {item.status === "accepted" && (
+            {original.status === "accepted" && (
               <span className="statusClass">গ্রহণ করা হয়েছে</span>
             )}
-            {item.status === "rejected" && (
+            {original.status === "rejected" && (
               <span className="rejectClass">বাতিল হয়েছে</span>
             )}
           </div>

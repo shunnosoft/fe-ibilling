@@ -197,7 +197,7 @@ export default function CollectorReport() {
       {
         Header: "আইডি",
         accessor: "customer.customerId",
-        Cell: ({ row: { val } }) => <div>৳ {FormatNumber(val)}</div>,
+        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
         Header: "গ্রাহক",

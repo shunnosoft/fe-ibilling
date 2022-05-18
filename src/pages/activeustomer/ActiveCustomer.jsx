@@ -84,7 +84,7 @@ export default function ConfigMikrotik() {
   }, [ispOwnerId, selectedMikrotikId, dispatch, mikrotik]);
 
   const selectMikrotikOptionsHandler = (e) => {
-    const val = e.target.value;
+    const original = e.target.value;
 
     const IDs = {
       ispOwner: ispOwnerId,
@@ -93,19 +93,19 @@ export default function ConfigMikrotik() {
 
     dispatch(resetMikrotikUserAndPackage());
 
-    if (val === "showActiveMikrotikUser") {
+    if (original === "showActiveMikrotikUser") {
       fetchActivepppoeUser(dispatch, IDs, singleMik.name);
       setWhatYouWantToShow("showActiveMikrotikUser");
-    } else if (val === "showAllMikrotikUser") {
+    } else if (original === "showAllMikrotikUser") {
       fetchpppoeUser(dispatch, IDs, singleMik.name);
       setWhatYouWantToShow("showAllMikrotikUser");
     }
 
-    // setWhatYouWantToShow(val);
+    // setWhatYouWantToShow(original);
   };
   const mikrotiSelectionHandler = (e) => {
-    const val = e.target.value;
-    setMikrotikId(val);
+    const original = e.target.value;
+    setMikrotikId(original);
   };
   const [isRefrsh, setIsRefrsh] = useState(false);
   const refreshHandler = () => {
@@ -140,26 +140,26 @@ export default function ConfigMikrotik() {
       {
         Header: "RX",
         accessor: "rxByte",
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(val?.rxByte / 1024 / 1024).toFixed(2) + " MB"}
+            {(original?.rxByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
       {
         Header: "TX",
         accessor: "txByte",
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(val?.txByte / 1024 / 1024).toFixed(2) + " MB"}
+            {(original?.txByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
@@ -168,13 +168,13 @@ export default function ConfigMikrotik() {
         Header: "আপ টাইম",
         accessor: "uptime",
 
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {val?.uptime
+            {original?.uptime
               .replace("w", "w ")
               .replace("d", "d ")
               .replace("h", "h ")
