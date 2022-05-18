@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -16,6 +16,7 @@ import arraySort from "array-sort";
 import { ArrowDownUp } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCallReseller";
 import FormatNumber from "../../components/common/NumberFormat";
+import Table from "../../components/table/Table";
 
 export default function Report() {
   // const cus = useSelector(state => state.customer.customer);
@@ -178,28 +179,37 @@ export default function Report() {
   }, [mainData]);
   // console.log(addAllBills())
 
-  const onSearch = (e) => {
-    const keys = ["amount", "name", "customerId", "createdAt"];
+  const columns = useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "আইডি",
+        accessor: "customer.customerId",
+      },
+      {
+        Header: "গ্রাহক",
+        accessor: "customer.name",
+      },
+      {
+        Header: "বিল",
+        accessor: "amount",
+      },
 
-    let arr = mainData2.filter((item) =>
-      keys.some((key) =>
-        item[key]
-          ? typeof item[key] === "string"
-            ? item[key]?.toString()?.toLowerCase().includes(e)
-            : item[key]?.toString().includes(e)
-          : typeof item["customer"][key] === "string"
-          ? item["customer"][key]?.toString()?.toLowerCase().includes(e)
-          : item["customer"][key]?.toString().includes(e)
-      )
-    );
-
-    setMainData(arr);
-  };
-
-  const toggleSort = (item) => {
-    setMainData(arraySort(mainData2, item, { reverse: isSorted }));
-    setSorted(!isSorted);
-  };
+      {
+        Header: "তারিখ",
+        accessor: "billingCycle",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY");
+        },
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -297,111 +307,10 @@ export default function Report() {
                         ফিল্টার
                       </button>
                     </div>
-
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোটঃ
-                          <span className="allCollectorSpan">
-                            {FormatNumber(mainData?.length)} টি
-                          </span>
-                          বিলঃ
-                          <span className="allCollectorSpan">
-                            {FormatNumber(addAllBills())} টাকা
-                          </span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          {/* <Search className="serchingIcon" /> */}
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ"
-                            onChange={(e) => onSearch(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr className="spetialSortingRow">
-                          <th
-                            onClick={() => toggleSort("customer.customerId")}
-                            scope="col"
-                          >
-                            আইডি
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th
-                            onClick={() => toggleSort("customer.name")}
-                            scope="col"
-                          >
-                            গ্রাহক
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th onClick={() => toggleSort("amount")} scope="col">
-                            বিল
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
 
-                          <th
-                            onClick={() => toggleSort("createdAt")}
-                            scope="col"
-                          >
-                            তারিখ
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {false ? (
-                          <tr>
-                            <TdLoader colspan={9} />
-                          </tr>
-                        ) : currentCustomers?.length === undefined ? (
-                          ""
-                        ) : (
-                          currentCustomers.map((val, key) => (
-                            <tr key={key} id={val?.id}>
-                              <td>{val?.customer?.customerId}</td>
-                              <td>{val?.customer?.name}</td>
-                              <td>{FormatNumber(val?.amount)}</td>
-                              <td>
-                                {moment(val?.createdAt).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-
-                    {/* Pagination */}
-                    <div className="paginationSection">
-                      <select
-                        className="form-select paginationFormSelect"
-                        aria-label="Default select example"
-                        onChange={(e) => setCustomerPerPage(e.target.value)}
-                      >
-                        <option value="50">৫০</option>
-                        <option value="100">১০০</option>
-                        <option value="200">২০০</option>
-                        <option value="500">৫০০</option>
-                        <option value="1000">১০০০</option>
-                      </select>
-                      <Pagination
-                        customerPerPage={customerPerPage}
-                        totalCustomers={allBills?.length}
-                        paginate={paginate}
-                      />
-                    </div>
-                  </div>
+                  <Table columns={columns} data={currentCustomers}></Table>
                 </div>
               </FourGround>
               <Footer />

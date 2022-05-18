@@ -9,9 +9,10 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import { badge } from "../common/Utils";
 import GlobalFilter from "./GlobalFilter";
 const Table = (props) => {
-  const { columns, data } = props;
+  const { columns, data, customComponent } = props;
   const {
     getTableProps,
     getTableBodyProps,
@@ -31,6 +32,7 @@ const Table = (props) => {
   } = useTable({ columns, data }, useGlobalFilter, useSortBy, usePagination);
 
   const { globalFilter, pageIndex, pageSize } = state;
+  console.log(Math.ceil(data.length / pageSize));
 
   return (
     <>
@@ -38,10 +40,11 @@ const Table = (props) => {
         filter={globalFilter}
         setFilter={setGlobalFilter}
         data={data}
+        customComponent={customComponent}
       />
       <div className="table-responsive-lg mt-4">
         <table
-          className="table table-striped table-bordered"
+          className="table table-striped table-borderless"
           {...getTableProps()}
         >
           <thead>
@@ -64,6 +67,7 @@ const Table = (props) => {
           <tbody {...getTableBodyProps()}>
             {page.map((row) => {
               prepareRow(row);
+
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell, i) => {
@@ -88,7 +92,7 @@ const Table = (props) => {
             value={pageSize}
             onChange={(event) => setPageSize(Number(event.target.value))}
           >
-            {[10, 20, 50].map((pageSize) => (
+            {[100, 200, 500, 1000].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 {pageSize}
               </option>
@@ -107,6 +111,7 @@ const Table = (props) => {
           ></Pagination.Prev>
 
           <Pagination.Item active>{pageIndex + 1}</Pagination.Item>
+          <Pagination.Ellipsis />
           {/* <Pagination.Item>{pageOptions.length}</Pagination.Item> */}
           <Pagination.Next onClick={() => nextPage()}></Pagination.Next>
           <Pagination.Last

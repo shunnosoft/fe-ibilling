@@ -37,7 +37,7 @@ export default function EditPackage(props) {
   const packageEditHandler = (data) => {
     const sendingData = {
       ...data,
-      id: props.package.id,
+      id: props.package?.id,
       ispOwner: ispOwnerId,
     };
     // console.log(sendingData)
@@ -71,8 +71,8 @@ export default function EditPackage(props) {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: props.package.name,
-                  rate: props.package.rate,
+                  name: props.package?.name,
+                  rate: props.package?.rate,
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {

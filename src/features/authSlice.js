@@ -54,8 +54,8 @@ const authSlice = createSlice({
       }
     },
     smsSettingUpdateIsp: (state, action) => {
+      state.userData = action.payload;
       if (state.role === "ispOwner") {
-        state.userData = action.payload;
       } else if (state.role === "manager") {
         // state.currentUser.manager = action.payload;
         // state.userData = action.payload;
