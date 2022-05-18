@@ -1,34 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import moment from "moment";
+import { ToastContainer } from "react-toastify";
 import { FontColor } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import Table from "../../components/table/Table";
-import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
+import { PenFill, ThreeDots } from "react-bootstrap-icons";
 import { getIspOwnerInvoice } from "../../features/apiCallAdmin";
-import moment from "moment";
 import InvoiceEditModal from "./modal/InvoiceEditModal";
 
 const InvoiceList = () => {
-  const [invoiceId, setInvoiceId] = useState("");
-  // get supplier id in params
-  const { ispOwnerId } = useParams();
-
+  // import dispatch
   const dispatch = useDispatch();
 
+  // get owner id in params
+  const { ispOwnerId } = useParams();
+
+  // set invoice id
+  const [invoiceId, setInvoiceId] = useState("");
+
+  // get invoice list
   const invoiceList = useSelector((state) => state.ownerInvoice.ownerInvoice);
 
+  // invoice edit method
   const invoiceEditModal = (invoiceId) => {
     setInvoiceId(invoiceId);
-    console.log(invoiceId);
   };
 
+  // dispatch data to api
+  useEffect(() => {
+    getIspOwnerInvoice(ispOwnerId, dispatch);
+  }, []);
+
+  // table column
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        Header: "Serial",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
@@ -55,7 +65,7 @@ const InvoiceList = () => {
           moment(original.dueDate).format("DD/MM/YYYY"),
       },
       {
-        Header: "Status",
+        Header: "Payment Status",
         Cell: ({ row: { original } }) => (
           <div
             style={{
@@ -120,25 +130,20 @@ const InvoiceList = () => {
     []
   );
 
-  // dispatch data to api
-  useEffect(() => {
-    getIspOwnerInvoice(ispOwnerId, dispatch);
-  }, []);
-
   return (
     <>
       <FontColor>
         <Sidebar />
-
         <div className="isp_owner_invoice_list">
+          <ToastContainer position="top-right" theme="colored" />
           <div className={useDash.dashboardWrapper}>
-            <div class="card">
-              <div class="card-header">
+            <div className="card">
+              <div className="card-header">
                 <h2 className="dashboardTitle text-center">
                   ISP Owner Invoice
                 </h2>
               </div>
-              <div class="card-body">
+              <div className="card-body">
                 <div className="dashboardField">
                   <div className="invoice">
                     {invoiceList.length > 0 && (

@@ -1,16 +1,15 @@
-import React from "react";
 import moment from "moment";
-import { useSelector, useDispatch } from "react-redux";
-import "../customer.css";
-import FormatNumber from "../../../components/common/NumberFormat";
+import React from "react";
+import { useSelector } from "react-redux";
 import { badge } from "../../../components/common/Utils";
 
-export default function DetailsModal({ single }) {
-  // const single = useSelector(state => state.customer.singleCustomer);
-  // console.log("Single: ", single);
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
-  );
+const DetailsModal = ({ ownerId }) => {
+  // get all data
+  const data = useSelector((state) => state.admin.ispOwners);
+
+  // get single isp owner data
+  const ownerData = data.find((item) => item.id === ownerId);
+
   return (
     <div>
       <div
@@ -23,13 +22,13 @@ export default function DetailsModal({ single }) {
         <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
-              <h5
+              <h4
                 style={{ color: "#0abb7a" }}
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {single?.name} - প্রোফাইল
-              </h5>
+                {ownerData?.name}
+              </h4>
               <button
                 type="button"
                 className="btn-close"
@@ -38,73 +37,221 @@ export default function DetailsModal({ single }) {
               ></button>
             </div>
             <div className="modal-body">
-              <h2 className="ProfileName">{single.name}</h2>
+              {/* <h2 className="ProfileName">{ownerData?.name}</h2> */}
               <div className="profileMain">
                 <div>
-                  <h5>গ্রাহক</h5>
+                  <h5>ISP Owner</h5>
                   <hr />
                   <h6>
-                    গ্রাহক আইডি: <b>{single?.customerId}</b>
+                    ISP ID: <i className="text-primary">{ownerData?.id}</i>
                   </h6>
                   <h6>
-                    নাম: <b>{single?.name}</b>
+                    Name: <i className="text-body">{ownerData?.name}</i>
                   </h6>
                   <h6>
-                    মোবাইল: <b>{single?.mobile}</b>
+                    Mobile: <i className="text-body">{ownerData?.mobile}</i>
                   </h6>
                   <h6>
-                    ঠিকানা: <b>{single?.address}</b>
+                    Address: <i className="text-body">{ownerData?.address}</i>
                   </h6>
                   <h6>
-                    ইমেইল: <b> {single?.email}</b>
+                    Email: <i className="text-body"> {ownerData?.email}</i>
                   </h6>
                   <h6>
-                    জাতীয় পরিচয়পত্র: <b>{single?.nid}</b>
+                    Status:{" "}
+                    <i className="text-body">
+                      <span class="badge bg-info">{ownerData?.status}</span>
+                    </i>
                   </h6>
                   <h6>
-                    স্ট্যাটাস: <b>{badge(single?.status)}</b>
+                    Signature:{" "}
+                    <i className="text-body">{ownerData?.signature}</i>
                   </h6>
                   <h6>
-                    পেমেন্ট: <b>{badge(single?.paymentStatus)}</b>
+                    SMS Balance:{" "}
+                    <i className="text-body">
+                      <span class="badge  bg-info">
+                        {ownerData?.smsBalance}
+                      </span>
+                    </i>
                   </h6>
                   <h6>
-                    মাসিক ফি:<b> {FormatNumber(single?.monthlyFee)}</b>
+                    SMS Rate: <i className="text-body">{ownerData?.smsRate}</i>
                   </h6>
                   <h6>
-                    ব্যাল্যান্স:<b> {FormatNumber(single?.balance)}</b>
+                    SMS Type: <i className="text-body">{ownerData?.smsType}</i>
                   </h6>
                   <h6>
-                    বিলিং সাইকেল:{" "}
-                    <b>
-                      {moment(single?.billingCycle).format(
+                    Bill Collection Type:{" "}
+                    <i className="text-body">
+                      <span class="badge bg-info">
+                        {ownerData?.billCollectionType}
+                      </span>
+                    </i>
+                  </h6>
+                  <h6>
+                    Create At:{" "}
+                    <i className="text-secondary">
+                      {moment(ownerData?.ceatedAt).format("DD-MM-YYYY hh:mm A")}
+                    </i>
+                  </h6>
+
+                  <br />
+                  <h5>Reference</h5>
+                  <hr />
+                  <h6>
+                    Name:{" "}
+                    <i className="text-body">{ownerData?.reference?.name}</i>
+                  </h6>
+                  <h6>
+                    Mobile:{" "}
+                    <i className="text-body">{ownerData?.reference?.mobile}</i>
+                  </h6>
+                </div>
+
+                <div>
+                  <h5>BP Setting</h5>
+                  <hr />
+                  <h6>
+                    Complain Management:{" "}
+                    <i className="text-body">
+                      {ownerData?.bpSettings?.complainManagement ? (
+                        <span class="badge rounded-pill bg-success">YES</span>
+                      ) : (
+                        <span class="badge rounded-pill bg-danger">NO</span>
+                      )}
+                    </i>
+                  </h6>
+                  <h6>
+                    Customer Limit:{" "}
+                    <i className="text-body">
+                      {" "}
+                      <span class="badge bg-info">
+                        {ownerData?.bpSettings?.customerLimit}
+                      </span>
+                    </i>
+                  </h6>
+                  <h6>
+                    Customer Portal:{" "}
+                    <i className="text-body">
+                      {ownerData?.bpSettings?.customerPortal ? (
+                        <span class="badge rounded-pill bg-success">YES</span>
+                      ) : (
+                        <span class="badge rounded-pill bg-danger">NO</span>
+                      )}
+                    </i>
+                  </h6>
+                  <h6>
+                    Mikrotik:{" "}
+                    <i className="text-body">
+                      {ownerData?.bpSettings?.hasMikrotik ? (
+                        <span class="badge rounded-pill bg-success">YES</span>
+                      ) : (
+                        <span class="badge rounded-pill bg-danger">NO</span>
+                      )}
+                    </i>
+                  </h6>
+                  <h6>
+                    Mikrotik Length:{" "}
+                    <i className="text-primary">
+                      {ownerData?.mikrotiks.length}
+                    </i>
+                  </h6>
+                  <h6>
+                    PG:{" "}
+                    <i className="text-body">
+                      {ownerData?.bpSettings?.hasPG ? (
+                        <span class="badge rounded-pill bg-success">YES</span>
+                      ) : (
+                        <span class="badge rounded-pill bg-danger">NO</span>
+                      )}
+                    </i>
+                  </h6>
+                  <h6>
+                    Reseller:{" "}
+                    <i className="text-body">
+                      {ownerData?.bpSettings?.hasReseller ? (
+                        <span class="badge rounded-pill bg-success">YES</span>
+                      ) : (
+                        <span class="badge rounded-pill bg-danger">NO</span>
+                      )}
+                    </i>
+                  </h6>
+                  <h6>
+                    Inventory:{" "}
+                    <i className="text-body">
+                      {ownerData?.bpSettings?.inventory ? (
+                        <span class="badge rounded-pill bg-success">YES</span>
+                      ) : (
+                        <span class="badge rounded-pill bg-danger">NO</span>
+                      )}
+                    </i>
+                  </h6>
+                  <h6>
+                    Monthly Due Date:{" "}
+                    <i className="text-danger">
+                      {moment(ownerData?.bpSettings?.monthlyDueDate).format(
                         "DD-MM-YYYY hh:mm A"
                       )}
-                    </b>
-                  </h6>
-                  {bpSettings.hasMikrotik && (
-                    <h6>
-                      অটোমেটিক সংযোগ বন্ধ:{" "}
-                      <b>{single?.autoDisable ? "YES" : "NO"}</b>
-                    </h6>
-                  )}
-                </div>
-                <div>
-                  <h5>PPPoE</h5>
-                  <hr />
-                  <h6>
-                    ইউজারনেম: <b>{single?.pppoe?.name}</b>
+                    </i>
                   </h6>
                   <h6>
-                    <h6>
-                      পাসওয়ার্ড: <b>{single?.password}</b>
-                    </h6>
-                    প্রোফাইল: <b> {single?.pppoe?.profile}</b>
+                    Registration Payment Status:{" "}
+                    <i className="text-body">
+                      <span
+                        class={`badge bg-${
+                          ownerData?.bpSettings?.paymentStatus === "paid"
+                            ? "success"
+                            : "danger"
+                        }`}
+                      >
+                        {ownerData?.bpSettings?.paymentStatus}
+                      </span>
+                    </i>
                   </h6>
                   <h6>
-                    সার্ভিস: <b>{single?.pppoe?.service}</b>
+                    Monthly Payment Status:{" "}
+                    <i className="text-body">
+                      <span
+                        class={`badge bg-${
+                          ownerData?.bpSettings?.monthlyPaymentStatus === "paid"
+                            ? "success"
+                            : "danger"
+                        }`}
+                      >
+                        {ownerData?.bpSettings?.monthlyPaymentStatus}
+                      </span>
+                    </i>
                   </h6>
                   <h6>
-                    কমেন্ট: <b>{single?.pppoe?.comment}</b>
+                    Package:
+                    <i className="text-body">
+                      <span class="badge bg-info">
+                        {ownerData?.bpSettings?.pack}
+                      </span>
+                    </i>
+                  </h6>
+                  <h6>
+                    Package Type:{" "}
+                    <i className="text-body">
+                      <span class="badge bg-info">
+                        {ownerData?.bpSettings?.packType}
+                      </span>
+                    </i>
+                  </h6>
+                  <h6>
+                    Package Rate:{" "}
+                    <i className="text-body">
+                      <span class="badge bg-info">
+                        {ownerData?.bpSettings?.packageRate}
+                      </span>
+                    </i>
+                  </h6>
+                  <h6>
+                    Queue Type:{" "}
+                    <i className="text-body">
+                      {ownerData?.bpSettings?.queueType}
+                    </i>
                   </h6>
                 </div>
               </div>
@@ -114,4 +261,6 @@ export default function DetailsModal({ single }) {
       </div>
     </div>
   );
-}
+};
+
+export default DetailsModal;
