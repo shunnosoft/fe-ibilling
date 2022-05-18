@@ -62,6 +62,7 @@ import Settings from "./pages/settings/Settings";
 import Expenditure from "./pages/expenditure/Expenditure";
 import Staff from "./pages/staff/Staff";
 import StaffSalary from "./pages/staff/Salary/StaffSalary";
+import InvoiceList from "./admin/invoiceList/InvoiceList";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -147,8 +148,24 @@ function App() {
                 !user ? <Landing></Landing> : <Navigate to={"/admin/home"} />
               }
             />
+            <Route
+              path="/netfee"
+              element={
+                !user ? (
+                  <Landing></Landing>
+                ) : (
+                  <Navigate to={"/admin/isp-owner/invoice-list/:ispOwnerId"} />
+                )
+              }
+            />
+            {/* <Route path="staff/:staffId" element={<StaffSalary />} /> */}
+
             <Route path="/*" element={<PrivateOutlet />}>
               <Route path="admin/home" element={<AdminDashboard />} />
+              <Route
+                path="admin/isp-owner/invoice-list/:ispOwnerId"
+                element={<InvoiceList />}
+              />
 
               <Route path="*" element={<NotFound />} />
             </Route>

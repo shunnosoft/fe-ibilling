@@ -146,7 +146,7 @@ export default function ConfigMikrotik() {
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(val.rxByte / 1024 / 1024).toFixed(2) + " MB"}
+            {(val?.rxByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
@@ -159,7 +159,7 @@ export default function ConfigMikrotik() {
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(val.txByte / 1024 / 1024).toFixed(2) + " MB"}
+            {(val?.txByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
@@ -174,7 +174,7 @@ export default function ConfigMikrotik() {
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {val.uptime
+            {val?.uptime
               .replace("w", "w ")
               .replace("d", "d ")
               .replace("h", "h ")
