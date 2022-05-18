@@ -1,43 +1,62 @@
 // external imports
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import "chart.js/auto";
 import { Link } from "react-router-dom";
-// internal imports
-import "./home.css";
-import { FourGround, FontColor } from "../../assets/js/theme";
-import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
+// internal imports
+import "chart.js/auto";
+import { FontColor } from "../../assets/js/theme";
+import {
+  PersonBoundingBox,
+  PersonFill,
+  PenFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import { getIspOwners } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
+import "./home.css";
+import DetailsModal from "./modal/DetailsModal";
 
 export default function Home() {
-  const [ownerId, setOwnerId] = useState();
-  let ispOwners = useSelector((state) => state.admin.ispOwners);
+  // import dispatch
+  const dispatch = useDispatch();
 
+  // set owner at local state
+  const [ownerId, setOwnerId] = useState();
+
+  // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
 
+  // get isp owner
+  let ispOwners = useSelector((state) => state.admin.ispOwners);
+
+  // payment filter
   if (filterStatus && filterStatus !== "Select") {
     ispOwners = ispOwners.filter(
       (value) => value.bpSettings.paymentStatus === filterStatus
     );
   }
 
-  const dispatch = useDispatch();
-
+  // api call
   useEffect(() => {
     getIspOwners(dispatch);
   }, [dispatch]);
 
+  // edit modal method
   const editModal = (ispOwnerId) => {
     setOwnerId(ispOwnerId);
   };
 
+  const detailsModal = (showDetailsId) => {
+    setOwnerId(showDetailsId);
+  };
+
+  // table column
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        Header: "Serial",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
@@ -45,22 +64,22 @@ export default function Home() {
 
       {
         accessor: "name",
-        Header: "নাম",
+        Header: "Name",
       },
       {
         accessor: "mobile",
-        Header: "মোবাইল",
+        Header: "Mobile",
       },
       {
         accessor: "company",
-        Header: "কোম্পানি",
+        Header: "Comapny",
       },
       {
         accessor: "address",
-        Header: "ঠিকানা",
+        Header: "Address",
       },
       {
-        Header: "পেমেন্ট স্টেটাস",
+        Header: "Payment Status",
         Cell: ({ row: { original } }) => (
           <div
             style={{
@@ -84,7 +103,7 @@ export default function Home() {
       },
 
       {
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">Action</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -106,6 +125,21 @@ export default function Home() {
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                 <li
                   data-bs-toggle="modal"
+                  data-bs-target="#showCustomerDetails"
+                  onClick={() => {
+                    detailsModal(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">Details</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li
+                  data-bs-toggle="modal"
                   data-bs-target="#clientEditModal"
                   onClick={() => {
                     editModal(original.id);
@@ -122,9 +156,9 @@ export default function Home() {
                 <li>
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <PenFill />
+                      <PersonBoundingBox />
                       <Link to={"/admin/isp-owner/invoice-list/" + original.id}>
-                        <p className="actionP">Invoice</p>
+                        <p className="actionP text-white">Invoice</p>
                       </Link>
                     </div>
                   </div>
@@ -142,15 +176,15 @@ export default function Home() {
     <>
       <div className="homeWrapper isp_owner_list">
         <ToastContainer position="top-right" theme="colored" />
-        <div class="card">
-          <div class="card-header">
+        <div className="card">
+          <div className="card-header">
             <div className="row">
               <h2 className="dashboardTitle text-center">Admin Dashborad</h2>
             </div>
           </div>
-          <div class="card-body">
+          <div className="card-body">
             <select
-              class="form-select"
+              className="form-select"
               aria-label="Default select example"
               onChange={(event) => setFilterStatus(event.target.value)}
             >
@@ -162,6 +196,7 @@ export default function Home() {
               <Table columns={columns} data={ispOwners}></Table>
 
               <EditModal ownerId={ownerId} />
+              <DetailsModal ownerId={ownerId} />
             </FontColor>
           </div>
         </div>

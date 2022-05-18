@@ -1,48 +1,44 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { editIspOwnerInvoice } from "../../../features/apiCallAdmin";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 
 const InvoiceEditModal = ({ invoiceId }) => {
-  const invoiceList = useSelector((state) => state.ownerInvoice.ownerInvoice);
-
-  // get editable owner
-  const ispOwnerInvoice = invoiceList.find((item) => item.id === invoiceId);
-  console.log(ispOwnerInvoice);
-  // console.log(ispOwnerInvoice.amount);
-
-  // payment status hook
-  const [paymentStatus, setPaymentStatus] = useState();
-
-  //  loading local state
-  const [isLoading, setIsLoading] = useState(false);
+  // form validate
+  const invoiceEditFieldValidator = Yup.object({
+    amount: Yup.number().required("Please insert amount."),
+  });
 
   // import dispatch
   const dispatch = useDispatch();
 
-  const handlePaymentStatusChange = (event) => {
-    setPaymentStatus((prev) => (prev = event.target.value));
-  };
+  //  loading local state
+  const [isLoading, setIsLoading] = useState(false);
 
+  // get isp owner invoice list
+  const invoiceList = useSelector((state) => state.ownerInvoice.ownerInvoice);
+
+  // get editable invoice
+  const ispOwnerInvoice = invoiceList.find((item) => item.id === invoiceId);
+
+  // handle submit
   const handleSubmit = (values) => {
-    console.log(values.dueDate, values.time);
-    // 2022-04-23T18:59:59.004Z
     const data = {
       amount: values.amount,
-      status: paymentStatus,
+      status: values.paymentStatus,
       dueDate: moment(values.dueDate + " " + values.time).toISOString(),
     };
-    console.log(data);
 
+    // edit api call
     editIspOwnerInvoice(invoiceId, data, setIsLoading, dispatch);
   };
 
   return (
-    <div>
+    <div className="edit_invoice_list">
       <div
         className="modal fade modal-dialog-scrollable "
         id="InvoiceEditModal"
@@ -75,7 +71,7 @@ const InvoiceEditModal = ({ invoiceId }) => {
 
                   time: moment(ispOwnerInvoice?.dueDate).format("HH:mm"),
                 }}
-                // validationSchema={BillValidatoin}
+                validationSchema={invoiceEditFieldValidator}
                 enableReinitialize
                 onSubmit={(values) => {
                   handleSubmit(values);
@@ -93,24 +89,15 @@ const InvoiceEditModal = ({ invoiceId }) => {
                       </div>
                       <div className="col-md-6">
                         <h6 className="mb-0">Payment Status</h6>
-                        <select
+                        <Field
+                          as="select"
                           className="form-select mt-1 mb-4"
                           aria-label="Default select example"
-                          onChange={handlePaymentStatusChange}
+                          name="paymentStatus"
                         >
-                          <option
-                            value="paid"
-                            selected={ispOwnerInvoice?.status === "paid"}
-                          >
-                            Paid
-                          </option>
-                          <option
-                            selected={ispOwnerInvoice?.status === "unpaid"}
-                            value="unpaid"
-                          >
-                            Unpaid
-                          </option>
-                        </select>
+                          <option value="paid">Paid</option>
+                          <option value="unpaid">Unpaid</option>
+                        </Field>
                       </div>
                     </div>
 

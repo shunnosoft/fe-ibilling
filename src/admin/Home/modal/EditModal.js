@@ -1,48 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
 
 const ISPOwnerEditModal = ({ ownerId }) => {
+  // import dispatch from react redux
+  const dispatch = useDispatch();
+
   //  get all isp owner
   const data = useSelector((state) => state.admin.ispOwners);
 
   // get editable owner
   const ispOwner = data.find((item) => item.id === ownerId);
-  console.log(ispOwner);
 
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
-
-  // import dispatch from react redux
-  const dispatch = useDispatch();
-
-  //  set payment status paid or unpain in local state
-  const [paymentStatus, setPaymentStatus] = useState(
-    ispOwner?.bpSettings?.paymentStatus
-  );
-
-  //  set mickrotik status true or flase
-  const [hasMikrotik, setHasMikrotik] = useState(
-    ispOwner?.bpSettings?.hasMikrotik
-  );
-
-  //  set package type status
-  const [packageType, setPackageType] = useState();
-
-  //  set package
-  const [packageStatus, setPackageStatus] = useState();
-
-  //  set payment status & mikrotik
-  useEffect(() => {
-    if (ispOwner) {
-      setPaymentStatus(ispOwner?.bpSettings?.paymentStatus);
-      setHasMikrotik(ispOwner?.bpSettings?.hasMikrotik);
-    }
-  }, [ispOwner]);
 
   //  isp owner form validation
   const ispOwnerValidator = Yup.object({
@@ -56,7 +31,6 @@ const ISPOwnerEditModal = ({ ownerId }) => {
     smsBalance: Yup.string().required("এস এম এস এর পরিমান দিন "),
     referenceName: Yup.string(),
     referenceMobile: Yup.string()
-      // .required("মোবাইল নাম্বার দিন")
       // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
       .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
@@ -76,10 +50,10 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       name: ispOwner?.name,
       mobile: ispOwner?.mobile,
       company: ispOwner?.company,
-      address: ispOwner?.address || "",
+      address: ispOwner?.address,
       smsBalance: ispOwner?.smsBalance,
-      referenceName: ispOwner?.reference?.name || "",
-      referenceMobile: ispOwner?.reference?.mobile || "",
+      referenceName: ispOwner?.reference?.name,
+      referenceMobile: ispOwner?.reference?.mobile,
       paymentStatus: ispOwner?.bpSettings?.paymentStatus,
       packType: ispOwner?.bpSettings?.packType,
       pack: ispOwner?.bpSettings?.pack,
@@ -89,62 +63,34 @@ const ISPOwnerEditModal = ({ ownerId }) => {
     };
   }
 
-  //  checked mikrotik
-  const handleHasMikrotikChange = (e) => {
-    //  check mikrotik
-    const { checked } = e.target;
-    setHasMikrotik(checked);
-  };
-
-  //  checked payment status
-  const handlePaymentStatusChange = (e) => {
-    setPaymentStatus(e.target.value);
-  };
-
   //  handle submit
   const ownerHandler = (values) => {
     //  delete id & mobile from value
     delete values.id;
     delete values.mobile;
 
-    //  set bpSetting & references
-    const bpSettings = { ...ispOwner.bpSettings };
-    const reference = { ...ispOwner.reference };
-
-    //  convert package rate string to int
-    if (values.packageRate)
-      bpSettings.packageRate = Number.parseInt(values.packageRate);
-
-    //  convert customer limit string to int
-    if (values.customerLimit)
-      bpSettings.customerLimit = Number.parseInt(values.customerLimit);
-
-    //  set package type to bpSetting
-    if (values.packType) bpSettings.packType = values.packType;
-
-    //  set pack to bpSetting
-    if (values.pack) bpSettings.pack = values.pack;
-
-    //  set payment status to bpSetting
-    if (paymentStatus) bpSettings.paymentStatus = paymentStatus;
-
-    //  set mikrotik status for bpSetting
-    bpSettings.hasMikrotik = hasMikrotik;
-
-    //  set references mobile
-    if (values.referenceMobile) reference.mobile = values.referenceMobile;
-
-    //  set references name
-    if (values.referenceName) reference.name = values.referenceName;
-
-    //  update bpSetting & references
-    values.bpSettings = bpSettings;
-    values.reference = reference;
-
-    console.log(values);
+    // send data to api
+    const data = {
+      name: values.name,
+      company: values.company,
+      address: values.address,
+      smsBalance: values.smsBalance,
+      bpSettings: {
+        packageRate: Number.parseInt(values.packageRate),
+        customerLimit: Number.parseInt(values.customerLimit),
+        packType: values.packType,
+        pack: values.pack,
+        paymentStatus: values.paymentStatus,
+        hasMikrotik: values.hasMikrotik,
+      },
+      reference: {
+        name: values.referenceName,
+        mobile: values.referenceMobile,
+      },
+    };
 
     // api call
-    updateOwner(ownerId, values, setIsLoading, dispatch);
+    updateOwner(ownerId, data, setIsLoading, dispatch);
   };
 
   return (
@@ -216,14 +162,14 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                     <div className="displayGrid3">
                       <div>
                         <h6 className="mb-0">Package Type</h6>
-                        <select
+                        <Field
+                          as="select"
+                          name="packType"
                           className="form-select mt-1 mb-4"
                           aria-label="Default select example"
-                          onChange={(event) =>
-                            setPackageType(event.target.value)
-                          }
                         >
                           <option
+                            value="Basic"
                             selected={
                               ispOwner?.bpSettings?.packType === "Basic"
                             }
@@ -231,124 +177,53 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                             Basic
                           </option>
                           <option
+                            value="Standard"
                             selected={
                               ispOwner?.bpSettings?.packType === "Standard"
                             }
                           >
                             Standard
                           </option>
-                        </select>
+                        </Field>
                       </div>
 
                       <div>
                         <h6 className="mb-0">Package</h6>
-                        <select
+                        <Field
+                          as="select"
                           className="form-select"
                           aria-label="Default select example"
-                          onChange={(event) =>
-                            setPackageStatus(event.target.value)
-                          }
+                          name="pack"
                         >
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P1"}
-                          >
-                            P1
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P2"}
-                          >
-                            P2
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P3"}
-                          >
-                            P3
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P4"}
-                          >
-                            P4
-                          </option>
-
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P5"}
-                          >
-                            P5
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P6"}
-                          >
-                            P6
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P7"}
-                          >
-                            P7
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P8"}
-                          >
-                            P8
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P9"}
-                          >
-                            P9
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P10"}
-                          >
-                            P10
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P11"}
-                          >
-                            P11
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P12"}
-                          >
-                            P12
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P13"}
-                          >
-                            P13
-                          </option>
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P14"}
-                          >
-                            P14
-                          </option>
-
-                          <option
-                            selected={ispOwner?.bpSettings?.pack === "P15"}
-                          >
-                            P15
-                          </option>
-                        </select>
+                          <option value="P1">P1</option>
+                          <option value="P2">P2</option>
+                          <option value="P3">P3</option>
+                          <option value="P4">P4</option>
+                          <option value="P5">P5</option>
+                          <option value="P6">P6</option>
+                          <option value="P7">P7</option>
+                          <option value="P8">P8</option>
+                          <option value="P9">P9</option>
+                          <option value="P10">P10</option>
+                          <option value="P11">P11</option>
+                          <option value="P12">P12</option>
+                          <option value="P13">P13</option>
+                          <option value="P14">P14</option>
+                          <option value="P15">P15</option>
+                        </Field>
                       </div>
 
                       <div>
                         <h6 className="mb-0">Paid status</h6>
-                        <select
+                        <Field
+                          as="select"
                           className="form-select mt-1 mb-4"
                           aria-label="Default select example"
-                          onChange={handlePaymentStatusChange}
+                          name="paymentStatus"
                         >
-                          <option
-                            value="paid"
-                            selected={paymentStatus === "paid"}
-                          >
-                            Paid
-                          </option>
-                          <option
-                            selected={paymentStatus === "unpaid"}
-                            value="unpaid"
-                          >
-                            Unpaid
-                          </option>
-                        </select>
+                          <option value="paid">Paid</option>
+                          <option value="unpaid">Unpaid</option>
+                        </Field>
                       </div>
                     </div>
                     <div className="displayGrid3">
@@ -363,16 +238,17 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         label="Reference Mobile"
                         name="referenceMobile"
                       />
-                      <div class="form-check mt-4">
-                        <input
-                          class="form-check-input"
+                      <div className="form-check mt-4">
+                        <Field
+                          className="form-check-input"
                           type="checkbox"
                           id="flexCheckChecked"
                           name="hasMikrotik"
-                          checked={hasMikrotik}
-                          onChange={handleHasMikrotikChange}
                         />
-                        <label class="form-check-label" for="flexCheckChecked">
+                        <label
+                          className="form-check-label"
+                          for="flexCheckChecked"
+                        >
                           Has Microtik
                         </label>
                       </div>
