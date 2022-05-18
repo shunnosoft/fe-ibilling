@@ -9,7 +9,7 @@ import { userLogout } from "../features/actions/authAsyncAction";
 // const BASE_URL = "http://137.184.69.182/api/v1/";
 
 // LOCAL vai
-const BASE_URL = "http://192.168.1.26:3030/api/v1/";
+// const BASE_URL = "http://192.168.1.26:3030/api/v1/";
 
 const BASE_URL = "http://localhost:3030/api/v1/";
 

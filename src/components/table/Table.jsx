@@ -32,18 +32,19 @@ const Table = (props) => {
   } = useTable({ columns, data }, useGlobalFilter, useSortBy, usePagination);
 
   const { globalFilter, pageIndex, pageSize } = state;
+  console.log(Math.ceil(data.length / pageSize));
 
   return (
     <>
       <GlobalFilter
         filter={globalFilter}
         setFilter={setGlobalFilter}
-        data={page}
+        data={data}
         customComponent={customComponent}
       />
       <div className="table-responsive-lg mt-4">
         <table
-          className="table table-striped table-bordered"
+          className="table table-striped table-borderless"
           {...getTableProps()}
         >
           <thead>
@@ -110,6 +111,7 @@ const Table = (props) => {
           ></Pagination.Prev>
 
           <Pagination.Item active>{pageIndex + 1}</Pagination.Item>
+          <Pagination.Ellipsis />
           {/* <Pagination.Item>{pageOptions.length}</Pagination.Item> */}
           <Pagination.Next onClick={() => nextPage()}></Pagination.Next>
           <Pagination.Last
