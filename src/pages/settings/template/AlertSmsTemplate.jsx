@@ -181,7 +181,7 @@ function AlertSmsTemplate() {
       .replace("ID: CUSTOMER_ID", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
-      .replace("LAST DATE: DATE", "");
+      .replace("LAST DATE: BILL_DATE", "");
 
     setBottomText(
       messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
@@ -315,14 +315,14 @@ function AlertSmsTemplate() {
                     id="5"
                     type="checkbox"
                     className="getValueUsingClass"
-                    checked={smsTemplet.includes("LAST DATE: DATE")}
-                    value={"LAST DATE: DATE"}
+                    checked={smsTemplet.includes("LAST DATE: BILL_DATE")}
+                    value={"LAST DATE: BILL_DATE"}
                     onChange={(e) => {
                       itemSettingHandler(e.target.value);
                     }}
                   />
                   <label className="templatelabel" htmlFor="5">
-                    {"LAST DATE: DATE"}
+                    {"LAST DATE: BILL_DATE"}
                   </label>
                 </div>
               </div>
