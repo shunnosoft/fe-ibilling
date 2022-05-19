@@ -163,29 +163,28 @@ function AlertSmsTemplate() {
   }, [settings]);
 
   const dayTempletHandler = (e) => {
-    let temp = e.target.value.split("\n");
+    let temp2 = e.target.value
+      ?.replace("ইউজারনেমঃ USERNAME", "")
+      .replace("ইউজার আইডিঃ USERID", "")
+      .replace("গ্রাহকঃ NAME", "")
+      .replace("বিলঃ AMOUNT", "")
+      .replace("তারিখঃ DATE", "");
+
+    let temp = temp2.split("\n");
     temp.splice(-2);
-    setAlertNum(e.target.value.split("\n").splice(-1)[0]);
+    setAlertNum(temp2.split("\n").splice(-1)[0]);
+
     setTemplet(temp);
 
-    // const fixedvalues = [
-    //   "USER: USERNAME",
-    //   "ID: CUSTOMER_ID",
-    //   "NAME: CUSTOMER_NAME",
-    //   "BILL: AMOUNT",
-    //   "LAST DATE: DATE",
-    // ];
-    // var found = [];
-
-    // let messageBoxStr = e.target.value
-    //   ?.replace("USER: USERNAME", "")
-    //   .replace("ID: CUSTOMER_ID", "")
-    //   .replace("NAME: CUSTOMER_NAME", "")
-    //   .replace("BILL: AMOUNT", "")
-    //   .replace("LAST DATE: DATE", "");
+    let messageBoxStr = e.target.value
+      ?.replace("USER: USERNAME", "")
+      .replace("ID: CUSTOMER_ID", "")
+      .replace("NAME: CUSTOMER_NAME", "")
+      .replace("BILL: AMOUNT", "")
+      .replace("LAST DATE: DATE", "");
 
     setBottomText(
-      e.target.value.split("\n")[e.target.value.split("\n").length - 2]
+      messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
     );
 
     // fixedvalues.map((i) => {
