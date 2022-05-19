@@ -1,8 +1,12 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
 import { getIspOwnersSuccess, editOwner } from "./adminSlice";
-import { getIspOwnerInvoicesSuccess } from "./ispOwnerInvoiceSlice";
+import {
+  getIspOwnerInvoicesSuccess,
+  editInvoiceSuccess,
+} from "./ispOwnerInvoiceSlice";
 
+// get owners
 export const getIspOwners = async (dispatch) => {
   try {
     const res = await apiLink.get(`/admin/getIspOwners`);
@@ -20,15 +24,14 @@ export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
     dispatch(editOwner(res.data));
     setIsLoading(false);
     document.querySelector("#clientEditModal").click();
-    toast.success(res.data?.message);
+    toast.success("ISP Owner Updated Success");
   } catch (err) {
-    toast.error(err.response?.message);
+    console.log(err);
   }
 };
 
 //  get invoice list
 export const getIspOwnerInvoice = async (ispOwnerId, dispatch) => {
-  console.log(ispOwnerId);
   try {
     const res = await apiLink.get("/admin/invoices/" + ispOwnerId);
     console.log(res.data);
@@ -38,4 +41,24 @@ export const getIspOwnerInvoice = async (ispOwnerId, dispatch) => {
   }
 };
 
-// admin/invoice/id
+//  update invoice
+export const editIspOwnerInvoice = async (
+  invoiceId,
+  data,
+  setIsloading,
+  dispatch
+) => {
+  try {
+    const res = await apiLink.patch("admin/invoice/" + invoiceId, data);
+    dispatch(editInvoiceSuccess(res.data));
+    setIsloading(false);
+    document.querySelector("#InvoiceEditModal").click();
+    toast.success("Invoice Edit Success!");
+  } catch (err) {
+    console.log(err.response);
+    if (err.response) {
+      setIsloading(false);
+      toast.error(err.response);
+    }
+  }
+};

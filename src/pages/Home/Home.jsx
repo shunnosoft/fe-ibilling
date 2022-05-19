@@ -162,9 +162,8 @@ export default function Home() {
         if (found) {
           found.subAreas.push({ id: item.id, name: item.name });
 
-          return (areas[
-            areas.findIndex((item) => item.id === found.id)
-          ] = found);
+          return (areas[areas.findIndex((item) => item.id === found.id)] =
+            found);
         } else {
           return areas.push(area);
         }
@@ -228,6 +227,11 @@ export default function Home() {
   //   initiatePayment(invoice);
   // };
 
+  const invoiceType = {
+    monthlyServiceCharge: "মাসিক",
+    registration: "রেজিস্ট্রেশন",
+  };
+
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
@@ -239,11 +243,11 @@ export default function Home() {
 
             {invoiceFlag === "UNPAID" && (
               <div className="col-md-12 mb-3 pt-3 pb-3 badge bg-primary text-wrap fs-5 text">
-                <div className="mb-1 pt-1 pb-1">{`নেটফি রেজিস্ট্রেশন ফি ${
-                  invoice.amount
-                } Tk পরিশোধের শেষ সময় ${moment(invoice.dueDate).format(
-                  "DD-MM-YYYY hh:mm:ss A"
-                )}`}</div>
+                <div className="mb-1 pt-1 pb-1">{`নেটফি ${
+                  invoiceType[invoice.type]
+                } ফি ${invoice.amount} Tk পরিশোধের শেষ সময় ${moment(
+                  invoice.dueDate
+                ).format("DD-MM-YYYY hh:mm:ss A")}`}</div>
 
                 <button
                   type="button"

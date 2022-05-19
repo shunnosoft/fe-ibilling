@@ -5,6 +5,11 @@ const addClass = {
 
   active: "light text-dark",
   inactive: "secondary",
+
+  new: "secondary",
+  prepaid: "info",
+  complainManagement: "danger",
+  smsBalance: "success",
 };
 
 export const badge = (item) => {

@@ -1,5 +1,5 @@
 // import React from "react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Pagination } from "react-bootstrap";
 import { ArrowDownUp } from "react-bootstrap-icons";
 // import { Pagination, Pagination.Item, PaginationLink } from "reactstrap";
@@ -30,6 +30,10 @@ const Table = (props) => {
     state,
     setGlobalFilter,
   } = useTable({ columns, data }, useGlobalFilter, useSortBy, usePagination);
+
+  useEffect(() => {
+    setPageSize(100);
+  }, []);
 
   const { globalFilter, pageIndex, pageSize } = state;
   console.log(Math.ceil(data.length / pageSize));
@@ -92,7 +96,7 @@ const Table = (props) => {
             value={pageSize}
             onChange={(event) => setPageSize(Number(event.target.value))}
           >
-            {[10, 20, 50].map((pageSize) => (
+            {[100, 200, 500, 1000].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 {pageSize}
               </option>
