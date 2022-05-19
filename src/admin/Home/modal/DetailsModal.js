@@ -92,7 +92,9 @@ const DetailsModal = ({ ownerId }) => {
                   <h6>
                     Create At:{" "}
                     <i className="text-secondary">
-                      {moment(ownerData?.ceatedAt).format("DD-MM-YYYY hh:mm A")}
+                      {moment(ownerData?.createdAt).format(
+                        "DD-MM-YYYY hh:mm A"
+                      )}
                     </i>
                   </h6>
 
@@ -190,9 +192,10 @@ const DetailsModal = ({ ownerId }) => {
                   <h6>
                     Monthly Due Date:{" "}
                     <i className="text-danger">
-                      {moment(ownerData?.bpSettings?.monthlyDueDate).format(
-                        "DD-MM-YYYY hh:mm A"
-                      )}
+                      {ownerData?.bpSettings?.monthlyDueDate &&
+                        moment(ownerData?.bpSettings?.monthlyDueDate).format(
+                          "DD-MM-YYYY hh:mm A"
+                        )}
                     </i>
                   </h6>
                   <h6>
