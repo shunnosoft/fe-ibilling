@@ -29,11 +29,20 @@ export default function Message() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [sms, setSms] = useState("");
   const [isChecked, setisChecked] = useState(false);
+  const [isAllChecked, setisAllChecked] = useState(false);
   const [status, setStatus] = useState("");
   const [payment, setPayment] = useState("");
+  const [smsTemplet, setTemplet] = useState([]);
+
+  const [bottomText, setBottomText] = useState("");
+  const [upperText, setUpperText] = useState("");
+  // const [totalText, setTotalText] = useState("");
+  console.log(upperText + "\n" + bottomText);
+
   const [isRefrsh, setIsrefresh] = useState(false);
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [areaIds, setAreaIds] = useState([]);
+  const [subAreaIds, setSubAreaIds] = useState([]);
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
 
@@ -66,8 +75,18 @@ export default function Message() {
     }
   }, [userRole, getIspownerwitSMS]);
 
-  const setAreaHandler = () => {
+  const setSubAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
+    }
+    setSubAreaIds(IDS_temp);
+  };
+  const setAreaHandler = () => {
+    const temp = document.querySelectorAll(".getValueUsingClassForArea");
     let IDS_temp = [];
     for (let i = 0; i < temp.length; i++) {
       if (temp[i].checked === true) {
@@ -77,13 +96,14 @@ export default function Message() {
     setAreaIds(IDS_temp);
   };
 
-  // WE GOT ALL AREA_IDS ON -> areaIds;
+  // WE GOT ALL AREA_IDS ON -> subAreaIds;
   const handleStatusSelect = (e) => {
     setStatus(e);
   };
   const handlePaymentSelect = (e) => {
     setPayment(e);
   };
+  console.log("subArea", subAreaIds);
 
   // day checkbox select
   const daySettingHandler = (e) => {
@@ -107,6 +127,7 @@ export default function Message() {
   const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
+    console.log(smsReceiverType);
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
@@ -124,14 +145,14 @@ export default function Message() {
           smsReceiverType === "unpaidCustomerByDate" &&
           customer.mobile &&
           customer.paymentStatus === "unpaid" &&
-          areaIds.includes(customer.subArea) &&
+          subAreaIds.includes(customer.subArea) &&
           days.includes(dueDate.diff(now, "days"))
         ) {
-          const msg = `আইডিঃ ${customer.customerId}\nইউজারনেমঃ ${
+          const msg = `ID: ${customer.customerId}\nNAME: ${
             customer?.pppoe?.name
-          }\nগ্রাহকঃ ${customer.name}\nবিলঃ ${
+          }\nUSER: ${customer.name}\nBILL: ${
             customer.monthlyFee
-          } Tk\nতারিখঃ ${moment(customer.billingCycle).format(
+          } Tk\nDATE: ${moment(customer.billingCycle).format(
             "DD-MM-YYYY"
           )}\n\n${smsRef.current.value}`;
 
@@ -150,11 +171,11 @@ export default function Message() {
 
         // send sms to all customer
         if (smsReceiverType === "allCustomer" && customer.mobile) {
-          const msg = `আইডিঃ ${customer.customerId}\nইউজারনেমঃ ${
+          const msg = `ID: ${customer.customerId}\nNAME: ${
             customer?.pppoe?.name
-          }\nগ্রাহকঃ ${customer.name}\nবিলঃ ${
+          }\nUSER: ${customer.name}\nBILL: ${
             customer.monthlyFee
-          } Tk\nতারিখঃ ${moment(customer.billingCycle).format(
+          } Tk \nDATE: ${moment(customer.billingCycle).format(
             "DD-MM-YYYY"
           )}\n\n${smsRef.current.value}`;
 
@@ -228,7 +249,7 @@ export default function Message() {
           });
 
           if (res.data.status) {
-            setAreaIds([]);
+            setSubAreaIds([]);
             setDays([]);
             smsRef.current.value = "";
             toast.success("সফলভাবে SMS পাঠানো হয়েছে।");
@@ -248,6 +269,46 @@ export default function Message() {
     console.log(e.target.value);
     setsmsReceiverType(e.target.value);
   };
+  const itemSettingHandler = (item) => {
+    if (smsTemplet.includes(item)) {
+      const index = smsTemplet.indexOf(item);
+      if (index > -1) {
+        smsTemplet.splice(index, 1);
+      }
+    } else {
+      if ((upperText + "\n" + bottomText).length + item.length > 334) {
+        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        return;
+      } else {
+        smsTemplet.unshift(item);
+      }
+    }
+
+    var theText = "";
+    smsTemplet.map((i) => {
+      return (theText = theText + "\n" + i);
+    });
+
+    setUpperText(theText);
+
+    setTemplet(smsTemplet);
+  };
+
+  const selectAllHandler = () => {
+    if (subAreaIds.length === 0) {
+      area.map((i) => {
+        i.subAreas.map((s) => {
+          subAreaIds.push(s.id);
+        });
+      });
+      setSubAreaIds(subAreaIds);
+      setisAllChecked(true);
+    } else {
+      setSubAreaIds([]);
+      setisAllChecked(false);
+    }
+  };
+
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -308,187 +369,319 @@ export default function Message() {
                           {/* area section*/}
                           <b className="mt-4">এরিয়া সিলেক্ট</b>
                           <div className="AllAreaClass mb-4">
+                            <div style={{ width: "200px", height: "30px" }}>
+                              <input
+                                style={{ cursor: "pointer" }}
+                                type="checkbox"
+                                className="getValueUsingClass"
+                                value={"selectAll"}
+                                // onChange={selectAllHandler}
+                                onClick={selectAllHandler}
+                                id={"selectAll"}
+                              />
+                              <label
+                                style={{
+                                  cursor: "pointer",
+                                  marginLeft: "5px",
+                                }}
+                                htmlFor={"selectAll"}
+                                className="areaParent"
+                              >
+                                {"Select All"}
+                              </label>
+                            </div>
                             {area?.map((val, key) => (
                               <div key={key}>
-                                <h6 className="areaParent">{val.name}</h6>
+                                <div
+                                  style={{
+                                    cursor: "pointer",
+                                    marginLeft: "5px",
+                                  }}
+                                  className="areaParent"
+                                >
+                                  {val.name}
+                                </div>
                                 {val.subAreas.map((v, k) => (
                                   <div key={k} className="displayFlex">
                                     <input
+                                      style={{ cursor: "pointer" }}
                                       type="checkbox"
                                       className="getValueUsingClass"
                                       value={v.id}
-                                      onChange={setAreaHandler}
+                                      onChange={setSubAreaHandler}
+                                      id={v.id}
+                                      checked={
+                                        isAllChecked &&
+                                        subAreaIds.includes(v.id)
+                                      }
                                     />
-                                    <label>{v.name}</label>
+                                    <label
+                                      style={{ cursor: "pointer" }}
+                                      htmlFor={v.id}
+                                    >
+                                      {v.name}
+                                    </label>
                                   </div>
                                 ))}
                               </div>
                             ))}
                           </div>
-                          <div className="radio-buttons">
-                            <div>
-                              <input
-                                id="bilDateEnd"
-                                value="unpaidCustomerByDate"
-                                name="platform"
-                                type="radio"
-                                className="form-check-input"
-                                onChange={(e) => handleSMSreceiver(e)}
-                              />
-                              <label
-                                className="form-check-lebel ms-2"
-                                htmlFor="bilDateEnd"
-                              >
-                                বিল ডেট শেষ হতে বাকিঃ
-                              </label>
-                              {smsReceiverType === "unpaidCustomerByDate" ? (
-                                <div style={{}} className="displayFlex">
-                                  <input
-                                    type="checkbox"
-                                    className="getValueUsingClass"
-                                    value={"1"}
-                                    onChange={(e) => {
-                                      daySettingHandler(e.target.value);
-                                    }}
-                                  />
-                                  <label className="mx-3">{"এক দিন"}</label>
-                                  <input
-                                    type="checkbox"
-                                    className="getValueUsingClass"
-                                    value={"2"}
-                                    onChange={(e) => {
-                                      daySettingHandler(e.target.value);
-                                    }}
-                                  />
-                                  <label className="mx-3">{"দুই দিন"}</label>
-                                  <input
-                                    type="checkbox"
-                                    className="getValueUsingClass"
-                                    value={"3"}
-                                    onChange={(e) => {
-                                      daySettingHandler(e.target.value);
-                                    }}
-                                  />
-                                  <label className="mx-3">{"তিন দিন"}</label>
-                                  <input
-                                    type="checkbox"
-                                    className="getValueUsingClass"
-                                    value={"5"}
-                                    onChange={(e) => {
-                                      daySettingHandler(e.target.value);
-                                    }}
-                                  />
-                                  <label className="mx-3">{"পাঁচ দিন"}</label>
-                                  <input
-                                    type="checkbox"
-                                    className="getValueUsingClass"
-                                    value={"7"}
-                                    onChange={(e) => {
-                                      daySettingHandler(e.target.value);
-                                    }}
-                                  />
-                                  <label className="mx-3">{"সাত দিন"}</label>
-                                </div>
-                              ) : (
-                                ""
-                              )}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <div className="radio-buttons">
+                              <div>
+                                <input
+                                  id="bilDateEnd"
+                                  value="unpaidCustomerByDate"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="bilDateEnd"
+                                >
+                                  বিল ডেট শেষ হতে বাকিঃ
+                                </label>
+                                {smsReceiverType === "unpaidCustomerByDate" ? (
+                                  <div style={{}} className="displayFlex">
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"1"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"এক দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"2"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"দুই দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"3"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"তিন দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"5"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"পাঁচ দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"7"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"সাত দিন"}</label>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                              <div>
+                                <input
+                                  id="allCustomer"
+                                  value="allCustomer"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="allCustomer"
+                                >
+                                  সকল গ্রাহক
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="paid"
+                                  value="paid"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="paid"
+                                >
+                                  পেইড
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="unpaid"
+                                  value="unpaid"
+                                  name="platform"
+                                  className="form-check-input"
+                                  type="radio"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="unpaid"
+                                >
+                                  বকেয়া
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="activee"
+                                  value="active"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="activee"
+                                >
+                                  এক্টিভ
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="inactive"
+                                  value="inactive"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="inactive"
+                                >
+                                  ইন-একটিভ
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="expire"
+                                  value="expire"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="expire"
+                                >
+                                  Expire
+                                </label>
+                              </div>
                             </div>
                             <div>
-                              <input
-                                id="allCustomer"
-                                value="allCustomer"
-                                name="platform"
-                                type="radio"
-                                className="form-check-input"
-                                onChange={(e) => handleSMSreceiver(e)}
-                              />
-                              <label
-                                className="form-check-lebel ms-2"
-                                htmlFor="allCustomer"
-                              >
-                                সকল গ্রাহক
-                              </label>
-                            </div>
-                            <div>
-                              <input
-                                id="paid"
-                                value="paid"
-                                name="platform"
-                                type="radio"
-                                className="form-check-input"
-                                onChange={(e) => handleSMSreceiver(e)}
-                              />
-                              <label
-                                className="form-check-lebel ms-2"
-                                htmlFor="paid"
-                              >
-                                পেইড
-                              </label>
-                            </div>
-                            <div>
-                              <input
-                                id="unpaid"
-                                value="unpaid"
-                                name="platform"
-                                className="form-check-input"
-                                type="radio"
-                                onChange={(e) => handleSMSreceiver(e)}
-                              />
-                              <label
-                                className="form-check-lebel ms-2"
-                                htmlFor="unpaid"
-                              >
-                                বকেয়া
-                              </label>
-                            </div>
-
-                            <div>
-                              <input
-                                id="activee"
-                                value="active"
-                                name="platform"
-                                type="radio"
-                                className="form-check-input"
-                                onChange={(e) => handleSMSreceiver(e)}
-                              />
-                              <label
-                                className="form-check-lebel ms-2"
-                                htmlFor="activee"
-                              >
-                                এক্টিভ
-                              </label>
-                            </div>
-                            <div>
-                              <input
-                                id="inactive"
-                                value="inactive"
-                                name="platform"
-                                type="radio"
-                                className="form-check-input"
-                                onChange={(e) => handleSMSreceiver(e)}
-                              />
-                              <label
-                                className="form-check-lebel ms-2"
-                                htmlFor="inactive"
-                              >
-                                ইন-একটিভ
-                              </label>
-                            </div>
-                            <div>
-                              <input
-                                id="expire"
-                                value="expire"
-                                name="platform"
-                                type="radio"
-                                className="form-check-input"
-                                onChange={(e) => handleSMSreceiver(e)}
-                              />
-                              <label
-                                className="form-check-lebel ms-2"
-                                htmlFor="expire"
-                              >
-                                Expire
-                              </label>
+                              <div className="radioselect">
+                                <input
+                                  id="1"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={"USER: USERNAME"}
+                                  checked={smsTemplet.includes(
+                                    "USER: USERNAME"
+                                  )}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="1">
+                                  {"USER: USERNAME"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="2"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "ID: CUSTOMER_ID"
+                                  )}
+                                  value={"ID: CUSTOMER_ID"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="2">
+                                  {"ID: CUSTOMER_ID"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="3"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "NAME: CUSTOMER_NAME"
+                                  )}
+                                  value={"NAME: CUSTOMER_NAME"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="3">
+                                  {"NAME: CUSTOMER_NAME"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="4"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes("BILL: AMOUNT")}
+                                  value={"BILL: AMOUNT"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="4">
+                                  {"BILL: AMOUNT"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="5"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "LAST DATE: DATE"
+                                  )}
+                                  value={"LAST DATE: DATE"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="5">
+                                  {"LAST DATE: DATE"}
+                                </label>
+                              </div>
                             </div>
                           </div>
 
@@ -505,8 +698,8 @@ export default function Message() {
                       )}
 
                       <br />
-                      <p>
-                        আইডিঃ ID
+                      {/* <p>
+                        ID: ID
                         <br />
                         গ্রাহকঃ NAME
                         <br />
@@ -514,16 +707,32 @@ export default function Message() {
                         <br />
                         তারিখঃ DATE
                         <br />
-                      </p>
+                      </p> */}
+                      <div className="showthesequence">
+                        {smsTemplet.map((item, key) => {
+                          return <p key={key}>{item}</p>;
+                        })}
 
+                        <p className="endingtext">{bottomText}</p>
+                      </div>
+                      <div className="smsCount">
+                        <span className="smsLength">
+                          অক্ষরঃ {(smsTemplet + bottomText).length}
+                        </span>
+                        <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
+                      </div>
                       <textarea
                         id="messageTextArea"
                         rows="6"
                         className="form-control mt-4"
                         placeholder="মেসেজ লিখুন..."
-                        ref={smsRef}
-                        // onChange={handleMessageChange}
-                      ></textarea>
+                        value={bottomText}
+                        // onClick={insertMyText}
+                        maxLength={335 - upperText.length}
+                        onChange={(e) => setBottomText(e.target.value)}
+                      >
+                        {" "}
+                      </textarea>
                       <hr />
                       <button
                         onClick={handleSendMessage}

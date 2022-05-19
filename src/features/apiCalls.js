@@ -1075,20 +1075,15 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/dashboard/invoice/unpaid/${ispOwnerId}`);
 
-    const invoiceType = {
-      monthlyServiceCharge: "মাসিক",
-      registration: "রেজিস্ট্রেশন",
-    };
-
     const invoice = res.data;
     if (
       invoice &&
       new Date(invoice?.dueDate).getTime() < new Date().getTime()
     ) {
       let con = window.confirm(
-        `নেটফি ${invoiceType[invoice.type]} ফি ${
-          invoice.amount
-        } Tk পরিশোধের শেষ সময় ${moment(invoice.dueDate).format(
+        `নেটফি রেজিস্ট্রেশন ফি ${invoice.amount} Tk পরিশোধের শেষ সময় ${moment(
+          invoice.dueDate
+        ).format(
           "DD-MM-YYYY hh:mm:ss A"
         )} অতিবাহিত হয়েছে। অনুগ্রহ করে পেমেন্ট করুন।`
       );
