@@ -5,25 +5,19 @@ import { toast, ToastContainer } from "react-toastify";
 import moment from "moment";
 
 // internal import
-import "./message.css";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
-import useDash from "../../assets/css/dash.module.css";
-import SmsParchase from "./smsParchaseModal";
-import { ArrowClockwise, RecordFill } from "react-bootstrap-icons";
-import Loader from "../../components/common/Loader";
-import { getCustomer } from "../../features/apiCalls";
-import apiLink from "../../api/apiLink";
 import { useCallback } from "react";
+import { ArrowClockwise } from "react-bootstrap-icons";
+import { FontColor, FourGround } from "../../assets/js/theme";
 
-const isBangla = (str) => {
-  for (var i = 0, n = str.length; i < n; i++) {
-    if (str.charCodeAt(i) > 255) {
-      return true;
-    }
-  }
-  return false;
-};
+import Footer from "../../components/admin/footer/Footer";
+import SmsParchase from "./smsParchaseModal";
+import Loader from "../../components/common/Loader";
+
+import "./message.css";
+import useDash from "../../assets/css/dash.module.css";
+
+import apiLink from "../../api/apiLink";
+import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -141,10 +135,7 @@ export default function Message() {
             "DD-MM-YYYY"
           )}\n\n${smsRef.current.value}`;
 
-          const isBanglaFlag = isBangla(msg);
-          const singleSms = isBanglaFlag ? 67 : 160;
-          const smsCount = Math.ceil([...msg].length / singleSms);
-          totalSmsCount += smsCount;
+          totalSmsCount += smsCount(msg);
 
           const sms = {
             app: "netfee",

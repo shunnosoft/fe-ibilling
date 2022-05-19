@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
+import { smsCount } from "../../../components/common/UtilityMethods";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 
 function AlertSmsTemplate() {
@@ -168,20 +169,20 @@ function AlertSmsTemplate() {
     setTemplet(temp);
 
     // const fixedvalues = [
-    //   "ইউজারনেমঃ USERNAME",
-    //   "ইউজার আইডিঃ USERID",
-    //   "গ্রাহকঃ NAME",
-    //   "বিলঃ AMOUNT",
-    //   "তারিখঃ DATE",
+    //   "USER: USERNAME",
+    //   "ID: CUSTOMER_ID",
+    //   "NAME: CUSTOMER_NAME",
+    //   "BILL: AMOUNT",
+    //   "LAST DATE: DATE",
     // ];
     // var found = [];
 
     // let messageBoxStr = e.target.value
-    //   ?.replace("ইউজারনেমঃ USERNAME", "")
-    //   .replace("ইউজার আইডিঃ USERID", "")
-    //   .replace("গ্রাহকঃ NAME", "")
-    //   .replace("বিলঃ AMOUNT", "")
-    //   .replace("তারিখঃ DATE", "");
+    //   ?.replace("USER: USERNAME", "")
+    //   .replace("ID: CUSTOMER_ID", "")
+    //   .replace("NAME: CUSTOMER_NAME", "")
+    //   .replace("BILL: AMOUNT", "")
+    //   .replace("LAST DATE: DATE", "");
 
     setBottomText(
       e.target.value.split("\n")[e.target.value.split("\n").length - 2]
@@ -255,14 +256,14 @@ function AlertSmsTemplate() {
                     id="1"
                     type="checkbox"
                     className="getValueUsingClass"
-                    value={"ইউজারনেমঃ USERNAME"}
-                    checked={smsTemplet.includes("ইউজারনেমঃ USERNAME")}
+                    value={"USER: USERNAME"}
+                    checked={smsTemplet.includes("USER: USERNAME")}
                     onChange={(e) => {
                       itemSettingHandler(e.target.value);
                     }}
                   />
                   <label className="templatelabel" htmlFor="1">
-                    {"ইউজারনেমঃ USERNAME"}
+                    {"USER: USERNAME"}
                   </label>
                 </div>
                 <div className="radioselect">
@@ -270,14 +271,14 @@ function AlertSmsTemplate() {
                     id="2"
                     type="checkbox"
                     className="getValueUsingClass"
-                    checked={smsTemplet.includes("ইউজার আইডিঃ USERID")}
-                    value={"ইউজার আইডিঃ USERID"}
+                    checked={smsTemplet.includes("ID: CUSTOMER_ID")}
+                    value={"ID: CUSTOMER_ID"}
                     onChange={(e) => {
                       itemSettingHandler(e.target.value);
                     }}
                   />
                   <label className="templatelabel" htmlFor="2">
-                    {"ইউজার আইডিঃ USERID"}
+                    {"ID: CUSTOMER_ID"}
                   </label>
                 </div>
                 <div className="radioselect">
@@ -285,14 +286,14 @@ function AlertSmsTemplate() {
                     id="3"
                     type="checkbox"
                     className="getValueUsingClass"
-                    checked={smsTemplet.includes("গ্রাহকঃ NAME")}
-                    value={"গ্রাহকঃ NAME"}
+                    checked={smsTemplet.includes("NAME: CUSTOMER_NAME")}
+                    value={"NAME: CUSTOMER_NAME"}
                     onChange={(e) => {
                       itemSettingHandler(e.target.value);
                     }}
                   />
                   <label className="templatelabel" htmlFor="3">
-                    {"গ্রাহকঃ NAME"}
+                    {"NAME: CUSTOMER_NAME"}
                   </label>
                 </div>
                 <div className="radioselect">
@@ -300,14 +301,14 @@ function AlertSmsTemplate() {
                     id="4"
                     type="checkbox"
                     className="getValueUsingClass"
-                    checked={smsTemplet.includes("বিলঃ AMOUNT")}
-                    value={"বিলঃ AMOUNT"}
+                    checked={smsTemplet.includes("BILL: AMOUNT")}
+                    value={"BILL: AMOUNT"}
                     onChange={(e) => {
                       itemSettingHandler(e.target.value);
                     }}
                   />
                   <label className="templatelabel" htmlFor="4">
-                    {"বিলঃ AMOUNT"}
+                    {"BILL: AMOUNT"}
                   </label>
                 </div>
                 <div className="radioselect">
@@ -315,14 +316,14 @@ function AlertSmsTemplate() {
                     id="5"
                     type="checkbox"
                     className="getValueUsingClass"
-                    checked={smsTemplet.includes("তারিখঃ DATE")}
-                    value={"তারিখঃ DATE"}
+                    checked={smsTemplet.includes("LAST DATE: DATE")}
+                    value={"LAST DATE: DATE"}
                     onChange={(e) => {
                       itemSettingHandler(e.target.value);
                     }}
                   />
                   <label className="templatelabel" htmlFor="5">
-                    {"তারিখঃ DATE"}
+                    {"LAST DATE: DATE"}
                   </label>
                 </div>
               </div>
@@ -425,9 +426,7 @@ function AlertSmsTemplate() {
             <span className="smsLength">
               অক্ষরঃ {(smsTemplet + bottomText).length}
             </span>
-            <span>
-              SMS: {Math.ceil([...(smsTemplet + bottomText)].length / 67)}
-            </span>
+            <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
           </div>
 
           <textarea
