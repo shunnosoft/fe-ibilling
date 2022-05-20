@@ -24,6 +24,27 @@ const useForceUpdate = () => {
   return () => setValue((value) => value + 1); // update the state to force render
 };
 
+const makeMessageObj = (template, ispOwnerId, customer) => {
+  let msg = template
+    .replace("USERNAME", customer?.pppoe?.name)
+    .replace("CUSTOMER_NAME", customer?.name)
+    .replace("CUSTOMER_ID", customer?.customerId)
+    .replace(
+      "BILL_DATE",
+      moment(customer?.billingCycle).format("DD-MM-YYYY hh:mm A")
+    )
+    .replace("AMOUNT", customer?.monthlyFee);
+
+  return {
+    app: "netfee",
+    type: "bulk",
+    senderId: ispOwnerId,
+    message: msg,
+    mobile: customer.mobile,
+    count: smsCount(msg),
+  };
+};
+
 export default function Message() {
   const reset = useForceUpdate();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
@@ -37,7 +58,7 @@ export default function Message() {
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
   // const [totalText, setTotalText] = useState("");
-  console.log(upperText + "\n" + bottomText);
+  // console.log(upperText + "\n" + bottomText);
 
   const [isRefrsh, setIsrefresh] = useState(false);
   const area = useSelector((state) => state.persistedReducer.area.area);
@@ -103,7 +124,7 @@ export default function Message() {
   const handlePaymentSelect = (e) => {
     setPayment(e);
   };
-  console.log("subArea", subAreaIds);
+  // console.log("subArea", subAreaIds);
 
   // day checkbox select
   const daySettingHandler = (e) => {
@@ -127,11 +148,17 @@ export default function Message() {
   const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
+<<<<<<< HEAD
     console.log(smsReceiverType);
     console.log(days);
     console.log(subAreaIds);
     console.log(upperText + "\n" + bottomText);
 
+=======
+    // console.log(smsReceiverType);
+    // console.log(upperText, bottomText);
+    let messageTemplate = upperText + "\n" + bottomText;
+>>>>>>> origin/development
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
@@ -152,50 +179,15 @@ export default function Message() {
           subAreaIds.includes(customer.subArea) &&
           days.includes(dueDate.diff(now, "days"))
         ) {
-          const msg = `ID: ${customer.customerId}\nNAME: ${
-            customer?.pppoe?.name
-          }\nUSER: ${customer.name}\nBILL: ${
-            customer.monthlyFee
-          } Tk\nDATE: ${moment(customer.billingCycle).format(
-            "DD-MM-YYYY"
-          )}\n\n${smsRef.current.value}`;
-
-          totalSmsCount += smsCount(msg);
-
-          const sms = {
-            app: "netfee",
-            senderId: ispOwnerId,
-            message: msg,
-            type: "bulk",
-            mobile: customer.mobile,
-            count: smsCount,
-          };
+          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
+          totalSmsCount += sms.count;
           items.push(sms);
         }
 
         // send sms to all customer
         if (smsReceiverType === "allCustomer" && customer.mobile) {
-          const msg = `ID: ${customer.customerId}\nNAME: ${
-            customer?.pppoe?.name
-          }\nUSER: ${customer.name}\nBILL: ${
-            customer.monthlyFee
-          } Tk \nDATE: ${moment(customer.billingCycle).format(
-            "DD-MM-YYYY"
-          )}\n\n${smsRef.current.value}`;
-
-          const isBanglaFlag = isBangla(msg);
-          const singleSms = isBanglaFlag ? 67 : 160;
-          const smsCount = Math.ceil([...msg].length / singleSms);
-          totalSmsCount += smsCount;
-
-          const sms = {
-            app: "netfee",
-            senderId: ispOwnerId,
-            message: msg,
-            type: "bulk",
-            mobile: customer.mobile,
-            count: smsCount,
-          };
+          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
+          totalSmsCount += sms.count;
           items.push(sms);
         }
 
@@ -205,6 +197,9 @@ export default function Message() {
           customer.mobile &&
           customer.paymentStatus === "unpaid"
         ) {
+          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
+          totalSmsCount += sms.count;
+          items.push(sms);
         }
 
         // send sms to paid customer
@@ -213,6 +208,9 @@ export default function Message() {
           customer.mobile &&
           customer.paymentStatus === "paid"
         ) {
+          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
+          totalSmsCount += sms.count;
+          items.push(sms);
         }
 
         // send sms to active customer
@@ -221,6 +219,9 @@ export default function Message() {
           customer.mobile &&
           customer.status === "active"
         ) {
+          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
+          totalSmsCount += sms.count;
+          items.push(sms);
         }
 
         // send sms to inactive customer
@@ -229,6 +230,9 @@ export default function Message() {
           customer.mobile &&
           customer.status === "inactive"
         ) {
+          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
+          totalSmsCount += sms.count;
+          items.push(sms);
         }
 
         // send sms to expired customer
@@ -237,10 +241,20 @@ export default function Message() {
           customer.mobile &&
           customer.status === "expired"
         ) {
+          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
+          totalSmsCount += sms.count;
+          items.push(sms);
         }
       });
 
-      alert(`স্যাম্পল SMS:\n\n${items[0].message}`);
+      // console.log(items);
+
+      if (items.length === 0) {
+        alert(`কোন গ্রাহক পাওয়া যায়নি।`);
+        return;
+      }
+
+      alert(`স্যাম্পল SMS:\n${items[0]?.message}`);
       if (owner.data.smsBalance >= totalSmsCount) {
         let con = window.confirm(
           `${items.length} জন গ্রাহক মেসেজ পাবে। ${totalSmsCount} টি SMS খরচ হবে।`
@@ -270,7 +284,7 @@ export default function Message() {
     }
   };
   const handleSMSreceiver = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setsmsReceiverType(e.target.value);
   };
   const itemSettingHandler = (item) => {
@@ -280,11 +294,11 @@ export default function Message() {
         smsTemplet.splice(index, 1);
       }
     } else {
-      if ((upperText + "\n" + bottomText).length + item.length > 334) {
+      if ((upperText + "\n" + bottomText).length + item.length > 480) {
         toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
         return;
       } else {
-        smsTemplet.unshift(item);
+        smsTemplet.push(item);
       }
     }
 
@@ -371,29 +385,29 @@ export default function Message() {
                       ) : (
                         <div className="ifNotCheckBox">
                           {/* area section*/}
-                          <b className="mt-4">এরিয়া সিলেক্ট</b>
+                          {/* <b className="mt-4">এরিয়া সিলেক্ট করুন</b> <br /> */}
+                          <div style={{ width: "200px", height: "30px" }}>
+                            <input
+                              style={{ cursor: "pointer" }}
+                              type="checkbox"
+                              className="getValueUsingClass"
+                              value={"selectAll"}
+                              // onChange={selectAllHandler}
+                              onClick={selectAllHandler}
+                              id={"selectAll"}
+                            />
+                            <label
+                              style={{
+                                cursor: "pointer",
+                                marginLeft: "5px",
+                              }}
+                              htmlFor={"selectAll"}
+                              className="areaParent"
+                            >
+                              {"সকল এরিয়া"}
+                            </label>
+                          </div>
                           <div className="AllAreaClass mb-4">
-                            <div style={{ width: "200px", height: "30px" }}>
-                              <input
-                                style={{ cursor: "pointer" }}
-                                type="checkbox"
-                                className="getValueUsingClass"
-                                value={"selectAll"}
-                                // onChange={selectAllHandler}
-                                onClick={selectAllHandler}
-                                id={"selectAll"}
-                              />
-                              <label
-                                style={{
-                                  cursor: "pointer",
-                                  marginLeft: "5px",
-                                }}
-                                htmlFor={"selectAll"}
-                                className="areaParent"
-                              >
-                                {"Select All"}
-                              </label>
-                            </div>
                             {area?.map((val, key) => (
                               <div key={key}>
                                 <div
@@ -550,7 +564,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="unpaid"
                                 >
-                                  বকেয়া
+                                  আনপেইড
                                 </label>
                               </div>
                               <div>
@@ -598,7 +612,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="expire"
                                 >
-                                  Expire
+                                  এক্সপায়ার্ড
                                 </label>
                               </div>
                             </div>
@@ -659,14 +673,16 @@ export default function Message() {
                                   id="4"
                                   type="checkbox"
                                   className="getValueUsingClass"
-                                  checked={smsTemplet.includes("BILL: AMOUNT")}
-                                  value={"BILL: AMOUNT"}
+                                  checked={smsTemplet.includes(
+                                    "BILL: AMOUNT Tk"
+                                  )}
+                                  value={"BILL: AMOUNT Tk"}
                                   onChange={(e) => {
                                     itemSettingHandler(e.target.value);
                                   }}
                                 />
                                 <label className="templatelabel" htmlFor="4">
-                                  {"BILL: AMOUNT"}
+                                  {"BILL: AMOUNT Tk"}
                                 </label>
                               </div>
                               <div className="radioselect">
@@ -675,20 +691,19 @@ export default function Message() {
                                   type="checkbox"
                                   className="getValueUsingClass"
                                   checked={smsTemplet.includes(
-                                    "LAST DATE: DATE"
+                                    "LAST DATE: BILL_DATE"
                                   )}
-                                  value={"LAST DATE: DATE"}
+                                  value={"LAST DATE: BILL_DATE"}
                                   onChange={(e) => {
                                     itemSettingHandler(e.target.value);
                                   }}
                                 />
                                 <label className="templatelabel" htmlFor="5">
-                                  {"LAST DATE: DATE"}
+                                  {"LAST DATE: BILL_DATE"}
                                 </label>
                               </div>
                             </div>
                           </div>
-
                           {/* area */}
                           {/* <select
                             id="selectCustomerID3"
