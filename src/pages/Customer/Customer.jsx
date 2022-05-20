@@ -70,12 +70,8 @@ export default function Customer() {
   const [singleCustomer, setSingleCustomer] = useState("");
   // const [cusId, setSingleCustomerReport] = useState("");
   // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
 
-  const currentCustomers = Customers.slice(firstIndex, lastIndex);
+  const currentCustomers = Customers;
   const allareas = useSelector((state) => state.persistedReducer.area.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
@@ -87,11 +83,6 @@ export default function Customer() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
-
-  // paginate call Back function -> response from paginate component
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   useEffect(() => {
     if (role === "collector") {
@@ -123,28 +114,28 @@ export default function Customer() {
     }
   }, [collectorArea, role]);
 
-  useEffect(() => {
-    const keys = [
-      "monthlyFee",
-      "customerId",
-      "name",
-      "mobile",
-      "address",
-      "paymentStatus",
-      "status",
-      "balance",
-      "subArea",
-    ];
-    setCustomers(
-      (isFilterRunning ? filterdCus : cus).filter((item) =>
-        keys.some((key) =>
-          typeof item[key] === "string"
-            ? item[key]?.toString().toLowerCase().includes(cusSearch)
-            : item[key]?.toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cus, cusSearch, filterdCus, isFilterRunning]);
+  // useEffect(() => {
+  //   const keys = [
+  //     "monthlyFee",
+  //     "customerId",
+  //     "name",
+  //     "mobile",
+  //     "address",
+  //     "paymentStatus",
+  //     "status",
+  //     "balance",
+  //     "subArea",
+  //   ];
+  //   setCustomers(
+  //     (isFilterRunning ? filterdCus : cus).filter((item) =>
+  //       keys.some((key) =>
+  //         typeof item[key] === "string"
+  //           ? item[key]?.toString().toLowerCase().includes(cusSearch)
+  //           : item[key]?.toString().includes(cusSearch)
+  //       )
+  //     )
+  //   );
+  // }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");

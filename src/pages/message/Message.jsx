@@ -148,17 +148,9 @@ export default function Message() {
   const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
-<<<<<<< HEAD
-    console.log(smsReceiverType);
-    console.log(days);
-    console.log(subAreaIds);
-    console.log(upperText + "\n" + bottomText);
-
-=======
     // console.log(smsReceiverType);
     // console.log(upperText, bottomText);
     let messageTemplate = upperText + "\n" + bottomText;
->>>>>>> origin/development
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
