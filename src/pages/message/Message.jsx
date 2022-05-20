@@ -128,6 +128,10 @@ export default function Message() {
 
   const handleSendMessage = async () => {
     console.log(smsReceiverType);
+    console.log(days);
+    console.log(subAreaIds);
+    console.log(upperText + "\n" + bottomText);
+
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
