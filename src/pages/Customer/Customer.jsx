@@ -71,7 +71,6 @@ export default function Customer() {
   // const [cusId, setSingleCustomerReport] = useState("");
   // pagination
 
-  const currentCustomers = Customers;
   const allareas = useSelector((state) => state.persistedReducer.area.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
@@ -114,28 +113,28 @@ export default function Customer() {
     }
   }, [collectorArea, role]);
 
-  // useEffect(() => {
-  //   const keys = [
-  //     "monthlyFee",
-  //     "customerId",
-  //     "name",
-  //     "mobile",
-  //     "address",
-  //     "paymentStatus",
-  //     "status",
-  //     "balance",
-  //     "subArea",
-  //   ];
-  //   setCustomers(
-  //     (isFilterRunning ? filterdCus : cus).filter((item) =>
-  //       keys.some((key) =>
-  //         typeof item[key] === "string"
-  //           ? item[key]?.toString().toLowerCase().includes(cusSearch)
-  //           : item[key]?.toString().includes(cusSearch)
-  //       )
-  //     )
-  //   );
-  // }, [cus, cusSearch, filterdCus, isFilterRunning]);
+  useEffect(() => {
+    const keys = [
+      "monthlyFee",
+      "customerId",
+      "name",
+      "mobile",
+      "address",
+      "paymentStatus",
+      "status",
+      "balance",
+      "subArea",
+    ];
+    setCustomers(
+      (isFilterRunning ? filterdCus : cus).filter((item) =>
+        keys.some((key) =>
+          typeof item[key] === "string"
+            ? item[key]?.toString().toLowerCase().includes(cusSearch)
+            : item[key]?.toString().includes(cusSearch)
+        )
+      )
+    );
+  }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
@@ -179,7 +178,7 @@ export default function Customer() {
   };
   //export customer data
 
-  let customerForCsV = currentCustomers.map((customer) => {
+  let customerForCsV = Customers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -300,7 +299,7 @@ export default function Customer() {
       customerStatus = "ইনএক্টিভ";
     }
   }
-  console.log({ customerStatus, paymentStatus });
+  console.log(Customer);
 
   if (paymentStatus) {
     const splitStatus = paymentStatus.split(".")[1];
@@ -627,12 +626,12 @@ export default function Customer() {
                   <div style={{ display: "none" }}>
                     <PrintCustomer
                       filterData={filterData}
-                      currentCustomers={currentCustomers}
+                      currentCustomers={Customers}
                       ref={componentRef}
                     />
                   </div>
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table columns={columns} data={Customers}></Table>
                 </div>
               </FourGround>
               <Footer />
