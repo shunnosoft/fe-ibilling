@@ -49,8 +49,6 @@ export default function Home() {
     (state) => state.persistedReducer.chart.customerStat
   );
 
-  console.log(ChartsData, customerStat);
-
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);

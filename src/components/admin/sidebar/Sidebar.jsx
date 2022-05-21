@@ -19,7 +19,7 @@ import {
   Gear,
   PersonCheck,
   CashStack,
-  PersonFill,
+  Envelope,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -428,6 +428,40 @@ export default function Sidebar() {
                       <span className="sidebarLinksName">
                         {"রিচার্জ হিস্ট্রি"}
                       </span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
+              {(userRole === "ispOwner" && bpSettings?.hasReseller) ||
+              userRole === "reseller" ? (
+                <NavLink
+                  key={71}
+                  to={
+                    userRole === "reseller"
+                      ? "/reseller/sms-receharge"
+                      : "/recharge"
+                  }
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname ===
+                        (userRole === "reseller"
+                          ? "/reseller/sms-receharge"
+                          : "/recharge")
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<Envelope />}</div>
+                      <span className="sidebarLinksName">{"মেসেজ"}</span>
                     </li>
                   </FontColor>
                 </NavLink>

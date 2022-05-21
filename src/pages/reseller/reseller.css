@@ -53,6 +53,10 @@
   padding: 15px 0;
 }
 
+.recdharge_sms table thead th,
+.recdharge_sms table tbody td {
+  text-align: center;
+}
 @media only screen and (max-width: 980px) {
   .TakesInputFields {
     display: initial;
