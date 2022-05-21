@@ -22,6 +22,7 @@ import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector } from "../../features/apiCalls";
+import Table from "../../components/table/Table";
 
 export default function Collector() {
   const dispatch = useDispatch();
@@ -91,6 +92,102 @@ export default function Collector() {
   const searchHandler = (e) => {
     setCollSearch(e.toString().toLowerCase());
   };
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+      },
+      {
+        Header: "এড্রেস",
+        accessor: "address",
+      },
+      {
+        Header: "মোবাইল",
+        accessor: "mobile",
+      },
+      {
+        Header: "ইমেইল",
+        accessor: "email",
+      },
+
+      {
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#showCollectorDetails"
+                onClick={() => {
+                  getSpecificCollector(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PersonFill />
+                    <p className="actionP">প্রোফাইল</p>
+                  </div>
+                </div>
+              </li>
+              {permission?.collectorEdit || role === "ispOwner" ? (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#collectorEditModal"
+                  onClick={() => {
+                    getSpecificCollector(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">এডিট</p>
+                    </div>
+                  </div>
+                </li>
+              ) : (
+                ""
+              )}
+              {/* {role==="ispOwner"? <li
+                                      onClick={() => {
+                                        deleteCollectorHandler(val.id);
+                                      }}
+                                    >
+                                      <div className="dropdown-item actionManager">
+                                        <div className="customerAction">
+                                          <ArchiveFill />
+                                          <p className="actionP">ডিলিট</p>
+                                        </div>
+                                      </div>
+                                    </li>:""} */}
+            </ul>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
   return (
     <>
       <Sidebar />
@@ -129,137 +226,8 @@ export default function Collector() {
                         </div>
                       </div>
                     </div>
-
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট কালেক্টর:
-                          <span>{collector?.length || ""}</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ এর জন্য নাম লিখুন"
-                            onChange={(e) => searchHandler(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                  {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <th>সিরিয়াল</th>
-                          <th>নাম</th>
-                          <th>মোবাইল</th>
-                          <th>ইমেইল</th>
-                          <th className="centeringTD">অ্যাকশন</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {collector?.length === undefined ? (
-                          <tr>
-                            <TdLoader colspan={5} />
-                          </tr>
-                        ) : (
-                          allCollector?.map((val, key) => (
-                            <tr key={key}>
-                              <td>{++serial}</td>
-                              <td>{val.name}</td>
-                              <td>{val.mobile}</td>
-                              <td>{val.email}</td>
-                              <td className="centeringTD">
-                                <ThreeDots
-                                  className="dropdown-toggle ActionDots"
-                                  id="customerDrop"
-                                  type="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                />
-
-                                {/* modal */}
-                                <ul
-                                  className="dropdown-menu"
-                                  aria-labelledby="customerDrop"
-                                >
-                                  <li
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#showCollectorDetails"
-                                    onClick={() => {
-                                      getSpecificCollector(val.id);
-                                    }}
-                                  >
-                                    <div className="dropdown-item">
-                                      <div className="customerAction">
-                                        <PersonFill />
-                                        <p className="actionP">প্রোফাইল</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  {permission?.collectorEdit ||
-                                  role === "ispOwner" ? (
-                                    <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#collectorEditModal"
-                                      onClick={() => {
-                                        getSpecificCollector(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <PenFill />
-                                          <p className="actionP">এডিট</p>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  ) : (
-                                    ""
-                                  )}
-                                  {/* {role==="ispOwner"? <li
-                                      onClick={() => {
-                                        deleteCollectorHandler(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>:""} */}
-                                </ul>
-
-                                {/* end */}
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                  {/* Pagination */}
-                  <div className="paginationSection">
-                    <select
-                      className="form-select paginationFormSelect"
-                      aria-label="Default select example"
-                      onChange={(e) => setCollectorPerPage(e.target.value)}
-                    >
-                      <option value="5">৫ জন</option>
-                      <option value="10">১০ জন</option>
-                      <option value="100">১০০ জন</option>
-                    </select>
-                    <Pagination
-                      customerPerPage={collectorPerPage}
-                      totalCustomers={collector.length}
-                      paginate={paginate}
-                    />
-                  </div>
+                  <Table columns={columns} data={collector}></Table>
                 </div>
               </FourGround>
               <Footer />

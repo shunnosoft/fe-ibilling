@@ -11,8 +11,8 @@ export const getParchaseHistory = async (resellerId, dispatch) => {
     const res = await apiLink.get("/reseller/smsPurchase/" + resellerId);
     dispatch(getParchaseHistorySuccess(res.data.smsPurchaseHistory));
   } catch (error) {
-    console.log(error);
-    toast.err(error?.response);
+    console.log(error?.response?.data?.message);
+    toast.error(error?.response?.data?.message);
   }
 };
 

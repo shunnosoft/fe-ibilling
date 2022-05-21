@@ -5,25 +5,19 @@ import { toast, ToastContainer } from "react-toastify";
 import moment from "moment";
 
 // internal import
-import "./message.css";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
-import useDash from "../../assets/css/dash.module.css";
-import SmsParchase from "./smsParchaseModal";
-import { ArrowClockwise, RecordFill } from "react-bootstrap-icons";
-import Loader from "../../components/common/Loader";
-import { getCustomer } from "../../features/apiCalls";
-import apiLink from "../../api/apiLink";
 import { useCallback } from "react";
+import { ArrowClockwise } from "react-bootstrap-icons";
+import { FontColor, FourGround } from "../../assets/js/theme";
 
-const isBangla = (str) => {
-  for (var i = 0, n = str.length; i < n; i++) {
-    if (str.charCodeAt(i) > 255) {
-      return true;
-    }
-  }
-  return false;
-};
+import Footer from "../../components/admin/footer/Footer";
+import SmsParchase from "./smsParchaseModal";
+import Loader from "../../components/common/Loader";
+
+import "./message.css";
+import useDash from "../../assets/css/dash.module.css";
+
+import apiLink from "../../api/apiLink";
+import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -124,12 +118,38 @@ export default function Message() {
 
       res.data.map((customer) => {
         var dueDate = moment(customer.billingCycle);
+
+        // send sms to unpaid customers by billing cycle ending date
         if (
+          smsReceiverType === "unpaidCustomerByDate" &&
           customer.mobile &&
           customer.paymentStatus === "unpaid" &&
           areaIds.includes(customer.subArea) &&
           days.includes(dueDate.diff(now, "days"))
         ) {
+          const msg = `আইডিঃ ${customer.customerId}\nইউজারনেমঃ ${
+            customer?.pppoe?.name
+          }\nগ্রাহকঃ ${customer.name}\nবিলঃ ${
+            customer.monthlyFee
+          } Tk\nতারিখঃ ${moment(customer.billingCycle).format(
+            "DD-MM-YYYY"
+          )}\n\n${smsRef.current.value}`;
+
+          totalSmsCount += smsCount(msg);
+
+          const sms = {
+            app: "netfee",
+            senderId: ispOwnerId,
+            message: msg,
+            type: "bulk",
+            mobile: customer.mobile,
+            count: smsCount,
+          };
+          items.push(sms);
+        }
+
+        // send sms to all customer
+        if (smsReceiverType === "allCustomer" && customer.mobile) {
           const msg = `আইডিঃ ${customer.customerId}\nইউজারনেমঃ ${
             customer?.pppoe?.name
           }\nগ্রাহকঃ ${customer.name}\nবিলঃ ${
@@ -151,10 +171,50 @@ export default function Message() {
             mobile: customer.mobile,
             count: smsCount,
           };
-
           items.push(sms);
         }
+
+        // send sms to unpaid customer
+        if (
+          smsReceiverType === "unpaid" &&
+          customer.mobile &&
+          customer.paymentStatus === "unpaid"
+        ) {
+        }
+
+        // send sms to paid customer
+        if (
+          smsReceiverType === "paid" &&
+          customer.mobile &&
+          customer.paymentStatus === "paid"
+        ) {
+        }
+
+        // send sms to active customer
+        if (
+          smsReceiverType === "active" &&
+          customer.mobile &&
+          customer.status === "active"
+        ) {
+        }
+
+        // send sms to inactive customer
+        if (
+          smsReceiverType === "inactive" &&
+          customer.mobile &&
+          customer.status === "inactive"
+        ) {
+        }
+
+        // send sms to expired customer
+        if (
+          smsReceiverType === "expired" &&
+          customer.mobile &&
+          customer.status === "expired"
+        ) {
+        }
       });
+
       alert(`স্যাম্পল SMS:\n\n${items[0].message}`);
       if (owner.data.smsBalance >= totalSmsCount) {
         let con = window.confirm(
@@ -232,49 +292,7 @@ export default function Message() {
                       )}
                     </div>
 
-                    {/* <div className="messageGuide">
-                      <h4>যেভাবে আপনি গ্রাহকদের মোবাইলে মেসেজ দিবেনঃ</h4>
-                      <p>
-                        ১। যে গ্রাহকদের মেসেজ দিতে চান ড্রপডাউন মেনু থেকে
-                        সিলেক্ট করুন।
-                      </p>
-                      <p>
-                        ২। মেসেজ বক্সে আপনার মেসেজ লিখুন এবং মেসেজের শেষে অবশ্যই
-                        আপনার <b> প্রতিষ্ঠানের নাম</b> লিখুন অথবা{" "}
-                        <b>সিগনেচার</b> যুক্ত করে দিন (নিচের মেসেজ বক্সে যেভাবে
-                        আছে)
-                      </p>
-                      <p>
-                        ৩। এবার <b> সেন্ড মেসেজ</b> বাটনে ক্লিক করে একটু অপেক্ষা
-                        করুন।{" "}
-                      </p>
-                      <p>
-                        ৪। কিছুক্ষণের মধ্যে আপনি দেখতে পাবেন কতজন গ্রাহক মেসেজ
-                        পাবে, মেসেজ সাইজ এবং কত টাকা মেসেজের জন্য খরচ হবে।{" "}
-                      </p>
-                      <p>
-                        ৫। এখন আপনি যদি মেসেজ দিতে চান তাহলে OK বাটনে ক্লিক করে
-                        কনফার্ম করুন এবং একটু অপেক্ষা করুন।
-                      </p>
-                      <p>
-                        ৬। আপনি একটি কনফার্মেশন মেসেজ দেখতে পাবেন। এবং স্বল্প
-                        সময়ের মধ্যে আপনার সম্মানিত গ্রাহকদের মোবাইলে মেসেজ পৌঁছে
-                        যাবে।
-                      </p>
-                    </div> */}
                     <div className="writeMessageSection">
-                      {/* <h4>মেসেজ লিখুন</h4>
-                      <hr /> */}
-                      {/* <div className="oneElementInput">
-                        <input
-                          type="checkbox"
-                          className="marginRight"
-                          onChange={handleMessageCheckBox}
-                        />
-                        <h6 className="mb-4">
-                          একটি নির্দিষ্ট মোবাইল নম্বরে মেসেজ সেন্ড
-                        </h6>
-                      </div> */}
                       {isChecked ? (
                         <div className="ifCheckedBox">
                           <p></p>
@@ -287,31 +305,6 @@ export default function Message() {
                         </div>
                       ) : (
                         <div className="ifNotCheckBox">
-                          {/* <div className="cusSelect">
-                            <select
-                              id="selectCustomerID1"
-                              className="form-select mb-4"
-                              onChange={(e) =>
-                                handleStatusSelect(e.target.value)
-                              }
-                            >
-                              <option value="">সকল গ্রাহক</option>
-                              <option value="active">এক্টিভ</option>
-                              <option value="inactive">ইনক্টিভ</option>
-                            </select>
-                            <select
-                              id="selectCustomerID1"
-                              className="form-select mb-4"
-                              onChange={(e) =>
-                                handlePaymentSelect(e.target.value)
-                              }
-                            >
-                              <option value="">সকল গ্রাহক</option>
-                              <option value="paid">পরিশোধ</option>
-                              <option value="unpaid">বকেয়া </option>
-                            </select>
-                          </div> */}
-                          {/* area */}
                           {/* area section*/}
                           <b className="mt-4">এরিয়া সিলেক্ট</b>
                           <div className="AllAreaClass mb-4">
@@ -336,7 +329,7 @@ export default function Message() {
                             <div>
                               <input
                                 id="bilDateEnd"
-                                value="bilDate"
+                                value="unpaidCustomerByDate"
                                 name="platform"
                                 type="radio"
                                 className="form-check-input"
@@ -348,7 +341,7 @@ export default function Message() {
                               >
                                 বিল ডেট শেষ হতে বাকিঃ
                               </label>
-                              {smsReceiverType === "bilDate" ? (
+                              {smsReceiverType === "unpaidCustomerByDate" ? (
                                 <div style={{}} className="displayFlex">
                                   <input
                                     type="checkbox"

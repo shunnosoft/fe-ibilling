@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 // import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
+import Table from "../../components/table/Table";
 
 export default function Diposit() {
   const balancee = useSelector(
@@ -98,11 +99,11 @@ export default function Diposit() {
 
   useEffect(() => {
     var arr = [];
-    allDeposit.forEach((item) => {
-      var match = allCollector.find((c) => c.user === item.user);
+    allDeposit.forEach((original) => {
+      var match = allCollector.find((c) => c.user === original.user);
 
       if (match) {
-        arr.push({ ...item, name: match.name });
+        arr.push({ ...original, name: match.name });
       }
     });
     setMainData(arr);
@@ -117,7 +118,8 @@ export default function Diposit() {
     );
     return sumWithInitial.toString();
   }, [mainData]);
-
+  console.log(mainData);
+  console.log(ownDeposits);
   // useEffect(() => {
   //   getMyDeposit(dispatch);
   // }, [dispatch]);
@@ -133,14 +135,14 @@ export default function Diposit() {
 
   const getNames = useCallback(() => {
     var arr = [];
-    allDeposit.forEach((item) => {
+    allDeposit.forEach((original) => {
       var match =
         userRole === "ispOwner"
           ? manager
-          : allCollector.find((c) => c.user === item.user);
+          : allCollector.find((c) => c.user === original.user);
 
       if (match) {
-        arr.push({ ...item, name: match.name });
+        arr.push({ ...original, name: match.name });
       }
     });
 
@@ -163,18 +165,18 @@ export default function Diposit() {
     initialToday.setHours(23, 59, 59, 999);
     setMainData(
       getNames().filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
+        (original) =>
+          Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
+          Date.parse(original.createdAt) <= Date.parse(initialToday)
       )
     );
 
     // Temp varialbe for search
     // setMainData2(
     //   getNames().filter(
-    //     (item) =>
-    //       Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-    //       Date.parse(item.createdAt) <= Date.parse(initialToday)
+    //     (original) =>
+    //       Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
+    //       Date.parse(original.createdAt) <= Date.parse(initialToday)
     //   )
     // );
   }, [getNames]);
@@ -190,7 +192,7 @@ export default function Diposit() {
       setCollectorIds([userId]);
     } else {
       let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.user));
+      collectors.map((original) => collectorUserIdsArr.push(original.user));
       setCollectorIds(collectorUserIdsArr);
     }
   };
@@ -203,15 +205,146 @@ export default function Diposit() {
     }
 
     arr = arr.filter(
-      (item) =>
-        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+      (original) =>
+        Date.parse(original.createdAt) >= Date.parse(dateStart) &&
+        Date.parse(original.createdAt) <= Date.parse(dateEnd)
     );
 
     setMainData(arr);
     // setMainData2(arr);
   };
+  const columns2 = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "পরিমান",
+        accessor: "amount",
+        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
+      },
+      {
+        Header: "স্টেটাস",
+        accessor: "status",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.status === "accepted" && (
+              <span className="statusClass">গ্রহণ করা হয়েছে</span>
+            )}
+            {original?.status === "rejected" && (
+              <span className="rejectClass">বাতিল হয়েছে</span>
+            )}
+          </div>
+        ),
+      },
 
+      {
+        Header: "তারিখ",
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY");
+        },
+      },
+    ],
+    []
+  );
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "নাম",
+        accessor: "name",
+        Cell: ({ row: { original } }) => (
+          <div>
+            নাম {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
+          </div>
+        ),
+      },
+      {
+        Header: "মোট",
+        accessor: "amount",
+        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
+      },
+
+      {
+        Header: <div className="text-center">অ্যাকশন</div>,
+        id: "option1",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div>
+              {original.status === "pending" ? (
+                acceptLoading ? (
+                  <div className="loaderDiv">
+                    <Loader />
+                  </div>
+                ) : (
+                  <div className="AcceptRejectBtn">
+                    <button
+                      onClick={() => {
+                        depositAcceptRejectHandler("accepted", original.id);
+                      }}
+                    >
+                      গ্রহণ
+                    </button>
+                    <button
+                      onClick={() => {
+                        depositAcceptRejectHandler("rejected", original.id);
+                      }}
+                    >
+                      বাতিল
+                    </button>
+                  </div>
+                )
+              ) : (
+                <>
+                  {original.status === "accepted" && (
+                    <span className="statusClass">গ্রহণ করা হয়েছে</span>
+                  )}
+                  {original.status === "rejected" && (
+                    <span className="rejectClass">বাতিল হয়েছে</span>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        ),
+      },
+      {
+        Header: "তারিখ",
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YYYY");
+        },
+      },
+    ],
+    []
+  );
+  const customComponent = (
+    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+      {userRole !== "reseller" ? (
+        <div>নিজ ডিপোজিটঃ {getTotalOwnDeposit()} টাকা</div>
+      ) : (
+        <div style={{ marginRight: "10px" }}>
+          মোট ডিপোজিটঃ {getTotalDeposit()} টাকা
+        </div>
+      )}
+    </div>
+  );
   return (
     <>
       <Sidebar />
@@ -268,68 +401,13 @@ export default function Diposit() {
                 ""
               )}
 
-              {userRole === "collector" ? (
-                <div className="row searchCollector">
-                  <div className="col-sm-8">
-                    <h4 className="allCollector">
-                      নিজ ডিপোজিটঃ{" "}
-                      <span>{FormatNumber(ownDeposits.length)} টি</span>
-                      পরিমাণঃ{" "}
-                      <span>{FormatNumber(getTotalOwnDeposit())} টাকা </span>
-                    </h4>
-                  </div>
-
-                  <div className="col-sm-4">
-                    <div className=" collectorSearch">
-                      {/* <Search className="serchingIcon" /> */}
-                      <input
-                        type="text"
-                        className="search"
-                        placeholder="সার্চ"
-                        // onChange={(e) => setCusSearch(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-
               {/* table */}
               {userRole === "collector" ? (
-                <div className="table-responsive-lg">
-                  <table className="table table-striped ">
-                    <thead>
-                      <tr>
-                        <td>পরিমান</td>
-                        <td className="textAlignCenter">স্টেটাস</td>
-                        <td>তারিখ</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ownDeposits?.map((item, key) => (
-                        <tr key={key}>
-                          <td>৳ {FormatNumber(item.amount)}</td>
-                          <td>
-                            {item.status === "accepted" && (
-                              <span className="statusClass">
-                                গ্রহণ করা হয়েছে
-                              </span>
-                            )}
-                            {item.status === "rejected" && (
-                              <span className="rejectClass">বাতিল হয়েছে</span>
-                            )}
-                          </td>
-                          <td>
-                            {moment(item.createdAt).format(
-                              "DD-MM-YYYY hh:mm:ss A"
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <Table
+                  customComponent={customComponent}
+                  data={mainData}
+                  columns={columns2}
+                ></Table>
               ) : (
                 ""
               )}
@@ -398,111 +476,12 @@ export default function Diposit() {
                       </button>
                     </div>
 
-                    {userRole === "reseller" ? (
-                      <div className="row searchCollector">
-                        <div className="col-sm-8">
-                          <h4 className="allCollector">
-                            কালেক্টর ডিপোজিটঃ{" "}
-                            <span>{FormatNumber(mainData.length)} টি</span>
-                            পরিমাণঃ{" "}
-                            <span>{FormatNumber(getTotalDeposit())} টাকা</span>
-                          </h4>
-                        </div>
-
-                        <div className="col-sm-4">
-                          <div className=" collectorSearch">
-                            {/* <Search className="serchingIcon" /> */}
-                            <input
-                              type="text"
-                              className="search"
-                              placeholder="সার্চ"
-                              // onChange={(e) => setCusSearch(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-
                     {/* table */}
-                    <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                            <td>
-                              নাম{" "}
-                              {userRole === "ispOwner"
-                                ? "(ম্যানেজার)"
-                                : "(কালেক্টর)"}
-                            </td>
-                            <td>মোট</td>
-                            <td>অ্যাকশন</td>
-                            <td>তারিখ</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {mainData?.map((item, key) => (
-                            <tr key={key}>
-                              <td>{item.name}</td>
-                              <td>৳ {FormatNumber(item.amount)}</td>
-
-                              <td>
-                                {item.status === "pending" ? (
-                                  acceptLoading ? (
-                                    <div className="loaderDiv">
-                                      <Loader />
-                                    </div>
-                                  ) : (
-                                    <div className="AcceptRejectBtn">
-                                      <button
-                                        onClick={() => {
-                                          depositAcceptRejectHandler(
-                                            "accepted",
-                                            item.id
-                                          );
-                                        }}
-                                      >
-                                        গ্রহণ
-                                      </button>
-                                      <button
-                                        onClick={() => {
-                                          depositAcceptRejectHandler(
-                                            "rejected",
-                                            item.id
-                                          );
-                                        }}
-                                      >
-                                        বাতিল
-                                      </button>
-                                    </div>
-                                  )
-                                ) : (
-                                  <>
-                                    {item.status === "accepted" && (
-                                      <span className="statusClass">
-                                        গ্রহণ করা হয়েছে
-                                      </span>
-                                    )}
-                                    {item.status === "rejected" && (
-                                      <span className="rejectClass">
-                                        বাতিল হয়েছে
-                                      </span>
-                                    )}
-                                  </>
-                                )}
-                              </td>
-
-                              <td>
-                                {moment(item.createdAt).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    <Table
+                      customComponent={customComponent}
+                      data={ownDeposits}
+                      columns={columns}
+                    ></Table>
                   </div>
                 </FourGround>
               ) : (

@@ -240,6 +240,30 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
+              <NavLink
+                key={60}
+                to={"/staticCustomer"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/staticCustomer"
+                        ? "active"
+                        : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<PeopleFill />}</div>
+                    <span className="sidebarLinksName">
+                      {"স্ট্যাটিক গ্রাহক"}
+                    </span>
+                  </li>
+                </FontColor>
+              </NavLink>
+
               {bpSettings?.hasMikrotik &&
               (userRole === "ispOwner" || userRole === "manager") ? (
                 <NavLink

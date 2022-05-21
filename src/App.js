@@ -45,7 +45,7 @@ import Invoice from "./pages/invoice/Invoice";
 
 import CollectorReport from "./pages/report/CollectorReport";
 import Reseller from "./pages/reseller/Reseller";
-import RechargeHistoryofReseller from "./pages/recharge/Diposit";
+import RechargeHistoryofReseller from "./pages/recharge/Recharge";
 import Landing from "./pages/public-pages/Landing";
 import About from "./pages/public-pages/About";
 import Privacy from "./pages/public-pages/Privacy";
@@ -63,9 +63,9 @@ import Expenditure from "./pages/expenditure/Expenditure";
 import Staff from "./pages/staff/Staff";
 import StaffSalary from "./pages/staff/Salary/StaffSalary";
 import InvoiceList from "./admin/invoiceList/InvoiceList";
-import SmsParchase from "./pages/message/smsParchaseModal";
-import SmsReceharge from "./pages/reseller/smsRecharge/RecehargeSMS";
 import RecehargeSMS from "./pages/reseller/smsRecharge/RecehargeSMS";
+import StaticCustomer from "./pages/staticCustomer/StaticCustomer";
+import PackageSetting from "./pages/staticCustomer/PakageSetting";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -237,6 +237,28 @@ function App() {
                 (userRole === "manager" && user) ||
                 (userRole === "ispOwner" && user) ? (
                   <Collector />
+                ) : (
+                  <Navigate to={"/"} />
+                )
+              }
+            />
+
+            {/* Static Customer  */}
+            <Route
+              path="/staticCustomer"
+              element={
+                userRole === "ispOwner" && user ? (
+                  <StaticCustomer />
+                ) : (
+                  <Navigate to={"/"} />
+                )
+              }
+            />
+            <Route
+              path="/packageSetting"
+              element={
+                userRole === "ispOwner" && user ? (
+                  <PackageSetting />
                 ) : (
                   <Navigate to={"/"} />
                 )
