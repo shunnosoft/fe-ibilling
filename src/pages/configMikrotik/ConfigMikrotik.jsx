@@ -249,6 +249,13 @@ export default function ConfigMikrotik() {
               justifyContent: "center",
             }}
           >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
             <ul
               className="dropdown-menu"
               aria-labelledby="pppoePackageDropdown"
@@ -519,7 +526,7 @@ export default function ConfigMikrotik() {
                         <h2 style={{ width: "100%", textAlign: "center" }}>
                           প্যাকেজ
                         </h2>
-                        <Table columns={columns1} data={activeUser}></Table>
+                        <Table columns={columns1} data={pppoePackage}></Table>
                       </>
                     ) : (
                       ""
