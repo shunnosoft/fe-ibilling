@@ -597,31 +597,32 @@ export const fetchpppoeUser = async (dispatch, IDs, mtkName) => {
       method: "GET",
       url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
-    // console.log(res.data);
+    console.log(res.data);
 
     const pppsecretUsers = res.data?.pppsecretUsers;
     const interfaaceList = res.data?.interfaceList;
     const temp = [];
 
-    // console.log(interfaaceList);
+    console.log(interfaaceList);
 
-    // pppsecretUsers.forEach((i) => {
-    //   let match = false;
-    //   interfaaceList.forEach((j) => {
-    //     if (j.name === "<pppoe-" + i.name + ">") {
-    //       match = true;
-    //       temp.push({
-    //         ...i,
-    //         ...j,
-    //       });
-    //     }
-    //   });
-    //   if (!match) temp.push(i);
-    // });
+    pppsecretUsers.forEach((i) => {
+      let match = false;
+      interfaaceList.forEach((j) => {
+        if (j.name === "<pppoe-" + i.name + ">") {
+          match = true;
 
-    // console.log(temp);
+          temp.push({
+            ...j,
+            ...i,
+          });
+        }
+      });
+      if (!match) temp.push(i);
+    });
 
-    dispatch(getpppoeUserSuccess(pppsecretUsers));
+    console.log(temp);
+
+    dispatch(getpppoeUserSuccess(temp));
     dispatch(mtkIsLoading(false));
   } catch (error) {
     console.log(error);
