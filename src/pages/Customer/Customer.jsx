@@ -70,12 +70,8 @@ export default function Customer() {
   const [singleCustomer, setSingleCustomer] = useState("");
   // const [cusId, setSingleCustomerReport] = useState("");
   // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
 
-  const currentCustomers = Customers.slice(firstIndex, lastIndex);
+  // const currentCustomers = Customers;
   const allareas = useSelector((state) => state.persistedReducer.area.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
@@ -89,9 +85,9 @@ export default function Customer() {
   );
 
   // paginate call Back function -> response from paginate component
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  // const paginate = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
 
   useEffect(() => {
     if (role === "collector") {
@@ -188,7 +184,7 @@ export default function Customer() {
   };
   //export customer data
 
-  let customerForCsV = currentCustomers.map((customer) => {
+  let customerForCsV = Customers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -309,7 +305,7 @@ export default function Customer() {
       customerStatus = "ইনএক্টিভ";
     }
   }
-  console.log({ customerStatus, paymentStatus });
+  // console.log({ customerStatus, paymentStatus });
 
   if (paymentStatus) {
     const splitStatus = paymentStatus.split(".")[1];
@@ -636,12 +632,12 @@ export default function Customer() {
                   <div style={{ display: "none" }}>
                     <PrintCustomer
                       filterData={filterData}
-                      currentCustomers={currentCustomers}
+                      currentCustomers={Customers}
                       ref={componentRef}
                     />
                   </div>
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table columns={columns} data={Customers}></Table>
                 </div>
               </FourGround>
               <Footer />
