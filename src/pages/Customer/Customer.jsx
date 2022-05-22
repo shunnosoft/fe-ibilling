@@ -560,6 +560,7 @@ export default function Customer() {
                           </option>
                           <option value="status.active">এক্টিভ</option>
                           <option value="status.inactive">ইন-এক্টিভ</option>
+                          <option value="status.expired">এক্সপায়ার্ড</option>
                         </select>
                         <select
                           className="form-select"
@@ -568,11 +569,8 @@ export default function Customer() {
                           <option value="" defaultValue>
                             পেমেন্ট
                           </option>
-                          <option value="paymentStatus.unpaid">বকেয়া</option>
-                          <option value="paymentStatus.paid">পরিশোধ</option>
-                          <option value="paymentStatus.expired">
-                            মেয়াদোত্তীর্ণ
-                          </option>
+                          <option value="paymentStatus.paid">পেইড</option>
+                          <option value="paymentStatus.unpaid">আন-পেইড</option>
                         </select>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
