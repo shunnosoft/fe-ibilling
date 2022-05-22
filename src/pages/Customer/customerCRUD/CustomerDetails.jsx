@@ -96,7 +96,7 @@ export default function CustomerDetails({ single }) {
                   </h6>
                   <h6>
                     <h6>
-                      পাসওয়ার্ড: <b>{single?.password}</b>
+                      পাসওয়ার্ড: <b>{single?.pppoe?.password}</b>
                     </h6>
                     প্রোফাইল: <b> {single?.pppoe?.profile}</b>
                   </h6>
