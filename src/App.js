@@ -66,6 +66,7 @@ import InvoiceList from "./admin/invoiceList/InvoiceList";
 import RecehargeSMS from "./pages/reseller/smsRecharge/RecehargeSMS";
 import StaticCustomer from "./pages/staticCustomer/StaticCustomer";
 import PackageSetting from "./pages/staticCustomer/PakageSetting";
+import ResellerSmsRequest from "./pages/resellerSMSrequest/ResellerSmsRequest";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -97,6 +98,23 @@ function App() {
           ""
         )}
 
+        {/* only reseller route */}
+        {userRole === "reseller" && (
+          <Routes>
+            <Route
+              path="/netfee"
+              element={
+                !user ? (
+                  <Landing></Landing>
+                ) : (
+                  <Navigate to={"/reseller/sms-receharge"} />
+                )
+              }
+            />
+          </Routes>
+        )}
+        {/* end only reseller route */}
+
         {/* for reseller route */}
         {userRole === "reseller" ||
         (userRole === "collector" && user.collector.reseller) ? (
@@ -111,16 +129,6 @@ function App() {
               path="/netfee"
               element={
                 !user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />
-              }
-            />
-            <Route
-              path="/netfee"
-              element={
-                !user ? (
-                  <Landing></Landing>
-                ) : (
-                  <Navigate to={"/reseller/sms-receharge"} />
-                )
               }
             />
 
@@ -345,6 +353,7 @@ function App() {
               <Route path="customer" element={<Customer />} />
               <Route path="activeCustomer" element={<ActiveCustomer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
+              <Route path="message-request" element={<ResellerSmsRequest />} />
 
               <Route path="*" element={<NotFound />} />
             </Route>

@@ -10,9 +10,6 @@ import { getParchaseHistory } from "../../../features/resellerParchaseSmsApi";
 import moment from "moment";
 import Table from "../../../components/table/Table";
 const RecehargeSMS = () => {
-  {
-  }
-
   const dispatch = useDispatch();
 
   const resellerId = useSelector(

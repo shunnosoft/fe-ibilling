@@ -9,6 +9,7 @@ import {
 export const getParchaseHistory = async (resellerId, dispatch) => {
   try {
     const res = await apiLink.get("/reseller/smsPurchase/" + resellerId);
+    console.log(res.data.smsPurchaseHistory);
     dispatch(getParchaseHistorySuccess(res.data.smsPurchaseHistory));
   } catch (error) {
     console.log(error?.response?.data?.message);
