@@ -273,6 +273,22 @@ export default function ConfigMikrotik() {
     ],
     []
   );
+  const [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  useEffect(() => {
+    setAllUsers(allMikrotikUsers);
+  }, [allMikrotikUsers]);
+  const filterIt = (e) => {
+    let temp;
+    if (e.target.value === "") {
+      setAllUsers(allMikrotikUsers);
+    } else if (e.target.value === "true") {
+      temp = allMikrotikUsers.filter((item) => item.running == true);
+      setAllUsers(temp);
+    } else if (e.target.value === "false") {
+      temp = allMikrotikUsers.filter((item) => item.running != true);
+      setAllUsers(temp);
+    }
+  };
   return (
     <>
       <Sidebar />
@@ -363,10 +379,27 @@ export default function ConfigMikrotik() {
                         >
                           সকল গ্রাহক
                         </h2>
-                        <Table
-                          columns={columns3}
-                          data={allMikrotikUsers}
-                        ></Table>
+                        <div
+                          className="LeftSideMikrotik"
+                          style={{
+                            widhth: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <select
+                            id="selectMikrotikOption"
+                            onChange={filterIt}
+                            className="form-select"
+                            style={{ marginBottom: "-10px" }}
+                          >
+                            <option value={""}>সকল গ্রাহক</option>;
+                            <option value={"true"}>অনলাইন</option>;
+                            <option value={"false"}>অফলাইন</option>;
+                          </select>
+                        </div>
+                        <Table columns={columns3} data={allUsers}></Table>
                       </>
                     ) : (
                       ""
