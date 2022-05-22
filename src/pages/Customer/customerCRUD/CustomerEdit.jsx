@@ -31,7 +31,7 @@ export default function CustomerEdit(props) {
   // const [ppPackage, setppPackage] = useState([]);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  // const [singleMikrotik, setSingleMikrotik] = useState(user.mikrotik);
+  // const [singleMikrotik, setSingleMikrotik] = useState(user?.mikrotik);
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
@@ -42,12 +42,12 @@ export default function CustomerEdit(props) {
       : state.package.packages
   );
 
-  const [autoDisable, setAutoDisable] = useState(user.autoDisable);
+  const [autoDisable, setAutoDisable] = useState(user?.autoDisable);
 
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(user.pppoe?.disabled);
+  const [activeStatus, setActiveStatus] = useState(user?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
@@ -60,7 +60,7 @@ export default function CustomerEdit(props) {
   useEffect(() => {
     setPackageId(props.single?.mikrotikPackage);
     setUser(props.single);
-    setStatus(user.status);
+    setStatus(user?.status);
     const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: props.single?.mikrotik,
@@ -97,7 +97,7 @@ export default function CustomerEdit(props) {
   // useEffect(() => {
   //   const IDs = {
   //     ispOwner: ispOwnerId,
-  //     mikrotikId: user.mikrotik,
+  //     mikrotikId: user?.mikrotik,
   //   };
   //   const fetchPac = async () => {
   //     try {
@@ -109,7 +109,7 @@ export default function CustomerEdit(props) {
   //       console.log(error);
   //     }
   //   };
-  //   user.mikrotik && fetchPac();
+  //   user?.mikrotik && fetchPac();
   // }, [ispOwnerId, props?.single]);
 
   // customer validator
@@ -156,7 +156,7 @@ export default function CustomerEdit(props) {
   // select Mikrotik Package
   useEffect(() => {
     //todo
-    const mikrotikPackageId = user.mikrotikPackage;
+    const mikrotikPackageId = user?.mikrotikPackage;
     // setPackageId(user?.mikrotikPackage)
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
@@ -247,7 +247,7 @@ export default function CustomerEdit(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {user.name} - এর প্রোফাইল এডিট করুন
+                {user?.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -260,18 +260,18 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: user.name || "",
-                  mobile: user.mobile || "",
-                  address: user.address || "",
-                  email: user.email || "",
-                  nid: user.nid || "",
-                  Pcomment: user.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || user.monthlyFee || 0,
-                  Pname: user.pppoe?.name || "",
-                  Pprofile: packageRate?.name || user.pppoe?.profile || "",
+                  name: user?.name || "",
+                  mobile: user?.mobile || "",
+                  address: user?.address || "",
+                  email: user?.email || "",
+                  nid: user?.nid || "",
+                  Pcomment: user?.pppoe?.comment || "",
+                  monthlyFee: packageRate?.rate || user?.monthlyFee || 0,
+                  Pname: user?.pppoe?.name || "",
+                  Pprofile: packageRate?.name || user?.pppoe?.profile || "",
                   Ppassword: user?.pppoe?.password || "",
                   status: status || "",
-                  balance: user.balance || "",
+                  balance: user?.balance || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -292,7 +292,7 @@ export default function CustomerEdit(props) {
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
                             disabled
-                            value={user.mikrotik || ""}
+                            value={user?.mikrotik || ""}
                           >
                             <option value={mikrotikName?.id || ""}>
                               {mikrotikName?.name || ""}

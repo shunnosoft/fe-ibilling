@@ -49,16 +49,16 @@ export default function CustomerEdit({ single }) {
     setStatus(single?.status);
     setAutoDisable(single?.autoDisable);
 
-    setSubArea(single.subArea);
-    setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(single.billingCycle).format("HH:mm"));
-    const temp = Getmikrotik?.find((val) => val.id === single.mikrotik);
+    setSubArea(single?.subArea);
+    setBillDate(moment(single?.billingCycle).format("YYYY-MM-DD"));
+    setBilltime(moment(single?.billingCycle).format("HH:mm"));
+    const temp = Getmikrotik?.find((val) => val.id === single?.mikrotik);
     setmikrotikName(temp);
 
     // findout area id by sub area id
     // const areaIDTemp = area.find((areaItem) => {
     //   return areaItem.subAreas.find((val) => {
-    //     if (single.subArea === val.id) {
+    //     if (single?.subArea === val.id) {
     //       setSubAreaId(val);
     //     }
     //     return areaItem;
@@ -193,7 +193,7 @@ export default function CustomerEdit({ single }) {
                   monthlyFee: packageRate?.rate || single?.monthlyFee || "",
                   Pname: single?.pppoe?.name || "",
                   Pprofile: packageRate?.name || single?.pppoe?.profile || "",
-                  Ppassword: single.pppoe?.password || "",
+                  Ppassword: single?.pppoe?.password || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
