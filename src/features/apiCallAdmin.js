@@ -10,6 +10,7 @@ import {
 export const getIspOwners = async (dispatch) => {
   try {
     const res = await apiLink.get(`/admin/getIspOwners`);
+    console.log(res.data);
     dispatch(getIspOwnersSuccess(res.data));
   } catch (error) {
     console.log(error);

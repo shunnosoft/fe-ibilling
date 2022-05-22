@@ -30,6 +30,7 @@ export default function Home() {
 
   // get isp owner
   let ispOwners = useSelector((state) => state.admin.ispOwners);
+  console.log(ispOwners);
 
   // payment filter
   if (filterStatus && filterStatus !== "Select") {
@@ -107,13 +108,7 @@ export default function Home() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="text-center">
             <>
               <ThreeDots
                 className="dropdown-toggle ActionDots"

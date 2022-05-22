@@ -63,6 +63,7 @@ import Expenditure from "./pages/expenditure/Expenditure";
 import Staff from "./pages/staff/Staff";
 import StaffSalary from "./pages/staff/Salary/StaffSalary";
 import InvoiceList from "./admin/invoiceList/InvoiceList";
+import RecehargeSMS from "./pages/reseller/smsRecharge/RecehargeSMS";
 import StaticCustomer from "./pages/staticCustomer/StaticCustomer";
 import PackageSetting from "./pages/staticCustomer/PakageSetting";
 
@@ -112,6 +113,16 @@ function App() {
                 !user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />
               }
             />
+            <Route
+              path="/netfee"
+              element={
+                !user ? (
+                  <Landing></Landing>
+                ) : (
+                  <Navigate to={"/reseller/sms-receharge"} />
+                )
+              }
+            />
 
             <Route
               path="/reseller/report"
@@ -132,6 +143,7 @@ function App() {
               />
 
               <Route path="reseller/diposit" element={<RDiposit />} />
+              <Route path="reseller/sms-receharge" element={<RecehargeSMS />} />
               <Route path="reseller/customer" element={<RCustomer />} />
 
               <Route path="*" element={<NotFound />} />
