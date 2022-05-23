@@ -1123,6 +1123,17 @@ export const getPackagewithoutmikrotik = async (ispOwnerId, dispatch) => {
     console.log(error.response?.data.message);
   }
 };
+
+export const getQueuePackageByIspOwnerId = async (ispOwnerId, dispatch) => {
+  try {
+    const res = await apiLink.get(`/mikrotik/queue/package/${ispOwnerId}`);
+    // console.log(res.data.packages);
+    dispatch(getpackageSuccess(res.data.packages));
+    dispatch(getpppoePackageSuccess(res.data.packages));
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+};
 export const addPackagewithoutmikrotik = async (
   data,
   dispatch,
@@ -1142,6 +1153,23 @@ export const addPackagewithoutmikrotik = async (
     toast.error("প্যাকেজ অ্যাড ব্যর্থ হয়েছে!");
   }
 };
+
+export const addQueuePackage = async (data, dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`/mikrotik/queue/package`, data);
+    // console.log(res.data.newPackage);
+    dispatch(addPackageSuccess(res.data.newPackage));
+    setIsLoading(false);
+    document.querySelector("#createPackage").click();
+    toast.success("প্যাকেজ সফলভাবে যুক্ত হয়েছে!");
+  } catch (error) {
+    console.log(error.response?.data.message);
+    setIsLoading(false);
+    toast.error("প্যাকেজ অ্যাড ব্যর্থ হয়েছে!");
+  }
+};
+
 export const editPackagewithoutmikrotik = async (
   data,
   dispatch,
