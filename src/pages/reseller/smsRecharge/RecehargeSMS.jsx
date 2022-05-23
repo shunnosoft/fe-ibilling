@@ -10,23 +10,23 @@ import { getParchaseHistory } from "../../../features/resellerParchaseSmsApi";
 import moment from "moment";
 import Table from "../../../components/table/Table";
 const RecehargeSMS = () => {
-  {
-  }
-
+  // import dispatch
   const dispatch = useDispatch();
 
+  // ger resller id
   const resellerId = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser?.reseller?.id
   );
 
+  // get data
   const data = useSelector(
     (state) => state?.persistedReducer?.smsHistory?.smsParchase
   );
-  console.log(data);
 
+  // get accept status
   const acceptStatus = data.filter((item) => item.status === "pending");
-  console.log(acceptStatus);
 
+  // api call
   useEffect(() => {
     getParchaseHistory(resellerId, dispatch);
   }, []);
@@ -46,14 +46,15 @@ const RecehargeSMS = () => {
       accessor: "status",
       Cell: ({ row: { original } }) => (
         <div>
-          <span
-            className={
-              "badge " +
-              (original.status === "accepted" ? "bg-success" : "bg-warning")
-            }
-          >
-            {original.status}
-          </span>
+          {original.status === "accepted" && (
+            <span className="badge bg-success">{original.status}</span>
+          )}
+          {original.status === "pending" && (
+            <span className="badge bg-warning">{original.status}</span>
+          )}
+          {original.status === "rejected" && (
+            <span className="badge bg-danger">{original.status}</span>
+          )}
         </div>
       ),
     },

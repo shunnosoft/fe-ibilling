@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 import Loader from "../../../../components/common/Loader";
-import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
 import { parchaseSms } from "../../../../features/resellerParchaseSmsApi";
 import { useDispatch } from "react-redux";
 import FormatNumber from "../../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
 
 const RechargeModal = ({ status }) => {
+  // import dispatch
+  const dispatch = useDispatch();
+
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useDispatch();
-
+  // set sms amoun
   const [smsAmount, setSmsAmount] = useState(100);
-  const [errMsg, setErrMsg] = useState("");
-  // console.log(smsAmount);
 
+  // set error value
+  const [errMsg, setErrMsg] = useState("");
+
+  // handle required
   const hadleRequired = () => {
     if (!smsAmount) {
       setErrMsg("এসএমএস পরিমান দিন");
@@ -26,6 +28,7 @@ const RechargeModal = ({ status }) => {
     }
   };
 
+  // form required
   const handleChange = (event) => {
     setSmsAmount(event.target.value);
 
@@ -33,8 +36,11 @@ const RechargeModal = ({ status }) => {
       setErrMsg("");
     }
   };
+
+  // sms amount calculation
   const msgPrice = smsAmount * 0.25;
 
+  // handle submit
   const handleSubmit = (event) => {
     event.preventDefault();
     if (status.length === 0) {

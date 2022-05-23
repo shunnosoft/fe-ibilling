@@ -17,6 +17,7 @@ export default function Header(props) {
   // const userRole = useSelector(state => state.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
   const [rechargeBalnace, setRechargeBalance] = useState(0);
+  const [smsBalance, setSmsBalance] = useState(0);
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
@@ -35,7 +36,12 @@ export default function Header(props) {
 
   useEffect(() => {
     if (userRole === "reseller")
-      getResellerBalance(userData.id, setRechargeBalance, setIsrefresh);
+      getResellerBalance(
+        userData.id,
+        setRechargeBalance,
+        setSmsBalance,
+        setIsrefresh
+      );
   }, [userRole, userData]);
   // logout
   const handleLogOut = async () => {
@@ -79,6 +85,13 @@ export default function Header(props) {
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
+                    এসএমএসঃ
+                    <strong className="mainsmsbalance">{smsBalance}</strong>
+                  </div>
+                  <div
+                    style={{ backgroundColor: "inherit" }}
+                    className="balancetext"
+                  >
                     ব্যালান্সঃ
                     <strong className="mainsmsbalance">
                       {rechargeBalnace}
@@ -97,6 +110,7 @@ export default function Header(props) {
                           getResellerBalance(
                             userData.id,
                             setRechargeBalance,
+                            setSmsBalance,
                             setIsrefresh
                           )
                         }

@@ -20,6 +20,7 @@ import staffSlice from "../features/staffSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import resellerParchaseSmsSlice from "../features/resellerParchaseSmsSlice";
+import resellerSmsRequestSlice from "../features/resellerSmsRequestSlice";
 
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
   invoice: invoiceSlice,
   staff: staffSlice,
   smsHistory: resellerParchaseSmsSlice,
+  resellerSmsRequest: resellerSmsRequestSlice,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -34,17 +34,24 @@ export default function EditPackage(props) {
     //   .required("মোবাইল নম্বর দিন "),
   });
 
+  // get mikrotik
+  const mikrotik = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+  );
+
   const packageEditHandler = (data) => {
+    console.log(data);
     const sendingData = {
       ...data,
       id: props.package?.id,
       ispOwner: ispOwnerId,
     };
-    // console.log(sendingData)
+    console.log(sendingData);
 
     editPackagewithoutmikrotik(sendingData, dispatch, setIsLoading);
   };
 
+  console.log(props.package?.mikrotik);
   return (
     <div>
       {/* Model start */}
@@ -71,6 +78,7 @@ export default function EditPackage(props) {
             <div className="modal-body">
               <Formik
                 initialValues={{
+                  mikrotik: props.package?.mikrotik,
                   name: props.package?.name,
                   rate: props.package?.rate,
                 }}
@@ -83,7 +91,29 @@ export default function EditPackage(props) {
                 {() => (
                   <Form>
                     <div className="collectorInputs">
-                      <div className="newDisplayforpackage">
+                      <div
+                        className="newDisplayforpackage"
+                        style={{ alignItems: "start" }}
+                      >
+                        <label for="" class="changeLabelFontColor">
+                          Disabled input
+                        </label>
+                        <Field
+                          as="select"
+                          name="mikrotik"
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                        >
+                          {mikrotik.map((item) => (
+                            <option
+                              value={item.id}
+                              selected={item?.id === props.package?.mikrotik}
+                            >
+                              {item?.name}
+                            </option>
+                          ))}
+                        </Field>
+
                         <FtextField
                           type="text"
                           label="প্যাকেজ এর নাম"

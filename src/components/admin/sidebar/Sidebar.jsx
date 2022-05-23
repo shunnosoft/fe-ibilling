@@ -20,6 +20,7 @@ import {
   PersonCheck,
   CashStack,
   Envelope,
+  ChatDots,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -459,39 +460,41 @@ export default function Sidebar() {
                 ""
               )}
 
-              {(userRole === "ispOwner" && bpSettings?.hasReseller) ||
-              userRole === "reseller" ? (
-                <NavLink
-                  key={71}
-                  to={
-                    userRole === "reseller"
-                      ? "/reseller/sms-receharge"
-                      : "/recharge"
-                  }
-                  className={(navInfo) =>
-                    navInfo.isActive ? activeClass.active : ""
-                  }
-                >
-                  <FontColor>
-                    <li
-                      className="sidebarItems"
-                      id={
-                        window.location.pathname ===
-                        (userRole === "reseller"
-                          ? "/reseller/sms-receharge"
-                          : "/recharge")
-                          ? "active"
-                          : ""
-                      }
-                    >
-                      <div className="sidebarIcon">{<Envelope />}</div>
-                      <span className="sidebarLinksName">{"মেসেজ"}</span>
-                    </li>
-                  </FontColor>
-                </NavLink>
-              ) : (
-                ""
-              )}
+              {
+                /*(userRole === "ispOwner" && bpSettings?.hasReseller) ||*/
+                userRole === "reseller" ? (
+                  <NavLink
+                    key={71}
+                    to={
+                      userRole === "reseller"
+                        ? "/reseller/sms-receharge"
+                        : "/recharge"
+                    }
+                    className={(navInfo) =>
+                      navInfo.isActive ? activeClass.active : ""
+                    }
+                  >
+                    <FontColor>
+                      <li
+                        className="sidebarItems"
+                        id={
+                          window.location.pathname ===
+                          (userRole === "reseller"
+                            ? "/reseller/sms-receharge"
+                            : "/recharge")
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        <div className="sidebarIcon">{<Envelope />}</div>
+                        <span className="sidebarLinksName">{"মেসেজ"}</span>
+                      </li>
+                    </FontColor>
+                  </NavLink>
+                ) : (
+                  ""
+                )
+              }
 
               {userRole === "ispOwner" ? (
                 <NavLink
@@ -510,6 +513,34 @@ export default function Sidebar() {
                     >
                       <div className="sidebarIcon">{<Messenger />}</div>
                       <span className="sidebarLinksName">{"মেসেজ"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
+              {userRole === "ispOwner" ? (
+                <NavLink
+                  key={99}
+                  to={"/message-request"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/message-request"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<ChatDots />}</div>
+                      <span className="sidebarLinksName">
+                        {"মেসেজ রিকোয়েস্ট"}
+                      </span>
                     </li>
                   </FontColor>
                 </NavLink>

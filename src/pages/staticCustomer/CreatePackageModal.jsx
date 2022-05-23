@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
-
 // internal imports
 // import { collectorData } from "../CollectorInputs";
 import "../Customer/customer.css";
@@ -21,8 +20,15 @@ export default function CreatePackage() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // get mikrotik
+  const mikrotik = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+  );
+  console.log(mikrotik);
+
   //validator
   const collectorValidator = Yup.object({
+    mikrotik: Yup.string().required("মাইক্রোটিক সিলেক্ট করুন"),
     name: Yup.string().required("প্যাকেজ এর নাম দিন"),
 
     rate: Yup.number()
@@ -38,11 +44,14 @@ export default function CreatePackage() {
   });
 
   const packageAddHandler = (data) => {
+    console.log(data);
     const sendingData = {
       ...data,
       ispOwner: ispOwnerId,
       packageType: "queue",
     };
+
+    console.log(sendingData);
 
     addQueuePackage(sendingData, dispatch, setIsLoading);
   };
@@ -75,6 +84,7 @@ export default function CreatePackage() {
                 initialValues={{
                   name: "",
                   rate: 1,
+                  mikrotik: "",
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
@@ -85,7 +95,35 @@ export default function CreatePackage() {
                 {() => (
                   <Form>
                     <div className="collectorInputs">
-                      <div className="newDisplayforpackage">
+                      <div
+                        className="newDisplayforpackage"
+                        style={{ alignItems: "start" }}
+                      >
+                        <div className="mb-3 w-100">
+                          <label
+                            htmlFor="মাইক্রোটিক"
+                            className="changeLabelFontColor"
+                          >
+                            মাইক্রোটিক
+                          </label>
+                          <Field
+                            className="form-select"
+                            as="select"
+                            name="mikrotik"
+                            aria-label="Default select example"
+                          >
+                            <option disabled selected></option>
+                            {mikrotik.map((item) => (
+                              <option value={item?.id}>{item?.name}</option>
+                            ))}
+                          </Field>
+                          <ErrorMessage
+                            component="div"
+                            name="mikrotik"
+                            className="errorMessage"
+                          />
+                        </div>
+
                         <FtextField
                           type="text"
                           label="প্যাকেজ এর নাম"
