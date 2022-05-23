@@ -33,6 +33,10 @@ import {
   editCustomerSuccess,
   getCustomerSuccess,
   updateBalance,
+  getStaticCustomerSuccess,
+  editStaticCustomerSuccess,
+  addStaticCustomerSuccess,
+  deleteStaticCustomerSuccess,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -401,6 +405,21 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   try {
     const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
     dispatch(getCustomerSuccess(res.data));
+    setIsloading(false);
+  } catch (error) {
+    console.log(error.message);
+    setIsloading(false);
+  }
+};
+
+//Static Customers
+export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
+  console.log("CALLING>>....");
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(`/ispOwner/static-customer/${ispOwner}`);
+    console.log(res.data);
+    dispatch(getStaticCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
     console.log(error.message);

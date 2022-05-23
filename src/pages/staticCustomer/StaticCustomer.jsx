@@ -36,7 +36,7 @@ import TdLoader from "../../components/common/TdLoader";
 import Pagination from "../../components/Pagination";
 import {
   deleteACustomer,
-  getCustomer,
+  getStaticCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import arraySort from "array-sort";
@@ -49,7 +49,10 @@ import { Link } from "react-router-dom";
 
 export default function StaticCustomer() {
   const componentRef = useRef(); //reference of pdf export component
-  const cus = useSelector((state) => state.persistedReducer.customer.customer);
+  const cus = useSelector(
+    (state) => state.persistedReducer?.customer?.staticCustomer
+  );
+  console.log(cus);
   const role = useSelector((state) => state.persistedReducer.auth.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
@@ -71,13 +74,7 @@ export default function StaticCustomer() {
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   // const [cusId, setSingleCustomerReport] = useState("");
-  // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
 
-  const currentCustomers = Customers.slice(firstIndex, lastIndex);
   const allareas = useSelector((state) => state.persistedReducer.area.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
@@ -89,6 +86,17 @@ export default function StaticCustomer() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
+
+  useEffect(() => {
+    console.log("call now.....");
+    if (
+      !bpSettings.hasMikrotik &&
+      (role === "manager" || role === "ispOwner")
+    ) {
+      getPackagewithoutmikrotik(ispOwner, dispatch);
+    }
+    getStaticCustomer(dispatch, ispOwner, setIsloading);
+  }, [dispatch, ispOwner, role, bpSettings]);
 
   useEffect(() => {
     if (role === "collector") {
@@ -162,7 +170,7 @@ export default function StaticCustomer() {
   };
   //export customer data
 
-  let customerForCsV = currentCustomers.map((customer) => {
+  let customerForCsV = Customers?.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -171,7 +179,7 @@ export default function StaticCustomer() {
       connectionType: "Wired",
       connectivity: "Dedicated",
       createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
+      package: customer?.queue?.package,
       ip: "",
       road: ispOwnerData.address,
       address: ispOwnerData.address,
@@ -203,16 +211,6 @@ export default function StaticCustomer() {
     { label: "mail", key: "email" },
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
-
-  useEffect(() => {
-    if (
-      !bpSettings.hasMikrotik &&
-      (role === "manager" || role === "ispOwner")
-    ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch);
-    }
-    getCustomer(dispatch, ispOwner, setIsloading);
-  }, [dispatch, ispOwner, role, bpSettings]);
 
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
@@ -328,7 +326,7 @@ export default function StaticCustomer() {
       },
       {
         Header: "	প্যাকেজ",
-        accessor: "pppoe.profile",
+        accessor: "queue.package",
       },
       {
         Header: "মাসিক ফি",
@@ -617,15 +615,17 @@ export default function StaticCustomer() {
                   </div>
                   {/* table */}
                   {/* print report */}
-                  <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={currentCustomers}
-                      ref={componentRef}
-                    />
-                  </div>
+                  {/* <div style={{ display: "none" }}>
+                    {cus && (
+                      <PrintCustomer
+                        filterData={filterData}
+                        currentCustomers={Customers}
+                        ref={componentRef}
+                      />
+                    )}
+                  </div> */}
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table columns={columns} data={Customers}></Table>
                 </div>
               </FourGround>
               <Footer />

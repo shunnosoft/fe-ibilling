@@ -44,7 +44,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
-              <td className="prin_td">{val.pppoe.profile}</td>
+              <td className="prin_td">{val.queue.package}</td>
               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
               <td className="prin_td">
                 <strong>{FormatNumber(val.balance)}</strong>
