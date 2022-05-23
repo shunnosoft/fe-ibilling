@@ -336,6 +336,10 @@ export default function Customer() {
         accessor: "name",
       },
       {
+        Header: "PPPoE",
+        accessor: "pppoe.name",
+      },
+      {
         Header: "মোবাইল",
         accessor: "mobile",
       },
@@ -354,10 +358,10 @@ export default function Customer() {
           return badge(value);
         },
       },
-      {
-        Header: "	প্যাকেজ",
-        accessor: "pppoe.profile",
-      },
+      // {
+      //   Header: "	প্যাকেজ",
+      //   accessor: "pppoe.profile",
+      // },
       {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
@@ -370,7 +374,7 @@ export default function Customer() {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("DD-MM-YY hh:mm A");
         },
       },
 
@@ -562,6 +566,7 @@ export default function Customer() {
                           <option value="status.inactive">ইন-এক্টিভ</option>
                           <option value="status.expired">এক্সপায়ার্ড</option>
                         </select>
+
                         <select
                           className="form-select"
                           onChange={handleActiveFilter}

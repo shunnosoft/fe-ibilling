@@ -34,7 +34,7 @@ export default function CustomerDetails({ single }) {
               ></button>
             </div>
             <div className="modal-body">
-              <h2 className="ProfileName">{single.name}</h2>
+              <h2 className="ProfileName">{single?.name}</h2>
               <div className="profileMain">
                 <div>
                   <h5>গ্রাহক</h5>
