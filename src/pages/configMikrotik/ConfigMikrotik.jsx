@@ -12,6 +12,7 @@ import {
   PersonSquare,
   PersonCheckFill,
   BagCheckFill,
+  PersonLinesFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -32,6 +33,7 @@ import {
   fetchActivepppoeUser,
   fetchMikrotik,
   fetchMikrotikSyncUser,
+  syncMikrotikStaticUser,
   fetchpppoePackage,
   fetchpppoeUser,
   fetchPackagefromDatabase,
@@ -209,6 +211,18 @@ export default function ConfigMikrotik() {
         mikrotikId: mikrotikId,
       };
       fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
+    }
+  };
+
+  const syncStaticCustomer = () => {
+    if (
+      window.confirm("আপনি কি মাইক্রোটিকের স্ট্যাটিক গ্রাহক সিংক করতে চান?")
+    ) {
+      const IDs = {
+        ispOwner: ispOwner,
+        mikrotikId: mikrotikId,
+      };
+      syncMikrotikStaticUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
     }
   };
   const syncPackage = () => {
@@ -469,6 +483,20 @@ export default function ConfigMikrotik() {
                               className="addcutmButton btnbyEnamul"
                             >
                               <PersonCheckFill />
+                            </button>
+                          )}
+
+                          {mtkIsLoading ? (
+                            <span>
+                              <Loader />
+                            </span>
+                          ) : (
+                            <button
+                              onClick={syncStaticCustomer}
+                              title="স্ট্যাটিক গ্রাহক সিংক"
+                              className="addcutmButton btnbyEnamul"
+                            >
+                              <PersonLinesFill />
                             </button>
                           )}
 

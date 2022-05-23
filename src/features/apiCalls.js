@@ -51,6 +51,7 @@ import {
   resetpppoeActiveUser,
   resetpppoePackage,
   resetpppoeUser,
+  fetchMikrotikSyncSimpleQueueUserSuccess,
 } from "./mikrotikSlice";
 import {
   addResellerSuccess,
@@ -471,6 +472,28 @@ export const fetchMikrotikSyncUser = async (dispatch, IDs, setIsLoadingCus) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
       setIsLoadingCus(false);
       toast.success("মাইক্রোটিক থেকে PPPoE গ্রাহক সিঙ্ক সফল হয়েছে");
+    })
+    .catch((error) => {
+      setIsLoadingCus(false);
+      toast.error(error.response?.data.message);
+    });
+};
+
+// get Mikrotik Sync user
+export const syncMikrotikStaticUser = async (
+  dispatch,
+  IDs,
+  setIsLoadingCus
+) => {
+  setIsLoadingCus(true);
+  await apiLink({
+    method: "GET",
+    url: `/mikrotik/sync/static/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+  })
+    .then((res) => {
+      dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
+      setIsLoadingCus(false);
+      toast.success("মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে");
     })
     .catch((error) => {
       setIsLoadingCus(false);

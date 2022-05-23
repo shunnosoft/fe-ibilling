@@ -43,6 +43,10 @@ export const mikroTikSlice = createSlice({
     fetchMikrotikSyncUserSuccess: (state, action) => {
       state.mikrotikSyncUser = action.payload;
     },
+    //sync simple-queue user
+    fetchMikrotikSyncSimpleQueueUserSuccess: (state, action) => {
+      state.mikrotikSyncSimpleQueueUser = action.payload;
+    },
     //pppoeActiveUser
     getpppoeActiveUserSuccess: (state, action) => {
       state.pppoeActiveUser = action.payload;
@@ -114,6 +118,7 @@ export const {
   getPackagefromDatabaseSuccess,
   resetPackagefromDatabase,
   resetMikrotikUserAndPackage,
+  fetchMikrotikSyncSimpleQueueUserSuccess,
 } = mikroTikSlice.actions;
 
 export default mikroTikSlice.reducer;
