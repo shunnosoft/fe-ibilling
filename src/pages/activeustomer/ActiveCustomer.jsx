@@ -136,7 +136,7 @@ export default function ConfigMikrotik() {
       },
       {
         Header: "স্ট্যাটাস",
-        Cell: <Wifi />,
+        Cell: <Wifi color="green" />,
       },
       {
         Header: "নাম",
