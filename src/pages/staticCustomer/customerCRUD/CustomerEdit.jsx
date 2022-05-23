@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -47,7 +47,7 @@ export default function CustomerEdit(props) {
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(user.pppoe?.disabled);
+  const [activeStatus, setActiveStatus] = useState(user.queue?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
@@ -56,6 +56,8 @@ export default function CustomerEdit(props) {
   const [status, setStatus] = useState("");
 
   const [packageId, setPackageId] = useState("");
+
+  console.log(props);
 
   useEffect(() => {
     setPackageId(props.single?.mikrotikPackage);
@@ -113,24 +115,24 @@ export default function CustomerEdit(props) {
   // }, [ispOwnerId, props?.single]);
 
   // customer validator
-  const customerValidator = Yup.object({
-    name: Yup.string().required("গ্রাহকের নাম লিখুন"),
-    mobile: Yup.string()
-      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
-    address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয়"),
-    nid: Yup.string(),
-    monthlyFee: Yup.number()
-      .integer()
-      .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-      .required("প্যাকেজ রেট দিন"),
-    Pname: Yup.string().required("PPPoE নাম লিখুন"),
-    Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
-    Pcomment: Yup.string(),
-    // balance: Yup.number().integer(),
-  });
+  // const customerValidator = Yup.object({
+  //   name: Yup.string().required("গ্রাহকের নাম লিখুন"),
+  //   mobile: Yup.string()
+  //     // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+  //     .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
+  //     .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+  //   address: Yup.string(),
+  //   email: Yup.string().email("ইমেইল সঠিক নয়"),
+  //   nid: Yup.string(),
+  //   monthlyFee: Yup.number()
+  //     .integer()
+  //     .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
+  //     .required("প্যাকেজ রেট দিন"),
+  //   Pname: Yup.string().required("PPPoE নাম লিখুন"),
+  //   Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
+  //   Pcomment: Yup.string(),
+  //   // balance: Yup.number().integer(),
+  // });
 
   // const [loadingPac, setLoadingPac] = useState(false);
 
@@ -203,16 +205,17 @@ export default function CustomerEdit(props) {
       mikrotikPackage: packageId,
       billPayType: "prepaid",
       autoDisable: autoDisable,
+      monthlyFee: data?.monthlyFee,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
-      pppoe: {
+      queue: {
         name: Pname,
-        password: Ppassword,
-        service: "pppoe",
-        comment: Pcomment,
-        profile: Pprofile,
-        disabled: activeStatus,
+        // password: Ppassword,
+        // service: "pppoe",
+        // comment: Pcomment,
+        // profile: Pprofile,
+        // disabled: activeStatus,
       },
       ...rest,
       status,
@@ -265,15 +268,15 @@ export default function CustomerEdit(props) {
                   address: user.address || "",
                   email: user.email || "",
                   nid: user.nid || "",
-                  Pcomment: user.pppoe?.comment || "",
+                  Pcomment: user.queue?.comment || "",
                   monthlyFee: packageRate?.rate || user.monthlyFee || 0,
-                  Pname: user.pppoe?.name || "",
+                  Pname: user.queue?.name || "",
                   Pprofile: packageRate?.name || user.pppoe?.profile || "",
                   Ppassword: user?.pppoe?.password || "",
                   status: status || "",
                   balance: user.balance || "",
                 }}
-                validationSchema={customerValidator}
+                // validationSchema={customerValidator}
                 onSubmit={(values) => {
                   customerHandler(values);
                 }}
@@ -282,7 +285,7 @@ export default function CustomerEdit(props) {
                 {() => (
                   <Form>
                     <div className="mikrotikSection">
-                      {bpSettings.hasMikrotik ? (
+                      {/* {bpSettings.hasMikrotik ? (
                         <div>
                           <p className="comstomerFieldsTitle">
                             মাইক্রোটিক সিলেক্ট করুন
@@ -297,21 +300,15 @@ export default function CustomerEdit(props) {
                             <option value={mikrotikName?.id || ""}>
                               {mikrotikName?.name || ""}
                             </option>
-                            {/* {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))} */}
+                            
                           </select>
                         </div>
                       ) : (
                         ""
-                      )}
+                      )} */}
 
                       {/* pppoe package */}
-                      <div>
+                      {/* <div>
                         <p className="comstomerFieldsTitle">
                           প্যাকেজ সিলেক্ট করুন
                         </p>
@@ -332,7 +329,7 @@ export default function CustomerEdit(props) {
                             </option>
                           ))}
                         </select>
-                      </div>
+                      </div> */}
                       <FtextField
                         type="number"
                         min={0}
@@ -352,13 +349,13 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
-                      <FtextField
+                      <FtextField type="text" label="নাম" name="Pname" />
+                      {/* <FtextField
                         type="text"
                         label="পাসওয়ার্ড"
                         name="Ppassword"
-                      />
-                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                      /> */}
+                      {/* <FtextField type="text" label="কমেন্ট" name="Pcomment" /> */}
                     </div>
 
                     <div className="displayGrid3">
@@ -445,7 +442,7 @@ export default function CustomerEdit(props) {
                       {bpSettings.hasMikrotik && (
                         <div className="autoDisable">
                           <label>অটোমেটিক সংযোগ বন্ধ</label>
-                          <input
+                          <Field
                             type="checkBox"
                             checked={autoDisable}
                             onChange={(e) => setAutoDisable(e.target.checked)}
@@ -455,7 +452,7 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeStatus">
-                      <p>স্ট্যাটাস</p>
+                      {/* <p>স্ট্যাটাস</p>
                       <div className="form-check form-check-inline">
                         <input
                           className="form-check-input"
@@ -471,8 +468,8 @@ export default function CustomerEdit(props) {
                         >
                           এক্টিভ
                         </label>
-                      </div>
-                      <div className="form-check form-check-inline">
+                      </div> */}
+                      {/* <div className="form-check form-check-inline">
                         <input
                           className="form-check-input"
                           type="radio"
@@ -487,7 +484,7 @@ export default function CustomerEdit(props) {
                         >
                           ইন-এক্টিভ
                         </label>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>
