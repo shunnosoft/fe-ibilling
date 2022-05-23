@@ -20,10 +20,19 @@ const packageSlice = createSlice({
     addPackageSuccess: (state, action) => {
       state.packages.push(action.payload);
     },
+    deletePackageSuccess: (state, action) => {
+      state.packages = state.packages.filter(
+        (item) => item.id !== action.payload
+      );
+    },
   },
 });
 
-export const { getpackageSuccess, editPackageSuccess, addPackageSuccess } =
-  packageSlice.actions;
+export const {
+  getpackageSuccess,
+  editPackageSuccess,
+  addPackageSuccess,
+  deletePackageSuccess,
+  } = packageSlice.actions;
 
 export default packageSlice.reducer;

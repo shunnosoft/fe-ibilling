@@ -20,7 +20,10 @@ import Footer from "../../components/admin/footer/Footer";
 import Pagination from "../../components/Pagination";
 
 import TdLoader from "../../components/common/TdLoader";
-import { getQueuePackageByIspOwnerId } from "../../features/apiCalls";
+import {
+  deleteStaticPackage,
+  getQueuePackageByIspOwnerId,
+} from "../../features/apiCalls";
 import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
 import { NavLink } from "react-router-dom";
@@ -29,7 +32,10 @@ import Table from "../../components/table/Table";
 // import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 
 export default function PackageSetting() {
-  const packages = useSelector((state) => state.package.packages);
+  let packages = useSelector((state) => state?.package?.packages);
+  console.log(packages);
+
+  const [isDeleting, setIsDeleting] = useState(false);
   // console.log(packages)
   const dispatch = useDispatch();
   const [collSearch, setCollSearch] = useState("");
@@ -43,6 +49,19 @@ export default function PackageSetting() {
   let serial = 0;
 
   const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  const mikrotik = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+  );
+  console.log(mikrotik);
+  // set filter status
+  const [filterStatus, setFilterStatus] = useState(null);
+  console.log(filterStatus);
+
+  // filter
+  if (filterStatus && filterStatus !== "মাইক্রোটিক") {
+    packages = packages.filter((value) => value.mikrotik === filterStatus);
+  }
 
   useEffect(() => {
     getQueuePackageByIspOwnerId(ispOwnerId, dispatch);
@@ -59,8 +78,13 @@ export default function PackageSetting() {
     setCollSearch(e.toString().toLowerCase());
   };
 
-  const deletePackageHandler = (e) => {
-    console.log(e);
+  const deletePackageHandler = (packageId) => {
+    const con = window.confirm("আপনি কি প্যাকেজ ডিলিট করতে চান?");
+    if (con) {
+      setIsDeleting(true);
+
+      deleteStaticPackage(dispatch, packageId);
+    }
   };
 
   const columns1 = React.useMemo(
@@ -164,6 +188,20 @@ export default function PackageSetting() {
                                 <span style={{ marginLeft: "3px" }}></span>
                               </div>
                             </NavLink>
+                          </div>
+                          <div className="mikrotiKFilter">
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              onChange={(event) =>
+                                setFilterStatus(event.target.value)
+                              }
+                            >
+                              <option selected>মাইক্রোটিক</option>
+                              {mikrotik.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
                           </div>
                           <div className="addAndSettingIcon">
                             {

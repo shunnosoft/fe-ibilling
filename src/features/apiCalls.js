@@ -74,6 +74,7 @@ import { showModal } from "./uiSlice";
 import {
   addPackageSuccess,
   editPackageSuccess,
+  deletePackageSuccess,
   getpackageSuccess,
 } from "./packageSlice";
 import {
@@ -1158,7 +1159,7 @@ export const addQueuePackage = async (data, dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/mikrotik/queue/package`, data);
-    // console.log(res.data.newPackage);
+    console.log(res.data.newPackage);
     dispatch(addPackageSuccess(res.data.newPackage));
     setIsLoading(false);
     document.querySelector("#createPackage").click();
@@ -1189,6 +1190,23 @@ export const editPackagewithoutmikrotik = async (
     setIsLoading(false);
     toast.success("প্যাকেজ এডিট ব্যার্থ হয়েছে");
   }
+};
+
+// DELETE pppoe Package
+export const deleteStaticPackage = async (dispatch, packageId) => {
+  await apiLink({
+    method: "DELETE",
+    url: `/mikrotik/package/${packageId}`,
+  })
+    .then((res) => {
+      dispatch(deletePackageSuccess(packageId));
+      toast.success("স্ট্যাটিক প্যাকেজ ডিলিট সফল হয়েছে!");
+    })
+    .catch((err) => {
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
+    });
 };
 
 // get ispOwner
