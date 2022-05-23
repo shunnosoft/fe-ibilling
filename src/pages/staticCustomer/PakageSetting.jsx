@@ -20,9 +20,9 @@ import Footer from "../../components/admin/footer/Footer";
 import Pagination from "../../components/Pagination";
 
 import TdLoader from "../../components/common/TdLoader";
-import { getPackagewithoutmikrotik } from "../../features/apiCalls";
-import CreatePackage from "../package/CreatePackageModal";
-import EditPackage from "../package/EditPackageModal";
+import { getQueuePackageByIspOwnerId } from "../../features/apiCalls";
+import CreatePackage from "./CreatePackageModal";
+import EditPackage from "./EditPackageModal";
 import { NavLink } from "react-router-dom";
 import Table from "../../components/table/Table";
 
@@ -45,7 +45,7 @@ export default function PackageSetting() {
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
   useEffect(() => {
-    getPackagewithoutmikrotik(ispOwnerId, dispatch);
+    getQueuePackageByIspOwnerId(ispOwnerId, dispatch);
   }, [ispOwnerId, dispatch]);
 
   const [singlePackage, setSinglePackage] = useState("");
