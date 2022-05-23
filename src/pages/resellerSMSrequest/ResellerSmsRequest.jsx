@@ -1,6 +1,16 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import { ToastContainer } from "react-toastify";
+import {
+  ThreeDots,
+  ArrowRightCircle,
+  Eraser,
+  Check,
+  XCircle,
+  CheckCircle,
+} from "react-bootstrap-icons";
+
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
@@ -8,31 +18,29 @@ import {
   getSmsRequestHistory,
   acceptedStatus,
 } from "../../features/resellerSmsRequestApi";
-import {
-  PersonBoundingBox,
-  PersonFill,
-  PenFill,
-  ThreeDots,
-} from "react-bootstrap-icons";
-import moment from "moment";
 import Table from "../../components/table/Table";
 
 const ResellerSmsRequest = () => {
+  // import dispatch
   const dispatch = useDispatch();
 
+  // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer?.auth?.currentUser?.ispOwner?.id
   );
 
+  // get reseller sms all data
   const data = useSelector(
     (state) => state?.persistedReducer?.resellerSmsRequest?.requestSmsHistory
   );
   console.log(data);
 
+  // api call
   useEffect(() => {
     getSmsRequestHistory(ispOwnerId, dispatch);
   }, []);
 
+  // handle submit
   const acceptHandle = (dataId, resellerId, status) => {
     let data;
     if (status === "pending") {
@@ -45,7 +53,7 @@ const ResellerSmsRequest = () => {
         status: "rejected",
       };
     }
-    console.log(data);
+    // dispatch all data to api call
     acceptedStatus(resellerId, dataId, data, dispatch);
   };
 
@@ -87,21 +95,44 @@ const ResellerSmsRequest = () => {
         moment(original.createdAt).format("DD-MM-YYYY"),
     },
     {
-      Header: () => <div className="text-center">Action</div>,
+      Header: () => <div className="text-center">অ্যাকশন</div>,
       id: "option",
 
       Cell: ({ row: { original } }) => (
         <div className="text-center">
-          <>
-            {original.status === "pending" && (
-              <ThreeDots
-                className="dropdown-toggle ActionDots"
-                id="areaDropdown"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />
-            )}
+          {original.status === "pending" && (
+            <>
+              <button
+                className="btn btn-sm bg-success text-white shadow"
+                onClick={() => {
+                  acceptHandle(
+                    original?.id,
+                    original?.reseller?.id,
+                    original?.status
+                  );
+                }}
+              >
+                <CheckCircle />
+              </button>
+              <button
+                className="btn btn-sm bg-danger text-white shadow ms-2"
+                onClick={() => {
+                  acceptHandle(
+                    original?.id,
+                    original?.reseller?.id,
+                    "rejected"
+                  );
+                }}
+              >
+                <XCircle />
+              </button>
+              {/* <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle={original.status === "pending" && "dropdown"}
+              aria-expanded="false"
+            />
 
             <ul className="dropdown-menu" aria-labelledby="areaDropdown">
               <li
@@ -115,8 +146,8 @@ const ResellerSmsRequest = () => {
               >
                 <div className="dropdown-item">
                   <div className="customerAction">
-                    <PersonFill />
-                    <p className="actionP">Accept</p>
+                    <ArrowRightCircle />
+                    <p className="actionP">একসেপ্ট</p>
                   </div>
                 </div>
               </li>
@@ -132,13 +163,14 @@ const ResellerSmsRequest = () => {
               >
                 <div className="dropdown-item">
                   <div className="customerAction">
-                    <PenFill />
-                    <p className="actionP">Reject</p>
+                    <Eraser />
+                    <p className="actionP">রিজেক্ট</p>
                   </div>
                 </div>
               </li>
-            </ul>
-          </>
+            </ul> */}
+            </>
+          )}
         </div>
       ),
     },

@@ -1178,11 +1178,13 @@ export const getIspOwnerData = async (dispatch, ispOwnerId) => {
 export const getResellerBalance = async (
   resellerId,
   setRechargeBalance,
+  setSmsBalance,
   setIsrefresh
 ) => {
   setIsrefresh(true);
   try {
     const res = await apiLink.get(`/reseller/recharge/balance/${resellerId}`);
+    setSmsBalance(res.data.smsBalance);
     setRechargeBalance(res.data.rechargeBalance);
     setIsrefresh(false);
   } catch (error) {

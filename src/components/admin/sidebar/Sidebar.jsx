@@ -20,6 +20,7 @@ import {
   PersonCheck,
   CashStack,
   Envelope,
+  ChatDots,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -536,7 +537,7 @@ export default function Sidebar() {
                           : ""
                       }
                     >
-                      <div className="sidebarIcon">{<Messenger />}</div>
+                      <div className="sidebarIcon">{<ChatDots />}</div>
                       <span className="sidebarLinksName">
                         {"মেসেজ রিকোয়েস্ট"}
                       </span>
