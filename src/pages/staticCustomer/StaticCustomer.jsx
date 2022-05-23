@@ -3,7 +3,7 @@ import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
 
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -14,10 +14,10 @@ import {
   PenFill,
   PersonFill,
   ArrowDownUp,
+  ArrowRightShort,
   CashStack,
   FileExcelFill,
   PrinterFill,
-  ArrowRightShort,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -45,14 +45,12 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
-import { Link } from "react-router-dom";
 
-export default function StaticCustomer() {
+export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector(
-    (state) => state.persistedReducer?.customer?.staticCustomer
+    (state) => state.persistedReducer.customer.staticCustomer
   );
-  console.log(cus);
   const role = useSelector((state) => state.persistedReducer.auth.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
@@ -74,7 +72,9 @@ export default function StaticCustomer() {
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   // const [cusId, setSingleCustomerReport] = useState("");
+  // pagination
 
+  // const currentCustomers = Customers;
   const allareas = useSelector((state) => state.persistedReducer.area.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
@@ -87,16 +87,10 @@ export default function StaticCustomer() {
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
 
-  useEffect(() => {
-    console.log("call now.....");
-    if (
-      !bpSettings.hasMikrotik &&
-      (role === "manager" || role === "ispOwner")
-    ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch);
-    }
-    getStaticCustomer(dispatch, ispOwner, setIsloading);
-  }, [dispatch, ispOwner, role, bpSettings]);
+  // paginate call Back function -> response from paginate component
+  // const paginate = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
 
   useEffect(() => {
     if (role === "collector") {
@@ -127,6 +121,29 @@ export default function StaticCustomer() {
       setAreas(areas);
     }
   }, [collectorArea, role]);
+
+  useEffect(() => {
+    const keys = [
+      "monthlyFee",
+      "customerId",
+      "name",
+      "mobile",
+      "address",
+      "paymentStatus",
+      "status",
+      "balance",
+      "subArea",
+    ];
+    setCustomers(
+      (isFilterRunning ? filterdCus : cus).filter((item) =>
+        keys.some((key) =>
+          typeof item[key] === "string"
+            ? item[key]?.toString().toLowerCase().includes(cusSearch)
+            : item[key]?.toString().includes(cusSearch)
+        )
+      )
+    );
+  }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
@@ -170,7 +187,7 @@ export default function StaticCustomer() {
   };
   //export customer data
 
-  let customerForCsV = Customers?.map((customer) => {
+  let customerForCsV = Customers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -179,7 +196,7 @@ export default function StaticCustomer() {
       connectionType: "Wired",
       connectivity: "Dedicated",
       createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.queue?.package,
+      package: customer?.pppoe?.profile,
       ip: "",
       road: ispOwnerData.address,
       address: ispOwnerData.address,
@@ -211,6 +228,22 @@ export default function StaticCustomer() {
     { label: "mail", key: "email" },
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
+
+  useEffect(() => {
+    if (
+      !bpSettings.hasMikrotik &&
+      (role === "manager" || role === "ispOwner")
+    ) {
+      getPackagewithoutmikrotik(ispOwner, dispatch);
+    }
+    getStaticCustomer(dispatch, ispOwner, setIsloading);
+  }, [dispatch, ispOwner, role, bpSettings]);
+
+  const [isSorted, setSorted] = useState(false);
+  const toggleSort = (item) => {
+    setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
+    setSorted(!isSorted);
+  };
 
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
@@ -275,7 +308,7 @@ export default function StaticCustomer() {
       customerStatus = "ইনএক্টিভ";
     }
   }
-  console.log({ customerStatus, paymentStatus });
+  // console.log({ customerStatus, paymentStatus });
 
   if (paymentStatus) {
     const splitStatus = paymentStatus.split(".")[1];
@@ -306,6 +339,10 @@ export default function StaticCustomer() {
         accessor: "name",
       },
       {
+        Header: "PPPoE",
+        accessor: "pppoe.name",
+      },
+      {
         Header: "মোবাইল",
         accessor: "mobile",
       },
@@ -324,10 +361,10 @@ export default function StaticCustomer() {
           return badge(value);
         },
       },
-      {
-        Header: "	প্যাকেজ",
-        accessor: "queue.package",
-      },
+      // {
+      //   Header: "	প্যাকেজ",
+      //   accessor: "pppoe.profile",
+      // },
       {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
@@ -340,7 +377,7 @@ export default function StaticCustomer() {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("DD-MM-YY hh:mm A");
         },
       },
 
@@ -468,7 +505,7 @@ export default function StaticCustomer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">স্ট্যাটিক গ্রাহক</h2>
+                <h2 className="collectorTitle">গ্রাহক </h2>
               </FourGround>
 
               {/* Model start */}
@@ -546,7 +583,9 @@ export default function StaticCustomer() {
                           </option>
                           <option value="status.active">এক্টিভ</option>
                           <option value="status.inactive">ইন-এক্টিভ</option>
+                          <option value="status.expired">এক্সপায়ার্ড</option>
                         </select>
+
                         <select
                           className="form-select"
                           onChange={handleActiveFilter}
@@ -554,11 +593,8 @@ export default function StaticCustomer() {
                           <option value="" defaultValue>
                             পেমেন্ট
                           </option>
-                          <option value="paymentStatus.unpaid">বকেয়া</option>
-                          <option value="paymentStatus.paid">পরিশোধ</option>
-                          <option value="paymentStatus.expired">
-                            মেয়াদোত্তীর্ণ
-                          </option>
+                          <option value="paymentStatus.paid">পেইড</option>
+                          <option value="paymentStatus.unpaid">আন-পেইড</option>
                         </select>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
@@ -589,7 +625,7 @@ export default function StaticCustomer() {
                               />
                             </div>
                           </div>
-                          {/* <div className="addNewCollector">
+                          <div className="addNewCollector">
                             <div className="addAndSettingIcon">
                               <PersonPlusFill
                                 className="addcutmButton"
@@ -598,7 +634,7 @@ export default function StaticCustomer() {
                                 title="নতুন গ্রাহক"
                               />
                             </div>
-                          </div> */}
+                          </div>
                         </>
                       ) : (
                         ""
@@ -615,15 +651,13 @@ export default function StaticCustomer() {
                   </div>
                   {/* table */}
                   {/* print report */}
-                  {/* <div style={{ display: "none" }}>
-                    {cus && (
-                      <PrintCustomer
-                        filterData={filterData}
-                        currentCustomers={Customers}
-                        ref={componentRef}
-                      />
-                    )}
-                  </div> */}
+                  <div style={{ display: "none" }}>
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={Customers}
+                      ref={componentRef}
+                    />
+                  </div>
 
                   <Table columns={columns} data={Customers}></Table>
                 </div>
