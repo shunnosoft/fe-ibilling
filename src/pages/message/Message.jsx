@@ -71,9 +71,7 @@ export default function Message() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-  const handleMessageCheckBox = (e) => {
-    setisChecked(e.target.checked);
-  };
+
   const dispatch = useDispatch();
   const mobileNumRef = useRef();
   const smsRef = useRef();
@@ -96,35 +94,14 @@ export default function Message() {
     }
   }, [userRole, getIspownerwitSMS]);
 
-  const setSubAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
-    }
-    setSubAreaIds(IDS_temp);
-  };
-  const setAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClassForArea");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
-    }
-    setAreaIds(IDS_temp);
-  };
+  //get all subArea ids
 
-  // WE GOT ALL AREA_IDS ON -> subAreaIds;
-  const handleStatusSelect = (e) => {
-    setStatus(e);
+  const getSubAreaIds = () => {
+    const subAreaAllId = area.map((item) => {
+      return item.subAreas?.map((sub) => sub.id);
+    });
+    return subAreaAllId.flat(Infinity);
   };
-  const handlePaymentSelect = (e) => {
-    setPayment(e);
-  };
-  // console.log("subArea", subAreaIds);
 
   // day checkbox select
   const daySettingHandler = (e) => {
@@ -141,20 +118,17 @@ export default function Message() {
     setDays(days);
   };
 
-  const customers = useSelector(
-    (state) => state.persistedReducer.customer.customer
-  );
+  // const customers = useSelector(
+  //   (state) => state.persistedReducer.customer.customer
+  // );
 
-  const [loading, setIsLoading] = useState(false);
+  // const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
-    // console.log(smsReceiverType);
-    // console.log(upperText, bottomText);
     let messageTemplate = upperText + "\n" + bottomText;
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-      // setSms(owner.data.smsBalance);
       const res = await apiLink.get(`/ispOwner/customer/${ispOwnerId}`);
 
       let items = [],
@@ -304,21 +278,34 @@ export default function Message() {
     setTemplet(smsTemplet);
   };
 
-  const selectAllHandler = () => {
-    if (subAreaIds.length === 0) {
-      area.map((i) => {
-        i.subAreas.map((s) => {
-          subAreaIds.push(s.id);
-        });
-      });
-      setSubAreaIds(subAreaIds);
+  const setSubAreaHandler = (e) => {
+    const subIds = getSubAreaIds();
+    const { value, checked } = e.target;
+    if (checked) {
+      const newArr = subAreaIds.push(value);
+      setAreaIds(newArr);
+      console.log({ subIds, newArr });
+      if (subIds.length === newArr) {
+        setisAllChecked(true);
+      }
+    } else {
+      const updatedData = subAreaIds.filter((id) => id !== value);
+      setSubAreaIds(updatedData);
+      setisAllChecked(false);
+    }
+  };
+
+  const selectAllHandler = (e) => {
+    if (e.target.checked) {
+      const newArray = getSubAreaIds();
+      setSubAreaIds(newArray);
       setisAllChecked(true);
     } else {
       setSubAreaIds([]);
       setisAllChecked(false);
     }
   };
-
+  console.log(subAreaIds);
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -384,9 +371,9 @@ export default function Message() {
                               type="checkbox"
                               className="getValueUsingClass"
                               value={"selectAll"}
-                              // onChange={selectAllHandler}
                               onClick={selectAllHandler}
                               id={"selectAll"}
+                              checked={isAllChecked}
                             />
                             <label
                               style={{
@@ -420,10 +407,7 @@ export default function Message() {
                                       value={v.id}
                                       onChange={setSubAreaHandler}
                                       id={v.id}
-                                      checked={
-                                        isAllChecked &&
-                                        subAreaIds.includes(v.id)
-                                      }
+                                      checked={subAreaIds.includes(v.id)}
                                     />
                                     <label
                                       style={{ cursor: "pointer" }}

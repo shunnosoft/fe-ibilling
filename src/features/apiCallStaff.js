@@ -11,10 +11,12 @@ import {
 } from "./staffSlice";
 
 // get all staff
-export const getStaffs = async (dispatch, ownerId) => {
+export const getStaffs = async (dispatch, ownerId, setTableLoading) => {
+  setTableLoading(true);
   try {
     const res = await apiLink.get("/staff/staffs/" + ownerId);
     dispatch(getStaffSuccess(res.data));
+    setTableLoading(false);
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);

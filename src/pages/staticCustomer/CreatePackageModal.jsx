@@ -11,11 +11,18 @@ import Loader from "../../components/common/Loader";
 import { addQueuePackage } from "../../features/apiCalls";
 
 export default function CreatePackage() {
+  // import dispatch
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.persistedReducer.area.area);
-  const [areaIds, setAreaIds] = useState([]);
+  // const area = useSelector((state) => state.persistedReducer.area.area);
+
+  // const [areaIds, setAreaIds] = useState([]);
+
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+
+  // const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+
+  // get isp owner id in state
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -24,9 +31,8 @@ export default function CreatePackage() {
   const mikrotik = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
-  console.log(mikrotik);
 
-  //validator
+  // form validator
   const collectorValidator = Yup.object({
     mikrotik: Yup.string().required("মাইক্রোটিক সিলেক্ট করুন"),
     name: Yup.string().required("প্যাকেজ এর নাম দিন"),
@@ -43,6 +49,7 @@ export default function CreatePackage() {
     //   .required("মোবাইল নম্বর দিন "),
   });
 
+  // add package gunction
   const packageAddHandler = (data) => {
     console.log(data);
     const sendingData = {
@@ -51,8 +58,7 @@ export default function CreatePackage() {
       packageType: "queue",
     };
 
-    console.log(sendingData);
-
+    // add api call
     addQueuePackage(sendingData, dispatch, setIsLoading);
   };
 
@@ -101,13 +107,13 @@ export default function CreatePackage() {
                       >
                         <div className="mb-3 w-100">
                           <label
-                            htmlFor="মাইক্রোটিক"
+                            htmlFor="mikrotik"
                             className="changeLabelFontColor"
                           >
                             মাইক্রোটিক
                           </label>
                           <Field
-                            className="form-select"
+                            className="form-select select-box"
                             as="select"
                             name="mikrotik"
                             aria-label="Default select example"

@@ -209,3 +209,8 @@
 .prin_td {
   font-size: 10px !important;
 }
+
+.select-box {
+  margin-top: 0px !important;
+  max-width: none !important;
+}

@@ -9,10 +9,11 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import TdLoader from "../common/TdLoader";
 import { badge } from "../common/Utils";
 import GlobalFilter from "./GlobalFilter";
 const Table = (props) => {
-  const { columns, data, customComponent } = props;
+  const { columns, data, isLoading, customComponent } = props;
   const {
     getTableProps,
     getTableBodyProps,
@@ -36,7 +37,7 @@ const Table = (props) => {
   }, []);
 
   const { globalFilter, pageIndex, pageSize } = state;
-  console.log(Math.ceil(data.length / pageSize));
+  console.log(columns);
 
   return (
     <>
@@ -68,23 +69,27 @@ const Table = (props) => {
               </tr>
             ))}
           </thead>
-          <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
-              prepareRow(row);
+          {isLoading ? (
+            <TdLoader colspan={columns.length} />
+          ) : (
+            <tbody {...getTableBodyProps()}>
+              {page.map((row) => {
+                prepareRow(row);
 
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell, i) => {
-                    return (
-                      <td key={i} className="align-middle">
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
+                return (
+                  <tr {...row.getRowProps()}>
+                    {row.cells.map((cell, i) => {
+                      return (
+                        <td key={i} className="align-middle">
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          )}
         </table>
       </div>
 
