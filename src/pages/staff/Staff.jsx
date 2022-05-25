@@ -26,6 +26,7 @@ const Staff = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [staffId, setStafId] = useState(null);
 
   const deleteStaff = (staffId) => {
@@ -37,7 +38,7 @@ const Staff = () => {
   };
 
   useEffect(() => {
-    getStaffs(dispatch, ispOwner);
+    getStaffs(dispatch, ispOwner, setTableLoading);
   }, [dispatch]);
 
   //create column of table
@@ -146,7 +147,11 @@ const Staff = () => {
                       ""
                     )}
                   </div>
-                  <Table columns={columns} data={getAllStaffs} />
+                  <Table
+                    isLoading={tableLoading}
+                    columns={columns}
+                    data={getAllStaffs}
+                  />
                 </div>
               </FourGround>
             </FontColor>

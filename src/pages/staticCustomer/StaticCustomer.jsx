@@ -32,8 +32,6 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
 import {
   deleteACustomer,
   getStaticCustomer,
@@ -71,8 +69,7 @@ export default function Customer() {
   const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
-  // const [cusId, setSingleCustomerReport] = useState("");
-  // pagination
+
 
   // const currentCustomers = Customers;
   const allareas = useSelector((state) => state.persistedReducer.area.area);
@@ -659,7 +656,7 @@ export default function Customer() {
                     />
                   </div>
 
-                  <Table columns={columns} data={Customers}></Table>
+                  <Table isLoading={isLoading} columns={columns} data={Customers}></Table>
                 </div>
               </FourGround>
               <Footer />

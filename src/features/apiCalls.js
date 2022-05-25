@@ -416,7 +416,6 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
 
 //Static Customers
 export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
-  console.log("CALLING>>....");
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/static-customer/${ispOwner}`);

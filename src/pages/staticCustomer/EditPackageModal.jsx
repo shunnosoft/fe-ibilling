@@ -12,13 +12,18 @@ import Loader from "../../components/common/Loader";
 import { editPackagewithoutmikrotik } from "../../features/apiCalls";
 
 export default function EditPackage(props) {
+  // import dispatch
   const dispatch = useDispatch();
+
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // get isp owner id from state
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
-  //validator
+  // form validator
   const collectorValidator = Yup.object({
     name: Yup.string().required("প্যাকেজ এর নাম দিন"),
 
@@ -39,6 +44,7 @@ export default function EditPackage(props) {
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
 
+  // handle edit function
   const packageEditHandler = (data) => {
     console.log(data);
     const sendingData = {
@@ -46,12 +52,11 @@ export default function EditPackage(props) {
       id: props.package?.id,
       ispOwner: ispOwnerId,
     };
-    console.log(sendingData);
 
+    // edit api call
     editPackagewithoutmikrotik(sendingData, dispatch, setIsLoading);
   };
 
-  console.log(props.package?.mikrotik);
   return (
     <div>
       {/* Model start */}
@@ -95,13 +100,16 @@ export default function EditPackage(props) {
                         className="newDisplayforpackage"
                         style={{ alignItems: "start" }}
                       >
-                        <label for="" class="changeLabelFontColor">
+                        <label
+                          htmlFor="mikrotik"
+                          className="changeLabelFontColor"
+                        >
                           Disabled input
                         </label>
                         <Field
                           as="select"
                           name="mikrotik"
-                          className="form-select mt-1 mb-4"
+                          className="form-select mt-1 mb-4 select-box"
                           aria-label="Default select example"
                         >
                           {mikrotik.map((item) => (
