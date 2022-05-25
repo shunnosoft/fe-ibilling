@@ -454,8 +454,11 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
       `/ispOwner/customer/${ispOwner}/${singleCustomerID}`,
       sendingData
     );
-    dispatch(editCustomerSuccess(res.data));
-    dispatch(editStaticCustomerSuccess(res.data));
+    if (data?.queue?.name) {
+      dispatch(editStaticCustomerSuccess(res.data));
+    } else {
+      dispatch(editCustomerSuccess(res.data));
+    }
 
     setIsloading(false);
     toast.success("কাস্টমার এডিট সফল হয়েছে!");
@@ -924,12 +927,18 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 //Bill
 
 export const billCollect = async (dispatch, billData, setLoading) => {
+  console.log(billData);
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/monthlyBill", billData);
 
-    dispatch(updateBalance(res.data));
-    dispatch(updateBalanceStaticCustomer(res.data));
+    console.log(res.data);
+
+    if (billData.userType === "pppoe") {
+      dispatch(updateBalance(res.data));
+    } else {
+      dispatch(updateBalanceStaticCustomer(res.data));
+    }
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
 

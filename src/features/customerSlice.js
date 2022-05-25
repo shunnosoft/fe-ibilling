@@ -43,6 +43,7 @@ const customerSliec = createSlice({
       customer.balance += action.payload.amount;
       if (customer.balance >= customer.monthlyFee) {
         customer.paymentStatus = "paid";
+        customer.status = "active";
       }
 
       state.customer[
@@ -57,6 +58,7 @@ const customerSliec = createSlice({
       customer.balance += action.payload.amount;
       if (customer.balance >= customer.monthlyFee) {
         customer.paymentStatus = "paid";
+        customer.status = "active";
       }
 
       state.staticCustomer[

@@ -38,6 +38,7 @@ export default function CustomerBillCollect({ single }) {
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
+      userType: single?.userType,
     };
     billCollect(dispatch, sendingData, setLoading);
   };
