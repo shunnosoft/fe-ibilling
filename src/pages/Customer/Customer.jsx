@@ -50,7 +50,7 @@ export default function Customer() {
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
   );
-  console.log(cus);
+  // console.log(cus);
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
 
@@ -162,7 +162,7 @@ export default function Customer() {
   };
   // get specific customer
   const getSpecificCustomer = (id) => {
-    console.log(id);
+    // console.log(id);
     if (cus.length !== undefined) {
       const temp = cus.find((original) => {
         return original.id === id;

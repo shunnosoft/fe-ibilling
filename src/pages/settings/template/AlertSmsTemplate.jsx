@@ -118,7 +118,7 @@ function AlertSmsTemplate() {
         `/ispOwner/settings/sms/${ispOwnerId}`,
         data
       );
-      console.log(res.data);
+      // console.log(res.data);
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
       toast.success("এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে");

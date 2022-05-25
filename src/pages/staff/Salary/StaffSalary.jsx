@@ -40,7 +40,7 @@ export default function StaffSalary() {
   const [salaryId, setSalaryId] = useState(null);
   //editHandler
   const editHandler = (id) => {
-    console.log(id);
+    // console.log(id);
     setSalaryId(id);
   };
 

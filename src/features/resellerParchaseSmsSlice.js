@@ -10,7 +10,7 @@ const resellerParchaseSmsSlice = createSlice({
       state.smsParchase = actions.payload;
     },
     parchaseSmsSuccess: (state, { payload }) => {
-      console.log(payload);
+      // console.log(payload);
       state.smsParchase.unshift(payload);
     },
   },

@@ -57,7 +57,7 @@ export default function CustomerEdit(props) {
 
   const [packageId, setPackageId] = useState("");
 
-  console.log(props);
+  // console.log(props);
 
   useEffect(() => {
     setPackageId(props?.single?.mikrotikPackage);
@@ -222,7 +222,7 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-    console.log(mainData);
+    // console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {

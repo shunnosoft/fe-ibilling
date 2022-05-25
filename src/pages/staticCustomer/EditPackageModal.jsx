@@ -46,7 +46,7 @@ export default function EditPackage(props) {
 
   // handle edit function
   const packageEditHandler = (data) => {
-    console.log(data);
+    // console.log(data);
     const sendingData = {
       ...data,
       id: props.package?.id,

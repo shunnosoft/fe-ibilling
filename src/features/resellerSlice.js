@@ -40,7 +40,7 @@ export const resellerSlice = createSlice({
       state.reseller = [];
     },
     getAllMikrotikPakages: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.allMikrotikPakages = action.payload;
     },
   },

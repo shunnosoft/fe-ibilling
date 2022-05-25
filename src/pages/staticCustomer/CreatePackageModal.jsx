@@ -51,7 +51,7 @@ export default function CreatePackage() {
 
   // add package gunction
   const packageAddHandler = (data) => {
-    console.log(data);
+    // console.log(data);
     const sendingData = {
       ...data,
       ispOwner: ispOwnerId,

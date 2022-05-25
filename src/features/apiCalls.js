@@ -419,7 +419,7 @@ export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/static-customer/${ispOwner}`);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getStaticCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
@@ -927,12 +927,12 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 //Bill
 
 export const billCollect = async (dispatch, billData, setLoading) => {
-  console.log(billData);
+  // console.log(billData);
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/monthlyBill", billData);
 
-    console.log(res.data);
+    // console.log(res.data);
 
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
@@ -1220,7 +1220,7 @@ export const addQueuePackage = async (data, dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/mikrotik/queue/package`, data);
-    console.log(res.data.newPackage);
+    // console.log(res.data.newPackage);
     dispatch(addPackageSuccess(res.data.newPackage));
     setIsLoading(false);
     document.querySelector("#createPackage").click();
@@ -1362,7 +1362,7 @@ export const addExpenditurePourpose = async (
   try {
     const res = await apiLink.post(`/staff/expenditurePurpose`, data);
     dispatch(addExpenditureSectorsSuccess(res.data));
-    console.log(res.data);
+    // console.log(res.data);
     setIsloading(false);
     document.querySelector("#createPourpose").click();
 
@@ -1379,7 +1379,7 @@ export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
   try {
     const res = await apiLink.patch(`/staff/expenditurePurpose`, data);
     dispatch(editExpenditureSectorsSuccess(res.data));
-    console.log(res.data);
+    // console.log(res.data);
     setIsloading(false);
     document.querySelector("#editPurpose").click();
 

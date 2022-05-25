@@ -33,7 +33,7 @@ const ResellerSmsRequest = () => {
   const data = useSelector(
     (state) => state?.persistedReducer?.resellerSmsRequest?.requestSmsHistory
   );
-  console.log(data);
+  // console.log(data);
 
   // api call
   useEffect(() => {

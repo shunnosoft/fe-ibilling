@@ -284,7 +284,7 @@ export default function Message() {
     if (checked) {
       const newArr = subAreaIds.push(value);
       setAreaIds(newArr);
-      console.log({ subIds, newArr });
+      // console.log({ subIds, newArr });
       if (subIds.length === newArr) {
         setisAllChecked(true);
       }
@@ -305,7 +305,7 @@ export default function Message() {
       setisAllChecked(false);
     }
   };
-  console.log(subAreaIds);
+  // console.log(subAreaIds);
   return (
     <>
       <SmsParchase></SmsParchase>

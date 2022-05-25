@@ -33,7 +33,7 @@ export default function StaffSalaryEditModal({ salaryId }) {
       year,
       month,
     };
-    console.log(sendingData);
+    // console.log(sendingData);
     updateSalary(dispatch, salaryId, sendingData, setIsLoading);
   };
 

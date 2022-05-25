@@ -32,7 +32,7 @@ export default function CustomerModal() {
       ? state.persistedReducer.mikrotik.packagefromDatabase
       : state.package.packages
   );
-  
+
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -120,7 +120,7 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    console.log(data);
+    // console.log(data);
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
@@ -152,7 +152,7 @@ export default function CustomerModal() {
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
     }
-    console.log(mainData);
+    // console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
     // console.log(data);
   };

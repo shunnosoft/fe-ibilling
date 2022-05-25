@@ -23,7 +23,7 @@ export const acceptedStatus = async (resellerId, dataId, data, dispatch) => {
       "/reseller/smsPurchase/" + resellerId + "/" + dataId,
       data
     );
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(acceptedStatusSuccess(res.data.smsPurchase));
   } catch (error) {
     console.log(error.response);

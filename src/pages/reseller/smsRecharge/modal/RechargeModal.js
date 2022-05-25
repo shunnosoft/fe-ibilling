@@ -48,7 +48,7 @@ const RechargeModal = ({ status }) => {
         const data = {
           smsAmount: smsAmount,
         };
-        console.log(data);
+        // console.log(data);
         parchaseSms(data, setIsLoading, dispatch);
       } else {
         setErrMsg("সর্বনিম্ন  ১০০ টি এবং সর্বোচ্চ ১০,০০০ কিনতে পারবেন");
