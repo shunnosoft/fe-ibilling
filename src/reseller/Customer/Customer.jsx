@@ -46,7 +46,6 @@ export default function Customer() {
     (state) => state?.persistedReducer?.customer?.customer
   );
 
-  console.log(cus);
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const resellerId = useSelector(
@@ -125,7 +124,6 @@ export default function Customer() {
 
   // get specific customer
   const getSpecificCustomer = (id) => {
-    console.log(id);
     if (cus.length !== undefined) {
       const temp = cus.find((val) => {
         return val.id === id;

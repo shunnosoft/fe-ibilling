@@ -31,6 +31,7 @@ export default function PackageSetting() {
 
   // delete local state
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
 
   // import dispatch
   const dispatch = useDispatch();
@@ -68,7 +69,7 @@ export default function PackageSetting() {
 
   // get queue packages
   useEffect(() => {
-    getQueuePackageByIspOwnerId(ispOwnerId, dispatch);
+    getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsloading);
   }, [ispOwnerId, dispatch]);
 
   // set editable data for state
@@ -223,7 +224,11 @@ export default function PackageSetting() {
                     )}
                   </div>
 
-                  <Table columns={columns1} data={packages}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns1}
+                    data={packages}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

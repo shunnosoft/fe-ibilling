@@ -35,6 +35,7 @@ export default function Collector() {
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [collectorPerPage, setCollectorPerPage] = useState(5);
+  const [isLoading, setIsloading] = useState(false);
   const lastIndex = currentPage * collectorPerPage;
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
@@ -226,7 +227,11 @@ export default function Collector() {
                     </div>
                   </div>
                   {/* table */}
-                  <Table columns={columns} data={collector}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={collector}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />
