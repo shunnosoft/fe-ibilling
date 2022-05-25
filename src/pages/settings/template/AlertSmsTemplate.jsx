@@ -77,18 +77,19 @@ function AlertSmsTemplate() {
   }, [days]);
   // day checkbox select
   const daySettingHandler = (e) => {
+    let tempDays = [...days];
     let item = Number(e);
 
-    if (days.includes(item)) {
-      const index = days.indexOf(item);
+    if (tempDays.includes(item)) {
+      const index = tempDays.indexOf(item);
       if (index > -1) {
-        days.splice(index, 1);
+        tempDays.splice(index, 1);
       }
     } else {
-      days.push(item);
+      tempDays.push(item);
     }
 
-    setDays([...days]);
+    setDays(tempDays);
   };
 
   const handleSubmit = async (e) => {
