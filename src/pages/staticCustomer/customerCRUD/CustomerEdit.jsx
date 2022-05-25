@@ -351,7 +351,7 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField type="text" label="নাম" name="Pname" />
+                      {/* <FtextField type="text" label="নাম" name="Pname" /> */}
                       {/* <FtextField
                         type="text"
                         label="পাসওয়ার্ড"
