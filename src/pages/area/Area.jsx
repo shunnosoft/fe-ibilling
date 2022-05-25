@@ -160,7 +160,11 @@ export default function Area() {
 
                   {/* table */}
 
-                  <Table columns={columns} data={area}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={area}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

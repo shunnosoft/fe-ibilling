@@ -241,7 +241,11 @@ export default function Reseller() {
                     )}
                   </div>
 
-                  <Table columns={columns} data={reseller}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={reseller}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

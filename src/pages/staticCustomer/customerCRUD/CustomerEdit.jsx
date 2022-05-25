@@ -21,11 +21,11 @@ import moment from "moment";
 export default function CustomerEdit(props) {
   const [user, setUser] = useState(props?.single);
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
   // const [ppPackage, setppPackage] = useState([]);
@@ -34,12 +34,12 @@ export default function CustomerEdit(props) {
   // const [singleMikrotik, setSingleMikrotik] = useState(user?.mikrotik);
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   const ppPackage = useSelector((state) =>
     bpSettings.hasMikrotik
-      ? state.persistedReducer.mikrotik.packagefromDatabase
-      : state.package.packages
+      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
   );
 
   const [autoDisable, setAutoDisable] = useState(user?.autoDisable);
@@ -65,7 +65,11 @@ export default function CustomerEdit(props) {
     setStatus(user?.status);
     const IDs = {
       ispOwner: ispOwnerId,
+<<<<<<< HEAD
       mikrotikId: props?.single?.mikrotik,
+=======
+      mikrotikId: props.single?.mikrotik,
+>>>>>>> 1bd8c8a1ef8b805e7d404ed88026a28679dce852
     };
 
     if (bpSettings?.hasMikrotik) {
@@ -74,7 +78,11 @@ export default function CustomerEdit(props) {
     // get the packages  not from mikrotik
   }, [bpSettings, ispOwnerId, dispatch, props?.single, user]);
   useEffect(() => {
+<<<<<<< HEAD
     setAutoDisable(props?.single?.autoDisable);
+=======
+    setAutoDisable(props.single?.autoDisable);
+>>>>>>> 1bd8c8a1ef8b805e7d404ed88026a28679dce852
     setBillDate(moment(props?.single?.billingCycle).format("YYYY-MM-DD"));
     setBilltime(moment(props?.single?.billingCycle).format("HH:mm"));
     const temp = Getmikrotik.find((val) => val.id === props?.single?.mikrotik);
@@ -86,7 +94,11 @@ export default function CustomerEdit(props) {
   useEffect(() => {
     area.map((a) => {
       a.subAreas.map((sub) => {
+<<<<<<< HEAD
         if (sub.id === props?.single?.subArea) {
+=======
+        if (sub.id === props.single?.subArea) {
+>>>>>>> 1bd8c8a1ef8b805e7d404ed88026a28679dce852
           setAreaID(a);
           setSubAreaId(sub);
           setSubArea(a.subAreas);
