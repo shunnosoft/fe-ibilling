@@ -37,7 +37,6 @@ const Table = (props) => {
   }, []);
 
   const { globalFilter, pageIndex, pageSize } = state;
-  console.log(columns);
 
   return (
     <>

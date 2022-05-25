@@ -47,22 +47,22 @@ import Table from "../../components/table/Table";
 export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector(
-    (state) => state.persistedReducer.customer.staticCustomer
+    (state) => state?.persistedReducer?.customer?.staticCustomer
   );
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+    (state) => state?.persistedReducer?.auth?.userData
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
+    (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
@@ -70,18 +70,17 @@ export default function Customer() {
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 
-
   // const currentCustomers = Customers;
-  const allareas = useSelector((state) => state.persistedReducer.area.area);
+  const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
-      ? state.persistedReducer.auth.currentUser?.collector.areas
+      ? state.persistedReducer?.auth?.currentUser?.collector?.areas
       : []
   );
   const [allArea, setAreas] = useState([]);
 
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
 
   // paginate call Back function -> response from paginate component
@@ -336,8 +335,8 @@ export default function Customer() {
         accessor: "name",
       },
       {
-        Header: "PPPoE",
-        accessor: "pppoe.name",
+        Header: "ইউজার",
+        accessor: "queue.name",
       },
       {
         Header: "মোবাইল",
@@ -656,7 +655,11 @@ export default function Customer() {
                     />
                   </div>
 
-                  <Table isLoading={isLoading} columns={columns} data={Customers}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={Customers}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />
