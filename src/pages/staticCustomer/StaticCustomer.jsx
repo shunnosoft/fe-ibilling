@@ -595,7 +595,7 @@ export default function Customer() {
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
                         <>
-                          <div className="addNewCollector">
+                          {/* <div className="addNewCollector">
                             <div className="addAndSettingIcon">
                               <CSVLink
                                 data={customerForCsV}
@@ -606,8 +606,8 @@ export default function Customer() {
                                 <FileExcelFill className="addcutmButton" />
                               </CSVLink>
                             </div>
-                          </div>
-                          <div className="addNewCollector">
+                          </div> */}
+                          {/* <div className="addNewCollector">
                             <div className="addAndSettingIcon">
                               <ReactToPrint
                                 documentTitle="customer-list"
@@ -630,7 +630,7 @@ export default function Customer() {
                                 title="নতুন গ্রাহক"
                               />
                             </div>
-                          </div>
+                          </div> */}
                         </>
                       ) : (
                         ""
@@ -647,13 +647,13 @@ export default function Customer() {
                   </div>
                   {/* table */}
                   {/* print report */}
-                  <div style={{ display: "none" }}>
+                  {/* <div style={{ display: "none" }}>
                     <PrintCustomer
                       filterData={filterData}
                       currentCustomers={Customers}
                       ref={componentRef}
                     />
-                  </div>
+                  </div> */}
 
                   <Table
                     isLoading={isLoading}
