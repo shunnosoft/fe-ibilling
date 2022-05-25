@@ -32,7 +32,7 @@ export default function CustomerModal() {
       ? state.persistedReducer.mikrotik.packagefromDatabase
       : state.package.packages
   );
-  
+
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -350,6 +350,7 @@ export default function CustomerModal() {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"
