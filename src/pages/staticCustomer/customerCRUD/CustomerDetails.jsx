@@ -89,22 +89,16 @@ export default function CustomerDetails({ single }) {
                   )}
                 </div>
                 <div>
-                  <h5>PPPoE</h5>
+                  <h5>স্ট্যাটিক গ্রাহক</h5>
                   <hr />
                   <h6>
-                    ইউজারনেম: <b>{single?.pppoe?.name}</b>
+                    ইউজারনেম: <b>{single?.queue?.name}</b>
                   </h6>
                   <h6>
-                    <h6>
-                      পাসওয়ার্ড: <b>{single?.password}</b>
-                    </h6>
-                    প্রোফাইল: <b> {single?.pppoe?.profile}</b>
+                    আই পি: <b>{single?.queue?.target}</b>
                   </h6>
                   <h6>
-                    সার্ভিস: <b>{single?.pppoe?.service}</b>
-                  </h6>
-                  <h6>
-                    কমেন্ট: <b>{single?.pppoe?.comment}</b>
+                    কমেন্ট: <b>{single?.queue?.comment}</b>
                   </h6>
                 </div>
               </div>

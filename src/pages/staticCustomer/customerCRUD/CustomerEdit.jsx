@@ -453,7 +453,7 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeStatus">
-                      {/* <p>স্ট্যাটাস</p>
+                      <p>স্ট্যাটাস</p>
                       <div className="form-check form-check-inline">
                         <input
                           className="form-check-input"
@@ -469,8 +469,8 @@ export default function CustomerEdit(props) {
                         >
                           এক্টিভ
                         </label>
-                      </div> */}
-                      {/* <div className="form-check form-check-inline">
+                      </div>
+                      <div className="form-check form-check-inline">
                         <input
                           className="form-check-input"
                           type="radio"
@@ -485,7 +485,7 @@ export default function CustomerEdit(props) {
                         >
                           ইন-এক্টিভ
                         </label>
-                      </div> */}
+                      </div>
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>
