@@ -42,18 +42,22 @@ import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 
 export default function Customer() {
-  const cus = useSelector((state) => state.persistedReducer.customer.customer);
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const cus = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
+
+  console.log(cus);
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const resellerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+    (state) => state?.persistedReducer?.auth?.userData?.id
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
+    (state) => state?.persistedReducer?.auth?.userData?.permission
   );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
@@ -68,9 +72,9 @@ export default function Customer() {
   // const firstIndex = lastIndex - customerPerPage;
 
   // const currentCustomers = Customers
-  const subAreas = useSelector((state) => state.persistedReducer.area.area);
+  const subAreas = useSelector((state) => state?.persistedReducer?.area?.area);
   const userData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser
+    (state) => state?.persistedReducer?.auth?.currentUser
   );
 
   // paginate call Back function -> response from paginate component
@@ -121,6 +125,7 @@ export default function Customer() {
 
   // get specific customer
   const getSpecificCustomer = (id) => {
+    console.log(id);
     if (cus.length !== undefined) {
       const temp = cus.find((val) => {
         return val.id === id;
@@ -443,7 +448,11 @@ export default function Customer() {
                     )}
                   </div>
 
-                  <Table columns={columns} data={Customers}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={Customers}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

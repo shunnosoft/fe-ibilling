@@ -4,7 +4,7 @@ import moment from "moment";
 import { CSVLink } from "react-csv";
 
 // import { Link } from "react-router-dom";
-  import useDash from "../../assets/css/dash.module.css";
+import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
@@ -47,21 +47,25 @@ import Table from "../../components/table/Table";
 
 export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
-  const cus = useSelector((state) => state.persistedReducer.customer.customer);
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const cus = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
+  console.log(cus);
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
+
   const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+    (state) => state?.persistedReducer?.auth?.userData
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
+    (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
@@ -72,16 +76,16 @@ export default function Customer() {
   // pagination
 
   // const currentCustomers = Customers;
-  const allareas = useSelector((state) => state.persistedReducer.area.area);
+  const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
-      ? state.persistedReducer.auth.currentUser?.collector.areas
+      ? state?.persistedReducer?.auth?.currentUser?.collector?.areas
       : []
   );
   const [allArea, setAreas] = useState([]);
 
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
 
   // paginate call Back function -> response from paginate component
@@ -95,12 +99,12 @@ export default function Customer() {
 
       collectorArea?.map((item) => {
         let area = {
-          id: item.area.id,
-          name: item.area.name,
+          id: item.area?.id,
+          name: item.area?.name,
           subAreas: [
             {
-              id: item.id,
-              name: item.name,
+              id: item?.id,
+              name: item?.name,
             },
           ],
         };
@@ -158,6 +162,7 @@ export default function Customer() {
   };
   // get specific customer
   const getSpecificCustomer = (id) => {
+    console.log(id);
     if (cus.length !== undefined) {
       const temp = cus.find((original) => {
         return original.id === id;
@@ -640,7 +645,11 @@ export default function Customer() {
                     />
                   </div>
 
-                  <Table columns={columns} data={Customers}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={Customers}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />
