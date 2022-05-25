@@ -339,8 +339,8 @@ export default function Customer() {
         accessor: "name",
       },
       {
-        Header: "PPPoE",
-        accessor: "pppoe.name",
+        Header: "ইউজার",
+        accessor: "queue.name",
       },
       {
         Header: "মোবাইল",
