@@ -7,7 +7,7 @@ import { badge } from "../../../components/common/Utils";
 
 export default function CustomerDetails({ single }) {
   // const single = useSelector(state => state.customer.singleCustomer);
-  // console.log("Single: ", single);
+  console.log("Single: ", single);
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.userData?.bpSettings
   );
@@ -38,7 +38,7 @@ export default function CustomerDetails({ single }) {
               ></button>
             </div>
             <div className="modal-body">
-              <h2 className="ProfileName">{single.name}</h2>
+              <h2 className="ProfileName">{single?.name}</h2>
               <div className="profileMain">
                 <div>
                   <h5>গ্রাহক</h5>
