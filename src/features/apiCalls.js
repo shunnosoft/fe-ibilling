@@ -455,6 +455,8 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
       sendingData
     );
     dispatch(editCustomerSuccess(res.data));
+    dispatch(editStaticCustomerSuccess(res.data));
+
     setIsloading(false);
     toast.success("কাস্টমার এডিট সফল হয়েছে!");
     document.querySelector("#customerEditModal").click();

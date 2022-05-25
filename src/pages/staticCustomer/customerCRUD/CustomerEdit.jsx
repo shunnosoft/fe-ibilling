@@ -188,6 +188,7 @@ export default function CustomerEdit(props) {
   };
   // sending data to backed
   const customerHandler = async (data) => {
+    // console.log(data, user);
     setIsloading(true);
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
     if (subArea2 === "") {
@@ -209,14 +210,15 @@ export default function CustomerEdit(props) {
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
-      queue: {
-        name: Pname,
-        // password: Ppassword,
-        // service: "pppoe",
-        // comment: Pcomment,
-        // profile: Pprofile,
-        // disabled: activeStatus,
-      },
+      // queue: {
+      // name: Pname,
+      // password: Ppassword,
+      // service: "pppoe",
+      // comment: Pcomment,
+      // profile: Pprofile,
+      // disabled: activeStatus,
+      // },
+      queue: { ...user?.queue },
       ...rest,
       status,
     };
