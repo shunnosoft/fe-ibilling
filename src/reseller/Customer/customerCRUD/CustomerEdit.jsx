@@ -132,13 +132,13 @@ export default function CustomerEdit({ single }) {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
-      paymentStatus: single?.paymentStatus,
+      // paymentStatus: single?.paymentStatus,
       singleCustomerID: single?.id,
       subArea: subArea,
       ispOwner: ispOwnerId,
       mikrotik: single?.mikrotik,
       mikrotikPackage: packageRate?.id,
-      billPayType: "prepaid",
+      // billPayType: "prepaid",
       autoDisable: autoDisable,
       reseller: resellerId,
       billingCycle: moment(billDate + " " + billTime).format(
@@ -316,6 +316,7 @@ export default function CustomerEdit({ single }) {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"

@@ -10,7 +10,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
-  console.log(ispOwnerData);
+  // console.log(ispOwnerData);
   return (
     <div className="mt-3 p-4" ref={ref}>
       <h2 className="text-center">{ispOwnerData.company}</h2>

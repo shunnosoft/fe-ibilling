@@ -36,7 +36,7 @@ const Table = (props) => {
   }, []);
 
   const { globalFilter, pageIndex, pageSize } = state;
-  console.log(Math.ceil(data.length / pageSize));
+  // console.log(Math.ceil(data.length / pageSize));
 
   return (
     <>
