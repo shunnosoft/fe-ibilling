@@ -46,7 +46,7 @@ export default function PackageSetting() {
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
 
   // let serial = 0;

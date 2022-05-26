@@ -35,12 +35,13 @@ function Invoice() {
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
+  console.log(ispOwnerId);
   const invoices = useSelector(
-    (state) => state.persistedReducer.invoice.invoices
+    (state) => state?.persistedReducer?.invoice?.invoices
   );
-
+  console.log(invoices);
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [customerPerPage, setCustomerPerPage] = useState(50);

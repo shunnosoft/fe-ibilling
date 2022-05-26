@@ -16,14 +16,14 @@ import apiLink from "../../../api/apiLink";
 import moment from "moment";
 export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.ispOwner
+    (state) => state?.persistedReducer?.auth?.userData?.ispOwner
   );
   const resellerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+    (state) => state?.persistedReducer?.auth?.userData?.id
   );
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
   const [ppPackage, setppPackage] = useState([]);

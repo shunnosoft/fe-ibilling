@@ -9,7 +9,7 @@ export default function CustomerDetails({ single }) {
   // const single = useSelector(state => state.customer.singleCustomer);
   // console.log("Single: ", single);
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   return (
     <div>

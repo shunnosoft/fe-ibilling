@@ -24,7 +24,7 @@ export default function CreatePackage() {
 
   // get isp owner id in state
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
 
   // get mikrotik

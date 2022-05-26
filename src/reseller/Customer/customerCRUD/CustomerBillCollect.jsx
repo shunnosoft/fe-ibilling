@@ -14,15 +14,15 @@ export default function CustomerBillCollect({ single }) {
 
   // const [defaultAmount, setDefault] = useState(single?.monthlyFee);
   const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
 
   const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
+    (state) => state?.persistedReducer?.auth?.currentUser
   );
 
   const currentUserId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+    (state) => state?.persistedReducer?.auth?.userData?.id
   );
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);

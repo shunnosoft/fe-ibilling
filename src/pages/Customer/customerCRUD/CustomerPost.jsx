@@ -15,22 +15,22 @@ import {
 import moment from "moment";
 export default function CustomerModal() {
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   // const packages= useSelector(state=>state.package.packages)
   // console.log( packages)
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
-      ? state.persistedReducer.mikrotik.packagefromDatabase
-      : state.package.packages
+      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
   );
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
