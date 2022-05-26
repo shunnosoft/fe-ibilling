@@ -49,6 +49,7 @@ export default function Customer() {
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
+  console.log(cus);
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
@@ -227,7 +228,7 @@ export default function Customer() {
 
   useEffect(() => {
     if (
-      !bpSettings.hasMikrotik &&
+      !bpSettings?.hasMikrotik &&
       (role === "manager" || role === "ispOwner")
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch);
@@ -335,8 +336,14 @@ export default function Customer() {
         accessor: "name",
       },
       {
-        Header: "ইউজার",
-        accessor: "queue.name",
+        Header: "IP",
+        Cell: ({ row: { original } }) => (
+          <>
+            {original.userType === "simple-queue"
+              ? original.queue.target
+              : original.queue.name}
+          </>
+        ),
       },
       {
         Header: "মোবাইল",

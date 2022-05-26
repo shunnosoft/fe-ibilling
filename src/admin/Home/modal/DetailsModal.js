@@ -5,7 +5,7 @@ import { badge } from "../../../components/common/Utils";
 
 const DetailsModal = ({ ownerId }) => {
   // get all data
-  const data = useSelector((state) => state.admin.ispOwners);
+  const data = useSelector((state) => state.admin?.ispOwners);
 
   // get single isp owner data
   const ownerData = data.find((item) => item.id === ownerId);

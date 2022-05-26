@@ -54,7 +54,7 @@ export default function ConfigMikrotik() {
   let serial3 = 0;
   const { ispOwner, mikrotikId } = useParams();
   const mikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   const singleMik = mikrotik.find((item) => item.id === mikrotikId)
     ? mikrotik.find((item) => item.id === mikrotikId)
@@ -64,16 +64,16 @@ export default function ConfigMikrotik() {
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
   const allMikrotikUsers = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
   const activeUser = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeActiveUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
   const pppoePackage = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoePackage
+    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
   const mtkIsLoading = useSelector(
-    (state) => state.persistedReducer.mikrotik.isLoading
+    (state) => state?.persistedReducer?.mikrotik?.isLoading
   );
   // const mikrotikSyncUser = useSelector(
   //   state => state.mikrotik.mikrotikSyncUser

@@ -28,13 +28,15 @@ import activeClass from "../../../assets/css/active.module.css";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  const user = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const user = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser
+  );
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   const getIspOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData
+    (state) => state?.persistedReducer?.auth?.ispOwnerData
   );
   // const hasReseller= true
   // addSidebar

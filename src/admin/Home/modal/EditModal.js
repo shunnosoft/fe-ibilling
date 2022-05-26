@@ -11,7 +11,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
   const dispatch = useDispatch();
 
   //  get all isp owner
-  const data = useSelector((state) => state.admin.ispOwners);
+  const data = useSelector((state) => state.admin?.ispOwners);
 
   // get editable owner
   const ispOwner = data.find((item) => item.id === ownerId);

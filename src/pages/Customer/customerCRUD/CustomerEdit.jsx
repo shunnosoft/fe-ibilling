@@ -433,7 +433,7 @@ export default function CustomerEdit(props) {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
-                            min={moment().startOf("month").format("YYYY-MM-DD")}
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"

@@ -727,19 +727,21 @@ export const fetchpppoePackage = async (dispatch, IDs, mtkName) => {
 };
 
 export const fetchPackagefromDatabase = async (dispatch, IDs) => {
-  dispatch(resetPackagefromDatabase());
-  dispatch(mtkIsLoading(true));
-  try {
-    const res = await apiLink.get(`/mikrotik/ppp/package/${IDs.mikrotikId}`);
+  if (IDs.mikrotikId) {
+    dispatch(resetPackagefromDatabase());
+    dispatch(mtkIsLoading(true));
+    try {
+      const res = await apiLink.get(`/mikrotik/ppp/package/${IDs.mikrotikId}`);
 
-    // console.log(res.data);
-    dispatch(getPackagefromDatabaseSuccess(res.data));
-    dispatch(mtkIsLoading(false));
-    // toast.success("PPPoE প্যাকেজ fetch success");
-  } catch (error) {
-    // toast.error("প্যাকেজ পাওয়া যায়নি!");
-    dispatch(mtkIsLoading(false));
-    console.log(error.response);
+      // console.log(res.data);
+      dispatch(getPackagefromDatabaseSuccess(res.data));
+      dispatch(mtkIsLoading(false));
+      // toast.success("PPPoE প্যাকেজ fetch success");
+    } catch (error) {
+      // toast.error("প্যাকেজ পাওয়া যায়নি!");
+      dispatch(mtkIsLoading(false));
+      console.log(error.response);
+    }
   }
 };
 

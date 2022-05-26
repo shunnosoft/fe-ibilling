@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 const PrintCustomer = React.forwardRef((props, ref) => {
   const { currentCustomers, filterData } = props;
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+    (state) => state?.persistedReducer?.auth?.userData
   );
   // console.log(ispOwnerData);
   return (

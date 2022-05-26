@@ -21,7 +21,7 @@ import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
 
 export default function Area() {
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   // const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [EditAarea, setEditAarea] = useState("");
@@ -35,7 +35,7 @@ export default function Area() {
   const dispatch = useDispatch();
   // const user = useSelector(state => state.auth.currentUser);
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   useEffect(() => {
     getArea(dispatch, ispOwnerId);

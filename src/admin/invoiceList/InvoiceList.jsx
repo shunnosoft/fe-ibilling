@@ -22,7 +22,7 @@ const InvoiceList = () => {
   const [invoiceId, setInvoiceId] = useState("");
 
   // get invoice list
-  const invoiceList = useSelector((state) => state.ownerInvoice.ownerInvoice);
+  const invoiceList = useSelector((state) => state.ownerInvoice?.ownerInvoice);
 
   // invoice edit method
   const invoiceEditModal = (invoiceId) => {

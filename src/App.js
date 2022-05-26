@@ -71,16 +71,18 @@ import ResellerSmsRequest from "./pages/resellerSMSrequest/ResellerSmsRequest";
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
-  const user = useSelector((state) => state.persistedReducer.auth.currentUser);
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const user = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser
+  );
+  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   // const hasReseller= true
-  const isModalShowing = useSelector((state) => state.ui.alertModalShow);
+  const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -255,10 +257,12 @@ function App() {
             <Route
               path="/staticCustomer"
               element={
-                userRole === "ispOwner" && user ? (
+                userRole === "ispOwner" ||
+                userRole === "manager" ||
+                (userRole === "collector" && !user.collector.reseller) ? (
                   <StaticCustomer />
                 ) : (
-                  <Navigate to={"/"} />
+                  <Navigate to={"/home"} />
                 )
               }
             />

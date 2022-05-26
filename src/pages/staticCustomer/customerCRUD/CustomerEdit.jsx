@@ -37,7 +37,7 @@ export default function CustomerEdit(props) {
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   const ppPackage = useSelector((state) =>
-    bpSettings.hasMikrotik
+    bpSettings?.hasMikrotik
       ? state?.persistedReducer?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
@@ -339,7 +339,7 @@ export default function CustomerEdit(props) {
                         name="monthlyFee"
                       />
 
-                      {bpSettings.hasMikrotik ? (
+                      {bpSettings?.hasMikrotik ? (
                         ""
                       ) : (
                         <FtextField
@@ -442,7 +442,7 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
-                      {bpSettings.hasMikrotik && (
+                      {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
                           <label>অটোমেটিক সংযোগ বন্ধ</label>
                           <Field

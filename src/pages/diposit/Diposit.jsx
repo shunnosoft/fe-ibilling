@@ -28,10 +28,10 @@ import Table from "../../components/table/Table";
 
 export default function Diposit() {
   const balancee = useSelector(
-    (state) => state.persistedReducer.payment.balance
+    (state) => state?.persistedReducer?.payment?.balance
   );
   const allDeposit = useSelector(
-    (state) => state.persistedReducer.payment.allDeposit
+    (state) => state?.persistedReducer?.payment?.allDeposit
   );
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -41,26 +41,26 @@ export default function Diposit() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
   const manager = useSelector(
-    (state) => state.persistedReducer.manager.manager
+    (state) => state?.persistedReducer?.manager?.manager
   );
   const collectors = useSelector(
-    (state) => state.persistedReducer.collector.collector
+    (state) => state?.persistedReducer?.collector?.collector
   );
   const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
+    (state) => state.persistedReducer?.auth?.ispOwnerId
   );
   const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
+    (state) => state.persistedReducer?.auth?.currentUser
   );
   //To do after api impliment
   const ownDeposits = useSelector(
-    (state) => state.persistedReducer.payment.myDeposit
+    (state) => state?.persistedReducer?.payment?.myDeposit
   );
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
   // const [mainData2, setMainData2] = useState(allDeposit);
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
   // const [depositAccepted, setDepositAccepet] = useState("")
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
@@ -87,7 +87,7 @@ export default function Diposit() {
     depositAcceptReject(dispatch, status, id, setAccLoading);
   };
   const allCollector = useSelector(
-    (state) => state.persistedReducer.collector.collector
+    (state) => state?.persistedReducer?.collector?.collector
   );
 
   // useEffect(()=>{

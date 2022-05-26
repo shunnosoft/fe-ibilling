@@ -81,7 +81,7 @@ export default function CustomerDetails({ single }) {
                       )}
                     </b>
                   </h6>
-                  {bpSettings.hasMikrotik && (
+                  {bpSettings?.hasMikrotik && (
                     <h6>
                       অটোমেটিক সংযোগ বন্ধ:{" "}
                       <b>{single?.autoDisable ? "YES" : "NO"}</b>

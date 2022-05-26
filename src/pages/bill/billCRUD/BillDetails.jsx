@@ -31,56 +31,56 @@ export default function CustomerDetails({ single }) {
               ></button>
             </div>
             <div className="modal-body">
-              <h2 className="ProfileName">{single.name}</h2>
+              <h2 className="ProfileName">{single?.name}</h2>
               <table className="table">
                 <thead>
                   <tr>
                     <th scope="col" className="thSt">
                       মোবাইল:
                     </th>
-                    <th scope="col">{single.mobile}</th>
+                    <th scope="col">{single?.mobile}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       এড্রেস:
                     </th>
-                    <th scope="col">{single.address}</th>
+                    <th scope="col">{single?.address}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       ইমেইল:
                     </th>
-                    <th scope="col">{single.email}</th>
+                    <th scope="col">{single?.email}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       NID নম্বর:
                     </th>
-                    <th scope="col">{single.nid}</th>
+                    <th scope="col">{single?.nid}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       ব্যালান্স:
                     </th>
-                    <th scope="col">{single.balance}</th>
+                    <th scope="col">{single?.balance}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       মাসিক বেতন:
                     </th>
-                    <th scope="col">{single.monthlyFee}</th>
+                    <th scope="col">{single?.monthlyFee}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       স্ট্যাটাস:
                     </th>
-                    <th scope="col">{single.status}</th>
+                    <th scope="col">{single?.status}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       ইউজারের ধরণ:
                     </th>
-                    <th scope="col">{single.userType}</th>
+                    <th scope="col">{single?.userType}</th>
                   </tr>
                 </thead>
               </table>

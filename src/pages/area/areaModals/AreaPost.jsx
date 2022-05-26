@@ -12,7 +12,7 @@ import { addArea } from "../../../features/apiCalls";
 
 export default function AreaPost() {
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
