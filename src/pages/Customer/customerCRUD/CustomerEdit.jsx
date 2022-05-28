@@ -7,46 +7,51 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-// import { editCustomer } from "../../../features/customerSlice";
-// import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
 import {
   editCustomer,
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
-// import apiLink from "../../../api/apiLink";
 import moment from "moment";
-// import { useLayoutEffect } from "react";
+
 export default function CustomerEdit(props) {
   const [user, setUser] = useState(props?.single);
+
+  // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
+
+  // get all area
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
+
+  // get mikrotik
   const Getmikrotik = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
-  // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
-  // const [ppPackage, setppPackage] = useState([]);
-  const [packageRate, setPackageRate] = useState("");
-  const [isLoading, setIsloading] = useState(false);
-  // const [singleMikrotik, setSingleMikrotik] = useState(user?.mikrotik);
-  const [mikrotikPackage, setMikrotikPackage] = useState("");
+
+  // get bp setting
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
+
+  // get ppoe package
   const ppPackage = useSelector((state) =>
     bpSettings.hasMikrotik
       ? state?.persistedReducer?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
 
+  const [packageRate, setPackageRate] = useState("");
+  const [isLoading, setIsloading] = useState(false);
+  const [mikrotikPackage, setMikrotikPackage] = useState("");
+
   const [autoDisable, setAutoDisable] = useState(user?.autoDisable);
 
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
-  // const [pppoePacakage, setPppoePacakage] = useState([]);
+
   const [activeStatus, setActiveStatus] = useState(user?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
@@ -69,8 +74,8 @@ export default function CustomerEdit(props) {
     if (bpSettings?.hasMikrotik) {
       fetchPackagefromDatabase(dispatch, IDs);
     }
-    // get the packages  not from mikrotik
   }, [bpSettings, ispOwnerId, dispatch, props?.single, user]);
+
   useEffect(() => {
     setAutoDisable(props.single?.autoDisable);
     setBillDate(moment(props?.single?.billingCycle).format("YYYY-MM-DD"));
@@ -94,23 +99,6 @@ export default function CustomerEdit(props) {
       return a;
     });
   }, [area, props]);
-  // useEffect(() => {
-  //   const IDs = {
-  //     ispOwner: ispOwnerId,
-  //     mikrotikId: user?.mikrotik,
-  //   };
-  //   const fetchPac = async () => {
-  //     try {
-  //       const res = await apiLink.get(
-  //         `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
-  //       );
-  //       setppPackage(res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   user?.mikrotik && fetchPac();
-  // }, [ispOwnerId, props?.single]);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -132,44 +120,18 @@ export default function CustomerEdit(props) {
     // balance: Yup.number().integer(),
   });
 
-  // const [loadingPac, setLoadingPac] = useState(false);
-
-  // select Getmikrotik
-  // const selectMikrotik = (e) => {
-  //   const id = e.target.value;
-  //   if (id && ispOwnerId) {
-  //     const IDs = {
-  //       ispOwner: ispOwnerId,
-  //       mikrotikId: id,
-  //     };
-  //     fetchpppoePackage(dispatch, IDs);
-  //   }
-
-  //   const getOneMikrotik = Getmikrotik.find((val) => val.id === id);
-  //   setSingleMikrotik(getOneMikrotik.id);
-
-  //   // set Pppoe Pacakage
-  //   const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
-  //   setPppoePacakage(filterPPPoEpacakage);
-  // };
-
   // select Mikrotik Package
   useEffect(() => {
-    //todo
     const mikrotikPackageId = user?.mikrotikPackage;
-    // setPackageId(user?.mikrotikPackage)
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
     setPackageRate(temp);
   }, [user, ppPackage]);
 
   const selectMikrotikPackage = (e) => {
-    // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
     setPackageId(mikrotikPackageId);
-    // setPackageId(packageIdOnSelect)
-    // console.log(mikrotikPackageId,packageIdOnSelect)
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
@@ -184,6 +146,7 @@ export default function CustomerEdit(props) {
     setAreaID(temp);
     setSubArea(temp.subAreas);
   };
+
   // sending data to backed
   const customerHandler = async (data) => {
     setIsloading(true);
@@ -194,14 +157,11 @@ export default function CustomerEdit(props) {
     }
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
-      // customerId: "randon123",
-      // paymentStatus: "unpaid",
       singleCustomerID: user?.id,
       subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: user?.mikrotik,
       mikrotikPackage: packageId,
-      // billPayType: "prepaid",
       autoDisable: autoDisable,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
@@ -217,7 +177,6 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-    // console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -297,13 +256,6 @@ export default function CustomerEdit(props) {
                             <option value={mikrotikName?.id || ""}>
                               {mikrotikName?.name || ""}
                             </option>
-                            {/* {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))} */}
                           </select>
                         </div>
                       ) : (
@@ -325,7 +277,6 @@ export default function CustomerEdit(props) {
                             <option
                               selected={user?.mikrotikPackage === val?.id}
                               key={key}
-                              // value={JSON.stringify({ mikrotikPackageId:val.name , packageIdOnSelect:val.id})}
                               value={val.id}
                             >
                               {val.name}
@@ -369,9 +320,6 @@ export default function CustomerEdit(props) {
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
-                          {/* <option value={areaID?.id || ""}>
-                            {areaID?.name || ""}
-                          </option> */}
                           {area.length === undefined
                             ? ""
                             : area.map((val, key) => (
@@ -395,9 +343,6 @@ export default function CustomerEdit(props) {
                           id="subAreaIdFromEdit"
                           onChange={selectedSubArea}
                         >
-                          {/* <option value={subAreaId?.id || ""}>
-                            {subAreaId?.name || ""}
-                          </option> */}
                           {subArea?.map((val, key) => (
                             <option
                               selected={val?.id === subAreaId?.id}
