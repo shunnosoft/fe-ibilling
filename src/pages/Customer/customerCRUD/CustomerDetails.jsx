@@ -9,7 +9,7 @@ export default function CustomerDetails({ single }) {
   // const single = useSelector(state => state.customer.singleCustomer);
   // console.log("Single: ", single);
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   return (
     <div>
@@ -38,7 +38,7 @@ export default function CustomerDetails({ single }) {
               ></button>
             </div>
             <div className="modal-body">
-              <h2 className="ProfileName">{single.name}</h2>
+              <h2 className="ProfileName">{single?.name}</h2>
               <div className="profileMain">
                 <div>
                   <h5>গ্রাহক</h5>
@@ -96,7 +96,7 @@ export default function CustomerDetails({ single }) {
                   </h6>
                   <h6>
                     <h6>
-                      পাসওয়ার্ড: <b>{single?.password}</b>
+                      পাসওয়ার্ড: <b>{single?.pppoe?.password}</b>
                     </h6>
                     প্রোফাইল: <b> {single?.pppoe?.profile}</b>
                   </h6>

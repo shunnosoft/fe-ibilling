@@ -15,7 +15,7 @@ import { editCustomer } from "../../../features/apiCalls";
 export default function CustomerEdit({ single }) {
   const CUSTOMER = single;
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   // const CUSTOMER = useSelector(state => state.customer.singleCustomer);
   const [isLoading, setIsloading] = useState(false);

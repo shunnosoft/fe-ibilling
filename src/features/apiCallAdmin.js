@@ -1,13 +1,65 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
-import { getIspOwnersSuccess } from "./adminSlice";
+import { getIspOwnersSuccess, editOwner } from "./adminSlice";
+import {
+  getIspOwnerInvoicesSuccess,
+  editInvoiceSuccess,
+} from "./ispOwnerInvoiceSlice";
 
+// get owners
 export const getIspOwners = async (dispatch) => {
   try {
     const res = await apiLink.get(`/admin/getIspOwners`);
-    dispatch(getIspOwnersSuccess(res.data));
     // console.log(res.data);
+    dispatch(getIspOwnersSuccess(res.data));
   } catch (error) {
     console.log(error);
+  }
+};
+
+// update owner
+export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch("/ispOwner/" + ispOwnerId, data);
+    dispatch(editOwner(res.data));
+    setIsLoading(false);
+    document.querySelector("#clientEditModal").click();
+    toast.success("ISP Owner Updated Success");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+//  get invoice list
+export const getIspOwnerInvoice = async (ispOwnerId, dispatch) => {
+  try {
+    const res = await apiLink.get("/admin/invoices/" + ispOwnerId);
+    // console.log(res.data);
+    dispatch(getIspOwnerInvoicesSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//  update invoice
+export const editIspOwnerInvoice = async (
+  invoiceId,
+  data,
+  setIsloading,
+  dispatch
+) => {
+  try {
+    const res = await apiLink.patch("admin/invoice/" + invoiceId, data);
+    dispatch(editInvoiceSuccess(res.data));
+    setIsloading(false);
+    document.querySelector("#InvoiceEditModal").click();
+    toast.success("Invoice Edit Success!");
+  } catch (err) {
+    console.log(err.response);
+    if (err.response) {
+      setIsloading(false);
+      toast.error(err.response);
+    }
   }
 };

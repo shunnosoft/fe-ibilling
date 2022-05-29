@@ -9,9 +9,15 @@ const adminSlice = createSlice({
     getIspOwnersSuccess: (state, action) => {
       state.ispOwners = action.payload;
     },
+    editOwner: (state, actions) => {
+      state.ispOwners[
+        state.ispOwners.findIndex((item) => item.id === actions.payload.id)
+      ] = actions.payload;
+      state.updateAdminSuccess = true;
+    },
   },
 });
 
-export const { getIspOwnersSuccess } = adminSlice.actions;
+export const { getIspOwnersSuccess, editOwner } = adminSlice.actions;
 
 export default adminSlice.reducer;

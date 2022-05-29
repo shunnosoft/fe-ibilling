@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 const PrintCustomer = React.forwardRef((props, ref) => {
   const { currentCustomers, filterData } = props;
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+    (state) => state?.persistedReducer?.auth?.userData
   );
-
+  // console.log(ispOwnerData);
   return (
     <div ref={ref}>
       <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">

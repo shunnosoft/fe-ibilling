@@ -27,11 +27,11 @@ import Table from "../../components/table/Table";
 export default function Collector() {
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector(
-    (state) => state.persistedReducer.collector.collector
+    (state) => state?.persistedReducer?.collector?.collector
   );
 
   let serial = 0;
@@ -43,9 +43,9 @@ export default function Collector() {
   const currentCollector = collector.slice(firstIndex, lastIndex);
   const [allCollector, setCollector] = useState(currentCollector);
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
+    (state) => state.persistedReducer?.auth?.userData?.permissions
   );
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);

@@ -13,7 +13,7 @@ export default function Settings() {
   const [day, setDay] = useState(0);
   const daySettingHandler = (e) => {
     setDay(e);
-    console.log(e);
+    // console.log(e);
   };
 
   const [cursorPosition, setPosition] = useState(0);
@@ -22,7 +22,7 @@ export default function Settings() {
   const textRef = useRef();
 
   const insertMyText = (e) => {
-    console.log(textRef.current.value);
+    // console.log(textRef.current.value);
     // let textToInsert = " this is the inserted text ";
     let cp = e.target.selectionStart;
     // console.log(cp);
@@ -38,17 +38,17 @@ export default function Settings() {
     var index = totalText.indexOf("Name");
     if (index !== -1) {
       const endIndex = index + totalText.length - 1;
-      console.log(index, endIndex);
+      // console.log(index, endIndex);
     }
-    console.log(textAfterCursorPosition);
+    // console.log(textAfterCursorPosition);
     setTotaltext(textBeforeCursorPosition + e + textAfterCursorPosition);
   };
   const keyDown = (e) => {
-    if (e.keyCode === 8) console.log("hello");
+    // if (e.keyCode === 8) console.log("hello");
   };
   const ssref = useRef();
   const handle = () => {
-    console.log(ssref.current);
+    // console.log(ssref.current);
   };
   return (
     <>

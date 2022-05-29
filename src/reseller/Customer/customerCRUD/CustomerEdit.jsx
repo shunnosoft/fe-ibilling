@@ -16,14 +16,14 @@ import apiLink from "../../../api/apiLink";
 import moment from "moment";
 export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.ispOwner
+    (state) => state?.persistedReducer?.auth?.userData?.ispOwner
   );
   const resellerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+    (state) => state?.persistedReducer?.auth?.userData?.id
   );
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
   const [ppPackage, setppPackage] = useState([]);
@@ -49,16 +49,16 @@ export default function CustomerEdit({ single }) {
     setStatus(single?.status);
     setAutoDisable(single?.autoDisable);
 
-    setSubArea(single.subArea);
-    setBillDate(moment(single.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(single.billingCycle).format("HH:mm"));
-    const temp = Getmikrotik?.find((val) => val.id === single.mikrotik);
+    setSubArea(single?.subArea);
+    setBillDate(moment(single?.billingCycle).format("YYYY-MM-DD"));
+    setBilltime(moment(single?.billingCycle).format("HH:mm"));
+    const temp = Getmikrotik?.find((val) => val.id === single?.mikrotik);
     setmikrotikName(temp);
 
     // findout area id by sub area id
     // const areaIDTemp = area.find((areaItem) => {
     //   return areaItem.subAreas.find((val) => {
-    //     if (single.subArea === val.id) {
+    //     if (single?.subArea === val.id) {
     //       setSubAreaId(val);
     //     }
     //     return areaItem;
@@ -132,13 +132,13 @@ export default function CustomerEdit({ single }) {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
-      paymentStatus: single?.paymentStatus,
+      // paymentStatus: single?.paymentStatus,
       singleCustomerID: single?.id,
       subArea: subArea,
       ispOwner: ispOwnerId,
       mikrotik: single?.mikrotik,
       mikrotikPackage: packageRate?.id,
-      billPayType: "prepaid",
+      // billPayType: "prepaid",
       autoDisable: autoDisable,
       reseller: resellerId,
       billingCycle: moment(billDate + " " + billTime).format(
@@ -193,7 +193,7 @@ export default function CustomerEdit({ single }) {
                   monthlyFee: packageRate?.rate || single?.monthlyFee || "",
                   Pname: single?.pppoe?.name || "",
                   Pprofile: packageRate?.name || single?.pppoe?.profile || "",
-                  Ppassword: single.pppoe?.password || "",
+                  Ppassword: single?.pppoe?.password || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -316,6 +316,7 @@ export default function CustomerEdit({ single }) {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"

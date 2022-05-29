@@ -17,10 +17,10 @@ import { addCollector } from "../../../features/apiCalls";
 
 export default function CollectorPost() {
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const [areaIds, setAreaIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const auth = useSelector((state) => state?.persistedReducer?.auth?.currentUser);
 
   //validator
   const collectorValidator = Yup.object({

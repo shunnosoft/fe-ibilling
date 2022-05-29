@@ -1,82 +1,211 @@
 // external imports
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-import { Line } from "react-chartjs-2";
-import "chart.js/auto";
-// import { ThreeDotsVertical } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 import moment from "moment";
-// internal imports
-import "./home.css";
-import { FourGround, FontColor } from "../../assets/js/theme";
-import { cardData, monthsName } from "./homeData";
 
 import { useDispatch, useSelector } from "react-redux";
+// internal imports
+import "chart.js/auto";
+import { FontColor } from "../../assets/js/theme";
+import {
+  PersonBoundingBox,
+  PersonFill,
+  PenFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import { getIspOwners } from "../../features/apiCallAdmin";
+import Table from "../../components/table/Table";
+import EditModal from "./modal/EditModal";
+import "./home.css";
+import DetailsModal from "./modal/DetailsModal";
 
 export default function Home() {
-  const ispOwners = useSelector((state) => state.admin.ispOwners);
+  // import dispatch
   const dispatch = useDispatch();
 
+  // set owner at local state
+  const [ownerId, setOwnerId] = useState();
+
+  // set filter status
+  const [filterStatus, setFilterStatus] = useState(null);
+
+  // get isp owner
+  let ispOwners = useSelector((state) => state.admin?.ispOwners);
+  // console.log(ispOwners);
+
+  // payment filter
+  if (filterStatus && filterStatus !== "Select") {
+    ispOwners = ispOwners.filter(
+      (value) => value.bpSettings.paymentStatus === filterStatus
+    );
+  }
+
+  // api call
   useEffect(() => {
     getIspOwners(dispatch);
   }, [dispatch]);
 
-  return (
-    <div className="container homeWrapper">
-      <ToastContainer position="top-right" theme="colored" />
-      <FontColor>
-        <div className="home">
-          {/* card section */}
-          <div className="row">
-            <h2 className="dashboardTitle">AdMIN ড্যাশবোর্ড</h2>
+  // edit modal method
+  const editModal = (ispOwnerId) => {
+    setOwnerId(ispOwnerId);
+  };
+
+  const detailsModal = (showDetailsId) => {
+    setOwnerId(showDetailsId);
+  };
+
+  // table column
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Serial",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+
+      {
+        accessor: "name",
+        Header: "Name",
+      },
+      {
+        accessor: "mobile",
+        Header: "Mobile",
+      },
+      {
+        accessor: "company",
+        Header: "Comapny",
+      },
+      {
+        accessor: "address",
+        Header: "Address",
+      },
+      {
+        Header: "Payment Status",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span
+              className={
+                "badge " +
+                (original.bpSettings.paymentStatus === "paid"
+                  ? "bg-success"
+                  : "bg-warning")
+              }
+            >
+              {original.bpSettings.paymentStatus}
+            </span>
           </div>
-          <br />
-          <div className="table-responsive-lg">
-            <table className="table table-striped table-responsive">
-              <thead>
-                <tr>
-                  <th width="5%">সিরিয়াল</th>
-                  <th width="10%">নাম</th>
-                  <th width="10%">মোবাইল</th>
-                  <th width="10%">ইমেইল</th>
-                  <th width="10%">কোম্পানি</th>
-                  <th width="10%">ঠিকানা</th>
-                  <th width="10%">প্যাকেজ</th>
-                  <th width="10%">রিসেলার</th>
-                  <th width="10%">মাইক্রোটিক</th>
-                  <th width="10%">তারিখ</th>
-                  <th width="5%"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {ispOwners?.length === undefined ? (
-                  <tr></tr>
-                ) : (
-                  ispOwners?.map((val, i) => (
-                    <tr key={i}>
-                      <td>{i}</td>
-                      <td>{val.name}</td>
-                      <td>{val.mobile}</td>
-                      <td>{val.email}</td>
-                      <td>{val.company}</td>
-                      <td>{val.address}</td>
-                      <td>
-                        {val?.bpSettings?.pack} - {val?.bpSettings?.packType}
-                      </td>
-                      <td>{val?.bpSettings?.hasReseller ? "YES" : "NO"}</td>
-                      <td>{val?.bpSettings?.hasMikrotik ? "YES" : "NO"}</td>
-                      <td>
-                        {moment(val.createdAt).format("DD-MM-YYYY hh:mm A")}
-                      </td>
-                      <td>...</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+        ),
+      },
+
+      {
+        Header: "CreatedAt",
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YY hh:mm A");
+        },
+      },
+
+      {
+        Header: () => <div className="text-center">Action</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <>
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#showCustomerDetails"
+                  onClick={() => {
+                    detailsModal(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">Details</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#clientEditModal"
+                  onClick={() => {
+                    editModal(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">Edit</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonBoundingBox />
+                      <Link to={"/admin/isp-owner/invoice-list/" + original.id}>
+                        <p className="actionP text-white">Invoice</p>
+                      </Link>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  return (
+    <>
+      <div className="homeWrapper isp_owner_list">
+        <ToastContainer position="top-right" theme="colored" />
+        <div className="card">
+          <div className="card-header">
+            <div className="row">
+              <h2 className="dashboardTitle text-center">Admin Dashborad</h2>
+            </div>
+          </div>
+          <div className="card-body">
+            <select
+              className="form-select"
+              aria-label="Default select example"
+              onChange={(event) => setFilterStatus(event.target.value)}
+            >
+              <option selected>Select</option>
+              <option value="paid">Paid</option>
+              <option value="unpaid">Unpaid</option>
+            </select>
+            <FontColor>
+              <Table columns={columns} data={ispOwners}></Table>
+
+              <EditModal ownerId={ownerId} />
+              <DetailsModal ownerId={ownerId} />
+            </FontColor>
           </div>
         </div>
-      </FontColor>
-    </div>
+      </div>
+    </>
   );
 }

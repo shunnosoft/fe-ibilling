@@ -46,65 +46,87 @@ import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
 
 export default function Customer() {
-  const componentRef = useRef(); //reference of pdf export component
-  const cus = useSelector((state) => state.persistedReducer.customer.customer);
-  const role = useSelector((state) => state.persistedReducer.auth.role);
   const dispatch = useDispatch();
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+
+  const componentRef = useRef(); //reference of pdf export component
+
+  // get all customer
+  const cus = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
   );
+
+  // get all role
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
+  );
+
+  // get isp owner data
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+    (state) => state?.persistedReducer?.auth?.userData
+  );
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state?.persistedReducer?.auth?.userData?.permissions
+  );
+
+  // get all area
+  const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
+
+  // get collector area
+  const collectorArea = useSelector((state) =>
+    role === "collector"
+      ? state?.persistedReducer?.auth?.currentUser?.collector?.areas
+      : []
+  );
+
+  // get bp setting permisson
+  const bpSettings = useSelector(
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
-  );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
-  // get specific customer
-  const [singleCustomer, setSingleCustomer] = useState("");
-  // const [cusId, setSingleCustomerReport] = useState("");
-  // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
-
-  const currentCustomers = Customers.slice(firstIndex, lastIndex);
-  const allareas = useSelector((state) => state.persistedReducer.area.area);
-  const collectorArea = useSelector((state) =>
-    role === "collector"
-      ? state.persistedReducer.auth.currentUser?.collector.areas
-      : []
-  );
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [status, setStatus] = useState("");
   const [allArea, setAreas] = useState([]);
+  const [singleCustomer, setSingleCustomer] = useState("");
+  const [customerReportData, setId] = useState([]);
+  const [isSorted, setSorted] = useState(false);
+  const [subAreaIds, setSubArea] = useState([]);
+  const [singleArea, setArea] = useState({});
 
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
-  );
+  // get customer api call
+  useEffect(() => {
+    if (
+      !bpSettings.hasMikrotik &&
+      (role === "manager" || role === "ispOwner")
+    ) {
+      getPackagewithoutmikrotik(ispOwner, dispatch);
+    }
+    getCustomer(dispatch, ispOwner, setIsloading);
+  }, [dispatch, ispOwner, role, bpSettings]);
 
-  // paginate call Back function -> response from paginate component
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
+  // collector filter
   useEffect(() => {
     if (role === "collector") {
       let areas = [];
 
       collectorArea?.map((item) => {
         let area = {
-          id: item.area.id,
-          name: item.area.name,
+          id: item.area?.id,
+          name: item.area?.name,
           subAreas: [
             {
-              id: item.id,
-              name: item.name,
+              id: item?.id,
+              name: item?.name,
             },
           ],
         };
@@ -122,6 +144,7 @@ export default function Customer() {
       setAreas(areas);
     }
   }, [collectorArea, role]);
+  // end collector filter
 
   useEffect(() => {
     const keys = [
@@ -146,8 +169,25 @@ export default function Customer() {
     );
   }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
-  const [paymentStatus, setPaymentStatus] = useState("");
-  const [status, setStatus] = useState("");
+  const onChangeArea = (param) => {
+    let area = JSON.parse(param);
+
+    setArea(area);
+    if (
+      area &&
+      Object.keys(area).length === 0 &&
+      Object.getPrototypeOf(area) === Object.prototype
+    ) {
+      setSubArea([]);
+    } else {
+      let subAreaIds = [];
+
+      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+
+      setSubArea(subAreaIds);
+    }
+  };
+
   //   filter
   const handleActiveFilter = (e) => {
     setPaymentStatus(e.target.value);
@@ -160,35 +200,62 @@ export default function Customer() {
 
     setFilter(filterdData);
   };
-  // get specific customer
-  const getSpecificCustomer = (id) => {
-    if (cus.length !== undefined) {
-      const temp = cus.find((original) => {
-        return original.id === id;
-      });
-      setSingleCustomer(temp);
+
+  // const toggleSort = (item) => {
+  //   setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
+  //   setSorted(!isSorted);
+  // };
+
+  useEffect(() => {
+    if (subAreaIds.length) {
+      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
+    } else {
+      setCustomers(cus);
     }
-  };
-  // get specific customer Report
-  const [customerReportData, setId] = useState([]);
+  }, [cus, subAreaIds]);
 
-  const getSpecificCustomerReport = (reportData) => {
-    setId(reportData);
+  const onChangeSubArea = (id) => {
+    setCusSearch(id);
   };
 
-  // DELETE handler
-  const deleteCustomer = async (ID) => {
-    setIsDeleting(true);
-    const IDs = {
-      ispID: ispOwner,
-      customerID: ID,
-    };
-    deleteACustomer(dispatch, IDs);
-    setIsDeleting(false);
+  let subArea, customerStatus, customerPaymentStatus;
+  if (singleArea && cusSearch) {
+    subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
+  }
+
+  const handleChangeStatus = (e) => {
+    setStatus(e.target.value);
   };
+
+  if (status) {
+    const splitStatus = status.split(".")[1];
+    if (splitStatus === "active") {
+      customerStatus = "এক্টিভ";
+    } else if (splitStatus === "inactive") {
+      customerStatus = "ইনএক্টিভ";
+    }
+  }
+
+  if (paymentStatus) {
+    const splitStatus = paymentStatus.split(".")[1];
+    if (splitStatus === "unpaid") {
+      customerPaymentStatus = "বকেয়া";
+    } else if (splitStatus === "paid") {
+      customerPaymentStatus = "পরিশোধ";
+    } else if (splitStatus === "expired") {
+      customerPaymentStatus = "মেয়াদোত্তীর্ণ";
+    }
+  }
+
+  const filterData = {
+    area: singleArea?.name ? singleArea.name : "সকল এরিয়া",
+    subArea: subArea ? subArea.name : "সকল সাবএরিয়া",
+    status: customerStatus ? customerStatus : "সকল গ্রাহক",
+    payment: customerPaymentStatus ? customerPaymentStatus : "সকল গ্রাহক",
+  };
+
   //export customer data
-
-  let customerForCsV = currentCustomers.map((customer) => {
+  let customerForCsV = Customers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -230,103 +297,31 @@ export default function Customer() {
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
 
-  useEffect(() => {
-    if (
-      !bpSettings.hasMikrotik &&
-      (role === "manager" || role === "ispOwner")
-    ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch);
-    }
-    getCustomer(dispatch, ispOwner, setIsloading);
-  }, [dispatch, ispOwner, role, bpSettings]);
-
-  const [isSorted, setSorted] = useState(false);
-  const toggleSort = (item) => {
-    setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
-    setSorted(!isSorted);
-  };
-
-  const [subAreaIds, setSubArea] = useState([]);
-  const [singleArea, setArea] = useState({});
-
-  const onChangeArea = (param) => {
-    let area = JSON.parse(param);
-
-    setArea(area);
-    if (
-      area &&
-      Object.keys(area).length === 0 &&
-      Object.getPrototypeOf(area) === Object.prototype
-    ) {
-      setSubArea([]);
-    } else {
-      let subAreaIds = [];
-
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
-      setSubArea(subAreaIds);
+  // get specific customer
+  const getSpecificCustomer = (id) => {
+    // console.log(id);
+    if (cus.length !== undefined) {
+      const temp = cus.find((original) => {
+        return original.id === id;
+      });
+      setSingleCustomer(temp);
     }
   };
-  useEffect(() => {
-    if (subAreaIds.length) {
-      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
-    } else {
-      setCustomers(cus);
-    }
-  }, [cus, subAreaIds]);
 
-  const onChangeSubArea = (id) => {
-    setCusSearch(id);
-    // console.log(id)
-    //     const filterdData = cus.filter((item) => item["subArea"] === id);
-
-    //     setFilter(filterdData);
-    // if (!id) {
-    //   let subAreaIds = [];
-    //   singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
-    //   setSubArea(subAreaIds);
-    // } else {
-    //   setSubArea([id]);
-    // }
-  };
-  // console.log(filterdCus);
-
-  const handleChangeStatus = (e) => {
-    setStatus(e.target.value);
+  // get specific customer Report
+  const getSpecificCustomerReport = (reportData) => {
+    setId(reportData);
   };
 
-  let subArea, customerStatus, customerPaymentStatus;
-  if (singleArea && cusSearch) {
-    subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
-  }
-
-  if (status) {
-    const splitStatus = status.split(".")[1];
-    if (splitStatus === "active") {
-      customerStatus = "এক্টিভ";
-    } else if (splitStatus === "inactive") {
-      customerStatus = "ইনএক্টিভ";
-    }
-  }
-  console.log({ customerStatus, paymentStatus });
-
-  if (paymentStatus) {
-    const splitStatus = paymentStatus.split(".")[1];
-    if (splitStatus === "unpaid") {
-      customerPaymentStatus = "বকেয়া";
-    } else if (splitStatus === "paid") {
-      customerPaymentStatus = "পরিশোধ";
-    } else if (splitStatus === "expired") {
-      customerPaymentStatus = "মেয়াদোত্তীর্ণ";
-    }
-  }
-
-  const filterData = {
-    area: singleArea?.name ? singleArea.name : "সকল এরিয়া",
-    subArea: subArea ? subArea.name : "সকল সাবএরিয়া",
-    status: customerStatus ? customerStatus : "সকল গ্রাহক",
-    payment: customerPaymentStatus ? customerPaymentStatus : "সকল গ্রাহক",
+  // DELETE handler
+  const deleteCustomer = async (ID) => {
+    setIsDeleting(true);
+    const IDs = {
+      ispID: ispOwner,
+      customerID: ID,
+    };
+    deleteACustomer(dispatch, IDs);
+    setIsDeleting(false);
   };
 
   const columns = React.useMemo(
@@ -338,6 +333,10 @@ export default function Customer() {
       {
         Header: "নাম",
         accessor: "name",
+      },
+      {
+        Header: "PPPoE",
+        accessor: "pppoe.name",
       },
       {
         Header: "মোবাইল",
@@ -358,10 +357,10 @@ export default function Customer() {
           return badge(value);
         },
       },
-      {
-        Header: "	প্যাকেজ",
-        accessor: "pppoe.profile",
-      },
+      // {
+      //   Header: "	প্যাকেজ",
+      //   accessor: "pppoe.profile",
+      // },
       {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
@@ -374,7 +373,7 @@ export default function Customer() {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("DD-MM-YY hh:mm A");
         },
       },
 
@@ -564,7 +563,9 @@ export default function Customer() {
                           </option>
                           <option value="status.active">এক্টিভ</option>
                           <option value="status.inactive">ইন-এক্টিভ</option>
+                          <option value="status.expired">এক্সপায়ার্ড</option>
                         </select>
+
                         <select
                           className="form-select"
                           onChange={handleActiveFilter}
@@ -572,11 +573,8 @@ export default function Customer() {
                           <option value="" defaultValue>
                             পেমেন্ট
                           </option>
-                          <option value="paymentStatus.unpaid">বকেয়া</option>
-                          <option value="paymentStatus.paid">পরিশোধ</option>
-                          <option value="paymentStatus.expired">
-                            মেয়াদোত্তীর্ণ
-                          </option>
+                          <option value="paymentStatus.paid">পেইড</option>
+                          <option value="paymentStatus.unpaid">আন-পেইড</option>
                         </select>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
@@ -636,12 +634,16 @@ export default function Customer() {
                   <div style={{ display: "none" }}>
                     <PrintCustomer
                       filterData={filterData}
-                      currentCustomers={currentCustomers}
+                      currentCustomers={Customers}
                       ref={componentRef}
                     />
                   </div>
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={Customers}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

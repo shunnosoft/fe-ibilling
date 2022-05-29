@@ -14,7 +14,7 @@ const staffSlice = createSlice({
       state.staff.push(action.payload);
     },
     editStaff: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.staff[
         state.staff.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;

@@ -17,7 +17,7 @@ function ReactModal() {
   const [isAgreed, setAgreed] = useState(false);
   // console.log(isAgreed);
 
-  const alertModalData = useSelector((state) => state.ui.alertModalData);
+  const alertModalData = useSelector((state) => state?.ui?.alertModalData);
 
   const modalHandle = () => {
     if (alertModalData.paymentUrl) {

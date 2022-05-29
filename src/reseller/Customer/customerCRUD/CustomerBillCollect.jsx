@@ -12,17 +12,17 @@ import Loader from "../../../components/common/Loader";
 export default function CustomerBillCollect({ single }) {
   const [billType, setBillType] = useState("bill");
 
-  // const [defaultAmount, setDefault] = useState(single.monthlyFee);
+  // const [defaultAmount, setDefault] = useState(single?.monthlyFee);
   const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
 
   const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
+    (state) => state?.persistedReducer?.auth?.currentUser
   );
 
   const currentUserId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+    (state) => state?.persistedReducer?.auth?.userData?.id
   );
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ export default function CustomerBillCollect({ single }) {
       amount: data.amount,
       collectedBy: currentUser?.user.role,
       billType: billType,
-      customer: single.id,
+      customer: single?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
@@ -76,8 +76,8 @@ export default function CustomerBillCollect({ single }) {
                   initialValues={{
                     amount:
                       single?.balance < single?.monthlyFee
-                        ? single.monthlyFee - single.balance
-                        : single.monthlyFee,
+                        ? single?.monthlyFee - single?.balance
+                        : single?.monthlyFee,
                     // collectorId,customer,ispOwner
                   }}
                   validationSchema={BillValidatoin}
@@ -88,8 +88,8 @@ export default function CustomerBillCollect({ single }) {
                 >
                   {() => (
                     <Form>
-                      <h4>Name:{single.name}</h4>
-                      <h4>ID:{single.customerId}</h4>
+                      <h4>Name:{single?.name}</h4>
+                      <h4>ID:{single?.customerId}</h4>
 
                       <FtextField type="number" name="amount" label="পরিমান" />
                       <label>ধরণ</label>

@@ -12,6 +12,7 @@ import {
   PersonSquare,
   PersonCheckFill,
   BagCheckFill,
+  PersonLinesFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -32,6 +33,7 @@ import {
   fetchActivepppoeUser,
   fetchMikrotik,
   fetchMikrotikSyncUser,
+  syncMikrotikStaticUser,
   fetchpppoePackage,
   fetchpppoeUser,
   fetchPackagefromDatabase,
@@ -52,7 +54,7 @@ export default function ConfigMikrotik() {
   let serial3 = 0;
   const { ispOwner, mikrotikId } = useParams();
   const mikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   const singleMik = mikrotik.find((item) => item.id === mikrotikId)
     ? mikrotik.find((item) => item.id === mikrotikId)
@@ -62,17 +64,16 @@ export default function ConfigMikrotik() {
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
   const allMikrotikUsers = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
-
   const activeUser = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeActiveUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
   const pppoePackage = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoePackage
+    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
   const mtkIsLoading = useSelector(
-    (state) => state.persistedReducer.mikrotik.isLoading
+    (state) => state?.persistedReducer?.mikrotik?.isLoading
   );
   // const mikrotikSyncUser = useSelector(
   //   state => state.mikrotik.mikrotikSyncUser
@@ -124,8 +125,8 @@ export default function ConfigMikrotik() {
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
     if (pppoePackage.length !== undefined) {
-      const temp = pppoePackage.find((val) => {
-        return val.id === id;
+      const temp = pppoePackage.find((original) => {
+        return original.id === id;
       });
       setSinglePackage(temp);
     }
@@ -180,7 +181,7 @@ export default function ConfigMikrotik() {
   };
 
   const selectMikrotikOptionsHandler = (e) => {
-    const val = e.target.value;
+    const original = e.target.value;
 
     const IDs = {
       ispOwner: ispOwner,
@@ -189,18 +190,18 @@ export default function ConfigMikrotik() {
 
     dispatch(resetMikrotikUserAndPackage());
 
-    if (val === "showActiveMikrotikUser") {
+    if (original === "showActiveMikrotikUser") {
       fetchActivepppoeUser(dispatch, IDs, singleMik?.name);
       setWhatYouWantToShow("showActiveMikrotikUser");
-    } else if (val === "showAllMikrotikUser") {
+    } else if (original === "showAllMikrotikUser") {
       fetchpppoeUser(dispatch, IDs, singleMik?.name);
       setWhatYouWantToShow("showAllMikrotikUser");
-    } else if (val === "showMikrotikPackage") {
+    } else if (original === "showMikrotikPackage") {
       fetchPackagefromDatabase(dispatch, IDs, singleMik?.name);
       setWhatYouWantToShow("showMikrotikPackage");
     }
 
-    // setWhatYouWantToShow(val);
+    // setWhatYouWantToShow(original);
   };
 
   const syncCustomer = () => {
@@ -210,6 +211,18 @@ export default function ConfigMikrotik() {
         mikrotikId: mikrotikId,
       };
       fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
+    }
+  };
+
+  const syncStaticCustomer = () => {
+    if (
+      window.confirm("আপনি কি মাইক্রোটিকের স্ট্যাটিক গ্রাহক সিংক করতে চান?")
+    ) {
+      const IDs = {
+        ispOwner: ispOwner,
+        mikrotikId: mikrotikId,
+      };
+      syncMikrotikStaticUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
     }
   };
   const syncPackage = () => {
@@ -250,6 +263,13 @@ export default function ConfigMikrotik() {
               justifyContent: "center",
             }}
           >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
             <ul
               className="dropdown-menu"
               aria-labelledby="pppoePackageDropdown"
@@ -307,26 +327,26 @@ export default function ConfigMikrotik() {
       {
         Header: "RX",
         accessor: "rxByte",
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(val.rxByte / 1024 / 1024).toFixed(2) + " MB"}
+            {(original.rxByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
       {
         Header: "TX",
         accessor: "txByte",
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(val.txByte / 1024 / 1024).toFixed(2) + " MB"}
+            {(original.txByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
@@ -335,13 +355,13 @@ export default function ConfigMikrotik() {
         Header: "আপ টাইম",
         accessor: "uptime",
 
-        Cell: ({ row: { val } }) => (
+        Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {val.uptime
+            {original.uptime
               .replace("w", "w ")
               .replace("d", "d ")
               .replace("h", "h ")
@@ -466,6 +486,20 @@ export default function ConfigMikrotik() {
                             </button>
                           )}
 
+                          {mtkIsLoading ? (
+                            <span>
+                              <Loader />
+                            </span>
+                          ) : (
+                            <button
+                              onClick={syncStaticCustomer}
+                              title="স্ট্যাটিক গ্রাহক সিংক"
+                              className="addcutmButton btnbyEnamul"
+                            >
+                              <PersonLinesFill />
+                            </button>
+                          )}
+
                           {/* {isLoading ? (
                             <div className="deletingAction">
                               <Loader /> <b>Deleting...</b>
@@ -520,7 +554,7 @@ export default function ConfigMikrotik() {
                         <h2 style={{ width: "100%", textAlign: "center" }}>
                           প্যাকেজ
                         </h2>
-                        <Table columns={columns1} data={activeUser}></Table>
+                        <Table columns={columns1} data={pppoePackage}></Table>
                       </>
                     ) : (
                       ""

@@ -12,12 +12,15 @@ import rechargeSlice from "../features/rechargeSlice";
 import invoiceSlice from "../features/invoiceSlice";
 import packageSlice from "../features/packageSlice";
 import adminSlice from "../features/adminSlice";
+import ispOwnerInvoiceSlice from "../features/ispOwnerInvoiceSlice";
 import uiSlice from "../features/uiSlice";
 import expenditureSlice from "../features/expenditureSlice";
 import staffSlice from "../features/staffSlice";
 
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import resellerParchaseSmsSlice from "../features/resellerParchaseSmsSlice";
+import resellerSmsRequestSlice from "../features/resellerSmsRequestSlice";
 
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
@@ -38,6 +41,8 @@ const rootReducer = combineReducers({
   recharge: rechargeSlice,
   invoice: invoiceSlice,
   staff: staffSlice,
+  smsHistory: resellerParchaseSmsSlice,
+  resellerSmsRequest: resellerSmsRequestSlice,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -47,6 +52,7 @@ const store = configureStore({
     ui: uiSlice,
     package: packageSlice,
     admin: adminSlice,
+    ownerInvoice: ispOwnerInvoiceSlice,
     expenditure: expenditureSlice,
   },
 

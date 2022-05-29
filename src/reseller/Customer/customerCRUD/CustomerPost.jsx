@@ -14,14 +14,14 @@ import {
 } from "../../../features/apiCallReseller";
 import moment from "moment";
 export default function CustomerModal() {
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const userData = useSelector((state) => state?.persistedReducer?.auth?.userData);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
 
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   const ppPackage = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoePackage
+    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -118,7 +118,7 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    console.log(mainData);
+    // console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -274,6 +274,7 @@ export default function CustomerModal() {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"

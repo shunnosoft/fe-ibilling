@@ -42,18 +42,21 @@ import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 
 export default function Customer() {
-  const cus = useSelector((state) => state.persistedReducer.customer.customer);
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const cus = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
+
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const resellerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+    (state) => state?.persistedReducer?.auth?.userData?.id
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
+    (state) => state?.persistedReducer?.auth?.userData?.permission
   );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
@@ -62,55 +65,63 @@ export default function Customer() {
   const [singleCustomer, setSingleCustomer] = useState("");
   // const [cusId, setSingleCustomerReport] = useState("");
   // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [customerPerPage, setCustomerPerPage] = useState(50);
+  // const lastIndex = currentPage * customerPerPage;
+  // const firstIndex = lastIndex - customerPerPage;
 
-  const currentCustomers = Customers.slice(firstIndex, lastIndex);
-  const subAreas = useSelector((state) => state.persistedReducer.area.area);
+  // const currentCustomers = Customers
+  const subAreas = useSelector((state) => state?.persistedReducer?.area?.area);
   const userData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser
+    (state) => state?.persistedReducer?.auth?.currentUser
   );
 
   // paginate call Back function -> response from paginate component
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  useEffect(() => {
-    const keys = [
-      "monthlyFee",
-      "customerId",
-      "name",
-      "mobile",
-      "address",
-      "paymentStatus",
-      "status",
-      "balance",
-      "subArea",
-    ];
-    setCustomers(
-      (isFilterRunning ? filterdCus : cus).filter((item) =>
-        keys.some((key) =>
-          typeof item[key] === "string"
-            ? item[key].toString().toLowerCase().includes(cusSearch)
-            : item[key].toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cus, cusSearch, filterdCus, isFilterRunning]);
+  // const paginate = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
+
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [status, setStatus] = useState("");
+  const [subAreaId, setSubAreaId] = useState("");
 
   //   filter
-  const handleActiveFilter = (e) => {
-    setRunning(true);
-    let fvalue = e.target.value;
-    const field = fvalue.split(".")[0];
-    const subfield = fvalue.split(".")[1];
-
-    const filterdData = cus.filter((item) => item[field] === subfield);
-
-    setFilter(filterdData);
+  const handleSubAreaChange = (id) => {
+    setSubAreaId(id);
   };
+
+  const handlePaymentChange = (e) => {
+    setPaymentStatus(e.target.value);
+  };
+
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
+
+  useEffect(() => {
+    let tempCustomers = cus;
+
+    if (subAreaId) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.subArea == subAreaId
+      );
+    }
+
+    if (status) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.status == status
+      );
+    }
+
+    if (paymentStatus) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.paymentStatus == paymentStatus
+      );
+    }
+
+    setCustomers(tempCustomers);
+  }, [cus, paymentStatus, status, subAreaId]);
+
   // get specific customer
   const getSpecificCustomer = (id) => {
     if (cus.length !== undefined) {
@@ -183,6 +194,7 @@ export default function Customer() {
     //   setSubArea([id]);
     // }
   };
+
   const columns = React.useMemo(
     () => [
       {
@@ -192,6 +204,10 @@ export default function Customer() {
       {
         Header: "নাম",
         accessor: "name",
+      },
+      {
+        Header: "PPPoE",
+        accessor: "pppoe.name",
       },
       {
         Header: "মোবাইল",
@@ -212,10 +228,10 @@ export default function Customer() {
           return badge(value);
         },
       },
-      {
-        Header: "	প্যাকেজ",
-        accessor: "pppoe.profile",
-      },
+      // {
+      //   Header: "	প্যাকেজ",
+      //   accessor: "pppoe.profile",
+      // },
       {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
@@ -227,6 +243,9 @@ export default function Customer() {
       {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD-MM-YY hh:mm A");
+        },
       },
 
       {
@@ -373,10 +392,10 @@ export default function Customer() {
                         {/* //Todo */}
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeSubArea(e.target.value)}
+                          onChange={(e) => handleSubAreaChange(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            সাব এরিয়া
+                            এরিয়া
                           </option>
                           {subAreas?.map((sub, key) => (
                             <option key={key} value={sub.id}>
@@ -386,26 +405,24 @@ export default function Customer() {
                         </select>
                         <select
                           className="form-select"
-                          onChange={handleActiveFilter}
+                          onChange={handleStatusChange}
                         >
                           <option value="" defaultValue>
                             স্ট্যাটাস
                           </option>
-                          <option value="status.active">এক্টিভ</option>
-                          <option value="status.inactive">ইনএক্টিভ</option>
+                          <option value="active">এক্টিভ</option>
+                          <option value="inactive">ইন-এক্টিভ</option>
+                          <option value="expired">এক্সপায়ার্ড</option>
                         </select>
                         <select
                           className="form-select"
-                          onChange={handleActiveFilter}
+                          onChange={handlePaymentChange}
                         >
                           <option value="" defaultValue>
                             পেমেন্ট
                           </option>
-                          <option value="paymentStatus.unpaid">বকেয়া</option>
-                          <option value="paymentStatus.paid">পরিশোধ</option>
-                          <option value="paymentStatus.expired">
-                            মেয়াদোত্তীর্ণ
-                          </option>
+                          <option value="paid">পেইড</option>
+                          <option value="unpaid">আন-পেইড</option>
                         </select>
                       </div>
 
@@ -429,7 +446,11 @@ export default function Customer() {
                     )}
                   </div>
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={Customers}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

@@ -37,8 +37,8 @@ export default function StaffSalaryPostModal({ staffId }) {
       ispOwner,
       staff: staffId,
     };
-    console.log(sendingData);
-    addSalaryApi(dispatch, sendingData,resetForm, setIsLoading);
+    // console.log(sendingData);
+    addSalaryApi(dispatch, sendingData, resetForm, setIsLoading);
   };
 
   return (

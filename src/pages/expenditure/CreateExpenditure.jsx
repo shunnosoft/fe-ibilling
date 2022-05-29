@@ -29,7 +29,7 @@ export default function CreateExpenditure() {
   // useEffect(() => {
   // }, [ispOwnerId, dispatch]);
   const handleSelect = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setPourpose(e.target.value);
   };
   const expenditureHandler = async (formdata, resetForm) => {

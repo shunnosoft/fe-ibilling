@@ -4,7 +4,6 @@ import {
   ThreeDots,
   PersonFill,
   PenFill,
-  Table,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +22,7 @@ import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector, getSubAreas } from "../../features/apiCallReseller";
+import Table from "../../components/table/Table";
 
 export default function Collector() {
   const dispatch = useDispatch();
@@ -35,6 +35,7 @@ export default function Collector() {
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [collectorPerPage, setCollectorPerPage] = useState(5);
+  const [isLoading, setIsloading] = useState(false);
   const lastIndex = currentPage * collectorPerPage;
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
@@ -226,7 +227,11 @@ export default function Collector() {
                     </div>
                   </div>
                   {/* table */}
-                  <Table columns={columns} data={collector}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={collector}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

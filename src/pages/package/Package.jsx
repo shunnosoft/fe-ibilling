@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ThreeDots, PersonFill, PenFill, PlusLg } from "react-bootstrap-icons";
+import {
+  ThreeDots,
+  PersonFill,
+  PenFill,
+  PlusLg,
+  ArchiveFill,
+} from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,6 +22,7 @@ import TdLoader from "../../components/common/TdLoader";
 import { getPackagewithoutmikrotik } from "../../features/apiCalls";
 import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
+import Table from "../../components/table/Table";
 
 // import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 
@@ -46,33 +53,84 @@ export default function Package() {
     setSinglePackage(val);
   };
 
-  // DELETE collector
-  // const deleteCollectorHandler = async (ID) => {
-  //   const IDs = { ispOwnerId, collectorId: ID };
-  //   deleteCollector(dispatch, IDs, setIsDeleting);
-  // };
-  // console.log(allCollector)
-
-  // useEffect(() => {
-  //   const keys = ["name", "mobile", "email"];
-  //   if (collSearch !== "") {
-  //     setCollector(
-  //       collector.filter((item) =>
-  //         keys.some((key) =>
-  //           typeof item[key] === "string"
-  //             ? item[key].toLowerCase().includes(collSearch)
-  //             : item[key].toString().includes(collSearch)
-  //         )
-  //       )
-  //     );
-  //   } else {
-  //     setCollector(collector);
-  //   }
-  // }, [collSearch, collector]);
-
   const searchHandler = (e) => {
     setCollSearch(e.toString().toLowerCase());
   };
+  const deletePackageHandler = (e) => {
+    // console.log(e);
+  };
+  const columns1 = React.useMemo(
+    () => [
+      {
+        Header: "সিরিয়াল",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "প্যাকেজ",
+        accessor: "name",
+      },
+      {
+        Header: "রেট",
+        accessor: "rate",
+      },
+
+      {
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              {
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#editPackage"
+                  onClick={() => {
+                    getSpecificPackage(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">এডিট</p>
+                    </div>
+                  </div>
+                </li>
+              }
+              <li
+                onClick={() => {
+                  deletePackageHandler(original.id);
+                }}
+              >
+                <div className="dropdown-item actionManager">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">ডিলিট</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
   return (
     <>
       <CreatePackage></CreatePackage>
@@ -83,7 +141,7 @@ export default function Package() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">প্যাকেজ</h2>
+              <h2 className="collectorTitle">প্যাকেজ </h2>
 
               <FourGround>
                 <div className="collectorWrapper">
@@ -103,125 +161,9 @@ export default function Package() {
                         </div>
                       </div>
                     )}
-
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          মোট প্যাকেজ:
-                          <span>{packages?.length || ""}</span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ করুন"
-                            onChange={(e) => searchHandler(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <th>সিরিয়াল</th>
-                          <th>নাম</th>
-                          <th>প্যাকেজ রেট</th>
-
-                          {role === "ispOwner" && (
-                            <th className="centeringTD">অ্যাকশন</th>
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {collector?.length === undefined ? (
-                          <tr>
-                            <TdLoader colspan={5} />
-                          </tr>
-                        ) : (
-                          packages?.map((val, key) => (
-                            <tr key={key}>
-                              <td>{++serial}</td>
-                              <td>{val.name}</td>
-                              <td>{val.rate}</td>
-
-                              {role === "ispOwner" && (
-                                <td className="centeringTD">
-                                  <ThreeDots
-                                    className="dropdown-toggle ActionDots"
-                                    id="customerDrop"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  />
-
-                                  {/* modal */}
-
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="customerDrop"
-                                  >
-                                    {
-                                      <li
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editPackage"
-                                        onClick={() => {
-                                          getSpecificPackage(val);
-                                        }}
-                                      >
-                                        <div className="dropdown-item">
-                                          <div className="customerAction">
-                                            <PenFill />
-                                            <p className="actionP">এডিট</p>
-                                          </div>
-                                        </div>
-                                      </li>
-                                    }
-                                    {/* {role==="ispOwner"? <li
-                                      onClick={() => {
-                                        deleteCollectorHandler(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>:""} */}
-                                  </ul>
-
-                                  {/* end */}
-                                </td>
-                              )}
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                  {/* Pagination */}
-                  {/* <div className="paginationSection">
-                    <select
-                      className="form-select paginationFormSelect"
-                      aria-label="Default select example"
-                      onChange={(e) => setCollectorPerPage(e.target.value)}
-                    >
-                      <option value="5">৫ জন</option>
-                      <option value="10">১০ জন</option>
-                      <option value="100">১০০ জন</option>
-                    </select>
-                    <Pagination
-                      customerPerPage={collectorPerPage}
-                      totalCustomers={collector.length}
-                      paginate={paginate}
-                    />
-                  </div> */}
+                  <Table columns={columns1} data={packages}></Table>
                 </div>
               </FourGround>
               <Footer />

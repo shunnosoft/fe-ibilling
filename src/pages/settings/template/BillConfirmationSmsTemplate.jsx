@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
+import { smsCount } from "../../../components/common/UtilityMethods";
+
 function BillConfirmationSmsTemplate() {
   const [loading, setLoading] = useState(false);
   const [totalText, setTotalText] = useState("");
@@ -14,7 +16,7 @@ function BillConfirmationSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
+  // console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -104,20 +106,20 @@ function BillConfirmationSmsTemplate() {
   }, [matchFound, bottomText, upperText]);
   useEffect(() => {
     const fixedvalues = [
-      "ইউজারনেমঃ USERNAME",
-      "ইউজার আইডিঃ USERID",
-      "গ্রাহকঃ NAME",
-      "বিলঃ AMOUNT",
-      "তারিখঃ DATE",
+      "USER: USERNAME",
+      "ID: CUSTOMER_ID",
+      "NAME: CUSTOMER_NAME",
+      "BILL: AMOUNT",
+      "LAST DATE: BILL_DATE",
     ];
     var found = [];
 
     let messageBoxStr = settings?.sms?.template?.billConfirmation
-      ?.replace("ইউজারনেমঃ USERNAME", "")
-      .replace("ইউজার আইডিঃ USERID", "")
-      .replace("গ্রাহকঃ NAME", "")
-      .replace("বিলঃ AMOUNT", "")
-      .replace("তারিখঃ DATE", "");
+      ?.replace("USER: USERNAME", "")
+      .replace("ID: CUSTOMER_ID", "")
+      .replace("NAME: CUSTOMER_NAME", "")
+      .replace("BILL: AMOUNT", "")
+      .replace("LAST DATE: BILL_DATE", "");
 
     setBottomText(messageBoxStr?.trim());
 
@@ -182,14 +184,14 @@ function BillConfirmationSmsTemplate() {
                   id="1"
                   type="checkbox"
                   className="getValueUsingClass"
-                  value={"ইউজারনেমঃ USERNAME"}
-                  checked={matchFound.includes("ইউজারনেমঃ USERNAME")}
+                  value={"USER: USERNAME"}
+                  checked={matchFound.includes("USER: USERNAME")}
                   onChange={(e) => {
                     itemSettingHandler(e.target.value);
                   }}
                 />
                 <label className="templatelabel" htmlFor="1">
-                  {"ইউজারনেমঃ USERNAME"}
+                  {"USER: USERNAME"}
                 </label>
               </div>
               <div className="radioselect">
@@ -197,14 +199,14 @@ function BillConfirmationSmsTemplate() {
                   id="2"
                   type="checkbox"
                   className="getValueUsingClass"
-                  checked={matchFound.includes("ইউজার আইডিঃ USERID")}
-                  value={"ইউজার আইডিঃ USERID"}
+                  checked={matchFound.includes("ID: CUSTOMER_ID")}
+                  value={"ID: CUSTOMER_ID"}
                   onChange={(e) => {
                     itemSettingHandler(e.target.value);
                   }}
                 />
                 <label className="templatelabel" htmlFor="2">
-                  {"ইউজার আইডিঃ USERID"}
+                  {"ID: CUSTOMER_ID"}
                 </label>
               </div>
               <div className="radioselect">
@@ -212,14 +214,14 @@ function BillConfirmationSmsTemplate() {
                   id="3"
                   type="checkbox"
                   className="getValueUsingClass"
-                  checked={matchFound.includes("গ্রাহকঃ NAME")}
-                  value={"গ্রাহকঃ NAME"}
+                  checked={matchFound.includes("NAME: CUSTOMER_NAME")}
+                  value={"NAME: CUSTOMER_NAME"}
                   onChange={(e) => {
                     itemSettingHandler(e.target.value);
                   }}
                 />
                 <label className="templatelabel" htmlFor="3">
-                  {"গ্রাহকঃ NAME"}
+                  {"NAME: CUSTOMER_NAME"}
                 </label>
               </div>
               <div className="radioselect">
@@ -227,14 +229,14 @@ function BillConfirmationSmsTemplate() {
                   id="4"
                   type="checkbox"
                   className="getValueUsingClass"
-                  checked={matchFound.includes("বিলঃ AMOUNT")}
-                  value={"বিলঃ AMOUNT"}
+                  checked={matchFound.includes("BILL: AMOUNT")}
+                  value={"BILL: AMOUNT"}
                   onChange={(e) => {
                     itemSettingHandler(e.target.value);
                   }}
                 />
                 <label className="templatelabel" htmlFor="4">
-                  {"বিলঃ AMOUNT"}
+                  {"BILL: AMOUNT"}
                 </label>
               </div>
               {/* <div className="radioselect">
@@ -242,14 +244,14 @@ function BillConfirmationSmsTemplate() {
                   id="5"
                   type="checkbox"
                   className="getValueUsingClass"
-                  checked={matchFound.includes("তারিখঃ DATE")}
-                  value={"তারিখঃ DATE"}
+                  checked={matchFound.includes("LAST DATE: BILL_DATE")}
+                  value={"LAST DATE: BILL_DATE"}
                   onChange={(e) => {
                     itemSettingHandler(e.target.value);
                   }}
                 />
                 <label className="templatelabel" htmlFor="5">
-                  {"তারিখঃ DATE"}
+                  {"LAST DATE: BILL_DATE"}
                 </label>
               </div> */}
             </div>
@@ -258,9 +260,7 @@ function BillConfirmationSmsTemplate() {
             <span className="smsLength">
               অক্ষরঃ {(matchFound + bottomText).length}
             </span>
-            <span>
-              SMS: {Math.ceil([...(matchFound + bottomText)].length / 67)}
-            </span>
+            <span>SMS: {smsCount(matchFound + bottomText)}</span>
           </div>
 
           <textarea

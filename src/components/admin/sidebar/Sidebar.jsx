@@ -19,7 +19,8 @@ import {
   Gear,
   PersonCheck,
   CashStack,
-  PersonFill,
+  Envelope,
+  ChatDots,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -27,13 +28,15 @@ import activeClass from "../../../assets/css/active.module.css";
 import { useSelector } from "react-redux";
 
 export default function Sidebar() {
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  const user = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const user = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser
+  );
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   const getIspOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData
+    (state) => state?.persistedReducer?.auth?.ispOwnerData
   );
   // const hasReseller= true
   // addSidebar
@@ -240,6 +243,30 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
+              <NavLink
+                key={60}
+                to={"/staticCustomer"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/staticCustomer"
+                        ? "active"
+                        : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<PeopleFill />}</div>
+                    <span className="sidebarLinksName">
+                      {"স্ট্যাটিক গ্রাহক"}
+                    </span>
+                  </li>
+                </FontColor>
+              </NavLink>
+
               {bpSettings?.hasMikrotik &&
               (userRole === "ispOwner" || userRole === "manager") ? (
                 <NavLink
@@ -435,6 +462,42 @@ export default function Sidebar() {
                 ""
               )}
 
+              {
+                /*(userRole === "ispOwner" && bpSettings?.hasReseller) ||*/
+                userRole === "reseller" ? (
+                  <NavLink
+                    key={71}
+                    to={
+                      userRole === "reseller"
+                        ? "/reseller/sms-receharge"
+                        : "/recharge"
+                    }
+                    className={(navInfo) =>
+                      navInfo.isActive ? activeClass.active : ""
+                    }
+                  >
+                    <FontColor>
+                      <li
+                        className="sidebarItems"
+                        id={
+                          window.location.pathname ===
+                          (userRole === "reseller"
+                            ? "/reseller/sms-receharge"
+                            : "/recharge")
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        <div className="sidebarIcon">{<Envelope />}</div>
+                        <span className="sidebarLinksName">{"মেসেজ"}</span>
+                      </li>
+                    </FontColor>
+                  </NavLink>
+                ) : (
+                  ""
+                )
+              }
+
               {userRole === "ispOwner" ? (
                 <NavLink
                   key={99}
@@ -452,6 +515,34 @@ export default function Sidebar() {
                     >
                       <div className="sidebarIcon">{<Messenger />}</div>
                       <span className="sidebarLinksName">{"মেসেজ"}</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              ) : (
+                ""
+              )}
+
+              {userRole === "ispOwner" ? (
+                <NavLink
+                  key={91}
+                  to={"/message-request"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/message-request"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<ChatDots />}</div>
+                      <span className="sidebarLinksName">
+                        {"মেসেজ রিকোয়েস্ট"}
+                      </span>
                     </li>
                   </FontColor>
                 </NavLink>
