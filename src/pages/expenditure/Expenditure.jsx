@@ -335,8 +335,8 @@ export default function Expenditure() {
                   {/* print report */}
                   <div style={{ display: "none" }}>
                     <PrintExpenditure
-                      allExpenditures={allExpenditures}
                       ref={componentRef}
+                      allExpenditures={allExpenditures}
                     />
                   </div>
                   {/* print report end*/}

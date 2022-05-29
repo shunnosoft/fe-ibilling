@@ -5,7 +5,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
 
 let serial = 0;
-let seriall = 0;
+
 
 const PrintExpenditure = React.forwardRef((props, ref) => {
   const { allExpenditures } = props;
