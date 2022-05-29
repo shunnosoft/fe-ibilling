@@ -637,7 +637,8 @@ export const mikrotikTesting = async (IDs) => {
 };
 
 // get PPPoE user
-export const fetchpppoeUser = async (dispatch, IDs, mtkName) => {
+export const fetchpppoeUser = async (dispatch, IDs, mtkName, setIsLoading) => {
+  setIsLoading(true);
   dispatch(resetpppoeUser());
   dispatch(mtkIsLoading(true));
   try {
@@ -667,18 +668,26 @@ export const fetchpppoeUser = async (dispatch, IDs, mtkName) => {
 
     dispatch(getpppoeUserSuccess(temp));
     dispatch(mtkIsLoading(false));
+    setIsLoading(false);
   } catch (error) {
-    console.log(error);
+    setIsLoading(false);
+
     dispatch(mtkIsLoading(false));
     toast.error(`${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`);
   }
 };
 
 // get PPPoE Active user
-export const fetchActivepppoeUser = async (dispatch, IDs, mtkName) => {
+export const fetchActivepppoeUser = async (
+  dispatch,
+  IDs,
+  mtkName,
+  setIsLoading
+) => {
   dispatch(resetpppoeActiveUser());
   dispatch(mtkIsLoading(true));
   try {
+    setIsLoading(true);
     const res = await apiLink({
       method: "GET",
       url: `/mikrotik/PPPactiveUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
@@ -701,7 +710,10 @@ export const fetchActivepppoeUser = async (dispatch, IDs, mtkName) => {
     // console.log(temp);
     dispatch(getpppoeActiveUserSuccess(temp));
     dispatch(mtkIsLoading(false));
+    setIsLoading(false);
   } catch (error) {
+    setIsLoading(false);
+
     dispatch(mtkIsLoading(false));
     toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
   }
