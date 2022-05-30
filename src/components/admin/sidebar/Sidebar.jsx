@@ -243,30 +243,6 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              <NavLink
-                key={60}
-                to={"/staticCustomer"}
-                className={(navInfo) =>
-                  navInfo.isActive ? activeClass.active : ""
-                }
-              >
-                <FontColor>
-                  <li
-                    className="sidebarItems"
-                    id={
-                      window.location.pathname === "/staticCustomer"
-                        ? "active"
-                        : ""
-                    }
-                  >
-                    <div className="sidebarIcon">{<PeopleFill />}</div>
-                    <span className="sidebarLinksName">
-                      {"স্ট্যাটিক গ্রাহক"}
-                    </span>
-                  </li>
-                </FontColor>
-              </NavLink>
-
               {bpSettings?.hasMikrotik &&
               (userRole === "ispOwner" || userRole === "manager") ? (
                 <NavLink
@@ -295,6 +271,54 @@ export default function Sidebar() {
               ) : (
                 ""
               )}
+
+              <NavLink
+                key={60}
+                to={"/staticCustomer"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/staticCustomer"
+                        ? "active"
+                        : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<PeopleFill />}</div>
+                    <span className="sidebarLinksName">
+                      {"স্ট্যাটিক গ্রাহক"}
+                    </span>
+                  </li>
+                </FontColor>
+              </NavLink>
+
+              <NavLink
+                key={61}
+                to={"/staticActiveCustomer"}
+                className={(navInfo) =>
+                  navInfo.isActive ? activeClass.active : ""
+                }
+              >
+                <FontColor>
+                  <li
+                    className="sidebarItems"
+                    id={
+                      window.location.pathname === "/staticActiveCustomer"
+                        ? "active"
+                        : ""
+                    }
+                  >
+                    <div className="sidebarIcon">{<PeopleFill />}</div>
+                    <span className="sidebarLinksName">
+                      {"স্ট্যাটিক এক্টিভ গ্রাহক"}
+                    </span>
+                  </li>
+                </FontColor>
+              </NavLink>
 
               <NavLink
                 key={8}

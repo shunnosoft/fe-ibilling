@@ -67,6 +67,7 @@ import RecehargeSMS from "./pages/reseller/smsRecharge/RecehargeSMS";
 import StaticCustomer from "./pages/staticCustomer/StaticCustomer";
 import PackageSetting from "./pages/staticCustomer/PakageSetting";
 import ResellerSmsRequest from "./pages/resellerSMSrequest/ResellerSmsRequest";
+import StaticActiveCustomer from "./pages/staticActiveCustomer/StaticActiveCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -261,6 +262,19 @@ function App() {
                 userRole === "manager" ||
                 (userRole === "collector" && !user.collector.reseller) ? (
                   <StaticCustomer />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            <Route
+              path="/staticActiveCustomer"
+              element={
+                userRole === "ispOwner" ||
+                userRole === "manager" ||
+                (userRole === "collector" && !user.collector.reseller) ? (
+                  <StaticActiveCustomer />
                 ) : (
                   <Navigate to={"/home"} />
                 )

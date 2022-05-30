@@ -49,7 +49,6 @@ export default function Customer() {
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
-  console.log(cus);
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(

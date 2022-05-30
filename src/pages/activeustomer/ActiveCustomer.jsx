@@ -61,7 +61,7 @@ export default function ConfigMikrotik() {
     (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   // const [isDeleting, setIsDeleting] = useState(false);
 
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
@@ -73,7 +73,7 @@ export default function ConfigMikrotik() {
   );
   const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
     const name = mtkId ? singleMik?.name : "";
     setMikrotikId(mtkId);
@@ -84,7 +84,7 @@ export default function ConfigMikrotik() {
 
     if (mtkId) {
       dispatch(resetMikrotikUserAndPackage());
-      fetchActivepppoeUser(dispatch, IDs, name);
+      fetchActivepppoeUser(dispatch, IDs, name, setLoading);
     }
   }, [ispOwnerId, selectedMikrotikId, dispatch, mikrotik]);
 
@@ -99,10 +99,10 @@ export default function ConfigMikrotik() {
     dispatch(resetMikrotikUserAndPackage());
 
     if (original === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name);
+      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (original === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name);
+      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
       setWhatYouWantToShow("showAllMikrotikUser");
     }
 
@@ -121,9 +121,9 @@ export default function ConfigMikrotik() {
 
     dispatch(resetMikrotikUserAndPackage());
     if (whatYouWantToShow === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name);
+      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
     } else if (whatYouWantToShow === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name);
+      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
     }
   };
   const columns2 = React.useMemo(
@@ -277,6 +277,7 @@ export default function ConfigMikrotik() {
   useEffect(() => {
     setAllUsers(allMikrotikUsers);
   }, [allMikrotikUsers]);
+
   const filterIt = (e) => {
     let temp;
     if (e.target.value === "") {
@@ -289,6 +290,7 @@ export default function ConfigMikrotik() {
       setAllUsers(temp);
     }
   };
+  console.log({ loading });
   return (
     <>
       <Sidebar />
@@ -399,7 +401,12 @@ export default function ConfigMikrotik() {
                             <option value={"false"}>অফলাইন</option>;
                           </select>
                         </div>
-                        <Table columns={columns3} data={allUsers}></Table>
+
+                        <Table
+                          isLoading={loading}
+                          columns={columns3}
+                          data={allUsers}
+                        ></Table>
                       </>
                     ) : (
                       ""
