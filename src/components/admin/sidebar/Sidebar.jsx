@@ -238,7 +238,7 @@ export default function Sidebar() {
                     }
                   >
                     <div className="sidebarIcon">{<PeopleFill />}</div>
-                    <span className="sidebarLinksName">{"গ্রাহক"}</span>
+                    <span className="sidebarLinksName">{"পিপিওই গ্রাহক"}</span>
                   </li>
                 </FontColor>
               </NavLink>
@@ -263,7 +263,7 @@ export default function Sidebar() {
                     >
                       <div className="sidebarIcon">{<PersonCheck />}</div>
                       <span className="sidebarLinksName">
-                        {"এক্টিভ গ্রাহক"}
+                        {"পিপিওই এক্টিভ গ্রাহক"}
                       </span>
                     </li>
                   </FontColor>
@@ -288,7 +288,7 @@ export default function Sidebar() {
                         : ""
                     }
                   >
-                    <div className="sidebarIcon">{<PeopleFill />}</div>
+                    <div className="sidebarIcon">{<PersonBoundingBox />}</div>
                     <span className="sidebarLinksName">
                       {"স্ট্যাটিক গ্রাহক"}
                     </span>
@@ -312,7 +312,7 @@ export default function Sidebar() {
                         : ""
                     }
                   >
-                    <div className="sidebarIcon">{<PeopleFill />}</div>
+                    <div className="sidebarIcon">{<PersonCheck />}</div>
                     <span className="sidebarLinksName">
                       {"স্ট্যাটিক এক্টিভ গ্রাহক"}
                     </span>

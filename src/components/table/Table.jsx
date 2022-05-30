@@ -70,7 +70,7 @@ const Table = (props) => {
           </thead>
           {isLoading ? (
             <TdLoader colspan={columns.length} />
-          ) : (
+          ) : data.length > 0 ? (
             <tbody {...getTableBodyProps()}>
               {page.map((row) => {
                 prepareRow(row);
@@ -88,6 +88,12 @@ const Table = (props) => {
                 );
               })}
             </tbody>
+          ) : (
+            <tr>
+              <td colspan={columns.length}>
+                <h5 className="text-center">কোন ডাটা পাওয়া যাই নি !</h5>
+              </td>
+            </tr>
           )}
         </table>
       </div>

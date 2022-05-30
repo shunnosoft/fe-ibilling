@@ -7,25 +7,19 @@ import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getStaticCustomer } from "../../features/apiCalls";
 import moment from "moment";
-import CustomerDetails from "../Customer/customerCRUD/CustomerDetails";
-import CustomerBillCollect from "../Customer/customerCRUD/CustomerBillCollect";
-import CustomerReport from "../Customer/customerCRUD/showCustomerReport";
-import CustomerEdit from "../Customer/customerCRUD/CustomerEdit";
+import CustomerDetails from "../staticCustomer/customerCRUD/CustomerDetails";
+import CustomerBillCollect from "../staticCustomer/customerCRUD/CustomerBillCollect";
+import CustomerReport from "../staticCustomer/customerCRUD/showCustomerReport";
+import CustomerEdit from "../staticCustomer/customerCRUD/CustomerEdit";
 import Table from "../../components/table/Table";
 // get specific customer
 
 import {
-  PersonPlusFill,
   Wallet,
   ThreeDots,
-  ArchiveFill,
   PenFill,
   PersonFill,
-  ArrowDownUp,
-  ArrowRightShort,
   CashStack,
-  FileExcelFill,
-  PrinterFill,
 } from "react-bootstrap-icons";
 
 const StaticActiveCustomer = () => {
@@ -33,37 +27,39 @@ const StaticActiveCustomer = () => {
   const [isLoading, setIsloading] = useState(false);
   const [singleCustomer, setSingleCustomer] = useState("");
   const [customerReportData, setId] = useState([]);
+
+  // get user role
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+
+  // get user permission
   const permission = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
+
+  // get all static customer
   const staticActiveCustomer = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
-  console.log(staticActiveCustomer);
 
+  // get active static customer
   const data = staticActiveCustomer.filter((item) => item.queue.target);
-  console.log(data);
 
+  // get isp owner id
   const ispOwner = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-  console.log(ispOwner);
 
+  // api call for get update static customer
   useEffect(() => {
     getStaticCustomer(dispatch, ispOwner, setIsloading);
   }, []);
 
   // get specific customer
   const getSpecificCustomer = (id) => {
-    if (data.length !== undefined) {
-      const temp = data.find((original) => {
-        return original.id === id;
-      });
-      setSingleCustomer(temp);
-    }
+    setSingleCustomer(id);
   };
 
+  // customer report handle
   const getSpecificCustomerReport = (reportData) => {
     setId(reportData);
   };

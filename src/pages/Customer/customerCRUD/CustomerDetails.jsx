@@ -6,8 +6,14 @@ import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 
 export default function CustomerDetails({ single }) {
-  // const single = useSelector(state => state.customer.singleCustomer);
-  // console.log("Single: ", single);
+  // get all customer
+  const customer = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
+
+  // find editable data
+  const data = customer.find((item) => item.id === single);
+
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
@@ -28,7 +34,7 @@ export default function CustomerDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {single?.name} - প্রোফাইল
+                {data?.name} - প্রোফাইল
               </h5>
               <button
                 type="button"
@@ -38,53 +44,51 @@ export default function CustomerDetails({ single }) {
               ></button>
             </div>
             <div className="modal-body">
-              <h2 className="ProfileName">{single?.name}</h2>
+              <h2 className="ProfileName">{data?.name}</h2>
               <div className="profileMain">
                 <div>
                   <h5>গ্রাহক</h5>
                   <hr />
                   <h6>
-                    গ্রাহক আইডি: <b>{single?.customerId}</b>
+                    গ্রাহক আইডি: <b>{data?.customerId}</b>
                   </h6>
                   <h6>
-                    নাম: <b>{single?.name}</b>
+                    নাম: <b>{data?.name}</b>
                   </h6>
                   <h6>
-                    মোবাইল: <b>{single?.mobile}</b>
+                    মোবাইল: <b>{data?.mobile}</b>
                   </h6>
                   <h6>
-                    ঠিকানা: <b>{single?.address}</b>
+                    ঠিকানা: <b>{data?.address}</b>
                   </h6>
                   <h6>
-                    ইমেইল: <b> {single?.email}</b>
+                    ইমেইল: <b> {data?.email}</b>
                   </h6>
                   <h6>
-                    জাতীয় পরিচয়পত্র: <b>{single?.nid}</b>
+                    জাতীয় পরিচয়পত্র: <b>{data?.nid}</b>
                   </h6>
                   <h6>
-                    স্ট্যাটাস: <b>{badge(single?.status)}</b>
+                    স্ট্যাটাস: <b>{badge(data?.status)}</b>
                   </h6>
                   <h6>
-                    পেমেন্ট: <b>{badge(single?.paymentStatus)}</b>
+                    পেমেন্ট: <b>{badge(data?.paymentStatus)}</b>
                   </h6>
                   <h6>
-                    মাসিক ফি:<b> {FormatNumber(single?.monthlyFee)}</b>
+                    মাসিক ফি:<b> {FormatNumber(data?.monthlyFee)}</b>
                   </h6>
                   <h6>
-                    ব্যাল্যান্স:<b> {FormatNumber(single?.balance)}</b>
+                    ব্যাল্যান্স:<b> {FormatNumber(data?.balance)}</b>
                   </h6>
                   <h6>
                     বিলিং সাইকেল:{" "}
                     <b>
-                      {moment(single?.billingCycle).format(
-                        "DD-MM-YYYY hh:mm A"
-                      )}
+                      {moment(data?.billingCycle).format("DD-MM-YYYY hh:mm A")}
                     </b>
                   </h6>
                   {bpSettings.hasMikrotik && (
                     <h6>
                       অটোমেটিক সংযোগ বন্ধ:{" "}
-                      <b>{single?.autoDisable ? "YES" : "NO"}</b>
+                      <b>{data?.autoDisable ? "YES" : "NO"}</b>
                     </h6>
                   )}
                 </div>
@@ -92,19 +96,19 @@ export default function CustomerDetails({ single }) {
                   <h5>PPPoE</h5>
                   <hr />
                   <h6>
-                    ইউজারনেম: <b>{single?.pppoe?.name}</b>
+                    ইউজারনেম: <b>{data?.pppoe?.name}</b>
                   </h6>
                   <h6>
                     <h6>
-                      পাসওয়ার্ড: <b>{single?.pppoe?.password}</b>
+                      পাসওয়ার্ড: <b>{data?.pppoe?.password}</b>
                     </h6>
-                    প্রোফাইল: <b> {single?.pppoe?.profile}</b>
+                    প্রোফাইল: <b> {data?.pppoe?.profile}</b>
                   </h6>
                   <h6>
-                    সার্ভিস: <b>{single?.pppoe?.service}</b>
+                    সার্ভিস: <b>{data?.pppoe?.service}</b>
                   </h6>
                   <h6>
-                    কমেন্ট: <b>{single?.pppoe?.comment}</b>
+                    কমেন্ট: <b>{data?.pppoe?.comment}</b>
                   </h6>
                 </div>
               </div>

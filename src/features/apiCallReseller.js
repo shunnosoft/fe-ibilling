@@ -213,6 +213,7 @@ export const billCollect = async (dispatch, billData, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.post("/reseller/monthlyBill", billData);
+    console.log(res.data);
     dispatch(updateBalance(res.data));
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();

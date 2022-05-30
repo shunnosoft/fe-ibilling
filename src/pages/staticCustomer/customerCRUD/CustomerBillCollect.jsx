@@ -10,9 +10,16 @@ import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 
 export default function CustomerBillCollect({ single }) {
+  // get all customer
+  const customer = useSelector(
+    (state) => state?.persistedReducer?.customer?.staticCustomer
+  );
+
+  // find editable data
+  const data = customer.find((item) => item.id === single);
+
   const [billType, setBillType] = useState("bill");
 
-  // const [defaultAmount, setDefault] = useState(single?.monthlyFee);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -29,21 +36,20 @@ export default function CustomerBillCollect({ single }) {
     amount: Yup.number().required("Please insert amount."),
   });
   // bill amount
-  const customerBillHandler = (data) => {
+  const customerBillHandler = (formValue) => {
     const sendingData = {
-      amount: data.amount,
+      amount: formValue.amount,
       collectedBy: currentUser?.user.role,
       billType: billType,
-      customer: single?.id,
+      customer: data?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
-      userType: single?.userType,
+      userType: data?.userType,
     };
     billCollect(dispatch, sendingData, setLoading);
   };
 
-  // console.log(defaultAmount)
   return (
     <div>
       <div>
@@ -75,10 +81,9 @@ export default function CustomerBillCollect({ single }) {
                 <Formik
                   initialValues={{
                     amount:
-                      single?.balance < single?.monthlyFee
-                        ? single?.monthlyFee - single?.balance
-                        : single?.monthlyFee,
-                    // collectorId,customer,ispOwner
+                      data?.balance < data?.monthlyFee
+                        ? data?.monthlyFee - data?.balance
+                        : data?.monthlyFee,
                   }}
                   validationSchema={BillValidatoin}
                   onSubmit={(values) => {
@@ -88,8 +93,8 @@ export default function CustomerBillCollect({ single }) {
                 >
                   {() => (
                     <Form>
-                      <h4>Name:{single?.name}</h4>
-                      <h4>ID:{single?.customerId}</h4>
+                      <h4>Name:{data?.name}</h4>
+                      <h4>ID:{data?.customerId}</h4>
 
                       <FtextField type="number" name="amount" label="পরিমান" />
                       <label>ধরণ</label>

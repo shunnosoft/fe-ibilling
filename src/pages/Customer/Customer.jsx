@@ -13,7 +13,6 @@ import {
   ArchiveFill,
   PenFill,
   PersonFill,
-  ArrowDownUp,
   CashStack,
   FileExcelFill,
   PrinterFill,
@@ -31,16 +30,12 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
 import {
   deleteACustomer,
   getCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
-import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
-import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
@@ -201,10 +196,6 @@ export default function Customer() {
     setFilter(filterdData);
   };
 
-  // const toggleSort = (item) => {
-  //   setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
-  //   setSorted(!isSorted);
-  // };
 
   useEffect(() => {
     if (subAreaIds.length) {
@@ -299,13 +290,7 @@ export default function Customer() {
 
   // get specific customer
   const getSpecificCustomer = (id) => {
-    // console.log(id);
-    if (cus.length !== undefined) {
-      const temp = cus.find((original) => {
-        return original.id === id;
-      });
-      setSingleCustomer(temp);
-    }
+    setSingleCustomer(id);
   };
 
   // get specific customer Report
@@ -357,10 +342,6 @@ export default function Customer() {
           return badge(value);
         },
       },
-      // {
-      //   Header: "	প্যাকেজ",
-      //   accessor: "pppoe.profile",
-      // },
       {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
