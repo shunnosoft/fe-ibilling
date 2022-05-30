@@ -30,11 +30,11 @@ const BillCollectInvoice = React.forwardRef((props, ref) => {
           </thead>
           <tbody>
             <tr>
-              <td>{customerData.name}</td>
-              <td>{customerData.mobile}</td>
-              <td>{customerData.billPayType}</td>
-              <td>{billingData.billType == "bill" ? "বিল" : "কানেকশন ফি"}</td>
-              <td>{billingData.amount && customerData.monthlyFee}</td>
+              <td>{customerData?.name}</td>
+              <td>{customerData?.mobile}</td>
+              <td>{customerData?.billPayType}</td>
+              <td>{billingData?.billType == "bill" ? "বিল" : "কানেকশন ফি"}</td>
+              <td>{billingData?.amount && customerData?.monthlyFee}</td>
             </tr>
           </tbody>
         </table>

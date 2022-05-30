@@ -50,8 +50,8 @@ export default function CustomerBillCollect({ single }) {
       collectorId: currentUserId, //when collector is logged in
       userType: single?.userType,
     };
-    setAmount(data.amount);
     billCollect(dispatch, sendingData, setLoading);
+    setAmount(data.amount);
   };
 
   return (
