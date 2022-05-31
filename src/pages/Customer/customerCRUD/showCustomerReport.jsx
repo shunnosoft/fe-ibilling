@@ -8,6 +8,7 @@ import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 
 export default function CustomerReport({ single }) {
+  console.log(single);
   const [customerReport, setCustomerReport] = useState([]);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function CustomerReport({ single }) {
                 <table className="table table-striped ">
                   <thead>
                     <tr className="spetialSortingRow">
+                      <th scope="col">প্যাকেজ</th>
                       <th scope="col">বিল</th>
                       <th scope="col">তারিখ</th>
                       <th scope="col">সময়</th>
@@ -62,6 +64,7 @@ export default function CustomerReport({ single }) {
                   <tbody>
                     {customerReport?.map((val, index) => (
                       <tr className="spetialSortingRow" key={index}>
+                        <td>{single.pppoe.profile}</td>
                         <td>{FormatNumber(val.amount)}</td>
                         <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
                         <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>

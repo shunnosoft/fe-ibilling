@@ -41,6 +41,8 @@ const StaticActiveCustomer = () => {
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
 
+  console.log(staticActiveCustomer);
+
   // get active static customer
   const data = staticActiveCustomer.filter((item) => item.queue.target);
 

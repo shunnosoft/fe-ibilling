@@ -53,10 +53,12 @@ export default function ConfigMikrotik() {
   const allMikrotikUsers = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
+  console.log(allMikrotikUsers)
 
   const activeUser = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
+  console.log(activeUser);
   const pppoePackage = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
