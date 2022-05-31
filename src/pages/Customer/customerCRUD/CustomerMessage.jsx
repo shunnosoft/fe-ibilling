@@ -4,7 +4,8 @@ import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { singleCustomerMsg } from "../../../features/customerApi";
+import { singleCustomerMsg } from "../../../features/singleMsgApi";
+import { smsCount } from "../../../components/common/UtilityMethods";
 
 // customer validator
 const customerValidator = Yup.object({
@@ -12,7 +13,11 @@ const customerValidator = Yup.object({
 });
 
 const CustomerMessage = ({ single }) => {
-  console.log(single);
+  const authName = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser?.ispOwner?.name
+  );
+  console.log(authName);
+
   // get all customer
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -24,13 +29,16 @@ const CustomerMessage = ({ single }) => {
   console.log(data);
 
   const [isLoading, setIsloading] = useState(false);
+  const [messageLength, setMessageLength] = useState("");
 
   const messageHandler = (formValue) => {
     const sendingData = {
-      msg: formValue.message,
+      authName,
       mobile: data.mobile,
+      msg: formValue.message,
     };
-    singleCustomerMsg(sendingData, setIsloading);
+    console.log(sendingData);
+    // singleCustomerMsg(sendingData, setIsloading);
   };
   return (
     <div>
@@ -66,29 +74,47 @@ const CustomerMessage = ({ single }) => {
                 }}
                 enableReinitialize
               >
-                {(formik) => (
-                  <Form>
-                    <FtextField type="text" label="মেসেজ" name="message" />
+                {(formik) => {
+                  return (
+                    <Form>
+                      <FtextField
+                        type="text"
+                        label="মেসেজ"
+                        name="message"
+                        value={messageLength}
+                        placeholder="মেসেজ লিখুন"
+                        onChange={(e) => {
+                          formik.handleChange(e);
+                          setMessageLength(e.target.value);
+                        }}
+                      />
+                      <div className="smsCount">
+                        <span className="smsLength">
+                          অক্ষরঃ {messageLength.length}
+                        </span>
+                        <span>SMS: {smsCount(authName + messageLength)}</span>
+                      </div>
 
-                    <div className="modal-footer" style={{ border: "none" }}>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        বাতিল করুন
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
-                      </button>
-                    </div>
-                  </Form>
-                )}
+                      <div className="modal-footer" style={{ border: "none" }}>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                          disabled={isLoading}
+                        >
+                          বাতিল করুন
+                        </button>
+                        <button
+                          type="submit"
+                          className="btn btn-success"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? <Loader /> : "পাঠান"}
+                        </button>
+                      </div>
+                    </Form>
+                  );
+                }}
               </Formik>
             </div>
           </div>

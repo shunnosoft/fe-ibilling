@@ -5,6 +5,7 @@ export const singleCustomerMsg = async (data, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.post("", data);
+    document.querySelector("#customerMessageModal").click();
     toast.success("মেসেজ পাঠানো হয়েছে ");
     setIsLoading(false);
   } catch (error) {
