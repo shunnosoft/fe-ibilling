@@ -7,17 +7,13 @@ import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
-  PersonPlusFill,
   Wallet,
   ThreeDots,
   ArchiveFill,
   PenFill,
   PersonFill,
-  ArrowDownUp,
   ArrowRightShort,
   CashStack,
-  FileExcelFill,
-  PrinterFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -82,11 +78,6 @@ export default function Customer() {
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
-
-  // paginate call Back function -> response from paginate component
-  // const paginate = (pageNumber) => {
-  //   setCurrentPage(pageNumber);
-  // };
 
   useEffect(() => {
     if (role === "collector") {
@@ -157,12 +148,8 @@ export default function Customer() {
   };
   // get specific customer
   const getSpecificCustomer = (id) => {
-    if (cus.length !== undefined) {
-      const temp = cus.find((original) => {
-        return original.id === id;
-      });
-      setSingleCustomer(temp);
-    }
+    console.log(id);
+    setSingleCustomer(id);
   };
   // get specific customer Report
   const [customerReportData, setId] = useState([]);
@@ -272,20 +259,7 @@ export default function Customer() {
 
   const onChangeSubArea = (id) => {
     setCusSearch(id);
-    // console.log(id)
-    //     const filterdData = cus.filter((item) => item["subArea"] === id);
-
-    //     setFilter(filterdData);
-    // if (!id) {
-    //   let subAreaIds = [];
-    //   singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
-    //   setSubArea(subAreaIds);
-    // } else {
-    //   setSubArea([id]);
-    // }
   };
-  // console.log(filterdCus);
 
   const handleChangeStatus = (e) => {
     setStatus(e.target.value);
@@ -304,7 +278,6 @@ export default function Customer() {
       customerStatus = "ইনএক্টিভ";
     }
   }
-  // console.log({ customerStatus, paymentStatus });
 
   if (paymentStatus) {
     const splitStatus = paymentStatus.split(".")[1];
@@ -363,10 +336,6 @@ export default function Customer() {
           return badge(value);
         },
       },
-      // {
-      //   Header: "	প্যাকেজ",
-      //   accessor: "pppoe.profile",
-      // },
       {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
@@ -651,15 +620,6 @@ export default function Customer() {
                       ""
                     )}
                   </div>
-                  {/* table */}
-                  {/* print report */}
-                  {/* <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={Customers}
-                      ref={componentRef}
-                    />
-                  </div> */}
 
                   <Table
                     isLoading={isLoading}

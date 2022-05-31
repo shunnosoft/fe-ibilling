@@ -19,7 +19,17 @@ import { useEffect } from "react";
 import moment from "moment";
 // import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
+  console.log(props);
   const [user, setUser] = useState(props?.single);
+  // get all customer
+  const customer = useSelector(
+    (state) => state?.persistedReducer?.customer?.staticCustomer
+  );
+
+  // find editable data
+  const data = customer.find((item) => item.id === props.single);
+  
+
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
@@ -42,12 +52,12 @@ export default function CustomerEdit(props) {
       : state?.package?.packages
   );
 
-  const [autoDisable, setAutoDisable] = useState(user?.autoDisable);
+  const [autoDisable, setAutoDisable] = useState(data?.autoDisable);
 
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(user?.queue?.disabled);
+  const [activeStatus, setActiveStatus] = useState(data?.queue?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
@@ -60,33 +70,33 @@ export default function CustomerEdit(props) {
   // console.log(props);
 
   useEffect(() => {
-    setPackageId(props?.single?.mikrotikPackage);
-    setUser(props?.single);
-    setStatus(user?.status);
+    setPackageId(data?.mikrotikPackage);
+    setUser(data);
+    setStatus(data?.status);
     const IDs = {
       ispOwner: ispOwnerId,
-      mikrotikId: props?.single?.mikrotik,
+      mikrotikId: data?.mikrotik,
     };
 
     if (bpSettings?.hasMikrotik) {
       fetchPackagefromDatabase(dispatch, IDs);
     }
     // get the packages  not from mikrotik
-  }, [bpSettings, ispOwnerId, dispatch, props?.single, user]);
+  }, [bpSettings, ispOwnerId, dispatch, data]);
   useEffect(() => {
-    setAutoDisable(props?.single?.autoDisable);
-    setBillDate(moment(props?.single?.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(props?.single?.billingCycle).format("HH:mm"));
-    const temp = Getmikrotik.find((val) => val.id === props?.single?.mikrotik);
+    setAutoDisable(data?.autoDisable);
+    setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
+    setBilltime(moment(data?.billingCycle).format("HH:mm"));
+    const temp = Getmikrotik.find((val) => val.id === data?.mikrotik);
     setmikrotikName(temp);
 
     // findout area id by sub area id
-  }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
+  }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
 
   useEffect(() => {
     area.map((a) => {
       a.subAreas.map((sub) => {
-        if (sub.id === props?.single?.subArea) {
+        if (sub.id === data?.subArea) {
           setAreaID(a);
           setSubAreaId(sub);
           setSubArea(a.subAreas);
@@ -95,7 +105,7 @@ export default function CustomerEdit(props) {
       });
       return a;
     });
-  }, [area, props]);
+  }, [area, data]);
   // useEffect(() => {
   //   const IDs = {
   //     ispOwner: ispOwnerId,
@@ -158,12 +168,12 @@ export default function CustomerEdit(props) {
   // select Mikrotik Package
   useEffect(() => {
     //todo
-    const mikrotikPackageId = user?.mikrotikPackage;
+    const mikrotikPackageId = data?.mikrotikPackage;
     // setPackageId(user?.mikrotikPackage)
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
     setPackageRate(temp);
-  }, [user, ppPackage]);
+  }, [data, ppPackage]);
 
   const selectMikrotikPackage = (e) => {
     // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
@@ -187,26 +197,26 @@ export default function CustomerEdit(props) {
     setSubArea(temp.subAreas);
   };
   // sending data to backed
-  const customerHandler = async (data) => {
-    // console.log(data, user);
+  const customerHandler = async (formValue) => {
+    console.log(formValue);
     setIsloading(true);
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
     if (subArea2 === "") {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
+    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
     const mainData = {
       // customerId: "randon123",
       // paymentStatus: "unpaid",
-      singleCustomerID: user?.id,
+      singleCustomerID: data?.id,
       subArea: subArea2,
       ispOwner: ispOwnerId,
-      mikrotik: user?.mikrotik,
+      mikrotik: formValue?.mikrotik,
       mikrotikPackage: packageId,
       // billPayType: "prepaid",
       autoDisable: autoDisable,
-      monthlyFee: data?.monthlyFee,
+      monthlyFee: formValue?.monthlyFee,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
@@ -218,10 +228,11 @@ export default function CustomerEdit(props) {
       // profile: Pprofile,
       // disabled: activeStatus,
       // },
-      queue: { ...user?.queue },
+      queue: { ...data?.queue },
       ...rest,
       status,
     };
+    console.log(mainData);
     // console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
@@ -252,7 +263,7 @@ export default function CustomerEdit(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {user?.name} - এর প্রোফাইল এডিট করুন
+                {data?.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -265,18 +276,18 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: user?.name || "",
-                  mobile: user?.mobile || "",
-                  address: user?.address || "",
-                  email: user?.email || "",
-                  nid: user?.nid || "",
-                  Pcomment: user?.queue?.comment || "",
-                  monthlyFee: packageRate?.rate || user?.monthlyFee || 0,
-                  Pname: user?.queue?.name || "",
-                  Pprofile: packageRate?.name || user?.pppoe?.profile || "",
-                  Ppassword: user?.pppoe?.password || "",
+                  name: data?.name || "",
+                  mobile: data?.mobile || "",
+                  address: data?.address || "",
+                  email: data?.email || "",
+                  nid: data?.nid || "",
+                  Pcomment: data?.queue?.comment || "",
+                  monthlyFee: packageRate?.rate || data?.monthlyFee || 0,
+                  Pname: data?.queue?.name || "",
+                  Pprofile: packageRate?.name || data?.pppoe?.profile || "",
+                  Ppassword: data?.pppoe?.password || "",
                   status: status || "",
-                  balance: user?.balance || "",
+                  balance: data?.balance || "",
                 }}
                 // validationSchema={customerValidator}
                 onSubmit={(values) => {

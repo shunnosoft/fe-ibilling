@@ -63,23 +63,12 @@ export default function Customer() {
   const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
-  // const [cusId, setSingleCustomerReport] = useState("");
-  // pagination
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [customerPerPage, setCustomerPerPage] = useState(50);
-  // const lastIndex = currentPage * customerPerPage;
-  // const firstIndex = lastIndex - customerPerPage;
 
   // const currentCustomers = Customers
   const subAreas = useSelector((state) => state?.persistedReducer?.area?.area);
   const userData = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser
   );
-
-  // paginate call Back function -> response from paginate component
-  // const paginate = (pageNumber) => {
-  //   setCurrentPage(pageNumber);
-  // };
 
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
@@ -124,12 +113,7 @@ export default function Customer() {
 
   // get specific customer
   const getSpecificCustomer = (id) => {
-    if (cus.length !== undefined) {
-      const temp = cus.find((val) => {
-        return val.id === id;
-      });
-      setSingleCustomer(temp);
-    }
+    setSingleCustomer(id);
   };
   // get specific customer Report
   const [customerReportData, setId] = useState([]);
@@ -167,9 +151,7 @@ export default function Customer() {
     setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
     setSorted(!isSorted);
   };
-  // console.log(permission)
   const [subAreaIds, setSubArea] = useState([]);
-  // const [singleArea, setArea] = useState({});
 
   useEffect(() => {
     if (subAreaIds.length) {
@@ -181,18 +163,6 @@ export default function Customer() {
 
   const onChangeSubArea = (id) => {
     setCusSearch(id);
-    // console.log(id)
-    //     const filterdData = cus.filter((item) => item["subArea"] === id);
-
-    //     setFilter(filterdData);
-    // if (!id) {
-    //   let subAreaIds = [];
-    //   singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
-    //   setSubArea(subAreaIds);
-    // } else {
-    //   setSubArea([id]);
-    // }
   };
 
   const columns = React.useMemo(
@@ -228,10 +198,6 @@ export default function Customer() {
           return badge(value);
         },
       },
-      // {
-      //   Header: "	প্যাকেজ",
-      //   accessor: "pppoe.profile",
-      // },
       {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
