@@ -30,15 +30,15 @@ export default function CustomerReport({ single }) {
     single?.id && getCustoemrReport();
   }, [single]);
 
-  useEffect(() => {
-    const getDeleteStatus = localStorage.getItem("canDeleteReport");
-    if (getDeleteStatus == "false") {
-      setTimeout(() => {
-        setDelete(true);
-        localStorage.setItem("canDeleteReport", true);
-      }, 1000 * 60 * 5);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const getDeleteStatus = localStorage.getItem("canDeleteReport");
+  //   if (getDeleteStatus == "false") {
+  //     setTimeout(() => {
+  //       setDelete(true);
+  //       localStorage.setItem("canDeleteReport", true);
+  //     }, 1000 * 60 * 5);
+  //   }
+  // }, []);
 
   const deletReport = async (reportId) => {
     if (canDelete) {
@@ -50,10 +50,8 @@ export default function CustomerReport({ single }) {
         // setCustomerReport(updatedState);
         // toast.error("রিপোর্ট ডিলিট সফল হয়েছে");
         setDelete(false);
-        localStorage.setItem("canDeleteReport", false);
         setTimeout(() => {
           setDelete(true);
-          localStorage.setItem("canDeleteReport", true);
         }, 1000 * 60 * 5);
       } catch (error) {
         toast.error(error.response?.data?.message);
@@ -63,6 +61,10 @@ export default function CustomerReport({ single }) {
       toast.error("একটু পরে আবার চেষ্টা করুন");
     }
   };
+
+  // const date = new Date(new Date(Date.now()).toLocaleDateString());
+  // const prevDays = moment().subtract(7, "d");
+  // const r = moment().isAfter(moment().subtract(7, "d"));
 
   return (
     <div>
@@ -112,7 +114,8 @@ export default function CustomerReport({ single }) {
                           <td>{FormatNumber(val.amount)}</td>
                           <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
                           <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
-                          <td className="text-center">
+
+                          {/* <td className="text-center">
                             <div title="ডিলিট রিপোর্ট">
                               <button
                                 className="border-0 bg-transparent"
@@ -124,7 +127,7 @@ export default function CustomerReport({ single }) {
                                 />
                               </button>
                             </div>
-                          </td>
+                          </td> */}
                         </tr>
                       ))
                     ) : (
