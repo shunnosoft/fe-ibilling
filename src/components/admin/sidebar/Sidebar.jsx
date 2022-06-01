@@ -238,7 +238,7 @@ export default function Sidebar() {
                     }
                   >
                     <div className="sidebarIcon">{<PeopleFill />}</div>
-                    <span className="sidebarLinksName">{"পিপিওই গ্রাহক"}</span>
+                    <span className="sidebarLinksName">{"PPPoE গ্রাহক"}</span>
                   </li>
                 </FontColor>
               </NavLink>
@@ -263,7 +263,7 @@ export default function Sidebar() {
                     >
                       <div className="sidebarIcon">{<PersonCheck />}</div>
                       <span className="sidebarLinksName">
-                        {"পিপিওই এক্টিভ গ্রাহক"}
+                        {"PPPoE এক্টিভ গ্রাহক"}
                       </span>
                     </li>
                   </FontColor>
@@ -296,29 +296,31 @@ export default function Sidebar() {
                 </FontColor>
               </NavLink>
 
-              <NavLink
-                key={61}
-                to={"/staticActiveCustomer"}
-                className={(navInfo) =>
-                  navInfo.isActive ? activeClass.active : ""
-                }
-              >
-                <FontColor>
-                  <li
-                    className="sidebarItems"
-                    id={
-                      window.location.pathname === "/staticActiveCustomer"
-                        ? "active"
-                        : ""
-                    }
-                  >
-                    <div className="sidebarIcon">{<PersonCheck />}</div>
-                    <span className="sidebarLinksName">
-                      {"স্ট্যাটিক এক্টিভ গ্রাহক"}
-                    </span>
-                  </li>
-                </FontColor>
-              </NavLink>
+              {bpSettings?.hasMikrotik && (
+                <NavLink
+                  key={61}
+                  to={"/staticActiveCustomer"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/staticActiveCustomer"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<PersonCheck />}</div>
+                      <span className="sidebarLinksName">
+                        {"স্ট্যাটিক এক্টিভ গ্রাহক"}
+                      </span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+              )}
 
               <NavLink
                 key={8}

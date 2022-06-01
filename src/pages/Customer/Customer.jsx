@@ -469,7 +469,7 @@ export default function Customer() {
                 ""
               )}
 
-              {original.mobile && (
+              {/* {original.mobile && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerMessageModal"
@@ -484,7 +484,7 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-              )}
+              )} */}
             </ul>
           </div>
         ),

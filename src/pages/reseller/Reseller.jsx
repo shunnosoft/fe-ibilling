@@ -7,6 +7,8 @@ import {
   ArchiveFill,
   PersonFill,
   Wallet,
+  Person,
+  PeopleFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -31,6 +33,7 @@ import ResellerDetails from "./resellerModals/ResellerDetails";
 import { deleteReseller, fetchReseller } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
+import { Link } from "react-router-dom";
 
 export default function Reseller() {
   const dispatch = useDispatch();
@@ -45,6 +48,7 @@ export default function Reseller() {
   const reseller = useSelector(
     (state) => state.persistedReducer.reseller.reseller
   );
+  console.log(reseller);
   let serial = 0;
   useEffect(() => {
     if (auth.ispOwner) {
@@ -59,6 +63,11 @@ export default function Reseller() {
     });
     setSingleUser(singleReseller);
   };
+
+  // const resellerCustomer = (resellerId) => {
+  //   console.log(resellerId);
+
+  // };
 
   // delete reseller
   const deleteSingleReseller = async (ispId, resellerId) => {
@@ -120,6 +129,18 @@ export default function Reseller() {
               aria-expanded="false"
             />
             <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
+              <Link to={`/reseller/customer/${original.id}`}>
+                <li>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PeopleFill />
+
+                      <p className="actionP">গ্রাহক</p>
+                    </div>
+                  </div>
+                </li>
+              </Link>
+
               <li
                 data-bs-toggle="modal"
                 href="#resellerRechargeModal"
@@ -135,19 +156,6 @@ export default function Reseller() {
                   </div>
                 </div>
               </li>
-              {/* <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#resellerrechargehistory"
-                                      role="button"
-                                       
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Cash />
-                                          <p className="actionP">রিচার্জ হিস্ট্রি</p>
-                                        </div>
-                                      </div>
-                                    </li> */}
               <li
                 data-bs-toggle="modal"
                 data-bs-target="#resellerDetailsModal"
