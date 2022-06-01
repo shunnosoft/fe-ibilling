@@ -91,7 +91,7 @@ const Table = (props) => {
           ) : (
             <tr>
               <td colspan={columns.length}>
-                <h5 className="text-center">কোন ডাটা পাওয়া যাই নি !</h5>
+                <h5 className="text-center">কোন ডাটা পাওয়া যায় নি !</h5>
               </td>
             </tr>
           )}

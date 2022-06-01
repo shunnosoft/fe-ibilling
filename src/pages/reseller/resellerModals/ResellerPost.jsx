@@ -284,18 +284,6 @@ export default function ResellerPost() {
 
                     <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
                     <div className="AllAreaClass">
-                      {/* {mikrotik?.map((val, key) => (
-                        <div key={key} className="displayFlex">
-                          <input
-                            type="checkbox"
-                            className="getValueUsingClasses"
-                            value={val.id}
-                            onChange={(e) => setMikrotikHandler(e.target.value)}
-                          />
-                          <label>{val.name}</label>
-                        </div>
-                      ))} */}
-
                       {mikrotikpakages?.mikrotiks?.map((item) => (
                         <div key={item.id}>
                           <h6 className="areaParent ">

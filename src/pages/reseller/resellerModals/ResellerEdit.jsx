@@ -25,7 +25,7 @@ export default function ResellerEdit({ reseller }) {
 
   const [allowedMikrotik, setAllowedMikrotik] = useState([]);
   const [mikrotikIds_Edit, setMikrotikIds_Edit] = useState([]);
-
+  const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
   // const [permissions, setPermissions] = useState([]);
   useEffect(() => {
     setMikrotikIds_Edit(reseller.mikrotiks);
@@ -35,7 +35,9 @@ export default function ResellerEdit({ reseller }) {
     setAllowedAreas(reseller?.subAreas);
 
     setAllowedMikrotik(reseller?.mikrotiks);
-  }, [reseller]);
+    setmikroTikPackagesId(reseller.mikrotikPackages);
+    console.log("calling");
+  }, [reseller, dispatch]);
 
   //validator
   const resellerValidator = Yup.object({
@@ -71,7 +73,7 @@ export default function ResellerEdit({ reseller }) {
   // };
 
   // edit Reseller
-  const resellerHandler = async (data) => {
+  const resellerHandler = (data) => {
     let commision = data.commissionRate;
     if (auth.ispOwner) {
       const sendingData = {
@@ -80,7 +82,7 @@ export default function ResellerEdit({ reseller }) {
         ispId: reseller.ispOwner,
         resellerId: reseller.id,
         subAreas: areaIds_Edit,
-
+        mikrotikPackages: mikroTikPackagesId,
         mikrotiks: mikrotikIds_Edit,
       };
 
@@ -88,7 +90,6 @@ export default function ResellerEdit({ reseller }) {
         reseller: commision,
         isp: 100 - commision,
       };
-
       editReseller(dispatch, sendingData, setIsLoading);
     }
   };
@@ -115,6 +116,22 @@ export default function ResellerEdit({ reseller }) {
     setAllowedMikrotik(IDS_temp);
     setMikrotikIds_Edit(IDS_temp);
   };
+
+  //get mikrotik packages
+
+  const mikrotikpakages = useSelector(
+    (state) => state.persistedReducer.reseller.allMikrotikPakages
+  );
+
+  //handle mikrotik packages
+  const handelMikrotikPakages = (e) => {
+    let newArray = [...mikroTikPackagesId, e.target.value];
+    if (mikroTikPackagesId.includes(e.target.value)) {
+      newArray = newArray.filter((item) => item !== e.target.value);
+    }
+    setmikroTikPackagesId(newArray);
+  };
+
   return (
     <div>
       <div
@@ -286,18 +303,50 @@ export default function ResellerEdit({ reseller }) {
 
                     <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
                     <div className="AllAreaClass">
-                      {mikrotik?.map((val, key) => (
-                        <div key={key} className="displayFlex">
-                          <input
-                            type="checkbox"
-                            className="getValueUsingClassesforMikrotik"
-                            value={val.id}
-                            checked={
-                              allowedMikrotik?.includes(val.id) ? true : false
-                            }
-                            onChange={(e) => setMikrotikHandler(e.target.value)}
-                          />
-                          <label>{val.name}</label>
+                      {mikrotikpakages?.mikrotiks?.map((item) => (
+                        <div key={item.id}>
+                          <h6 className="areaParent ">
+                            <input
+                              type="checkbox"
+                              className="getValueUsingClasses"
+                              value={item.id}
+                              onChange={(e) =>
+                                setMikrotikHandler(e.target.value)
+                              }
+                              disabled
+                            />{" "}
+                            <label>
+                              <b className="h5">{item.name}</b>
+                            </label>
+                          </h6>
+                          {mikrotikpakages.packages.map(
+                            (p) =>
+                              p.mikrotik === item.id && (
+                                <div key={p.id} className="displayFlex">
+                                  {reseller.mikrotikPackages?.includes(p.id) ? (
+                                    <>
+                                      <input
+                                        type="checkbox"
+                                        value={p.id}
+                                        onChange={handelMikrotikPakages}
+                                        checked={true}
+                                        disabled={true}
+                                      />
+                                      <label>{p.name}</label>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <input
+                                        type="checkbox"
+                                        value={p.id}
+                                        onChange={handelMikrotikPakages}
+                                      />
+                                      <label>{p.name}</label>
+                                    </>
+                                  )}
+                                </div>
+                              )
+                          )}
                         </div>
                       ))}
                     </div>
@@ -332,6 +381,9 @@ export default function ResellerEdit({ reseller }) {
                         className="btn btn-success"
                         disabled={isLoading}
                       >
+                        {isLoading ? <Loader /> : "সেভ করুন"}
+                      </button>
+                      <button type="reset" className="d-none" id="resetBtn">
                         {isLoading ? <Loader /> : "সেভ করুন"}
                       </button>
                       <button

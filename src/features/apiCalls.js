@@ -1096,7 +1096,7 @@ export const rechargeHistoryfunc = async (dispatch, ispOwnerId) => {
 export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
   setIsloading(true);
   try {
-    const res = await apiLink(`/ispOwner/invoicee/${ispOwnerId}`);
+    const res = await apiLink(`/ispOwner/invoice/${ispOwnerId}`);
 
     dispatch(getInvoiceListSuccess(res.data));
     setIsloading(false);
