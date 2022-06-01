@@ -45,6 +45,7 @@ import Invoice from "./pages/invoice/Invoice";
 
 import CollectorReport from "./pages/report/CollectorReport";
 import Reseller from "./pages/reseller/Reseller";
+import ResellerCustomer from "./pages/reseller/resellerCustomer/ResellerCustomer";
 import RechargeHistoryofReseller from "./pages/recharge/Recharge";
 import Landing from "./pages/public-pages/Landing";
 import About from "./pages/public-pages/About";
@@ -363,6 +364,16 @@ function App() {
                   bpSettings?.hasMikrotik &&
                   userRole === "ispOwner" ? (
                     <Reseller />
+                  ) : (
+                    <Navigate to={"/home"}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path="reseller/customer/:resellerId"
+                element={
+                  userRole === "ispOwner" ? (
+                    <ResellerCustomer />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
                   )
