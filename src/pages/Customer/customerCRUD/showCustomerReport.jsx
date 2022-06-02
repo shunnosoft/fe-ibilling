@@ -6,12 +6,14 @@ import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
 import { TrashFill } from "react-bootstrap-icons";
+import { useDispatch } from "react-redux";
+import { editCustomerSuccess } from "../../../features/customerSlice";
 
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
   const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const getCustoemrReport = async () => {
       setIsLoading(true);
@@ -37,6 +39,7 @@ export default function CustomerReport({ single }) {
           (item) => item.id !== reportId
         );
         setCustomerReport(updatedState);
+        dispatch(editCustomerSuccess(res.data.customer));
         toast.success("রিপোর্ট ডিলিট সফল হয়েছে");
         setDelete(false);
         setTimeout(() => {
@@ -50,6 +53,42 @@ export default function CustomerReport({ single }) {
       toast.error("একটু পরে আবার চেষ্টা করুন");
     }
   };
+
+  // customer:
+  // address: "raj"
+  // autoDisable: true
+  // balance: -5800
+  // billPayType: "prepaid"
+  // billingCycle: "2022-06-25T17:59:00.590Z"
+  // createdAt: "2022-04-27T08:56:18.024Z"
+  // customerId: "1023"
+  // email: "bashar@gmail.com"
+  // id: "62690532d496062499b52c47"
+  // ispOwner: {reference: {…}, settings: {…}, bpSettings: {…}, billCollectionType: 'prepaid', status: 'new', …}
+  // mikrotik: "6252fa5d182934438bad188e"
+  // mikrotikPackage: "628e6a29f6603aaa468f5968"
+  // mobile: "01789213930"
+  // monthlyFee: 5000
+  // name: "hojafia"
+  // nid: "123456789987654"
+  // paymentStatus: "paid"
+  // pppoe: {service: 'pppoe', disabled: false, name: 'bashar', password: 'hojaifa', comment: 'hello', …}
+  // queue: {type: 'simple-queue', disabled: false}
+  // status: "inactive"
+  // subArea: "6268e21f8c1b12154e4963ed"
+  // user: "6298c88d5f58bb76d578b9ad"
+  // userType: "pppoe"
+
+  // monthlyBill:
+  // amount: 1300
+  // billType: "bill"
+  // collectedBy: "ispOwner"
+  // collectorId: "624061bbaae58479466259a8"
+  // createdAt: "2022-05-26T18:47:36.058Z"
+  // customer: "62690532d496062499b52c47"
+  // id: "628fcb483b28b86bcd83ef21"
+  // ispOwner: "624061bbaae58479466259a8"
+  // user: "624061b9aae58479466259a4"
 
   return (
     <div>

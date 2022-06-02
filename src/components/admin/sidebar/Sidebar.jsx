@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./sidebar.css";
 
 import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
@@ -57,6 +57,21 @@ export default function Sidebar() {
   //     .getElementById("toggleSubBilling")
   //     .classList.toggle("hideSubBilling");
   // };
+  const [isExpand, setIsExpand] = useState(false);
+  const location = window.location.pathname;
+
+  // useEffect(() => {
+  //   if (
+  //     location === "/customer" ||
+  //     location === "/activeCustomer" ||
+  //     location === "/staticCustomer" ||
+  //     location === "/staticActiveCustomer"
+  //   ) {
+  //     setIsExpand(true);
+  //   } else {
+  //     setIsExpand(false);
+  //   }
+  // }, [location]);
 
   return (
     <TitleColor>
@@ -214,8 +229,8 @@ export default function Sidebar() {
                 ""
               )}
               <div className="sideBar_accordian">
-                <Accordion>
-                  <Accordion.Item>
+                <Accordion defaultActiveKey="">
+                  <Accordion.Item eventKey="0">
                     <Accordion.Header>
                       <div className="sidebarIcon">{<PersonCheck />}</div>
                       <span className="sidebarLinksName">{"গ্রাহক"}</span>
