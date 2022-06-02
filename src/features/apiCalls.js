@@ -91,6 +91,7 @@ import {
   getExpenditureSectorsSuccess,
   getExpenditureSuccess,
 } from "./expenditureSlice";
+import { deleteReCustomer } from "./resellerCustomerAdminSlice";
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -471,11 +472,15 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
   }
 };
 
-export const deleteACustomer = async (dispatch, IDs) => {
+export const deleteACustomer = async (
+  dispatch,
+  IDs,
+  isResellerCustomer = false
+) => {
   try {
     await apiLink.delete(`/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`);
     dispatch(deleteCustomerSuccess(IDs.customerID));
-
+    isResellerCustomer && dispatch(deleteReCustomer(IDs.customerID));
     toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
   } catch (err) {
     if (err.response) {

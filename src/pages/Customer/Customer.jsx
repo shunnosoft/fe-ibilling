@@ -295,7 +295,6 @@ export default function Customer() {
     setSingleCustomer(id);
   };
 
-  console.log(singleCustomer);
 
   // get specific customer Report
   const getSpecificCustomerReport = (reportData) => {

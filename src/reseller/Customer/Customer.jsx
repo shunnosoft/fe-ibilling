@@ -26,8 +26,7 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
+
 import {
   deleteACustomer,
   getCustomer,
@@ -301,7 +300,7 @@ export default function Customer() {
                 </div>
               </li>
 
-              {permission?.customerDelete || role === "ispOwner" ? (
+              {permission?.customerDelete && role === "ispOwner" ? (
                 <li
                   onClick={() => {
                     let con = window.confirm(
@@ -424,6 +423,7 @@ export default function Customer() {
           </div>
         </div>
       </div>
+
     </>
   );
 }

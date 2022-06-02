@@ -9,8 +9,30 @@ import { badge } from "../../../components/common/Utils";
 import { getResellerCustomer } from "../../../features/resellerCustomerAdminApi";
 import useDash from "../../../assets/css/dash.module.css";
 import Table from "../../../components/table/Table";
+import {
+  ArchiveFill,
+  CashStack,
+  PersonFill,
+  ThreeDots,
+  Wallet,
+} from "react-bootstrap-icons";
+import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
+import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
+import { deleteACustomer } from "../../../features/apiCalls";
+import Loader from "../../../components/common/Loader";
+// get specific customer
 
 const ResellerCustomer = () => {
+  const [singleCustomer, setSingleCustomer] = useState("");
+  // get specific customer Report
+  const [customerReportId, setcustomerReportId] = useState([]);
+  const [isDelete, setIsDeleting] = useState(false);
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
+  );
+
   // get id from route
   const { resellerId } = useParams();
 
@@ -49,6 +71,27 @@ const ResellerCustomer = () => {
       (value) => value.paymentStatus === filterPayment
     );
   }
+
+  // get specific customer
+  const getSpecificCustomer = (id) => {
+    setSingleCustomer(id);
+  };
+
+  // get specific customer Report
+  const getSpecificCustomerReport = (reportData) => {
+    setcustomerReportId(reportData);
+  };
+
+  // DELETE handler
+  const deleteCustomer = async (ID) => {
+    setIsDeleting(true);
+    const IDs = {
+      ispID: ispOwner,
+      customerID: ID,
+    };
+    deleteACustomer(dispatch, IDs,true);
+    setIsDeleting(false);
+  };
 
   // table column
   const columns = React.useMemo(
@@ -99,6 +142,105 @@ const ResellerCustomer = () => {
           return moment(value).format("DD-MM-YY hh:mm A");
         },
       },
+
+      {
+        Header: () => <div className="text-center">অ্যাকশন</div>,
+        id: "option",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#resellerCustomerModalDetails"
+                onClick={() => {
+                  getSpecificCustomer(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PersonFill />
+                    <p className="actionP">প্রোফাইল</p>
+                  </div>
+                </div>
+              </li>
+
+              {/* <li
+                data-bs-toggle="modal"
+                data-bs-target="#collectCustomerBillModal"
+                onClick={() => {
+                  getSpecificCustomer(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <Wallet />
+                    <p className="actionP">বিল গ্রহণ</p>
+                  </div>
+                </div>
+              </li> */}
+
+              {/* <li
+                data-bs-toggle="modal"
+                data-bs-target="#customerEditModal"
+                onClick={() => {
+                  getSpecificCustomer(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <PenFill />
+                    <p className="actionP">এডিট</p>
+                  </div>
+                </div>
+              </li> */}
+
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#showCustomerReport"
+                onClick={() => {
+                  getSpecificCustomerReport(original);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <CashStack />
+                    <p className="actionP">রিপোর্ট</p>
+                  </div>
+                </div>
+              </li>
+
+              <li
+                onClick={() => {
+                  let con = window.confirm(
+                    `${original.name} গ্রাহক ডিলিট করতে চান?`
+                  );
+                  con && deleteCustomer(original.id);
+                }}
+              >
+                <div className="dropdown-item actionManager">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">ডিলিট</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        ),
+      },
     ],
     []
   );
@@ -143,6 +285,13 @@ const ResellerCustomer = () => {
                     </select>
                     {/* end payment status filter */}
                   </div>
+                  {isDelete ? (
+                    <div className="deletingAction">
+                      <Loader /> <b>Deleting...</b>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   {/* call table component */}
                   <Table
                     isLoading={isLoading}
@@ -155,6 +304,8 @@ const ResellerCustomer = () => {
           </div>
         </div>
       </div>
+      <ResellerCustomerDetails single={singleCustomer} />
+      <CustomerReport single={customerReportId} />
     </>
   );
 };

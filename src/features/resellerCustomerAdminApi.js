@@ -6,7 +6,6 @@ export const getResellerCustomer = async (dispatch, reseller, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/reseller/customer/${reseller}`);
-    console.log(res.data);
     dispatch(getResellerCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {

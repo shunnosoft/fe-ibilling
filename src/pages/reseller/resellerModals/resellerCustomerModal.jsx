@@ -1,22 +1,23 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 
-export default function CustomerDetails({ single }) {
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
+export default function ResellerCustomerDetails({ single }) {
+  // get all data from redux state
+  let data = useSelector((state) =>
+    state?.persistedReducer?.resellerCustomer?.resellerCustomer.find(
+      (item) => item.id === single
+    )
   );
 
-  const data = customer.find((item) => item.id === single);
-  console.log(data);
+
   return (
     <div>
       <div
         className="modal fade"
-        id="showCustomerDetails"
+        id="resellerCustomerModalDetails"
         tabIndex="-1"
         aria-labelledby="customerModalDetails"
         aria-hidden="true"

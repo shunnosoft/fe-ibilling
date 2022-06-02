@@ -1,18 +1,18 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import apiLink from "../../../api/apiLink";
-// import TdLoader from "../../../components/common/TdLoader";
-// import Pagination from "../../../components/Pagination";
 import TdLoader from "../../../components/common/TdLoader";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
-
 import { TrashFill } from "react-bootstrap-icons";
+
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
   const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
+
 
   useEffect(() => {
     const getCustoemrReport = async () => {
@@ -52,7 +52,7 @@ export default function CustomerReport({ single }) {
         setDelete(false);
         setTimeout(() => {
           setDelete(true);
-        }, 1000 * 60 * 5);
+        }, 1000 * 60 * 2);
       } catch (error) {
         toast.error(error.response?.data?.message);
         console.log(error);
@@ -61,10 +61,6 @@ export default function CustomerReport({ single }) {
       toast.error("একটু পরে আবার চেষ্টা করুন");
     }
   };
-
-  // const date = new Date(new Date(Date.now()).toLocaleDateString());
-  // const prevDays = moment().subtract(7, "d");
-  // const r = moment().isAfter(moment().subtract(7, "d"));
 
   return (
     <div>
@@ -115,19 +111,23 @@ export default function CustomerReport({ single }) {
                           <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
                           <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
 
-                          {/* <td className="text-center">
-                            <div title="ডিলিট রিপোর্ট">
-                              <button
-                                className="border-0 bg-transparent"
-                                onClick={() => deletReport(val.id)}
-                              >
-                                <TrashFill
-                                  color="#dc3545"
-                                  style={{ cursor: "pointer" }}
-                                />
-                              </button>
-                            </div>
-                          </td> */}
+                          {moment()
+                            .subtract(8, "d")
+                            .isBefore(moment(val.createdAt)) && (
+                            <td className="text-center">
+                              <div title="ডিলিট রিপোর্ট">
+                                <button
+                                  className="border-0 bg-transparent"
+                                  onClick={() => deletReport(val.id)}
+                                >
+                                  <TrashFill
+                                    color="#dc3545"
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </button>
+                              </div>
+                            </td>
+                          )}
                         </tr>
                       ))
                     ) : (

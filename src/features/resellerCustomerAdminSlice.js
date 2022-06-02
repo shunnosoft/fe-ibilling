@@ -7,11 +7,16 @@ const resellerCustomerSlice = createSlice({
   },
   reducers: {
     getResellerCustomerSuccess: (state, actions) => {
-      console.log(actions.payload);
       state.resellerCustomer = actions.payload;
+    },
+    deleteReCustomer: (state, actions) => {
+      state.resellerCustomer = state.resellerCustomer.filter(
+        (item) => item.id !== actions.payload
+      );
     },
   },
 });
 
-export const { getResellerCustomerSuccess } = resellerCustomerSlice.actions;
+export const { getResellerCustomerSuccess, deleteReCustomer } =
+  resellerCustomerSlice.actions;
 export default resellerCustomerSlice.reducer;

@@ -36,7 +36,6 @@ export default function ResellerEdit({ reseller }) {
 
     setAllowedMikrotik(reseller?.mikrotiks);
     setmikroTikPackagesId(reseller.mikrotikPackages);
-    console.log("calling");
   }, [reseller, dispatch]);
 
   //validator

@@ -48,7 +48,6 @@ export default function Reseller() {
   const reseller = useSelector(
     (state) => state.persistedReducer.reseller.reseller
   );
-  console.log(reseller);
   let serial = 0;
   useEffect(() => {
     if (auth.ispOwner) {
