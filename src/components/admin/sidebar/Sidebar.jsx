@@ -26,6 +26,7 @@ import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
 // import { billData } from "./billData";
 import { useSelector } from "react-redux";
+import { Accordion } from "react-bootstrap";
 
 export default function Sidebar() {
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
@@ -212,116 +213,135 @@ export default function Sidebar() {
               ) : (
                 ""
               )}
-
-              <NavLink
-                key={6}
-                to={
-                  userRole === "reseller" ||
-                  (userRole === "collector" && user.collector.reseller)
-                    ? "/reseller/customer"
-                    : "/customer"
-                }
-                className={(navInfo) =>
-                  navInfo.isActive ? activeClass.active : ""
-                }
-              >
-                <FontColor>
-                  <li
-                    className="sidebarItems"
-                    id={
-                      window.location.pathname ===
-                      (userRole === "reseller"
-                        ? "/reseller/customer"
-                        : "/customer")
-                        ? "active"
-                        : ""
-                    }
-                  >
-                    <div className="sidebarIcon">{<PeopleFill />}</div>
-                    <span className="sidebarLinksName">{"PPPoE গ্রাহক"}</span>
-                  </li>
-                </FontColor>
-              </NavLink>
-
-              {bpSettings?.hasMikrotik &&
-              (userRole === "ispOwner" || userRole === "manager") ? (
-                <NavLink
-                  key={66}
-                  to={"/activeCustomer"}
-                  className={(navInfo) =>
-                    navInfo.isActive ? activeClass.active : ""
-                  }
-                >
-                  <FontColor>
-                    <li
-                      className="sidebarItems"
-                      id={
-                        window.location.pathname === "/activeCustomer"
-                          ? "active"
-                          : ""
-                      }
-                    >
+              <div className="sideBar_accordian">
+                <Accordion>
+                  <Accordion.Item>
+                    <Accordion.Header>
                       <div className="sidebarIcon">{<PersonCheck />}</div>
-                      <span className="sidebarLinksName">
-                        {"PPPoE এক্টিভ গ্রাহক"}
-                      </span>
-                    </li>
-                  </FontColor>
-                </NavLink>
-              ) : (
-                ""
-              )}
+                      <span className="sidebarLinksName">{"গ্রাহক"}</span>
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      <NavLink
+                        key={6}
+                        to={
+                          userRole === "reseller" ||
+                          (userRole === "collector" && user.collector.reseller)
+                            ? "/reseller/customer"
+                            : "/customer"
+                        }
+                        className={(navInfo) =>
+                          navInfo.isActive ? activeClass.active : ""
+                        }
+                      >
+                        <FontColor>
+                          <li
+                            className="sidebarItems"
+                            id={
+                              window.location.pathname ===
+                              (userRole === "reseller"
+                                ? "/reseller/customer"
+                                : "/customer")
+                                ? "active"
+                                : ""
+                            }
+                          >
+                            <div className="sidebarIcon">{<PeopleFill />}</div>
+                            <span className="sidebarLinksName">
+                              {"PPPoE গ্রাহক"}
+                            </span>
+                          </li>
+                        </FontColor>
+                      </NavLink>
 
-              <NavLink
-                key={60}
-                to={"/staticCustomer"}
-                className={(navInfo) =>
-                  navInfo.isActive ? activeClass.active : ""
-                }
-              >
-                <FontColor>
-                  <li
-                    className="sidebarItems"
-                    id={
-                      window.location.pathname === "/staticCustomer"
-                        ? "active"
-                        : ""
-                    }
-                  >
-                    <div className="sidebarIcon">{<PersonBoundingBox />}</div>
-                    <span className="sidebarLinksName">
-                      {"স্ট্যাটিক গ্রাহক"}
-                    </span>
-                  </li>
-                </FontColor>
-              </NavLink>
+                      {bpSettings?.hasMikrotik &&
+                      (userRole === "ispOwner" || userRole === "manager") ? (
+                        <NavLink
+                          key={66}
+                          to={"/activeCustomer"}
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname === "/activeCustomer"
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">
+                                {<PersonCheck />}
+                              </div>
+                              <span className="sidebarLinksName">
+                                {"PPPoE এক্টিভ গ্রাহক"}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
+                      ) : (
+                        ""
+                      )}
 
-              {bpSettings?.hasMikrotik && (
-                <NavLink
-                  key={61}
-                  to={"/staticActiveCustomer"}
-                  className={(navInfo) =>
-                    navInfo.isActive ? activeClass.active : ""
-                  }
-                >
-                  <FontColor>
-                    <li
-                      className="sidebarItems"
-                      id={
-                        window.location.pathname === "/staticActiveCustomer"
-                          ? "active"
-                          : ""
-                      }
-                    >
-                      <div className="sidebarIcon">{<PersonCheck />}</div>
-                      <span className="sidebarLinksName">
-                        {"স্ট্যাটিক এক্টিভ গ্রাহক"}
-                      </span>
-                    </li>
-                  </FontColor>
-                </NavLink>
-              )}
+                      <NavLink
+                        key={60}
+                        to={"/staticCustomer"}
+                        className={(navInfo) =>
+                          navInfo.isActive ? activeClass.active : ""
+                        }
+                      >
+                        <FontColor>
+                          <li
+                            className="sidebarItems"
+                            id={
+                              window.location.pathname === "/staticCustomer"
+                                ? "active"
+                                : ""
+                            }
+                          >
+                            <div className="sidebarIcon">
+                              {<PersonBoundingBox />}
+                            </div>
+                            <span className="sidebarLinksName">
+                              {"স্ট্যাটিক গ্রাহক"}
+                            </span>
+                          </li>
+                        </FontColor>
+                      </NavLink>
 
+                      {bpSettings?.hasMikrotik && (
+                        <NavLink
+                          key={61}
+                          to={"/staticActiveCustomer"}
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname ===
+                                "/staticActiveCustomer"
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">
+                                {<PersonCheck />}
+                              </div>
+                              <span className="sidebarLinksName">
+                                {"স্ট্যাটিক এক্টিভ গ্রাহক"}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
+                      )}
+                    </Accordion.Body>
+                  </Accordion.Item>
+                </Accordion>
+              </div>
               <NavLink
                 key={8}
                 to={

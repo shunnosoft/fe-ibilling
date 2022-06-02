@@ -163,3 +163,24 @@ a {
     margin-left: 20px;
   }
 }
+.sideBar_accordian .accordion-item {
+  border: none;
+}
+
+.sideBar_accordian .accordion-item .accordion-button {
+  background-color: transparent;
+  box-shadow: none;
+  color: #496356;
+  font-weight: 600;
+}
+
+.sideBar_accordian h2.accordion-header {
+  margin-left: 1.1rem;
+}
+
+.sideBar_accordian .accordion-body {
+  padding: 0;
+  background-color: #f4f4f4;
+  margin-left: 1rem;
+  border-left: 2px solid #000000;
+}

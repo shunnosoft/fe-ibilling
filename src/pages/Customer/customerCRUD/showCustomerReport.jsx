@@ -101,7 +101,7 @@ export default function CustomerReport({ single }) {
                           <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
 
                           {moment()
-                            .subtract(8, "d")
+                            .subtract(7, "d")
                             .isBefore(moment(val.createdAt)) && (
                             <td className="text-center">
                               <div title="ডিলিট রিপোর্ট">
