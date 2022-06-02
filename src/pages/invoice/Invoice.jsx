@@ -87,13 +87,13 @@ function Invoice() {
           return moment(value).format("DD-MM-YYYY hh:mm:ss A");
         },
       },
-      {
-        Header: "পেমেন্টের শেষ তারিখ",
-        accessor: "dueDate",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY hh:mm:ss A");
-        },
-      },
+      // {
+      //   Header: "পেমেন্টের শেষ তারিখ",
+      //   accessor: "dueDate",
+      //   Cell: ({ cell: { value } }) => {
+      //     return moment(value).format("DD-MM-YYYY hh:mm:ss A");
+      //   },
+      // },
       {
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
@@ -117,7 +117,7 @@ function Invoice() {
                 Pay ৳
               </span>
             ) : (
-              <span className="badge bg-success">Paid</span>
+              ""
             )}
           </div>
         ),
