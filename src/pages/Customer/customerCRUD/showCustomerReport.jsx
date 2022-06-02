@@ -12,8 +12,6 @@ export default function CustomerReport({ single }) {
   const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-
-
   useEffect(() => {
     const getCustoemrReport = async () => {
       setIsLoading(true);
@@ -30,25 +28,16 @@ export default function CustomerReport({ single }) {
     single?.id && getCustoemrReport();
   }, [single]);
 
-  // useEffect(() => {
-  //   const getDeleteStatus = localStorage.getItem("canDeleteReport");
-  //   if (getDeleteStatus == "false") {
-  //     setTimeout(() => {
-  //       setDelete(true);
-  //       localStorage.setItem("canDeleteReport", true);
-  //     }, 1000 * 60 * 5);
-  //   }
-  // }, []);
-
   const deletReport = async (reportId) => {
     if (canDelete) {
       try {
-        // const res = await apiLink(`/bill/customer/${single?.id}/${reportId}`);
-        // const updatedState = customerReport.filter(
-        //   (item) => item.id !== res.data.id
-        // );
-        // setCustomerReport(updatedState);
-        // toast.error("রিপোর্ট ডিলিট সফল হয়েছে");
+        const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
+        console.log(res);
+        const updatedState = customerReport.filter(
+          (item) => item.id !== reportId
+        );
+        setCustomerReport(updatedState);
+        toast.success("রিপোর্ট ডিলিট সফল হয়েছে");
         setDelete(false);
         setTimeout(() => {
           setDelete(true);
