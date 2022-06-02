@@ -4,6 +4,7 @@ import {
   ThreeDots,
   PersonFill,
   PenFill,
+  ChatText,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +24,7 @@ import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 export default function Collector() {
   const dispatch = useDispatch();
@@ -63,6 +65,11 @@ export default function Collector() {
       });
       setSingleCollector(temp);
     }
+  };
+
+  const [collectorId, setCollectorId] = useState();
+  const handleSingleMessage = (collectorID) => {
+    setCollectorId(collectorID);
   };
 
   // DELETE collector
@@ -169,18 +176,22 @@ export default function Collector() {
               ) : (
                 ""
               )}
-              {/* {role==="ispOwner"? <li
-                                      onClick={() => {
-                                        deleteCollectorHandler(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>:""} */}
+              {original.mobile && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerMessageModal"
+                  onClick={() => {
+                    handleSingleMessage(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ChatText />
+                      <p className="actionP">মেসেজ</p>
+                    </div>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
         ),
@@ -202,6 +213,7 @@ export default function Collector() {
               <CollectorPost />
               <CollectorDetails single={singleCollector} />
               <CollectorEdit single={singleCollector} />
+              <SingleMessage single={collectorId} sendCustomer="collector" />
 
               <FourGround>
                 <div className="collectorWrapper">

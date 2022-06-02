@@ -40,7 +40,7 @@ import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
-import CustomerMessage from "./customerCRUD/CustomerMessage";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 export default function Customer() {
   const dispatch = useDispatch();
@@ -295,7 +295,6 @@ export default function Customer() {
     setSingleCustomer(id);
   };
 
-
   // get specific customer Report
   const getSpecificCustomerReport = (reportData) => {
     setId(reportData);
@@ -468,7 +467,7 @@ export default function Customer() {
                 ""
               )}
 
-              {/* {original.mobile && (
+              {original.mobile && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerMessageModal"
@@ -483,7 +482,7 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-              )} */}
+              )}
             </ul>
           </div>
         ),
@@ -511,7 +510,7 @@ export default function Customer() {
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
-              <CustomerMessage single={singleCustomer} />
+              <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
               {/* Model finish */}
 

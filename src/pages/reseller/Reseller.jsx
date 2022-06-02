@@ -9,6 +9,7 @@ import {
   Wallet,
   Person,
   PeopleFill,
+  ChatText,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -34,6 +35,7 @@ import { deleteReseller, fetchReseller } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
 import { Link } from "react-router-dom";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 export default function Reseller() {
   const dispatch = useDispatch();
@@ -46,8 +48,9 @@ export default function Reseller() {
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
   const reseller = useSelector(
-    (state) => state.persistedReducer.reseller.reseller
+    (state) => state.persistedReducer?.reseller?.reseller
   );
+
   let serial = 0;
   useEffect(() => {
     if (auth.ispOwner) {
@@ -61,6 +64,11 @@ export default function Reseller() {
       return val.id === rid;
     });
     setSingleUser(singleReseller);
+  };
+
+  const [resellerSmsId, setResellerSmsId] = useState();
+  const handleSingleMessage = (resellerID) => {
+    setResellerSmsId(resellerID);
   };
 
   // const resellerCustomer = (resellerId) => {
@@ -196,6 +204,23 @@ export default function Reseller() {
                   </div>
                 </div>
               </li>
+
+              {original.mobile && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerMessageModal"
+                  onClick={() => {
+                    handleSingleMessage(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ChatText />
+                      <p className="actionP">মেসেজ</p>
+                    </div>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
         ),
@@ -218,6 +243,7 @@ export default function Reseller() {
               <ResellerEdit reseller={singleUser} />
               <ResellerDetails reseller={singleUser} />
               <Recharge reseller={singleUser}></Recharge>
+              <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
               {/* modals */}
               <FourGround>
                 <h2 className="collectorTitle">রিসেলার</h2>

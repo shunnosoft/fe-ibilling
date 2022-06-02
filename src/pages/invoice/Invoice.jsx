@@ -5,9 +5,7 @@ import moment from "moment";
 // import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import {
-  ThreeDots,
-} from "react-bootstrap-icons";
+import { ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,10 +14,10 @@ import "react-toastify/dist/ReactToastify.css";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 
-
 import { getInvoices } from "../../features/apiCalls";
 import { showModal } from "../../features/uiSlice";
 import Table from "../../components/table/Table";
+import { badge } from "../../components/common/Utils";
 
 function Invoice() {
   const [isLoading, setIsloading] = useState(false);
@@ -77,19 +75,9 @@ function Invoice() {
       {
         Header: "স্ট্যাটাস",
         accessor: "status",
-        Cell: ({ row: { original } }) => (
-          <td>
-            {original.status === "unpaid" ? (
-              <span className="p-1 mb-1 bg-danger text-white">
-                {original.status}
-              </span>
-            ) : (
-              <span className="p-1 mb-1 bg-success text-white">
-                {original.status}{" "}
-              </span>
-            )}
-          </td>
-        ),
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
       },
 
       {
@@ -118,29 +106,19 @@ function Invoice() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <td>
-              {original.status === "unpaid" ? (
-                <div className="AcceptRejectBtn">
-                  <button
-                    onClick={() => {
-                      dispatch(showModal(original));
-                      // payNowHandler(original);
-                    }}
-                  >
-                    <strong>Pay Now</strong>
-                  </button>
-                </div>
-              ) : (
-                ""
-              )}
-            </td>
+            {original.status === "unpaid" ? (
+              <span
+                style={{ cursor: "pointer" }}
+                className="badge bg-warning text-dark shadow"
+                onClick={() => {
+                  dispatch(showModal(original));
+                }}
+              >
+                Pay ৳
+              </span>
+            ) : (
+              <span className="badge bg-success">Paid</span>
+            )}
           </div>
         ),
       },
@@ -164,7 +142,9 @@ function Invoice() {
               <FourGround>
                 <div className="collectorWrapper">
                   {/* table */}
-                  <Table data={invoices} columns={columns2}></Table>
+                  <div className="invoice-table">
+                    <Table data={invoices} columns={columns2}></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

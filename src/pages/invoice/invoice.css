@@ -1,0 +1,4 @@
+.invoice-table tr td,
+.invoice-table tr th {
+  text-align: center;
+}

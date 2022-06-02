@@ -1,0 +1,221 @@
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import Loader from "../common/Loader";
+import { smsCount } from "../common/UtilityMethods";
+import apiLink from "../../api/apiLink";
+import { toast } from "react-toastify";
+
+const SingleMessage = ({ single, sendCustomer }) => {
+  // get current user from redux
+  const cureentAuth = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser?.ispOwner
+  );
+
+  // get all customer from redux
+  const customer = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
+
+  // get all satic customer from redux
+  const staticCustomer = useSelector(
+    (state) => state?.persistedReducer?.customer?.staticCustomer
+  );
+
+  // get all collector from redux
+  const collector = useSelector(
+    (state) => state?.persistedReducer?.collector?.collector
+  );
+
+  // get all reseller from redux
+  const allReseller = useSelector(
+    (state) => state.persistedReducer?.reseller?.reseller
+  );
+
+  // get all staff from redux
+  const getAllStaffs = useSelector(
+    (state) => state.persistedReducer?.staff?.staff
+  );
+
+  //initial data variable
+  let data;
+
+  if (sendCustomer === "customer") {
+    // find single customer
+    data = customer.find((item) => item.id === single);
+  }
+
+  if (sendCustomer === "staticCustomer") {
+    // find single static customer
+    data = staticCustomer.find((item) => item.id === single);
+  }
+
+  if (sendCustomer === "collector") {
+    // find single collector
+    data = collector.find((item) => item.id === single);
+  }
+
+  if (sendCustomer === "reseller") {
+    // find single reseller
+    data = allReseller.find((item) => item.id === single);
+  }
+
+  if (sendCustomer === "staff") {
+    // find single reseller
+    data = getAllStaffs.find((item) => item.id === single);
+  }
+
+  // loading state
+  const [isLoading, setIsloading] = useState(false);
+
+  // get message form textare field
+  const [messageLength, setMessageLength] = useState("");
+
+  // set error value
+  const [errMsg, setErrMsg] = useState("");
+
+  // handle change
+  const handleChange = (event) => {
+    setMessageLength(event.target.value);
+
+    if (event.target.value) {
+      setErrMsg("");
+    }
+  };
+
+  // Message counting from text
+  let smsAmount = smsCount(messageLength);
+
+  // validation check
+  const hadleRequired = () => {
+    if (!messageLength) {
+      setErrMsg("এসএমএস পরিমান দিন");
+    }
+  };
+
+  // handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (messageLength) {
+      // send data for api body
+      const sendingData = {
+        items: {
+          app: "netfee",
+          type: "other",
+          senderId: cureentAuth.id,
+          message: messageLength,
+          mobile: data?.mobile,
+          count: smsCount(messageLength),
+        },
+        totalSmsCount: smsCount(messageLength),
+      };
+
+      try {
+        // owner api call
+        const owner = await apiLink.get(`/ispOwner/${cureentAuth?.id}`);
+
+        alert(`স্যাম্পল SMS:\n\n${messageLength}`);
+        if (owner.data.smsBalance >= smsAmount) {
+          // message confirm alert
+          let condition = window.confirm(
+            `${data.name} গ্রাহক মেসেজ পাবে। ${smsAmount} টি SMS খরচ হবে।`
+          );
+          if (condition) {
+            // sms api call
+            setIsloading(true);
+            const res = await apiLink.post(
+              `sms/bulk/${cureentAuth.id}`,
+              sendingData
+            );
+            setIsloading(false);
+            if (res.data.status) {
+              document.querySelector("#customerMessageModal").click();
+              toast.success("সফলভাবে SMS পাঠানো হয়েছে।");
+            } else {
+              toast.error("সমস যায়নি");
+            }
+          }
+        }
+      } catch (error) {
+        toast.error(error.response.message);
+      }
+    } else {
+      setErrMsg("এসএমএস পরিমান দিন");
+    }
+  };
+  return (
+    <div
+      className="modal fade modal-dialog-scrollable "
+      id="customerMessageModal"
+      tabIndex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel">
+              {data?.name} কে মেসেজ করুন
+            </h5>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div className="modal-body">
+            {/* model body here */}
+            <form onSubmit={handleSubmit}>
+              <div class="mb-3">
+                <div className="d-flex justify-content-between">
+                  <label
+                    for="exampleFormControlTextarea1"
+                    class="form-label fw-bold mb-0"
+                  >
+                    মেসেজ
+                  </label>
+                  <div className="smsCount mt-0">
+                    <span className="smsLength">
+                      অক্ষরঃ {messageLength.length}
+                    </span>
+                    <span>SMS: {smsAmount}</span>
+                  </div>
+                </div>
+                <textarea
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="3"
+                  placeholder="মেসেজ লিখুন"
+                  onChange={handleChange}
+                  onBlur={hadleRequired}
+                ></textarea>
+                <div id="emailHelp" class="form-text text-danger">
+                  {errMsg}
+                </div>
+              </div>
+              <div className="modal-footer" style={{ border: "none" }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  disabled={isLoading}
+                >
+                  বাতিল করুন
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : "সেন্ড মেসেজ"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SingleMessage;

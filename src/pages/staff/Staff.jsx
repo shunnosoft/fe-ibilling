@@ -14,6 +14,7 @@ import { getStaffs, deleteStaffApi } from "../../features/apiCallStaff";
 import ActionButton from "./ActionButton";
 import StaffEdit from "./staffModal/staffEdit";
 import Table from "../../components/table/Table";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 const Staff = () => {
   const dispatch = useDispatch();
@@ -22,12 +23,13 @@ const Staff = () => {
   );
 
   const getAllStaffs = useSelector(
-    (state) => state.persistedReducer.staff.staff
+    (state) => state.persistedReducer?.staff?.staff
   );
 
   const [isLoading, setIsLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [staffId, setStafId] = useState(null);
+  const [staffSmsId, setStafSmsId] = useState();
 
   const deleteStaff = (staffId) => {
     deleteStaffApi(dispatch, staffId, setIsLoading);
@@ -35,6 +37,10 @@ const Staff = () => {
 
   const editHandler = (staffId) => {
     setStafId(staffId);
+  };
+
+  const handleSingleMessage = (staffId) => {
+    setStafSmsId(staffId);
   };
 
   useEffect(() => {
@@ -84,6 +90,7 @@ const Staff = () => {
             <ActionButton
               deleteStaff={deleteStaff}
               editHandler={editHandler}
+              handleSingleMessage={handleSingleMessage}
               data={original}
             />
           </div>
@@ -104,6 +111,7 @@ const Staff = () => {
           <div className="container">
             <FontColor>
               <StaffPost />
+              <SingleMessage single={staffSmsId} sendCustomer="staff" />
               <StaffEdit staffId={staffId} />
               <FourGround>
                 <h2 className="collectorTitle">কর্মচারী</h2>
