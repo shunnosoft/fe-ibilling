@@ -309,14 +309,18 @@ export default function Customer() {
       },
       {
         Header: "IP",
-        Cell: ({ row: { original } }) => (
-          <>
-            {original.userType === "simple-queue"
-              ? original.queue.target
-              : original.queue.name}
-          </>
-        ),
+        accessor: "queue.address",
+        Cell: ({ row: { original } }) => {
+          return (
+            <>
+              {original.queue.type === "simple-queue"
+                ? original.queue.address
+                : original.queue.name}
+            </>
+          );
+        },
       },
+
       {
         Header: "মোবাইল",
         accessor: "mobile",
