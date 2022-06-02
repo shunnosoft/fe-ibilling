@@ -30,7 +30,12 @@ const Table = (props) => {
     setPageSize,
     state,
     setGlobalFilter,
-  } = useTable({ columns, data }, useGlobalFilter, useSortBy, usePagination);
+  } = useTable(
+    { columns, data, autoResetGlobalFilter: false },
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  );
 
   useEffect(() => {
     setPageSize(100);
