@@ -14,6 +14,7 @@ import {
   PersonFill,
   ArrowRightShort,
   CashStack,
+  ChatText,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -39,6 +40,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
@@ -148,7 +150,6 @@ export default function Customer() {
   };
   // get specific customer
   const getSpecificCustomer = (id) => {
-    console.log(id);
     setSingleCustomer(id);
   };
   // get specific customer Report
@@ -458,6 +459,23 @@ export default function Customer() {
               ) : (
                 ""
               )}
+
+              {original.mobile && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerMessageModal"
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ChatText />
+                      <p className="actionP">মেসেজ</p>
+                    </div>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
         ),
@@ -485,6 +503,10 @@ export default function Customer() {
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
+              <SingleMessage
+                single={singleCustomer}
+                sendCustomer="staticCustomer"
+              />
 
               {/* Model finish */}
 
