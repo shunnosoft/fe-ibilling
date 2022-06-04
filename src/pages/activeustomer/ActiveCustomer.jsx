@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
 
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
 import { ArrowClockwise, WifiOff, Wifi } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
-// import { Link } from "react-router-dom";
 
 // internal imports
 import { toast, ToastContainer } from "react-toastify";
@@ -41,7 +38,6 @@ export default function ConfigMikrotik() {
   const allMikrotikUsers = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
-  console.log(allMikrotikUsers);
 
   const activeUser = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
@@ -280,7 +276,6 @@ export default function ConfigMikrotik() {
       setAllUsers(temp);
     }
   };
-  console.log({ loading });
   return (
     <>
       <Sidebar />
