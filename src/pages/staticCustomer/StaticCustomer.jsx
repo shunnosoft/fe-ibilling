@@ -30,7 +30,6 @@ import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 import {
-  deleteACustomer,
   getStaticCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
@@ -41,6 +40,7 @@ import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
 
 export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
@@ -67,6 +67,7 @@ export default function Customer() {
   const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
+  const [singleData, setSingleData] = useState();
 
   // const currentCustomers = Customers;
   const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
@@ -159,17 +160,15 @@ export default function Customer() {
     setId(reportData);
   };
 
-  // DELETE handler
-  const deleteCustomer = async (ID) => {
-    setIsDeleting(true);
-    const IDs = {
-      ispID: ispOwner,
-      customerID: ID,
-    };
-    deleteACustomer(dispatch, IDs);
-    setIsDeleting(false);
+  // check mikrotik checkbox
+  const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
+  // cutomer delete
+  const customerDelete = (customerId) => {
+    setMikrotikCheck(false);
+    const singleData = Customers.find((item) => item.id === customerId);
+    setSingleData(singleData);
   };
-  //export customer data
 
   let customerForCsV = Customers.map((customer) => {
     return {
@@ -310,16 +309,10 @@ export default function Customer() {
       },
       {
         Header: "IP",
-        accessor: "queue.address",
-        Cell: ({ row: { original } }) => {
-          return (
-            <>
-              {original.queue.type === "simple-queue"
-                ? original.queue.address
-                : original.queue.name}
-            </>
-          );
-        },
+        accessor: (field) =>
+          field.userType === "firewall-queue"
+            ? field.queue.address
+            : field.queue.target,
       },
 
       {
@@ -444,16 +437,15 @@ export default function Customer() {
                 </div>
               </li>
 
-              {permission?.customerDelete || role === "ispOwner" ? (
+              {/* {permission?.customerDelete || role === "ispOwner" ? (
                 <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerDelete"
                   onClick={() => {
-                    let con = window.confirm(
-                      `${original.name} গ্রাহক ডিলিট করতে চান?`
-                    );
-                    con && deleteCustomer(original.id);
+                    customerDelete(original.id);
                   }}
                 >
-                  <div className="dropdown-item actionManager">
+                  <div className="dropdown-item">
                     <div className="customerAction">
                       <ArchiveFill />
                       <p className="actionP">ডিলিট</p>
@@ -462,7 +454,7 @@ export default function Customer() {
                 </li>
               ) : (
                 ""
-              )}
+              )} */}
 
               {original.mobile && (
                 <li
@@ -498,7 +490,25 @@ export default function Customer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">গ্রাহক </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>গ্রাহক</div>
+                  <div className="settingbtn">
+                    <Link
+                      to={`/packageSetting`}
+                      className="mikrotikConfigureButtom"
+                      style={{
+                        height: "40px",
+                        fontSize: "20px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      প্যাকেজ সেটিং{" "}
+                      <ArrowRightShort style={{ fontSize: "19px" }} />
+                    </Link>
+                  </div>
+                </div>
               </FourGround>
 
               {/* Model start */}
@@ -507,6 +517,11 @@ export default function Customer() {
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
+              <CustomerDelete
+                single={singleData}
+                mikrotikCheck={mikrotikCheck}
+                setMikrotikCheck={setMikrotikCheck}
+              />
               <SingleMessage
                 single={singleCustomer}
                 sendCustomer="staticCustomer"
@@ -517,22 +532,6 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="settingbtn">
-                      <Link
-                        to={`/packageSetting`}
-                        className="mikrotikConfigureButtom"
-                        style={{
-                          height: "40px",
-                          fontSize: "20px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        প্যাকেজ সেটিং{" "}
-                        <ArrowRightShort style={{ fontSize: "19px" }} />
-                      </Link>
-                    </div>
                     <div className="displexFlexSys">
                       {/* filter selector */}
                       <div className="selectFiltering allFilter">

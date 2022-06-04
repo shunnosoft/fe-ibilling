@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { GeoAlt, ArrowRightShort } from "react-bootstrap-icons";
+import { GeoAlt, ArrowRightShort, PlusLg } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
 // internal imports
@@ -130,23 +130,34 @@ export default function Area() {
               <AreaEdit oneArea={EditAarea} />
 
               <FourGround>
-                <h2 className="collectorTitle">এরিয়া</h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>এরিয়া</div>
+                  <button
+                    title="এরিয়া এড করুন"
+                    className="btn btn-outline-light btn-md"
+                    data-bs-toggle="modal"
+                    data-bs-target="#areaModal"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      fill="currentColor"
+                      className="bi bi-plus-lg"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector">
-                      <p>অ্যাড এরিয়া</p>
-                      <div className="addAndSettingIcon">
-                        <GeoAlt
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#areaModal"
-                        />
-                      </div>
-                    </div>
-
                     <div>
                       {isLoading ? (
                         <div className="deletingAction">

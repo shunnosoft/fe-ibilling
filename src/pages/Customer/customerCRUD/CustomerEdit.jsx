@@ -442,6 +442,23 @@ export default function CustomerEdit(props) {
                           ইন-এক্টিভ
                         </label>
                       </div>
+                      {data?.status === "expired" && (
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            id="inlineRadio2"
+                            disabled
+                            checked={status === "expired"}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio2"
+                          >
+                            এক্সপায়ার্ড
+                          </label>
+                        </div>
+                      )}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

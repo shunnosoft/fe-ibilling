@@ -4,3 +4,9 @@
   justify-content: space-between;
   flex-wrap: wrap;
 }
+.custombtngroup {
+  border: 1px solid rgb(194, 194, 194) !important;
+}
+.custombtngroup:hover {
+  background-color: rgba(40, 153, 206, 0.63) !important;
+}

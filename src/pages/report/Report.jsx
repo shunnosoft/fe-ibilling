@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useState,
-  createRef,
-  useRef,
-  useMemo,
-} from "react";
+import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -300,51 +293,57 @@ export default function Report() {
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">
-                      <select
-                        className="form-select"
-                        onChange={(e) => onChangeArea(e.target.value)}
-                      >
-                        <option value={JSON.stringify({})} defaultValue>
-                          সকল এরিয়া{" "}
-                        </option>
-                        {allArea.map((area, key) => (
-                          <option key={key} value={JSON.stringify(area)}>
-                            {area.name}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        className="form-select"
-                        onChange={(e) => onChangeSubArea(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          সকল সাব এরিয়া{" "}
-                        </option>
-                        {singleArea?.subAreas?.map((sub, key) => (
-                          <option key={key} value={sub.id}>
-                            {sub.name}
-                          </option>
-                        ))}
-                      </select>
-                      {userRole !== "collector" ? (
+                      <div className="dateDiv">
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeCollector(e.target.value)}
+                          onChange={(e) => onChangeArea(e.target.value)}
                         >
-                          <option value="" defaultValue>
-                            সকল কালেক্টর{" "}
+                          <option value={JSON.stringify({})} defaultValue>
+                            সকল এরিয়া{" "}
                           </option>
-                          {collectors?.map((c, key) => (
-                            <option key={key} value={c.user}>
-                              {c.name}
+                          {allArea.map((area, key) => (
+                            <option key={key} value={JSON.stringify(area)}>
+                              {area.name}
                             </option>
                           ))}
                         </select>
-                      ) : (
-                        ""
+                      </div>
+
+                      <div className="dateDiv">
+                        <select
+                          className="form-select"
+                          onChange={(e) => onChangeSubArea(e.target.value)}
+                        >
+                          <option value="" defaultValue>
+                            সকল সাব এরিয়া{" "}
+                          </option>
+                          {singleArea?.subAreas?.map((sub, key) => (
+                            <option key={key} value={sub.id}>
+                              {sub.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {userRole !== "collector" && (
+                        <div className="dateDiv  ">
+                          <select
+                            className="form-select"
+                            onChange={(e) => onChangeCollector(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              সকল কালেক্টর{" "}
+                            </option>
+                            {collectors?.map((c, key) => (
+                              <option key={key} value={c.user}>
+                                {c.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       )}
 
-                      <div className="dateDiv  ">
+                      <div className="dateDiv">
                         <input
                           className="form-select"
                           type="date"
@@ -377,15 +376,17 @@ export default function Report() {
                           // max="2018-12-31"
                         />
                       </div>
+                      <div>
+                        <button
+                          className="btn btn-success mt-2"
+                          type="button"
+                          onClick={onClickFilter}
+                        >
+                          ফিল্টার
+                        </button>
+                      </div>
                     </div>
-                    <div className="submitdiv d-flex justify-content-between">
-                      <button
-                        className="btn fs-5 btn-success w-25"
-                        type="button"
-                        onClick={onClickFilter}
-                      >
-                        ফিল্টার
-                      </button>
+                    <div className="submitdiv d-flex justify-content-end">
                       <ReactToPrint
                         documentTitle="বিল রিপোর্ট"
                         trigger={() => (
@@ -394,7 +395,6 @@ export default function Report() {
                             type="button"
                             title="ডাউনলোড পিডিএফ"
                           >
-                            প্রিন্ট {`   `}
                             <PrinterFill />
                           </button>
                         )}

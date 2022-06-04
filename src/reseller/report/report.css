@@ -137,28 +137,6 @@
   margin: 18px 0;
 }
 
-.selectFilteringg {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-.form-select {
-  max-width: 200px !important;
-
-  margin-top: 10px !important;
-}
-.dateDiv {
-  display: flex;
-  align-items: center !important;
-  justify-content: center !important;
-  max-width: 200px !important ;
-}
-.submitdiv {
-  margin: 18px 0;
-}
-
 /* css added by enamul end  */
 
 @media only screen and (max-width: 980px) {

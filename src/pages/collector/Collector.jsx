@@ -16,10 +16,7 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import CollectorPost from "./collectorCRUD/CollectorPost";
-// import Loader from "../../components/common/Loader";
-import Pagination from "../../components/Pagination";
 
-import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector } from "../../features/apiCalls";
@@ -207,38 +204,51 @@ export default function Collector() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">কালেক্টর</h2>
-
-              {/* modals */}
-              <CollectorPost />
-              <CollectorDetails single={singleCollector} />
-              <CollectorEdit single={singleCollector} />
-              <SingleMessage single={collectorId} sendCustomer="collector" />
+              <div className="collectorTitle d-flex justify-content-between px-5">
+                <div>কালেক্টর</div>
+                {permission?.collectorAdd ||
+                  (role === "ispOwner" && (
+                    <>
+                      <button
+                        title="কালেক্টর এড করুন"
+                        className="btn btn-outline-light btn-md"
+                        data-bs-toggle="modal"
+                        data-bs-target="#collectorModal"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="25"
+                          height="25"
+                          fill="currentColor"
+                          class="bi bi-person-plus"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                          <path
+                            fill-rule="evenodd"
+                            d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"
+                          />
+                        </svg>
+                      </button>
+                    </>
+                  ))}
+              </div>
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
+                  {/* <div className="addCollector">
                     <div className="addNewCollector">
                       <div className="displexFlexSys">
-                        <div className="addAndSettingIcon">
-                          {permission?.collectorAdd || role === "ispOwner" ? (
-                            <PersonPlusFill
-                              className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#collectorModal"
-                            />
-                          ) : (
-                            ""
-                          )}
-                          {/* <GearFill
+                        <div className="addAndSettingIcon"> */}
+                  {/* <GearFill
                             className="addcutmButton"
                             // data-bs-toggle="modal"
                             // data-bs-target="#exampleModal"
                           /> */}
-                        </div>
+                  {/* </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <Table columns={columns} data={collector}></Table>
                 </div>
               </FourGround>
@@ -246,6 +256,11 @@ export default function Collector() {
             </FontColor>
           </div>
         </div>
+        {/* modals */}
+        <CollectorPost />
+        <CollectorDetails single={singleCollector} />
+        <CollectorEdit single={singleCollector} />
+        <SingleMessage single={collectorId} sendCustomer="collector" />
       </div>
     </>
   );

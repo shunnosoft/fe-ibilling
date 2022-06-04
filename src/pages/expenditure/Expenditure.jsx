@@ -66,7 +66,7 @@ export default function Expenditure() {
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
   const role = useSelector((state) => state.persistedReducer.auth.role);
-
+  const [whatToShow, setWhatToShow] = useState("expenditure");
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -338,12 +338,61 @@ export default function Expenditure() {
                       allExpenditures={allExpenditures}
                     />
                   </div>
-                  <Table
-                    customComponent={customComponent}
-                    data={allExpenditures}
-                    columns={columns}
-                  ></Table>
-                  <Table data={purpose} columns={columns2}></Table>
+
+                  <div
+                    className="btn-group"
+                    role="group"
+                    aria-label="Basic radio toggle button group"
+                    style={{ width: "100%" }}
+                  >
+                    <input
+                      type="radio"
+                      className="btn-check"
+                      name="btnradio"
+                      id="btnradio1"
+                      autocomplete="off"
+                      checked={whatToShow === "expenditure"}
+                      onClick={() => {
+                        setWhatToShow("expenditure");
+                      }}
+                    />
+                    <label
+                      className="btn shadow-none btn-outline-primary custombtngroup"
+                      for="btnradio1"
+                    >
+                      খরচ
+                    </label>
+
+                    <input
+                      type="radio"
+                      className="btn-check"
+                      name="btnradio"
+                      id="btnradio2"
+                      autocomplete="off"
+                      checked={whatToShow === "expenditurePurpose"}
+                      onClick={() => {
+                        setWhatToShow("expenditurePurpose");
+                      }}
+                    />
+                    <label
+                      className="btn btn-outline-primary shadow-none custombtngroup"
+                      for="btnradio2"
+                    >
+                      খরচ খাত
+                    </label>
+                  </div>
+
+                  {whatToShow === "expenditure" ? (
+                    <Table
+                      customComponent={customComponent}
+                      data={allExpenditures}
+                      columns={columns}
+                    ></Table>
+                  ) : whatToShow === "expenditurePurpose" ? (
+                    <Table data={purpose} columns={columns2}></Table>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </FourGround>
               <Footer />

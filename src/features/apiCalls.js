@@ -474,13 +474,42 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
 
 export const deleteACustomer = async (
   dispatch,
-  IDs,
+  data,
+  setIsLoading,
   isResellerCustomer = false
 ) => {
   try {
-    await apiLink.delete(`/ispOwner/customer/${IDs.ispID}/${IDs.customerID}`);
-    dispatch(deleteCustomerSuccess(IDs.customerID));
-    isResellerCustomer && dispatch(deleteReCustomer(IDs.customerID));
+    setIsLoading(true);
+    await apiLink.delete(
+      `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
+    );
+    dispatch(deleteCustomerSuccess(data.customerID));
+    isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
+    document.querySelector("#customerDelete").click();
+    setIsLoading(false);
+    toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
+  } catch (err) {
+    if (err.response) {
+      toast.error(err.response.data.message);
+    }
+  }
+};
+
+export const deleteStaticCustomer = async (
+  dispatch,
+  data,
+  setIsLoading,
+  isResellerCustomer = false
+) => {
+  try {
+    setIsLoading(true);
+    await apiLink.delete(
+      `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
+    );
+    dispatch(deleteStaticCustomerSuccess(data.customerID));
+    isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
+    document.querySelector("#StaticCustomerDelete").click();
+    setIsLoading(false);
     toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
   } catch (err) {
     if (err.response) {
