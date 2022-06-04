@@ -3,14 +3,9 @@ import moment from "moment";
 
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
-import {
-  ArrowClockwise,
-  PersonCircle,
-  WifiOff,
-  Wifi,
-} from "react-bootstrap-icons";
+import { ArrowClockwise, WifiOff, Wifi } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 // import { Link } from "react-router-dom";
 
 // internal imports
@@ -19,23 +14,16 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
-import TdLoader from "../../components/common/TdLoader";
 
 import Loader from "../../components/common/Loader";
 import { fetchActivepppoeUser, fetchpppoeUser } from "../../features/apiCalls";
 
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 
-import { useLayoutEffect } from "react";
 import Table from "../../components/table/Table";
 // import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
-  const navigate = useNavigate();
-
-  let serial = 0;
-  let serial2 = 0;
-  let serial3 = 0;
   const mikrotik = useSelector(
     (state) => state.persistedReducer?.mikrotik?.mikrotik
   );
@@ -53,7 +41,7 @@ export default function ConfigMikrotik() {
   const allMikrotikUsers = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
-  console.log(allMikrotikUsers)
+  console.log(allMikrotikUsers);
 
   const activeUser = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
@@ -311,7 +299,7 @@ export default function ConfigMikrotik() {
                   <div className="addCollector">
                     <div className="activeuserselection">
                       <div className="LeftSideMikrotik">
-                        <h4>মাইক্রোটিক সিলেক্ট করুন</h4>
+                        <h6>মাইক্রোটিক সিলেক্ট করুন</h6>
                         <select
                           id="selectMikrotikOption"
                           onChange={mikrotiSelectionHandler}
@@ -324,7 +312,7 @@ export default function ConfigMikrotik() {
                         </select>
                       </div>
                       <div className="rightSideMikrotik">
-                        <h4>গ্রাহক সিলেক্ট করুন</h4>
+                        <h6>গ্রাহক সিলেক্ট করুন</h6>
                         <select
                           id="selectMikrotikOption"
                           onChange={selectMikrotikOptionsHandler}
@@ -339,7 +327,7 @@ export default function ConfigMikrotik() {
                         </select>
                       </div>
                       <div className="rightSideMikrotik">
-                        <h4>রিফ্রেশ করুন</h4>
+                        <h5>রিফ্রেশ করুন</h5>
 
                         <div className="refreshIcon">
                           {isRefrsh ? (
@@ -354,64 +342,48 @@ export default function ConfigMikrotik() {
                     </div>
 
                     {/* PPPoE users */}
-                    {whatYouWantToShow === "showActiveMikrotikUser" ? (
-                      <>
-                        <h2
-                          style={{
-                            width: "100%",
-                            textAlign: "center",
-                            marginTop: "50px",
-                          }}
-                        >
-                          এক্টিভ গ্রাহক
-                        </h2>
-                        <Table columns={columns2} data={activeUser}></Table>
-                      </>
-                    ) : (
-                      ""
+                    {whatYouWantToShow === "showActiveMikrotikUser" && (
+                      <Table columns={columns2} data={activeUser}></Table>
                     )}
 
                     {/* Active PPPoE users */}
-                    {whatYouWantToShow === "showAllMikrotikUser" ? (
-                      <>
-                        <h2
-                          style={{
-                            width: "100%",
-                            textAlign: "center",
-                            marginTop: "50px",
-                          }}
-                        >
-                          সকল গ্রাহক
-                        </h2>
-                        <div
-                          className="LeftSideMikrotik"
-                          style={{
-                            widhth: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <select
-                            id="selectMikrotikOption"
-                            onChange={filterIt}
-                            className="form-select"
-                            style={{ marginBottom: "-10px" }}
-                          >
-                            <option value={""}>সকল গ্রাহক</option>;
-                            <option value={"true"}>অনলাইন</option>;
-                            <option value={"false"}>অফলাইন</option>;
-                          </select>
-                        </div>
+                    {whatYouWantToShow === "showAllMikrotikUser" && (
+                      // <>
+                      //   <h2
+                      //     style={{
+                      //       width: "100%",
+                      //       textAlign: "center",
+                      //       marginTop: "50px",
+                      //     }}
+                      //   >
+                      //     সকল গ্রাহক
+                      //   </h2>
+                      //   <div
+                      //     className="LeftSideMikrotik"
+                      //     style={{
+                      //       widhth: "100%",
+                      //       display: "flex",
+                      //       alignItems: "center",
+                      //       justifyContent: "flex-end",
+                      //     }}
+                      //   >
+                      //     <select
+                      //       id="selectMikrotikOption"
+                      //       onChange={filterIt}
+                      //       className="form-select"
+                      //       style={{ marginBottom: "-10px" }}
+                      //     >
+                      //       <option value={""}>সকল গ্রাহক</option>;
+                      //       <option value={"true"}>অনলাইন</option>;
+                      //       <option value={"false"}>অফলাইন</option>;
+                      //     </select>
+                      //   </div>
 
-                        <Table
-                          isLoading={loading}
-                          columns={columns3}
-                          data={allUsers}
-                        ></Table>
-                      </>
-                    ) : (
-                      ""
+                      <Table
+                        isLoading={loading}
+                        columns={columns3}
+                        data={allUsers}
+                      ></Table>
                     )}
                   </div>
                 </div>

@@ -25,6 +25,7 @@ const Staff = () => {
   const getAllStaffs = useSelector(
     (state) => state.persistedReducer?.staff?.staff
   );
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
 
   const [isLoading, setIsLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -99,9 +100,6 @@ const Staff = () => {
     ],
     []
   );
-
-  // const data = useMemo(() => getAllStaffs, []);
-
   return (
     <>
       <Sidebar />
@@ -114,7 +112,32 @@ const Staff = () => {
               <SingleMessage single={staffSmsId} sendCustomer="staff" />
               <StaffEdit staffId={staffId} />
               <FourGround>
-                <h2 className="collectorTitle">কর্মচারী</h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>কর্মচারী</div>
+                  {(role === "ispOwner" || role === "reseller") && (
+                    <button
+                      title="কর্মচারী এড করুন"
+                      className="btn btn-outline-light btn-md"
+                      data-bs-toggle="modal"
+                      data-bs-target="#staffModal"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="25"
+                        height="25"
+                        fill="currentColor"
+                        class="bi bi-person-plus"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                        <path
+                          fill-rule="evenodd"
+                          d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </FourGround>
               <FourGround>
                 <div className="collectorWrapper">
@@ -136,23 +159,21 @@ const Staff = () => {
                         />
                       </div>
                     </div> */}
-                    <div className="addAndSettingIcon col-sm-6 text-end">
+                    {/* <div className="addAndSettingIcon col-sm-6 text-end">
                       <PersonPlusFill
                         style={{ background: "#328eea", color: "#fff" }}
                         className="addcutmButton"
                         data-bs-toggle="modal"
                         data-bs-target="#staffModal"
                       />
-                    </div>
+                    </div> */}
 
-                    {isLoading ? (
+                    {isLoading && (
                       <div className="deleteReseller">
                         <h6>
                           <Loader /> Deleting...
                         </h6>
                       </div>
-                    ) : (
-                      ""
                     )}
                   </div>
                   <Table

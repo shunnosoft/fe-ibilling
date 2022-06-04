@@ -492,7 +492,25 @@ export default function Customer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">গ্রাহক </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>গ্রাহক</div>
+                  <div className="settingbtn">
+                    <Link
+                      to={`/packageSetting`}
+                      className="mikrotikConfigureButtom"
+                      style={{
+                        height: "40px",
+                        fontSize: "20px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      প্যাকেজ সেটিং{" "}
+                      <ArrowRightShort style={{ fontSize: "19px" }} />
+                    </Link>
+                  </div>
+                </div>
               </FourGround>
 
               {/* Model start */}
@@ -511,22 +529,6 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="settingbtn">
-                      <Link
-                        to={`/packageSetting`}
-                        className="mikrotikConfigureButtom"
-                        style={{
-                          height: "40px",
-                          fontSize: "20px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        প্যাকেজ সেটিং{" "}
-                        <ArrowRightShort style={{ fontSize: "19px" }} />
-                      </Link>
-                    </div>
                     <div className="displexFlexSys">
                       {/* filter selector */}
                       <div className="selectFiltering allFilter">

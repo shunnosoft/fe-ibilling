@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./sidebar.css";
 
 import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
@@ -75,21 +75,35 @@ export default function Sidebar() {
   //     .getElementById("toggleSubBilling")
   //     .classList.toggle("hideSubBilling");
   // };
-  const [isExpand, setIsExpand] = useState(false);
+
+  const [activeKey, setActiveKey] = useState();
   const location = window.location.pathname;
 
-  // useEffect(() => {
-  //   if (
-  //     location === "/customer" ||
-  //     location === "/activeCustomer" ||
-  //     location === "/staticCustomer" ||
-  //     location === "/staticActiveCustomer"
-  //   ) {
-  //     setIsExpand(true);
-  //   } else {
-  //     setIsExpand(false);
-  //   }
-  // }, [location]);
+  useEffect(() => {
+    switch (location) {
+      case "/home":
+        localStorage.removeItem("active-key");
+        break;
+      case "/area":
+        localStorage.removeItem("active-key");
+        break;
+      case "/mikrotik":
+        localStorage.removeItem("active-key");
+        break;
+      default:
+        break;
+    }
+    setActiveKey(localStorage.getItem("active-key"));
+  }, [location]);
+
+  const handleActiveAccordian = (key) => {
+    if (key === activeKey) {
+      setActiveKey("");
+    } else {
+      setActiveKey(key);
+      localStorage.setItem("active-key", key);
+    }
+  };
 
   return (
     <TitleColor>
@@ -213,9 +227,11 @@ export default function Sidebar() {
 
               {/* গ্রাহক */}
               <div className="sideBar_accordian">
-                <Accordion defaultActiveKey="">
+                <Accordion activeKey={activeKey}>
                   <Accordion.Item eventKey="0">
-                    <Accordion.Header>
+                    <Accordion.Header
+                      onClick={() => handleActiveAccordian("0")}
+                    >
                       <div className="sidebarIcon">{<PeopleFill />}</div>
                       <span className="sidebarLinksName">গ্রাহক</span>
                     </Accordion.Header>
@@ -334,15 +350,13 @@ export default function Sidebar() {
                         </NavLink>
                       )}
                     </Accordion.Body>
-                  </Accordion.Item>
-                </Accordion>
-              </div>
 
-              {/* রিপোর্ট */}
-              <div className="sideBar_accordian">
-                <Accordion defaultActiveKey="">
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>
+                    {/* রিপোর্ট */}
+                  </Accordion.Item>
+                  <Accordion.Item eventKey="1">
+                    <Accordion.Header
+                      onClick={() => handleActiveAccordian("1")}
+                    >
                       <div className="sidebarIcon">{<BarChartFill />}</div>
                       <span className="sidebarLinksName">রিপোর্ট</span>
                     </Accordion.Header>
@@ -413,15 +427,13 @@ export default function Sidebar() {
                         </FontColor>
                       </NavLink>
                     </Accordion.Body>
-                  </Accordion.Item>
-                </Accordion>
-              </div>
 
-              {/* স্টাফ */}
-              <div className="sideBar_accordian">
-                <Accordion defaultActiveKey="">
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>
+                    {/* স্টাফ */}
+                  </Accordion.Item>
+                  <Accordion.Item eventKey="2">
+                    <Accordion.Header
+                      onClick={() => handleActiveAccordian("2")}
+                    >
                       <div className="sidebarIcon">{<PersonLinesFill />}</div>
                       <span className="sidebarLinksName">স্টাফ</span>
                     </Accordion.Header>
@@ -519,14 +531,12 @@ export default function Sidebar() {
                       )}
                     </Accordion.Body>
                   </Accordion.Item>
-                </Accordion>
-              </div>
 
-              {/* রিসেলার */}
-              <div className="sideBar_accordian">
-                <Accordion defaultActiveKey="">
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>
+                  {/* রিসেলার */}
+                  <Accordion.Item eventKey="3">
+                    <Accordion.Header
+                      onClick={() => handleActiveAccordian("3")}
+                    >
                       <div className="sidebarIcon">{<PersonCircle />}</div>
                       <span className="sidebarLinksName">রিসেলার</span>
                     </Accordion.Header>
@@ -628,14 +638,11 @@ export default function Sidebar() {
                       )}
                     </Accordion.Body>
                   </Accordion.Item>
-                </Accordion>
-              </div>
-
-              {/* মেসেজ */}
-              <div className="sideBar_accordian">
-                <Accordion defaultActiveKey="">
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>
+                  {/* মেসেজ */}
+                  <Accordion.Item eventKey="4">
+                    <Accordion.Header
+                      onClick={() => handleActiveAccordian("4")}
+                    >
                       <div className="sidebarIcon">{<Messenger />}</div>
                       <span className="sidebarLinksName">মেসেজ</span>
                     </Accordion.Header>
@@ -736,14 +743,12 @@ export default function Sidebar() {
                       )}
                     </Accordion.Body>
                   </Accordion.Item>
-                </Accordion>
-              </div>
+                  {/* একাউন্টস */}
 
-              {/* একাউন্টস */}
-              <div className="sideBar_accordian">
-                <Accordion defaultActiveKey="">
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>
+                  <Accordion.Item eventKey="5">
+                    <Accordion.Header
+                      onClick={() => handleActiveAccordian("5")}
+                    >
                       <div className="sidebarIcon">{<WalletFill />}</div>
                       <span className="sidebarLinksName">একাউন্টস</span>
                     </Accordion.Header>

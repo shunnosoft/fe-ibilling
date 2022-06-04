@@ -17,6 +17,7 @@ import MikrotikPost from "./mikrotikModals/MikrotikPost";
 import TdLoader from "../../components/common/TdLoader";
 import { fetchMikrotik } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
+import { Button } from "react-bootstrap";
 
 export default function Mikrotik() {
   let serial = 0;
@@ -89,14 +90,35 @@ export default function Mikrotik() {
               <MikrotikPost />
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">মাইক্রোটিক </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>মাইক্রোটিক</div>
+                  <button
+                    title="মাইক্রোটিক এড করুন"
+                    className="btn btn-outline-light btn-md"
+                    data-bs-toggle="modal"
+                    data-bs-target="#MikrotikModal"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      fill="currentColor"
+                      className="bi bi-plus-lg"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
+                  {/* <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>মাইক্রোটিক অ্যাড</p>
                       <div className="addAndSettingIcon">
                         <Plus
                           className="addcutmButton"
@@ -105,7 +127,7 @@ export default function Mikrotik() {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* table */}
                   <Table columns={columns} data={allmikrotiks}></Table>
