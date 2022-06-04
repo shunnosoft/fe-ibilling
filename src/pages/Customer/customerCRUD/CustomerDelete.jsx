@@ -17,6 +17,12 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // DELETE handler
   const deleteCustomer = (customerId) => {
+    let con = true;
+
+    if (mikrotikCheck) {
+      con = window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
+    }
+
     // send data for api
     const data = {
       ispID: ispOwnerId,
@@ -25,7 +31,9 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
     };
 
     // api call
-    deleteACustomer(dispatch, data, setIsloading);
+    if (con) {
+      deleteACustomer(dispatch, data, setIsloading);
+    }
   };
 
   return (
@@ -82,9 +90,6 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               </button>
               <button
                 onClick={() => {
-                  if (mikrotikCheck) {
-                    window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
-                  }
                   deleteCustomer(single?.id);
                 }}
                 className="btn btn-success"
