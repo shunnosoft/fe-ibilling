@@ -7,47 +7,60 @@ import { useSelector, useDispatch } from "react-redux";
 import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
-// import { editCustomer } from "../../../features/customerSlice";
-// import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
 import {
   editCustomer,
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
-// import apiLink from "../../../api/apiLink";
 import moment from "moment";
-// import { useLayoutEffect } from "react";
+
 export default function CustomerEdit(props) {
-  const [user, setUser] = useState(props?.single);
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-  const area = useSelector((state) => state.persistedReducer.area.area);
-  const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
-  );
-  // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
-  // const [ppPackage, setppPackage] = useState([]);
-  const [packageRate, setPackageRate] = useState("");
-  const [isLoading, setIsloading] = useState(false);
-  // const [singleMikrotik, setSingleMikrotik] = useState(user.mikrotik);
-  const [mikrotikPackage, setMikrotikPackage] = useState("");
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
-  );
-  const ppPackage = useSelector((state) =>
-    bpSettings.hasMikrotik
-      ? state.persistedReducer.mikrotik.packagefromDatabase
-      : state.package.packages
+  // get all customer
+  const customer = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
   );
 
-  const [autoDisable, setAutoDisable] = useState(user.autoDisable);
+  // find editable data
+  const data = customer.find((item) => item.id === props.single);
+
+  const [user, setUser] = useState(data);
+
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
+  );
+
+  // get all area
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
+
+  // get mikrotik
+  const Getmikrotik = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+  );
+
+  // get bp setting
+  const bpSettings = useSelector(
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+  );
+
+  // get ppoe package
+  const ppPackage = useSelector((state) =>
+    bpSettings.hasMikrotik
+      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
+  );
+
+  const [packageRate, setPackageRate] = useState("");
+  const [isLoading, setIsloading] = useState(false);
+  const [mikrotikPackage, setMikrotikPackage] = useState("");
+
+  const [autoDisable, setAutoDisable] = useState(data?.autoDisable);
 
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
-  // const [pppoePacakage, setPppoePacakage] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(user.pppoe?.disabled);
+
+  const [activeStatus, setActiveStatus] = useState(data?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
@@ -58,33 +71,33 @@ export default function CustomerEdit(props) {
   const [packageId, setPackageId] = useState("");
 
   useEffect(() => {
-    setPackageId(props.single?.mikrotikPackage);
-    setUser(props.single);
-    setStatus(user.status);
+    setPackageId(data?.mikrotikPackage);
+    setUser(data);
+    setStatus(data?.status);
     const IDs = {
       ispOwner: ispOwnerId,
-      mikrotikId: props.single.mikrotik,
+      mikrotikId: data?.mikrotik,
     };
 
     if (bpSettings?.hasMikrotik) {
       fetchPackagefromDatabase(dispatch, IDs);
     }
-    // get the packages  not from mikrotik
-  }, [bpSettings, ispOwnerId, dispatch, props?.single, user]);
+  }, [bpSettings, ispOwnerId, dispatch, data]);
+
   useEffect(() => {
-    setAutoDisable(props.single?.autoDisable);
-    setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(props?.single.billingCycle).format("HH:mm"));
-    const temp = Getmikrotik.find((val) => val.id === props?.single.mikrotik);
+    setAutoDisable(data?.autoDisable);
+    setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
+    setBilltime(moment(data?.billingCycle).format("HH:mm"));
+    const temp = Getmikrotik.find((val) => val.id === data?.mikrotik);
     setmikrotikName(temp);
 
     // findout area id by sub area id
-  }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
+  }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
 
   useEffect(() => {
     area.map((a) => {
       a.subAreas.map((sub) => {
-        if (sub.id === props.single.subArea) {
+        if (sub.id === data?.subArea) {
           setAreaID(a);
           setSubAreaId(sub);
           setSubArea(a.subAreas);
@@ -93,24 +106,7 @@ export default function CustomerEdit(props) {
       });
       return a;
     });
-  }, [area, props]);
-  // useEffect(() => {
-  //   const IDs = {
-  //     ispOwner: ispOwnerId,
-  //     mikrotikId: user.mikrotik,
-  //   };
-  //   const fetchPac = async () => {
-  //     try {
-  //       const res = await apiLink.get(
-  //         `/mikrotik/PPPpackages/${IDs.ispOwner}/${IDs.mikrotikId}`
-  //       );
-  //       setppPackage(res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   user.mikrotik && fetchPac();
-  // }, [ispOwnerId, props?.single]);
+  }, [area, data]);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -132,44 +128,18 @@ export default function CustomerEdit(props) {
     // balance: Yup.number().integer(),
   });
 
-  // const [loadingPac, setLoadingPac] = useState(false);
-
-  // select Getmikrotik
-  // const selectMikrotik = (e) => {
-  //   const id = e.target.value;
-  //   if (id && ispOwnerId) {
-  //     const IDs = {
-  //       ispOwner: ispOwnerId,
-  //       mikrotikId: id,
-  //     };
-  //     fetchpppoePackage(dispatch, IDs);
-  //   }
-
-  //   const getOneMikrotik = Getmikrotik.find((val) => val.id === id);
-  //   setSingleMikrotik(getOneMikrotik.id);
-
-  //   // set Pppoe Pacakage
-  //   const filterPPPoEpacakage = ppPackage.filter((val) => val.mikrotik === id);
-  //   setPppoePacakage(filterPPPoEpacakage);
-  // };
-
   // select Mikrotik Package
   useEffect(() => {
-    //todo
-    const mikrotikPackageId = user.mikrotikPackage;
-    // setPackageId(user?.mikrotikPackage)
+    const mikrotikPackageId = data?.mikrotikPackage;
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
     setPackageRate(temp);
-  }, [user, ppPackage]);
+  }, [data, ppPackage]);
 
   const selectMikrotikPackage = (e) => {
-    // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
     setPackageId(mikrotikPackageId);
-    // setPackageId(packageIdOnSelect)
-    // console.log(mikrotikPackageId,packageIdOnSelect)
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
@@ -184,24 +154,22 @@ export default function CustomerEdit(props) {
     setAreaID(temp);
     setSubArea(temp.subAreas);
   };
+
   // sending data to backed
-  const customerHandler = async (data) => {
+  const customerHandler = async (formValue) => {
     setIsloading(true);
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
     if (subArea2 === "") {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
+    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
     const mainData = {
-      // customerId: "randon123",
-      paymentStatus: "unpaid",
-      singleCustomerID: user?.id,
+      singleCustomerID: data?.id,
       subArea: subArea2,
       ispOwner: ispOwnerId,
-      mikrotik: user?.mikrotik,
+      mikrotik: formValue?.mikrotik,
       mikrotikPackage: packageId,
-      billPayType: "prepaid",
       autoDisable: autoDisable,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
@@ -217,7 +185,6 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-    console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -247,7 +214,7 @@ export default function CustomerEdit(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {user.name} - এর প্রোফাইল এডিট করুন
+                {data?.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -260,18 +227,18 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: user.name || "",
-                  mobile: user.mobile || "",
-                  address: user.address || "",
-                  email: user.email || "",
-                  nid: user.nid || "",
-                  Pcomment: user.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || user.monthlyFee || 0,
-                  Pname: user.pppoe?.name || "",
-                  Pprofile: packageRate?.name || user.pppoe?.profile || "",
-                  Ppassword: user?.pppoe?.password || "",
+                  name: data?.name || "",
+                  mobile: data?.mobile || "",
+                  address: data?.address || "",
+                  email: data?.email || "",
+                  nid: data?.nid || "",
+                  Pcomment: data?.pppoe?.comment || "",
+                  monthlyFee: packageRate?.rate || data?.monthlyFee || 0,
+                  Pname: data?.pppoe?.name || "",
+                  Pprofile: packageRate?.name || data?.pppoe?.profile || "",
+                  Ppassword: data?.pppoe?.password || "",
                   status: status || "",
-                  balance: user.balance || "",
+                  balance: data?.balance || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -292,18 +259,11 @@ export default function CustomerEdit(props) {
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
                             disabled
-                            value={user.mikrotik || ""}
+                            value={data?.mikrotik || ""}
                           >
                             <option value={mikrotikName?.id || ""}>
                               {mikrotikName?.name || ""}
                             </option>
-                            {/* {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))} */}
                           </select>
                         </div>
                       ) : (
@@ -323,9 +283,8 @@ export default function CustomerEdit(props) {
                         >
                           {ppPackage?.map((val, key) => (
                             <option
-                              selected={user?.mikrotikPackage === val?.id}
+                              selected={data?.mikrotikPackage === val?.id}
                               key={key}
-                              // value={JSON.stringify({ mikrotikPackageId:val.name , packageIdOnSelect:val.id})}
                               value={val.id}
                             >
                               {val.name}
@@ -369,9 +328,6 @@ export default function CustomerEdit(props) {
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
-                          {/* <option value={areaID?.id || ""}>
-                            {areaID?.name || ""}
-                          </option> */}
                           {area.length === undefined
                             ? ""
                             : area.map((val, key) => (
@@ -395,9 +351,6 @@ export default function CustomerEdit(props) {
                           id="subAreaIdFromEdit"
                           onChange={selectedSubArea}
                         >
-                          {/* <option value={subAreaId?.id || ""}>
-                            {subAreaId?.name || ""}
-                          </option> */}
                           {subArea?.map((val, key) => (
                             <option
                               selected={val?.id === subAreaId?.id}
@@ -433,6 +386,7 @@ export default function CustomerEdit(props) {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"

@@ -16,7 +16,7 @@ function BillConfirmationSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
+  // console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");

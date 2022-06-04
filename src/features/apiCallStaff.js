@@ -11,10 +11,12 @@ import {
 } from "./staffSlice";
 
 // get all staff
-export const getStaffs = async (dispatch, ownerId) => {
+export const getStaffs = async (dispatch, ownerId, setTableLoading) => {
+  setTableLoading(true);
   try {
     const res = await apiLink.get("/staff/staffs/" + ownerId);
     dispatch(getStaffSuccess(res.data));
+    setTableLoading(false);
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);
@@ -27,7 +29,7 @@ export const addStaff = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff", data);
-    console.log("Clicked");
+    // console.log("Clicked");
     dispatch(addStaffSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#staffModal").click();
@@ -103,7 +105,7 @@ export const updateSalary = async (dispatch, salaryId, data, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch("/staff/salary/" + salaryId, data);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(updateSalarySuccess(res.data));
     document.querySelector("#editSalaryPostModal").click();
     setIsLoading(false);

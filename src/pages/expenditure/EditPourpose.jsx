@@ -15,7 +15,7 @@ import {
 } from "../../features/apiCalls";
 
 export default function EditPourpose({ singlePurpose }) {
-  console.log(singlePurpose);
+  // console.log(singlePurpose);
 
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();

@@ -15,24 +15,24 @@ import {
 import moment from "moment";
 export default function CustomerModal() {
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   // const packages= useSelector(state=>state.package.packages)
   // console.log( packages)
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
-      ? state.persistedReducer.mikrotik.packagefromDatabase
-      : state.package.packages
+      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
   );
-  
+
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -120,7 +120,7 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    console.log(data);
+    // console.log(data);
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
@@ -152,7 +152,7 @@ export default function CustomerModal() {
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
     }
-    console.log(mainData);
+    // console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
     // console.log(data);
   };
@@ -208,7 +208,7 @@ export default function CustomerModal() {
                 {(formik) => (
                   <Form>
                     <div className="mikrotikSection">
-                      {bpSettings.hasMikrotik ? (
+                      {bpSettings?.hasMikrotik ? (
                         <div>
                           <p className="comstomerFieldsTitle">
                             মাইক্রোটিক সিলেক্ট করুন
@@ -265,7 +265,7 @@ export default function CustomerModal() {
                         //   })
                         // }}
                       />
-                      {bpSettings.hasMikrotik ? (
+                      {bpSettings?.hasMikrotik ? (
                         ""
                       ) : (
                         <FtextField
@@ -359,7 +359,7 @@ export default function CustomerModal() {
                           />
                         </div>
                       </div>
-                      {bpSettings.hasMikrotik && (
+                      {bpSettings?.hasMikrotik && (
                         <div className="displayGrid3">
                           <div className="autoDisable">
                             <label>অটোমেটিক সংযোগ বন্ধ</label>

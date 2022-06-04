@@ -45,6 +45,7 @@ import Invoice from "./pages/invoice/Invoice";
 
 import CollectorReport from "./pages/report/CollectorReport";
 import Reseller from "./pages/reseller/Reseller";
+import ResellerCustomer from "./pages/reseller/resellerCustomer/ResellerCustomer";
 import RechargeHistoryofReseller from "./pages/recharge/Recharge";
 import Landing from "./pages/public-pages/Landing";
 import About from "./pages/public-pages/About";
@@ -66,20 +67,24 @@ import InvoiceList from "./admin/invoiceList/InvoiceList";
 import RecehargeSMS from "./pages/reseller/smsRecharge/RecehargeSMS";
 import StaticCustomer from "./pages/staticCustomer/StaticCustomer";
 import PackageSetting from "./pages/staticCustomer/PakageSetting";
+import ResellerSmsRequest from "./pages/resellerSMSrequest/ResellerSmsRequest";
+import StaticActiveCustomer from "./pages/staticActiveCustomer/StaticActiveCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
-  const user = useSelector((state) => state.persistedReducer.auth.currentUser);
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const user = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser
+  );
+  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   // const hasReseller= true
-  const isModalShowing = useSelector((state) => state.ui.alertModalShow);
+  const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -97,6 +102,23 @@ function App() {
           ""
         )}
 
+        {/* only reseller route */}
+        {userRole === "reseller" && (
+          <Routes>
+            <Route
+              path="/netfee"
+              element={
+                !user ? (
+                  <Landing></Landing>
+                ) : (
+                  <Navigate to={"/reseller/sms-receharge"} />
+                )
+              }
+            />
+          </Routes>
+        )}
+        {/* end only reseller route */}
+
         {/* for reseller route */}
         {userRole === "reseller" ||
         (userRole === "collector" && user.collector.reseller) ? (
@@ -111,16 +133,6 @@ function App() {
               path="/netfee"
               element={
                 !user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />
-              }
-            />
-            <Route
-              path="/netfee"
-              element={
-                !user ? (
-                  <Landing></Landing>
-                ) : (
-                  <Navigate to={"/reseller/sms-receharge"} />
-                )
               }
             />
 
@@ -247,10 +259,25 @@ function App() {
             <Route
               path="/staticCustomer"
               element={
-                userRole === "ispOwner" && user ? (
+                userRole === "ispOwner" ||
+                userRole === "manager" ||
+                (userRole === "collector" && !user.collector.reseller) ? (
                   <StaticCustomer />
                 ) : (
-                  <Navigate to={"/"} />
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            <Route
+              path="/staticActiveCustomer"
+              element={
+                userRole === "ispOwner" ||
+                userRole === "manager" ||
+                (userRole === "collector" && !user.collector.reseller) ? (
+                  <StaticActiveCustomer />
+                ) : (
+                  <Navigate to={"/home"} />
                 )
               }
             />
@@ -342,9 +369,20 @@ function App() {
                   )
                 }
               />
+              <Route
+                path="reseller/customer/:resellerId"
+                element={
+                  userRole === "ispOwner" ? (
+                    <ResellerCustomer />
+                  ) : (
+                    <Navigate to={"/home"}></Navigate>
+                  )
+                }
+              />
               <Route path="customer" element={<Customer />} />
               <Route path="activeCustomer" element={<ActiveCustomer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
+              <Route path="message-request" element={<ResellerSmsRequest />} />
 
               <Route path="*" element={<NotFound />} />
             </Route>

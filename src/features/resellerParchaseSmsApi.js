@@ -9,6 +9,7 @@ import {
 export const getParchaseHistory = async (resellerId, dispatch) => {
   try {
     const res = await apiLink.get("/reseller/smsPurchase/" + resellerId);
+    // console.log(res.data.smsPurchaseHistory);
     dispatch(getParchaseHistorySuccess(res.data.smsPurchaseHistory));
   } catch (error) {
     console.log(error?.response?.data?.message);
@@ -21,7 +22,7 @@ export const parchaseSms = async (data, setIsLoading, dispatch) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/reseller/smsPurchase", data);
-    console.log(res.data.resellerSmsPurchase);
+    // console.log(res.data.resellerSmsPurchase);
     dispatch(parchaseSmsSuccess(res.data.resellerSmsPurchase));
     setIsLoading(false);
     toast.success("সাবমিট সফল হয়েছে");

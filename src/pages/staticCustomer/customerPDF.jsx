@@ -10,7 +10,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
-  console.log(ispOwnerData);
+  // console.log(ispOwnerData);
   return (
     <div className="mt-3 p-4" ref={ref}>
       <h2 className="text-center">{ispOwnerData.company}</h2>
@@ -44,7 +44,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
-              <td className="prin_td">{val.pppoe.profile}</td>
+              <td className="prin_td">{val.queue.package}</td>
               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
               <td className="prin_td">
                 <strong>{FormatNumber(val.balance)}</strong>

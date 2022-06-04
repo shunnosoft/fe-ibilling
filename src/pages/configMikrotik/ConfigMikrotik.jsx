@@ -12,6 +12,7 @@ import {
   PersonSquare,
   PersonCheckFill,
   BagCheckFill,
+  PersonLinesFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -32,6 +33,7 @@ import {
   fetchActivepppoeUser,
   fetchMikrotik,
   fetchMikrotikSyncUser,
+  syncMikrotikStaticUser,
   fetchpppoePackage,
   fetchpppoeUser,
   fetchPackagefromDatabase,
@@ -52,7 +54,7 @@ export default function ConfigMikrotik() {
   let serial3 = 0;
   const { ispOwner, mikrotikId } = useParams();
   const mikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   const singleMik = mikrotik.find((item) => item.id === mikrotikId)
     ? mikrotik.find((item) => item.id === mikrotikId)
@@ -62,16 +64,16 @@ export default function ConfigMikrotik() {
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
   const allMikrotikUsers = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
   const activeUser = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeActiveUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
   const pppoePackage = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoePackage
+    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
   const mtkIsLoading = useSelector(
-    (state) => state.persistedReducer.mikrotik.isLoading
+    (state) => state?.persistedReducer?.mikrotik?.isLoading
   );
   // const mikrotikSyncUser = useSelector(
   //   state => state.mikrotik.mikrotikSyncUser
@@ -209,6 +211,18 @@ export default function ConfigMikrotik() {
         mikrotikId: mikrotikId,
       };
       fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
+    }
+  };
+
+  const syncStaticCustomer = () => {
+    if (
+      window.confirm("আপনি কি মাইক্রোটিকের স্ট্যাটিক গ্রাহক সিংক করতে চান?")
+    ) {
+      const IDs = {
+        ispOwner: ispOwner,
+        mikrotikId: mikrotikId,
+      };
+      syncMikrotikStaticUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
     }
   };
   const syncPackage = () => {
@@ -469,6 +483,20 @@ export default function ConfigMikrotik() {
                               className="addcutmButton btnbyEnamul"
                             >
                               <PersonCheckFill />
+                            </button>
+                          )}
+
+                          {mtkIsLoading ? (
+                            <span>
+                              <Loader />
+                            </span>
+                          ) : (
+                            <button
+                              onClick={syncStaticCustomer}
+                              title="স্ট্যাটিক গ্রাহক সিংক"
+                              className="addcutmButton btnbyEnamul"
+                            >
+                              <PersonLinesFill />
                             </button>
                           )}
 

@@ -3,10 +3,16 @@ import {
   PenFill,
   ArchiveFill,
   CurrencyDollar,
+  ChatText,
 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 
-const ActionButton = ({ data, deleteStaff, editHandler }) => {
+const ActionButton = ({
+  data,
+  deleteStaff,
+  editHandler,
+  handleSingleMessage,
+}) => {
   return (
     <>
       <ThreeDots
@@ -54,6 +60,22 @@ const ActionButton = ({ data, deleteStaff, editHandler }) => {
             </div>
           </div>
         </li>
+        {data.mobile && (
+          <li
+            data-bs-toggle="modal"
+            data-bs-target="#customerMessageModal"
+            onClick={() => {
+              handleSingleMessage(data.id);
+            }}
+          >
+            <div className="dropdown-item">
+              <div className="customerAction">
+                <ChatText />
+                <p className="actionP">মেসেজ</p>
+              </div>
+            </div>
+          </li>
+        )}
       </ul>
     </>
   );

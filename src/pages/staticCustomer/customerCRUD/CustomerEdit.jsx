@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -19,35 +19,45 @@ import { useEffect } from "react";
 import moment from "moment";
 // import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
+  console.log(props);
   const [user, setUser] = useState(props?.single);
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+  // get all customer
+  const customer = useSelector(
+    (state) => state?.persistedReducer?.customer?.staticCustomer
   );
-  const area = useSelector((state) => state.persistedReducer.area.area);
+
+  // find editable data
+  const data = customer.find((item) => item.id === props.single);
+  
+
+  const ispOwnerId = useSelector(
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
+  );
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   // const ppPackage = useSelector(state => state.mikrotik.pppoePackage);
   // const [ppPackage, setppPackage] = useState([]);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  // const [singleMikrotik, setSingleMikrotik] = useState(user.mikrotik);
+  // const [singleMikrotik, setSingleMikrotik] = useState(user?.mikrotik);
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
   const ppPackage = useSelector((state) =>
-    bpSettings.hasMikrotik
-      ? state.persistedReducer.mikrotik.packagefromDatabase
-      : state.package.packages
+    bpSettings?.hasMikrotik
+      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
   );
 
-  const [autoDisable, setAutoDisable] = useState(user.autoDisable);
+  const [autoDisable, setAutoDisable] = useState(data?.autoDisable);
 
   const [subArea, setSubArea] = useState([]);
   const dispatch = useDispatch();
   // const [pppoePacakage, setPppoePacakage] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(user.pppoe?.disabled);
+  const [activeStatus, setActiveStatus] = useState(data?.queue?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
@@ -57,34 +67,36 @@ export default function CustomerEdit(props) {
 
   const [packageId, setPackageId] = useState("");
 
+  // console.log(props);
+
   useEffect(() => {
-    setPackageId(props.single?.mikrotikPackage);
-    setUser(props.single);
-    setStatus(user.status);
+    setPackageId(data?.mikrotikPackage);
+    setUser(data);
+    setStatus(data?.status);
     const IDs = {
       ispOwner: ispOwnerId,
-      mikrotikId: props.single.mikrotik,
+      mikrotikId: data?.mikrotik,
     };
 
     if (bpSettings?.hasMikrotik) {
       fetchPackagefromDatabase(dispatch, IDs);
     }
     // get the packages  not from mikrotik
-  }, [bpSettings, ispOwnerId, dispatch, props?.single, user]);
+  }, [bpSettings, ispOwnerId, dispatch, data]);
   useEffect(() => {
-    setAutoDisable(props.single?.autoDisable);
-    setBillDate(moment(props?.single.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(props?.single.billingCycle).format("HH:mm"));
-    const temp = Getmikrotik.find((val) => val.id === props?.single.mikrotik);
+    setAutoDisable(data?.autoDisable);
+    setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
+    setBilltime(moment(data?.billingCycle).format("HH:mm"));
+    const temp = Getmikrotik.find((val) => val.id === data?.mikrotik);
     setmikrotikName(temp);
 
     // findout area id by sub area id
-  }, [Getmikrotik, area, props?.single, dispatch, ispOwnerId, ppPackage]);
+  }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
 
   useEffect(() => {
     area.map((a) => {
       a.subAreas.map((sub) => {
-        if (sub.id === props.single.subArea) {
+        if (sub.id === data?.subArea) {
           setAreaID(a);
           setSubAreaId(sub);
           setSubArea(a.subAreas);
@@ -93,11 +105,11 @@ export default function CustomerEdit(props) {
       });
       return a;
     });
-  }, [area, props]);
+  }, [area, data]);
   // useEffect(() => {
   //   const IDs = {
   //     ispOwner: ispOwnerId,
-  //     mikrotikId: user.mikrotik,
+  //     mikrotikId: user?.mikrotik,
   //   };
   //   const fetchPac = async () => {
   //     try {
@@ -109,28 +121,28 @@ export default function CustomerEdit(props) {
   //       console.log(error);
   //     }
   //   };
-  //   user.mikrotik && fetchPac();
+  //   user?.mikrotik && fetchPac();
   // }, [ispOwnerId, props?.single]);
 
   // customer validator
-  const customerValidator = Yup.object({
-    name: Yup.string().required("গ্রাহকের নাম লিখুন"),
-    mobile: Yup.string()
-      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
-    address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয়"),
-    nid: Yup.string(),
-    monthlyFee: Yup.number()
-      .integer()
-      .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-      .required("প্যাকেজ রেট দিন"),
-    Pname: Yup.string().required("PPPoE নাম লিখুন"),
-    Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
-    Pcomment: Yup.string(),
-    // balance: Yup.number().integer(),
-  });
+  // const customerValidator = Yup.object({
+  //   name: Yup.string().required("গ্রাহকের নাম লিখুন"),
+  //   mobile: Yup.string()
+  //     // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+  //     .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
+  //     .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+  //   address: Yup.string(),
+  //   email: Yup.string().email("ইমেইল সঠিক নয়"),
+  //   nid: Yup.string(),
+  //   monthlyFee: Yup.number()
+  //     .integer()
+  //     .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
+  //     .required("প্যাকেজ রেট দিন"),
+  //   Pname: Yup.string().required("PPPoE নাম লিখুন"),
+  //   Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
+  //   Pcomment: Yup.string(),
+  //   // balance: Yup.number().integer(),
+  // });
 
   // const [loadingPac, setLoadingPac] = useState(false);
 
@@ -156,12 +168,12 @@ export default function CustomerEdit(props) {
   // select Mikrotik Package
   useEffect(() => {
     //todo
-    const mikrotikPackageId = user.mikrotikPackage;
+    const mikrotikPackageId = data?.mikrotikPackage;
     // setPackageId(user?.mikrotikPackage)
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
     setPackageRate(temp);
-  }, [user, ppPackage]);
+  }, [data, ppPackage]);
 
   const selectMikrotikPackage = (e) => {
     // const { mikrotikPackageId , packageIdOnSelect} =JSON.parse(e.target.value)
@@ -185,39 +197,43 @@ export default function CustomerEdit(props) {
     setSubArea(temp.subAreas);
   };
   // sending data to backed
-  const customerHandler = async (data) => {
+  const customerHandler = async (formValue) => {
+    console.log(formValue);
     setIsloading(true);
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
     if (subArea2 === "") {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
+    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
     const mainData = {
       // customerId: "randon123",
-      paymentStatus: "unpaid",
-      singleCustomerID: user?.id,
+      // paymentStatus: "unpaid",
+      singleCustomerID: data?.id,
       subArea: subArea2,
       ispOwner: ispOwnerId,
-      mikrotik: user?.mikrotik,
+      mikrotik: formValue?.mikrotik,
       mikrotikPackage: packageId,
-      billPayType: "prepaid",
+      // billPayType: "prepaid",
       autoDisable: autoDisable,
+      monthlyFee: formValue?.monthlyFee,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
-      pppoe: {
-        name: Pname,
-        password: Ppassword,
-        service: "pppoe",
-        comment: Pcomment,
-        profile: Pprofile,
-        disabled: activeStatus,
-      },
+      // queue: {
+      // name: Pname,
+      // password: Ppassword,
+      // service: "pppoe",
+      // comment: Pcomment,
+      // profile: Pprofile,
+      // disabled: activeStatus,
+      // },
+      queue: { ...data?.queue },
       ...rest,
       status,
     };
     console.log(mainData);
+    // console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -247,7 +263,7 @@ export default function CustomerEdit(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {user.name} - এর প্রোফাইল এডিট করুন
+                {data?.name} - এর প্রোফাইল এডিট করুন
               </h5>
               <button
                 type="button"
@@ -260,20 +276,20 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: user.name || "",
-                  mobile: user.mobile || "",
-                  address: user.address || "",
-                  email: user.email || "",
-                  nid: user.nid || "",
-                  Pcomment: user.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || user.monthlyFee || 0,
-                  Pname: user.pppoe?.name || "",
-                  Pprofile: packageRate?.name || user.pppoe?.profile || "",
-                  Ppassword: user?.pppoe?.password || "",
+                  name: data?.name || "",
+                  mobile: data?.mobile || "",
+                  address: data?.address || "",
+                  email: data?.email || "",
+                  nid: data?.nid || "",
+                  Pcomment: data?.queue?.comment || "",
+                  monthlyFee: packageRate?.rate || data?.monthlyFee || 0,
+                  Pname: data?.queue?.name || "",
+                  Pprofile: packageRate?.name || data?.pppoe?.profile || "",
+                  Ppassword: data?.pppoe?.password || "",
                   status: status || "",
-                  balance: user.balance || "",
+                  balance: data?.balance || "",
                 }}
-                validationSchema={customerValidator}
+                // validationSchema={customerValidator}
                 onSubmit={(values) => {
                   customerHandler(values);
                 }}
@@ -282,7 +298,7 @@ export default function CustomerEdit(props) {
                 {() => (
                   <Form>
                     <div className="mikrotikSection">
-                      {bpSettings.hasMikrotik ? (
+                      {/* {bpSettings.hasMikrotik ? (
                         <div>
                           <p className="comstomerFieldsTitle">
                             মাইক্রোটিক সিলেক্ট করুন
@@ -292,26 +308,20 @@ export default function CustomerEdit(props) {
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
                             disabled
-                            value={user.mikrotik || ""}
+                            value={user?.mikrotik || ""}
                           >
                             <option value={mikrotikName?.id || ""}>
                               {mikrotikName?.name || ""}
                             </option>
-                            {/* {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))} */}
+                            
                           </select>
                         </div>
                       ) : (
                         ""
-                      )}
+                      )} */}
 
                       {/* pppoe package */}
-                      <div>
+                      {/* <div>
                         <p className="comstomerFieldsTitle">
                           প্যাকেজ সিলেক্ট করুন
                         </p>
@@ -332,7 +342,7 @@ export default function CustomerEdit(props) {
                             </option>
                           ))}
                         </select>
-                      </div>
+                      </div> */}
                       <FtextField
                         type="number"
                         min={0}
@@ -340,7 +350,7 @@ export default function CustomerEdit(props) {
                         name="monthlyFee"
                       />
 
-                      {bpSettings.hasMikrotik ? (
+                      {bpSettings?.hasMikrotik ? (
                         ""
                       ) : (
                         <FtextField
@@ -352,13 +362,13 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
-                      <FtextField
+                      {/* <FtextField type="text" label="নাম" name="Pname" /> */}
+                      {/* <FtextField
                         type="text"
                         label="পাসওয়ার্ড"
                         name="Ppassword"
-                      />
-                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                      /> */}
+                      {/* <FtextField type="text" label="কমেন্ট" name="Pcomment" /> */}
                     </div>
 
                     <div className="displayGrid3">
@@ -433,6 +443,7 @@ export default function CustomerEdit(props) {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"
@@ -442,10 +453,10 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
-                      {bpSettings.hasMikrotik && (
+                      {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
                           <label>অটোমেটিক সংযোগ বন্ধ</label>
-                          <input
+                          <Field
                             type="checkBox"
                             checked={autoDisable}
                             onChange={(e) => setAutoDisable(e.target.checked)}

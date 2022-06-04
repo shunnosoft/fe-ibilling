@@ -7,6 +7,9 @@ import {
   ArchiveFill,
   PersonFill,
   Wallet,
+  Person,
+  PeopleFill,
+  ChatText,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -31,6 +34,8 @@ import ResellerDetails from "./resellerModals/ResellerDetails";
 import { deleteReseller, fetchReseller } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
+import { Link } from "react-router-dom";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 export default function Reseller() {
   const dispatch = useDispatch();
@@ -43,8 +48,9 @@ export default function Reseller() {
   const [isLoading, setIsLoading] = useState(false);
   const [rsearch, setRsearch] = useState("");
   const reseller = useSelector(
-    (state) => state.persistedReducer.reseller.reseller
+    (state) => state.persistedReducer?.reseller?.reseller
   );
+
   let serial = 0;
   useEffect(() => {
     if (auth.ispOwner) {
@@ -59,6 +65,16 @@ export default function Reseller() {
     });
     setSingleUser(singleReseller);
   };
+
+  const [resellerSmsId, setResellerSmsId] = useState();
+  const handleSingleMessage = (resellerID) => {
+    setResellerSmsId(resellerID);
+  };
+
+  // const resellerCustomer = (resellerId) => {
+  //   console.log(resellerId);
+
+  // };
 
   // delete reseller
   const deleteSingleReseller = async (ispId, resellerId) => {
@@ -120,6 +136,18 @@ export default function Reseller() {
               aria-expanded="false"
             />
             <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
+              <Link to={`/reseller/customer/${original.id}`}>
+                <li>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PeopleFill />
+
+                      <p className="actionP">গ্রাহক</p>
+                    </div>
+                  </div>
+                </li>
+              </Link>
+
               <li
                 data-bs-toggle="modal"
                 href="#resellerRechargeModal"
@@ -135,19 +163,6 @@ export default function Reseller() {
                   </div>
                 </div>
               </li>
-              {/* <li
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#resellerrechargehistory"
-                                      role="button"
-                                       
-                                    >
-                                      <div className="dropdown-item">
-                                        <div className="customerAction">
-                                          <Cash />
-                                          <p className="actionP">রিচার্জ হিস্ট্রি</p>
-                                        </div>
-                                      </div>
-                                    </li> */}
               <li
                 data-bs-toggle="modal"
                 data-bs-target="#resellerDetailsModal"
@@ -189,6 +204,23 @@ export default function Reseller() {
                   </div>
                 </div>
               </li>
+
+              {original.mobile && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerMessageModal"
+                  onClick={() => {
+                    handleSingleMessage(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ChatText />
+                      <p className="actionP">মেসেজ</p>
+                    </div>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
         ),
@@ -211,6 +243,7 @@ export default function Reseller() {
               <ResellerEdit reseller={singleUser} />
               <ResellerDetails reseller={singleUser} />
               <Recharge reseller={singleUser}></Recharge>
+              <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
               {/* modals */}
               <FourGround>
                 <h2 className="collectorTitle">রিসেলার</h2>
@@ -241,7 +274,11 @@ export default function Reseller() {
                     )}
                   </div>
 
-                  <Table columns={columns} data={reseller}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={reseller}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

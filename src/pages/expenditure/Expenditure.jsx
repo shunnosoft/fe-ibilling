@@ -1,14 +1,10 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  PersonPlusFill,
   ThreeDots,
-  PersonFill,
-  PenFill,
-  GearFill,
   PlusCircleDotted,
   PlusCircleFill,
-  GearWide,
   Tools,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,9 +31,12 @@ import CreatePourpose from "./Createpourpose";
 import moment from "moment";
 import EditExpenditure from "./ExpenditureEdit";
 import EditPourpose from "./EditPourpose";
+import PrintExpenditure from "./expenditurePDF";
+import ReactToPrint from "react-to-print";
 import Table from "../../components/table/Table";
 
 export default function Expenditure() {
+  const componentRef = useRef();
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -67,7 +66,7 @@ export default function Expenditure() {
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
   const role = useSelector((state) => state.persistedReducer.auth.role);
-
+  const [whatToShow, setWhatToShow] = useState("expenditure");
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -299,10 +298,7 @@ export default function Expenditure() {
                   <div className="addCollector">
                     <div className="addNewCollector">
                       <div className="displexFlexSys">
-                        <div
-                          style={{ display: "flex" }}
-                          className="addAndSettingIcon"
-                        >
+                        <div className="addAndSettingIcon d-flex justify-content-end">
                           <div title="খরচ অ্যাড ">
                             <PlusCircleDotted
                               className="addcutmButton"
@@ -318,17 +314,85 @@ export default function Expenditure() {
                               data-bs-target="#createPourpose"
                             />
                           </div>
+                          <div title="প্রিন্ট">
+                            <ReactToPrint
+                              documentTitle="খরচ রিপোর্ট"
+                              trigger={() => (
+                                <PrinterFill
+                                  title="প্রিন্ট "
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => componentRef.current}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* table */}
-                  <Table
-                    customComponent={customComponent}
-                    data={allExpenditures}
-                    columns={columns}
-                  ></Table>
-                  <Table data={purpose} columns={columns2}></Table>
+
+                  {/* print report */}
+                  <div style={{ display: "none" }}>
+                    <PrintExpenditure
+                      ref={componentRef}
+                      allExpenditures={allExpenditures}
+                    />
+                  </div>
+
+                  <div
+                    className="btn-group"
+                    role="group"
+                    aria-label="Basic radio toggle button group"
+                    style={{ width: "100%" }}
+                  >
+                    <input
+                      type="radio"
+                      className="btn-check"
+                      name="btnradio"
+                      id="btnradio1"
+                      autocomplete="off"
+                      checked={whatToShow === "expenditure"}
+                      onClick={() => {
+                        setWhatToShow("expenditure");
+                      }}
+                    />
+                    <label
+                      className="btn shadow-none btn-outline-primary custombtngroup"
+                      for="btnradio1"
+                    >
+                      খরচ
+                    </label>
+
+                    <input
+                      type="radio"
+                      className="btn-check"
+                      name="btnradio"
+                      id="btnradio2"
+                      autocomplete="off"
+                      checked={whatToShow === "expenditurePurpose"}
+                      onClick={() => {
+                        setWhatToShow("expenditurePurpose");
+                      }}
+                    />
+                    <label
+                      className="btn btn-outline-primary shadow-none custombtngroup"
+                      for="btnradio2"
+                    >
+                      খরচ খাত
+                    </label>
+                  </div>
+
+                  {whatToShow === "expenditure" ? (
+                    <Table
+                      customComponent={customComponent}
+                      data={allExpenditures}
+                      columns={columns}
+                    ></Table>
+                  ) : whatToShow === "expenditurePurpose" ? (
+                    <Table data={purpose} columns={columns2}></Table>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </FourGround>
               <Footer />

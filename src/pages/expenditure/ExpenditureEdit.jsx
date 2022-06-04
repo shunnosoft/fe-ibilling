@@ -12,7 +12,7 @@ import {
   getExpenditureSectors,
 } from "../../features/apiCalls";
 export default function EditExpenditure({ singleExp }) {
-  console.log(singleExp);
+  // console.log(singleExp);
   const [isLoading, setIsLoading] = useState(false);
   const [pourpose, setPourpose] = useState("");
   const [des, setDes] = useState(singleExp.description);
@@ -36,7 +36,7 @@ export default function EditExpenditure({ singleExp }) {
     setPourpose(singleExp.expenditurePurpose);
   }, [singleExp]);
   const handleSelect = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setPourpose(e.target.value);
   };
   const expenditureHandler = async (formdata, resetForm) => {
@@ -52,7 +52,7 @@ export default function EditExpenditure({ singleExp }) {
       //     : userRole === "reseller"
       //     ? (data.reseller = userData.id)
       //     : (data.staff = userData.id);
-      console.log(data);
+      // console.log(data);
 
       await editExpenditure(dispatch, data, setIsLoading, resetForm);
     }

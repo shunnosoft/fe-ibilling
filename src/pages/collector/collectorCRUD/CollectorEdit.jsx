@@ -17,7 +17,7 @@ import { collectorPermission } from "./collectorPermission";
 
 export default function CollectorEdit({ single }) {
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

@@ -24,25 +24,28 @@ const useForceUpdate = () => {
   return () => setValue((value) => value + 1); // update the state to force render
 };
 
-const makeMessageObj = (template, ispOwnerId, customer) => {
-  let msg = template
-    .replace("USERNAME", customer?.pppoe?.name)
-    .replace("CUSTOMER_NAME", customer?.name)
-    .replace("CUSTOMER_ID", customer?.customerId)
-    .replace(
-      "BILL_DATE",
-      moment(customer?.billingCycle).format("DD-MM-YYYY hh:mm A")
-    )
-    .replace("AMOUNT", customer?.monthlyFee);
+const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
+  if (subAreaIds.includes(customer.subArea)) {
+    let msg = template
+      .replace("USERNAME", customer?.pppoe?.name)
+      .replace("CUSTOMER_NAME", customer?.name)
+      .replace("CUSTOMER_ID", customer?.customerId)
+      .replace(
+        "BILL_DATE",
+        moment(customer?.billingCycle).format("DD-MM-YYYY hh:mm A")
+      )
+      .replace("AMOUNT", customer?.monthlyFee);
 
-  return {
-    app: "netfee",
-    type: "bulk",
-    senderId: ispOwnerId,
-    message: msg,
-    mobile: customer.mobile,
-    count: smsCount(msg),
-  };
+    return {
+      app: "netfee",
+      type: "bulk",
+      senderId: ispOwnerId,
+      message: msg,
+      mobile: customer?.mobile,
+      count: smsCount(msg),
+    };
+  }
+  return null;
 };
 
 export default function Message() {
@@ -64,6 +67,7 @@ export default function Message() {
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
+
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
 
@@ -71,9 +75,7 @@ export default function Message() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-  const handleMessageCheckBox = (e) => {
-    setisChecked(e.target.checked);
-  };
+
   const dispatch = useDispatch();
   const mobileNumRef = useRef();
   const smsRef = useRef();
@@ -96,35 +98,14 @@ export default function Message() {
     }
   }, [userRole, getIspownerwitSMS]);
 
-  const setSubAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
-    }
-    setSubAreaIds(IDS_temp);
-  };
-  const setAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClassForArea");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
-    }
-    setAreaIds(IDS_temp);
-  };
+  //get all subArea ids
 
-  // WE GOT ALL AREA_IDS ON -> subAreaIds;
-  const handleStatusSelect = (e) => {
-    setStatus(e);
+  const getSubAreaIds = () => {
+    const subAreaAllId = area.map((item) => {
+      return item.subAreas?.map((sub) => sub.id);
+    });
+    return subAreaAllId.flat(Infinity);
   };
-  const handlePaymentSelect = (e) => {
-    setPayment(e);
-  };
-  // console.log("subArea", subAreaIds);
 
   // day checkbox select
   const daySettingHandler = (e) => {
@@ -141,46 +122,61 @@ export default function Message() {
     setDays(days);
   };
 
-  const customers = useSelector(
-    (state) => state.persistedReducer.customer.customer
-  );
+  // const customers = useSelector(
+  //   (state) => state.persistedReducer.customer.customer
+  // );
 
-  const [loading, setIsLoading] = useState(false);
+  // const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
-    // console.log(smsReceiverType);
-    // console.log(upperText, bottomText);
+    console.log(smsReceiverType);
     let messageTemplate = upperText + "\n" + bottomText;
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-      // setSms(owner.data.smsBalance);
       const res = await apiLink.get(`/ispOwner/customer/${ispOwnerId}`);
 
       let items = [],
         totalSmsCount = 0;
+      const filterCustomerBySelectedArea = (customer) => {
+        if (subAreaIds.includes(customer.subArea)) {
+          return customer;
+        }
+      };
 
       res.data.map((customer) => {
-        var dueDate = moment(customer.billingCycle);
-
+        let dueDate = moment(customer.billingCycle);
         // send sms to unpaid customers by billing cycle ending date
         if (
           smsReceiverType === "unpaidCustomerByDate" &&
           customer.mobile &&
           customer.paymentStatus === "unpaid" &&
-          subAreaIds.includes(customer.subArea) &&
           days.includes(dueDate.diff(now, "days"))
         ) {
-          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
-          totalSmsCount += sms.count;
-          items.push(sms);
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
         }
 
         // send sms to all customer
         if (smsReceiverType === "allCustomer" && customer.mobile) {
-          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
-          totalSmsCount += sms.count;
-          items.push(sms);
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
         }
 
         // send sms to unpaid customer
@@ -189,9 +185,16 @@ export default function Message() {
           customer.mobile &&
           customer.paymentStatus === "unpaid"
         ) {
-          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
-          totalSmsCount += sms.count;
-          items.push(sms);
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
         }
 
         // send sms to paid customer
@@ -200,9 +203,16 @@ export default function Message() {
           customer.mobile &&
           customer.paymentStatus === "paid"
         ) {
-          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
-          totalSmsCount += sms.count;
-          items.push(sms);
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
         }
 
         // send sms to active customer
@@ -211,9 +221,16 @@ export default function Message() {
           customer.mobile &&
           customer.status === "active"
         ) {
-          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
-          totalSmsCount += sms.count;
-          items.push(sms);
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
         }
 
         // send sms to inactive customer
@@ -222,9 +239,16 @@ export default function Message() {
           customer.mobile &&
           customer.status === "inactive"
         ) {
-          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
-          totalSmsCount += sms.count;
-          items.push(sms);
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
         }
 
         // send sms to expired customer
@@ -233,13 +257,18 @@ export default function Message() {
           customer.mobile &&
           customer.status === "expired"
         ) {
-          let sms = makeMessageObj(messageTemplate, ispOwnerId, customer);
-          totalSmsCount += sms.count;
-          items.push(sms);
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
         }
       });
-
-      // console.log(items);
 
       if (items.length === 0) {
         alert(`কোন গ্রাহক পাওয়া যায়নি।`);
@@ -304,21 +333,34 @@ export default function Message() {
     setTemplet(smsTemplet);
   };
 
-  const selectAllHandler = () => {
-    if (subAreaIds.length === 0) {
-      area.map((i) => {
-        i.subAreas.map((s) => {
-          subAreaIds.push(s.id);
-        });
-      });
-      setSubAreaIds(subAreaIds);
+  const setSubAreaHandler = (e) => {
+    const subIds = getSubAreaIds();
+    const { value, checked } = e.target;
+    if (checked) {
+      const newArr = subAreaIds.push(value);
+      setAreaIds(newArr);
+      // console.log({ subIds, newArr });
+      if (subIds.length === newArr) {
+        setisAllChecked(true);
+      }
+    } else {
+      const updatedData = subAreaIds.filter((id) => id !== value);
+      setSubAreaIds(updatedData);
+      setisAllChecked(false);
+    }
+  };
+
+  const selectAllHandler = (e) => {
+    if (e.target.checked) {
+      const newArray = getSubAreaIds();
+      setSubAreaIds(newArray);
       setisAllChecked(true);
     } else {
       setSubAreaIds([]);
       setisAllChecked(false);
     }
   };
-
+  console.log(subAreaIds);
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -384,9 +426,9 @@ export default function Message() {
                               type="checkbox"
                               className="getValueUsingClass"
                               value={"selectAll"}
-                              // onChange={selectAllHandler}
                               onClick={selectAllHandler}
                               id={"selectAll"}
+                              checked={isAllChecked}
                             />
                             <label
                               style={{
@@ -420,10 +462,7 @@ export default function Message() {
                                       value={v.id}
                                       onChange={setSubAreaHandler}
                                       id={v.id}
-                                      checked={
-                                        isAllChecked &&
-                                        subAreaIds.includes(v.id)
-                                      }
+                                      checked={subAreaIds.includes(v.id)}
                                     />
                                     <label
                                       style={{ cursor: "pointer" }}
@@ -594,7 +633,7 @@ export default function Message() {
                               <div>
                                 <input
                                   id="expire"
-                                  value="expire"
+                                  value="expired"
                                   name="platform"
                                   type="radio"
                                   className="form-check-input"

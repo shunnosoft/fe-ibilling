@@ -59,9 +59,9 @@ function AlertSmsTemplate() {
   };
 
   useEffect(() => {
-    setDays(settings.sms.alertDays);
+    setDays(settings?.sms.alertDays);
 
-    if (settings.sms.alert) {
+    if (settings?.sms.alert) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");
@@ -77,25 +77,26 @@ function AlertSmsTemplate() {
   }, [days]);
   // day checkbox select
   const daySettingHandler = (e) => {
+    let tempDays = [...days];
     let item = Number(e);
 
-    if (days.includes(item)) {
-      const index = days.indexOf(item);
+    if (tempDays.includes(item)) {
+      const index = tempDays.indexOf(item);
       if (index > -1) {
-        days.splice(index, 1);
+        tempDays.splice(index, 1);
       }
     } else {
-      days.push(item);
+      tempDays.push(item);
     }
 
-    setDays([...days]);
+    setDays(tempDays);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     let data = {
-      ...settings.sms,
+      ...settings?.sms,
       alert:
         billConfirmation === "on"
           ? true
@@ -104,7 +105,7 @@ function AlertSmsTemplate() {
           : null,
       alertDays: days,
       template: {
-        ...settings.sms.template,
+        ...settings?.sms?.template,
         alert: upperText + "\n" + bottomText,
         [alertNum]: upperText + "\n" + bottomText,
       },
@@ -117,7 +118,7 @@ function AlertSmsTemplate() {
         `/ispOwner/settings/sms/${ispOwnerId}`,
         data
       );
-      console.log(res.data);
+      // console.log(res.data);
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
       toast.success("এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে");
@@ -133,31 +134,31 @@ function AlertSmsTemplate() {
     return [
       {
         name: "এক দিনের টেমপ্লেট",
-        value: (settings.sms.template.alert1 || "") + "\nalert1",
+        value: (settings?.sms?.template?.alert1 || "") + "\nalert1",
       },
       {
         name: "দুই দিনের টেমপ্লেট",
-        value: (settings.sms.template.alert2 || "") + "\nalert2",
+        value: (settings?.sms?.template?.alert2 || "") + "\nalert2",
       },
       {
         name: "তিন দিনের টেমপ্লেট",
-        value: (settings.sms.template.alert3 || "") + "\nalert3",
+        value: (settings?.sms?.template?.alert3 || "") + "\nalert3",
       },
       {
         name: "চার দিনের টেমপ্লেট",
-        value: (settings.sms.template.alert4 || "") + "\nalert4",
+        value: (settings?.sms?.template?.alert4 || "") + "\nalert4",
       },
       {
         name: "পাঁচ দিনের টেমপ্লেট",
-        value: (settings.sms.template.alert5 || "") + "\nalert5",
+        value: (settings?.sms?.template?.alert5 || "") + "\nalert5",
       },
       {
         name: "ছয় দিনের টেমপ্লেট",
-        value: (settings.sms.template.alert6 || "") + "\nalert6",
+        value: (settings?.sms?.template?.alert6 || "") + "\nalert6",
       },
       {
         name: "সাত দিনের টেমপ্লেট",
-        value: (settings.sms.template.alert7 || "") + "\nalert7",
+        value: (settings?.sms?.template?.alert7 || "") + "\nalert7",
       },
     ];
   }, [settings]);

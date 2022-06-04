@@ -57,7 +57,7 @@ export default function Package() {
     setCollSearch(e.toString().toLowerCase());
   };
   const deletePackageHandler = (e) => {
-    console.log(e);
+    // console.log(e);
   };
   const columns1 = React.useMemo(
     () => [

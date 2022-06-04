@@ -10,7 +10,7 @@ import {
 export const getIspOwners = async (dispatch) => {
   try {
     const res = await apiLink.get(`/admin/getIspOwners`);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getIspOwnersSuccess(res.data));
   } catch (error) {
     console.log(error);
@@ -35,7 +35,7 @@ export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
 export const getIspOwnerInvoice = async (ispOwnerId, dispatch) => {
   try {
     const res = await apiLink.get("/admin/invoices/" + ispOwnerId);
-    console.log(res.data);
+    // console.log(res.data);
     dispatch(getIspOwnerInvoicesSuccess(res.data));
   } catch (error) {
     console.log(error);

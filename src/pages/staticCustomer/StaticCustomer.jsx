@@ -3,21 +3,18 @@ import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
 
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
-  PersonPlusFill,
   Wallet,
   ThreeDots,
   ArchiveFill,
   PenFill,
   PersonFill,
-  ArrowDownUp,
-  CashStack,
-  FileExcelFill,
-  PrinterFill,
   ArrowRightShort,
+  CashStack,
+  ChatText,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,11 +29,9 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
 import {
   deleteACustomer,
-  getCustomer,
+  getStaticCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import arraySort from "array-sort";
@@ -45,49 +40,45 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
-import { Link } from "react-router-dom";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
-export default function StaticCustomer() {
+export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
-  const cus = useSelector((state) => state.persistedReducer.customer.customer);
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const cus = useSelector(
+    (state) => state?.persistedReducer?.customer?.staticCustomer
+  );
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+    (state) => state?.persistedReducer?.auth?.userData
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
+    (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
-  // const [cusId, setSingleCustomerReport] = useState("");
-  // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
 
-  const currentCustomers = Customers.slice(firstIndex, lastIndex);
-  const allareas = useSelector((state) => state.persistedReducer.area.area);
+  // const currentCustomers = Customers;
+  const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
-      ? state.persistedReducer.auth.currentUser?.collector.areas
+      ? state.persistedReducer?.auth?.currentUser?.collector?.areas
       : []
   );
   const [allArea, setAreas] = useState([]);
 
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings
+    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
 
   useEffect(() => {
@@ -120,6 +111,29 @@ export default function StaticCustomer() {
     }
   }, [collectorArea, role]);
 
+  useEffect(() => {
+    const keys = [
+      "monthlyFee",
+      "customerId",
+      "name",
+      "mobile",
+      "address",
+      "paymentStatus",
+      "status",
+      "balance",
+      "subArea",
+    ];
+    setCustomers(
+      (isFilterRunning ? filterdCus : cus).filter((item) =>
+        keys.some((key) =>
+          typeof item[key] === "string"
+            ? item[key]?.toString().toLowerCase().includes(cusSearch)
+            : item[key]?.toString().includes(cusSearch)
+        )
+      )
+    );
+  }, [cus, cusSearch, filterdCus, isFilterRunning]);
+
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
   //   filter
@@ -136,12 +150,7 @@ export default function StaticCustomer() {
   };
   // get specific customer
   const getSpecificCustomer = (id) => {
-    if (cus.length !== undefined) {
-      const temp = cus.find((original) => {
-        return original.id === id;
-      });
-      setSingleCustomer(temp);
-    }
+    setSingleCustomer(id);
   };
   // get specific customer Report
   const [customerReportData, setId] = useState([]);
@@ -162,7 +171,7 @@ export default function StaticCustomer() {
   };
   //export customer data
 
-  let customerForCsV = currentCustomers.map((customer) => {
+  let customerForCsV = Customers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -206,13 +215,19 @@ export default function StaticCustomer() {
 
   useEffect(() => {
     if (
-      !bpSettings.hasMikrotik &&
+      !bpSettings?.hasMikrotik &&
       (role === "manager" || role === "ispOwner")
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch);
     }
-    getCustomer(dispatch, ispOwner, setIsloading);
+    getStaticCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
+
+  const [isSorted, setSorted] = useState(false);
+  const toggleSort = (item) => {
+    setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
+    setSorted(!isSorted);
+  };
 
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
@@ -245,20 +260,7 @@ export default function StaticCustomer() {
 
   const onChangeSubArea = (id) => {
     setCusSearch(id);
-    // console.log(id)
-    //     const filterdData = cus.filter((item) => item["subArea"] === id);
-
-    //     setFilter(filterdData);
-    // if (!id) {
-    //   let subAreaIds = [];
-    //   singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
-    //   setSubArea(subAreaIds);
-    // } else {
-    //   setSubArea([id]);
-    // }
   };
-  // console.log(filterdCus);
 
   const handleChangeStatus = (e) => {
     setStatus(e.target.value);
@@ -277,7 +279,6 @@ export default function StaticCustomer() {
       customerStatus = "ইনএক্টিভ";
     }
   }
-  console.log({ customerStatus, paymentStatus });
 
   if (paymentStatus) {
     const splitStatus = paymentStatus.split(".")[1];
@@ -308,6 +309,20 @@ export default function StaticCustomer() {
         accessor: "name",
       },
       {
+        Header: "IP",
+        accessor: "queue.address",
+        Cell: ({ row: { original } }) => {
+          return (
+            <>
+              {original.queue.type === "simple-queue"
+                ? original.queue.address
+                : original.queue.name}
+            </>
+          );
+        },
+      },
+
+      {
         Header: "মোবাইল",
         accessor: "mobile",
       },
@@ -327,10 +342,6 @@ export default function StaticCustomer() {
         },
       },
       {
-        Header: "	প্যাকেজ",
-        accessor: "pppoe.profile",
-      },
-      {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
       },
@@ -342,7 +353,7 @@ export default function StaticCustomer() {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("DD-MM-YY hh:mm A");
         },
       },
 
@@ -452,6 +463,23 @@ export default function StaticCustomer() {
               ) : (
                 ""
               )}
+
+              {original.mobile && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerMessageModal"
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ChatText />
+                      <p className="actionP">মেসেজ</p>
+                    </div>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
         ),
@@ -470,7 +498,7 @@ export default function StaticCustomer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">স্ট্যাটিক গ্রাহক</h2>
+                <h2 className="collectorTitle">গ্রাহক </h2>
               </FourGround>
 
               {/* Model start */}
@@ -479,6 +507,10 @@ export default function StaticCustomer() {
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
+              <SingleMessage
+                single={singleCustomer}
+                sendCustomer="staticCustomer"
+              />
 
               {/* Model finish */}
 
@@ -548,7 +580,9 @@ export default function StaticCustomer() {
                           </option>
                           <option value="status.active">এক্টিভ</option>
                           <option value="status.inactive">ইন-এক্টিভ</option>
+                          <option value="status.expired">এক্সপায়ার্ড</option>
                         </select>
+
                         <select
                           className="form-select"
                           onChange={handleActiveFilter}
@@ -556,16 +590,13 @@ export default function StaticCustomer() {
                           <option value="" defaultValue>
                             পেমেন্ট
                           </option>
-                          <option value="paymentStatus.unpaid">বকেয়া</option>
-                          <option value="paymentStatus.paid">পরিশোধ</option>
-                          <option value="paymentStatus.expired">
-                            মেয়াদোত্তীর্ণ
-                          </option>
+                          <option value="paymentStatus.paid">পেইড</option>
+                          <option value="paymentStatus.unpaid">আন-পেইড</option>
                         </select>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
                         <>
-                          <div className="addNewCollector">
+                          {/* <div className="addNewCollector">
                             <div className="addAndSettingIcon">
                               <CSVLink
                                 data={customerForCsV}
@@ -576,8 +607,8 @@ export default function StaticCustomer() {
                                 <FileExcelFill className="addcutmButton" />
                               </CSVLink>
                             </div>
-                          </div>
-                          <div className="addNewCollector">
+                          </div> */}
+                          {/* <div className="addNewCollector">
                             <div className="addAndSettingIcon">
                               <ReactToPrint
                                 documentTitle="customer-list"
@@ -591,7 +622,7 @@ export default function StaticCustomer() {
                               />
                             </div>
                           </div>
-                          {/* <div className="addNewCollector">
+                          <div className="addNewCollector">
                             <div className="addAndSettingIcon">
                               <PersonPlusFill
                                 className="addcutmButton"
@@ -615,17 +646,12 @@ export default function StaticCustomer() {
                       ""
                     )}
                   </div>
-                  {/* table */}
-                  {/* print report */}
-                  <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={currentCustomers}
-                      ref={componentRef}
-                    />
-                  </div>
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={Customers}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

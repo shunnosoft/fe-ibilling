@@ -1,5 +1,4 @@
 import React from "react";
-import { ArrowDownUp } from "react-bootstrap-icons";
 import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
@@ -8,15 +7,25 @@ import { useSelector } from "react-redux";
 const PrintCustomer = React.forwardRef((props, ref) => {
   const { currentCustomers, filterData } = props;
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+    (state) => state?.persistedReducer?.auth?.userData
   );
-  console.log(ispOwnerData);
+  // console.log(ispOwnerData);
   return (
-    <div className="mt-3 p-4" ref={ref}>
-      <h2 className="text-center">{ispOwnerData.company}</h2>
-      <h5 className="text-center">মোবাইল {ispOwnerData.mobile}</h5>
-      <h6 className="text-center text-mute">গ্রাহক রিপোর্ট ডিটেইলস</h6>
-      <ul className="d-flex justify-content-evenly">
+    <div ref={ref}>
+      <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
+        <div className="logo_side">
+          <div className="company_logo">
+            <img src="/assets/img/logo.png" alt="Company Logo" />
+          </div>
+          <div className="company_name">{ispOwnerData.company}</div>
+        </div>
+        <div className="details_side">
+          <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
+          {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
+        </div>
+      </div>
+
+      <ul className="d-flex justify-content-evenly filter_list">
         <li>এরিয়াঃ {filterData.area}</li>
         <li>সাবএরিয়াঃ {filterData.subArea}</li>
         <li>স্টাটাসঃ {filterData.status}</li>

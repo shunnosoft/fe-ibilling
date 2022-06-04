@@ -3,7 +3,12 @@ import moment from "moment";
 
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
-import { ArrowClockwise } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  PersonCircle,
+  WifiOff,
+  Wifi,
+} from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
 // import { Link } from "react-router-dom";
@@ -32,10 +37,10 @@ export default function ConfigMikrotik() {
   let serial2 = 0;
   let serial3 = 0;
   const mikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state.persistedReducer?.mikrotik?.mikrotik
   );
   const mtkIsLoading = useSelector(
-    (state) => state.persistedReducer.mikrotik.isLoading
+    (state) => state?.persistedReducer?.mikrotik?.isLoading
   );
   const [selectedMikrotikId, setMikrotikId] = useState();
   const singleMik = mikrotik.find((item) => item.id === selectedMikrotikId)
@@ -46,17 +51,19 @@ export default function ConfigMikrotik() {
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
   const allMikrotikUsers = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
+  console.log(allMikrotikUsers)
 
   const activeUser = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoeActiveUser
+    (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
+  console.log(activeUser);
   const pppoePackage = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoePackage
+    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   // const [isDeleting, setIsDeleting] = useState(false);
 
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
@@ -64,11 +71,11 @@ export default function ConfigMikrotik() {
   );
 
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
     const name = mtkId ? singleMik?.name : "";
     setMikrotikId(mtkId);
@@ -79,7 +86,7 @@ export default function ConfigMikrotik() {
 
     if (mtkId) {
       dispatch(resetMikrotikUserAndPackage());
-      fetchActivepppoeUser(dispatch, IDs, name);
+      fetchActivepppoeUser(dispatch, IDs, name, setLoading);
     }
   }, [ispOwnerId, selectedMikrotikId, dispatch, mikrotik]);
 
@@ -94,10 +101,10 @@ export default function ConfigMikrotik() {
     dispatch(resetMikrotikUserAndPackage());
 
     if (original === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name);
+      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (original === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name);
+      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
       setWhatYouWantToShow("showAllMikrotikUser");
     }
 
@@ -116,9 +123,9 @@ export default function ConfigMikrotik() {
 
     dispatch(resetMikrotikUserAndPackage());
     if (whatYouWantToShow === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name);
+      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
     } else if (whatYouWantToShow === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name);
+      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
     }
   };
   const columns2 = React.useMemo(
@@ -130,8 +137,24 @@ export default function ConfigMikrotik() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        Header: "স্ট্যাটাস",
+        Cell: <Wifi color="green" />,
+      },
+      {
         Header: "নাম",
         accessor: "name",
+        // Cell: ({ row: { original } }) => (
+        //   <div
+        //     style={{
+        //       display: "flex",
+        //     }}
+        //   >
+        //     <div style={{ marginRight: "5px" }}>
+        //       <Wifi />
+        //     </div>
+        //     {original?.name}
+        //   </div>
+        // ),
       },
       {
         Header: "এড্রেস",
@@ -195,20 +218,81 @@ export default function ConfigMikrotik() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "নাম",
-        accessor: "name",
+        Header: "স্ট্যাটাস",
+        accessor: "running",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.running ? (
+              <Wifi color="green" />
+            ) : (
+              <WifiOff color="red" />
+            )}
+          </div>
+        ),
       },
       {
-        Header: "কলার আইডি",
-        accessor: "callerId",
+        Header: "নাম",
+        accessor: "name",
       },
       {
         Header: "প্যাকেজ",
         accessor: "profile",
       },
+      {
+        Header: "RX",
+        accessor: "rxByte",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              padding: "15px 15px 15px 0 !important",
+            }}
+          >
+            {original?.rxByte
+              ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+              : ""}
+          </div>
+        ),
+      },
+      {
+        Header: "TX",
+        accessor: "txByte",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              padding: "15px 15px 15px 0 !important",
+            }}
+          >
+            {original?.txByte
+              ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
+              : ""}
+          </div>
+        ),
+      },
+      {
+        Header: "Last Link Up Time",
+        accessor: "lastLinkUpTime",
+      },
     ],
     []
   );
+  const [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  useEffect(() => {
+    setAllUsers(allMikrotikUsers);
+  }, [allMikrotikUsers]);
+
+  const filterIt = (e) => {
+    let temp;
+    if (e.target.value === "") {
+      setAllUsers(allMikrotikUsers);
+    } else if (e.target.value === "true") {
+      temp = allMikrotikUsers.filter((item) => item.running == true);
+      setAllUsers(temp);
+    } else if (e.target.value === "false") {
+      temp = allMikrotikUsers.filter((item) => item.running != true);
+      setAllUsers(temp);
+    }
+  };
+  console.log({ loading });
   return (
     <>
       <Sidebar />
@@ -299,9 +383,31 @@ export default function ConfigMikrotik() {
                         >
                           সকল গ্রাহক
                         </h2>
+                        <div
+                          className="LeftSideMikrotik"
+                          style={{
+                            widhth: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <select
+                            id="selectMikrotikOption"
+                            onChange={filterIt}
+                            className="form-select"
+                            style={{ marginBottom: "-10px" }}
+                          >
+                            <option value={""}>সকল গ্রাহক</option>;
+                            <option value={"true"}>অনলাইন</option>;
+                            <option value={"false"}>অফলাইন</option>;
+                          </select>
+                        </div>
+
                         <Table
+                          isLoading={loading}
                           columns={columns3}
-                          data={allMikrotikUsers}
+                          data={allUsers}
                         ></Table>
                       </>
                     ) : (

@@ -14,6 +14,7 @@ export const resellerSlice = createSlice({
       state.reseller.push(action.payload);
     },
     editResellerSuccess: (state, action) => {
+      console.log(action.payload);
       state.reseller[
         state.reseller.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
@@ -40,7 +41,7 @@ export const resellerSlice = createSlice({
       state.reseller = [];
     },
     getAllMikrotikPakages: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.allMikrotikPakages = action.payload;
     },
   },

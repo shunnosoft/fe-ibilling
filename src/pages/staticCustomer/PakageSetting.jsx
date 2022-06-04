@@ -16,53 +16,84 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
-// import Loader from "../../components/common/Loader";
-import Pagination from "../../components/Pagination";
-
-import TdLoader from "../../components/common/TdLoader";
-import { getPackagewithoutmikrotik } from "../../features/apiCalls";
-import CreatePackage from "../package/CreatePackageModal";
-import EditPackage from "../package/EditPackageModal";
+import {
+  deleteStaticPackage,
+  getQueuePackageByIspOwnerId,
+} from "../../features/apiCalls";
+import CreatePackage from "./CreatePackageModal";
+import EditPackage from "./EditPackageModal";
 import { NavLink } from "react-router-dom";
 import Table from "../../components/table/Table";
 
-// import { getCollector, getSubAreas } from "../../features/apiCallReseller";
-
 export default function PackageSetting() {
-  const packages = useSelector((state) => state.package.packages);
-  // console.log(packages)
+  // get all package list
+  let packages = useSelector((state) => state?.package?.packages);
+
+  // delete local state
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
+
+  // import dispatch
   const dispatch = useDispatch();
-  const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector(
-    (state) => state.persistedReducer.collector.collector
-  );
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // const [collSearch, setCollSearch] = useState("");
+
+  // const collector = useSelector(
+  //   (state) => state.persistedReducer.collector.collector
+  // );
+
+  // const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+    (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-  let serial = 0;
 
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  // let serial = 0;
 
+  // get login user role
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+
+  // get mikrotik from state
+  const mikrotik = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+  );
+
+  // set filter status
+  const [filterStatus, setFilterStatus] = useState(null);
+
+  // filter mikrotk
+  if (filterStatus && filterStatus !== "মাইক্রোটিক") {
+    packages = packages.filter((value) => value.mikrotik === filterStatus);
+  }
+
+  // get queue packages
   useEffect(() => {
-    getPackagewithoutmikrotik(ispOwnerId, dispatch);
+    getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsloading);
   }, [ispOwnerId, dispatch]);
 
+  // set editable data for state
   const [singlePackage, setSinglePackage] = useState("");
 
+  // handle edit function
   const getSpecificPackage = (val) => {
-    console.log(val);
     setSinglePackage(val);
   };
 
-  const searchHandler = (e) => {
-    setCollSearch(e.toString().toLowerCase());
+  // const searchHandler = (e) => {
+  //   setCollSearch(e.toString().toLowerCase());
+  // };
+
+  // delete handle function
+  const deletePackageHandler = (packageId) => {
+    const con = window.confirm("আপনি কি প্যাকেজ ডিলিট করতে চান?");
+    if (con) {
+      setIsDeleting(true);
+      deleteStaticPackage(dispatch, packageId);
+    }
   };
 
-  const deletePackageHandler = (e) => {
-    console.log(e);
-  };
-
+  // table column
   const columns1 = React.useMemo(
     () => [
       {
@@ -165,6 +196,20 @@ export default function PackageSetting() {
                               </div>
                             </NavLink>
                           </div>
+                          <div className="mikrotiKFilter">
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              onChange={(event) =>
+                                setFilterStatus(event.target.value)
+                              }
+                            >
+                              <option selected>মাইক্রোটিক</option>
+                              {mikrotik.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
                           <div className="addAndSettingIcon">
                             {
                               <PlusLg
@@ -179,7 +224,11 @@ export default function PackageSetting() {
                     )}
                   </div>
 
-                  <Table columns={columns1} data={packages}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns1}
+                    data={packages}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

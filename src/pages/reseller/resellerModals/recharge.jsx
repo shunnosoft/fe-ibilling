@@ -7,7 +7,7 @@ import { recharge } from "../../../features/apiCalls";
 import "../../message/message.css";
 
 function Recharge({ reseller }) {
-  console.log(reseller);
+  // console.log(reseller);
   const rechargeRef = useRef(Number);
   const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);

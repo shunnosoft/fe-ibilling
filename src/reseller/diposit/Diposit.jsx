@@ -118,8 +118,8 @@ export default function Diposit() {
     );
     return sumWithInitial.toString();
   }, [mainData]);
-  console.log(mainData);
-  console.log(ownDeposits);
+  // console.log(mainData);
+  // console.log(ownDeposits);
   // useEffect(() => {
   //   getMyDeposit(dispatch);
   // }, [dispatch]);

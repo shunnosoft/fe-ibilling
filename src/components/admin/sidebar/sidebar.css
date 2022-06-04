@@ -82,16 +82,14 @@ a {
 }
 .sidebarUl {
   padding: 0px;
-  /* height: 100vh; */
   padding-top: 10px;
 }
 .sidebarItems {
   list-style: none;
   display: flex;
   align-items: center;
-  padding: 13px 38px;
+  padding: 10px 38px;
   font-weight: 600;
-  /* border-bottom: 1px solid #44444426; */
   cursor: pointer;
   transition: 0.3s;
 }
@@ -162,4 +160,24 @@ a {
     margin-top: 6px;
     margin-left: 20px;
   }
+}
+.sideBar_accordian .accordion-item {
+  border: none;
+}
+
+.sideBar_accordian .accordion-item .accordion-button {
+  background-color: transparent;
+  box-shadow: none;
+  color: #496356;
+  font-weight: 600;
+}
+
+.sideBar_accordian h2.accordion-header {
+  margin-left: 1.1rem;
+}
+
+.sideBar_accordian .accordion-body {
+  padding: 0;
+  margin-left: 0.5rem;
+  border-left: 2px solid #000000;
 }

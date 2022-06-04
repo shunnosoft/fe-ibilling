@@ -14,14 +14,16 @@ import {
 } from "../../../features/apiCallReseller";
 import moment from "moment";
 export default function CustomerModal() {
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const userData = useSelector(
+    (state) => state?.persistedReducer?.auth?.userData
+  );
+  const area = useSelector((state) => state?.persistedReducer?.area?.area);
 
   const Getmikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
   const ppPackage = useSelector(
-    (state) => state.persistedReducer.mikrotik.pppoePackage
+    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -118,7 +120,7 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    console.log(mainData);
+    // console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -129,6 +131,15 @@ export default function CustomerModal() {
   const selectArea = (e) => {
     setsubAreaId(e);
   };
+
+  const reseller = useSelector(
+    (state) => state?.persistedReducer?.auth?.userData
+  );
+
+  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+
+  console.log({ reseller, ppPackage, Getmikrotik });
+
   return (
     <div>
       <div
@@ -175,46 +186,102 @@ export default function CustomerModal() {
                 {(formik) => (
                   <Form>
                     <div className="mikrotikSection">
-                      <div>
-                        <p className="comstomerFieldsTitle">
-                          মাইক্রোটিক সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          onChange={selectMikrotik}
-                        >
-                          <option value="">...</option>
-                          {Getmikrotik?.length === undefined
-                            ? ""
-                            : Getmikrotik?.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-                      </div>
-
                       {/* pppoe package */}
-                      <div>
-                        <p className="comstomerFieldsTitle">
-                          PPPoE প্যাকেজ সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select mb-3"
-                          aria-label="Default select example"
-                          onChange={selectMikrotikPackage}
-                        >
-                          <option value="">...</option>
-                          {ppPackage.length === undefined
-                            ? ""
-                            : ppPackage?.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-                      </div>
+                      {(userRole === "ispOwner" ||
+                        userRole === "collector" ||
+                        userRole === "manager") && (
+                        <>
+                          <p className="comstomerFieldsTitle">
+                            মাইক্রোটিক সিলেক্ট করুন
+                          </p>
+                          <select
+                            className="form-select"
+                            aria-label="Default select example"
+                            onChange={selectMikrotik}
+                          >
+                            <option value="">...</option>
+                            {Getmikrotik?.length === undefined
+                              ? ""
+                              : Getmikrotik?.map((val, key) => (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                          </select>
+
+                          <p className="comstomerFieldsTitle">
+                            PPPoE প্যাকেজ সিলেক্ট করুন
+                          </p>
+                          <select
+                            className="form-select mb-3"
+                            aria-label="Default select example"
+                            onChange={selectMikrotikPackage}
+                          >
+                            <option value="">...</option>
+                            {ppPackage.length === undefined
+                              ? ""
+                              : ppPackage?.map((val, key) => (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                          </select>
+                        </>
+                      )}
+
+                      {userRole === "reseller" && (
+                        <>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              মাইক্রোটিক সিলেক্ট করুন
+                            </p>
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              onChange={selectMikrotik}
+                            >
+                              <option value="">...</option>
+                              {Getmikrotik?.length === undefined
+                                ? ""
+                                : Getmikrotik?.map((val, key) =>
+                                    reseller.mikrotiks.map(
+                                      (item) =>
+                                        val.id === item && (
+                                          <option key={key} value={val.id}>
+                                            {val.name}
+                                          </option>
+                                        )
+                                    )
+                                  )}
+                            </select>
+                          </div>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              PPPoE প্যাকেজ সিলেক্ট করুন
+                            </p>
+                            <select
+                              className="form-select mb-3"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="">...</option>
+                              {ppPackage.length === undefined
+                                ? ""
+                                : ppPackage?.map((val, key) =>
+                                    reseller.mikrotikPackages.map(
+                                      (p) =>
+                                        p === val.id && (
+                                          <option key={key} value={val.id}>
+                                            {val.name}
+                                          </option>
+                                        )
+                                    )
+                                  )}
+                            </select>
+                          </div>
+                        </>
+                      )}
+
                       <FtextField
                         type="text"
                         label="মাসিক ফি"
@@ -274,6 +341,7 @@ export default function CustomerModal() {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
+                            min={moment().format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"

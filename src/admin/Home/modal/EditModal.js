@@ -11,7 +11,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
   const dispatch = useDispatch();
 
   //  get all isp owner
-  const data = useSelector((state) => state.admin.ispOwners);
+  const data = useSelector((state) => state.admin?.ispOwners);
 
   // get editable owner
   const ispOwner = data.find((item) => item.id === ownerId);
@@ -35,6 +35,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
     paymentStatus: Yup.string().required("পেমেন্ট স্ট্যাটাস দিন"),
+    queueType: Yup.string().required("queueType দিন"),
     packType: Yup.string().required("প্যাকেজ টাইপ দিন"),
     pack: Yup.string().required("প্যাকেজ দিন"),
     customerLimit: Yup.string().required("কাস্টমার লিমিট দিন"),
@@ -55,6 +56,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       referenceName: ispOwner?.reference?.name,
       referenceMobile: ispOwner?.reference?.mobile,
       paymentStatus: ispOwner?.bpSettings?.paymentStatus,
+      queueType: ispOwner?.bpSettings?.queueType,
       packType: ispOwner?.bpSettings?.packType,
       pack: ispOwner?.bpSettings?.pack,
       packageRate: ispOwner?.bpSettings?.packageRate,
@@ -81,6 +83,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
         packType: values.packType,
         pack: values.pack,
         paymentStatus: values.paymentStatus,
+        queueType: values.queueType,
         hasMikrotik: values.hasMikrotik,
       },
       reference: {
@@ -223,6 +226,19 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         >
                           <option value="paid">Paid</option>
                           <option value="unpaid">Unpaid</option>
+                        </Field>
+                      </div>
+
+                      <div>
+                        <h6 className="mb-0">Queue Type</h6>
+                        <Field
+                          as="select"
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                          name="queueType"
+                        >
+                          <option value="simple-queue">Simple Queue</option>
+                          <option value="firewall-queue">Firewall Queue</option>
                         </Field>
                       </div>
                     </div>
