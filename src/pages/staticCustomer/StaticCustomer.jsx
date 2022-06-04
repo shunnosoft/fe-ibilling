@@ -310,16 +310,10 @@ export default function Customer() {
       },
       {
         Header: "IP",
-        accessor: "queue.address",
-        Cell: ({ row: { original } }) => {
-          return (
-            <>
-              {original.queue.type === "simple-queue"
-                ? original.queue.address
-                : original.queue.name}
-            </>
-          );
-        },
+        accessor: (field) =>
+          field.userType === "firewall-queue"
+            ? field.queue.address
+            : field.queue.target,
       },
 
       {
