@@ -382,66 +382,70 @@ export default function Diposit() {
               {userRole !== "collector" ? (
                 <FourGround>
                   <div className="collectorWrapper">
-                    <div
-                      className="btn-group"
-                      role="group"
-                      aria-label="Basic radio toggle button group"
-                      style={{ width: "100%", marginBottom: "25px" }}
-                    >
-                      <input
-                        type="radio"
-                        className="btn-check"
-                        name="btnradio"
-                        id="btnradio4"
-                        autocomplete="off"
-                        checked={whatToShow === "depositNow"}
-                        onClick={() => {
-                          setWhatToShow("depositNow");
-                        }}
-                      />
-                      <label
-                        className="btn shadow-none btn-outline-primary custombtngroup"
-                        for="btnradio4"
+                    {userRole !== "ispOwner" ? (
+                      <div
+                        className="btn-group"
+                        role="group"
+                        aria-label="Basic radio toggle button group"
+                        style={{ width: "100%", marginBottom: "25px" }}
                       >
-                        ডিপোজিট করুন
-                      </label>
-                      <input
-                        type="radio"
-                        className="btn-check"
-                        name="btnradio"
-                        id="btnradio1"
-                        autocomplete="off"
-                        checked={whatToShow === "deposit"}
-                        onClick={() => {
-                          setWhatToShow("deposit");
-                        }}
-                      />
-                      <label
-                        className="btn shadow-none btn-outline-primary custombtngroup"
-                        for="btnradio1"
-                      >
-                        ডিপোজিট
-                      </label>
+                        <input
+                          type="radio"
+                          className="btn-check"
+                          name="btnradio"
+                          id="btnradio4"
+                          autocomplete="off"
+                          checked={whatToShow === "depositNow"}
+                          onClick={() => {
+                            setWhatToShow("depositNow");
+                          }}
+                        />
+                        <label
+                          className="btn shadow-none btn-outline-primary custombtngroup"
+                          for="btnradio4"
+                        >
+                          ডিপোজিট করুন
+                        </label>
+                        <input
+                          type="radio"
+                          className="btn-check"
+                          name="btnradio"
+                          id="btnradio1"
+                          autocomplete="off"
+                          checked={whatToShow === "deposit"}
+                          onClick={() => {
+                            setWhatToShow("deposit");
+                          }}
+                        />
+                        <label
+                          className="btn shadow-none btn-outline-primary custombtngroup"
+                          for="btnradio1"
+                        >
+                          ডিপোজিট
+                        </label>
 
-                      <input
-                        type="radio"
-                        className="btn-check"
-                        name="btnradio"
-                        id="btnradio2"
-                        autocomplete="off"
-                        checked={whatToShow === "ownDeposit"}
-                        onClick={() => {
-                          setWhatToShow("ownDeposit");
-                        }}
-                      />
-                      <label
-                        className="btn btn-outline-primary shadow-none custombtngroup"
-                        for="btnradio2"
-                      >
-                        নিজ ডিপোজিট
-                      </label>
-                    </div>
-                    {whatToShow === "deposit" ? (
+                        <input
+                          type="radio"
+                          className="btn-check"
+                          name="btnradio"
+                          id="btnradio2"
+                          autocomplete="off"
+                          checked={whatToShow === "ownDeposit"}
+                          onClick={() => {
+                            setWhatToShow("ownDeposit");
+                          }}
+                        />
+                        <label
+                          className="btn btn-outline-primary shadow-none custombtngroup"
+                          for="btnradio2"
+                        >
+                          নিজ ডিপোজিট
+                        </label>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    {whatToShow === "deposit" || userRole === "ispOwner" ? (
                       <div>
                         <div className="selectFilteringg">
                           {userRole !== "ispOwner" && (
@@ -507,7 +511,7 @@ export default function Diposit() {
                     )}
 
                     {/* table */}
-                    {whatToShow === "deposit" ? (
+                    {whatToShow === "deposit" || userRole === "ispOwner" ? (
                       <Table
                         customComponent={customComponent}
                         columns={columns}
