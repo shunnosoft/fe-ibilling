@@ -41,6 +41,7 @@ import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import CustomerDelete from "./customerCRUD/CustomerDelete";
 
 export default function Customer() {
   const dispatch = useDispatch();
@@ -99,6 +100,10 @@ export default function Customer() {
   const [isSorted, setSorted] = useState(false);
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
+  const [singleData, setSingleData] = useState();
+
+  // check mikrotik checkbox
+  const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
   // get customer api call
   useEffect(() => {
@@ -291,7 +296,6 @@ export default function Customer() {
 
   // get specific customer
   const getSpecificCustomer = (id) => {
-    console.log(id);
     setSingleCustomer(id);
   };
 
@@ -300,15 +304,12 @@ export default function Customer() {
     setId(reportData);
   };
 
-  // DELETE handler
-  const deleteCustomer = async (ID) => {
-    setIsDeleting(true);
-    const IDs = {
-      ispID: ispOwner,
-      customerID: ID,
-    };
-    deleteACustomer(dispatch, IDs);
-    setIsDeleting(false);
+  // cutomer delete
+  const customerDelete = (customerId) => {
+    setMikrotikCheck(false);
+    const singleData = Customers.find((item) => item.id === customerId);
+    console.log(singleData);
+    setSingleData(singleData);
   };
 
   const columns = React.useMemo(
@@ -449,14 +450,13 @@ export default function Customer() {
 
               {permission?.customerDelete || role === "ispOwner" ? (
                 <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerDelete"
                   onClick={() => {
-                    let con = window.confirm(
-                      `${original.name} গ্রাহক ডিলিট করতে চান?`
-                    );
-                    con && deleteCustomer(original.id);
+                    customerDelete(original.id);
                   }}
                 >
-                  <div className="dropdown-item actionManager">
+                  <div className="dropdown-item">
                     <div className="customerAction">
                       <ArchiveFill />
                       <p className="actionP">ডিলিট</p>
@@ -510,6 +510,11 @@ export default function Customer() {
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
+              <CustomerDelete
+                single={singleData}
+                mikrotikCheck={mikrotikCheck}
+                setMikrotikCheck={setMikrotikCheck}
+              />
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
               {/* Model finish */}
