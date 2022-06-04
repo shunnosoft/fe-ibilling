@@ -235,7 +235,9 @@ export default function Diposit() {
       {
         Header: "মোট",
         accessor: "amount",
-        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
+        Cell: ({ row: { original } }) => (
+          <div>৳ {FormatNumber(original.amount)}</div>
+        ),
       },
 
       {
