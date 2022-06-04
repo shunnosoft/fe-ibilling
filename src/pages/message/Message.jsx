@@ -134,7 +134,7 @@ export default function Message() {
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-      const res = await apiLink.get(`/ispOwner/customer/${ispOwnerId}`);
+      const res = await apiLink.get(`/ispOwner/all-customer/${ispOwnerId}`);
 
       let items = [],
         totalSmsCount = 0;
