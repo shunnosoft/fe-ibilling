@@ -121,30 +121,10 @@ export default function CustomerBillCollect({ single }) {
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : "সাবমিট"}
                         </button>
-                        {/* for invoice print  */}
-                        <ReactToPrint
-                          documentTitle="বিল ইনভয়েস"
-                          trigger={() => (
-                            <button
-                              style={{ display: "none" }}
-                              id="billing_invoice_print"
-                            ></button>
-                          )}
-                          content={() => billRef.current}
-                        />
                       </div>
                     </Form>
                   )}
                 </Formik>
-              </div>
-              {/* invoice print  */}
-              <div style={{ display: "none" }}>
-                <BillCollectInvoice
-                  ref={billRef}
-                  customerData={single}
-                  billingData={{ amount, billType }}
-                  ispOwnerData={ispOwnerData}
-                />
               </div>
             </div>
           </div>

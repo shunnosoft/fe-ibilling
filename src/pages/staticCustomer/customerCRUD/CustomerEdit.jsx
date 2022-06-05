@@ -198,7 +198,6 @@ export default function CustomerEdit(props) {
   };
   // sending data to backed
   const customerHandler = async (formValue) => {
-    console.log(formValue);
     setIsloading(true);
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
     if (subArea2 === "") {
@@ -232,8 +231,6 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
-    console.log(mainData);
-    // console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
