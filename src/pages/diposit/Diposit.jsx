@@ -60,9 +60,9 @@ export default function Diposit() {
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
-  const [mainData2, setMainData2] = useState(allDeposit);
+
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
-  const [depositAccepted, setDepositAccepet] = useState("");
+
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
   });

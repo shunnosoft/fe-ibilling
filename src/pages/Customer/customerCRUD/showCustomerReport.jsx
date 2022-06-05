@@ -1,15 +1,22 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import apiLink from "../../../api/apiLink";
 import TdLoader from "../../../components/common/TdLoader";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
-import { TrashFill } from "react-bootstrap-icons";
-import { useDispatch } from "react-redux";
+import { PrinterFill, TrashFill } from "react-bootstrap-icons";
+import { useDispatch, useSelector } from "react-redux";
 import { editCustomerSuccess } from "../../../features/customerSlice";
+import BillCollectInvoice from "./customerBillCollectInvoicePDF";
+import ReactToPrint from "react-to-print";
 
 export default function CustomerReport({ single }) {
+  const billRef = useRef();
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
+
   const [customerReport, setCustomerReport] = useState([]);
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,10 +48,6 @@ export default function CustomerReport({ single }) {
         setCustomerReport(updatedState);
         dispatch(editCustomerSuccess(res.data.customer));
         toast.success("বিল ডিলিট সফল হয়েছে");
-        // setDelete(false);
-        // setTimeout(() => {
-        //   setDelete(true);
-        // }, 1000 * 60 * 2);
       } catch (error) {
         toast.error(error.response?.data?.message);
         console.log(error);
@@ -94,32 +97,66 @@ export default function CustomerReport({ single }) {
                     {isLoading ? (
                       <TdLoader colspan={5} />
                     ) : customerReport.length > 0 ? (
-                      customerReport.map((val, index) => (
-                        <tr className="spetialSortingRow" key={index}>
-                          <td>{single.pppoe.profile}</td>
-                          <td>{FormatNumber(val.amount)}</td>
-                          <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
-                          <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
-                          {/* 
+                      customerReport.map((val, index) => {
+                        console.log(val);
+                        return (
+                          <tr className="spetialSortingRow" key={index}>
+                            <td>{single.pppoe.profile}</td>
+                            <td>{FormatNumber(val.amount)}</td>
+                            <td>
+                              {moment(val.createdAt).format("DD-MM-YYYY")}
+                            </td>
+                            <td>
+                              {moment(val.createdAt).format("hh:mm:ss A")}
+                            </td>
+                            {/* 
                           {moment()
                             .subtract(7, "d")
                             .isBefore(moment(val.createdAt)) && ( */}
-                          <td className="text-center">
-                            <div title="ডিলিট রিপোর্ট">
-                              <button
-                                className="border-0 bg-transparent"
-                                onClick={() => deletReport(val.id)}
-                              >
-                                <TrashFill
-                                  color="#dc3545"
-                                  style={{ cursor: "pointer" }}
+
+                            <td className="text-center">
+                              <div style={{ display: "none" }}>
+                                <BillCollectInvoice
+                                  ref={billRef}
+                                  customerData={single}
+                                  billingData={{
+                                    amount: val.amount,
+                                    billType: val.billType,
+                                    paymentDate: val.createdAt,
+                                  }}
+                                  ispOwnerData={ispOwnerData}
                                 />
-                              </button>
-                            </div>
-                          </td>
-                          {/* )} */}
-                        </tr>
-                      ))
+                              </div>
+                              <div>
+                                <ReactToPrint
+                                  documentTitle="বিল ইনভয়েস"
+                                  trigger={() => (
+                                    <div
+                                      title="প্রিন্ট বিল ইনভয়েস"
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <PrinterFill />
+                                    </div>
+                                  )}
+                                  content={() => billRef.current}
+                                />
+                              </div>
+                              <div title="ডিলিট রিপোর্ট">
+                                <button
+                                  className="border-0 bg-transparent"
+                                  onClick={() => deletReport(val.id)}
+                                >
+                                  <TrashFill
+                                    color="#dc3545"
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </button>
+                              </div>
+                            </td>
+                            {/* )} */}
+                          </tr>
+                        );
+                      })
                     ) : (
                       <td colSpan={5}>
                         <h5 className="text-center">কোন ডাটা পাওয়া যাই নি !</h5>

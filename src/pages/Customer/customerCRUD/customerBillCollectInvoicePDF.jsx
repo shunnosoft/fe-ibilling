@@ -1,7 +1,8 @@
 import React from "react";
-
+import moment from "moment";
 const BillCollectInvoice = React.forwardRef((props, ref) => {
-  const { billingData, ispOwnerData, customerData } = props;
+  const { billingData, ispOwnerData, customerData, paymentDate } = props;
+
   return (
     <>
       <div ref={ref}>
@@ -18,7 +19,7 @@ const BillCollectInvoice = React.forwardRef((props, ref) => {
           </div>
         </div>
 
-        <table className="table table-striped ">
+        {/* <table className="table table-striped ">
           <thead>
             <tr>
               <th scope="col">নাম</th>
@@ -37,12 +38,67 @@ const BillCollectInvoice = React.forwardRef((props, ref) => {
               <td>{billingData?.amount && customerData?.monthlyFee}</td>
             </tr>
           </tbody>
-        </table>
-        <div className="page-footer">
+        </table> */}
+        {/* <div className="page-footer">
           <div className="signature_container">
             <div className="p-3 signature_wraper">
               <div className="signamture_field">ম্যানেজার</div>
               <div className="signamture_field">এডমিন</div>
+            </div>
+          </div>
+        </div>
+        </div>
+        */}
+
+        <div className="container mt-3 mb-5">
+          <table>
+            <tbody>
+              <tr>
+                <td>গ্রাহক ডাটা</td>
+              </tr>
+              <tr>
+                <td className="font-weight-bold">
+                  নামঃ {customerData.name} <br />
+                  {customerData.mobile && `মোবাইলঃ ${customerData.mobile}`}
+                  <br />
+                  {customerData.address && `ঠিকানা ${customerData.address}`}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="table table-bordered mt-2">
+            <tbody>
+              <tr>
+                <td>বিল টাইপ</td>
+                <td>বিলের ধরণ</td>
+                <td>প্যাকেজ</td>
+                <td>এমাউন্ট</td>
+                <td>পরিশোধের তারিখ</td>
+              </tr>
+              <tr>
+                <td>{customerData?.billPayType}</td>
+                <td>
+                  {billingData?.billType == "bill" ? "বিল" : "কানেকশন ফি"}
+                </td>
+
+                <td>
+                  {customerData.userType === "simple-queue" ||
+                  customerData.userType === "firewall-queue"
+                    ? customerData.queue.package
+                    : customerData.pppoe.profile}
+                </td>
+                <td>{billingData?.amount}</td>
+                <td>{moment(paymentDate).format("DD-MM-YYYY")}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div className="page-footer">
+            <div className="signature_container">
+              <div className="p-3 signature_wraper">
+                <div className="signamture_field">প্রোপাইটার</div>
+                <div className="signamture_field">কাস্টমার</div>
+              </div>
             </div>
           </div>
         </div>
