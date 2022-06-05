@@ -25,10 +25,9 @@ import moment from "moment";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
+import { Tab, Tabs } from "react-bootstrap";
 
 export default function Diposit() {
-  const [whatToShow, setWhatToShow] = useState("depositNow");
-
   const balancee = useSelector(
     (state) => state?.persistedReducer?.payment?.balance
   );
@@ -61,15 +60,17 @@ export default function Diposit() {
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
-  // const [mainData2, setMainData2] = useState(allDeposit);
+  const [mainData2, setMainData2] = useState(allDeposit);
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
-  // const [depositAccepted, setDepositAccepet] = useState("")
+  const [depositAccepted, setDepositAccepet] = useState("");
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
   });
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  // const balance = useSelector(state=>state.persistedReducer.payment.balance)
+  const balance = useSelector(
+    (state) => state.persistedReducer.payment.balance
+  );
 
   // bill amount
   const billDipositHandler = (data) => {
@@ -369,138 +370,107 @@ export default function Diposit() {
                 <h2 className="collectorTitle">ডিপোজিট</h2>
               </FourGround>
 
-              <br />
-
-              {/* table */}
-              {userRole === "collector" ? (
-                <Table
-                  customComponent={customComponent}
-                  data={ownDeposits}
-                  columns={columns2}
-                ></Table>
-              ) : (
-                ""
-              )}
-              {userRole !== "collector" ? (
-                <FourGround>
-                  <div className="collectorWrapper">
-                    {userRole !== "ispOwner" ? (
-                      <div
-                        className="btn-group"
-                        role="group"
-                        aria-label="Basic radio toggle button group"
-                        style={{ width: "100%", marginBottom: "25px" }}
-                      >
-                        <input
-                          type="radio"
-                          className="btn-check"
-                          name="btnradio"
-                          id="btnradio4"
-                          autocomplete="off"
-                          checked={whatToShow === "depositNow"}
-                          onClick={() => {
-                            setWhatToShow("depositNow");
+              <Tabs
+                defaultActiveKey="profile"
+                id="uncontrolled-tab-example"
+                className="mb-3"
+              >
+                {(userRole === "manager" || userRole === "collector") && (
+                  <Tab eventKey="home" title="ডিপোজিট করুন">
+                    <FourGround>
+                      <div className="managerDipositToIsp">
+                        <Formik
+                          initialValues={{
+                            amount: "",
+                            balance: balancee, //put the value from api
                           }}
-                        />
-                        <label
-                          className="btn shadow-none btn-outline-primary custombtngroup"
-                          for="btnradio4"
-                        >
-                          ডিপোজিট করুন
-                        </label>
-                        <input
-                          type="radio"
-                          className="btn-check"
-                          name="btnradio"
-                          id="btnradio1"
-                          autocomplete="off"
-                          checked={whatToShow === "deposit"}
-                          onClick={() => {
-                            setWhatToShow("deposit");
+                          validationSchema={BillValidatoin}
+                          onSubmit={(values) => {
+                            billDipositHandler(values);
                           }}
-                        />
-                        <label
-                          className="btn shadow-none btn-outline-primary custombtngroup"
-                          for="btnradio1"
+                          enableReinitialize
                         >
-                          ডিপোজিট
-                        </label>
-
-                        <input
-                          type="radio"
-                          className="btn-check"
-                          name="btnradio"
-                          id="btnradio2"
-                          autocomplete="off"
-                          checked={whatToShow === "ownDeposit"}
-                          onClick={() => {
-                            setWhatToShow("ownDeposit");
-                          }}
-                        />
-                        <label
-                          className="btn btn-outline-primary shadow-none custombtngroup"
-                          for="btnradio2"
-                        >
-                          নিজ ডিপোজিট
-                        </label>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                    {whatToShow === "deposit" || userRole === "ispOwner" ? (
-                      <div>
-                        <div className="selectFilteringg">
-                          {userRole !== "ispOwner" && (
-                            <select
-                              className="form-select"
-                              onChange={(e) =>
-                                onChangeCollector(e.target.value)
-                              }
-                            >
-                              <option value="" defaultValue>
-                                সকল কালেক্টর{" "}
-                              </option>
-                              {collectors?.map((c, key) => (
-                                <option key={key} value={c.user}>
-                                  {c.name}
-                                </option>
-                              ))}
-                            </select>
+                          {() => (
+                            <Form>
+                              <div className="displayGridForDiposit">
+                                <FtextField
+                                  type="text"
+                                  name="balance"
+                                  label="মোট ব্যালান্স"
+                                  disabled
+                                />
+                                <FtextField
+                                  type="text"
+                                  name="amount"
+                                  label="ডিপোজিট পরিমান"
+                                />
+                                <button
+                                  type="submit"
+                                  className="btn btn-success dipositSubmitBtn"
+                                >
+                                  {isLoading ? <Loader></Loader> : " সাবমিট"}
+                                </button>
+                              </div>
+                            </Form>
                           )}
-                          <div className="dateDiv  ">
-                            <input
-                              className="form-select"
-                              type="date"
-                              id="start"
-                              name="trip-start"
-                              value={moment(dateStart).format("YYYY-MM-DD")}
-                              onChange={(e) => {
-                                setStartDate(e.target.value);
-                              }}
-                              // value="2018-07-22"
-                              // min="2018-01-01"
-                              // max="2018-12-31"
-                            />
-                          </div>
-                          <div className="dateDiv">
-                            <input
-                              className="form-select"
-                              type="date"
-                              id="end"
-                              name="trip-start"
-                              value={moment(dateEnd).format("YYYY-MM-DD")}
-                              onChange={(e) => {
-                                setEndDate(e.target.value);
-                              }}
-                              // value="2018-07-22"
-                              // min="2018-01-01"
-                              // max="2018-12-31"
-                            />
-                          </div>
+                        </Formik>
+                      </div>
+                    </FourGround>
+                  </Tab>
+                )}
+
+                <Tab eventKey="profile" title="ডিপোজিট">
+                  <FourGround>
+                    <div>
+                      <div className="selectFilteringg">
+                        {userRole === "ispOwner" && (
+                          <select
+                            className="form-select"
+                            onChange={(e) => onChangeCollector(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              সকল কালেক্টর{" "}
+                            </option>
+                            {collectors?.map((c, key) => (
+                              <option key={key} value={c.user}>
+                                {c.name}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                        <div className="dateDiv  ">
+                          <input
+                            className="form-select"
+                            type="date"
+                            id="start"
+                            name="trip-start"
+                            value={moment(dateStart).format("YYYY-MM-DD")}
+                            onChange={(e) => {
+                              setStartDate(e.target.value);
+                            }}
+                            // value="2018-07-22"
+                            // min="2018-01-01"
+                            // max="2018-12-31"
+                          />
                         </div>
-                        <div className="submitdiv d-grid gap-2">
+                        <div className="dateDiv">
+                          <input
+                            className="form-select"
+                            type="date"
+                            id="end"
+                            name="trip-start"
+                            value={moment(dateEnd).format("YYYY-MM-DD")}
+                            onChange={(e) => {
+                              setEndDate(e.target.value);
+                            }}
+                            // value="2018-07-22"
+                            // min="2018-01-01"
+                            // max="2018-12-31"
+                          />
+                        </div>
+                        <div className="submitDiv">
                           <button
-                            className="btn fs-5 btn-success w-100"
+                            className="btn btn-success mt-2"
                             type="button"
                             onClick={onClickFilter}
                           >
@@ -508,73 +478,27 @@ export default function Diposit() {
                           </button>
                         </div>
                       </div>
-                    ) : (
-                      ""
-                    )}
+                    </div>
+                    <Table
+                      customComponent={customComponent}
+                      columns={columns}
+                      data={mainData}
+                    ></Table>
+                  </FourGround>
+                </Tab>
 
-                    {/* table */}
-                    {whatToShow === "deposit" || userRole === "ispOwner" ? (
-                      <Table
-                        customComponent={customComponent}
-                        columns={columns}
-                        data={mainData}
-                      ></Table>
-                    ) : whatToShow === "ownDeposit" &&
-                      userRole !== "ispOwner" ? (
+                {(userRole === "manager" || userRole === "collector") && (
+                  <Tab eventKey="contact" title="নিজ ডিপোজিট">
+                    <FourGround>
                       <Table
                         customComponent={customComponent}
                         data={ownDeposits}
                         columns={columns2}
                       ></Table>
-                    ) : whatToShow === "depositNow" &&
-                      userRole !== "ispOwner" ? (
-                      <FourGround>
-                        <div className="managerDipositToIsp">
-                          <Formik
-                            initialValues={{
-                              amount: "",
-                              balance: balancee, //put the value from api
-                            }}
-                            validationSchema={BillValidatoin}
-                            onSubmit={(values) => {
-                              billDipositHandler(values);
-                            }}
-                            enableReinitialize
-                          >
-                            {() => (
-                              <Form>
-                                <div className="displayGridForDiposit">
-                                  <FtextField
-                                    type="text"
-                                    name="balance"
-                                    label="মোট ব্যালান্স"
-                                    disabled
-                                  />
-                                  <FtextField
-                                    type="text"
-                                    name="amount"
-                                    label="ডিপোজিট পরিমান"
-                                  />
-                                  <button
-                                    type="submit"
-                                    className="btn btn-success dipositSubmitBtn"
-                                  >
-                                    {isLoading ? <Loader></Loader> : " সাবমিট"}
-                                  </button>
-                                </div>
-                              </Form>
-                            )}
-                          </Formik>
-                        </div>
-                      </FourGround>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </FourGround>
-              ) : (
-                ""
-              )}
+                    </FourGround>
+                  </Tab>
+                )}
+              </Tabs>
 
               <Footer />
             </FontColor>
