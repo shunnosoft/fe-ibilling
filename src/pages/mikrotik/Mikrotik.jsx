@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "./mikrotik.css";
-import { Plus, ArrowRightShort } from "react-bootstrap-icons";
+import { Plus, ArrowRightShort, PlusCircle } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -92,43 +92,19 @@ export default function Mikrotik() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>মাইক্রোটিক</div>
-                  <button
+                  <div
                     title="মাইক্রোটিক এড করুন"
-                    className="btn btn-outline-light btn-md"
+                    className="header_icon"
                     data-bs-toggle="modal"
                     data-bs-target="#MikrotikModal"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      fill="currentColor"
-                      className="bi bi-plus-lg"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-                      />
-                    </svg>
-                  </button>
+                    <Plus />
+                  </div>
                 </div>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
-                  {/* <div className="addCollector">
-                    <div className="addNewCollector">
-                      <div className="addAndSettingIcon">
-                        <Plus
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#MikrotikModal"
-                        />
-                      </div>
-                    </div>
-                  </div> */}
-
                   {/* table */}
                   <Table columns={columns} data={allmikrotiks}></Table>
                 </div>

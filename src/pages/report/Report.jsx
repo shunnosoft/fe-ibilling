@@ -281,7 +281,22 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">বিল রিপোর্ট</h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>বিল রিপোর্ট</div>
+                  <ReactToPrint
+                    documentTitle="বিল রিপোর্ট"
+                    trigger={() => (
+                      <button
+                        className="header_icon border-0"
+                        type="button"
+                        title="ডাউনলোড পিডিএফ"
+                      >
+                        <PrinterFill />
+                      </button>
+                    )}
+                    content={() => componentRef.current}
+                  />
+                </div>
               </FourGround>
 
               {/* Model start */}
@@ -387,7 +402,7 @@ export default function Report() {
                       </div>
                     </div>
                     <div className="submitdiv d-flex justify-content-end">
-                      <ReactToPrint
+                      {/* <ReactToPrint
                         documentTitle="বিল রিপোর্ট"
                         trigger={() => (
                           <button
@@ -399,7 +414,7 @@ export default function Report() {
                           </button>
                         )}
                         content={() => componentRef.current}
-                      />
+                      /> */}
                       {/* print report */}
                       <div style={{ display: "none" }}>
                         <PrintReport

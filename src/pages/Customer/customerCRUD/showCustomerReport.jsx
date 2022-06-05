@@ -11,7 +11,7 @@ import { editCustomerSuccess } from "../../../features/customerSlice";
 
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
-  const [canDelete, setDelete] = useState(true);
+  // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -31,64 +31,26 @@ export default function CustomerReport({ single }) {
   }, [single]);
 
   const deletReport = async (reportId) => {
-    if (canDelete) {
+    const con = window.confirm("আপনি কি বিল ডিলিট করতে চান?");
+    if (con) {
       try {
         const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
-        console.log(res);
         const updatedState = customerReport.filter(
           (item) => item.id !== reportId
         );
         setCustomerReport(updatedState);
         dispatch(editCustomerSuccess(res.data.customer));
-        toast.success("রিপোর্ট ডিলিট সফল হয়েছে");
-        setDelete(false);
-        setTimeout(() => {
-          setDelete(true);
-        }, 1000 * 60 * 2);
+        toast.success("বিল ডিলিট সফল হয়েছে");
+        // setDelete(false);
+        // setTimeout(() => {
+        //   setDelete(true);
+        // }, 1000 * 60 * 2);
       } catch (error) {
         toast.error(error.response?.data?.message);
         console.log(error);
       }
-    } else {
-      toast.error("একটু পরে আবার চেষ্টা করুন");
     }
   };
-
-  // customer:
-  // address: "raj"
-  // autoDisable: true
-  // balance: -5800
-  // billPayType: "prepaid"
-  // billingCycle: "2022-06-25T17:59:00.590Z"
-  // createdAt: "2022-04-27T08:56:18.024Z"
-  // customerId: "1023"
-  // email: "bashar@gmail.com"
-  // id: "62690532d496062499b52c47"
-  // ispOwner: {reference: {…}, settings: {…}, bpSettings: {…}, billCollectionType: 'prepaid', status: 'new', …}
-  // mikrotik: "6252fa5d182934438bad188e"
-  // mikrotikPackage: "628e6a29f6603aaa468f5968"
-  // mobile: "01789213930"
-  // monthlyFee: 5000
-  // name: "hojafia"
-  // nid: "123456789987654"
-  // paymentStatus: "paid"
-  // pppoe: {service: 'pppoe', disabled: false, name: 'bashar', password: 'hojaifa', comment: 'hello', …}
-  // queue: {type: 'simple-queue', disabled: false}
-  // status: "inactive"
-  // subArea: "6268e21f8c1b12154e4963ed"
-  // user: "6298c88d5f58bb76d578b9ad"
-  // userType: "pppoe"
-
-  // monthlyBill:
-  // amount: 1300
-  // billType: "bill"
-  // collectedBy: "ispOwner"
-  // collectorId: "624061bbaae58479466259a8"
-  // createdAt: "2022-05-26T18:47:36.058Z"
-  // customer: "62690532d496062499b52c47"
-  // id: "628fcb483b28b86bcd83ef21"
-  // ispOwner: "624061bbaae58479466259a8"
-  // user: "624061b9aae58479466259a4"
 
   return (
     <div>
@@ -138,24 +100,24 @@ export default function CustomerReport({ single }) {
                           <td>{FormatNumber(val.amount)}</td>
                           <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
                           <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
-
+                          {/* 
                           {moment()
                             .subtract(7, "d")
-                            .isBefore(moment(val.createdAt)) && (
-                            <td className="text-center">
-                              <div title="ডিলিট রিপোর্ট">
-                                <button
-                                  className="border-0 bg-transparent"
-                                  onClick={() => deletReport(val.id)}
-                                >
-                                  <TrashFill
-                                    color="#dc3545"
-                                    style={{ cursor: "pointer" }}
-                                  />
-                                </button>
-                              </div>
-                            </td>
-                          )}
+                            .isBefore(moment(val.createdAt)) && ( */}
+                          <td className="text-center">
+                            <div title="ডিলিট রিপোর্ট">
+                              <button
+                                className="border-0 bg-transparent"
+                                onClick={() => deletReport(val.id)}
+                              >
+                                <TrashFill
+                                  color="#dc3545"
+                                  style={{ cursor: "pointer" }}
+                                />
+                              </button>
+                            </div>
+                          </td>
+                          {/* )} */}
                         </tr>
                       ))
                     ) : (
