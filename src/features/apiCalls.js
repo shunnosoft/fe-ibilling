@@ -487,9 +487,11 @@ export const deleteACustomer = async (
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
     document.querySelector("#customerDelete").click();
     setIsLoading(false);
-    toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
+    toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
   } catch (err) {
     if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#customerDelete").click();
       toast.error(err.response.data.message);
     }
   }

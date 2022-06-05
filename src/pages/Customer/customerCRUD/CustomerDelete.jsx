@@ -17,10 +17,10 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // DELETE handler
   const deleteCustomer = (customerId) => {
-    let con = true;
+    let checkCondition = true;
 
     if (mikrotikCheck) {
-      con = window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
+      checkCondition = window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
     }
 
     // send data for api
@@ -31,7 +31,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
     };
 
     // api call
-    if (con) {
+    if (checkCondition) {
       deleteACustomer(dispatch, data, setIsloading);
     }
   };
