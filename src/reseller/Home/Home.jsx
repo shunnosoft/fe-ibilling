@@ -314,11 +314,11 @@ export default function Home() {
                   ))}
                 </select>
                 <button
+                  className="btn btn-success mt-2"
                   type="button"
-                  className="btn btn-success"
                   onClick={handleFilterHandler}
                 >
-                  সাবমিট
+                  ফিল্টার
                 </button>
               </div>
             </div>

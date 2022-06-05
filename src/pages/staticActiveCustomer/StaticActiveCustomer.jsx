@@ -223,9 +223,11 @@ const StaticActiveCustomer = () => {
               {/* modals */}
               <FourGround>
                 <h2 className="collectorTitle">স্ট্যাটিক এক্টিভ গ্রাহক</h2>
-              </FourGround>
 
-              <Table isLoading={isLoading} columns={columns} data={data} />
+                <div className="collectorWrapper">
+                  <Table isLoading={isLoading} columns={columns} data={data} />
+                </div>
+              </FourGround>
             </FontColor>
           </div>
         </div>
