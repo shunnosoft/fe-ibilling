@@ -258,9 +258,9 @@ export default function Report() {
 
       {
         Header: "তারিখ",
-        accessor: "billingCycle",
+        accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("DD-MM-YYYY hh:mm:ss A");
         },
       },
     ],

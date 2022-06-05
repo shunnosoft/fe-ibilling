@@ -64,7 +64,7 @@ const PrintReport = React.forwardRef((props, ref) => {
                 <td className="p-1">{val?.customer?.name}</td>
                 <td className="p-1">{FormatNumber(val?.amount)}</td>
                 <td className="p-1">
-                  {moment(val?.createdAt).format("DD-MM-YYYY")}
+                  {moment(val?.createdAt).format("DD-MM-YYYY hh:mm:ss A")}
                 </td>
               </tr>
             ))}
