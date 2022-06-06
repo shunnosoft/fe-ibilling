@@ -63,6 +63,8 @@ export default function Report() {
   const [isSorted, setSorted] = useState(false);
   // const [totalBill,setTotalBill]= useState("")
 
+  console.log(mainData);
+
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
     let collectors = [];
@@ -250,6 +252,10 @@ export default function Report() {
       {
         Header: "গ্রাহক",
         accessor: "customer.name",
+      },
+      {
+        Header: "প্যাকেজ",
+        accessor: "customer.mikrotikPackage.name",
       },
       {
         Header: "বিল",
