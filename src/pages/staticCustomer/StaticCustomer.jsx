@@ -43,6 +43,7 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
 
 export default function Customer() {
+  
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
