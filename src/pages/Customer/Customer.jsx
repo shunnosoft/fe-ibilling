@@ -42,7 +42,7 @@ import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/CustomerDelete";
-
+import lodash from "lodash";
 export default function Customer() {
   const dispatch = useDispatch();
 
@@ -90,20 +90,55 @@ export default function Customer() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const [Customers, setCustomers] = useState(cus);
-  const [filterdCus, setFilter] = useState(Customers);
-  const [isFilterRunning, setRunning] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
   const [allArea, setAreas] = useState([]);
   const [singleCustomer, setSingleCustomer] = useState("");
   const [customerReportData, setId] = useState([]);
-  const [isSorted, setSorted] = useState(false);
-  const [subAreaIds, setSubArea] = useState([]);
-  const [singleArea, setArea] = useState({});
+  const [subAreaIds, setSubArea] = useState("");
+  const [singleArea, setSingleArea] = useState({});
+  const [areaId, setAreaId] = useState("");
   const [singleData, setSingleData] = useState();
 
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
+  const filterChange = (e) => {
+    if (e.target.name === "area") {
+      setCustomers(cus);
+
+      setAreaId(e.target.value);
+      const singleArea = allareas.find((area) => area.id === e.target.value);
+      setSingleArea(singleArea);
+      if (singleArea) {
+        const customer = cus.filter((item) => {
+          for (let i = 0; i < singleArea.subAreas.length; i++) {
+            if (singleArea.subAreas[i].id === item.subArea) {
+              return true;
+            }
+          }
+        });
+        setCustomers(customer);
+      }
+    }
+
+    if (e.target.name === "subArea") {
+      setCustomers(cus);
+
+      setSubArea(e.target.value);
+      const customers = cus.filter(
+        (customer) => customer.subArea === e.target.value
+      );
+      // console.log(customers)
+      setCustomers(customers);
+    }
+
+    if (e.target.name === "status") {
+      setStatus(e.target.value.split(".")[1]);
+    }
+    if (e.target.name === "paymentStatus") {
+      setPaymentStatus(e.target.value.split(".")[1]);
+    }
+  };
 
   // get customer api call
   useEffect(() => {
@@ -146,83 +181,87 @@ export default function Customer() {
       setAreas(areas);
     }
   }, [collectorArea, role]);
+
+  useEffect(() => {
+    setCustomers(cus);
+  }, [cus]);
   // end collector filter
 
-  useEffect(() => {
-    const keys = [
-      "monthlyFee",
-      "customerId",
-      "name",
-      "mobile",
-      "address",
-      "paymentStatus",
-      "status",
-      "balance",
-      "subArea",
-    ];
-    setCustomers(
-      (isFilterRunning ? filterdCus : cus).filter((item) =>
-        keys.some((key) =>
-          typeof item[key] === "string"
-            ? item[key]?.toString().toLowerCase().includes(cusSearch)
-            : item[key]?.toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cus, cusSearch, filterdCus, isFilterRunning]);
+  // useEffect(() => {
+  //   const keys = [
+  //     "monthlyFee",
+  //     "customerId",
+  //     "name",
+  //     "mobile",
+  //     "address",
+  //     "paymentStatus",
+  //     "status",
+  //     "balance",
+  //     "subArea",
+  //   ];
+  //   setCustomers(
+  //     (isFilterRunning ? filterdCus : cus).filter((item) =>
+  //       keys.some((key) =>
+  //         typeof item[key] === "string"
+  //           ? item[key]?.toString().toLowerCase().includes(cusSearch)
+  //           : item[key]?.toString().includes(cusSearch)
+  //       )
+  //     )
+  //   );
+  // }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
-  const onChangeArea = (param) => {
-    let area = JSON.parse(param);
+  // console.log(subAreaIds);
 
-    setArea(area);
-    if (
-      area &&
-      Object.keys(area).length === 0 &&
-      Object.getPrototypeOf(area) === Object.prototype
-    ) {
-      setSubArea([]);
-    } else {
-      let subAreaIds = [];
+  // const onChangeArea = (param) => {
+  //   let area = JSON.parse(param);
 
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+  //   setArea(area);
+  //   if (
+  //     area &&
+  //     Object.keys(area).length === 0 &&
+  //     Object.getPrototypeOf(area) === Object.prototype
+  //   ) {
+  //     setSubArea([]);
+  //   } else {
+  //     let subAreaIds = [];
 
-      setSubArea(subAreaIds);
-    }
-  };
+  //     area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+
+  //     setSubArea(subAreaIds);
+  //   }
+  // };
 
   //   filter
-  const handleActiveFilter = (e) => {
-    setPaymentStatus(e.target.value);
-    setRunning(true);
-    let fvalue = e.target.value;
-    const field = fvalue.split(".")[0];
-    const subfield = fvalue.split(".")[1];
+  // const handleActiveFilter = (e) => {
+  //   console.log(e.target.value);
+  //   setRunning(true);
+  //   let fvalue = e.target.value;
+  //   const field = fvalue.split(".")[0];
+  //   const subfield = fvalue.split(".")[1];
 
-    const filterdData = cus.filter((item) => item[field] === subfield);
+  //   const filterdData = cus.filter((item) => item[field] === subfield);
 
-    setFilter(filterdData);
-  };
+  //   setFilter(filterdData);
+  // };
 
-  useEffect(() => {
-    if (subAreaIds.length) {
-      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
-    } else {
-      setCustomers(cus);
-    }
-  }, [cus, subAreaIds]);
+  // useEffect(() => {
+  //   if (subAreaIds.length) {
+  //     setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
+  //   } else {
+  //     setCustomers(cus);
+  //   }
+  // }, [cus, subAreaIds]);
 
   const onChangeSubArea = (id) => {
-    setCusSearch(id);
+    console.log(id);
+    // setCusSearch(id);
+    setSubArea(id);
   };
 
   let subArea, customerStatus, customerPaymentStatus;
   if (singleArea && cusSearch) {
     subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
   }
-
-  const handleChangeStatus = (e) => {
-    setStatus(e.target.value);
-  };
 
   if (status) {
     const splitStatus = status.split(".")[1];
@@ -337,6 +376,8 @@ export default function Customer() {
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
+        filter: (rows, id, filterValue) =>
+          rows.filter((row) => row.original.status === filterValue),
       },
       {
         Header: "পেমেন্ট",
@@ -344,6 +385,8 @@ export default function Customer() {
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
+        filter: (rows, id, filterValue) =>
+          rows.filter((row) => row.original.paymentStatus === filterValue),
       },
       {
         Header: "মাসিক ফি",
@@ -490,6 +533,7 @@ export default function Customer() {
     ],
     []
   );
+  console.log(Customers);
 
   return (
     <>
@@ -526,27 +570,31 @@ export default function Customer() {
                       {/* filter selector */}
                       <div className="selectFiltering allFilter">
                         <select
+                          name="area"
                           className="form-select"
-                          onChange={(e) => onChangeArea(e.target.value)}
+                          onChange={(e) => {
+                            // onChangeArea(e.target.value);
+                            filterChange(e);
+                          }}
                         >
-                          <option value={JSON.stringify({})} defaultValue>
-                            সকল এরিয়া
-                          </option>
-                          {(role === "collector" ? allArea : allareas)?.map(
-                            (area, key) => {
-                              return (
-                                <option key={key} value={JSON.stringify(area)}>
-                                  {area.name}
-                                </option>
-                              );
-                            }
-                          )}
+                          <option defaultValue>সকল এরিয়া</option>
+                          {allareas.map((area, key) => {
+                            return (
+                              <option key={key} value={area.id}>
+                                {area.name}
+                              </option>
+                            );
+                          })}
                         </select>
 
                         {/* //Todo */}
                         <select
+                          name="subArea"
                           className="form-select"
-                          onChange={(e) => onChangeSubArea(e.target.value)}
+                          onChange={(e) => {
+                            // onChangeSubArea(e.target.value);
+                            filterChange(e);
+                          }}
                         >
                           <option value="" defaultValue>
                             সাব এরিয়া
@@ -558,10 +606,12 @@ export default function Customer() {
                           ))}
                         </select>
                         <select
+                          name="status"
                           className="form-select"
                           onChange={(e) => {
-                            handleActiveFilter(e);
-                            handleChangeStatus(e);
+                            // handleActiveFilter(e);
+
+                            filterChange(e);
                           }}
                         >
                           <option value="" defaultValue>
@@ -573,8 +623,11 @@ export default function Customer() {
                         </select>
 
                         <select
+                          name="paymentStatus"
                           className="form-select"
-                          onChange={handleActiveFilter}
+                          onChange={(e) => {
+                            filterChange(e);
+                          }}
                         >
                           <option value="" defaultValue>
                             পেমেন্ট
@@ -649,6 +702,8 @@ export default function Customer() {
                     isLoading={isLoading}
                     columns={columns}
                     data={Customers}
+                    status={status}
+                    paymentStatus={paymentStatus}
                   ></Table>
                 </div>
               </FourGround>
