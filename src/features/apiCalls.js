@@ -38,6 +38,7 @@ import {
   addStaticCustomerSuccess,
   deleteStaticCustomerSuccess,
   updateBalanceStaticCustomer,
+  getStaticCustomerActiveSuccess,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -425,6 +426,26 @@ export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
     setIsloading(false);
   } catch (error) {
     console.log(error.message);
+    setIsloading(false);
+  }
+};
+
+//Static Customers
+export const getStaticActiveCustomer = async (
+  dispatch,
+  ispOwnerId,
+  mikrotikId,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(
+      `mikrotik/arpList/${ispOwnerId}/${mikrotikId}`
+    );
+    dispatch(getStaticCustomerActiveSuccess(res.data.arpList));
+    setIsloading(false);
+  } catch (error) {
+    console.log(error.response.data.message);
     setIsloading(false);
   }
 };
