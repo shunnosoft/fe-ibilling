@@ -38,7 +38,7 @@ const Table = (props) => {
     useSortBy,
     usePagination
   );
-
+  console.log(props.status);
   useEffect(() => {
     setPageSize(100);
   }, []);
@@ -47,16 +47,15 @@ const Table = (props) => {
     if (props.paymentStatus) {
       setFilter("paymentStatus", props.paymentStatus);
     }
-  }, [props.paymentStatus]);
+  }, [props.paymentStatus, data]);
 
   useEffect(() => {
-    if (props.paymentStatus) {
+    if (props.status) {
       setFilter("status", props.status);
     }
-  }, [props.status]);
+  }, [props.status, data]);
 
   const { globalFilter, pageIndex, pageSize } = state;
-
   return (
     <>
       <GlobalFilter
