@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
-import { deleteStaticCustomer } from "../../../features/apiCalls";
+import { deleteStaticCustomerApi } from "../../../features/apiCalls";
 
 const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   // import dispatch
@@ -17,23 +17,20 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // DELETE handler
   const deleteStaticCustomer = (customerId) => {
-    console.log(customerId);
     // send data for api
     const data = {
       ispID: ispOwnerId,
       customerID: customerId,
       mikrotik: mikrotikCheck,
     };
-    console.log(data);
-
     // api call
-    // deleteStaticCustomer(dispatch, data, setIsloading);
+    deleteStaticCustomerApi(dispatch, data, setIsloading);
   };
 
   return (
     <div
       className="modal fade"
-      id="customerDelete"
+      id="staticCustomerDelete"
       tabIndex="-1"
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
@@ -87,7 +84,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                   if (mikrotikCheck) {
                     window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
                   }
-                  deleteStaticCustomer(single?.id);
+                  deleteStaticCustomer(single.id);
                 }}
                 className="btn btn-success"
                 disabled={isLoading}

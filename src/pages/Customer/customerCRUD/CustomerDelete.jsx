@@ -5,6 +5,7 @@ import { deleteACustomer } from "../../../features/apiCalls";
 
 const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   // import dispatch
+
   const dispatch = useDispatch();
 
   // loading state

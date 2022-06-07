@@ -8,7 +8,6 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
-  useFilters,
 } from "react-table";
 import TdLoader from "../common/TdLoader";
 import { badge } from "../common/Utils";
@@ -25,7 +24,6 @@ const Table = (props) => {
     canNextPage,
     canPreviousPage,
     prepareRow,
-    setFilter,
     gotoPage,
     pageCount,
     setPageSize,
@@ -34,26 +32,12 @@ const Table = (props) => {
   } = useTable(
     { columns, data, autoResetGlobalFilter: false },
     useGlobalFilter,
-    useFilters,
     useSortBy,
     usePagination
   );
-  console.log(props.status);
   useEffect(() => {
     setPageSize(100);
   }, []);
-
-  useEffect(() => {
-    if (props.paymentStatus) {
-      setFilter("paymentStatus", props.paymentStatus);
-    }
-  }, [props.paymentStatus, data]);
-
-  useEffect(() => {
-    if (props.status) {
-      setFilter("status", props.status);
-    }
-  }, [props.status, data]);
 
   const { globalFilter, pageIndex, pageSize } = state;
   return (

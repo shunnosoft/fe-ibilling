@@ -48,7 +48,7 @@ const StaticActiveCustomer = () => {
   // api call for get update static customer
   useEffect(() => {
     getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
-  }, []);
+  }, [mikrotikId]);
 
   const columns = React.useMemo(
     () => [

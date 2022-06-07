@@ -19,7 +19,6 @@ import { useEffect } from "react";
 import moment from "moment";
 // import { useLayoutEffect } from "react";
 export default function CustomerEdit(props) {
-  console.log(props);
   const [user, setUser] = useState(props?.single);
   // get all customer
   const customer = useSelector(

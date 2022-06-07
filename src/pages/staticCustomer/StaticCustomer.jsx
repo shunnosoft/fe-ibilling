@@ -43,7 +43,6 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
 
 export default function Customer() {
-  
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
@@ -63,6 +62,7 @@ export default function Customer() {
   const permission = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
+
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
@@ -167,7 +167,7 @@ export default function Customer() {
   // cutomer delete
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
-    const singleData = Customers.find((item) => item.id === customerId);
+    const singleData = cus?.find((item) => item.id === customerId);
     setSingleData(singleData);
   };
 
@@ -438,10 +438,10 @@ export default function Customer() {
                 </div>
               </li>
 
-              {/* {permission?.customerDelete || role === "ispOwner" ? (
+              {permission?.customerDelete || role === "ispOwner" ? (
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#customerDelete"
+                  data-bs-target="#staticCustomerDelete"
                   onClick={() => {
                     customerDelete(original.id);
                   }}
@@ -455,7 +455,7 @@ export default function Customer() {
                 </li>
               ) : (
                 ""
-              )} */}
+              )}
 
               {original.mobile && (
                 <li

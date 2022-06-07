@@ -518,7 +518,7 @@ export const deleteACustomer = async (
   }
 };
 
-export const deleteStaticCustomer = async (
+export const deleteStaticCustomerApi = async (
   dispatch,
   data,
   setIsLoading,
@@ -531,7 +531,7 @@ export const deleteStaticCustomer = async (
     );
     dispatch(deleteStaticCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
-    document.querySelector("#StaticCustomerDelete").click();
+    document.querySelector("#staticCustomerDelete").click();
     setIsLoading(false);
     toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
   } catch (err) {
