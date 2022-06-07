@@ -101,10 +101,20 @@ export default function Customer() {
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
   const [singleData, setSingleData] = useState();
+  const [Customers1, setCustomers1] = useState([]);
+  const [Customers2, setCustomers2] = useState([]);
 
+  const [filterOptions, setFilterOption] = useState({
+    status: "",
+    paymentStatus: "",
+    area: "",
+    subArea: "",
+    package: "",
+  });
+  console.log(filterOptions);
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
-
+  console.log(Customers1);
   // get customer api call
   useEffect(() => {
     if (
@@ -148,28 +158,28 @@ export default function Customer() {
   }, [collectorArea, role]);
   // end collector filter
 
-  useEffect(() => {
-    const keys = [
-      "monthlyFee",
-      "customerId",
-      "name",
-      "mobile",
-      "address",
-      "paymentStatus",
-      "status",
-      "balance",
-      "subArea",
-    ];
-    setCustomers(
-      (isFilterRunning ? filterdCus : cus).filter((item) =>
-        keys.some((key) =>
-          typeof item[key] === "string"
-            ? item[key]?.toString().toLowerCase().includes(cusSearch)
-            : item[key]?.toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cus, cusSearch, filterdCus, isFilterRunning]);
+  // useEffect(() => {
+  //   const keys = [
+  //     "monthlyFee",
+  //     "customerId",
+  //     "name",
+  //     "mobile",
+  //     "address",
+  //     "paymentStatus",
+  //     "status",
+  //     "balance",
+  //     "subArea",
+  //   ];
+  //   setCustomers(
+  //     (isFilterRunning ? filterdCus : cus).filter((item) =>
+  //       keys.some((key) =>
+  //         typeof item[key] === "string"
+  //           ? item[key]?.toString().toLowerCase().includes(cusSearch)
+  //           : item[key]?.toString().includes(cusSearch)
+  //       )
+  //     )
+  //   );
+  // }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
@@ -191,18 +201,66 @@ export default function Customer() {
   };
 
   //   filter
-  const handleActiveFilter = (e) => {
-    setPaymentStatus(e.target.value);
-    setRunning(true);
-    let fvalue = e.target.value;
-    const field = fvalue.split(".")[0];
-    const subfield = fvalue.split(".")[1];
+  const handleActiveFilter = () => {
+    console.log(filterOptions);
+    let tempCustomers = Customers1;
 
-    const filterdData = cus.filter((item) => item[field] === subfield);
+    if (filterOptions.area) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.area === filterOptions.area
+      );
+    }
 
-    setFilter(filterdData);
+    if (filterOptions.subArea) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.subArea === filterOptions.subArea
+      );
+    }
+
+    if (filterOptions.status) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.status === filterOptions.status
+      );
+    }
+
+    if (filterOptions.paymentStatus) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.paymentStatus === filterOptions.paymentStatus
+      );
+    }
+
+    setCustomers1(tempCustomers);
+    setCustomers(tempCustomers);
+  };
+  const handleFilterReset = () => {
+    setFilterOption({
+      status: "",
+      paymentStatus: "",
+      area: "",
+      subArea: "",
+      package: "",
+    });
+    setCustomers1(Customers2);
   };
 
+  useEffect(() => {
+    const temp = [];
+    cus.map((customer) => {
+      allareas.map((area) => {
+        area.subAreas.map((sub) => {
+          if (customer.subArea === sub.id) {
+            temp.push({
+              ...customer,
+              area: area.id,
+            });
+          }
+        });
+      });
+    });
+    setCustomers(temp);
+    setCustomers1(temp);
+    setCustomers2(temp);
+  }, [allareas, cus]);
   useEffect(() => {
     if (subAreaIds.length) {
       setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
@@ -527,15 +585,33 @@ export default function Customer() {
                       <div className="selectFiltering allFilter">
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeArea(e.target.value)}
+                          onChange={(e) => {
+                            onChangeArea(e.target.value);
+                            setFilterOption({
+                              ...filterOptions,
+                              area: JSON.parse(e.target.value).id,
+                            });
+                          }}
                         >
-                          <option value={JSON.stringify({})} defaultValue>
+                          <option
+                            value={JSON.stringify({
+                              id: "",
+                              name: "",
+                              subAreas: [],
+                            })}
+                            defaultValue
+                            selected={filterOptions.area === ""}
+                          >
                             সকল এরিয়া
                           </option>
                           {(role === "collector" ? allArea : allareas)?.map(
                             (area, key) => {
                               return (
-                                <option key={key} value={JSON.stringify(area)}>
+                                <option
+                                  selected={filterOptions.area === area.id}
+                                  key={key}
+                                  value={JSON.stringify(area)}
+                                >
                                   {area.name}
                                 </option>
                               );
@@ -546,13 +622,27 @@ export default function Customer() {
                         {/* //Todo */}
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeSubArea(e.target.value)}
+                          onChange={(e) => {
+                            onChangeSubArea(e.target.value);
+                            setFilterOption({
+                              ...filterOptions,
+                              subArea: e.target.value,
+                            });
+                          }}
                         >
-                          <option value="" defaultValue>
+                          <option
+                            selected={filterOptions.subArea === ""}
+                            value=""
+                            defaultValue
+                          >
                             সাব এরিয়া
                           </option>
                           {singleArea?.subAreas?.map((sub, key) => (
-                            <option key={key} value={sub.id}>
+                            <option
+                              selected={filterOptions.subArea === sub.id}
+                              key={key}
+                              value={sub.id}
+                            >
                               {sub.name}
                             </option>
                           ))}
@@ -560,28 +650,71 @@ export default function Customer() {
                         <select
                           className="form-select"
                           onChange={(e) => {
-                            handleActiveFilter(e);
                             handleChangeStatus(e);
+                            setFilterOption({
+                              ...filterOptions,
+                              status: e.target.value,
+                            });
                           }}
                         >
-                          <option value="" defaultValue>
+                          <option
+                            selected={filterOptions.status === ""}
+                            value=""
+                            defaultValue
+                          >
                             স্ট্যাটাস
                           </option>
-                          <option value="status.active">এক্টিভ</option>
-                          <option value="status.inactive">ইন-এক্টিভ</option>
-                          <option value="status.expired">এক্সপায়ার্ড</option>
+                          <option
+                            selected={filterOptions.status === "active"}
+                            value="active"
+                          >
+                            এক্টিভ
+                          </option>
+                          <option
+                            selected={filterOptions.status === "inactive"}
+                            value="inactive"
+                          >
+                            ইন-এক্টিভ
+                          </option>
+                          <option
+                            selected={filterOptions.status === "expired"}
+                            value="expired"
+                          >
+                            এক্সপায়ার্ড
+                          </option>
                         </select>
 
                         <select
                           className="form-select"
-                          onChange={handleActiveFilter}
+                          onChange={(e) => {
+                            setFilterOption({
+                              ...filterOptions,
+                              paymentStatus: e.target.value,
+                            });
+                          }}
                         >
-                          <option value="" defaultValue>
+                          <option
+                            selected={filterOptions.paymentStatus === ""}
+                            value=""
+                            defaultValue
+                          >
                             পেমেন্ট
                           </option>
-                          <option value="paymentStatus.paid">পেইড</option>
-                          <option value="paymentStatus.unpaid">আন-পেইড</option>
+                          <option
+                            selected={filterOptions.paymentStatus === "paid"}
+                            value="paid"
+                          >
+                            পেইড
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "unpaid"}
+                            value="unpaid"
+                          >
+                            আন-পেইড
+                          </option>
                         </select>
+                        <button onClick={handleActiveFilter}>filter</button>
+                        <button onClick={handleFilterReset}>reset</button>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
                         <>
@@ -648,7 +781,7 @@ export default function Customer() {
                   <Table
                     isLoading={isLoading}
                     columns={columns}
-                    data={Customers}
+                    data={Customers1}
                   ></Table>
                 </div>
               </FourGround>
