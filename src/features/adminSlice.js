@@ -15,9 +15,22 @@ const adminSlice = createSlice({
       ] = actions.payload;
       state.updateAdminSuccess = true;
     },
+    updateComment: (state, { payload }) => {
+      console.log(payload);
+      const ispOwner = state.ispOwners.find(
+        (item) => item.id === payload.ownerId
+      );
+
+      ispOwner.comments = payload.data;
+      state.ispOwners[
+        state.ispOwners.findIndex((item) => item.id === payload.ownerId)
+      ] = ispOwner;
+      state.updateAdminSuccess = true;
+    },
   },
 });
 
-export const { getIspOwnersSuccess, editOwner } = adminSlice.actions;
+export const { getIspOwnersSuccess, editOwner, updateComment } =
+  adminSlice.actions;
 
 export default adminSlice.reducer;

@@ -1,19 +1,22 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
-import { getIspOwnersSuccess, editOwner } from "./adminSlice";
+import { getIspOwnersSuccess, editOwner, updateComment } from "./adminSlice";
 import {
   getIspOwnerInvoicesSuccess,
   editInvoiceSuccess,
 } from "./ispOwnerInvoiceSlice";
 
 // get owners
-export const getIspOwners = async (dispatch) => {
+export const getIspOwners = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get(`/admin/getIspOwners`);
-    // console.log(res.data);
+    console.log(res.data);
+    setIsLoading(false);
     dispatch(getIspOwnersSuccess(res.data));
   } catch (error) {
     console.log(error);
+    setIsLoading(false);
   }
 };
 
@@ -61,5 +64,20 @@ export const editIspOwnerInvoice = async (
       setIsloading(false);
       toast.error(err.response);
     }
+  }
+};
+
+// add comment
+
+export const addComment = async (ownerId, data, setIsloading, dispatch) => {
+  // console.log(ownerId, data, setIsloading);
+  try {
+    setIsloading(true);
+    const res = await apiLink.patch(`admin/ispOwner/comment/${ownerId}`, data);
+    console.log(res.data.comments);
+    setIsloading(false);
+    dispatch(updateComment({ data: res.data.comments, ownerId }));
+  } catch (error) {
+    console.log(error);
   }
 };
