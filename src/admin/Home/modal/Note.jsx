@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { Accordion } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../components/common/Loader";
+import Table from "../../../components/table/Table";
 import { addComment } from "../../../features/apiCallAdmin";
 // import { addComment } from "../../features/apiCallAdmin";
 
@@ -30,7 +32,7 @@ const Note = ({ ownerId }) => {
   // validation check
   const hadleRequired = () => {
     if (!addNote) {
-      setErrMsg("এসএমএস পরিমান দিন");
+      setErrMsg("Write Somthing !");
     }
   };
 
@@ -42,69 +44,117 @@ const Note = ({ ownerId }) => {
         comment: addNote,
       };
 
-      console.log(data);
       addComment(ownerId, data, setIsloading, dispatch);
+      setAddNote("");
     }
   };
+
+  // get isp owner
+  let ispOwners = useSelector((state) => state.admin?.ispOwners);
+
+  // find single data
+  const singleData = ispOwners.find((item) => item.id === ownerId);
+  let comments;
+  if (singleData) {
+    comments = singleData.comments;
+    comments = [...comments].reverse();
+  }
+  console.log(comments);
+
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="clientNoteModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              কে মেসেজ করুন
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            {/* model body here */}
-            <form onSubmit={handleSubmit}>
-              <div class="mb-3">
-                <textarea
-                  class="form-control"
-                  id="exampleFormControlTextarea1"
-                  rows="3"
-                  placeholder="মেসেজ লিখুন"
-                  onChange={handleChange}
-                  onBlur={hadleRequired}
-                ></textarea>
-                <div id="emailHelp" class="form-text text-danger">
-                  {errMsg}
-                </div>
-              </div>
-              <div className="modal-footer" style={{ border: "none" }}>
+    <>
+      <ToastContainer theme="colored" />
+      <div
+        className="modal fade modal-dialog-scrollable "
+        id="clientNoteModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-xl">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Write some note for{" "}
+                <i className="text-secondary">{singleData?.name}</i>
+              </h5>
+              <div className="d-flex">
+                <button
+                  onClick={handleSubmit}
+                  type="submit"
+                  className="btn btn-sm btn-outline-success"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : "Submit"}
+                </button>
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-sm btn-outline-secondary ms-3"
                   data-bs-dismiss="modal"
                   disabled={isLoading}
                 >
-                  বাতিল করুন
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-success"
-                  disabled={isLoading}
-                >
-                  {isLoading ? <Loader /> : "সেন্ড মেসেজ"}
+                  Cancel
                 </button>
               </div>
-            </form>
+            </div>
+            <div className="modal-body">
+              {/* model body here */}
+              <form>
+                <div class="mb-3">
+                  <textarea
+                    class="form-control"
+                    id="exampleFormControlTextarea1"
+                    rows="3"
+                    placeholder="Note"
+                    onChange={handleChange}
+                    onBlur={hadleRequired}
+                    value={addNote}
+                  ></textarea>
+                  <div id="emailHelp" class="form-text text-danger">
+                    {errMsg}
+                  </div>
+                </div>
+              </form>
+            </div>
+            {comments?.length > 0 && (
+              <>
+                <hr />
+                {/* <Accordion defaultActiveKey="">
+                  <Accordion.Item>
+                    <Accordion.Header>Comment</Accordion.Header>
+                    <Accordion.Body> */}
+                <div
+                  className="noteList container"
+                  style={{
+                    height: "250px",
+                    overflowY: "auto",
+                  }}
+                >
+                  <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">Comment</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {comments.map((item, index) => (
+                        <tr colspan="2">
+                          <td>{item}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* </Accordion.Body>
+                  </Accordion.Item>
+                </Accordion> */}
+              </>
+            )}
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
