@@ -14,8 +14,9 @@ function AlertSmsTemplate() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
   const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
+    (state) => state.persistedReducer.auth.ispOwnerData?.settings
   );
+  console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -118,7 +119,7 @@ function AlertSmsTemplate() {
         `/ispOwner/settings/sms/${ispOwnerId}`,
         data
       );
-      console.log(res.data);
+      // console.log(res.data);
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
       toast.success("এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে");

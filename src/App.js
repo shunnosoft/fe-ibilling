@@ -69,6 +69,8 @@ import StaticCustomer from "./pages/staticCustomer/StaticCustomer";
 import PackageSetting from "./pages/staticCustomer/PakageSetting";
 import ResellerSmsRequest from "./pages/resellerSMSrequest/ResellerSmsRequest";
 import StaticActiveCustomer from "./pages/staticActiveCustomer/StaticActiveCustomer";
+import RMessage from "./reseller/message/Message";
+import RSettings from "./reseller/settings/Settings";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -145,6 +147,9 @@ function App() {
 
             {/* dashboard */}
             <Route path="/*" element={<PrivateOutlet />}>
+              <Route path="message" element={<RMessage />} />
+              <Route path="settings" element={<RSettings />} />
+
               <Route path="reseller/profile" element={<RProfile />} />
               <Route path="reseller/home" element={<RDashboard />} />
               <Route path="reseller/collector" element={<RCollector />} />
