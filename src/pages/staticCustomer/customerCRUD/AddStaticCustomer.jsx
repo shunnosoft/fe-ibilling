@@ -13,6 +13,8 @@ import {
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import moment from "moment";
+import { addStaticCustomerSuccess } from "../../../features/customerSlice";
+import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
 export default function AddStaticCustomer() {
   // get user bp setting
   const bpSettings = useSelector(
@@ -35,8 +37,6 @@ export default function AddStaticCustomer() {
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
 
-  console.log(Getmikrotik);
-
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.persistedReducer?.mikrotik?.packagefromDatabase
@@ -52,6 +52,7 @@ export default function AddStaticCustomer() {
   const dispatch = useDispatch();
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
+  const [userType, setUserType] = useState("");
 
   // customer validator
   const customerValidator = Yup.object({
@@ -68,10 +69,6 @@ export default function AddStaticCustomer() {
       .integer()
       .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
       .required("প্যাকেজ রেট দিন"),
-    Pname: Yup.string().required("PPPoE নাম লিখুন"),
-    Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
-    Pcomment: Yup.string(),
-    // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
 
   // select subArea
@@ -117,7 +114,9 @@ export default function AddStaticCustomer() {
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
-    // console.log(mikrotikPackageId)
+
+    console.log(e.target.value);
+
     if (mikrotikPackageId === "0") {
       setPackageRate({ rate: 0 });
     } else {
@@ -136,9 +135,18 @@ export default function AddStaticCustomer() {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
-    const { Pname, Ppassword, Pprofile, Pcomment, balance, ...rest } = data;
+    const {
+      Pname,
+      Ppassword,
+      Pprofile,
+      Pcomment,
+      balance,
+      ipAddress,
+      queueName,
+      target,
+      ...rest
+    } = data;
     const mainData = {
-      // customerId: "randon123",
       paymentStatus: "unpaid",
       subArea: subArea2,
       ispOwner: ispOwnerId,
@@ -149,28 +157,36 @@ export default function AddStaticCustomer() {
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
-      pppoe: {
-        name: Pname,
-        password: Ppassword,
-        service: "pppoe",
-        comment: Pcomment,
-        profile: Pprofile,
-      },
       balance: -balance,
       ...rest,
     };
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
     }
-    // console.log(mainData);
-    addCustomer(dispatch, mainData, setIsloading, resetForm);
-    // console.log(data);
+    let sendingData = { ...mainData };
+    if (userType === "firewall-queue") {
+      sendingData.userType = "firewall-queue";
+      sendingData.queue = {
+        type: userType,
+        address: ipAddress,
+        list: "allow_ip",
+      };
+    }
+    if (userType === "simple-queue") {
+      sendingData.userType = "simple-queue";
+      sendingData.queue = { type: userType, target, maxLimit: "" };
+    }
+
+    console.log(sendingData);
+    addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
   };
 
   useEffect(() => {
     setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
     setBilltime(moment().endOf("day").format("HH:mm"));
   }, [bpSettings, role]);
+
+  //traget ad ip queue-{name ,target-ip,max-limit,}
   return (
     <div>
       <div
@@ -205,9 +221,11 @@ export default function AddStaticCustomer() {
                   monthlyFee: packageRate?.rate || 0,
                   Pname: "",
                   Pprofile: packageRate?.name || "",
-                  Ppassword: "",
                   Pcomment: "",
                   balance: "",
+                  ipAddress: "",
+                  queueName: "",
+                  target: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -219,61 +237,142 @@ export default function AddStaticCustomer() {
                   <Form>
                     <div className="mikrotikSection">
                       {bpSettings?.hasMikrotik ? (
-                        <div>
-                          <p className="comstomerFieldsTitle">
-                            মাইক্রোটিক সিলেক্ট করুন
-                          </p>
-                          <select
-                            className="form-select"
-                            aria-label="Default select example"
-                            onChange={selectMikrotik}
-                          >
-                            <option value="">...</option>
-                            {Getmikrotik.length === undefined
-                              ? ""
-                              : Getmikrotik.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
-                        </div>
+                        <>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              মাইক্রোটিক সিলেক্ট করুন
+                            </p>
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              onChange={selectMikrotik}
+                            >
+                              <option value="">...</option>
+                              {Getmikrotik.length === undefined
+                                ? ""
+                                : Getmikrotik.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                          </div>
+                          <div>
+                            <p>কাস্টমার টাইপ</p>
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              onChange={(e) => setUserType(e.target.value)}
+                            >
+                              <option value="">...</option>
+                              <option value="firewall-queue">Firewall</option>
+                              {/* <option value="simple-queue">Simple queue</option> */}
+                            </select>
+                          </div>
+                          {userType === "firewall-queue" && (
+                            <FtextField
+                              type="text"
+                              label="আইপি এড্রেস"
+                              name="ipAddress"
+                            />
+                          )}
+
+                          {/* {userType === "simple-queue" && (
+                            <>
+                              <FtextField
+                                type="text"
+                                label="কিউ নাম"
+                                name="queueName"
+                              />
+                              <FtextField
+                                type="text"
+                                label="আইপি এড্রেস"
+                                name="target"
+                              />
+                            </>
+                          )} */}
+                        </>
                       ) : (
                         ""
                       )}
 
                       {/* pppoe package */}
-                      <div>
-                        <p className="comstomerFieldsTitle">
-                          প্যাকেজ সিলেক্ট করুন
-                        </p>
-                        <select
-                          className="form-select mb-3"
-                          aria-label="Default select example"
-                          onChange={selectMikrotikPackage}
-                        >
-                          <option value={"0"}>...</option>
-                          {ppPackage &&
-                            ppPackage?.map((val, key) => (
-                              <option key={key} value={val.id}>
-                                {val.name}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
+                      {userType === "firewall-queue" && (
+                        <div>
+                          <p className="comstomerFieldsTitle">
+                            প্যাকেজ সিলেক্ট করুন
+                          </p>
+                          <select
+                            className="form-select mb-3"
+                            aria-label="Default select example"
+                            onChange={selectMikrotikPackage}
+                          >
+                            <option value={"0"}>...</option>
+                            {ppPackage &&
+                              ppPackage?.map(
+                                (val, key) =>
+                                  val.packageType === "queue" && (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  )
+                              )}
+                          </select>
+                        </div>
+                      )}
+
+                      {userType === "simple-queue" && (
+                        <>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              আপলোড প্যাকেজ
+                            </p>
+                            <select
+                              className="form-select mb-3"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value={"0"}>...</option>
+                              {ppPackage &&
+                                ppPackage?.map(
+                                  (val, key) =>
+                                    val.packageType === "queue" && (
+                                      <option key={key} value={val.id}>
+                                        {val.name}
+                                      </option>
+                                    )
+                                )}
+                            </select>
+                          </div>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              ডাউনলোড প্যাকেজ
+                            </p>
+                            <select
+                              className="form-select mb-3"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value={"0"}>...</option>
+                              {ppPackage &&
+                                ppPackage?.map(
+                                  (val, key) =>
+                                    val.packageType === "queue" && (
+                                      <option key={key} value={val.id}>
+                                        {val.name}
+                                      </option>
+                                    )
+                                )}
+                            </select>
+                          </div>
+                        </>
+                      )}
+
                       <FtextField
                         type="number"
                         label="মাসিক ফি"
                         name="monthlyFee"
                         min={0}
-                        // value={packageRate?.rate}
-                        // onChange={(e)=>{
-                        //   setPackageRate((preval)=>{
-                        //     return {
-                        //       ...preval,rate:e.target.value
-                        //     }
-                        //   })
-                        // }}
                       />
                       {bpSettings?.hasMikrotik ? (
                         ""
@@ -286,15 +385,7 @@ export default function AddStaticCustomer() {
                       )}
                     </div>
 
-                    <div className="pppoeSection2">
-                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
-                      <FtextField
-                        type="text"
-                        label="পাসওয়ার্ড"
-                        name="Ppassword"
-                      />
-                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
-                    </div>
+                    <div className="pppoeSection2"></div>
 
                     <div className="displayGrid3">
                       <div>
