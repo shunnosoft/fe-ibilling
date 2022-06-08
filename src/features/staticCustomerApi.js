@@ -1,4 +1,6 @@
+import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
+import { addStaticCustomerSuccess } from "./customerSlice";
 
 export const addStaticCustomerApi = async (
   dispatch,
@@ -12,9 +14,12 @@ export const addStaticCustomerApi = async (
       "ispOwner/static-customer/" + data.ispOwner,
       data
     );
-    console.log(res);
+    dispatch(addStaticCustomerSuccess(res.data.customer));
+    document.getElementById("addStaticCustomerModal").click();
+    toast.success("কাস্টমার এড সফল হয়েছে");
   } catch (error) {
-    console.log(error.response);
+    toast.error(error.response?.data?.message);
+    console.log(error.response?.data?.message);
   }
   setIsloading(false);
 };
