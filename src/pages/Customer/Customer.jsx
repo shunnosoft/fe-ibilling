@@ -203,7 +203,7 @@ export default function Customer() {
   //   filter
   const handleActiveFilter = () => {
     console.log(filterOptions);
-    let tempCustomers = Customers1;
+    let tempCustomers = Customers2;
 
     if (filterOptions.area) {
       tempCustomers = tempCustomers.filter(
@@ -713,8 +713,6 @@ export default function Customer() {
                             আন-পেইড
                           </option>
                         </select>
-                        <button onClick={handleActiveFilter}>filter</button>
-                        <button onClick={handleFilterReset}>reset</button>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
                         <>
@@ -776,6 +774,28 @@ export default function Customer() {
                       currentCustomers={Customers}
                       ref={componentRef}
                     />
+                  </div>
+                  <div className="filterresetbtn">
+                    {/* <button onClick={handleActiveFilter}>filter</button> */}
+                    <button
+                      className="btn btn-success mt-2"
+                      type="button"
+                      onClick={handleActiveFilter}
+                    >
+                      ফিল্টার
+                    </button>
+                    <button
+                      style={{
+                        marginLeft: "7px",
+                        width: "150px",
+                      }}
+                      className="btn btn-secondary mt-2"
+                      type="button"
+                      onClick={handleFilterReset}
+                    >
+                      রিসেট
+                    </button>
+                    {/* <button onClick={handleFilterReset}>reset</button> */}
                   </div>
 
                   <Table

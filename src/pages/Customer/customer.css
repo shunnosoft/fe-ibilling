@@ -175,6 +175,13 @@
   flex-direction: column;
   width: 100%;
 }
+.filterresetbtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 10px;
+  margin-left: 5px;
+}
 @media only screen and (max-width: 980px) {
   .customerGrid {
     display: initial;
