@@ -366,7 +366,7 @@ export default function Customer() {
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
     const singleData = Customers.find((item) => item.id === customerId);
-    console.log(singleData);
+
     setSingleData(singleData);
   };
 

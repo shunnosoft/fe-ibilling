@@ -15,6 +15,7 @@ import {
   ArrowRightShort,
   CashStack,
   ChatText,
+  PersonPlusFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -24,7 +25,7 @@ import ReactToPrint from "react-to-print";
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import CustomerPost from "./customerCRUD/CustomerPost";
+import CustomerPost from "./customerCRUD/AddStaticCustomer";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
@@ -41,6 +42,7 @@ import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
+import AddStaticCustomer from "./customerCRUD/AddStaticCustomer";
 
 export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
@@ -62,6 +64,7 @@ export default function Customer() {
   const permission = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
+
   const [Customers, setCustomers] = useState(cus);
   const [filterdCus, setFilter] = useState(Customers);
   const [isFilterRunning, setRunning] = useState(false);
@@ -166,7 +169,7 @@ export default function Customer() {
   // cutomer delete
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
-    const singleData = Customers.find((item) => item.id === customerId);
+    const singleData = cus?.find((item) => item.id === customerId);
     setSingleData(singleData);
   };
 
@@ -437,10 +440,10 @@ export default function Customer() {
                 </div>
               </li>
 
-              {/* {permission?.customerDelete || role === "ispOwner" ? (
+              {permission?.customerDelete || role === "ispOwner" ? (
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#customerDelete"
+                  data-bs-target="#staticCustomerDelete"
                   onClick={() => {
                     customerDelete(original.id);
                   }}
@@ -454,7 +457,7 @@ export default function Customer() {
                 </li>
               ) : (
                 ""
-              )} */}
+              )}
 
               {original.mobile && (
                 <li
@@ -491,7 +494,17 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>গ্রাহক</div>
+                  <div className="d-flex">
+                    <div className="me-3">স্ট্যাটিক গ্রাহক</div>
+                    <div
+                      title="স্ট্যাটিক গ্রাহক যুক্ত"
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#addStaticCustomerModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  </div>
                   <div className="settingbtn">
                     <Link
                       to={`/packageSetting`}
@@ -512,7 +525,7 @@ export default function Customer() {
               </FourGround>
 
               {/* Model start */}
-              <CustomerPost />
+              <AddStaticCustomer />
               <CustomerEdit single={singleCustomer} />
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />

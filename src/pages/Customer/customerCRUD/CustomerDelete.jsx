@@ -5,6 +5,7 @@ import { deleteACustomer } from "../../../features/apiCalls";
 
 const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   // import dispatch
+
   const dispatch = useDispatch();
 
   // loading state
@@ -17,6 +18,12 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // DELETE handler
   const deleteCustomer = (customerId) => {
+    let checkCondition = true;
+
+    if (mikrotikCheck) {
+      checkCondition = window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
+    }
+
     // send data for api
     const data = {
       ispID: ispOwnerId,
@@ -25,7 +32,9 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
     };
 
     // api call
-    deleteACustomer(dispatch, data, setIsloading);
+    if (checkCondition) {
+      deleteACustomer(dispatch, data, setIsloading);
+    }
   };
 
   return (
@@ -82,9 +91,6 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               </button>
               <button
                 onClick={() => {
-                  if (mikrotikCheck) {
-                    window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
-                  }
                   deleteCustomer(single?.id);
                 }}
                 className="btn btn-success"

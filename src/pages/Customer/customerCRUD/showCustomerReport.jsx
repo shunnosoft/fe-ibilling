@@ -1,17 +1,24 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import apiLink from "../../../api/apiLink";
 import TdLoader from "../../../components/common/TdLoader";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
-import { TrashFill } from "react-bootstrap-icons";
-import { useDispatch } from "react-redux";
+import { PrinterFill, TrashFill } from "react-bootstrap-icons";
+import { useDispatch, useSelector } from "react-redux";
 import { editCustomerSuccess } from "../../../features/customerSlice";
+import BillCollectInvoice from "./customerBillCollectInvoicePDF";
+import ReactToPrint from "react-to-print";
 
 export default function CustomerReport({ single }) {
+  const billRef = useRef();
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
+
   const [customerReport, setCustomerReport] = useState([]);
-  const [canDelete, setDelete] = useState(true);
+  // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -31,64 +38,22 @@ export default function CustomerReport({ single }) {
   }, [single]);
 
   const deletReport = async (reportId) => {
-    if (canDelete) {
+    const con = window.confirm("আপনি কি বিল ডিলিট করতে চান?");
+    if (con) {
       try {
         const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
-        console.log(res);
         const updatedState = customerReport.filter(
           (item) => item.id !== reportId
         );
         setCustomerReport(updatedState);
         dispatch(editCustomerSuccess(res.data.customer));
-        toast.success("রিপোর্ট ডিলিট সফল হয়েছে");
-        setDelete(false);
-        setTimeout(() => {
-          setDelete(true);
-        }, 1000 * 60 * 2);
+        toast.success("বিল ডিলিট সফল হয়েছে");
       } catch (error) {
         toast.error(error.response?.data?.message);
         console.log(error);
       }
-    } else {
-      toast.error("একটু পরে আবার চেষ্টা করুন");
     }
   };
-
-  // customer:
-  // address: "raj"
-  // autoDisable: true
-  // balance: -5800
-  // billPayType: "prepaid"
-  // billingCycle: "2022-06-25T17:59:00.590Z"
-  // createdAt: "2022-04-27T08:56:18.024Z"
-  // customerId: "1023"
-  // email: "bashar@gmail.com"
-  // id: "62690532d496062499b52c47"
-  // ispOwner: {reference: {…}, settings: {…}, bpSettings: {…}, billCollectionType: 'prepaid', status: 'new', …}
-  // mikrotik: "6252fa5d182934438bad188e"
-  // mikrotikPackage: "628e6a29f6603aaa468f5968"
-  // mobile: "01789213930"
-  // monthlyFee: 5000
-  // name: "hojafia"
-  // nid: "123456789987654"
-  // paymentStatus: "paid"
-  // pppoe: {service: 'pppoe', disabled: false, name: 'bashar', password: 'hojaifa', comment: 'hello', …}
-  // queue: {type: 'simple-queue', disabled: false}
-  // status: "inactive"
-  // subArea: "6268e21f8c1b12154e4963ed"
-  // user: "6298c88d5f58bb76d578b9ad"
-  // userType: "pppoe"
-
-  // monthlyBill:
-  // amount: 1300
-  // billType: "bill"
-  // collectedBy: "ispOwner"
-  // collectorId: "624061bbaae58479466259a8"
-  // createdAt: "2022-05-26T18:47:36.058Z"
-  // customer: "62690532d496062499b52c47"
-  // id: "628fcb483b28b86bcd83ef21"
-  // ispOwner: "624061bbaae58479466259a8"
-  // user: "624061b9aae58479466259a4"
 
   return (
     <div>
@@ -132,17 +97,50 @@ export default function CustomerReport({ single }) {
                     {isLoading ? (
                       <TdLoader colspan={5} />
                     ) : customerReport.length > 0 ? (
-                      customerReport.map((val, index) => (
-                        <tr className="spetialSortingRow" key={index}>
-                          <td>{single.pppoe.profile}</td>
-                          <td>{FormatNumber(val.amount)}</td>
-                          <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
-                          <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
-
+                      customerReport.map((val, index) => {
+                        console.log(val);
+                        return (
+                          <tr className="spetialSortingRow" key={index}>
+                            <td>{single.pppoe.profile}</td>
+                            <td>{FormatNumber(val.amount)}</td>
+                            <td>
+                              {moment(val.createdAt).format("DD-MM-YYYY")}
+                            </td>
+                            <td>
+                              {moment(val.createdAt).format("hh:mm:ss A")}
+                            </td>
+                            {/* 
                           {moment()
                             .subtract(7, "d")
-                            .isBefore(moment(val.createdAt)) && (
+                            .isBefore(moment(val.createdAt)) && ( */}
+
                             <td className="text-center">
+                              <div style={{ display: "none" }}>
+                                <BillCollectInvoice
+                                  ref={billRef}
+                                  customerData={single}
+                                  billingData={{
+                                    amount: val.amount,
+                                    billType: val.billType,
+                                    paymentDate: val.createdAt,
+                                  }}
+                                  ispOwnerData={ispOwnerData}
+                                />
+                              </div>
+                              <div>
+                                <ReactToPrint
+                                  documentTitle="বিল ইনভয়েস"
+                                  trigger={() => (
+                                    <div
+                                      title="প্রিন্ট বিল ইনভয়েস"
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <PrinterFill />
+                                    </div>
+                                  )}
+                                  content={() => billRef.current}
+                                />
+                              </div>
                               <div title="ডিলিট রিপোর্ট">
                                 <button
                                   className="border-0 bg-transparent"
@@ -155,9 +153,10 @@ export default function CustomerReport({ single }) {
                                 </button>
                               </div>
                             </td>
-                          )}
-                        </tr>
-                      ))
+                            {/* )} */}
+                          </tr>
+                        );
+                      })
                     ) : (
                       <td colSpan={5}>
                         <h5 className="text-center">কোন ডাটা পাওয়া যাই নি !</h5>

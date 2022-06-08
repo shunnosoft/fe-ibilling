@@ -43,6 +43,7 @@ export default function Reseller() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
 
   const [singleUser, setSingleUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -246,31 +247,30 @@ export default function Reseller() {
               <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">রিসেলার</h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>রিসেলার</div>
+                  {role === "ispOwner" && (
+                    <div
+                      title="রিসেলার এড করুন"
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#resellerModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  )}
+                </div>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector">
-                      <p>অ্যাড রিসেলার</p>
-                      <div className="addAndSettingIcon">
-                        <PersonPlusFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#resellerModal"
-                        />
-                      </div>
-                    </div>
-
-                    {isLoading ? (
+                    {isLoading && (
                       <div className="deleteReseller">
                         <h6>
                           <Loader /> Deleting...
                         </h6>
                       </div>
-                    ) : (
-                      ""
                     )}
                   </div>
 

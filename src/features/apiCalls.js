@@ -38,6 +38,7 @@ import {
   addStaticCustomerSuccess,
   deleteStaticCustomerSuccess,
   updateBalanceStaticCustomer,
+  getStaticCustomerActiveSuccess,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -429,6 +430,26 @@ export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
   }
 };
 
+//Static Customers
+export const getStaticActiveCustomer = async (
+  dispatch,
+  ispOwnerId,
+  mikrotikId,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(
+      `mikrotik/arpList/${ispOwnerId}/${mikrotikId}`
+    );
+    dispatch(getStaticCustomerActiveSuccess(res.data.arpList));
+    setIsloading(false);
+  } catch (error) {
+    console.log(error.response.data.message);
+    setIsloading(false);
+  }
+};
+
 export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {
@@ -487,15 +508,17 @@ export const deleteACustomer = async (
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
     document.querySelector("#customerDelete").click();
     setIsLoading(false);
-    toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
+    toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
   } catch (err) {
     if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#customerDelete").click();
       toast.error(err.response.data.message);
     }
   }
 };
 
-export const deleteStaticCustomer = async (
+export const deleteStaticCustomerApi = async (
   dispatch,
   data,
   setIsLoading,
@@ -508,7 +531,7 @@ export const deleteStaticCustomer = async (
     );
     dispatch(deleteStaticCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
-    document.querySelector("#StaticCustomerDelete").click();
+    document.querySelector("#staticCustomerDelete").click();
     setIsLoading(false);
     toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
   } catch (err) {

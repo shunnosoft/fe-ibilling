@@ -13,20 +13,30 @@ import {
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import moment from "moment";
-export default function CustomerModal() {
+export default function AddStaticCustomer() {
+  // get user bp setting
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
+
+  // get role from redux
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
-  // const packages= useSelector(state=>state.package.packages)
-  // console.log( packages)
+
+  // get Isp owner id
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
+
+  // get all area
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
+
+  // get all mikrotik
   const Getmikrotik = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
   );
+
+  console.log(Getmikrotik);
+
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.persistedReducer?.mikrotik?.packagefromDatabase
@@ -165,7 +175,7 @@ export default function CustomerModal() {
     <div>
       <div
         className="modal fade modal-dialog-scrollable "
-        id="customerModal"
+        id="addStaticCustomerModal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"

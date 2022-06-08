@@ -27,7 +27,7 @@ const useForceUpdate = () => {
 const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
   if (subAreaIds.includes(customer.subArea)) {
     let msg = template
-      .replace("USERNAME", customer?.pppoe?.name)
+      // .replace("USERNAME", customer?.pppoe?.name)
       .replace("CUSTOMER_NAME", customer?.name)
       .replace("CUSTOMER_ID", customer?.customerId)
       .replace(
@@ -35,6 +35,17 @@ const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
         moment(customer?.billingCycle).format("DD-MM-YYYY hh:mm A")
       )
       .replace("AMOUNT", customer?.monthlyFee);
+
+    if (customer.userType === "pppoe") {
+      msg = msg.replace("USERNAME", customer?.pppoe?.name);
+    } else if (customer.userType === "firewall-queue") {
+      msg = msg.replace("USERNAME", customer?.queue?.address);
+    } else if (customer.userType === "simple-queue") {
+      let temp = customer.queue.target
+        ? customer.queue.target.split("/")[0]
+        : "";
+      msg = msg.replace("USERNAME", temp);
+    }
 
     return {
       app: "netfee",
@@ -134,7 +145,7 @@ export default function Message() {
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-      const res = await apiLink.get(`/ispOwner/customer/${ispOwnerId}`);
+      const res = await apiLink.get(`/ispOwner/all-customer/${ispOwnerId}`);
 
       let items = [],
         totalSmsCount = 0;

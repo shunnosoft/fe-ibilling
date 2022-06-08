@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  ThreeDots,
-  PersonFill,
-  PenFill,
-  PlusLg,
-  ArchiveFill,
-} from "react-bootstrap-icons";
+import { ThreeDots, PenFill, ArchiveFill, Plus } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -15,10 +9,6 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
-// import Loader from "../../components/common/Loader";
-import Pagination from "../../components/Pagination";
-
-import TdLoader from "../../components/common/TdLoader";
 import { getPackagewithoutmikrotik } from "../../features/apiCalls";
 import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
@@ -141,11 +131,23 @@ export default function Package() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">প্যাকেজ </h2>
+              <div className="collectorTitle d-flex justify-content-between px-5">
+                <div>প্যাকেজ</div>
+                {role === "ispOwner" && (
+                  <div
+                    title="প্যাকেজ এড করুন"
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createPackage"
+                  >
+                    <Plus />
+                  </div>
+                )}
+              </div>
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
+                  {/* <div className="addCollector">
                     {role === "ispOwner" && (
                       <div className="addNewCollector">
                         <div className="displexFlexSys">
@@ -161,7 +163,7 @@ export default function Package() {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                   {/* table */}
                   <Table columns={columns1} data={packages}></Table>
                 </div>

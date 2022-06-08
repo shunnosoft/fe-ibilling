@@ -26,3 +26,22 @@
 .gotoSubAreaBtn:hover {
   background: #048b46;
 }
+
+.header_icon {
+  width: 46px;
+  height: 35px;
+  background-color: #fcf2f2;
+  color: #04a753;
+  border-radius: 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.4s;
+  font-size: 19px;
+}
+
+.header_icon:hover {
+  background-color: #04a753;
+  color: #fcf2f2;
+}

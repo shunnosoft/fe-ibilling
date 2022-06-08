@@ -24,7 +24,6 @@ const Table = (props) => {
     canNextPage,
     canPreviousPage,
     prepareRow,
-
     gotoPage,
     pageCount,
     setPageSize,
@@ -36,19 +35,17 @@ const Table = (props) => {
     useSortBy,
     usePagination
   );
-
   useEffect(() => {
     setPageSize(100);
   }, []);
 
   const { globalFilter, pageIndex, pageSize } = state;
-
   return (
     <>
       <GlobalFilter
         filter={globalFilter}
-        setFilter={setGlobalFilter}
         data={data}
+        setFilter={setGlobalFilter}
         customComponent={customComponent}
       />
       <div className="table-responsive-lg mt-4">

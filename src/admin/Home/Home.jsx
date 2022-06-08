@@ -19,8 +19,11 @@ import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
 import "./home.css";
 import DetailsModal from "./modal/DetailsModal";
+import Note from "./modal/Note";
 
 export default function Home() {
+  // loading
+  const [isLoading, setIsLoading] = useState(false);
   // import dispatch
   const dispatch = useDispatch();
 
@@ -43,7 +46,7 @@ export default function Home() {
 
   // api call
   useEffect(() => {
-    getIspOwners(dispatch);
+    getIspOwners(dispatch, setIsLoading);
   }, [dispatch]);
 
   // edit modal method
@@ -51,8 +54,13 @@ export default function Home() {
     setOwnerId(ispOwnerId);
   };
 
+  // details modal handle
   const detailsModal = (showDetailsId) => {
     setOwnerId(showDetailsId);
+  };
+
+  const noteModal = (noteId) => {
+    setOwnerId(noteId);
   };
 
   // table column
@@ -168,6 +176,20 @@ export default function Home() {
                     </div>
                   </div>
                 </li>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#clientNoteModal"
+                  onClick={() => {
+                    noteModal(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">Note</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </>
           </div>
@@ -198,10 +220,15 @@ export default function Home() {
               <option value="unpaid">Unpaid</option>
             </select>
             <FontColor>
-              <Table columns={columns} data={ispOwners}></Table>
+              <Table
+                isLoading={isLoading}
+                columns={columns}
+                data={ispOwners}
+              ></Table>
 
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
+              <Note ownerId={ownerId} />
             </FontColor>
           </div>
         </div>
