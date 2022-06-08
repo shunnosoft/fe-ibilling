@@ -116,7 +116,7 @@ const Note = ({ ownerId }) => {
                 </div>
               </form>
             </div>
-            {comments.length > 0 && (
+            {comments?.length > 0 && (
               <>
                 <hr />
                 {/* <Accordion defaultActiveKey="">
