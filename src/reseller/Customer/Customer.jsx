@@ -91,19 +91,19 @@ export default function Customer() {
 
     if (subAreaId) {
       tempCustomers = tempCustomers.filter(
-        (customer) => customer.subArea == subAreaId
+        (customer) => customer.subArea === subAreaId
       );
     }
 
     if (status) {
       tempCustomers = tempCustomers.filter(
-        (customer) => customer.status == status
+        (customer) => customer.status === status
       );
     }
 
     if (paymentStatus) {
       tempCustomers = tempCustomers.filter(
-        (customer) => customer.paymentStatus == paymentStatus
+        (customer) => customer.paymentStatus === paymentStatus
       );
     }
 
@@ -247,7 +247,7 @@ export default function Customer() {
                   </div>
                 </div>
               </li>
-              {permission?.billPosting || role === "ispOwner" ? (
+              {role === "reseller" || role === "collector" ? (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#collectCustomerBillModal"

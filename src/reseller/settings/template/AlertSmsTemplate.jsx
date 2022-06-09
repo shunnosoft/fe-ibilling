@@ -14,8 +14,9 @@ function AlertSmsTemplate() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
   const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
+    (state) => state.persistedReducer.auth.ispOwnerData?.settings
   );
+  console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -40,7 +41,7 @@ function AlertSmsTemplate() {
         smsTemplet.splice(index, 1);
       }
     } else {
-      if ((upperText + "\n" + bottomText).length + item.length > 334) {
+      if (totalText.length + item.length > 334) {
         toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
         return;
       } else {
@@ -118,7 +119,7 @@ function AlertSmsTemplate() {
         `/ispOwner/settings/sms/${ispOwnerId}`,
         data
       );
-
+      // console.log(res.data);
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
       toast.success("এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে");
@@ -174,9 +175,8 @@ function AlertSmsTemplate() {
     let temp = temp2.split("\n");
     temp.splice(-2);
     setAlertNum(temp2.split("\n").splice(-1)[0]);
-    if (!e.target.value) {
-      setTemplet(temp);
-    }
+
+    setTemplet(temp);
 
     let messageBoxStr = e.target.value
       ?.replace("USER: USERNAME", "")
@@ -184,18 +184,18 @@ function AlertSmsTemplate() {
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
-    let temp4 = messageBoxStr.split("\n");
-    temp4.splice(-1);
 
-    let temp5 = "";
-    temp4.map((i) => {
-      if (i !== "") {
-        temp5 = temp5 + i + "\n";
-      }
-      return temp5;
-    });
+    setBottomText(
+      messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
+    );
 
-    setBottomText(temp5);
+    // fixedvalues.map((i) => {
+    //   if (e.target.value.includes(i)) {
+    //     found.push(i);
+    //   }
+    //   return found;
+    // });
+    // setMatchFound(found);
 
     var theText = "";
     temp.map((i) => {

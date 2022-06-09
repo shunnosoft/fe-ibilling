@@ -16,7 +16,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 // internal imports
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -25,7 +25,12 @@ import SubAreaPost from "./subAreaModals/SubAreaPost";
 // import { fetchArea, getArea } from "../../features/areaSlice";
 // import { deleteSubArea, editSubArea } from "../../features/subAreaSlice";
 import { FtextField } from "../../components/common/FtextField";
-import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
+import {
+  deleteSubArea,
+  getArea,
+  editSubArea,
+  getCustomer,
+} from "../../features/apiCalls";
 import ActionButton from "../area/ActionButton";
 import Table from "../../components/table/Table";
 
@@ -41,6 +46,9 @@ export default function SubArea() {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const cus = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
   let serial = 0;
 
   const linemanValidator = Yup.object({
@@ -97,13 +105,26 @@ export default function SubArea() {
 
   // delete sub area
   const deleteSingleSubAarea = (id, ispOwner) => {
-    setIsLoading(true);
-    const IDs = {
-      ispOwnerId: ispOwnerId,
-      subAreaId: id,
-      areaId,
-    };
-    deleteSubArea(dispatch, IDs, setIsLoading);
+    let isCustomer = false;
+    cus.map((customer) => {
+      if (customer.subArea === id) {
+        isCustomer = true;
+      }
+    });
+    if (isCustomer) {
+      toast.warn("এই সাব-এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না");
+    } else {
+      let con = window.confirm("আপনি কি সাব-এরিয়া ডিলিট করতে চান?");
+      if (con) {
+        setIsLoading(true);
+        const IDs = {
+          ispOwnerId: ispOwnerId,
+          subAreaId: id,
+          areaId,
+        };
+        deleteSubArea(dispatch, IDs, setIsLoading);
+      }
+    }
   };
   //create column of table
   const columns = React.useMemo(

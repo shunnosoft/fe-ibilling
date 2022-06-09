@@ -3,13 +3,13 @@ import jwt_decode from "jwt-decode";
 import { userLogout } from "../features/actions/authAsyncAction";
 
 // PRODUCTION
-const BASE_URL = "https://netfeebd.net/api/v1/";
+// const BASE_URL = "https://netfeebd.net/api/v1/";
 
 // DEVELOPMENT
 // const BASE_URL = "http://137.184.69.182/api/v1/";
 
 // LOCAL vai
-// const BASE_URL = "http://192.168.1.26:3030/api/v1/";
+const BASE_URL = "http://192.168.1.26:3030/api/v1/";
 
 // const BASE_URL = "http://localhost:3030/api/v1/";
 
@@ -76,20 +76,20 @@ apiLink.interceptors.request.use(
   }
 );
 
-apiLink.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (err) {
-    // console.log(err?.response);
-    // console.log(err.response?.status);
-    // userLogout();
-    if (err.response?.status === 401) {
-      userLogout();
-    }
+// apiLink.interceptors.response.use(
+//   function (response) {
+//     return response;
+//   },
+//   function (err) {
+//     // console.log(err?.response);
+//     // console.log(err.response?.status);
+//     // userLogout();
+//     if (err.response?.status === 401) {
+//       userLogout();
+//     }
 
-    return Promise.reject(err);
-  }
-);
+//     return Promise.reject(err);
+//   }
+// );
 
 export default apiLink;

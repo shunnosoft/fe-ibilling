@@ -1,44 +1,377 @@
-import { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import moment from "moment";
 
 // internal import
-import "./message.css";
+import { useCallback } from "react";
+import { ArrowClockwise } from "react-bootstrap-icons";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
-import useDash from "../../assets/css/dash.module.css";
-import SmsParchase from "./smsParchaseModal";
 
-export default function Message() {
+import Footer from "../../components/admin/footer/Footer";
+import SmsParchase from "./smsParchaseModal";
+import Loader from "../../components/common/Loader";
+
+import "./message.css";
+import useDash from "../../assets/css/dash.module.css";
+
+import apiLink from "../../api/apiLink";
+import { isBangla, smsCount } from "../../components/common/UtilityMethods";
+
+const useForceUpdate = () => {
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue((value) => value + 1); // update the state to force render
+};
+
+const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
+  if (subAreaIds.includes(customer.subArea)) {
+    let msg = template
+      // .replace("USERNAME", customer?.pppoe?.name)
+      .replace("CUSTOMER_NAME", customer?.name)
+      .replace("CUSTOMER_ID", customer?.customerId)
+      .replace(
+        "BILL_DATE",
+        moment(customer?.billingCycle).format("DD-MM-YYYY hh:mm A")
+      )
+      .replace("AMOUNT", customer?.monthlyFee);
+
+    if (customer.userType === "pppoe") {
+      msg = msg.replace("USERNAME", customer?.pppoe?.name);
+    } else if (customer.userType === "firewall-queue") {
+      msg = msg.replace("USERNAME", customer?.queue?.address);
+    } else if (customer.userType === "simple-queue") {
+      let temp = customer.queue.target
+        ? customer.queue.target.split("/")[0]
+        : "";
+      msg = msg.replace("USERNAME", temp);
+    }
+
+    return {
+      app: "netfee",
+      type: "bulk",
+      senderId: ispOwnerId,
+      message: msg,
+      mobile: customer?.mobile,
+      count: smsCount(msg),
+    };
+  }
+  return null;
+};
+
+export default function RMessage() {
+  const reset = useForceUpdate();
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  const [sms, setSms] = useState("");
   const [isChecked, setisChecked] = useState(false);
-  const area = useSelector((state) => state.persistedReducer.area.area);
-  // const [areaIds, setAreaIds] = useState([]);
+  const [isAllChecked, setisAllChecked] = useState(false);
   const [status, setStatus] = useState("");
   const [payment, setPayment] = useState("");
+  const [smsTemplet, setTemplet] = useState([]);
 
-  const handleMessageCheckBox = (e) => {
-    setisChecked(e.target.checked);
+  const [bottomText, setBottomText] = useState("");
+  const [upperText, setUpperText] = useState("");
+  // const [totalText, setTotalText] = useState("");
+  // console.log(upperText + "\n" + bottomText);
+
+  const [isRefrsh, setIsrefresh] = useState(false);
+  const area = useSelector((state) => state.persistedReducer.area.area);
+  const [areaIds, setAreaIds] = useState([]);
+  const [subAreaIds, setSubAreaIds] = useState([]);
+
+  const [days, setDays] = useState([]);
+  const [smsReceiverType, setsmsReceiverType] = useState("");
+
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  const dispatch = useDispatch();
+  const mobileNumRef = useRef();
+  const smsRef = useRef();
+
+  const getIspownerwitSMS = useCallback(async () => {
+    setIsrefresh(true);
+    try {
+      const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+      setSms(res.data.smsBalance);
+      setIsrefresh(false);
+    } catch (error) {
+      console.log(error.response?.data.message);
+      setIsrefresh(false);
+    }
+  }, [ispOwnerId]);
+
+  useEffect(() => {
+    if (userRole === "ispOwner" || userRole === "manager") {
+      getIspownerwitSMS();
+    }
+  }, [userRole, getIspownerwitSMS]);
+
+  //get all subArea ids
+
+  const getSubAreaIds = () => {
+    const subAreaAllId = area.map((item) => {
+      return item.subAreas?.map((sub) => sub.id);
+    });
+    return subAreaAllId.flat(Infinity);
   };
-  const handleStatusSelect = (e) => {
-    setStatus(e);
+
+  // day checkbox select
+  const daySettingHandler = (e) => {
+    let item = Number(e);
+    if (days.includes(item)) {
+      const index = days.indexOf(item);
+      if (index > -1) {
+        days.splice(index, 1);
+      }
+    } else {
+      days.push(item);
+    }
+
+    setDays(days);
   };
-  const handlePaymentSelect = (e) => {
-    setPayment(e);
+
+  // const customers = useSelector(
+  //   (state) => state.persistedReducer.customer.customer
+  // );
+
+  // const [loading, setIsLoading] = useState(false);
+
+  const handleSendMessage = async () => {
+    console.log(smsReceiverType);
+    let messageTemplate = upperText + "\n" + bottomText;
+    const now = moment();
+    try {
+      const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+      const res = await apiLink.get(`/ispOwner/all-customer/${ispOwnerId}`);
+
+      let items = [],
+        totalSmsCount = 0;
+      const filterCustomerBySelectedArea = (customer) => {
+        if (subAreaIds.includes(customer.subArea)) {
+          return customer;
+        }
+      };
+
+      res.data.map((customer) => {
+        let dueDate = moment(customer.billingCycle);
+        // send sms to unpaid customers by billing cycle ending date
+        if (
+          smsReceiverType === "unpaidCustomerByDate" &&
+          customer.mobile &&
+          customer.paymentStatus === "unpaid" &&
+          days.includes(dueDate.diff(now, "days"))
+        ) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
+
+        // send sms to all customer
+        if (smsReceiverType === "allCustomer" && customer.mobile) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
+
+        // send sms to unpaid customer
+        if (
+          smsReceiverType === "unpaid" &&
+          customer.mobile &&
+          customer.paymentStatus === "unpaid"
+        ) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
+
+        // send sms to paid customer
+        if (
+          smsReceiverType === "paid" &&
+          customer.mobile &&
+          customer.paymentStatus === "paid"
+        ) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
+
+        // send sms to active customer
+        if (
+          smsReceiverType === "active" &&
+          customer.mobile &&
+          customer.status === "active"
+        ) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
+
+        // send sms to inactive customer
+        if (
+          smsReceiverType === "inactive" &&
+          customer.mobile &&
+          customer.status === "inactive"
+        ) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
+
+        // send sms to expired customer
+        if (
+          smsReceiverType === "expired" &&
+          customer.mobile &&
+          customer.status === "expired"
+        ) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
+      });
+
+      if (items.length === 0) {
+        alert(`কোন গ্রাহক পাওয়া যায়নি।`);
+        return;
+      }
+
+      alert(`স্যাম্পল SMS:\n${items[0]?.message}`);
+      if (owner.data.smsBalance >= totalSmsCount) {
+        let con = window.confirm(
+          `${items.length} জন গ্রাহক মেসেজ পাবে। ${totalSmsCount} টি SMS খরচ হবে।`
+        );
+        if (con && items.length) {
+          // post
+          const res = await apiLink.post(`sms/bulk/${ispOwnerId}`, {
+            items,
+            totalSmsCount,
+          });
+
+          if (res.data.status) {
+            setSubAreaIds([]);
+            setDays([]);
+            smsRef.current.value = "";
+            toast.success("সফলভাবে SMS পাঠানো হয়েছে।");
+            window.location.reload();
+          }
+        }
+      } else {
+        toast.error(
+          "দুঃখিত, আপনার পর্যাপ্ত SMS ব্যাল্যান্স নেই। দয়া করে SMS রিচার্জ করুন।"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const setAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
+  const handleSMSreceiver = (e) => {
+    // console.log(e.target.value);
+    setsmsReceiverType(e.target.value);
+  };
+  const itemSettingHandler = (item) => {
+    if (smsTemplet.includes(item)) {
+      const index = smsTemplet.indexOf(item);
+      if (index > -1) {
+        smsTemplet.splice(index, 1);
+      }
+    } else {
+      if ((upperText + "\n" + bottomText).length + item.length > 480) {
+        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        return;
+      } else {
+        smsTemplet.push(item);
       }
     }
-    // setAreaIds(IDS_temp);
+
+    var theText = "";
+    smsTemplet.map((i) => {
+      return (theText = theText + "\n" + i);
+    });
+
+    setUpperText(theText);
+
+    setTemplet(smsTemplet);
   };
 
-  // WE GOT ALL AREA_IDS ON -> areaIds;
+  const setSubAreaHandler = (e) => {
+    const subIds = getSubAreaIds();
+    const { value, checked } = e.target;
+    if (checked) {
+      const newArr = subAreaIds.push(value);
+      setAreaIds(newArr);
+      // console.log({ subIds, newArr });
+      if (subIds.length === newArr) {
+        setisAllChecked(true);
+      }
+    } else {
+      const updatedData = subAreaIds.filter((id) => id !== value);
+      setSubAreaIds(updatedData);
+      setisAllChecked(false);
+    }
+  };
 
+  const selectAllHandler = (e) => {
+    if (e.target.checked) {
+      const newArray = getSubAreaIds();
+      setSubAreaIds(newArray);
+      setisAllChecked(true);
+    } else {
+      setSubAreaIds([]);
+      setisAllChecked(false);
+    }
+  };
+  console.log(subAreaIds);
   return (
     <>
       <SmsParchase></SmsParchase>
@@ -56,62 +389,34 @@ export default function Message() {
                 <div className="collectorWrapper">
                   <div className="profileWrapper uiChange">
                     <div className="smsbal">
-                      <div>
-                        এসএমএস ব্যালান্সঃ <strong>{2000}</strong>{" "}
+                      <div className="refreshDiv">
+                        <div className="balancetext">
+                          এসএমএস ব্যালান্সঃ
+                          <strong className="mainsmsbalance">{sms}</strong>
+                        </div>
+                        <div title="রিফ্রেশ করুন" className="refreshIcon">
+                          {isRefrsh ? (
+                            <Loader></Loader>
+                          ) : (
+                            <ArrowClockwise
+                              onClick={() => getIspownerwitSMS()}
+                            ></ArrowClockwise>
+                          )}
+                        </div>
                       </div>
 
-                      <button
-                        data-bs-toggle="modal"
-                        data-bs-target="#smsparchase"
-                        className="buysms"
-                      >
-                        এসএমএস কিনুন
-                      </button>
+                      {userRole === "ispOwner" && (
+                        <button
+                          data-bs-toggle="modal"
+                          data-bs-target="#smsparchase"
+                          className="buysms"
+                        >
+                          এসএমএস কিনুন
+                        </button>
+                      )}
                     </div>
 
-                    <div className="messageGuide">
-                      <h4>যেভাবে আপনি গ্রাহকদের মোবাইলে মেসেজ দিবেনঃ</h4>
-                      <p>
-                        ১। যে গ্রাহকদের মেসেজ দিতে চান ড্রপডাউন মেনু থেকে
-                        সিলেক্ট করুন।
-                      </p>
-                      <p>
-                        ২। মেসেজ বক্সে আপনার মেসেজ লিখুন এবং মেসেজের শেষে অবশ্যই
-                        আপনার <b> প্রতিষ্ঠানের নাম</b> লিখুন অথবা{" "}
-                        <b>সিগনেচার</b> যুক্ত করে দিন (নিচের মেসেজ বক্সে যেভাবে
-                        আছে)
-                      </p>
-                      <p>
-                        ৩। এবার <b> সেন্ড মেসেজ</b> বাটনে ক্লিক করে একটু অপেক্ষা
-                        করুন।{" "}
-                      </p>
-                      <p>
-                        ৪। কিছুক্ষণের মধ্যে আপনি দেখতে পাবেন কতজন গ্রাহক মেসেজ
-                        পাবে, মেসেজ সাইজ এবং কত টাকা মেসেজের জন্য খরচ হবে।{" "}
-                      </p>
-                      <p>
-                        ৫। এখন আপনি যদি মেসেজ দিতে চান তাহলে OK বাটনে ক্লিক করে
-                        কনফার্ম করুন এবং একটু অপেক্ষা করুন।
-                      </p>
-                      <p>
-                        ৬। আপনি একটি কনফার্মেশন মেসেজ দেখতে পাবেন। এবং স্বল্প
-                        সময়ের মধ্যে আপনার সম্মানিত গ্রাহকদের মোবাইলে মেসেজ পৌঁছে
-                        যাবে।
-                      </p>
-                    </div>
                     <div className="writeMessageSection">
-                      <h4>মেসেজ লিখুন</h4>
-                      <hr />
-                      <div className="oneElementInput">
-                        <input
-                          type="checkbox"
-                          className="marginRight"
-                          onChange={handleMessageCheckBox}
-                        />
-                        <h6 className="mb-4">
-                          একটি নির্দিষ্ট মোবাইল নম্বরে মেসেজ সেন্ড
-                        </h6>
-                      </div>
                       {isChecked ? (
                         <div className="ifCheckedBox">
                           <p></p>
@@ -119,54 +424,314 @@ export default function Message() {
                             type="text"
                             placeholder="মোবাইল নম্বর"
                             className="form-control"
+                            ref={mobileNumRef}
                           />
                         </div>
                       ) : (
                         <div className="ifNotCheckBox">
-                          <div className="cusSelect">
-                            <select
-                              id="selectCustomerID1"
-                              className="form-select mb-4"
-                              onChange={(e) =>
-                                handleStatusSelect(e.target.value)
-                              }
-                            >
-                              <option value="">স্ট্যাটাস</option>
-                              <option value="active">এক্টিভ</option>
-                              <option value="inactive">ইনক্টিভ</option>
-                            </select>
-                            <select
-                              id="selectCustomerID1"
-                              className="form-select mb-4"
-                              onChange={(e) =>
-                                handlePaymentSelect(e.target.value)
-                              }
-                            >
-                              <option value="">পেমেন্ট</option>
-                              <option value="paid">পরিশোধ</option>
-                              <option value="unpaid">বকেয়া </option>
-                            </select>
-                          </div>
-                          {/* area */}
                           {/* area section*/}
-                          <b className="mt-4">এরিয়া সিলেক্ট</b>
+                          {/* <b className="mt-4">এরিয়া সিলেক্ট করুন</b> <br /> */}
+                          <div style={{ width: "200px", height: "30px" }}>
+                            <input
+                              style={{ cursor: "pointer" }}
+                              type="checkbox"
+                              className="getValueUsingClass"
+                              value={"selectAll"}
+                              onClick={selectAllHandler}
+                              id={"selectAll"}
+                              checked={isAllChecked}
+                            />
+                            <label
+                              style={{
+                                cursor: "pointer",
+                                marginLeft: "5px",
+                              }}
+                              htmlFor={"selectAll"}
+                              className="areaParent"
+                            >
+                              {"সকল এরিয়া"}
+                            </label>
+                          </div>
                           <div className="AllAreaClass mb-4">
-                            {area?.map((val, key) => (
-                              <div key={key}>
-                                <h6 className="areaParent">{val.name}</h6>
-                                {val.subAreas.map((v, k) => (
-                                  <div key={k} className="displayFlex">
+                            {area.map((v, k) => (
+                              <div key={k} className="displayFlex">
+                                <input
+                                  style={{ cursor: "pointer" }}
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={v.id}
+                                  onChange={setSubAreaHandler}
+                                  id={v.id}
+                                  checked={subAreaIds.includes(v.id)}
+                                />
+                                <label
+                                  style={{ cursor: "pointer" }}
+                                  htmlFor={v.id}
+                                >
+                                  {v.name}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <div className="radio-buttons">
+                              <div>
+                                <input
+                                  id="bilDateEnd"
+                                  value="unpaidCustomerByDate"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="bilDateEnd"
+                                >
+                                  বিল ডেট শেষ হতে বাকিঃ
+                                </label>
+                                {smsReceiverType === "unpaidCustomerByDate" ? (
+                                  <div style={{}} className="displayFlex">
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
-                                      value={v.id}
-                                      onChange={setAreaHandler}
+                                      value={"1"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
                                     />
-                                    <label>{v.name}</label>
+                                    <label className="mx-3">{"এক দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"2"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"দুই দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"3"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"তিন দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"5"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"পাঁচ দিন"}</label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"7"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">{"সাত দিন"}</label>
                                   </div>
-                                ))}
+                                ) : (
+                                  ""
+                                )}
                               </div>
-                            ))}
+                              <div>
+                                <input
+                                  id="allCustomer"
+                                  value="allCustomer"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="allCustomer"
+                                >
+                                  সকল গ্রাহক
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="paid"
+                                  value="paid"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="paid"
+                                >
+                                  পেইড
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="unpaid"
+                                  value="unpaid"
+                                  name="platform"
+                                  className="form-check-input"
+                                  type="radio"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="unpaid"
+                                >
+                                  আনপেইড
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="activee"
+                                  value="active"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="activee"
+                                >
+                                  এক্টিভ
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="inactive"
+                                  value="inactive"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="inactive"
+                                >
+                                  ইন-একটিভ
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  id="expire"
+                                  value="expired"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="expire"
+                                >
+                                  এক্সপায়ার্ড
+                                </label>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="radioselect">
+                                <input
+                                  id="1"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  value={"USER: USERNAME"}
+                                  checked={smsTemplet.includes(
+                                    "USER: USERNAME"
+                                  )}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="1">
+                                  {"USER: USERNAME"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="2"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "ID: CUSTOMER_ID"
+                                  )}
+                                  value={"ID: CUSTOMER_ID"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="2">
+                                  {"ID: CUSTOMER_ID"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="3"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "NAME: CUSTOMER_NAME"
+                                  )}
+                                  value={"NAME: CUSTOMER_NAME"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="3">
+                                  {"NAME: CUSTOMER_NAME"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="4"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "BILL: AMOUNT Tk"
+                                  )}
+                                  value={"BILL: AMOUNT Tk"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="4">
+                                  {"BILL: AMOUNT Tk"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="5"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "LAST DATE: BILL_DATE"
+                                  )}
+                                  value={"LAST DATE: BILL_DATE"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="5">
+                                  {"LAST DATE: BILL_DATE"}
+                                </label>
+                              </div>
+                            </div>
                           </div>
                           {/* area */}
                           {/* <select
@@ -180,14 +745,49 @@ export default function Message() {
                         </div>
                       )}
 
+                      <br />
+                      {/* <p>
+                        ID: ID
+                        <br />
+                        গ্রাহকঃ NAME
+                        <br />
+                        বিলঃ AMOUNT Tk
+                        <br />
+                        তারিখঃ DATE
+                        <br />
+                      </p> */}
+                      <div className="showthesequence">
+                        {smsTemplet.map((item, key) => {
+                          return <p key={key}>{item}</p>;
+                        })}
+
+                        <p className="endingtext">{bottomText}</p>
+                      </div>
+                      <div className="smsCount">
+                        <span className="smsLength">
+                          অক্ষরঃ {(smsTemplet + bottomText).length}
+                        </span>
+                        <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
+                      </div>
                       <textarea
                         id="messageTextArea"
                         rows="6"
                         className="form-control mt-4"
                         placeholder="মেসেজ লিখুন..."
-                      ></textarea>
+                        value={bottomText}
+                        // onClick={insertMyText}
+                        maxLength={335 - upperText.length}
+                        onChange={(e) => setBottomText(e.target.value)}
+                      >
+                        {" "}
+                      </textarea>
                       <hr />
-                      <button className="btn btn-success">সেন্ড মেসেজ</button>
+                      <button
+                        onClick={handleSendMessage}
+                        className="btn btn-success"
+                      >
+                        সেন্ড মেসেজ
+                      </button>
                     </div>
                   </div>
                 </div>

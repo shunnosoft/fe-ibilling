@@ -650,7 +650,9 @@ export default function Sidebar() {
                       <span className="sidebarLinksName">মেসেজ</span>
                     </Accordion.Header>
                     <Accordion.Body>
-                      {userRole === "ispOwner" || userRole === "manager" ? (
+                      {userRole === "ispOwner" ||
+                      userRole === "manager" ||
+                      userRole === "reseller" ? (
                         <NavLink
                           key={99}
                           to={"/message"}
@@ -717,7 +719,7 @@ export default function Sidebar() {
                           ""
                         )
                       }
-                      {userRole === "ispOwner" ? (
+                      {userRole === "ispOwner" || userRole === "reseller" ? (
                         <NavLink
                           key={337}
                           to={"/settings"}
