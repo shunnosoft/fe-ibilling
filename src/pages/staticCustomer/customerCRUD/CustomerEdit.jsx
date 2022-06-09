@@ -27,7 +27,6 @@ export default function CustomerEdit(props) {
 
   // find editable data
   const data = customer.find((item) => item.id === props.single);
-  console.log(data);
 
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId

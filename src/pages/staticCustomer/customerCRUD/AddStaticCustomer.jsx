@@ -26,6 +26,10 @@ export default function AddStaticCustomer() {
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
 
+  const userType = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
+  );
+
   // get all area
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
 
@@ -49,10 +53,11 @@ export default function AddStaticCustomer() {
   const [subArea, setSubArea] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
-  const [userType, setUserType] = useState("");
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
+  const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
   // customer validator
+  console.log(monthlyFee);
   const customerValidator = Yup.object({
     name: Yup.string().required("গ্রাহকের নাম লিখুন"),
     mobile: Yup.string()
@@ -63,10 +68,10 @@ export default function AddStaticCustomer() {
     address: Yup.string(),
     email: Yup.string().email("ইমেইল সঠিক নয়"),
     nid: Yup.string(),
-    monthlyFee: Yup.number()
-      .integer()
-      .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-      .required("প্যাকেজ রেট দিন"),
+    // monthlyFee: Yup.number()
+    //   .integer()
+    //   .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
+    //   .required("প্যাকেজ রেট দিন"),
   });
 
   const selectMikrotik = (e) => {
@@ -99,7 +104,10 @@ export default function AddStaticCustomer() {
   const setPackageLimit = (value, isDown) => {
     setMikrotikPackage(value);
     const temp = ppPackage.find((val) => val.id === value);
-    if (isDown) setPackageRate(temp);
+    if (isDown) {
+      setPackageRate(temp);
+      setMonthlyFee(temp.rate);
+    }
     if (value === "unlimited") return "0";
     const getLetter = temp.name.toLowerCase();
     if (getLetter.indexOf("m") !== -1) {
@@ -121,6 +129,7 @@ export default function AddStaticCustomer() {
         setMikrotikPackage(target.value);
         const temp = ppPackage.find((val) => val.id === target.value);
         setPackageRate(temp);
+        setMonthlyFee(temp.rate);
       }
 
       if (target.name === "upPackage") {
@@ -220,7 +229,6 @@ export default function AddStaticCustomer() {
                   address: "",
                   email: "",
                   nid: "",
-                  monthlyFee: packageRate?.rate || 0,
                   balance: "",
                   ipAddress: "",
                   queueName: "",
@@ -230,7 +238,6 @@ export default function AddStaticCustomer() {
                 onSubmit={(values, { resetForm }) => {
                   customerHandler(values, resetForm);
                 }}
-                // enableReinitialize
               >
                 {(formik) => (
                   <Form>
@@ -294,21 +301,6 @@ export default function AddStaticCustomer() {
                       </div>
                     </div>
                     <div className="row mt-4">
-                      {singleMikrotik && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <p>কাস্টমার টাইপ</p>
-                          <select
-                            className="form-select mw-100"
-                            aria-label="Default select example"
-                            onChange={(e) => setUserType(e.target.value)}
-                          >
-                            <option value="">...</option>
-                            <option value="firewall-queue">Firewall</option>
-                            <option value="simple-queue">Simple queue</option>
-                          </select>
-                        </div>
-                      )}
-
                       {userType === "simple-queue" && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
@@ -328,16 +320,17 @@ export default function AddStaticCustomer() {
                           />
                         )}
                         {userType === "firewall-queue" && (
-                          <FtextField
-                            type="text"
-                            label="আইপি এড্রেস"
-                            name="ipAddress"
-                          />
+                          <>
+                            <FtextField
+                              type="text"
+                              label="আইপি এড্রেস"
+                              name="ipAddress"
+                            />
+                          </>
                         )}
                       </div>
-
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {userType === "firewall-queue" && (
+                      {userType === "firewall-queue" && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
                           <>
                             <p className="comstomerFieldsTitle">
                               প্যাকেজ সিলেক্ট করুন
@@ -360,11 +353,12 @@ export default function AddStaticCustomer() {
                                 )}
                             </select>
                           </>
-                        )}
-                      </div>
-                      <div className="row mt-3">
+                        </div>
+                      )}
+
+                      <div className="col-lg-4 col-md-4 col-xs-6">
                         {userType === "simple-queue" && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
+                          <>
                             <p className="comstomerFieldsTitle">
                               আপলোড প্যাকেজ
                             </p>
@@ -385,8 +379,10 @@ export default function AddStaticCustomer() {
                                     )
                                 )}
                             </select>
-                          </div>
+                          </>
                         )}
+                      </div>
+                      <div className="row mt-3">
                         {userType === "simple-queue" && (
                           <div className="col-lg-4 col-md-4 col-xs-6">
                             <p className="comstomerFieldsTitle">
@@ -417,6 +413,8 @@ export default function AddStaticCustomer() {
                             label="মাসিক ফি"
                             name="monthlyFee"
                             min={0}
+                            value={monthlyFee}
+                            onChange={(e) => setMonthlyFee(e.target.value)}
                           />
                         </div>
                         {!bpSettings?.hasMikrotik && (
@@ -435,11 +433,11 @@ export default function AddStaticCustomer() {
                             name="nid"
                           />
                         </div>
+                      </div>
+                      <div className="row mt-3">
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField type="text" label="নাম" name="name" />
                         </div>
-                      </div>
-                      <div className="row mt-3">
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
