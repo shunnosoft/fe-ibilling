@@ -7,7 +7,7 @@ import { GeoAlt, ArrowRightShort, PlusLg } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
 // internal imports
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -16,12 +16,18 @@ import ResellerPost from "./areaModals/AreaPost";
 // import { fetchArea } from "../../features/areaSlice";
 import AreaEdit from "./areaModals/AreaEdit";
 // import TdLoader from "../../components/common/TdLoader";
-import { deleteArea, getArea } from "../../features/apiCalls";
+import { deleteArea, getArea, getCustomer } from "../../features/apiCalls";
 import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
 
 export default function Area() {
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
+  const [loading, setIsloading] = useState(false);
+  const dispatch = useDispatch();
+  const cus = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
+  console.log(cus);
   // const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [EditAarea, setEditAarea] = useState("");
@@ -32,22 +38,41 @@ export default function Area() {
   //   }
   // };
 
-  const dispatch = useDispatch();
   // const user = useSelector(state => state.auth.currentUser);
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   useEffect(() => {
     getArea(dispatch, ispOwnerId);
+    getCustomer(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
 
   const deleteSingleArea = async (id, ispOwner) => {
-    setIsLoading(true);
-    const IDs = {
-      ispOwner: ispOwner,
-      id: id,
-    };
-    deleteArea(dispatch, IDs, setIsLoading);
+    let singleArea = area.find((a) => a.id === id);
+    let isCustomer = false;
+    const subAreas = singleArea?.subAreas;
+    console.log(subAreas);
+    subAreas.map((sub) => {
+      cus.map((cus) => {
+        if (cus.subArea === sub.id) {
+          isCustomer = true;
+        }
+      });
+    });
+    if (isCustomer) {
+      toast.warn("এই এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না");
+    } else {
+      let con = window.confirm("আপনি কি এরিয়া ডিলিট করতে চান?");
+      if (con) {
+        console.log(singleArea);
+        setIsLoading(true);
+        const IDs = {
+          ispOwner: ispOwner,
+          id: id,
+        };
+        deleteArea(dispatch, IDs, setIsLoading);
+      }
+    }
   };
 
   const getSpecificArea = (id) => {
