@@ -27,7 +27,6 @@ export default function Area() {
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
   );
-  console.log(cus);
   // const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [EditAarea, setEditAarea] = useState("");
@@ -51,7 +50,6 @@ export default function Area() {
     let singleArea = area.find((a) => a.id === id);
     let isCustomer = false;
     const subAreas = singleArea?.subAreas;
-    console.log(subAreas);
     subAreas.map((sub) => {
       cus.map((cus) => {
         if (cus.subArea === sub.id) {
@@ -64,7 +62,6 @@ export default function Area() {
     } else {
       let con = window.confirm("আপনি কি এরিয়া ডিলিট করতে চান?");
       if (con) {
-        console.log(singleArea);
         setIsLoading(true);
         const IDs = {
           ispOwner: ispOwner,
