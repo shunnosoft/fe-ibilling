@@ -11,7 +11,7 @@ export default function CustomerDetails({ single }) {
   );
 
   const data = customer.find((item) => item.id === single);
-  console.log(data);
+
   return (
     <div>
       <div

@@ -145,6 +145,7 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
 };
 
 export const editCustomer = async (dispatch, data, setIsloading) => {
+  console.log(data);
   setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
   try {
@@ -152,6 +153,7 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
       `/reseller/customer/${reseller}/${singleCustomerID}`,
       sendingData
     );
+    console.log(res.data);
     dispatch(editCustomerSuccess(res.data));
     setIsloading(false);
     toast.success("কাস্টমার এডিট সফল হয়েছে!");
@@ -210,6 +212,7 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 //Bill
 
 export const billCollect = async (dispatch, billData, setLoading) => {
+  console.log(billData);
   setLoading(true);
   try {
     const res = await apiLink.post("/reseller/monthlyBill", billData);

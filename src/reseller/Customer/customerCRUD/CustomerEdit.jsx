@@ -12,6 +12,7 @@ import { editCustomer } from "../../../features/apiCallReseller";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
+import { toast } from "react-toastify";
 export default function CustomerEdit({ single }) {
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -42,6 +43,7 @@ export default function CustomerEdit({ single }) {
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
+
   useEffect(() => {
     setAreaID(data?.subArea);
     setStatus(data?.status);
@@ -111,7 +113,6 @@ export default function CustomerEdit({ single }) {
   };
   // sending data to backed
   const customerHandler = async (formValue) => {
-    console.log(formValue);
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
     const mainData = {
       // customerId: "randon123",
@@ -136,9 +137,9 @@ export default function CustomerEdit({ single }) {
         disabled: activeStatus,
       },
       ...rest,
+
       status,
     };
-    console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
 
@@ -316,9 +317,10 @@ export default function CustomerEdit({ single }) {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
-                          onChange={() => setActiveStatus(false)}
-                          defaultChecked={!activeStatus}
+                          name="staus"
+                          value={"active"}
+                          onChange={(e) => setStatus(e.target.value)}
+                          checked={status === "active"}
                         />
                         <label
                           className="form-check-label"
@@ -331,10 +333,10 @@ export default function CustomerEdit({ single }) {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
                           id="inlineRadio2"
-                          onChange={() => setActiveStatus(true)}
-                          defaultChecked={activeStatus}
+                          value={"inactive"}
+                          onChange={(e) => setStatus(e.target.value)}
+                          checked={status === "inactive"}
                         />
                         <label
                           className="form-check-label"
@@ -343,6 +345,23 @@ export default function CustomerEdit({ single }) {
                           ইন-এক্টিভ
                         </label>
                       </div>
+                      {data?.status === "expired" && (
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            id="inlineRadio2"
+                            disabled
+                            checked={status === "expired"}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio2"
+                          >
+                            এক্সপায়ার্ড
+                          </label>
+                        </div>
+                      )}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

@@ -469,8 +469,8 @@ export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
 };
 
 export const editCustomer = async (dispatch, data, setIsloading) => {
-  // console.log("Edit Data: ", data);
   const { singleCustomerID, ispOwner, ...sendingData } = data;
+
   try {
     const res = await apiLink.patch(
       `/ispOwner/customer/${ispOwner}/${singleCustomerID}`,

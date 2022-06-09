@@ -138,8 +138,6 @@ export default function CustomerModal() {
 
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
 
-  console.log({ reseller, ppPackage, Getmikrotik });
-
   return (
     <div>
       <div

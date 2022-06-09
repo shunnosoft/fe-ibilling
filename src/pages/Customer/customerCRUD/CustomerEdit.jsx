@@ -186,6 +186,13 @@ export default function CustomerEdit(props) {
       ...rest,
       status,
     };
+    if (
+      mainData.balance === "" ||
+      mainData.balance === undefined ||
+      mainData === null
+    ) {
+      delete mainData.balance;
+    }
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
