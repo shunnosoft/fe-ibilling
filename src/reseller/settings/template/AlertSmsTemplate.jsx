@@ -13,10 +13,12 @@ function AlertSmsTemplate() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData?.settings
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller.id
   );
-  console.log(settings);
+  const settings = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller?.settings
+  );
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -116,7 +118,7 @@ function AlertSmsTemplate() {
 
     try {
       const res = await apiLink.patch(
-        `/ispOwner/settings/sms/${ispOwnerId}`,
+        `/reseller/settings/sms/${resellerId}`,
         data
       );
       // console.log(res.data);

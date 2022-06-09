@@ -13,8 +13,11 @@ function CreateCustomerSmsTemplate() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller.id
+  );
   const settings = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData?.settings
+    (state) => state.persistedReducer.auth.currentUser.reseller?.settings
   );
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
@@ -81,7 +84,7 @@ function CreateCustomerSmsTemplate() {
     setLoading(true);
     try {
       const res = await apiLink.patch(
-        `/ispOwner/settings/sms/${ispOwnerId}`,
+        `/reseller/settings/sms/${resellerId}`,
         data
       );
       dispatch(smsSettingUpdateIsp(res.data));
@@ -131,7 +134,7 @@ function CreateCustomerSmsTemplate() {
     setMatchFound(found);
     // setbillconparametres(found);
 
-    if (settings.sms.billConfirmation) {
+    if (settings?.sms?.createCustomer) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");

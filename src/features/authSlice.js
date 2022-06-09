@@ -60,7 +60,7 @@ const authSlice = createSlice({
         // state.currentUser.manager = action.payload;
         // state.userData = action.payload;
       } else if (state.role === "reseller") {
-        state.ispOwnerData = action.payload;
+        state.currentUser.reseller = action.payload;
       }
     },
     updateTokenSuccess: (state, action) => {
