@@ -79,7 +79,7 @@ export default function RMessage() {
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
-
+  console.log(subAreaIds);
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
 
@@ -117,10 +117,7 @@ export default function RMessage() {
   //get all subArea ids
 
   const getSubAreaIds = () => {
-    const subAreaAllId = area.map((item) => {
-      return item.subAreas?.map((sub) => sub.id);
-    });
-    return subAreaAllId.flat(Infinity);
+    return area?.map((i) => i.id);
   };
 
   // day checkbox select
