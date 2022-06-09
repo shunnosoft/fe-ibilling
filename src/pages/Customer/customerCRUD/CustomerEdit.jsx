@@ -69,7 +69,7 @@ export default function CustomerEdit(props) {
   const [status, setStatus] = useState("");
 
   const [packageId, setPackageId] = useState("");
-
+  // console.log(moment("2022-06-08"));
   useEffect(() => {
     setPackageId(data?.mikrotikPackage);
     setUser(data);
@@ -163,6 +163,7 @@ export default function CustomerEdit(props) {
       setIsloading(false);
       return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
     }
+
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
     const mainData = {
       singleCustomerID: data?.id,
@@ -201,6 +202,19 @@ export default function CustomerEdit(props) {
       return a;
     });
   };
+
+  // const billTimeCon = (e) => {
+  //   const getTime = moment(data.billingCycle).get("millisecond");
+  //   const value = moment(e.target.value);
+  //   console.log(moment(value).milliseconds());
+  //   // console.log({ getTime, value });
+  //   // const compareTime = moment(getTime).isBefore(moment(e.target.value)._i);
+  //   // if (getTime.isAfter(value)) {
+  //   //   alert("Invalid Date");
+  //   // }
+  //   // console.log(getTime);
+  // };
+
   return (
     <div>
       <div
@@ -386,7 +400,7 @@ export default function CustomerEdit(props) {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
-                            min={moment().format("YYYY-MM-DD")}
+                            min={moment(billDate).format("YYYY-MM-DD")}
                           />
                           <input
                             className="billTime"

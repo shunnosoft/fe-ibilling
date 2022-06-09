@@ -68,13 +68,12 @@ export const editIspOwnerInvoice = async (
 };
 
 // add comment
-
 export const addComment = async (ownerId, data, setIsloading, dispatch) => {
-  // console.log(ownerId, data, setIsloading);
   try {
     setIsloading(true);
     const res = await apiLink.patch(`admin/ispOwner/comment/${ownerId}`, data);
     console.log(res.data.comments);
+    toast.success("Note Added");
     setIsloading(false);
     dispatch(updateComment({ data: res.data.comments, ownerId }));
   } catch (error) {

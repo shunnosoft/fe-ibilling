@@ -13,6 +13,7 @@ import {
   PersonFill,
   PenFill,
   ThreeDots,
+  CardChecklist,
 } from "react-bootstrap-icons";
 import { getIspOwners } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -185,7 +186,7 @@ export default function Home() {
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <PenFill />
+                      <CardChecklist />
                       <p className="actionP">Note</p>
                     </div>
                   </div>

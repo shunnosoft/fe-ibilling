@@ -16,7 +16,6 @@ const adminSlice = createSlice({
       state.updateAdminSuccess = true;
     },
     updateComment: (state, { payload }) => {
-      console.log(payload);
       const ispOwner = state.ispOwners.find(
         (item) => item.id === payload.ownerId
       );
