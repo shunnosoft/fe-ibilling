@@ -71,7 +71,7 @@ const Note = ({ ownerId }) => {
   let comments;
   if (singleData) {
     comments = singleData.comments;
-    comments = [...comments].reverse();
+    // comments = [...comments].reverse();
   }
   console.log(comments);
 
@@ -131,7 +131,9 @@ const Note = ({ ownerId }) => {
                               <b>{data.name}</b>
                             </h5>
                             <small className="ms-2">
-                              {moment(data.createdAt).format("ll")}
+                              {moment(data.createdAt).format(
+                                "DD-MMM-YYYY hh:mm:ss A"
+                              )}
                             </small>
                           </div>
                           <p>{data.comment}</p>
