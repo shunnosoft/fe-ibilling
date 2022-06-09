@@ -50,7 +50,7 @@ export default function Area() {
     let singleArea = area.find((a) => a.id === id);
     let isCustomer = false;
     const subAreas = singleArea?.subAreas;
-    subAreas.map((sub) => {
+    subAreas?.map((sub) => {
       cus.map((cus) => {
         if (cus.subArea === sub.id) {
           isCustomer = true;
