@@ -71,7 +71,7 @@ const Table = (props) => {
             ))}
           </thead>
           {isLoading ? (
-            <TdLoader colspan={columns.length} />
+            <TdLoader colSpan={columns.length} />
           ) : data.length > 0 ? (
             <tbody {...getTableBodyProps()}>
               {page.map((row) => {
@@ -92,7 +92,7 @@ const Table = (props) => {
             </tbody>
           ) : (
             <tr>
-              <td colspan={columns.length}>
+              <td colSpan={columns.length}>
                 <h5 className="text-center">কোন ডাটা পাওয়া যায় নি !</h5>
               </td>
             </tr>

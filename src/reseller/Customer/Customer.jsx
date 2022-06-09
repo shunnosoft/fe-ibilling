@@ -247,7 +247,7 @@ export default function Customer() {
                   </div>
                 </div>
               </li>
-              {permission?.billPosting || role === "ispOwner" ? (
+              {role === "reseller" || role === "collector" ? (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#collectCustomerBillModal"
