@@ -44,6 +44,7 @@ import apiLink from "../../api/apiLink";
 import { clearMikrotik } from "../../features/mikrotikSlice";
 import { useLayoutEffect } from "react";
 import Table from "../../components/table/Table";
+import CustomerSync from "./configMikrotikModals/CustomerSync";
 // import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
@@ -79,15 +80,17 @@ export default function ConfigMikrotik() {
   //   state => state.mikrotik.mikrotikSyncUser
   // );
 
-  // const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
   const [isLoadingPac, setIsLoadingPac] = useState(false);
   const [isLoadingCus, setIsLoadingCus] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
+  const [customerType, setCustomerType] = useState();
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
     "showMikrotikPackage"
   );
+  const [inActiveCustomer, setInActiveCustomer] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const [refresh2, setRefresh2] = useState(0);
   // const [syncUserRefresh, setSyncUserRefresh] = useState(0);
@@ -124,12 +127,12 @@ export default function ConfigMikrotik() {
 
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
-    if (pppoePackage.length !== undefined) {
-      const temp = pppoePackage.find((original) => {
-        return original.id === id;
-      });
-      setSinglePackage(temp);
-    }
+    // if (pppoePackage.length !== undefined) {
+    //   const temp = pppoePackage.find((original) => {
+    //     return original.id === id;
+    //   });
+    setSinglePackage(id);
+    // }
   };
 
   // delete single pppoe package
@@ -191,10 +194,10 @@ export default function ConfigMikrotik() {
     dispatch(resetMikrotikUserAndPackage());
 
     if (original === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik?.name);
+      fetchActivepppoeUser(dispatch, IDs, singleMik?.name, setIsloading);
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (original === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik?.name);
+      fetchpppoeUser(dispatch, IDs, singleMik?.name, setIsloading);
       setWhatYouWantToShow("showAllMikrotikUser");
     } else if (original === "showMikrotikPackage") {
       fetchPackagefromDatabase(dispatch, IDs, singleMik?.name);
@@ -204,27 +207,29 @@ export default function ConfigMikrotik() {
     // setWhatYouWantToShow(original);
   };
 
-  const syncCustomer = () => {
-    if (window.confirm("আপনি কি মাইক্রোটিকের গ্রাহক সিংক করতে চান?")) {
-      const IDs = {
-        ispOwner: ispOwner,
-        mikrotikId: mikrotikId,
-      };
-      fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
-    }
-  };
+  // const syncCustomer = (PPPoE) => {
+  //   console.log(PPPoE);
+  //   if (window.confirm("আপনি কি মাইক্রোটিকের গ্রাহক সিংক করতে চান?")) {
+  //     const IDs = {
+  //       ispOwner: ispOwner,
+  //       mikrotikId: mikrotikId,
+  //     };
+  //     fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
+  //   }
+  // };
 
-  const syncStaticCustomer = () => {
-    if (
-      window.confirm("আপনি কি মাইক্রোটিকের স্ট্যাটিক গ্রাহক সিংক করতে চান?")
-    ) {
-      const IDs = {
-        ispOwner: ispOwner,
-        mikrotikId: mikrotikId,
-      };
-      syncMikrotikStaticUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
-    }
-  };
+  // const syncStaticCustomer = () => {
+  //   if (
+  //     window.confirm("আপনি কি মাইক্রোটিকের স্ট্যাটিক গ্রাহক সিংক করতে চান?")
+  //   ) {
+  //     const IDs = {
+  //       ispOwner: ispOwner,
+  //       mikrotikId: mikrotikId,
+  //     };
+  //     syncMikrotikStaticUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
+  //   }
+  // };
+
   const syncPackage = () => {
     if (window.confirm("আপনি কি মাইক্রোটিকের প্যাকেজ সিংক করতে চান?")) {
       const IDs = {
@@ -413,12 +418,9 @@ export default function ConfigMikrotik() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector showMikrotikUpperSection">
-                      <div className="LeftSideMikrotik">
-                        <p>মাইক্রোটিক কনফিগারেশন</p>
-
-                        {/* Modals */}
-                        <PPPoEpackageEditModal singlePackage={singlePackage} />
+                    <div className="addNewCollector showMikrotikUpperSection mx-auto">
+                      <div className="LeftSideMikrotik justify-content-center">
+                        {/* <p>মাইক্রোটিক কনফিগারেশন</p> */}
 
                         {isChecking ? (
                           <div className="CheckingClass">
@@ -433,18 +435,18 @@ export default function ConfigMikrotik() {
                         <div className="addAndSettingIcon">
                           <button
                             title="কানেকশন চেক"
-                            className="addcutmButton  btnbyEnamul"
+                            className="btn btn-outline-primary me-2"
                             onClick={MikrotikConnectionTest}
                           >
-                            <PlugFill className="rotating" />
+                            কানেকশন চেক <PlugFill className="rotating" />
                           </button>
                           <button
                             title="মাইক্রোটিক এডিট"
                             data-bs-toggle="modal"
                             data-bs-target="#configMikrotikModal"
-                            className="btnbyEnamul addcutmButton"
+                            className="btn btn-outline-primary me-2  "
                           >
-                            <PencilFill />
+                            এডিট <PencilFill />
                           </button>
 
                           {/* <Trash2Fill
@@ -466,9 +468,9 @@ export default function ConfigMikrotik() {
                               )}
                               onClick={syncPackage}
                               title="প্যাকেজ সিংক"
-                              className="addcutmButton btnbyEnamul"
+                              className="btn btn-outline-primary me-2 "
                             >
-                              <BagCheckFill />
+                              প্যাকেজ সিংক <BagCheckFill />
                             </button>
                           )}
 
@@ -478,11 +480,16 @@ export default function ConfigMikrotik() {
                             </span>
                           ) : (
                             <button
-                              onClick={syncCustomer}
-                              title="গ্রাহক সিংক"
-                              className="addcutmButton btnbyEnamul"
+                              data-bs-toggle="modal"
+                              data-bs-target="#SyncCustomer"
+                              onClick={() => {
+                                setInActiveCustomer(false);
+                                setCustomerType("PPPoE");
+                              }}
+                              title="PPPoE গ্রাহক সিংক"
+                              className="btn btn-outline-primary me-2 "
                             >
-                              <PersonCheckFill />
+                              PPPoE গ্রাহক সিংক <PersonCheckFill />
                             </button>
                           )}
 
@@ -492,11 +499,16 @@ export default function ConfigMikrotik() {
                             </span>
                           ) : (
                             <button
-                              onClick={syncStaticCustomer}
+                              data-bs-toggle="modal"
+                              data-bs-target="#SyncCustomer"
+                              onClick={() => {
+                                setInActiveCustomer(false);
+                                setCustomerType("static");
+                              }}
                               title="স্ট্যাটিক গ্রাহক সিংক"
-                              className="addcutmButton btnbyEnamul"
+                              className="btn btn-outline-primary me-2 "
                             >
-                              <PersonLinesFill />
+                              স্ট্যাটিক গ্রাহক সিংক <PersonLinesFill />
                             </button>
                           )}
 
@@ -508,7 +520,10 @@ export default function ConfigMikrotik() {
                             ""
                           )} */}
                         </div>
-                        <div className="mikrotikDetails mt-5">
+                      </div>
+
+                      <div className="d-flex mt-3">
+                        <div className="mikrotikDetails me-5">
                           <p>
                             নামঃ <b>{singleMik?.name || "..."}</b>
                           </p>
@@ -522,24 +537,24 @@ export default function ConfigMikrotik() {
                             পোর্টঃ <b>{singleMik.port || "..."}</b>
                           </p>
                         </div>
-                      </div>
-                      <div className="rightSideMikrotik">
-                        <h4>সিলেক্ট করুন</h4>
-                        <select
-                          id="selectMikrotikOption"
-                          onChange={selectMikrotikOptionsHandler}
-                          className="form-select"
-                        >
-                          <option value="showMikrotikPackage">
-                            PPPoE প্যাকেজ
-                          </option>
-                          <option value="showAllMikrotikUser">
-                            সকল গ্রাহক
-                          </option>
-                          <option value="showActiveMikrotikUser">
-                            এক্টিভ গ্রাহক
-                          </option>
-                        </select>
+                        <div className="rightSideMikrotik ms-5">
+                          <h4>সিলেক্ট করুন</h4>
+                          <select
+                            id="selectMikrotikOption"
+                            onChange={selectMikrotikOptionsHandler}
+                            className="form-select"
+                          >
+                            <option value="showMikrotikPackage">
+                              PPPoE প্যাকেজ
+                            </option>
+                            <option value="showAllMikrotikUser">
+                              সকল গ্রাহক
+                            </option>
+                            <option value="showActiveMikrotikUser">
+                              এক্টিভ গ্রাহক
+                            </option>
+                          </select>
+                        </div>
                       </div>
                     </div>
 
@@ -594,6 +609,15 @@ export default function ConfigMikrotik() {
           </div>
         </div>
       </div>
+      {/* Modals */}
+      <PPPoEpackageEditModal singlePackage={singlePackage} />
+      <CustomerSync
+        mikrotikId={mikrotikId}
+        ispOwner={ispOwner}
+        customerType={customerType}
+        inActiveCustomer={inActiveCustomer}
+        setInActiveCustomer={setInActiveCustomer}
+      />
     </>
   );
 }

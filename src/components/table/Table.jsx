@@ -71,7 +71,7 @@ const Table = (props) => {
             ))}
           </thead>
           {isLoading ? (
-            <TdLoader colSpan={columns.length} />
+            <TdLoader colspan={columns.length} />
           ) : data.length > 0 ? (
             <tbody {...getTableBodyProps()}>
               {page.map((row) => {
