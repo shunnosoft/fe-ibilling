@@ -310,7 +310,7 @@ export default function RActiveCustomer() {
                         >
                           {mikrotik.map((m) => {
                             return (
-                              <option disabled={true} value={m.id}>
+                              <option selected={true} value={m.id}>
                                 {m.name}
                               </option>
                             );

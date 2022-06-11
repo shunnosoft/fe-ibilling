@@ -207,9 +207,15 @@ export default function Customer() {
     let tempCustomers = Customers2;
 
     if (filterOptions.area) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.area === filterOptions.area
-      );
+      if (filterOptions.area === "noArea") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.area === filterOptions.area
+        );
+      } else {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.area === filterOptions.area
+        );
+      }
     }
 
     if (filterOptions.subArea) {
@@ -271,6 +277,7 @@ export default function Customer() {
             if (!check) {
               temp.push({
                 ...customer,
+                area: "noArea",
                 profile: customer.pppoe?.profile,
               });
             }
@@ -600,7 +607,7 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>গ্রাহক</div>
+                  <div>গ্রাহক </div>
                   {permission?.customerAdd || role === "ispOwner" ? (
                     <div
                       style={{
@@ -690,6 +697,18 @@ export default function Customer() {
                           >
                             সকল এরিয়া
                           </option>
+                          {Customers2.some((c) => c.area === "noArea") && (
+                            <option
+                              value={JSON.stringify({
+                                id: "noArea",
+                                name: "",
+                                subAreas: [],
+                              })}
+                              selected={filterOptions.area === "noArea"}
+                            >
+                              এরিয়া বিহীন গ্রাহক
+                            </option>
+                          )}
                           {(role === "collector" ? allArea : allareas)?.map(
                             (area, key) => {
                               return (
