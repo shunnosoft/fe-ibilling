@@ -544,41 +544,38 @@ export const deleteStaticCustomerApi = async (
 //Mikrotik
 
 // get Mikrotik Sync user
-export const fetchMikrotikSyncUser = async (dispatch, IDs, setIsLoadingCus) => {
-  setIsLoadingCus(true);
+export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
   await apiLink({
     method: "GET",
-    url: `/mikrotik/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+    url: `/mikrotik/customer/${data.ispOwner}/${data.mikrotikId}?inActiveCustomer=${data.inActiveCustomer}`,
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
-      setIsLoadingCus(false);
+      setIsLoading(false);
+      document.querySelector("#SyncCustomer").click();
       toast.success("মাইক্রোটিক থেকে PPPoE গ্রাহক সিঙ্ক সফল হয়েছে");
     })
     .catch((error) => {
-      setIsLoadingCus(false);
+      setIsLoading(false);
       toast.error(error.response?.data.message);
     });
 };
 
 // get Mikrotik Sync user
-export const syncMikrotikStaticUser = async (
-  dispatch,
-  IDs,
-  setIsLoadingCus
-) => {
-  setIsLoadingCus(true);
+export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
   await apiLink({
     method: "GET",
-    url: `/mikrotik/sync/static/customer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+    url: `/mikrotik/sync/static/customer/${data.ispOwner}/${data.mikrotikId}?inActiveCustomer=${data.inActiveCustomer}`,
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
-      setIsLoadingCus(false);
+      setIsLoading(false);
       toast.success("মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে");
     })
     .catch((error) => {
-      setIsLoadingCus(false);
+      setIsLoading(false);
       toast.error(error.response?.data.message);
     });
 };

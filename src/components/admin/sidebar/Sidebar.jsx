@@ -296,32 +296,37 @@ export default function Sidebar() {
                       ) : (
                         ""
                       )}
-
-                      <NavLink
-                        key={60}
-                        to={"/staticCustomer"}
-                        className={(navInfo) =>
-                          navInfo.isActive ? activeClass.active : ""
-                        }
-                      >
-                        <FontColor>
-                          <li
-                            className="sidebarItems"
-                            id={
-                              window.location.pathname === "/staticCustomer"
-                                ? "active"
-                                : ""
-                            }
-                          >
-                            <div className="sidebarIcon">{<PersonVideo />}</div>
-                            <span className="sidebarLinksName">
-                              {"স্ট্যাটিক"}
-                            </span>
-                          </li>
-                        </FontColor>
-                      </NavLink>
-
-                      {bpSettings?.hasMikrotik && (
+                      {userRole === "ispOwner" || userRole === "manager" ? (
+                        <NavLink
+                          key={60}
+                          to={"/staticCustomer"}
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname === "/staticCustomer"
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">
+                                {<PersonVideo />}
+                              </div>
+                              <span className="sidebarLinksName">
+                                {"স্ট্যাটিক"}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
+                      ) : (
+                        ""
+                      )}
+                      {bpSettings?.hasMikrotik &&
+                      (userRole === "ispOwner" || userRole === "manager") ? (
                         <NavLink
                           key={61}
                           to={"/staticActiveCustomer"}
@@ -348,6 +353,8 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
+                      ) : (
+                        ""
                       )}
                     </Accordion.Body>
 
@@ -427,9 +434,8 @@ export default function Sidebar() {
                         </FontColor>
                       </NavLink>
                     </Accordion.Body>
-
-                    {/* স্টাফ */}
                   </Accordion.Item>
+                  {/* স্টাফ */}
                   <Accordion.Item eventKey="2">
                     <Accordion.Header
                       onClick={() => handleActiveAccordian("2")}
@@ -749,18 +755,15 @@ export default function Sidebar() {
                     </Accordion.Body>
                   </Accordion.Item>
                   {/* একাউন্টস */}
-
-                  <Accordion.Item eventKey="5">
-                    <Accordion.Header
-                      onClick={() => handleActiveAccordian("5")}
-                    >
-                      <div className="sidebarIcon">{<WalletFill />}</div>
-                      <span className="sidebarLinksName">একাউন্টস</span>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      {userRole === "ispOwner" ||
-                      userRole === "reseller" ||
-                      userRole === "manager" ? (
+                  {userRole === "ispOwner" || userRole === "manager" ? (
+                    <Accordion.Item eventKey="5">
+                      <Accordion.Header
+                        onClick={() => handleActiveAccordian("5")}
+                      >
+                        <div className="sidebarIcon">{<WalletFill />}</div>
+                        <span className="sidebarLinksName">একাউন্টস</span>
+                      </Accordion.Header>
+                      <Accordion.Body>
                         <NavLink
                           key={309}
                           to={"/expenditure"}
@@ -782,11 +785,7 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
-                      ) : (
-                        ""
-                      )}
 
-                      {userRole === "ispOwner" || userRole === "manager" ? (
                         <NavLink
                           key={300}
                           to={"/invoice"}
@@ -812,11 +811,11 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
-                      ) : (
-                        ""
-                      )}
-                    </Accordion.Body>
-                  </Accordion.Item>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  ) : (
+                    ""
+                  )}
                 </Accordion>
               </div>
             </ul>
