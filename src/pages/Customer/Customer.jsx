@@ -282,10 +282,10 @@ export default function Customer() {
         });
       }
     });
-    console.log("temp", temp);
-    temp.map((t) => {
-      if (t.area === "noArea") console.log(t);
-    });
+
+    // temp.map((t) => {
+    //   if (t.area === "noArea") console.log(t);
+    // });
     setCustomers(temp);
     setCustomers1(temp);
     setCustomers2(temp);
