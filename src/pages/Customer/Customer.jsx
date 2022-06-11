@@ -207,15 +207,9 @@ export default function Customer() {
     let tempCustomers = Customers2;
 
     if (filterOptions.area) {
-      if (filterOptions.area === "noArea") {
-        tempCustomers = tempCustomers.filter(
-          (customer) => customer.area === filterOptions.area
-        );
-      } else {
-        tempCustomers = tempCustomers.filter(
-          (customer) => customer.area === filterOptions.area
-        );
-      }
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.area === filterOptions.area
+      );
     }
 
     if (filterOptions.subArea) {
@@ -264,26 +258,33 @@ export default function Customer() {
   useEffect(() => {
     const temp = [];
     cus.map((customer) => {
+      let areaFound = false;
       allareas.map((area) => {
         area.subAreas.map((sub) => {
           if (customer.subArea === sub.id) {
+            areaFound = true;
+            // if (!temp.find((item) => item.id === customer.id)) {
             temp.push({
               ...customer,
               area: area.id,
               profile: customer.pppoe.profile,
             });
-          } else {
-            const check = temp.some((item) => item.id === customer.id);
-            if (!check) {
-              temp.push({
-                ...customer,
-                area: "noArea",
-                profile: customer.pppoe?.profile,
-              });
-            }
+            // }
           }
         });
       });
+
+      if (!areaFound) {
+        temp.push({
+          ...customer,
+          area: "noArea",
+          profile: customer.pppoe?.profile,
+        });
+      }
+    });
+    console.log("temp", temp);
+    temp.map((t) => {
+      if (t.area === "noArea") console.log(t);
     });
     setCustomers(temp);
     setCustomers1(temp);
