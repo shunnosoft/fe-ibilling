@@ -43,8 +43,8 @@
   width: 50px;
   height: 38px;
   padding: 9px;
-  color: #fff;
-  background: var(--primaryColor);
+  color: var(--primaryColor);
+  background: white;
   /* border: 1px solid #06bf79; */
   border-radius: 7px;
   /* box-shadow: 0px 3px 10px #1ab53d87; */
@@ -55,6 +55,7 @@
 .addcutmButton:hover {
   /* box-shadow: none; */
   background: #0ea158;
+  color: white;
 }
 .serchingIcon {
   margin-top: 10px;
