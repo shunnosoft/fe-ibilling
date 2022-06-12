@@ -775,6 +775,47 @@ export const fetchActivepppoeUser = async (
     toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
   }
 };
+export const fetchActivepppoeUserForReseller = async (
+  dispatch,
+  IDs,
+  mtkName,
+  setIsLoading
+) => {
+  dispatch(resetpppoeActiveUser());
+  dispatch(mtkIsLoading(true));
+
+  try {
+    setIsLoading(true);
+    const res = await apiLink.get(
+      `/reseller/PPPactiveCustomer/${IDs.ispOwner}/${IDs.mikrotikId}`
+    );
+
+    // const activeUsers = res.data?.activeUsers;
+    // const interfaaceList = res.data?.interfaceList;
+    // const temp = [];
+
+    // interfaaceList.forEach((i) => {
+    //   activeUsers.forEach((j) => {
+    //     if (i.name === "<pppoe-" + j.name + ">") {
+    //       temp.push({
+    //         ...i,
+    //         ...j,
+    //       });
+    //     }
+    //   });
+    // });
+
+    // console.log(temp);
+    dispatch(getpppoeActiveUserSuccess(res.data));
+    dispatch(mtkIsLoading(false));
+    setIsLoading(false);
+  } catch (error) {
+    setIsLoading(false);
+    console.log(error);
+    dispatch(mtkIsLoading(false));
+    toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
+  }
+};
 
 // get pppoe Package
 export const fetchpppoePackage = async (dispatch, IDs, mtkName) => {
