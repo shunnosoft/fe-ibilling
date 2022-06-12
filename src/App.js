@@ -282,9 +282,7 @@ function App() {
             <Route
               path="/staticActiveCustomer"
               element={
-                userRole === "ispOwner" ||
-                userRole === "manager" ||
-                (userRole === "collector" && !user.collector.reseller) ? (
+                userRole === "ispOwner" || userRole === "manager" ? (
                   <StaticActiveCustomer />
                 ) : (
                   <Navigate to={"/home"} />

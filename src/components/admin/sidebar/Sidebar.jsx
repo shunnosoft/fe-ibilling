@@ -296,7 +296,9 @@ export default function Sidebar() {
                       ) : (
                         ""
                       )}
-                      {userRole === "ispOwner" || userRole === "manager" ? (
+                      {userRole === "ispOwner" ||
+                      userRole === "manager" ||
+                      userRole === "collector" ? (
                         <NavLink
                           key={60}
                           to={"/staticCustomer"}
