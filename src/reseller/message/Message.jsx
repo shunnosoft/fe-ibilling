@@ -18,6 +18,7 @@ import useDash from "../../assets/css/dash.module.css";
 
 import apiLink from "../../api/apiLink";
 import { isBangla, smsCount } from "../../components/common/UtilityMethods";
+import { getSubAreas } from "../../features/apiCallReseller";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -78,11 +79,13 @@ export default function RMessage() {
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
-
+  console.log(subAreaIds);
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
 
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller.id
+  );
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -91,31 +94,30 @@ export default function RMessage() {
   const mobileNumRef = useRef();
   const smsRef = useRef();
 
-  const getIspownerwitSMS = useCallback(async () => {
+  const getResellerNow = useCallback(async () => {
     setIsrefresh(true);
     try {
-      const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+      const res = await apiLink.get(`/reseller/${resellerId}`);
+      console.log(res.data);
       setSms(res.data.smsBalance);
       setIsrefresh(false);
     } catch (error) {
       console.log(error.response?.data.message);
       setIsrefresh(false);
     }
-  }, [ispOwnerId]);
+  }, [resellerId]);
 
   useEffect(() => {
-    if (userRole === "ispOwner" || userRole === "manager") {
-      getIspownerwitSMS();
+    if (userRole === "reseller") {
+      getResellerNow();
+      getSubAreas(dispatch, resellerId);
     }
-  }, [userRole, getIspownerwitSMS]);
+  }, [userRole, getResellerNow, getSubAreas]);
 
   //get all subArea ids
 
   const getSubAreaIds = () => {
-    const subAreaAllId = area.map((item) => {
-      return item.subAreas?.map((sub) => sub.id);
-    });
-    return subAreaAllId.flat(Infinity);
+    return area?.map((i) => i.id);
   };
 
   // day checkbox select
@@ -144,8 +146,8 @@ export default function RMessage() {
     let messageTemplate = upperText + "\n" + bottomText;
     const now = moment();
     try {
-      const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-      const res = await apiLink.get(`/ispOwner/all-customer/${ispOwnerId}`);
+      const reseller = await apiLink.get(`/reseller/${resellerId}`);
+      const res = await apiLink.get(`/reseller/customer/${resellerId}`);
 
       let items = [],
         totalSmsCount = 0;
@@ -166,7 +168,7 @@ export default function RMessage() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            resellerId,
             customer,
             subAreaIds
           );
@@ -180,7 +182,7 @@ export default function RMessage() {
         if (smsReceiverType === "allCustomer" && customer.mobile) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            resellerId,
             customer,
             subAreaIds
           );
@@ -198,7 +200,7 @@ export default function RMessage() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            resellerId,
             customer,
             subAreaIds
           );
@@ -216,7 +218,7 @@ export default function RMessage() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            resellerId,
             customer,
             subAreaIds
           );
@@ -234,7 +236,7 @@ export default function RMessage() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            resellerId,
             customer,
             subAreaIds
           );
@@ -252,7 +254,7 @@ export default function RMessage() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            resellerId,
             customer,
             subAreaIds
           );
@@ -270,7 +272,7 @@ export default function RMessage() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            resellerId,
             customer,
             subAreaIds
           );
@@ -287,13 +289,13 @@ export default function RMessage() {
       }
 
       alert(`স্যাম্পল SMS:\n${items[0]?.message}`);
-      if (owner.data.smsBalance >= totalSmsCount) {
+      if (reseller.data.smsBalance >= totalSmsCount) {
         let con = window.confirm(
           `${items.length} জন গ্রাহক মেসেজ পাবে। ${totalSmsCount} টি SMS খরচ হবে।`
         );
         if (con && items.length) {
           // post
-          const res = await apiLink.post(`sms/bulk/${ispOwnerId}`, {
+          const res = await apiLink.post(`sms/reseller/bulk/${resellerId}`, {
             items,
             totalSmsCount,
           });
@@ -399,7 +401,7 @@ export default function RMessage() {
                             <Loader></Loader>
                           ) : (
                             <ArrowClockwise
-                              onClick={() => getIspownerwitSMS()}
+                              onClick={() => getResellerNow()}
                             ></ArrowClockwise>
                           )}
                         </div>

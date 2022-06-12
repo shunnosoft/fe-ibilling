@@ -11,7 +11,7 @@ export const getIspOwners = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(`/admin/getIspOwners`);
-    console.log(res.data);
+
     setIsLoading(false);
     dispatch(getIspOwnersSuccess(res.data));
   } catch (error) {

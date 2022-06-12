@@ -43,12 +43,20 @@ import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
 import AddStaticCustomer from "./customerCRUD/AddStaticCustomer";
+import apiLink from "../../api/apiLink";
 
 export default function Customer() {
+  const [mikrotikPac, setMikrotikPac] = useState([]);
+  const [Customers1, setCustomers1] = useState([]);
+  const [Customers2, setCustomers2] = useState([]);
+  const mikrotiks = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+  );
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
+
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
@@ -64,10 +72,17 @@ export default function Customer() {
   const permission = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
-
+  const [filterOptions, setFilterOption] = useState({
+    status: "",
+    paymentStatus: "",
+    area: "",
+    subArea: "",
+    package: "",
+    mikrotik: "",
+  });
   const [Customers, setCustomers] = useState(cus);
-  const [filterdCus, setFilter] = useState(Customers);
-  const [isFilterRunning, setRunning] = useState(false);
+  // const [filterdCus, setFilter] = useState(Customers);
+  // const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const [singleData, setSingleData] = useState();
@@ -115,43 +130,10 @@ export default function Customer() {
     }
   }, [collectorArea, role]);
 
-  useEffect(() => {
-    const keys = [
-      "monthlyFee",
-      "customerId",
-      "name",
-      "mobile",
-      "address",
-      "paymentStatus",
-      "status",
-      "balance",
-      "subArea",
-    ];
-    setCustomers(
-      (isFilterRunning ? filterdCus : cus).filter((item) =>
-        keys.some((key) =>
-          typeof item[key] === "string"
-            ? item[key]?.toString().toLowerCase().includes(cusSearch)
-            : item[key]?.toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cus, cusSearch, filterdCus, isFilterRunning]);
-
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
   //   filter
-  const handleActiveFilter = (e) => {
-    setPaymentStatus(e.target.value);
-    setRunning(true);
-    let fvalue = e.target.value;
-    const field = fvalue.split(".")[0];
-    const subfield = fvalue.split(".")[1];
 
-    const filterdData = cus.filter((item) => item[field] === subfield);
-
-    setFilter(filterdData);
-  };
   // get specific customer
   const getSpecificCustomer = (id) => {
     setSingleCustomer(id);
@@ -226,10 +208,6 @@ export default function Customer() {
   }, [dispatch, ispOwner, role, bpSettings]);
 
   const [isSorted, setSorted] = useState(false);
-  const toggleSort = (item) => {
-    setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
-    setSorted(!isSorted);
-  };
 
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
@@ -252,6 +230,71 @@ export default function Customer() {
       setSubArea(subAreaIds);
     }
   };
+
+  // useEffect(() => {
+  //   const temp = [];
+  //   cus.map((customer) => {
+  //     allareas.map((area) => {
+  //       area.subAreas.map((sub) => {
+  //         if (customer.subArea === sub.id) {
+  //           temp.push({
+  //             ...customer,
+  //             area: area.id,
+  //             profile: customer.pppoe.profile,
+  //           });
+  //         } else {
+  //           const check = temp.some((item) => item.id === customer.id);
+  //           if (!check) {
+  //             temp.push({
+  //               ...customer,
+  //               area: "noArea",
+  //               profile: customer.pppoe?.profile,
+  //             });
+  //           }
+  //         }
+  //       });
+  //     });
+  //   });
+
+  //   setCustomers(temp);
+  //   setCustomers1(temp);
+  //   setCustomers2(temp);
+  // }, [cus, allareas]);
+  useEffect(() => {
+    const temp = [];
+    cus.map((customer) => {
+      let areaFound = false;
+      allareas.map((area) => {
+        area.subAreas.map((sub) => {
+          if (customer.subArea === sub.id) {
+            areaFound = true;
+            // if (!temp.find((item) => item.id === customer.id)) {
+            temp.push({
+              ...customer,
+              area: area.id,
+              profile: customer.pppoe.profile,
+            });
+            // }
+          }
+        });
+      });
+
+      if (!areaFound) {
+        temp.push({
+          ...customer,
+          area: "noArea",
+          profile: customer.pppoe?.profile,
+        });
+      }
+    });
+
+    // temp.map((t) => {
+    //   if (t.area === "noArea") console.log(t);
+    // });
+    setCustomers(temp);
+    setCustomers1(temp);
+    setCustomers2(temp);
+  }, [allareas, cus]);
   useEffect(() => {
     if (subAreaIds.length) {
       setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
@@ -260,6 +303,57 @@ export default function Customer() {
     }
   }, [cus, subAreaIds]);
 
+  const handleActiveFilter = () => {
+    let tempCustomers = Customers2;
+
+    if (filterOptions.area) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.area === filterOptions.area
+      );
+    }
+
+    if (filterOptions.subArea) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.subArea === filterOptions.subArea
+      );
+    }
+
+    if (filterOptions.status) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.status === filterOptions.status
+      );
+    }
+
+    if (filterOptions.paymentStatus) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.paymentStatus === filterOptions.paymentStatus
+      );
+    }
+    if (filterOptions.mikrotik) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotik === filterOptions.mikrotik
+      );
+    }
+    if (filterOptions.package) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.profile === filterOptions.package
+      );
+    }
+
+    setCustomers1(tempCustomers);
+    setCustomers(tempCustomers);
+  };
+  const handleFilterReset = () => {
+    setMikrotikPac([]);
+    setFilterOption({
+      status: "",
+      paymentStatus: "",
+      area: "",
+      subArea: "",
+      package: "",
+    });
+    setCustomers1(Customers2);
+  };
   const onChangeSubArea = (id) => {
     setCusSearch(id);
   };
@@ -298,6 +392,24 @@ export default function Customer() {
     subArea: subArea ? subArea.name : "সকল সাবএরিয়া",
     status: customerStatus ? customerStatus : "সকল গ্রাহক",
     payment: customerPaymentStatus ? customerPaymentStatus : "সকল গ্রাহক",
+  };
+  const mikrotikHandler = async (id) => {
+    setFilterOption({
+      ...filterOptions,
+      mikrotik: id,
+    });
+    if (!id) {
+      setMikrotikPac([]);
+    }
+    if (id) {
+      try {
+        const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
+
+        setMikrotikPac(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const columns = React.useMemo(
@@ -495,7 +607,7 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
-                    <div className="me-3">স্ট্যাটিক গ্রাহক</div>
+                    <div className="me-3">স্ট্যাটিক গ্রাহক </div>
                     <div
                       title="স্ট্যাটিক গ্রাহক যুক্ত"
                       className="header_icon"
@@ -547,18 +659,49 @@ export default function Customer() {
                   <div className="addCollector">
                     <div className="displexFlexSys">
                       {/* filter selector */}
+                      {/* filter selector */}
                       <div className="selectFiltering allFilter">
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeArea(e.target.value)}
+                          onChange={(e) => {
+                            onChangeArea(e.target.value);
+                            setFilterOption({
+                              ...filterOptions,
+                              area: JSON.parse(e.target.value).id,
+                            });
+                          }}
                         >
-                          <option value={JSON.stringify({})} defaultValue>
+                          <option
+                            value={JSON.stringify({
+                              id: "",
+                              name: "",
+                              subAreas: [],
+                            })}
+                            defaultValue
+                            selected={filterOptions.area === ""}
+                          >
                             সকল এরিয়া
                           </option>
+                          {Customers2.some((c) => c.area === "noArea") && (
+                            <option
+                              value={JSON.stringify({
+                                id: "noArea",
+                                name: "",
+                                subAreas: [],
+                              })}
+                              selected={filterOptions.area === "noArea"}
+                            >
+                              এরিয়া বিহীন গ্রাহক
+                            </option>
+                          )}
                           {(role === "collector" ? allArea : allareas)?.map(
                             (area, key) => {
                               return (
-                                <option key={key} value={JSON.stringify(area)}>
+                                <option
+                                  selected={filterOptions.area === area.id}
+                                  key={key}
+                                  value={JSON.stringify(area)}
+                                >
                                   {area.name}
                                 </option>
                               );
@@ -569,13 +712,27 @@ export default function Customer() {
                         {/* //Todo */}
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeSubArea(e.target.value)}
+                          onChange={(e) => {
+                            onChangeSubArea(e.target.value);
+                            setFilterOption({
+                              ...filterOptions,
+                              subArea: e.target.value,
+                            });
+                          }}
                         >
-                          <option value="" defaultValue>
+                          <option
+                            selected={filterOptions.subArea === ""}
+                            value=""
+                            defaultValue
+                          >
                             সাব এরিয়া
                           </option>
                           {singleArea?.subAreas?.map((sub, key) => (
-                            <option key={key} value={sub.id}>
+                            <option
+                              selected={filterOptions.subArea === sub.id}
+                              key={key}
+                              value={sub.id}
+                            >
                               {sub.name}
                             </option>
                           ))}
@@ -583,27 +740,123 @@ export default function Customer() {
                         <select
                           className="form-select"
                           onChange={(e) => {
-                            handleActiveFilter(e);
                             handleChangeStatus(e);
+                            setFilterOption({
+                              ...filterOptions,
+                              status: e.target.value,
+                            });
                           }}
                         >
-                          <option value="" defaultValue>
+                          <option
+                            selected={filterOptions.status === ""}
+                            value=""
+                            defaultValue
+                          >
                             স্ট্যাটাস
                           </option>
-                          <option value="status.active">এক্টিভ</option>
-                          <option value="status.inactive">ইন-এক্টিভ</option>
-                          <option value="status.expired">এক্সপায়ার্ড</option>
+                          <option
+                            selected={filterOptions.status === "active"}
+                            value="active"
+                          >
+                            এক্টিভ
+                          </option>
+                          <option
+                            selected={filterOptions.status === "inactive"}
+                            value="inactive"
+                          >
+                            ইন-এক্টিভ
+                          </option>
+                          <option
+                            selected={filterOptions.status === "expired"}
+                            value="expired"
+                          >
+                            এক্সপায়ার্ড
+                          </option>
                         </select>
 
                         <select
                           className="form-select"
-                          onChange={handleActiveFilter}
+                          onChange={(e) => {
+                            setFilterOption({
+                              ...filterOptions,
+                              paymentStatus: e.target.value,
+                            });
+                          }}
                         >
-                          <option value="" defaultValue>
+                          <option
+                            selected={filterOptions.paymentStatus === ""}
+                            value=""
+                            defaultValue
+                          >
                             পেমেন্ট
                           </option>
-                          <option value="paymentStatus.paid">পেইড</option>
-                          <option value="paymentStatus.unpaid">আন-পেইড</option>
+                          <option
+                            selected={filterOptions.paymentStatus === "paid"}
+                            value="paid"
+                          >
+                            পেইড
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "unpaid"}
+                            value="unpaid"
+                          >
+                            আন-পেইড
+                          </option>
+                        </select>
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            mikrotikHandler(e.target.value);
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.mikrotik === ""}
+                            value=""
+                            defaultValue
+                          >
+                            মাইক্রোটিক
+                          </option>
+
+                          {mikrotiks.map((m, i) => {
+                            return (
+                              <option
+                                key={i}
+                                selected={filterOptions.mikrotik === `${m.id}`}
+                                value={m.id}
+                              >
+                                {m.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            setFilterOption({
+                              ...filterOptions,
+                              package: e.target.value,
+                            });
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.mikrotik === ""}
+                            value=""
+                            defaultValue
+                          >
+                            প্যাকেজ
+                          </option>
+
+                          {mikrotikPac?.map((m, i) => {
+                            return (
+                              <option
+                                key={i}
+                                selected={filterOptions.package === `${m.name}`}
+                                value={m.name}
+                              >
+                                {m.name}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                       {permission?.customerAdd || role === "ispOwner" ? (
@@ -659,10 +912,33 @@ export default function Customer() {
                     )}
                   </div>
 
+                  <div className="filterresetbtn">
+                    {/* <button onClick={handleActiveFilter}>filter</button> */}
+                    <button
+                      className="btn btn-success mt-2"
+                      type="button"
+                      onClick={handleActiveFilter}
+                    >
+                      ফিল্টার
+                    </button>
+                    <button
+                      style={{
+                        marginLeft: "7px",
+                        width: "150px",
+                      }}
+                      className="btn btn-secondary mt-2"
+                      type="button"
+                      onClick={handleFilterReset}
+                    >
+                      রিসেট
+                    </button>
+                    {/* <button onClick={handleFilterReset}>reset</button> */}
+                  </div>
+
                   <Table
                     isLoading={isLoading}
                     columns={columns}
-                    data={Customers}
+                    data={Customers1}
                   ></Table>
                 </div>
               </FourGround>

@@ -13,9 +13,13 @@ function BillConfirmationSmsTemplate() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData?.settings
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller.id
   );
+  const settings = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller?.settings
+  );
+
   // console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
@@ -82,7 +86,7 @@ function BillConfirmationSmsTemplate() {
     setLoading(true);
     try {
       const res = await apiLink.patch(
-        `/ispOwner/settings/sms/${ispOwnerId}`,
+        `/reseller/settings/sms/${resellerId}`,
         data
       );
       dispatch(smsSettingUpdateIsp(res.data));
@@ -132,7 +136,7 @@ function BillConfirmationSmsTemplate() {
     setMatchFound(found);
     // setbillconparametres(found);
 
-    if (settings.sms.billConfirmation) {
+    if (settings?.sms?.billConfirmation) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");

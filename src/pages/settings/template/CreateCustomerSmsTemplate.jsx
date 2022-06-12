@@ -131,7 +131,7 @@ function CreateCustomerSmsTemplate() {
     setMatchFound(found);
     // setbillconparametres(found);
 
-    if (settings.sms.billConfirmation) {
+    if (settings?.sms?.createCustomer) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");

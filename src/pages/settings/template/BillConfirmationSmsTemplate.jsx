@@ -132,7 +132,7 @@ function BillConfirmationSmsTemplate() {
     setMatchFound(found);
     // setbillconparametres(found);
 
-    if (settings.sms.billConfirmation) {
+    if (settings?.sms?.billConfirmation) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");

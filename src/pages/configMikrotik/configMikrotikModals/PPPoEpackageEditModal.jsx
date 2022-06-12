@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
@@ -14,6 +14,12 @@ import { editPPPoEpackageRate } from "../../../features/apiCalls";
 // } from "../../../features/mikrotikSlice";
 
 export default function PPPoEpackageEditModal({ singlePackage }) {
+  const pppoePackage = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
+  );
+
+  const data = pppoePackage.find((item) => item.id === singlePackage);
+
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -22,16 +28,16 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
     rate: Yup.number(),
   });
 
-  const pppoeEditHandler = async (data, resetForm) => {
-    if (singlePackage) {
+  const pppoeEditHandler = async (formValue, resetForm) => {
+    if (formValue) {
       // const IDs = {
       //   ispOwner: singlePackage.ispOwner,
       //   mikrotikId: singlePackage.mikrotik,
       // };
       const sendingData = {
-        rate: data.rate.toString(),
-        mikrotikId: singlePackage.mikrotik,
-        pppPackageId: singlePackage.id,
+        rate: formValue.rate.toString(),
+        mikrotikId: data?.mikrotik,
+        pppPackageId: data?.id,
       };
       editPPPoEpackageRate(dispatch, sendingData, setIsLoading, resetForm);
     }
@@ -50,7 +56,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {singlePackage?.name} - রেট এডিট করুন
+                {data?.name} - রেট এডিট করুন
               </h5>
               <button
                 type="button"
@@ -62,7 +68,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  rate: singlePackage.rate || "",
+                  rate: data?.rate || "",
                 }}
                 validationSchema={pppoeValidator}
                 onSubmit={(values, { resetForm }) => {

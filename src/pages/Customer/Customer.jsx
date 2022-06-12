@@ -42,7 +42,8 @@ import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/CustomerDelete";
-
+import apiLink from "../../api/apiLink";
+// import apiLink from ""
 export default function Customer() {
   const dispatch = useDispatch();
 
@@ -73,7 +74,9 @@ export default function Customer() {
 
   // get all area
   const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
-
+  const mikrotiks = useSelector(
+    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+  );
   // get collector area
   const collectorArea = useSelector((state) =>
     role === "collector"
@@ -103,18 +106,17 @@ export default function Customer() {
   const [singleData, setSingleData] = useState();
   const [Customers1, setCustomers1] = useState([]);
   const [Customers2, setCustomers2] = useState([]);
-
+  const [mikrotikPac, setMikrotikPac] = useState([]);
   const [filterOptions, setFilterOption] = useState({
     status: "",
     paymentStatus: "",
     area: "",
     subArea: "",
     package: "",
+    mikrotik: "",
   });
-  console.log(filterOptions);
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
-  console.log(Customers1);
   // get customer api call
   useEffect(() => {
     if (
@@ -202,7 +204,6 @@ export default function Customer() {
 
   //   filter
   const handleActiveFilter = () => {
-    console.log(filterOptions);
     let tempCustomers = Customers2;
 
     if (filterOptions.area) {
@@ -228,11 +229,22 @@ export default function Customer() {
         (customer) => customer.paymentStatus === filterOptions.paymentStatus
       );
     }
+    if (filterOptions.mikrotik) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotik === filterOptions.mikrotik
+      );
+    }
+    if (filterOptions.package) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.profile === filterOptions.package
+      );
+    }
 
     setCustomers1(tempCustomers);
     setCustomers(tempCustomers);
   };
   const handleFilterReset = () => {
+    setMikrotikPac([]);
     setFilterOption({
       status: "",
       paymentStatus: "",
@@ -246,17 +258,34 @@ export default function Customer() {
   useEffect(() => {
     const temp = [];
     cus.map((customer) => {
+      let areaFound = false;
       allareas.map((area) => {
         area.subAreas.map((sub) => {
           if (customer.subArea === sub.id) {
+            areaFound = true;
+            // if (!temp.find((item) => item.id === customer.id)) {
             temp.push({
               ...customer,
               area: area.id,
+              profile: customer.pppoe.profile,
             });
+            // }
           }
         });
       });
+
+      if (!areaFound) {
+        temp.push({
+          ...customer,
+          area: "noArea",
+          profile: customer.pppoe?.profile,
+        });
+      }
     });
+
+    // temp.map((t) => {
+    //   if (t.area === "noArea") console.log(t);
+    // });
     setCustomers(temp);
     setCustomers1(temp);
     setCustomers2(temp);
@@ -549,6 +578,25 @@ export default function Customer() {
     []
   );
 
+  const mikrotikHandler = async (id) => {
+    setFilterOption({
+      ...filterOptions,
+      mikrotik: id,
+    });
+    if (!id) {
+      setMikrotikPac([]);
+    }
+    if (id) {
+      try {
+        const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
+
+        setMikrotikPac(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <>
       <Sidebar />
@@ -559,7 +607,53 @@ export default function Customer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">গ্রাহক </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>গ্রাহক </div>
+                  {permission?.customerAdd || role === "ispOwner" ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div className="addAndSettingIcon">
+                        <CSVLink
+                          data={customerForCsV}
+                          filename={ispOwnerData.company}
+                          headers={headers}
+                          title="BTRC রিপোর্ট ডাউনলোড"
+                        >
+                          <FileExcelFill className="addcutmButton" />
+                        </CSVLink>
+                      </div>
+
+                      <div className="addAndSettingIcon">
+                        <ReactToPrint
+                          documentTitle="গ্রাহক লিস্ট"
+                          trigger={() => (
+                            <PrinterFill
+                              title="প্রিন্ট "
+                              className="addcutmButton"
+                            />
+                          )}
+                          content={() => componentRef.current}
+                        />
+                      </div>
+
+                      <div className="addAndSettingIcon">
+                        <PersonPlusFill
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#customerModal"
+                          title="নতুন গ্রাহক"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </FourGround>
 
               {/* Model start */}
@@ -604,6 +698,18 @@ export default function Customer() {
                           >
                             সকল এরিয়া
                           </option>
+                          {Customers2.some((c) => c.area === "noArea") && (
+                            <option
+                              value={JSON.stringify({
+                                id: "noArea",
+                                name: "",
+                                subAreas: [],
+                              })}
+                              selected={filterOptions.area === "noArea"}
+                            >
+                              এরিয়া বিহীন গ্রাহক
+                            </option>
+                          )}
                           {(role === "collector" ? allArea : allareas)?.map(
                             (area, key) => {
                               return (
@@ -713,49 +819,62 @@ export default function Customer() {
                             আন-পেইড
                           </option>
                         </select>
-                      </div>
-                      {permission?.customerAdd || role === "ispOwner" ? (
-                        <>
-                          <div className="addNewCollector">
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={customerForCsV}
-                                filename={ispOwnerData.company}
-                                headers={headers}
-                                title="BTRC রিপোর্ট ডাউনলোড"
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            mikrotikHandler(e.target.value);
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.mikrotik === ""}
+                            value=""
+                            defaultValue
+                          >
+                            মাইক্রোটিক
+                          </option>
+
+                          {mikrotiks.map((m, i) => {
+                            return (
+                              <option
+                                key={i}
+                                selected={filterOptions.mikrotik === `${m.id}`}
+                                value={m.id}
                               >
-                                <FileExcelFill className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-                          </div>
-                          <div className="addNewCollector">
-                            <div className="addAndSettingIcon">
-                              <ReactToPrint
-                                documentTitle="গ্রাহক লিস্ট"
-                                trigger={() => (
-                                  <PrinterFill
-                                    title="প্রিন্ট "
-                                    className="addcutmButton"
-                                  />
-                                )}
-                                content={() => componentRef.current}
-                              />
-                            </div>
-                          </div>
-                          <div className="addNewCollector">
-                            <div className="addAndSettingIcon">
-                              <PersonPlusFill
-                                className="addcutmButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#customerModal"
-                                title="নতুন গ্রাহক"
-                              />
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        ""
-                      )}
+                                {m.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            setFilterOption({
+                              ...filterOptions,
+                              package: e.target.value,
+                            });
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.mikrotik === ""}
+                            value=""
+                            defaultValue
+                          >
+                            প্যাকেজ
+                          </option>
+
+                          {mikrotikPac?.map((m, i) => {
+                            return (
+                              <option
+                                key={i}
+                                selected={filterOptions.package === `${m.name}`}
+                                value={m.name}
+                              >
+                                {m.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
                     </div>
 
                     {isDeleting ? (
