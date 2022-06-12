@@ -407,7 +407,11 @@ export default function CustomerEdit(props) {
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
-                            min={moment().format("YYYY-MM-DD")}
+                            min={
+                              status !== "expired"
+                                ? moment().format("YYYY-MM-DD")
+                                : ""
+                            }
                           />
                           <input
                             className="billTime"
