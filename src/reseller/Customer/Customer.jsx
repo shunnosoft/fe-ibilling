@@ -11,7 +11,6 @@ import {
   ArchiveFill,
   PenFill,
   PersonFill,
-  ArrowDownUp,
   CashStack,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -33,11 +32,8 @@ import {
   getMikrotik,
   getSubAreas,
 } from "../../features/apiCallReseller";
-import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
-import { FetchAreaSuccess } from "../../features/areaSlice";
 import { badge } from "../../components/common/Utils";
-import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 
 export default function Customer() {
@@ -53,13 +49,10 @@ export default function Customer() {
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [cusSearch, setCusSearch] = useState("");
   const permission = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.permission
   );
   const [Customers, setCustomers] = useState(cus);
-  const [filterdCus, setFilter] = useState(Customers);
-  const [isFilterRunning, setRunning] = useState(false);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 
@@ -144,12 +137,6 @@ export default function Customer() {
     }
   }, [dispatch, resellerId, userData, role]);
 
-  const [isSorted, setSorted] = useState(false);
-
-  const toggleSort = (item) => {
-    setCustomers(arraySort([...Customers], item, { reverse: isSorted }));
-    setSorted(!isSorted);
-  };
   const [subAreaIds, setSubArea] = useState([]);
 
   useEffect(() => {
@@ -159,10 +146,6 @@ export default function Customer() {
       setCustomers(cus);
     }
   }, [cus, subAreaIds]);
-
-  const onChangeSubArea = (id) => {
-    setCusSearch(id);
-  };
 
   const columns = React.useMemo(
     () => [

@@ -7,17 +7,14 @@ import moment from "moment";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./ReportPDF";
 
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
-import arraySort from "array-sort";
-import { ArrowDownUp, PrinterFill } from "react-bootstrap-icons";
+
+import { PrinterFill } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCalls";
-import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 export default function Report() {
   const componentRef = useRef();
@@ -58,6 +55,7 @@ export default function Report() {
   // const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
+  const [billType, setBillType] = useState("");
 
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
@@ -178,7 +176,7 @@ export default function Report() {
   const onClickFilter = () => {
     // console.log("filter data");
 
-    let arr = allBills;
+    let arr = [...allBills];
 
     if (subAreaIds.length) {
       arr = allBills.filter((bill) =>
@@ -187,6 +185,9 @@ export default function Report() {
     }
     if (collectorIds.length) {
       arr = arr.filter((bill) => collectorIds.includes(bill.user));
+    }
+    if (billType) {
+      arr = arr.filter((bill) => bill.billType === billType);
     }
 
     arr = arr.filter(
@@ -307,7 +308,7 @@ export default function Report() {
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">
-                      <div className="dateDiv">
+                      <div style={{ margin: "0 5px" }} className="dateDiv">
                         <select
                           className="form-select"
                           onChange={(e) => onChangeArea(e.target.value)}
@@ -323,7 +324,7 @@ export default function Report() {
                         </select>
                       </div>
 
-                      <div className="dateDiv">
+                      <div style={{ margin: "0 5px" }} className="dateDiv">
                         <select
                           className="form-select"
                           onChange={(e) => onChangeSubArea(e.target.value)}
@@ -340,7 +341,7 @@ export default function Report() {
                       </div>
 
                       {userRole !== "collector" && (
-                        <div className="dateDiv  ">
+                        <div style={{ margin: "0 5px" }} className="dateDiv  ">
                           <select
                             className="form-select"
                             onChange={(e) => onChangeCollector(e.target.value)}
@@ -357,7 +358,7 @@ export default function Report() {
                         </div>
                       )}
 
-                      <div className="dateDiv">
+                      <div style={{ margin: "0 5px" }} className="dateDiv">
                         <input
                           className="form-select"
                           type="date"
@@ -373,7 +374,7 @@ export default function Report() {
                           // max="2018-12-31"
                         />
                       </div>
-                      <div className="dateDiv">
+                      <div style={{ margin: "0 5px" }} className="dateDiv">
                         <input
                           className="form-select"
                           type="date"
@@ -389,6 +390,19 @@ export default function Report() {
                           // min="2018-01-01"
                           // max="2018-12-31"
                         />
+                      </div>
+                      <div style={{ margin: "0 5px" }} className="dateDiv  ">
+                        <select
+                          className="form-select mw-100"
+                          onChange={(e) => setBillType(e.target.value)}
+                        >
+                          <option value="" defaultValue>
+                            বিল টাইপ{" "}
+                          </option>
+
+                          <option value="connectionFee">সংযোগ ফি</option>
+                          <option value="bill">মাসিক বিল</option>
+                        </select>
                       </div>
                       <div>
                         <button

@@ -5,7 +5,6 @@ import moment from "moment";
 // import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,20 +28,10 @@ function Invoice() {
   const invoices = useSelector(
     (state) => state?.persistedReducer?.invoice?.invoices
   );
-  console.log(invoices);
-  // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
 
   useEffect(() => {
     getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
-
-  // const payNowHandler = (invoice) => {
-  //   initiatePayment(invoice);
-  // };
 
   const columns2 = React.useMemo(
     () => [

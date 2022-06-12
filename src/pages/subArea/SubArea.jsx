@@ -6,9 +6,8 @@ import {
   ThreeDots,
   PenFill,
   ArchiveFill,
-  GeoFill,
   ArrowLeftShort,
-  EmojiFrown,
+  PlusCircle,
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,23 +21,15 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import SubAreaPost from "./subAreaModals/SubAreaPost";
-// import { fetchArea, getArea } from "../../features/areaSlice";
-// import { deleteSubArea, editSubArea } from "../../features/subAreaSlice";
 import { FtextField } from "../../components/common/FtextField";
-import {
-  deleteSubArea,
-  getArea,
-  editSubArea,
-  getCustomer,
-} from "../../features/apiCalls";
-import ActionButton from "../area/ActionButton";
+import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
+
 import Table from "../../components/table/Table";
 
 export default function SubArea() {
   const navigate = useNavigate();
   const { areaId } = useParams();
   const area = useSelector((state) => state.persistedReducer.area.area);
-  const [search, setSearch] = useState("");
   const [subAreas, setSubAreas] = useState([]);
   const [subAreaName, setSubAreaName] = useState("");
   const [ispId, setIspId] = useState("");
@@ -49,7 +40,6 @@ export default function SubArea() {
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
   );
-  let serial = 0;
 
   const linemanValidator = Yup.object({
     name: Yup.string().required("নাম দিন"),
@@ -97,11 +87,6 @@ export default function SubArea() {
     }
   }, [area, areaId, navigate]);
 
-  // const dispatchArea = (ispOwner) => {
-  //   if (ispOwner) {
-  //     dispatch(FetchAreaSuccess(ispOwner));
-  //   }
-  // };
 
   // delete sub area
   const deleteSingleSubAarea = (id, ispOwner) => {
@@ -271,30 +256,27 @@ export default function SubArea() {
                 </div>
               </div>
               {/* Edit MOdal */}
-
               <FourGround>
-                <h2 className="collectorTitle">{name || ""} এর সাব-এরিয়া </h2>
+                <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
+                  <div className="allSubArea mt-0" onClick={gotoAllArea}>
+                    <ArrowLeftShort className="arrowLeftSize" />
+                    <span style={{ marginLeft: "3px" }}>এরিয়া</span>
+                  </div>
+                  <div>{name || ""} এর সাব-এরিয়া</div>
+                  <div
+                    title="সাব-এরিয়া এড করুন"
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#areaModal"
+                  >
+                    <PlusCircle />
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    <div className="addNewCollector">
-                      <p>অ্যাড সাব-এরিয়া</p>
-                      <div className="addAndSettingIcon">
-                        <GeoFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#subAreaModal"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="allSubArea" onClick={gotoAllArea}>
-                      <ArrowLeftShort className="arrowLeftSize" />
-                      <span style={{ marginLeft: "3px" }}>এরিয়া</span>
-                    </div>
-
                     <div>
                       {isLoading ? (
                         <div className="deletingAction">

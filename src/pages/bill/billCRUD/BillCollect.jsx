@@ -16,9 +16,9 @@ export default function CustomerBillCollect({ singleCustomer }) {
   );
 
   const BillValidatoin = Yup.object({
-    amount: Yup.string()
-      .required("টাকার পরিমান দিন")
-      .matches("^[0-9]*$", "দশামিক গ্রহনযোগ্য নয়"),
+    amount: Yup.number()
+      .min(10, "দশ টাকার নিচে বিল গ্রহন যোগ্য নয়")
+      .integer("দশামিক গ্রহনযোগ্য নয়"),
   });
   // bill amount
   const customerBillHandler = (data) => {
@@ -72,7 +72,7 @@ export default function CustomerBillCollect({ singleCustomer }) {
                 >
                   {() => (
                     <Form>
-                      <FtextField type="text" name="amount" label="পরিমান" />
+                      <FtextField type="number" name="amount" label="পরিমান" />
 
                       <label className="mt-3">ধরণ</label>
                       <select
