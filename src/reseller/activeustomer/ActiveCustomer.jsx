@@ -75,8 +75,8 @@ export default function RActiveCustomer() {
     const name = mtkId ? singleMik?.name : "";
     setMikrotikId(mtkId);
     const IDs = {
-      resellerId: userData.id,
-      mikrotikId: mikrotik[0].id,
+      resellerId: userData?.id,
+      mikrotikId: mikrotik[0]?.id,
     };
 
     if (mtkId) {
@@ -85,7 +85,7 @@ export default function RActiveCustomer() {
       fetchActivepppoeUserForReseller(
         dispatch,
         IDs,
-        mikrotik[0].name,
+        mikrotik[0]?.name,
         setLoading
       );
     }
@@ -96,7 +96,7 @@ export default function RActiveCustomer() {
 
     const IDs = {
       resellerId: userData.id,
-      mikrotikId: mikrotik[0].id,
+      mikrotikId: mikrotik[0]?.id,
     };
 
     dispatch(resetMikrotikUserAndPackage());
@@ -106,13 +106,13 @@ export default function RActiveCustomer() {
       fetchActivepppoeUserForReseller(
         dispatch,
         IDs,
-        mikrotik[0].name,
+        mikrotik[0]?.name,
         setLoading
       );
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (original === "showAllMikrotikUser") {
       // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0].name, setLoading);
+      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0]?.name, setLoading);
       setWhatYouWantToShow("showAllMikrotikUser");
     }
 
@@ -126,7 +126,7 @@ export default function RActiveCustomer() {
   const refreshHandler = () => {
     const IDs = {
       resellerId: userData.id,
-      mikrotikId: mikrotik[0].id,
+      mikrotikId: mikrotik[0]?.id,
     };
 
     dispatch(resetMikrotikUserAndPackage());
@@ -135,12 +135,12 @@ export default function RActiveCustomer() {
       fetchActivepppoeUserForReseller(
         dispatch,
         IDs,
-        mikrotik[0].name,
+        mikrotik[0]?.name,
         setLoading
       );
     } else if (whatYouWantToShow === "showAllMikrotikUser") {
       // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0].name, setLoading);
+      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0]?.name, setLoading);
     }
   };
   const columns2 = React.useMemo(
