@@ -733,6 +733,52 @@ export const fetchpppoeUser = async (dispatch, IDs, mtkName, setIsLoading) => {
     toast.error(`${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`);
   }
 };
+// get PPPoE user
+// to do
+export const fetchpppoeUserForReseller = async (
+  dispatch,
+  IDs,
+  mtkName,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  dispatch(resetpppoeUser());
+  dispatch(mtkIsLoading(true));
+  try {
+    const res = await apiLink({
+      method: "GET",
+      url: `/reseller/PPPsecretUsers/${IDs.resellerId}/${IDs.mikrotikId}`,
+    });
+
+    // const pppsecretUsers = res.data?.pppsecretUsers;
+    // const interfaaceList = res.data?.interfaceList;
+    // const temp = [];
+
+    // pppsecretUsers.forEach((i) => {
+    //   let match = false;
+    //   interfaaceList.forEach((j) => {
+    //     if (j.name === "<pppoe-" + i.name + ">") {
+    //       match = true;
+
+    //       temp.push({
+    //         ...j,
+    //         ...i,
+    //       });
+    //     }
+    //   });
+    //   if (!match) temp.push(i);
+    // });
+
+    dispatch(getpppoeUserSuccess(res.data.PPPsecretUsers));
+    dispatch(mtkIsLoading(false));
+    setIsLoading(false);
+  } catch (error) {
+    setIsLoading(false);
+
+    dispatch(mtkIsLoading(false));
+    toast.error(`${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`);
+  }
+};
 
 // get PPPoE Active user
 export const fetchActivepppoeUser = async (
@@ -787,7 +833,7 @@ export const fetchActivepppoeUserForReseller = async (
   try {
     setIsLoading(true);
     const res = await apiLink.get(
-      `/reseller/PPPactiveCustomer/${IDs.ispOwner}/${IDs.mikrotikId}`
+      `/reseller/PPPactiveCustomer/${IDs.resellerId}/${IDs.mikrotikId}`
     );
 
     // const activeUsers = res.data?.activeUsers;
@@ -806,7 +852,7 @@ export const fetchActivepppoeUserForReseller = async (
     // });
 
     // console.log(temp);
-    dispatch(getpppoeActiveUserSuccess(res.data));
+    dispatch(getpppoeActiveUserSuccess(res.data?.activePPPcustomers));
     dispatch(mtkIsLoading(false));
     setIsLoading(false);
   } catch (error) {

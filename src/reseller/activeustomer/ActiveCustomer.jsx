@@ -14,7 +14,12 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 
 import Loader from "../../components/common/Loader";
-import { fetchActivepppoeUser, fetchpppoeUser } from "../../features/apiCalls";
+import {
+  fetchActivepppoeUser,
+  fetchActivepppoeUserForReseller,
+  fetchpppoeUser,
+  fetchpppoeUserForReseller,
+} from "../../features/apiCalls";
 
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 
@@ -70,13 +75,19 @@ export default function RActiveCustomer() {
     const name = mtkId ? singleMik?.name : "";
     setMikrotikId(mtkId);
     const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: mtkId,
+      resellerId: userData.id,
+      mikrotikId: mikrotik[0].id,
     };
 
     if (mtkId) {
       dispatch(resetMikrotikUserAndPackage());
-      fetchActivepppoeUser(dispatch, IDs, name, setLoading);
+      // fetchActivepppoeUser();
+      fetchActivepppoeUserForReseller(
+        dispatch,
+        IDs,
+        mikrotik[0].name,
+        setLoading
+      );
     }
   }, []);
 
@@ -84,17 +95,24 @@ export default function RActiveCustomer() {
     const original = e.target.value;
 
     const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: selectedMikrotikId,
+      resellerId: userData.id,
+      mikrotikId: mikrotik[0].id,
     };
 
     dispatch(resetMikrotikUserAndPackage());
 
     if (original === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      // fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      fetchActivepppoeUserForReseller(
+        dispatch,
+        IDs,
+        mikrotik[0].name,
+        setLoading
+      );
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (original === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0].name, setLoading);
       setWhatYouWantToShow("showAllMikrotikUser");
     }
 
@@ -107,15 +125,22 @@ export default function RActiveCustomer() {
   const [isRefrsh, setIsRefrsh] = useState(false);
   const refreshHandler = () => {
     const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: selectedMikrotikId,
+      resellerId: userData.id,
+      mikrotikId: mikrotik[0].id,
     };
 
     dispatch(resetMikrotikUserAndPackage());
     if (whatYouWantToShow === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      // fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      fetchActivepppoeUserForReseller(
+        dispatch,
+        IDs,
+        mikrotik[0].name,
+        setLoading
+      );
     } else if (whatYouWantToShow === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
+      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0].name, setLoading);
     }
   };
   const columns2 = React.useMemo(
@@ -228,40 +253,40 @@ export default function RActiveCustomer() {
         Header: "প্যাকেজ",
         accessor: "profile",
       },
-      {
-        Header: "RX",
-        accessor: "rxByte",
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {original?.rxByte
-              ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
-              : ""}
-          </div>
-        ),
-      },
-      {
-        Header: "TX",
-        accessor: "txByte",
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {original?.txByte
-              ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
-              : ""}
-          </div>
-        ),
-      },
-      {
-        Header: "Last Link Up Time",
-        accessor: "lastLinkUpTime",
-      },
+      // {
+      //   Header: "RX",
+      //   accessor: "rxByte",
+      //   Cell: ({ row: { original } }) => (
+      //     <div
+      //       style={{
+      //         padding: "15px 15px 15px 0 !important",
+      //       }}
+      //     >
+      //       {original?.rxByte
+      //         ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+      //         : ""}
+      //     </div>
+      //   ),
+      // },
+      // {
+      //   Header: "TX",
+      //   accessor: "txByte",
+      //   Cell: ({ row: { original } }) => (
+      //     <div
+      //       style={{
+      //         padding: "15px 15px 15px 0 !important",
+      //       }}
+      //     >
+      //       {original?.txByte
+      //         ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
+      //         : ""}
+      //     </div>
+      //   ),
+      // },
+      // {
+      //   Header: "Last Link Up Time",
+      //   accessor: "lastLinkUpTime",
+      // },
     ],
     []
   );
