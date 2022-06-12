@@ -518,7 +518,7 @@ export default function Customer() {
                 ""
               )}
 
-              {permission?.customerEdit || role === "ispOwner" ? (
+              {role === "ispOwner" ? (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerEditModal"
@@ -552,7 +552,7 @@ export default function Customer() {
                 </div>
               </li>
 
-              {permission?.customerDelete || role === "ispOwner" ? (
+              {role === "ispOwner" ? (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#staticCustomerDelete"
@@ -571,7 +571,7 @@ export default function Customer() {
                 ""
               )}
 
-              {original.mobile && (
+              {original.mobile && role === "ispOwner" ? (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerMessageModal"
@@ -586,6 +586,8 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
+              ) : (
+                ""
               )}
             </ul>
           </div>
@@ -608,14 +610,16 @@ export default function Customer() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
                     <div className="me-3">স্ট্যাটিক গ্রাহক </div>
-                    <div
-                      title="স্ট্যাটিক গ্রাহক যুক্ত"
-                      className="header_icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#addStaticCustomerModal"
-                    >
-                      <PersonPlusFill />
-                    </div>
+                    {role === "ispOwner" && (
+                      <div
+                        title="স্ট্যাটিক গ্রাহক যুক্ত"
+                        className="header_icon"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addStaticCustomerModal"
+                      >
+                        <PersonPlusFill />
+                      </div>
+                    )}
                   </div>
                   <div className="settingbtn">
                     <Link
