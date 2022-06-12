@@ -247,7 +247,7 @@ export default function Customer() {
                   </div>
                 </div>
               </li>
-              {role === "reseller" || role === "collector" ? (
+              {(role === "reseller" || role === "collector") && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#collectCustomerBillModal"
@@ -262,11 +262,9 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-              ) : (
-                ""
               )}
 
-              {permission?.customerEdit || role === "ispOwner" ? (
+              {(permission?.customerEdit || role === "ispOwner") && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerEditModal"
@@ -281,8 +279,6 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-              ) : (
-                ""
               )}
 
               <li
@@ -300,7 +296,7 @@ export default function Customer() {
                 </div>
               </li>
 
-              {permission?.customerDelete && role === "ispOwner" ? (
+              {permission?.customerDelete && role === "ispOwner" && (
                 <li
                   onClick={() => {
                     let con = window.confirm(
@@ -316,8 +312,6 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-              ) : (
-                ""
               )}
             </ul>
           </div>

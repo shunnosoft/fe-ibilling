@@ -113,10 +113,12 @@ export default function CustomerEdit({ single }) {
   };
   // sending data to backed
   const customerHandler = async (formValue) => {
-    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
+    const { Pname, Ppassword, Pprofile, Pcomment, monthlyFee, ...rest } =
+      formValue;
+    if (Number(monthlyFee) < Number(packageRate.rate)) {
+      return alert("বিল কমানো যাবে না");
+    }
     const mainData = {
-      // customerId: "randon123",
-      // paymentStatus: single?.paymentStatus,
       singleCustomerID: data?.id,
       subArea: subArea,
       ispOwner: ispOwnerId,
@@ -233,6 +235,7 @@ export default function CustomerEdit({ single }) {
                         type="text"
                         label="মাসিক ফি"
                         name="monthlyFee"
+                        min={packageRate?.rate || data?.monthlyFee}
                       />
                     </div>
 

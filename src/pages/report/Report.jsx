@@ -230,8 +230,6 @@ export default function Report() {
     totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
-  console.log({ mainData, filterData });
-
   const columns = useMemo(
     () => [
       {
