@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -8,8 +8,6 @@ import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
 import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
-import ReactToPrint from "react-to-print";
-import BillCollectInvoice from "./customerBillCollectInvoicePDF";
 
 export default function CustomerBillCollect({ single }) {
   const billRef = useRef();
@@ -43,8 +41,11 @@ export default function CustomerBillCollect({ single }) {
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
   const BillValidatoin = Yup.object({
-    amount: Yup.number().required("Please insert amount."),
+    amount: Yup.string()
+      .required("টাকার পরিমান দিন")
+      .matches("^[0-9]*$", "দশামিক গ্রহনযোগ্য নয়"),
   });
+
   // bill amount
   const customerBillHandler = (formValue) => {
     const sendingData = {

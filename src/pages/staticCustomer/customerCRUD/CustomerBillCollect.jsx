@@ -33,7 +33,9 @@ export default function CustomerBillCollect({ single }) {
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
   const BillValidatoin = Yup.object({
-    amount: Yup.number().required("Please insert amount."),
+    amount: Yup.string()
+      .required("টাকার পরিমান দিন")
+      .matches("^[0-9]*$", "দশামিক গ্রহনযোগ্য নয়"),
   });
   // bill amount
   const customerBillHandler = (formValue) => {
