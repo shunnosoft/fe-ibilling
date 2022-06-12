@@ -267,10 +267,20 @@ export default function Sidebar() {
                       </NavLink>
 
                       {bpSettings?.hasMikrotik &&
-                      (userRole === "ispOwner" || userRole === "manager") ? (
+                      (userRole === "ispOwner" ||
+                        userRole === "manager" ||
+                        userRole === "reseller" ||
+                        (userRole === "collector" &&
+                          user.collector.reseller)) ? (
                         <NavLink
                           key={66}
-                          to={"/activeCustomer"}
+                          to={
+                            userRole === "reseller" ||
+                            (userRole === "collector" &&
+                              user.collector.reseller)
+                              ? "/reseller/activeCustomer"
+                              : "/activeCustomer"
+                          }
                           className={(navInfo) =>
                             navInfo.isActive ? activeClass.active : ""
                           }
@@ -279,7 +289,10 @@ export default function Sidebar() {
                             <li
                               className="sidebarItems"
                               id={
-                                window.location.pathname === "/activeCustomer"
+                                window.location.pathname ===
+                                (userRole === "reseller"
+                                  ? "/reseller/activeCustomer"
+                                  : "/activeCustomer")
                                   ? "active"
                                   : ""
                               }
