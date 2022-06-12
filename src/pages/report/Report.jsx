@@ -55,15 +55,9 @@ export default function Report() {
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
   const [mainData, setMainData] = useState(allBills);
-  const [mainData2, setMainData2] = useState(allBills);
+  // const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
-  // const [cusSearch, setCusSearch] = useState("");
-  // const ispOwnerId = useSelector(state => state.auth?.ispOwnerId);
-  const [isSorted, setSorted] = useState(false);
-  // const [totalBill,setTotalBill]= useState("")
-
-  console.log(mainData);
 
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId);
@@ -130,13 +124,13 @@ export default function Report() {
     );
 
     // Temp varialbe for search
-    setMainData2(
-      allBills.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    // setMainData2(
+    //   allBills.filter(
+    //     (item) =>
+    //       Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+    //       Date.parse(item.createdAt) <= Date.parse(initialToday)
+    //   )
+    // );
   }, [allBills]);
 
   const onChangeCollector = (userId) => {
@@ -202,7 +196,7 @@ export default function Report() {
     );
 
     setMainData(arr);
-    setMainData2(arr);
+    // setMainData2(arr);
   };
 
   const addAllBills = useCallback(() => {
@@ -233,9 +227,10 @@ export default function Report() {
     collector: collector?.name ? collector.name : "সকল",
     startDate: dateStart,
     endDate: dateEnd,
+    totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
-  console.log(mainData);
+  console.log({ mainData, filterData });
 
   const columns = useMemo(
     () => [

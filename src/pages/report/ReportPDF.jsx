@@ -34,6 +34,7 @@ const PrintReport = React.forwardRef((props, ref) => {
           <li>
             তারিখঃ {startDate} - {endDate}
           </li>
+          <li>মোট বিলঃ{filterData.totalBill}</li>
         </ul>
         <table className="table table-striped">
           <thead>
