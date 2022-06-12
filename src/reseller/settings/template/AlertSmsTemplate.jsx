@@ -47,7 +47,7 @@ function AlertSmsTemplate() {
         toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
         return;
       } else {
-        smsTemplet.unshift(item);
+        smsTemplet.push(item);
       }
     }
 
@@ -113,7 +113,10 @@ function AlertSmsTemplate() {
         [alertNum]: upperText + "\n" + bottomText,
       },
     };
-
+    if (!alertNum) {
+      toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
+      return 0;
+    }
     setLoading(true);
 
     try {
@@ -176,6 +179,17 @@ function AlertSmsTemplate() {
 
     let temp = temp2.split("\n");
     temp.splice(-2);
+    const temp9 = temp;
+    const temp10 = temp9.filter((i) =>
+      [
+        "USER: USERNAME",
+        "ID: CUSTOMER_ID",
+        "NAME: CUSTOMER_NAME",
+        "BILL: AMOUNT",
+        "LAST DATE: BILL_DATE",
+      ].includes(i)
+    );
+    setTemplet(temp10);
     setAlertNum(temp2.split("\n").splice(-1)[0]);
 
     setTemplet(temp);
@@ -187,9 +201,13 @@ function AlertSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
 
-    setBottomText(
-      messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
-    );
+    if (e.target.value) {
+      setBottomText(
+        messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
+      );
+    } else {
+      setBottomText("");
+    }
 
     // fixedvalues.map((i) => {
     //   if (e.target.value.includes(i)) {

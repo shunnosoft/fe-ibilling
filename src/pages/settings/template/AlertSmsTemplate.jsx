@@ -44,7 +44,7 @@ function AlertSmsTemplate() {
         toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
         return;
       } else {
-        smsTemplet.unshift(item);
+        smsTemplet.push(item);
       }
     }
 
@@ -110,7 +110,10 @@ function AlertSmsTemplate() {
         [alertNum]: upperText + "\n" + bottomText,
       },
     };
-
+    if (!alertNum) {
+      toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
+      return 0;
+    }
     setLoading(true);
 
     try {
@@ -118,7 +121,6 @@ function AlertSmsTemplate() {
         `/ispOwner/settings/sms/${ispOwnerId}`,
         data
       );
-
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
       toast.success("এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে");
@@ -170,9 +172,19 @@ function AlertSmsTemplate() {
       .replace("গ্রাহকঃ NAME", "")
       .replace("বিলঃ AMOUNT", "")
       .replace("তারিখঃ DATE", "");
-
     let temp = temp2.split("\n");
     temp.splice(-2);
+    const temp9 = temp;
+    const temp10 = temp9.filter((i) =>
+      [
+        "USER: USERNAME",
+        "ID: CUSTOMER_ID",
+        "NAME: CUSTOMER_NAME",
+        "BILL: AMOUNT",
+        "LAST DATE: BILL_DATE",
+      ].includes(i)
+    );
+    setTemplet(temp10);
     setAlertNum(temp2.split("\n").splice(-1)[0]);
     if (!e.target.value) {
       setTemplet(temp);
@@ -342,7 +354,7 @@ function AlertSmsTemplate() {
                   name=""
                   id=""
                 >
-                  <option value="">Please Select</option>
+                  <option value="">টেমপ্লেট সিলেক্ট</option>
                   {smstempletDay.slice(0, numberOfDay).map((item) => {
                     return <option value={item.value}>{item.name}</option>;
                   })}
