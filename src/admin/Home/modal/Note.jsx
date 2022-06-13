@@ -1,20 +1,28 @@
 import moment from "moment";
 import React, { useState } from "react";
-import { Accordion } from "react-bootstrap";
+import { useEffect } from "react";
+import { Pencil } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../components/common/Loader";
-import TdLoader from "../../../components/common/TdLoader";
-import Table from "../../../components/table/Table";
-import { addComment } from "../../../features/apiCallAdmin";
-// import { addComment } from "../../features/apiCallAdmin";
+import { addComment, getComments } from "../../../features/apiCallAdmin";
 
-const Note = ({ ownerId }) => {
+const Note = ({ ownerId, ownerName }) => {
   // import dispatch
   const dispatch = useDispatch();
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
+
+  // set name
+  const [name, setName] = useState();
+  console.log(name);
+
+  // set comment type
+  const [commentType, setCommentType] = useState();
+
+  // set comment status
+  const [status, setStatus] = useState();
 
   // get message form textare field
   const [addNote, setAddNote] = useState("");
@@ -22,58 +30,77 @@ const Note = ({ ownerId }) => {
   // set error value
   const [errMsg, setErrMsg] = useState("");
 
-  const [name, setName] = useState();
+  // set comment id
+  const [commentId, setCommentId] = useState();
 
+  // set name in state
   const checkNameHandle = (event) => {
-    setName(event.target.value);
+    if (event.target.value !== "Select Name") {
+      setName(event.target.value);
+    }
   };
-  console.log(name);
-  // handle change
+
+  // set comment in state
+  const commentTypeHandle = (event) => {
+    if (event.target.value !== "Comment Type") {
+      setCommentType(event.target.value);
+    }
+  };
+
+  // set status in state
+  const statusHandle = (event) => {
+    if (event.target.value !== "Status") {
+      setStatus(event.target.value);
+    }
+  };
+
+  // set note in state
   const handleChange = (event) => {
     setAddNote(event.target.value);
-
-    if (event.target.value) {
-      setErrMsg("");
-    }
   };
 
   // validation check
-  const hadleRequired = () => {
-    if (!name) {
-      setErrMsg("Set Name !");
-    }
+  const handleRequired = () => {
     if (!addNote) {
-      setErrMsg("Write Somthing !");
+      setErrMsg("Write Comment !");
     }
   };
 
   // handle submit
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (addNote && name) {
+    if (name && addNote && commentType && status) {
       const data = {
-        comment: addNote,
         name,
+        comment: addNote,
+        commentType,
+        status,
+        ispOwner: ownerId,
       };
 
-      addComment(ownerId, data, setIsloading, dispatch);
+      addComment(data, setIsloading, dispatch);
+      setName("");
+      setCommentType("");
+      setStatus("");
       setAddNote("");
-    } else {
-      toast.error("name and comment required");
+    } else if (!name) {
+      toast.error("Select Name");
+    } else if (!commentType) {
+      toast.error("Select Comment Type");
+    } else if (!status) {
+      toast.error("Select Status");
+    } else if (!addNote) {
+      toast.error("Comment field required");
     }
   };
 
-  // get isp owner
-  let ispOwners = useSelector((state) => state.admin?.ispOwners);
+  // get note api call
+  useEffect(() => {
+    getComments(dispatch, setIsloading);
+  }, []);
 
-  // find single data
-  const singleData = ispOwners.find((item) => item.id === ownerId);
-  let comments;
-  if (singleData) {
-    comments = singleData.comments;
-    // comments = [...comments].reverse();
-  }
-  console.log(comments);
+  // get all note in redux
+  const comments = useSelector((state) => state.admin?.comments);
 
   return (
     <>
@@ -89,8 +116,8 @@ const Note = ({ ownerId }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Write some note for{" "}
-                <i className="text-secondary">{singleData?.name}</i>
+                Write some note for {ownerName}
+                {/* <i className="text-secondary">{singleData?.name}</i> */}
               </h5>
               <div className="d-flex">
                 <button
@@ -128,15 +155,35 @@ const Note = ({ ownerId }) => {
                         <div className="comment-show">
                           <div className="d-flex">
                             <h5 className="mb-1">
-                              <b>{data.name}</b>
+                              <b>{data?.name}</b>
                             </h5>
+
                             <small className="ms-2">
                               {moment(data.createdAt).format(
                                 "DD-MMM-YYYY hh:mm:ss A"
                               )}
                             </small>
                           </div>
-                          <p>{data.comment}</p>
+                          <div
+                            className="comment-info"
+                            style={{ marginTop: "-10px" }}
+                          >
+                            <i class="badge bg-primary me-1">
+                              {data?.commentType}
+                            </i>
+                            <i class="badge bg-info">{data?.status}</i>
+                            {/* <span
+                              class="badge text-dark"
+                              data-bs-toggle="modal"
+                              data-bs-target="#commentEditModal"
+                              onClick={() => {
+                                setCommentId(data.id);
+                              }}
+                            >
+                              <Pencil />
+                            </span> */}
+                          </div>
+                          <p className="mt-2">{data.comment}</p>
                         </div>
                         <br />
                       </>
@@ -146,152 +193,56 @@ const Note = ({ ownerId }) => {
               )}
               <hr />
               <form>
-                <div className="">
-                  <div className="row">
-                    <div className="col-md-3">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Saikat Mostofa"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Saikat Mostofa</label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Shahadat Hossain"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Shahadat Hossain</label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Nayem Ahmed"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Nayem Ahmed</label>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Rasel Ali"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Rasel Ali</label>
-                      </div>
-
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Parvez Joy"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Parvez Joy</label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Shahriar Alam"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Shahriar Alam</label>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Abdur Razzaq"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Abdur Razzaq</label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Towkir Hossain"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Towkir Hossain</label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Ashim Mondol"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Ashim Mondol</label>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Sharmin Akter"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Sharmin Akter</label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Taposy Chowdhury"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Taposy Chowdhury</label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          value={"Others"}
-                          onChange={checkNameHandle}
-                          onBlur={hadleRequired}
-                        />
-                        <label class="form-check-label">Others</label>
-                      </div>
-                    </div>
+                <div className="d-flex justify-content-around mb-2">
+                  <div className="name-section">
+                    <select
+                      class="form-select"
+                      aria-label="Default select example"
+                      onChange={checkNameHandle}
+                      value={name}
+                    >
+                      <option selected>Select Name</option>
+                      <option value="Saikat Mostofa">Saikat Mostofa</option>
+                      <option value="Shahadat Hossain">Shahadat Hossain</option>
+                      <option value="Nayem Ahmed">Nayem Ahmed</option>
+                      <option value="Rasel Ali">Rasel Ali</option>
+                      <option value="Parvez Joy">Parvez Joy</option>
+                      <option value="Abdur Razzaq">Abdur Razzaq</option>
+                      <option value="Shahriar Alam">Shahriar Alam</option>
+                      <option value="Towkir Hossain">Towkir Hossain</option>
+                      <option value="Ashim Mondol">Ashim Mondol</option>
+                      <option value="Sharmin Akter">Sharmin Akter</option>
+                      <option value="Taposy Chowdhury">Taposy Chowdhury</option>
+                      <option value="Others">Others</option>
+                    </select>
                   </div>
-                  <div id="emailHelp" class="form-text text-danger">
-                    {errMsg}
+
+                  <div className="type-section">
+                    <select
+                      class="form-select"
+                      aria-label="Default select example"
+                      onChange={commentTypeHandle}
+                      value={commentType}
+                    >
+                      <option selected>Comment Type</option>
+                      <option value="support">Support</option>
+                      <option value="feature">Feature</option>
+                      <option value="migration">Migration</option>
+                      <option value="sms">SMS</option>
+                    </select>
+                  </div>
+                  <div className="status-section">
+                    <select
+                      class="form-select"
+                      aria-label="Default select example"
+                      onChange={statusHandle}
+                      value={status}
+                    >
+                      <option selected>Status</option>
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="completed">Completed</option>
+                    </select>
                   </div>
                 </div>
 
@@ -302,7 +253,7 @@ const Note = ({ ownerId }) => {
                     rows="3"
                     placeholder="Note"
                     onChange={handleChange}
-                    onBlur={hadleRequired}
+                    onBlur={handleRequired}
                     value={addNote}
                   ></textarea>
                   <div id="emailHelp" class="form-text text-danger">

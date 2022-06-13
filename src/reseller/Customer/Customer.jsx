@@ -263,21 +263,22 @@ export default function Customer() {
                   </div>
                 </li>
               )}
-
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#showCustomerReport"
-                onClick={() => {
-                  getSpecificCustomerReport(original);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <CashStack />
-                    <p className="actionP">রিপোর্ট</p>
+              {role !== "collector" && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#showCustomerReport"
+                  onClick={() => {
+                    getSpecificCustomerReport(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">রিপোর্ট</p>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
+              )}
 
               {permission?.customerDelete && role === "ispOwner" && (
                 <li
