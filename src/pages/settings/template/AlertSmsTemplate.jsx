@@ -244,6 +244,7 @@ function AlertSmsTemplate() {
             />{" "}
             অফ
           </div>
+
           <div className="billconfirm">
             <div className="showthesequence">
               {smsTemplet.map((item, key) => {
@@ -252,6 +253,7 @@ function AlertSmsTemplate() {
 
               <p className="endingtext">{bottomText}</p>
             </div>
+
             <div
               style={{
                 display: "flex",
@@ -342,24 +344,27 @@ function AlertSmsTemplate() {
               </div>
 
               {/* //working */}
-              <div className="templateSelect">
-                <select
-                  style={{
-                    width: "150px",
-                    border: "2px solid grey",
-                    fontWeight: "600",
-                    borderRadius: "5px",
-                  }}
-                  onChange={(e) => dayTempletHandler(e)}
-                  name=""
-                  id=""
-                >
-                  <option value="">টেমপ্লেট সিলেক্ট</option>
-                  {smstempletDay.slice(0, numberOfDay).map((item) => {
+            </div>
+            <div className="templateSelect">
+              <select
+                style={{
+                  width: "150px",
+                  border: "2px solid grey",
+                  fontWeight: "600",
+                  borderRadius: "5px",
+                  marginTop: "25px",
+                }}
+                onChange={(e) => dayTempletHandler(e)}
+                name=""
+                id=""
+              >
+                <option value="">টেমপ্লেট সিলেক্ট</option>
+                {smstempletDay
+                  .filter((s, i) => days.includes(i + 1))
+                  .map((item) => {
                     return <option value={item.value}>{item.name}</option>;
                   })}
-                </select>
-              </div>
+              </select>
             </div>
             <div style={{ marginBotton: "20px" }} className="displayFlex">
               <input
@@ -435,6 +440,7 @@ function AlertSmsTemplate() {
             </div>
             <p style={{ marginTop: "20px" }}>বিল সাইকেল শেষ হতে বাকিঃ</p>
           </div>
+
           <div className="smsCount">
             <span className="smsLength">
               অক্ষরঃ {(smsTemplet + bottomText).length}

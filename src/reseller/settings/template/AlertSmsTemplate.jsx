@@ -350,7 +350,7 @@ function AlertSmsTemplate() {
               </div>
 
               {/* //working */}
-              <div className="templateSelect">
+              {/* <div className="templateSelect">
                 <select
                   style={{
                     width: "150px",
@@ -367,7 +367,28 @@ function AlertSmsTemplate() {
                     return <option value={item.value}>{item.name}</option>;
                   })}
                 </select>
-              </div>
+              </div> */}
+            </div>
+            <div className="templateSelect">
+              <select
+                style={{
+                  width: "150px",
+                  border: "2px solid grey",
+                  fontWeight: "600",
+                  borderRadius: "5px",
+                  marginTop: "25px",
+                }}
+                onChange={(e) => dayTempletHandler(e)}
+                name=""
+                id=""
+              >
+                <option value="">টেমপ্লেট সিলেক্ট</option>
+                {smstempletDay
+                  .filter((s, i) => days.includes(i + 1))
+                  .map((item) => {
+                    return <option value={item.value}>{item.name}</option>;
+                  })}
+              </select>
             </div>
             <div style={{ marginBotton: "20px" }} className="displayFlex">
               <input
