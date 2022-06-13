@@ -111,6 +111,37 @@ export default function CustomerEdit({ single }) {
     setAreaID(data.target.value);
     // setAreaID(single?.subArea);
   };
+
+  // reseller upper package select function
+  const getPackageByte = (value) => {
+    let currentPackage = data.pppoe.profile.toLowerCase();
+
+    const getLetter = value.toLowerCase();
+
+    if (currentPackage.indexOf("m") !== -1) {
+      currentPackage = currentPackage.slice(0, currentPackage.indexOf("m") + 1);
+      if (getLetter.indexOf("k") !== -1) {
+        return false;
+      } else {
+        return (
+          parseInt(getLetter.replace("m", "000000")) >=
+          parseInt(currentPackage.replace("m", "000000"))
+        );
+      }
+    }
+
+    if (currentPackage.indexOf("k") !== -1) {
+      if (getLetter.indexOf("k") !== -1) {
+        return (
+          parseInt(getLetter.replace("k", "000")) >=
+          parseInt(currentPackage.replace("k", "000"))
+        );
+      } else {
+        return true;
+      }
+    }
+  };
+
   // sending data to backed
   const customerHandler = async (formValue) => {
     const { Pname, Ppassword, Pprofile, Pcomment, monthlyFee, ...rest } =
@@ -220,15 +251,18 @@ export default function CustomerEdit({ single }) {
                           value={mikrotikPackage}
                         >
                           {ppPackage &&
-                            ppPackage?.map((val, key) => (
-                              <option
-                                selected={val.id === packageRate?.id}
-                                key={key}
-                                value={val.id || ""}
-                              >
-                                {val.name}
-                              </option>
-                            ))}
+                            ppPackage?.map(
+                              (val, key) =>
+                                getPackageByte(val.name) && (
+                                  <option
+                                    selected={val.id === packageRate?.id}
+                                    key={key}
+                                    value={val.id || ""}
+                                  >
+                                    {val.name}
+                                  </option>
+                                )
+                            )}
                         </select>
                       </div>
                       <FtextField
@@ -257,17 +291,16 @@ export default function CustomerEdit({ single }) {
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
-                          {area?.length === undefined
-                            ? ""
-                            : area?.map((val, key) => (
-                                <option
-                                  selected={val.id === areaID}
-                                  key={key}
-                                  value={val.id || ""}
-                                >
-                                  {val.name}
-                                </option>
-                              ))}
+                          {area?.length !== undefined &&
+                            area?.map((val, key) => (
+                              <option
+                                selected={val.id === areaID}
+                                key={key}
+                                value={val.id || ""}
+                              >
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
 
