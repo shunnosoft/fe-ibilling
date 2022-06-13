@@ -87,7 +87,6 @@ export default function SubArea() {
     }
   }, [area, areaId, navigate]);
 
-
   // delete sub area
   const deleteSingleSubAarea = (id, ispOwner) => {
     let isCustomer = false;
@@ -267,7 +266,7 @@ export default function SubArea() {
                     title="সাব-এরিয়া এড করুন"
                     className="header_icon"
                     data-bs-toggle="modal"
-                    data-bs-target="#areaModal"
+                    data-bs-target="#subAreaModal"
                   >
                     <PlusCircle />
                   </div>
