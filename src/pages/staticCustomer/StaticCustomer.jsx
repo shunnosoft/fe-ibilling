@@ -28,7 +28,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerPost from "./customerCRUD/AddStaticCustomer";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-import CustomerEdit from "./customerCRUD/CustomerEdit";
+import StaticCustomerEdit from "./customerCRUD/StaticCustomerEdit";
 import Loader from "../../components/common/Loader";
 import {
   getStaticCustomer,
@@ -518,10 +518,10 @@ export default function Customer() {
                 ""
               )}
 
-              {role === "ispOwner" ? (
+              {/* {role === "ispOwner" && (
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#customerEditModal"
+                  data-bs-target="#editStaticCustomerModal"
                   onClick={() => {
                     getSpecificCustomer(original.id);
                   }}
@@ -533,9 +533,7 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-              ) : (
-                ""
-              )}
+              )} */}
               {role !== "collector" && (
                 <li
                   data-bs-toggle="modal"
@@ -643,7 +641,7 @@ export default function Customer() {
 
               {/* Model start */}
               <AddStaticCustomer />
-              <CustomerEdit single={singleCustomer} />
+              <StaticCustomerEdit single={singleCustomer} />
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
