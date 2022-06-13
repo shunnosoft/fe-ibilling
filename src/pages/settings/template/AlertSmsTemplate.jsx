@@ -61,7 +61,7 @@ function AlertSmsTemplate() {
   useEffect(() => {
     setDays(settings?.sms.alertDays);
 
-    if (settings?.sms.alert) {
+    if (settings?.sms?.alert) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");

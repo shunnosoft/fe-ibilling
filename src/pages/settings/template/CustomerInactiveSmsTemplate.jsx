@@ -131,7 +131,7 @@ function CustomerInactiveSmsTemplate() {
     setMatchFound(found);
     // setbillconparametres(found);
 
-    if (settings.sms.billConfirmation) {
+    if (settings?.sms?.customerInactive) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");
