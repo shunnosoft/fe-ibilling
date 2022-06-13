@@ -12,8 +12,12 @@ import { LoginField } from "./LoginField";
 import { asyncLogin } from "../../../features/actions/authAsyncAction";
 import "./login.css";
 import { useDispatch } from "react-redux";
+import { useRef } from "react";
+import { useState } from "react";
 
 export default function Login() {
+  const [passInputType, setPassInputType] = useState("password");
+
   const dispatch = useDispatch();
   const loginValidate = Yup.object({
     mobile: Yup.string()
@@ -65,8 +69,30 @@ export default function Login() {
                     <LoginField
                       label="পাসওয়ার্ড"
                       name="password"
-                      type="password"
+                      type={passInputType}
+                      id="password"
                     />
+                    <div className="showPassword">
+                      <input
+                        style={{ cursor: "pointer" }}
+                        className="form-check-input shadow-none"
+                        type="checkbox"
+                        name="showPass"
+                        id="showPass"
+                        onChange={(e) =>
+                          setPassInputType(
+                            e.target.checked ? "text" : "password"
+                          )
+                        }
+                      />
+                      <label
+                        style={{ cursor: "pointer" }}
+                        className="form-check-label text-mute"
+                        htmlFor="showPass"
+                      >
+                        &nbsp; Show password
+                      </label>
+                    </div>
                     <button
                       className="btn  btn-primary mt-4 cstm-login-btn"
                       type="submit"

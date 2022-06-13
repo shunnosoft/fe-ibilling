@@ -31,6 +31,9 @@ export default function Home() {
   // set owner at local state
   const [ownerId, setOwnerId] = useState();
 
+  // set owner name
+  const [ownerName, setOwnerName] = useState();
+
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
 
@@ -60,8 +63,9 @@ export default function Home() {
     setOwnerId(showDetailsId);
   };
 
-  const noteModal = (noteId) => {
+  const noteModal = (noteId, ownerName) => {
     setOwnerId(noteId);
+    setOwnerName(ownerName);
   };
 
   // table column
@@ -181,7 +185,7 @@ export default function Home() {
                   data-bs-toggle="modal"
                   data-bs-target="#clientNoteModal"
                   onClick={() => {
-                    noteModal(original.id);
+                    noteModal(original.id, original.name);
                   }}
                 >
                   <div className="dropdown-item">
@@ -229,7 +233,7 @@ export default function Home() {
 
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
-              <Note ownerId={ownerId} />
+              <Note ownerId={ownerId} ownerName={ownerName} />
             </FontColor>
           </div>
         </div>
