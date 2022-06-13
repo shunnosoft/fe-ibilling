@@ -66,7 +66,12 @@ import {
   editResellerSuccess,
   getResellerrSuccess,
 } from "./resellerSlice";
-import { setBpsetting, updateProfile, setIspOwnerData } from "./authSlice";
+import {
+  setBpsetting,
+  updateProfile,
+  setIspOwnerData,
+  updateUserData,
+} from "./authSlice";
 import {
   getAllBillsSuccess,
   getDepositSuccess,
@@ -1431,6 +1436,16 @@ export const getIspOwnerData = async (dispatch, ispOwnerId) => {
     const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
     dispatch(setBpsetting(res.data.bpSettings));
     dispatch(setIspOwnerData(res.data));
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+};
+
+//updated Users
+export const getUpdatedUserData = async (dispatch, userRole, userId) => {
+  try {
+    const res = await apiLink.get(`/${userRole}/${userId}`);
+    dispatch(updateUserData(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }

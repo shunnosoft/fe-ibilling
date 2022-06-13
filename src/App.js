@@ -53,7 +53,7 @@ import Privacy from "./pages/public-pages/Privacy";
 import Terms from "./pages/public-pages/Terms";
 import Refund from "./pages/public-pages/Refund";
 
-import { getUnpaidInvoice } from "./features/apiCalls";
+import { getUnpaidInvoice, getUpdatedUserData } from "./features/apiCalls";
 import { useEffect } from "react";
 import ReactModal from "./components/modals/reactModal/ReactModal";
 import Cancel from "./pages/success copy/Success";
@@ -72,6 +72,7 @@ import StaticActiveCustomer from "./pages/staticActiveCustomer/StaticActiveCusto
 import RMessage from "./reseller/message/Message";
 import RSettings from "./reseller/settings/Settings";
 import RActiveCustomer from "./reseller/activeustomer/ActiveCustomer";
+import { toast } from "react-toastify";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -94,6 +95,23 @@ function App() {
     if (userRole === "ispOwner") getUnpaidInvoice(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch, userRole]);
   const pathName = useLocation().pathname;
+
+  useEffect(() => {
+    // toast.success("App js test triggered");
+    if (userRole === "ispOwner") {
+      getUpdatedUserData(dispatch, "ispOwner", user?.ispOwner?.id);
+    }
+    if (userRole === "reseller") {
+      getUpdatedUserData(dispatch, "reseller", user?.reseller?.id);
+    }
+    if (userRole === "manager") {
+      getUpdatedUserData(dispatch, "manager", user?.manager?.id);
+    }
+    if (userRole === "collector") {
+      getUpdatedUserData(dispatch, "collector", user?.collector?.id);
+    }
+  }, []);
+
   return (
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
