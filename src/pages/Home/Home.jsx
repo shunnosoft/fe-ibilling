@@ -148,12 +148,12 @@ export default function Home() {
 
       collectorArea?.map((item) => {
         let area = {
-          id: item.area.id,
-          name: item.area.name,
+          id: item.area?.id,
+          name: item.area?.name,
           subAreas: [
             {
-              id: item.id,
-              name: item.name,
+              id: item?.id,
+              name: item?.name,
             },
           ],
         };
