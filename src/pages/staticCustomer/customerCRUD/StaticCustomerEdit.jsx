@@ -492,16 +492,6 @@ export default function StaticCustomerEdit({ single }) {
                             />
                           </div>
                         )}
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <div className="autoDisable">
-                            <label>সংযোগ বন্ধ</label>
-                            <input
-                              type="checkBox"
-                              checked={qDisable}
-                              onChange={(e) => setQdisable(e.target.checked)}
-                            />
-                          </div>
-                        </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col-lg-4 col-md-4 col-xs-6">
@@ -555,26 +545,72 @@ export default function StaticCustomerEdit({ single }) {
                             </div>
                           )}
                         </div>
-                        <div
-                          className="modal-footer"
-                          style={{ border: "none" }}
-                        >
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                            disabled={isLoading}
+                      </div>
+                      <div className="pppoeStatus">
+                        <p>স্ট্যাটাস</p>
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="staus"
+                            value={"active"}
+                            checked={!qDisable}
+                            onChange={(e) => setQdisable(false)}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio1"
                           >
-                            বাতিল করুন
-                          </button>
-                          <button
-                            type="submit"
-                            className="btn btn-success"
-                            disabled={isLoading}
-                          >
-                            {isLoading ? <Loader /> : "সেভ করুন"}
-                          </button>
+                            এক্টিভ
+                          </label>
                         </div>
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            id="inlineRadio2"
+                            value={"inactive"}
+                            checked={qDisable}
+                            onChange={(e) => setQdisable(true)}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio2"
+                          >
+                            ইন-এক্টিভ
+                          </label>
+                        </div>
+                        {/* <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            id="inlineRadio2"
+                            checked={customer?.status === "expired"}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio2"
+                          >
+                            এক্সপায়ার্ড
+                          </label>
+                        </div> */}
+                      </div>
+                      <div className="modal-footer" style={{ border: "none" }}>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                          disabled={isLoading}
+                        >
+                          বাতিল করুন
+                        </button>
+                        <button
+                          type="submit"
+                          className="btn btn-success"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? <Loader /> : "সেভ করুন"}
+                        </button>
                       </div>
                     </div>
                   </Form>
