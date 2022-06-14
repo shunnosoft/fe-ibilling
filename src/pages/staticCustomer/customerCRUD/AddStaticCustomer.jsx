@@ -57,7 +57,6 @@ export default function AddStaticCustomer() {
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
   // customer validator
-  console.log(monthlyFee);
   const customerValidator = Yup.object({
     name: Yup.string().required("গ্রাহকের নাম লিখুন"),
     mobile: Yup.string()
@@ -165,6 +164,7 @@ export default function AddStaticCustomer() {
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
       balance: -balance,
       ...rest,
+      monthlyFee,
     };
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
@@ -188,7 +188,6 @@ export default function AddStaticCustomer() {
       };
     }
 
-    console.log(sendingData);
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
   };
 

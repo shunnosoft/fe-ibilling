@@ -12,6 +12,7 @@ import AlertSmsTemplate from "./template/AlertSmsTemplate";
 import CreateCustomerSmsTemplate from "./template/CreateCustomerSmsTemplate";
 import CustomerInactiveSmsTemplate from "./template/CustomerInactiveSmsTemplate";
 import { useState } from "react";
+import { Tab, Tabs } from "react-bootstrap";
 export default function RSettings() {
   const [settingSelect, setSettingSelect] = useState("confirmation");
   const selectSettingHandler = (e) => {
@@ -31,52 +32,51 @@ export default function RSettings() {
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    className="rightSideMikrotik"
+                  <Tabs
+                    defaultActiveKey="billConfirmation"
+                    id="uncontrolled-tab-example"
+                    className="mb-3"
                   >
-                    <h4 style={{ marginTop: "20px", marginRight: "30px" }}>
-                      SMS টেমপ্লেট সিলেক্ট করুন
-                    </h4>{" "}
-                    <select
-                      id="selectMikrotikOption"
-                      onChange={selectSettingHandler}
-                      className="form-select"
+                    <Tab
+                      className="mt-5"
+                      eventKey="billConfirmation"
+                      title="বিল কনফার্মেশন SMS"
                     >
-                      <option value="confirmation">বিল কনফার্মেশন SMS</option>
-                      <option value="alert">এলার্ট SMS</option>
-                      <option value="newCustomer">নতুন গ্রাহক SMS</option>
-                      <option value="inactiveCustomer">
-                        গ্রাহক ইন-এক্টিভ SMS
-                      </option>
-                    </select>
-                  </div>
-                  <div className="profileWrapper uiChange">
-                    {settingSelect === "confirmation" ? (
-                      <div className="settingMainDiv  mb-4">
-                        <BillConfirmationSmsTemplate />
-                      </div>
-                    ) : settingSelect === "alert" ? (
-                      <div className="settingMainDiv  mb-4">
-                        <AlertSmsTemplate />
-                      </div>
-                    ) : settingSelect === "newCustomer" ? (
-                      <div className="settingMainDiv  mb-4">
-                        <CreateCustomerSmsTemplate />
-                      </div>
-                    ) : settingSelect === "inactiveCustomer" ? (
-                      <div className="settingMainDiv  mb-4">
-                        <CustomerInactiveSmsTemplate />
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                      <FourGround>
+                        <BillConfirmationSmsTemplate></BillConfirmationSmsTemplate>
+                      </FourGround>
+                    </Tab>
+
+                    <Tab
+                      className="mt-5"
+                      eventKey="alertSms"
+                      title="এলার্ট SMS"
+                    >
+                      <FourGround>
+                        <AlertSmsTemplate></AlertSmsTemplate>
+                      </FourGround>
+                    </Tab>
+
+                    <Tab
+                      className="mt-5"
+                      eventKey="newCustomer"
+                      title="নতুন গ্রাহক SMS"
+                    >
+                      <FourGround>
+                        <CreateCustomerSmsTemplate></CreateCustomerSmsTemplate>
+                      </FourGround>
+                    </Tab>
+
+                    <Tab
+                      className="mt-5"
+                      eventKey="inactiveCustomer"
+                      title="গ্রাহক ইন-এক্টিভ SMS"
+                    >
+                      <FourGround>
+                        <CustomerInactiveSmsTemplate></CustomerInactiveSmsTemplate>
+                      </FourGround>
+                    </Tab>
+                  </Tabs>
                 </div>
               </FourGround>
               <Footer />

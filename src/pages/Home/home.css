@@ -1,6 +1,7 @@
 .home {
   padding: 10px;
   border-radius: 10px;
+  width: 100%;
 }
 .dashboardTitle {
   font-size: 24px;
@@ -52,16 +53,21 @@
   font-size: 22px;
   color: rgb(239 239 239);
 }
-.ChartsHeader {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  padding: 10px;
+.ChartsHeadernew {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 20px;
 }
-.ChartsFilter {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  padding: 10px;
+.ChartsFilternew {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+}
+.chartFilteritem {
+  margin-right: 10px !important;
 }
 .selectGraph {
   width: 200px;
@@ -105,4 +111,31 @@
 /* tabel collector section */
 .tableWrapper {
   padding: 20px;
+}
+
+@media only screen and (max-width: 778px) {
+  .ChartsFilternew {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+  }
+  .chartFilteritem {
+    width: 200px !important;
+  }
+  .selectGraph {
+    display: flex;
+    flex-direction: column;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .chartFilteritem {
+    width: 100% !important;
+  }
+}
+@media only screen and (max-width: 300px) {
+  .ChartsHeadernew {
+    flex-direction: column;
+    width: 100%;
+  }
 }

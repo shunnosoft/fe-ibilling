@@ -37,10 +37,9 @@ export default function RActiveCustomer() {
     (state) => state?.persistedReducer?.mikrotik?.isLoading
   );
   const [selectedMikrotikId, setMikrotikId] = useState();
-  const singleMik = mikrotik.find((item) => item.id === selectedMikrotikId)
-    ? mikrotik.find((item) => item.id === selectedMikrotikId)
-    : {};
+  const [singleMik, setSingleMik] = useState({});
 
+  console.log(singleMik);
   const [search, setSearch] = useState("");
   const [search2, setSearch2] = useState("");
   const [search3, setSearch3] = useState("");
@@ -59,9 +58,7 @@ export default function RActiveCustomer() {
   const [loading, setLoading] = useState(false);
   // const [isDeleting, setIsDeleting] = useState(false);
 
-  const [whatYouWantToShow, setWhatYouWantToShow] = useState(
-    "showActiveMikrotikUser"
-  );
+  const [whatYouWantToShow, setWhatYouWantToShow] = useState("customerSelect");
 
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
@@ -70,33 +67,36 @@ export default function RActiveCustomer() {
   useEffect(() => {
     getMikrotik(dispatch, userData?.id);
   }, [dispatch, userData?.id]);
-  useEffect(() => {
-    const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
-    const name = mtkId ? singleMik?.name : "";
-    setMikrotikId(mtkId);
-    const IDs = {
-      resellerId: userData?.id,
-      mikrotikId: mikrotik[0]?.id,
-    };
+  // useEffect(() => {
+  //   const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
+  //   console.log(mtkId);
+  //   const name = mtkId ? singleMik?.name : "";
+  //   setMikrotikId(mtkId);
+  //   const IDs = {
+  //     resellerId: userData?.id,
+  //     mikrotikId: selectedMikrotikId,
+  //   };
 
-    if (mtkId) {
-      dispatch(resetMikrotikUserAndPackage());
-      // fetchActivepppoeUser();
-      fetchActivepppoeUserForReseller(
-        dispatch,
-        IDs,
-        mikrotik[0]?.name,
-        setLoading
-      );
-    }
-  }, []);
+  //   if (mtkId) {
+  //     dispatch(resetMikrotikUserAndPackage());
+  //     // fetchActivepppoeUser();
+  //     fetchActivepppoeUserForReseller(
+  //       dispatch,
+  //       IDs,
+  //       singleMik?.name,
+  //       setLoading
+  //     );
+  //   }
+  // }, []);
 
   const selectMikrotikOptionsHandler = (e) => {
     const original = e.target.value;
-
+    if (!selectedMikrotikId) {
+      return 0;
+    }
     const IDs = {
       resellerId: userData.id,
-      mikrotikId: mikrotik[0]?.id,
+      mikrotikId: selectedMikrotikId,
     };
 
     dispatch(resetMikrotikUserAndPackage());
@@ -106,27 +106,42 @@ export default function RActiveCustomer() {
       fetchActivepppoeUserForReseller(
         dispatch,
         IDs,
-        mikrotik[0]?.name,
+        singleMik?.name,
         setLoading
       );
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (original === "showAllMikrotikUser") {
       // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0]?.name, setLoading);
+      fetchpppoeUserForReseller(dispatch, IDs, singleMik?.name, setLoading);
       setWhatYouWantToShow("showAllMikrotikUser");
     }
 
-    // setWhatYouWantToShow(original);
+    setWhatYouWantToShow(original);
   };
   const mikrotiSelectionHandler = (e) => {
     const original = e.target.value;
     setMikrotikId(original);
+    if (e) {
+      const singleMikTemp = mikrotik.find((item) => item.id === original)
+        ? mikrotik.find((item) => item.id === original)
+        : {};
+      setSingleMik(singleMikTemp);
+    } else {
+      setSingleMik({});
+    }
   };
   const [isRefrsh, setIsRefrsh] = useState(false);
   const refreshHandler = () => {
+    if (!selectedMikrotikId) {
+      toast.warn("মাইক্রোটিক সিলেক্ট করুন");
+      return 0;
+    } else if (whatYouWantToShow === "customerSelect") {
+      toast.warn("গ্রাহক সিলেক্ট করুন");
+      return 0;
+    }
     const IDs = {
       resellerId: userData.id,
-      mikrotikId: mikrotik[0]?.id,
+      mikrotikId: singleMik?.id,
     };
 
     dispatch(resetMikrotikUserAndPackage());
@@ -135,12 +150,12 @@ export default function RActiveCustomer() {
       fetchActivepppoeUserForReseller(
         dispatch,
         IDs,
-        mikrotik[0]?.name,
+        singleMik?.name,
         setLoading
       );
     } else if (whatYouWantToShow === "showAllMikrotikUser") {
       // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchpppoeUserForReseller(dispatch, IDs, mikrotik[0]?.name, setLoading);
+      fetchpppoeUserForReseller(dispatch, IDs, singleMik?.name, setLoading);
     }
   };
   const columns2 = React.useMemo(
@@ -325,17 +340,20 @@ export default function RActiveCustomer() {
                   <div className="addCollector">
                     <div className="activeuserselection">
                       <div className="LeftSideMikrotik">
-                        <h6>মাইক্রোটিক সিলেক্ট করুন</h6>
+                        {/* <h6>মাইক্রোটিক সিলেক্ট করুন</h6> */}
                         <select
-                          disabled={true}
                           id="selectMikrotikOption"
                           onChange={mikrotiSelectionHandler}
                           className="form-select"
                           style={{ marginBottom: "-10px" }}
                         >
+                          <option value={""}>মাইক্রোটিক সিলেক্ট</option>
                           {mikrotik.map((m) => {
                             return (
-                              <option selected={true} value={m.id}>
+                              <option
+                                selected={singleMik?.id === m.id}
+                                value={m.id}
+                              >
                                 {m.name}
                               </option>
                             );
@@ -343,12 +361,13 @@ export default function RActiveCustomer() {
                         </select>
                       </div>
                       <div className="rightSideMikrotik">
-                        <h6>গ্রাহক সিলেক্ট করুন</h6>
+                        {/* <h6>গ্রাহক সিলেক্ট করুন</h6> */}
                         <select
                           id="selectMikrotikOption"
                           onChange={selectMikrotikOptionsHandler}
                           className="form-select"
                         >
+                          <option value="customerSelect">গ্রাহক সিলেক্ট</option>
                           <option value="showActiveMikrotikUser">
                             এক্টিভ গ্রাহক
                           </option>
@@ -358,7 +377,7 @@ export default function RActiveCustomer() {
                         </select>
                       </div>
                       <div className="rightSideMikrotik">
-                        <h5>রিফ্রেশ করুন</h5>
+                        {/* <h5>রিফ্রেশ করুন</h5> */}
 
                         <div className="refreshIcon">
                           {isRefrsh ? (
@@ -373,43 +392,17 @@ export default function RActiveCustomer() {
                     </div>
 
                     {/* PPPoE users */}
-                    {whatYouWantToShow === "showActiveMikrotikUser" && (
-                      <Table columns={columns2} data={activeUser}></Table>
+                    {(whatYouWantToShow === "showActiveMikrotikUser" ||
+                      whatYouWantToShow === "customerSelect") && (
+                      <Table
+                        isLoading={loading}
+                        columns={columns2}
+                        data={activeUser}
+                      ></Table>
                     )}
 
                     {/* Active PPPoE users */}
                     {whatYouWantToShow === "showAllMikrotikUser" && (
-                      // <>
-                      //   <h2
-                      //     style={{
-                      //       width: "100%",
-                      //       textAlign: "center",
-                      //       marginTop: "50px",
-                      //     }}
-                      //   >
-                      //     সকল গ্রাহক
-                      //   </h2>
-                      //   <div
-                      //     className="LeftSideMikrotik"
-                      //     style={{
-                      //       widhth: "100%",
-                      //       display: "flex",
-                      //       alignItems: "center",
-                      //       justifyContent: "flex-end",
-                      //     }}
-                      //   >
-                      //     <select
-                      //       id="selectMikrotikOption"
-                      //       onChange={filterIt}
-                      //       className="form-select"
-                      //       style={{ marginBottom: "-10px" }}
-                      //     >
-                      //       <option value={""}>সকল গ্রাহক</option>;
-                      //       <option value={"true"}>অনলাইন</option>;
-                      //       <option value={"false"}>অফলাইন</option>;
-                      //     </select>
-                      //   </div>
-
                       <Table
                         isLoading={loading}
                         columns={columns3}

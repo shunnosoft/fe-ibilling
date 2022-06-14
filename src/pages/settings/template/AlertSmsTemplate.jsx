@@ -110,10 +110,10 @@ function AlertSmsTemplate() {
         [alertNum]: upperText + "\n" + bottomText,
       },
     };
-    if (!alertNum) {
-      toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
-      return 0;
-    }
+    // if (!alertNum) {
+    //   toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
+    //   return 0;
+    // }
     setLoading(true);
 
     try {
@@ -361,8 +361,12 @@ function AlertSmsTemplate() {
                 <option value="">টেমপ্লেট সিলেক্ট</option>
                 {smstempletDay
                   .filter((s, i) => days.includes(i + 1))
-                  .map((item) => {
-                    return <option value={item.value}>{item.name}</option>;
+                  .map((item, index) => {
+                    return (
+                      <option key={index} value={item.value}>
+                        {item.name}
+                      </option>
+                    );
                   })}
               </select>
             </div>
