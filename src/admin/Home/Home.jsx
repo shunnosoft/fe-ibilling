@@ -215,15 +215,26 @@ export default function Home() {
             </div>
           </div>
           <div className="card-body">
-            <select
-              className="form-select"
-              aria-label="Default select example"
-              onChange={(event) => setFilterStatus(event.target.value)}
-            >
-              <option selected>Select</option>
-              <option value="paid">Paid</option>
-              <option value="unpaid">Unpaid</option>
-            </select>
+            <div className="d-flex">
+              <select
+                className="form-select mt-0 me-3"
+                aria-label="Default select example"
+                onChange={(event) => setFilterStatus(event.target.value)}
+              >
+                <option selected>Select</option>
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+              </select>
+
+              <Link to={"/admin/all-comments"}>
+                <div className="all-comment-btn">
+                  <button className="btn btn-outline-success">
+                    All Comment
+                  </button>
+                </div>
+              </Link>
+            </div>
+
             <FontColor>
               <Table
                 isLoading={isLoading}

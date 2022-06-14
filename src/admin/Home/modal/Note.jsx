@@ -5,7 +5,12 @@ import { Pencil } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../components/common/Loader";
-import { addComment, getComments } from "../../../features/apiCallAdmin";
+import {
+  addComment,
+  getComments,
+  getSingleComment,
+  getSingleComments,
+} from "../../../features/apiCallAdmin";
 
 const Note = ({ ownerId, ownerName }) => {
   // import dispatch
@@ -16,7 +21,6 @@ const Note = ({ ownerId, ownerName }) => {
 
   // set name
   const [name, setName] = useState();
-  console.log(name);
 
   // set comment type
   const [commentType, setCommentType] = useState();
@@ -96,11 +100,15 @@ const Note = ({ ownerId, ownerName }) => {
 
   // get note api call
   useEffect(() => {
-    getComments(dispatch, setIsloading);
-  }, []);
+    if (ownerId) {
+      getSingleComments(dispatch, setIsloading, ownerId);
+    }
+  }, [ownerId]);
 
   // get all note in redux
-  const comments = useSelector((state) => state.admin?.comments);
+  const singleComment = useSelector(
+    (state) => state.admin?.singleComment?.results
+  );
 
   return (
     <>
@@ -141,7 +149,7 @@ const Note = ({ ownerId, ownerName }) => {
             <div className="modal-body">
               {/* model body here */}
 
-              {comments?.length > 0 && (
+              {singleComment?.length > 0 ? (
                 <>
                   <div
                     className="noteList container"
@@ -150,7 +158,7 @@ const Note = ({ ownerId, ownerName }) => {
                       overflowY: "auto",
                     }}
                   >
-                    {comments.map((data, key) => (
+                    {singleComment.map((data, key) => (
                       <>
                         <div className="comment-show">
                           <div className="d-flex">
@@ -190,6 +198,8 @@ const Note = ({ ownerId, ownerName }) => {
                     ))}
                   </div>
                 </>
+              ) : (
+                <div className="text-center">Data not Available !</div>
               )}
               <hr />
               <form>

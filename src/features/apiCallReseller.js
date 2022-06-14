@@ -145,7 +145,6 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
 };
 
 export const editCustomer = async (dispatch, data, setIsloading) => {
-  console.log(data);
   setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
   try {
@@ -366,13 +365,17 @@ export const getMikrotik = async (dispatch, resellerId) => {
 };
 
 export const fetchpppoePackage = async (dispatch, IDs) => {
+  console.log(IDs.mikrotikId);
   try {
     const res = await apiLink({
       method: "GET",
       url: `/mikrotik/ppp/package/${IDs.mikrotikId}`,
     });
+    console.log(res.data);
     dispatch(getpppoePackageSuccess(res.data));
-  } catch (error) {}
+  } catch (error) {
+    console.log(error.response);
+  }
 };
 
 export const rechargeHistoryfuncR = async (dispatch, resellerId) => {

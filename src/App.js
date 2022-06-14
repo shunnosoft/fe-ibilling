@@ -73,6 +73,7 @@ import RMessage from "./reseller/message/Message";
 import RSettings from "./reseller/settings/Settings";
 import RActiveCustomer from "./reseller/activeustomer/ActiveCustomer";
 import { toast } from "react-toastify";
+import AllComments from "./admin/allComments/AllComments";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -212,6 +213,16 @@ function App() {
                 )
               }
             />
+            <Route
+              path="/netfee"
+              element={
+                !user ? (
+                  <Landing></Landing>
+                ) : (
+                  <Navigate to={"/admin/all-comments"} />
+                )
+              }
+            />
             {/* <Route path="staff/:staffId" element={<StaffSalary />} /> */}
 
             <Route path="/*" element={<PrivateOutlet />}>
@@ -220,6 +231,7 @@ function App() {
                 path="admin/isp-owner/invoice-list/:ispOwnerId"
                 element={<InvoiceList />}
               />
+              <Route path="admin/all-comments" element={<AllComments />} />
 
               <Route path="*" element={<NotFound />} />
             </Route>

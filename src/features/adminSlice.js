@@ -1,9 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const adminSlice = createSlice({
   name: "admin",
   initialState: {
     ispOwners: [],
+    singleComment: [],
     comments: [],
   },
   reducers: {
@@ -16,10 +17,16 @@ const adminSlice = createSlice({
       ] = actions.payload;
       state.updateAdminSuccess = true;
     },
-    addCommentSuccess: (state, { payload }) => {
-      state.comments.push(payload);
+    getSingleCommentSuccess: (state, { payload }) => {
+      state.singleComment = payload;
     },
+    addCommentSuccess: (state, { payload }) => {
+      console.log(current(state));
+      state.singleComment.results.push(payload);
+    },
+
     getCommentsSuccess: (state, { payload }) => {
+      console.log(current(state));
       state.comments = payload;
     },
     // updateComment: (state, { payload }) => {
@@ -40,6 +47,7 @@ export const {
   getIspOwnersSuccess,
   editOwner,
   addCommentSuccess,
+  getSingleCommentSuccess,
   getCommentsSuccess,
 } = adminSlice.actions;
 

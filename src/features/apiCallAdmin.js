@@ -5,6 +5,7 @@ import {
   editOwner,
   addCommentSuccess,
   getCommentsSuccess,
+  getSingleCommentSuccess,
 } from "./adminSlice";
 import {
   getIspOwnerInvoicesSuccess,
@@ -43,7 +44,6 @@ export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
 export const getIspOwnerInvoice = async (ispOwnerId, dispatch) => {
   try {
     const res = await apiLink.get("/admin/invoices/" + ispOwnerId);
-    // console.log(res.data);
     dispatch(getIspOwnerInvoicesSuccess(res.data));
   } catch (error) {
     console.log(error);
@@ -74,11 +74,9 @@ export const editIspOwnerInvoice = async (
 
 // add comment
 export const addComment = async (data, setIsloading, dispatch) => {
-  console.log(data);
   try {
     setIsloading(true);
     const res = await apiLink.post(`admin/comment/`, data);
-    console.log(res.data.comment);
     toast.success("Note Added");
     setIsloading(false);
     dispatch(addCommentSuccess(res.data.comment));
@@ -87,13 +85,31 @@ export const addComment = async (data, setIsloading, dispatch) => {
   }
 };
 
+// get single comment
+export const getSingleComments = async (dispatch, setIsLoading, ownerId) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `admin/comment?ispOwner=${ownerId}&limit=${1000}&sortBy=${"Desc"}`
+    );
+    setIsLoading(false);
+    dispatch(getSingleCommentSuccess(res.data.comments));
+  } catch (error) {
+    setIsLoading(false);
+    console.log(error.response);
+  }
+};
+
+// get all comment
 export const getComments = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`admin/comment`);
+    const res = await apiLink.get(
+      `admin/comment?limit=${1000}&sortBy=${"DESC"}`
+    );
     console.log(res.data.comments);
     setIsLoading(false);
-    dispatch(getCommentsSuccess(res.data?.comments));
+    dispatch(getCommentsSuccess(res.data?.comments.results));
   } catch (error) {
     console.log(error.response);
   }

@@ -12,6 +12,7 @@ import Table from "../../../components/table/Table";
 import {
   ArchiveFill,
   CashStack,
+  PenFill,
   PersonFill,
   ThreeDots,
   Wallet,
@@ -20,6 +21,7 @@ import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
 import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
 import { deleteACustomer } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
+import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
 // get specific customer
 
 const ResellerCustomer = () => {
@@ -89,7 +91,7 @@ const ResellerCustomer = () => {
       ispID: ispOwner,
       customerID: ID,
     };
-    deleteACustomer(dispatch, IDs,true);
+    deleteACustomer(dispatch, IDs, true);
     setIsDeleting(false);
   };
 
@@ -179,22 +181,7 @@ const ResellerCustomer = () => {
 
               {/* <li
                 data-bs-toggle="modal"
-                data-bs-target="#collectCustomerBillModal"
-                onClick={() => {
-                  getSpecificCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <Wallet />
-                    <p className="actionP">বিল গ্রহণ</p>
-                  </div>
-                </div>
-              </li> */}
-
-              {/* <li
-                data-bs-toggle="modal"
-                data-bs-target="#customerEditModal"
+                data-bs-target="#CustomerEditModal"
                 onClick={() => {
                   getSpecificCustomer(original.id);
                 }}
@@ -306,6 +293,7 @@ const ResellerCustomer = () => {
       </div>
       <ResellerCustomerDetails single={singleCustomer} />
       <CustomerReport single={customerReportId} />
+      <ResellerCustomerEdit customerId={singleCustomer} />
     </>
   );
 };
