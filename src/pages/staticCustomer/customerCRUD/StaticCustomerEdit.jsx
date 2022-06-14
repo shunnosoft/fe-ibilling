@@ -67,7 +67,10 @@ export default function StaticCustomerEdit({ single }) {
     setMonthlyFee(customer?.monthlyFee);
     setSingleMikrotik(customer?.mikrotik);
     setMikrotikPackage(customer?.mikrotikPackage);
-    if (userType === "simple-queue") {
+    if (
+      userType === "simple-queue" &&
+      customer?.queue.type === "simple-queue"
+    ) {
       setUpMaxLimit(customer?.queue.maxLimit.split("/")[0]);
       setDownMaxLimit(customer?.queue.maxLimit.split("/")[1]);
     }
