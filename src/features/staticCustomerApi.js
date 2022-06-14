@@ -1,6 +1,9 @@
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
-import { addStaticCustomerSuccess } from "./customerSlice";
+import {
+  addStaticCustomerSuccess,
+  editStaticCustomerSuccess,
+} from "./customerSlice";
 
 export const addStaticCustomerApi = async (
   dispatch,
@@ -17,6 +20,28 @@ export const addStaticCustomerApi = async (
     dispatch(addStaticCustomerSuccess(res.data.customer));
     document.getElementById("addStaticCustomerModal").click();
     toast.success("কাস্টমার এড সফল হয়েছে");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+    console.log(error.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+export const updateStaticCustomerApi = async (
+  customerId,
+  dispatch,
+  data,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.patch(
+      `/ispOwner/static-customer/${data.ispOwner}/${customerId}`,
+      data
+    );
+    dispatch(editStaticCustomerSuccess(res.data.customer));
+    document.getElementById("editStaticCustomerModal").click();
+    toast.success("কাস্টমার আপডেট সফল হয়েছে");
   } catch (error) {
     toast.error(error.response?.data?.message);
     console.log(error.response?.data?.message);
