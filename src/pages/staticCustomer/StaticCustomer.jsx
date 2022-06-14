@@ -518,7 +518,7 @@ export default function Customer() {
                 ""
               )}
 
-              {/* {role === "ispOwner" && (
+              {role === "ispOwner" && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#editStaticCustomerModal"
@@ -533,7 +533,7 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-              )} */}
+              )}
               {role !== "collector" && (
                 <li
                   data-bs-toggle="modal"

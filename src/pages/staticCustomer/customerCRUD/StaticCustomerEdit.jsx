@@ -10,7 +10,7 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
-import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
+import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
 
 export default function StaticCustomerEdit({ single }) {
   const customer = useSelector((state) =>
@@ -35,7 +35,7 @@ export default function StaticCustomerEdit({ single }) {
   );
 
   // get all area
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
+  const areas = useSelector((state) => state?.persistedReducer?.area?.area);
 
   // get all mikrotik
   const Getmikrotik = useSelector(
@@ -47,6 +47,7 @@ export default function StaticCustomerEdit({ single }) {
       ? state?.persistedReducer?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
+
   const dispatch = useDispatch();
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
@@ -54,18 +55,41 @@ export default function StaticCustomerEdit({ single }) {
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(true);
-  const [subArea, setSubArea] = useState("");
+  const [area, setArea] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState();
-  // const [area,setArea]=useState("")
+  const [qDisable, setQdisable] = useState();
   // customer validator
-
   useEffect(() => {
     setMonthlyFee(customer?.monthlyFee);
+    setSingleMikrotik(customer?.mikrotik);
+    setMikrotikPackage(customer?.mikrotikPackage);
+    if (userType === "simple-queue") {
+      setUpMaxLimit(customer?.queue.maxLimit.split("/")[0]);
+      setDownMaxLimit(customer?.queue.maxLimit.split("/")[1]);
+    }
+    setQdisable(customer?.queue.disabled);
+    areas?.forEach((item) => {
+      item.subAreas?.forEach((sub) => {
+        if (sub.id === customer?.subArea) {
+          return setArea(item);
+        }
+      });
+    });
   }, [customer]);
+
+  useEffect(() => {
+    const IDs = {
+      ispOwner: ispOwnerId,
+      mikrotikId: customer?.mikrotik,
+    };
+    if (bpSettings?.hasMikrotik) {
+      fetchPackagefromDatabase(dispatch, IDs);
+    }
+  }, [customer?.mikrotik]);
 
   useEffect(() => {
     setBillDate(
@@ -108,11 +132,11 @@ export default function StaticCustomerEdit({ single }) {
   // select subArea
   const selectSubArea = (data) => {
     const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
+    if (areas) {
+      const temp = areas.find((val) => {
         return val.id === areaId;
       });
-      setSubArea(temp);
+      setArea(temp);
     }
   };
 
@@ -161,27 +185,20 @@ export default function StaticCustomerEdit({ single }) {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    // console.log(data);
-    const subArea2 = document.getElementById("subAreaId").value;
-    if (subArea2 === "") {
-      setIsloading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
-    }
     const { balance, ipAddress, queueName, target, ...rest } = data;
     const mainData = {
-      paymentStatus: "unpaid",
-      subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
-      billPayType: "prepaid",
       autoDisable: autoDisable,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
       balance: -balance,
       ...rest,
+      monthlyFee: monthlyFee,
     };
+
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
     }
@@ -192,6 +209,7 @@ export default function StaticCustomerEdit({ single }) {
         type: userType,
         address: ipAddress,
         list: "allow_ip",
+        disabled: qDisable,
       };
     }
     if (userType === "simple-queue") {
@@ -201,12 +219,11 @@ export default function StaticCustomerEdit({ single }) {
         type: userType,
         target,
         maxLimit: `${maxUpLimit}/${maxDownLimit}`,
+        disabled: qDisable,
       };
     }
+    updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
-
-  console.log(customer);
-
   return (
     <div>
       <div
@@ -259,6 +276,7 @@ export default function StaticCustomerEdit({ single }) {
                           className="form-select mw-100"
                           aria-label="Default select example"
                           onChange={selectMikrotik}
+                          disabled
                         >
                           <option value="">...</option>
                           {Getmikrotik.length === undefined
@@ -282,10 +300,14 @@ export default function StaticCustomerEdit({ single }) {
                           onChange={selectSubArea}
                         >
                           <option value="">...</option>
-                          {area.length === undefined
+                          {areas.length === undefined
                             ? ""
-                            : area.map((val, key) => (
-                                <option key={key} value={val.id}>
+                            : areas.map((val, key) => (
+                                <option
+                                  selected={val.id === area?.id}
+                                  key={key}
+                                  value={val.id}
+                                >
                                   {val.name}
                                 </option>
                               ))}
@@ -293,8 +315,8 @@ export default function StaticCustomerEdit({ single }) {
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <p>
-                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
-                          সিলেক্ট করুন
+                          {area ? area.name + " এর - " : ""} সাব-এরিয়া সিলেক্ট
+                          করুন
                         </p>
                         <select
                           className="form-select mw-100"
@@ -303,16 +325,22 @@ export default function StaticCustomerEdit({ single }) {
                           id="subAreaId"
                         >
                           <option value="">...</option>
-                          {subArea?.subAreas
-                            ? subArea.subAreas.map((val, key) => (
-                                <option
-                                  selected={val.id === customer?.subArea}
-                                  key={key}
-                                  value={val.id}
-                                >
-                                  {val.name}
-                                </option>
-                              ))
+                          {area?.subAreas
+                            ? area.subAreas.map((val, key) => {
+                                // console.log({
+                                //   value: val.id,
+                                //   customer: customer?.subArea,
+                                // });
+                                return (
+                                  <option
+                                    selected={val.id === customer?.subArea}
+                                    key={key}
+                                    value={val.id}
+                                  >
+                                    {val.name}
+                                  </option>
+                                );
+                              })
                             : ""}
                         </select>
                       </div>
@@ -363,7 +391,13 @@ export default function StaticCustomerEdit({ single }) {
                                 ppPackage?.map(
                                   (val, key) =>
                                     val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
+                                      <option
+                                        selected={
+                                          val.id === customer?.mikrotikPackage
+                                        }
+                                        key={key}
+                                        value={val.id}
+                                      >
                                         {val.name}
                                       </option>
                                     )
@@ -390,7 +424,13 @@ export default function StaticCustomerEdit({ single }) {
                                 ppPackage?.map(
                                   (val, key) =>
                                     val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
+                                      <option
+                                        selected={
+                                          val.id === customer?.mikrotikPackage
+                                        }
+                                        key={key}
+                                        value={val.id}
+                                      >
                                         {val.name}
                                       </option>
                                     )
@@ -416,7 +456,13 @@ export default function StaticCustomerEdit({ single }) {
                                 ppPackage?.map(
                                   (val, key) =>
                                     val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
+                                      <option
+                                        selected={
+                                          val.id === customer?.mikrotikPackage
+                                        }
+                                        key={key}
+                                        value={val.id}
+                                      >
                                         {val.name}
                                       </option>
                                     )
@@ -443,13 +489,16 @@ export default function StaticCustomerEdit({ single }) {
                             />
                           </div>
                         )}
-                        {/* <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label="জাতীয় পরিচয়পত্র নং"
-                            name="nid"
-                          />
-                        </div> */}
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <div className="autoDisable">
+                            <label>সংযোগ বন্ধ</label>
+                            <input
+                              type="checkBox"
+                              checked={qDisable}
+                              onChange={(e) => setQdisable(e.target.checked)}
+                            />
+                          </div>
+                        </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col-lg-4 col-md-4 col-xs-6">
