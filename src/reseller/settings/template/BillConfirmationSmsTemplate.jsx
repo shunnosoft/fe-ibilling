@@ -24,7 +24,7 @@ function BillConfirmationSmsTemplate() {
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
-
+  console.log(bottomText);
   const [billConfirmation, setBillConfirmation] = useState("");
   const [billconfarmationparametres, setbillconparametres] = useState([]);
   const [matchFound, setMatchFound] = useState([]);
@@ -125,7 +125,7 @@ function BillConfirmationSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
 
-    setBottomText(messageBoxStr?.trim());
+    setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
 
     fixedvalues.map((i) => {
       if (settings?.sms?.template?.billConfirmation?.includes(i)) {

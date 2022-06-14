@@ -121,7 +121,7 @@ function BillConfirmationSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
 
-    setBottomText(messageBoxStr?.trim());
+    setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
 
     fixedvalues.map((i) => {
       if (settings?.sms?.template?.billConfirmation?.includes(i)) {
