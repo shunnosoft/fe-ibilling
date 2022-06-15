@@ -11,7 +11,8 @@ import {
   Coin,
 } from "react-bootstrap-icons";
 // internal imports
-import "./home.css";
+// import "./home.css";
+import "../Home/home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { cardData, monthsName } from "./homeData";
 import { getCollector } from "../../features/apiCallReseller";
@@ -271,15 +272,34 @@ export default function Home() {
           {/* <h2 className="dashboardTitle mt-2">কালেকশন</h2> */}
           <br />
           <FourGround>
-            <div className="ChartsHeader">
-              <h3 className="chartTitle">কালেকশন</h3>
+            <div className="ChartsHeadernew">
+              <div className="selectGraph">
+                <h3>কালেকশন</h3>
+                <div>
+                  <input
+                    type="radio"
+                    name="graphSelectRadio"
+                    checked={showGraphData === "amount" && "checked"}
+                    onChange={() => setShowGraphData("amount")}
+                  />
+                   <label htmlFor="html">এমাউন্ট</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    name="graphSelectRadio"
+                    onChange={() => setShowGraphData("bill")}
+                  />
+                    <label htmlFor="css">বিল</label>
+                </div>
+              </div>
 
-              <div className="ChartsFilter">
+              <div className="ChartsFilternew">
                 {role === "collector" ? (
                   ""
                 ) : (
                   <select
-                    className="form-select"
+                    className="form-select chartFilteritem"
                     onChange={(e) => setCurrentCollector(e.target.value)}
                   >
                     <option value="">সকল কালেক্টর</option>
@@ -292,14 +312,14 @@ export default function Home() {
                 )}
 
                 <select
-                  className="form-select"
+                  className="form-select chartFilteritem"
                   onChange={(e) => setYear(e.target.value)}
                 >
                   <option value={Year}>{Year}</option>
                   <option value={Year - 1}>{Year - 1}</option>
                 </select>
                 <select
-                  className="form-select"
+                  className="form-select chartFilteritem"
                   value={Month}
                   onChange={(e) => setMonth(e.target.value)}
                 >
@@ -314,7 +334,7 @@ export default function Home() {
                   ))}
                 </select>
                 <button
-                  className="btn btn-success mt-2"
+                  className="btn btn-success mt-2 chartFilteritem"
                   type="button"
                   onClick={handleFilterHandler}
                 >
@@ -324,21 +344,7 @@ export default function Home() {
             </div>
 
             {/* select graph */}
-            <div className="selectGraph">
-              <input
-                type="radio"
-                name="graphSelectRadio"
-                checked={showGraphData === "amount" && "checked"}
-                onChange={() => setShowGraphData("amount")}
-              />
-               <label htmlFor="html">এমাউন্ট</label>
-              <input
-                type="radio"
-                name="graphSelectRadio"
-                onChange={() => setShowGraphData("bill")}
-              />
-                <label htmlFor="css">বিল</label>
-            </div>
+
             <div className="lineChart">
               <Line
                 data={chartsData}

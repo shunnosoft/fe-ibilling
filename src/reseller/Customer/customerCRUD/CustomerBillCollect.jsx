@@ -21,7 +21,7 @@ export default function CustomerBillCollect({ single }) {
   const ispOwner = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const currentUser = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser
   );
@@ -44,6 +44,7 @@ export default function CustomerBillCollect({ single }) {
       amount: formValue.amount,
       collectedBy: currentUser?.user.role,
       billType: billType,
+      name: userData.name,
       customer: data?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,

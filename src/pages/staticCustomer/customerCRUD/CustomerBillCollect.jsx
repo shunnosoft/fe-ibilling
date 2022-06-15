@@ -14,7 +14,7 @@ export default function CustomerBillCollect({ single }) {
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
-
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
   // find editable data
   const data = customer.find((item) => item.id === single);
 
@@ -44,6 +44,7 @@ export default function CustomerBillCollect({ single }) {
       amount: formValue.amount,
       collectedBy: currentUser?.user.role,
       billType: billType,
+      name: userData.name,
       customer: data?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,

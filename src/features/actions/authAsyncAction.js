@@ -87,31 +87,6 @@ export const asyncLogin = async (dispatch, loginData) => {
 // };
 
 export const userLogout = async () => {
-  try {
-    await publicRequest.post("/auth/logout");
-
-    // dispatch(clearCustomer());
-    // dispatch(clearArea());
-    // dispatch(clearManager());
-    // dispatch(clearCollector());
-    // dispatch(clearMikrotik());
-    // dispatch(clearChart());
-    // dispatch(clearBills());
-    // dispatch(clearReseller());
-    // dispatch(logOut());
-    localStorage.clear();
-    window.location.reload();
-  } catch (error) {
-    // dispatch(clearCustomer());
-    // dispatch(clearArea());
-    // dispatch(clearManager());
-    // dispatch(clearCollector());
-    // dispatch(clearMikrotik());
-    // dispatch(clearChart());
-    // dispatch(clearBills());
-    // dispatch(clearReseller());
-    // dispatch(logOut());
-    localStorage.clear();
-    window.location.reload();
-  }
+  localStorage.clear();
+  window.location.reload();
 };

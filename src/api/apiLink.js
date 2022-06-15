@@ -5,13 +5,15 @@ import { userLogout } from "../features/actions/authAsyncAction";
 // PRODUCTION
 const BASE_URL = "https://netfeebd.net/api/v1/";
 
-// DEVELOPMENT
-// const BASE_URL = "http://137.184.69.182/api/v1/";
+//sohan
+// const BASE_URL = "http://192.168.1.11:3030/api/v1/";
 
 // LOCAL vai
 // const BASE_URL = "http://192.168.1.26:3030/api/v1/";
 
+//OwnS
 // const BASE_URL = "http://localhost:3030/api/v1/";
+// const BASE_URL = "http://137.184.69.182/api/v1/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
 // const access = user && JSON.parse(user)?.access;
@@ -37,20 +39,20 @@ const apiLink = axios.create({
 
 // export default apiLink;
 
-const refreshToken = async () => {
-  try {
-    const res = await publicRequest.post("auth/refresh-tokens");
-    // console.log(res.data)
-    localStorage.setItem("netFeeToken", JSON.stringify(res.data?.access.token));
-    return res.data?.access.token;
-  } catch (err) {
-    // console.log(err)
-    // console.log("logged OUt for refresh route")
-    if (err) {
-      userLogout();
-    }
-  }
-};
+// const refreshToken = async () => {
+//   try {
+//     const res = await publicRequest.post("auth/refresh-tokens");
+//     // console.log(res.data)
+//     localStorage.setItem("netFeeToken", JSON.stringify(res.data?.access.token));
+//     return res.data?.access.token;
+//   } catch (err) {
+//     // console.log(err)
+//     // console.log("logged OUt for refresh route")
+//     if (err) {
+//       userLogout();
+//     }
+//   }
+// };
 
 // const axiosJWT = axios.create()
 
@@ -61,11 +63,12 @@ apiLink.interceptors.request.use(
     const decodedToken = jwt_decode(TOKEN);
 
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      await refreshToken();
+      // await refreshToken();
       // config.baseURL = BASE_URL;
-      const TOKEN = await JSON.parse(localStorage.getItem("netFeeToken"));
+      // const TOKEN = await JSON.parse(localStorage.getItem("netFeeToken"));
 
-      config.headers["authorization"] = "Bearer " + TOKEN;
+      // config.headers["authorization"] = "Bearer " + TOKEN;
+      userLogout();
     } else {
       config.headers["authorization"] = "Bearer " + TOKEN;
     }

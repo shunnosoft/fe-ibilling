@@ -147,7 +147,7 @@ const ResellerCustomer = () => {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YY hh:mm A");
+          return moment(value).format("MMMM DD YYYY hh:mm A");
         },
       },
 
