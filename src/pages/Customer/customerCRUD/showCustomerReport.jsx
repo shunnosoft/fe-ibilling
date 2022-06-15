@@ -87,6 +87,7 @@ export default function CustomerReport({ single }) {
                   <thead>
                     <tr className="spetialSortingRow">
                       <th scope="col">প্যাকেজ</th>
+                      <th scope="col">কালেক্টর</th>
                       <th scope="col">বিল</th>
                       <th scope="col">তারিখ</th>
                       <th scope="col">সময়</th>
@@ -98,10 +99,10 @@ export default function CustomerReport({ single }) {
                       <TdLoader colspan={5} />
                     ) : customerReport.length > 0 ? (
                       customerReport.map((val, index) => {
-                        console.log(val);
                         return (
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>
+                            <td>{val.name}</td>
                             <td>{FormatNumber(val.amount)}</td>
                             <td>
                               {moment(val.createdAt).format("DD-MM-YYYY")}

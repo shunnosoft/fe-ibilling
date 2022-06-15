@@ -94,7 +94,7 @@ export default function Header(props) {
                   >
                     ব্যালান্সঃ
                     <strong className="mainsmsbalance">
-                      {rechargeBalnace}
+                      {Math.round(rechargeBalnace)}
                     </strong>
                   </div>
                   <div
