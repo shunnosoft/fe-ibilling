@@ -43,11 +43,17 @@ export default function CustomerEdit({ single }) {
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
+  // initial package rate
+  const [dataPackageRate, setDataPackageRate] = useState();
+
+  // initial fix package rate
+  const [fixPackageRate, setFixPackageRate] = useState();
 
   useEffect(() => {
     setAreaID(data?.subArea);
     setStatus(data?.status);
     setAutoDisable(data?.autoDisable);
+    setDataPackageRate(data?.mikrotikPackage);
 
     setSubArea(data?.subArea);
     setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
@@ -112,35 +118,43 @@ export default function CustomerEdit({ single }) {
     // setAreaID(single?.subArea);
   };
 
-  // reseller upper package select function
-  const getPackageByte = (value) => {
-    let currentPackage = data.pppoe.profile.toLowerCase();
+  // // reseller upper package select function
+  // const getPackageByte = (value) => {
+  //   let currentPackage = data.pppoe.profile.toLowerCase();
 
-    const getLetter = value.toLowerCase();
+  //   const getLetter = value.toLowerCase();
 
-    if (currentPackage.indexOf("m") !== -1) {
-      currentPackage = currentPackage.slice(0, currentPackage.indexOf("m") + 1);
-      if (getLetter.indexOf("k") !== -1) {
-        return false;
-      } else {
-        return (
-          parseInt(getLetter.replace("m", "000000")) >=
-          parseInt(currentPackage.replace("m", "000000"))
-        );
-      }
-    }
+  //   if (currentPackage.indexOf("m") !== -1) {
+  //     currentPackage = currentPackage.slice(0, currentPackage.indexOf("m") + 1);
+  //     if (getLetter.indexOf("k") !== -1) {
+  //       return false;
+  //     } else {
+  //       return (
+  //         parseInt(getLetter.replace("m", "000000")) >=
+  //         parseInt(currentPackage.replace("m", "000000"))
+  //       );
+  //     }
+  //   }
 
-    if (currentPackage.indexOf("k") !== -1) {
-      if (getLetter.indexOf("k") !== -1) {
-        return (
-          parseInt(getLetter.replace("k", "000")) >=
-          parseInt(currentPackage.replace("k", "000"))
-        );
-      } else {
-        return true;
-      }
-    }
-  };
+  //   if (currentPackage.indexOf("k") !== -1) {
+  //     if (getLetter.indexOf("k") !== -1) {
+  //       return (
+  //         parseInt(getLetter.replace("k", "000")) >=
+  //         parseInt(currentPackage.replace("k", "000"))
+  //       );
+  //     } else {
+  //       return true;
+  //     }
+  //   }
+  // };
+
+  // find profile package
+  const findPackage = ppPackage.find((item) => item.id === dataPackageRate);
+
+  // set package rate in state
+  useEffect(() => {
+    setFixPackageRate(findPackage?.rate);
+  }, [findPackage?.rate]);
 
   // sending data to backed
   const customerHandler = async (formValue) => {
@@ -252,16 +266,18 @@ export default function CustomerEdit({ single }) {
                         >
                           {ppPackage &&
                             ppPackage?.map(
-                              (val, key) =>
-                                getPackageByte(val.name) && (
-                                  <option
-                                    selected={val.id === packageRate?.id}
-                                    key={key}
-                                    value={val.id || ""}
-                                  >
-                                    {val.name}
-                                  </option>
-                                )
+                              (val, key) => (
+                                // getPackageByte(val.name) && (
+                                <option
+                                  selected={val.id === packageRate?.id}
+                                  disabled={val.rate <= findPackage?.rate}
+                                  key={key}
+                                  value={val.id || ""}
+                                >
+                                  {val.name}
+                                </option>
+                              )
+                              // )
                             )}
                         </select>
                       </div>

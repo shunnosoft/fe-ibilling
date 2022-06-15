@@ -6,61 +6,86 @@ import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { fetchpppoePackage } from "../../../features/apiCalls";
 import { editResellerCustomer } from "../../../features/resellerCustomerAdminApi";
-// import { fetchpppoePackage } from "../../../features/apiCallReseller";
 
 const ResellerCustomerEdit = ({ customerId }) => {
+  // import dispatch
   const dispatch = useDispatch();
+
+  // initial loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // initial package state
   const [packageId, setPackageId] = useState();
-  console.log(packageId);
+
+  // initial package rate
+  const [packageRate, setPackageRate] = useState();
+
+  // initial fix package rate
+  const [fixPackageRate, setFixPackageRate] = useState();
+
   // get all data from redux state
   const resellerCustomer = useSelector(
     (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
   );
 
+  // get single customer
   const data = resellerCustomer.find((item) => item.id === customerId);
-  console.log(data);
 
+  // get mikrotik
   const getMikrotik = useSelector(
     (state) => state.persistedReducer?.mikrotik?.mikrotik
   );
-
-  console.log(getMikrotik);
-
+  // get single mikrotik
   const singleMikrotik = getMikrotik.find((item) => item.id === data?.mikrotik);
-  console.log(singleMikrotik?.id);
 
   useEffect(() => {
+    // set package id in package state
     setPackageId(data?.mikrotikPackage);
+
+    setPackageRate(data?.mikrotikPackage);
+
     if (singleMikrotik) {
       const IDs = {
         ispOwner: data?.ispOwner,
         mikrotikId: singleMikrotik?.id,
       };
+
+      // get package api call
       fetchpppoePackage(dispatch, IDs, singleMikrotik?.name);
     }
   }, [singleMikrotik?.id]);
-  console.log(singleMikrotik);
 
+  // get PPPoE package from state
   const ppPackage = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
-  console.log(ppPackage);
 
+  // find single package
+  const packages = ppPackage.find((item) => item.id === packageId);
+
+  // find profile package
+  const findPackage = ppPackage.find((item) => item.id === packageRate);
+
+  // set package rate in state
+  useEffect(() => {
+    setFixPackageRate(findPackage?.rate);
+  }, [findPackage?.rate]);
+
+  // handle submit
   const handleSubmit = () => {
     const sendingData = {
       mikrotik: singleMikrotik?.id,
       mikrotikPackage: packageId,
+      monthlyFee: packages?.rate,
       pppoe: {
         name: data?.pppoe?.name,
         password: data?.pppoe?.password,
         service: data?.pppoe?.service,
         comment: data?.pppoe?.comment,
-        profile: data?.pppoe?.profile,
+        profile: packages?.name,
         disabled: data?.pppoe?.disabled,
       },
     };
-    console.log(sendingData);
     editResellerCustomer(
       dispatch,
       sendingData,
@@ -92,54 +117,81 @@ const ResellerCustomerEdit = ({ customerId }) => {
             ></button>
           </div>
           <div className="modal-body">
-            <p className="comstomerFieldsTitle">মাইক্রোটিক সিলেক্ট করুন</p>
-            <select
-              className="form-select"
-              aria-label="Default select example"
-              // onChange={selectMikrotik}
-              disabled
-              value={data?.mikrotik || ""}
-            >
-              <option value={singleMikrotik?.id || ""}>
-                {singleMikrotik?.name || ""}
-              </option>
-            </select>
-            <div>
-              <p className="comstomerFieldsTitle">প্যাকেজ সিলেক্ট করুন</p>
-              <select
-                className="form-select mb-3"
-                aria-label="Default select example"
-                onChange={(event) => setPackageId(event.target.value)}
-              >
-                {ppPackage &&
-                  ppPackage?.map((item, key) => (
-                    <option
-                      selected={item.id === data?.mikrotikPackage}
-                      key={key}
-                      value={item.id || ""}
-                    >
-                      {item.name}
+            <div className="wrapper-body">
+              <div class="align-items-center">
+                <div class="col-auto">
+                  <label class="form-label mb-0">মাইক্রোটিক সিলেক্ট</label>
+                </div>
+                <div className="col-auto">
+                  <select
+                    className="form-select mt-0 mb-3 mw-100"
+                    aria-label="Default select example"
+                    disabled
+                    value={data?.mikrotik || ""}
+                  >
+                    <option value={singleMikrotik?.id || ""}>
+                      {singleMikrotik?.name || ""}
                     </option>
-                  ))}
-              </select>
+                  </select>
+                </div>
+              </div>
+
+              <div class=" align-items-center">
+                <div class="col-auto">
+                  <label class="form-label mb-0">প্যাকেজ সিলেক্ট</label>
+                </div>
+                <div className="col-auto">
+                  <select
+                    className="form-select mb-3 mt-0 mw-100"
+                    aria-label="Default select example"
+                    onChange={(event) => setPackageId(event.target.value)}
+                  >
+                    {ppPackage &&
+                      ppPackage?.map((item, key) => (
+                        <option
+                          selected={item.id === data?.mikrotikPackage}
+                          key={key}
+                          disabled={item.rate >= findPackage?.rate}
+                          value={item.id || ""}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+
+              <div class="align-items-center">
+                <div class="col-auto">
+                  <label class="form-label mb-0">মাসিক ফি</label>
+                </div>
+                <div class="col-auto">
+                  <input
+                    disabled
+                    type="text"
+                    class="form-control"
+                    value={packages?.rate}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="modal-footer" style={{ border: "none" }}>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-                disabled={isLoading}
-              >
-                বাতিল করুন
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="btn btn-success"
-                disabled={isLoading}
-              >
-                {isLoading ? <Loader /> : "সাবমিট"}
-              </button>
-            </div>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              data-bs-dismiss="modal"
+              disabled={isLoading}
+            >
+              বাতিল
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : "সাবমিট"}
+            </button>
           </div>
         </div>
       </div>

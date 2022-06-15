@@ -36,6 +36,7 @@ import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
 import { Link } from "react-router-dom";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
 
 export default function Reseller() {
   const dispatch = useDispatch();
@@ -47,12 +48,10 @@ export default function Reseller() {
 
   const [singleUser, setSingleUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [rsearch, setRsearch] = useState("");
   const reseller = useSelector(
     (state) => state.persistedReducer?.reseller?.reseller
   );
 
-  let serial = 0;
   useEffect(() => {
     if (auth.ispOwner) {
       fetchReseller(dispatch, auth.ispOwner.id);
@@ -71,11 +70,6 @@ export default function Reseller() {
   const handleSingleMessage = (resellerID) => {
     setResellerSmsId(resellerID);
   };
-
-  // const resellerCustomer = (resellerId) => {
-  //   console.log(resellerId);
-
-  // };
 
   // delete reseller
   const deleteSingleReseller = async (ispId, resellerId) => {

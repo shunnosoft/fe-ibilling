@@ -28,6 +28,8 @@ const ResellerCustomer = () => {
   const [singleCustomer, setSingleCustomer] = useState("");
   // get specific customer Report
   const [customerReportId, setcustomerReportId] = useState([]);
+
+  // delete state
   const [isDelete, setIsDeleting] = useState(false);
 
   // get isp owner id
@@ -130,6 +132,10 @@ const ResellerCustomer = () => {
         },
       },
       {
+        Header: "প্যাকেজ",
+        accessor: "pppoe.profile",
+      },
+      {
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
       },
@@ -179,7 +185,7 @@ const ResellerCustomer = () => {
                 </div>
               </li>
 
-              {/* <li
+              <li
                 data-bs-toggle="modal"
                 data-bs-target="#CustomerEditModal"
                 onClick={() => {
@@ -192,7 +198,7 @@ const ResellerCustomer = () => {
                     <p className="actionP">এডিট</p>
                   </div>
                 </div>
-              </li> */}
+              </li>
 
               <li
                 data-bs-toggle="modal"
