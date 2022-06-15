@@ -227,12 +227,15 @@ export default function StaticCustomerEdit({ single }) {
       };
     }
     if (!qDisable) {
-      mainData.status = "active";
+      sendingData.status = "active";
+    } else {
+      sendingData.status = "inactive";
     }
+
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
 
-  console.log(customer);
+  // console.log(customer);
 
   return (
     <div>
@@ -591,21 +594,23 @@ export default function StaticCustomerEdit({ single }) {
                           </label>
                         </div>
 
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            id="inlineRadio2"
-                            checked={customer?.status === "expired"}
-                            disabled
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            এক্সপায়ার্ড
-                          </label>
-                        </div>
+                        {customer?.status === "expired" && (
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              id="inlineRadio2"
+                              checked={customer?.status === "expired"}
+                              disabled
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="inlineRadio2"
+                            >
+                              এক্সপায়ার্ড
+                            </label>
+                          </div>
+                        )}
                       </div>
                       <div className="modal-footer" style={{ border: "none" }}>
                         <button
