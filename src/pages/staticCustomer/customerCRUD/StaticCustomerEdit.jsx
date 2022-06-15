@@ -54,7 +54,7 @@ export default function StaticCustomerEdit({ single }) {
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
-  const [autoDisable, setAutoDisable] = useState(true);
+  const [autoDisable, setAutoDisable] = useState();
   const [area, setArea] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
@@ -64,6 +64,7 @@ export default function StaticCustomerEdit({ single }) {
   const [qDisable, setQdisable] = useState();
   // customer validator
   useEffect(() => {
+    setAutoDisable(customer?.autoDisable);
     setMonthlyFee(customer?.monthlyFee);
     setSingleMikrotik(customer?.mikrotik);
     setMikrotikPackage(customer?.mikrotikPackage);
@@ -225,8 +226,14 @@ export default function StaticCustomerEdit({ single }) {
         disabled: qDisable,
       };
     }
+    if (!qDisable) {
+      mainData.status = "active";
+    }
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
+
+  console.log(customer);
+
   return (
     <div>
       <div
@@ -365,6 +372,7 @@ export default function StaticCustomerEdit({ single }) {
                             type="text"
                             label="আইপি এড্রেস"
                             name="target"
+                            className=""
                           />
                         )}
                         {userType === "firewall-queue" && (
@@ -418,7 +426,7 @@ export default function StaticCustomerEdit({ single }) {
                             </p>
                             <select
                               name="upPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-50 mb-3"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -450,7 +458,7 @@ export default function StaticCustomerEdit({ single }) {
                             </p>
                             <select
                               name="downPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-50 mb-3"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -554,7 +562,9 @@ export default function StaticCustomerEdit({ single }) {
                             type="radio"
                             name="staus"
                             value={"active"}
-                            checked={!qDisable}
+                            checked={
+                              !qDisable && customer?.status !== "expired"
+                            }
                             onChange={(e) => setQdisable(false)}
                           />
                           <label
@@ -570,7 +580,7 @@ export default function StaticCustomerEdit({ single }) {
                             type="radio"
                             id="inlineRadio2"
                             value={"inactive"}
-                            checked={qDisable}
+                            checked={qDisable && customer?.status !== "expired"}
                             onChange={(e) => setQdisable(true)}
                           />
                           <label
@@ -580,12 +590,14 @@ export default function StaticCustomerEdit({ single }) {
                             ইন-এক্টিভ
                           </label>
                         </div>
-                        {/* <div className="form-check form-check-inline">
+
+                        <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
                             type="radio"
                             id="inlineRadio2"
                             checked={customer?.status === "expired"}
+                            disabled
                           />
                           <label
                             className="form-check-label"
@@ -593,7 +605,7 @@ export default function StaticCustomerEdit({ single }) {
                           >
                             এক্সপায়ার্ড
                           </label>
-                        </div> */}
+                        </div>
                       </div>
                       <div className="modal-footer" style={{ border: "none" }}>
                         <button

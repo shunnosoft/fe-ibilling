@@ -54,6 +54,7 @@ export default function CustomerReport({ single }) {
                   <thead>
                     <tr className="spetialSortingRow">
                       <th scope="col">বিল</th>
+                      <th scope="col">কালেক্টর</th>
                       <th scope="col">তারিখ</th>
                       <th scope="col">সময়</th>
                     </tr>
@@ -62,6 +63,7 @@ export default function CustomerReport({ single }) {
                     {customerReport?.map((val, index) => (
                       <tr className="spetialSortingRow" key={index}>
                         <td>{FormatNumber(val.amount)}</td>
+                        <td>{val.name}</td>
                         <td>{moment(val.createdAt).format("DD-MM-YYYY")}</td>
                         <td>{moment(val.createdAt).format("hh:mm:ss A")}</td>
                       </tr>

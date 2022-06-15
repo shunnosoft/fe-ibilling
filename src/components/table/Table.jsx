@@ -1,5 +1,5 @@
 // import React from "react";
-import React, { useEffect } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import { Pagination } from "react-bootstrap";
 import { ArrowDownUp } from "react-bootstrap-icons";
 // import { Pagination, Pagination.Item, PaginationLink } from "reactstrap";
@@ -8,10 +8,31 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
+  useRowSelect,
 } from "react-table";
 import TdLoader from "../common/TdLoader";
-import { badge } from "../common/Utils";
 import GlobalFilter from "./GlobalFilter";
+
+// const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
+//   const defaultRef = useRef();
+//   const resolvedRef = ref || defaultRef;
+
+//   useEffect(() => {
+//     resolvedRef.current.indeterminate = indeterminate;
+//   }, [resolvedRef, indeterminate]);
+
+//   return (
+//     <>
+//       <input
+//         class="form-check-input"
+//         type="checkbox"
+//         id="selectRows"
+//         ref={resolvedRef}
+//         {...rest}
+//       />
+//     </>
+//   );
+// });
 const Table = (props) => {
   const { columns, data, isLoading, customComponent } = props;
   const {
@@ -29,17 +50,41 @@ const Table = (props) => {
     setPageSize,
     state,
     setGlobalFilter,
+    selectedFlatRows,
   } = useTable(
     { columns, data, autoResetGlobalFilter: false },
     useGlobalFilter,
     useSortBy,
-    usePagination
+    usePagination,
+    useRowSelect
+    // (hooks) => {
+    //   hooks.visibleColumns.push((columns) => [
+    //     {
+    //       id: "selection",
+    //       Header: ({ getToggleAllPageRowsSelectedProps }) => (
+    //         <div>
+    //           <IndeterminateCheckbox
+    //             customeStyle={true}
+    //             {...getToggleAllPageRowsSelectedProps()}
+    //           />
+    //           &nbsp; Select All
+    //         </div>
+    //       ),
+    //       Cell: ({ row }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    //         </div>
+    //       ),
+    //     },
+    //     ...columns,
+    //   ]);
+    // }
   );
   useEffect(() => {
     setPageSize(100);
   }, []);
 
-  const { globalFilter, pageIndex, pageSize } = state;
+  const { globalFilter, pageIndex, pageSize, selectedRowIds } = state;
   return (
     <>
       <GlobalFilter
@@ -60,7 +105,9 @@ const Table = (props) => {
                   <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                     {column.render("Header")}
 
-                    {column.id === "option" || column.id === "option1" ? (
+                    {column.id === "option" ||
+                    column.id === "option1" ||
+                    column.id === "selection" ? (
                       ""
                     ) : (
                       <ArrowDownUp key={column.id} className="arrowDownUp" />
