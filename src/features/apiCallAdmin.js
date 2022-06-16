@@ -119,7 +119,7 @@ export const getComments = async (dispatch, setIsLoading) => {
 export const editComments = async (dispatch, setIsLoading, data, commentId) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.patch(`admin/comment/${commentId}"}`, data);
+    const res = await apiLink.patch(`admin/comment/${commentId}`, data);
     setIsLoading(false);
     document.querySelector("#editComment").click();
     dispatch(editCommentSuccess(res.data));
