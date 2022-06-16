@@ -461,7 +461,7 @@ export default function Customer() {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMMM DD YYYY hh:mm A");
+          return moment(value).format("MMM DD YYYY hh:mm A");
         },
       },
 
