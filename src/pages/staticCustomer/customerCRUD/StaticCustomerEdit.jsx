@@ -235,8 +235,6 @@ export default function StaticCustomerEdit({ single }) {
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
 
-  // console.log(customer);
-
   return (
     <div>
       <div
