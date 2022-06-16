@@ -212,3 +212,15 @@
   margin-top: 0px !important;
   max-width: none !important;
 }
+
+.static_customer_edit_modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.static_customer_edit_modal .static_edit_item {
+  margin: 10px 13px;
+  width: 20rem;
+}
