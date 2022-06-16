@@ -6,10 +6,14 @@ const adminSlice = createSlice({
     ispOwners: [],
     singleComment: [],
     comments: [],
+    ispOwnerIds: {},
   },
   reducers: {
     getIspOwnersSuccess: (state, action) => {
       state.ispOwners = action.payload;
+      const ids = {};
+      action.payload.map((ispOwner) => (ids[ispOwner.id] = ispOwner.company));
+      state.ispOwnerIds = ids;
     },
     editOwner: (state, actions) => {
       state.ispOwners[
