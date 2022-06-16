@@ -82,7 +82,6 @@ const AllComments = () => {
       {
         Header: "Comment",
         Cell: ({ row: { original } }) => {
-          console.log(original);
           return (
             <div>
               {original.comment && original.comment.slice(0, 50)}

@@ -32,17 +32,17 @@ const adminSlice = createSlice({
     getCommentsSuccess: (state, { payload }) => {
       state.comments = payload;
     },
-    // updateComment: (state, { payload }) => {
-    //   const ispOwner = state.ispOwners.find(
-    //     (item) => item.id === payload.ownerId
-    //   );
+    editCommentSuccess: (state, { payload }) => {
+      // const ispOwner = state.ispOwners.find(
+      //   (item) => item.id === payload.ownerId
+      // );
 
-    //   ispOwner.comments = payload.data;
-    //   state.ispOwners[
-    //     state.ispOwners.findIndex((item) => item.id === payload.ownerId)
-    //   ] = ispOwner;
-    //   state.updateAdminSuccess = true;
-    // },
+      // ispOwner.comments = payload.data;
+      state.comments[
+        state.comments.findIndex((item) => item.id === payload.id)
+      ] = state.comments;
+      state.updateAdminSuccess = true;
+    },
   },
 });
 
@@ -52,6 +52,7 @@ export const {
   addCommentSuccess,
   getSingleCommentSuccess,
   getCommentsSuccess,
+  editCommentSuccess,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;
