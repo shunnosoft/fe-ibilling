@@ -817,32 +817,37 @@ export default function Customer() {
                             আন-পেইড
                           </option>
                         </select>
-                        <select
-                          className="form-select"
-                          onChange={(e) => {
-                            mikrotikHandler(e.target.value);
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.mikrotik === ""}
-                            value=""
-                            defaultValue
+                        {bpSettings?.hasMikrotik && (
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              mikrotikHandler(e.target.value);
+                            }}
                           >
-                            মাইক্রোটিক
-                          </option>
+                            <option
+                              selected={filterOptions.mikrotik === ""}
+                              value=""
+                              defaultValue
+                            >
+                              মাইক্রোটিক
+                            </option>
 
-                          {mikrotiks.map((m, i) => {
-                            return (
-                              <option
-                                key={i}
-                                selected={filterOptions.mikrotik === `${m.id}`}
-                                value={m.id}
-                              >
-                                {m.name}
-                              </option>
-                            );
-                          })}
-                        </select>
+                            {mikrotiks.map((m, i) => {
+                              return (
+                                <option
+                                  key={i}
+                                  selected={
+                                    filterOptions.mikrotik === `${m.id}`
+                                  }
+                                  value={m.id}
+                                >
+                                  {m.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        )}
+
                         <select
                           className="form-select"
                           onChange={(e) => {
