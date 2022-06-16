@@ -4,8 +4,15 @@ import Loader from "../../../components/common/Loader";
 import { deleteACustomer } from "../../../features/apiCalls";
 
 const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
-  // import dispatch
+  // get all customer
+  const customers = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
 
+  // find deletable customer
+  const singleData = customers.find((item) => item.id === single);
+
+  // import dispatch
   const dispatch = useDispatch();
 
   // loading state
@@ -63,7 +70,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
             ></button>
           </div>
           <div className="modal-body">
-            <h5>{single?.name} গ্রাহক কে ডিলিট করুন</h5>
+            <h5>{singleData?.name} গ্রাহক কে ডিলিট করুন</h5>
 
             <div class="form-check mt-4">
               <input
@@ -91,7 +98,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               </button>
               <button
                 onClick={() => {
-                  deleteCustomer(single?.id);
+                  deleteCustomer(single);
                 }}
                 className="btn btn-success"
                 disabled={isLoading}

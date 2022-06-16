@@ -105,9 +105,8 @@ export const getComments = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(
-      `admin/comment?limit=${1000}&sortBy=${"DESC"}`
+      `admin/comment?limit=${1000}&sortBy=${"createdAt:desc"}`
     );
-    console.log(res.data.comments);
     setIsLoading(false);
     dispatch(getCommentsSuccess(res.data?.comments.results));
   } catch (error) {

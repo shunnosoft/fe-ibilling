@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { FontColor } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import useDash from "../../assets/css/dash.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getComments } from "../../features/apiCallAdmin";
 import moment from "moment";
 import Table from "../../components/table/Table";
 import { PenFill, PersonFill, ThreeDots } from "react-bootstrap-icons";
+import useDash from "../../assets/css/dash.module.css";
+import "./allComments.css";
+import DetailsModal from "./modal/DetailsModal";
+import EditModal from "./modal/EditModal";
 
 const AllComments = () => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // initial customer id state
+  const [commentID, setCommentID] = useState();
 
   // import dispatch
   const dispatch = useDispatch();
@@ -22,7 +28,21 @@ const AllComments = () => {
 
   // get all note in redux
   const comments = useSelector((state) => state.admin?.comments);
-  console.log(comments);
+
+  // get all company name from redux
+  const company = useSelector(
+    (state) => state.persistedReducer?.companyName?.ispOwnerIds
+  );
+
+  // handle delete
+  const detailsModal = (commentId) => {
+    setCommentID(commentId);
+  };
+
+  // handle edit
+  const handleEdit = (commentId) => {
+    setCommentID(commentId);
+  };
 
   // table column
   const columns = React.useMemo(
@@ -39,19 +59,54 @@ const AllComments = () => {
         Header: "Name",
       },
       {
-        accessor: "company",
         Header: "Comapny",
+        accessor: "ispOwner",
+        Cell: ({ cell: { value } }) => {
+          return <div>{company[value]}</div>;
+        },
       },
       {
-        accessor: "comment",
+        Header: "Comment Type",
+        accessor: "commentType",
+        Cell: ({ cell: { value } }) => {
+          return <div class="badge bg-info">{value}</div>;
+        },
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        Cell: ({ cell: { value } }) => {
+          return <div class="badge bg-primary">{value}</div>;
+        },
+      },
+      {
         Header: "Comment",
+        Cell: ({ row: { original } }) => {
+          console.log(original);
+          return (
+            <div>
+              {original.comment && original.comment.slice(0, 50)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#detailsComment"
+                onClick={() => {
+                  detailsModal(original.id);
+                }}
+              >
+                {" "}
+                {original.comment && "...see more"}
+              </span>
+            </div>
+          );
+        },
       },
 
       {
         Header: "CreatedAt",
         accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YY hh:mm A");
+        Cell: ({ row: { original } }) => {
+          return moment(original).format("DD-MM-YY hh:mm A");
         },
       },
 
@@ -72,10 +127,10 @@ const AllComments = () => {
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#showCustomerDetails"
-                  // onClick={() => {
-                  //   detailsModal(original.id);
-                  // }}
+                  data-bs-target="#detailsComment"
+                  onClick={() => {
+                    detailsModal(original.id);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -87,10 +142,10 @@ const AllComments = () => {
 
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#clientEditModal"
-                  // onClick={() => {
-                  //   editModal(original.id);
-                  // }}
+                  data-bs-target="#editComment"
+                  onClick={() => {
+                    handleEdit(original.id);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -118,12 +173,18 @@ const AllComments = () => {
                 <h2 className="dashboardTitle text-center">All Comments</h2>
               </div>
               <div className="card-body">
-                <Table columns={columns} data={comments} />
+                <Table
+                  columns={columns}
+                  data={comments}
+                  isLoading={isLoading}
+                />
               </div>
             </div>
           </div>
         </div>
       </FontColor>
+      <DetailsModal id={commentID} isLoading={isLoading} />
+      <EditModal id={commentID} />
     </>
   );
 };

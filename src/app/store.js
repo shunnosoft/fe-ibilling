@@ -45,6 +45,7 @@ const rootReducer = combineReducers({
   smsHistory: resellerParchaseSmsSlice,
   resellerSmsRequest: resellerSmsRequestSlice,
   resellerCustomer: resellerCustomerAdminSlice,
+  companyName: adminSlice,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

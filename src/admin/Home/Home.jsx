@@ -39,7 +39,6 @@ export default function Home() {
 
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
-  // console.log(ispOwners);
 
   // payment filter
   if (filterStatus && filterStatus !== "Select") {

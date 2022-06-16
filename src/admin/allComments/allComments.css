@@ -1,0 +1,6 @@
+.see-more {
+  cursor: pointer;
+}
+.see-more:hover {
+  text-decoration: underline;
+}

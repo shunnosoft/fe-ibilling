@@ -51,7 +51,6 @@ export default function Reseller() {
   const reseller = useSelector(
     (state) => state.persistedReducer?.reseller?.reseller
   );
-
   useEffect(() => {
     if (auth.ispOwner) {
       fetchReseller(dispatch, auth.ispOwner.id);
@@ -96,16 +95,21 @@ export default function Reseller() {
         accessor: "name",
       },
       {
-        Header: "এড্রেস",
-        accessor: "address",
-      },
-      {
         Header: "মোবাইল",
         accessor: "mobile",
       },
       {
+        Header: "এড্রেস",
+        accessor: "address",
+      },
+
+      {
         Header: "ইমেইল",
         accessor: "email",
+      },
+      {
+        Header: "গ্রাহক",
+        accessor: "customerCount",
       },
       {
         Header: "রিচার্জ ব্যালান্স",

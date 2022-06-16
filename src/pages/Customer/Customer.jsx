@@ -283,9 +283,6 @@ export default function Customer() {
       }
     });
 
-    // temp.map((t) => {
-    //   if (t.area === "noArea") console.log(t);
-    // });
     setCustomers(temp);
     setCustomers1(temp);
     setCustomers2(temp);
@@ -394,9 +391,8 @@ export default function Customer() {
   // cutomer delete
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
-    const singleData = Customers.find((item) => item.id === customerId);
 
-    setSingleData(singleData);
+    setSingleData(customerId);
   };
 
   const columns = React.useMemo(
