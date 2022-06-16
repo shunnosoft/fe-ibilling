@@ -89,13 +89,12 @@ export default function Customer() {
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
 
+  const nonMikrotikPackages = useSelector((state) => state.package.packages);
+
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const [Customers, setCustomers] = useState(cus);
-  const [filterdCus, setFilter] = useState(Customers);
-  const [isFilterRunning, setRunning] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
   const [allArea, setAreas] = useState([]);
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -843,36 +842,71 @@ export default function Customer() {
                             })}
                           </select>
                         )}
-
-                        <select
-                          className="form-select"
-                          onChange={(e) => {
-                            setFilterOption({
-                              ...filterOptions,
-                              package: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.mikrotik === ""}
-                            value=""
-                            defaultValue
+                        {bpSettings?.hasMikrotik ? (
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOptions,
+                                package: e.target.value,
+                              });
+                            }}
                           >
-                            প্যাকেজ
-                          </option>
+                            <option
+                              selected={filterOptions.mikrotik === ""}
+                              value=""
+                              defaultValue
+                            >
+                              প্যাকেজ
+                            </option>
 
-                          {mikrotikPac?.map((m, i) => {
-                            return (
-                              <option
-                                key={i}
-                                selected={filterOptions.package === `${m.name}`}
-                                value={m.name}
-                              >
-                                {m.name}
-                              </option>
-                            );
-                          })}
-                        </select>
+                            {mikrotikPac?.map((m, i) => {
+                              return (
+                                <option
+                                  key={i}
+                                  selected={
+                                    filterOptions.package === `${m.name}`
+                                  }
+                                  value={m.name}
+                                >
+                                  {m.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        ) : (
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOptions,
+                                package: e.target.value,
+                              });
+                            }}
+                          >
+                            <option
+                              selected={filterOptions.mikrotik === ""}
+                              value=""
+                              defaultValue
+                            >
+                              প্যাকেজ
+                            </option>
+
+                            {nonMikrotikPackages?.map((m, i) => {
+                              return (
+                                <option
+                                  key={i}
+                                  selected={
+                                    filterOptions.package === `${m.name}`
+                                  }
+                                  value={m.name}
+                                >
+                                  {m.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        )}
                       </div>
                     </div>
 
