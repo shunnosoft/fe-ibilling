@@ -62,12 +62,16 @@ export default function StaticCustomerEdit({ single }) {
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState();
   const [qDisable, setQdisable] = useState();
+  const [status, setStatus] = useState("");
+
   // customer validator
   useEffect(() => {
     setAutoDisable(customer?.autoDisable);
     setMonthlyFee(customer?.monthlyFee);
     setSingleMikrotik(customer?.mikrotik);
     setMikrotikPackage(customer?.mikrotikPackage);
+    setStatus(customer?.status);
+
     if (
       userType === "simple-queue" &&
       customer?.queue.type === "simple-queue"
@@ -223,18 +227,17 @@ export default function StaticCustomerEdit({ single }) {
         type: userType,
         target,
         maxLimit: `${maxUpLimit}/${maxDownLimit}`,
-        disabled: qDisable,
+        disabled: status === "active" ? false : true,
       };
     }
-    if (!qDisable) {
-      sendingData.status = "active";
-    } else {
-      sendingData.status = "inactive";
+    if (status === "active") {
+      sendingData.status = status;
+    } else if (status === "inactive") {
+      sendingData.status = status;
     }
 
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
-
   return (
     <div>
       <div
@@ -548,12 +551,10 @@ export default function StaticCustomerEdit({ single }) {
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="staus"
+                            name="status"
                             value={"active"}
-                            checked={
-                              !qDisable && customer?.status !== "expired"
-                            }
-                            onChange={(e) => setQdisable(false)}
+                            checked={status === "active"}
+                            onChange={(e) => setStatus("active")}
                           />
                           <label
                             className="form-check-label"
@@ -568,8 +569,8 @@ export default function StaticCustomerEdit({ single }) {
                             type="radio"
                             id="inlineRadio2"
                             value={"inactive"}
-                            checked={qDisable && customer?.status !== "expired"}
-                            onChange={(e) => setQdisable(true)}
+                            checked={status === "inactive"}
+                            onChange={(e) => setStatus("inactive")}
                           />
                           <label
                             className="form-check-label"
@@ -585,7 +586,7 @@ export default function StaticCustomerEdit({ single }) {
                               className="form-check-input"
                               type="radio"
                               id="inlineRadio2"
-                              checked={customer?.status === "expired"}
+                              checked={status === "expired"}
                               disabled
                             />
                             <label
