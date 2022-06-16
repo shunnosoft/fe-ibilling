@@ -62,12 +62,16 @@ export default function StaticCustomerEdit({ single }) {
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState();
   const [qDisable, setQdisable] = useState();
+  const [status, setStatus] = useState("");
+
   // customer validator
   useEffect(() => {
     setAutoDisable(customer?.autoDisable);
     setMonthlyFee(customer?.monthlyFee);
     setSingleMikrotik(customer?.mikrotik);
     setMikrotikPackage(customer?.mikrotikPackage);
+    setStatus(customer?.status);
+
     if (
       userType === "simple-queue" &&
       customer?.queue.type === "simple-queue"
@@ -107,8 +111,7 @@ export default function StaticCustomerEdit({ single }) {
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
       .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে")
-      .required("মোবাইল নম্বর লিখুন"),
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
     address: Yup.string(),
     email: Yup.string().email("ইমেইল সঠিক নয়"),
     nid: Yup.string(),
@@ -223,20 +226,17 @@ export default function StaticCustomerEdit({ single }) {
         type: userType,
         target,
         maxLimit: `${maxUpLimit}/${maxDownLimit}`,
-        disabled: qDisable,
+        disabled: status === "active" ? false : true,
       };
     }
-    if (!qDisable) {
-      sendingData.status = "active";
-    } else {
-      sendingData.status = "inactive";
+    if (status === "active") {
+      sendingData.status = status;
+    } else if (status === "inactive") {
+      sendingData.status = status;
     }
 
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
-
-  // console.log(customer);
-
   return (
     <div>
       <div
@@ -280,8 +280,8 @@ export default function StaticCustomerEdit({ single }) {
               >
                 {(formik) => (
                   <Form>
-                    <div className="row">
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                    <div className="static_customer_edit_modal">
+                      <div className="static_edit_item">
                         <p className="comstomerFieldsTitle">
                           মাইক্রোটিক সিলেক্ট করুন
                         </p>
@@ -305,7 +305,7 @@ export default function StaticCustomerEdit({ single }) {
                               ))}
                         </select>
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div className="static_edit_item">
                         <p>এরিয়া সিলেক্ট করুন</p>
                         <select
                           className="form-select mw-100"
@@ -326,7 +326,7 @@ export default function StaticCustomerEdit({ single }) {
                               ))}
                         </select>
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div className="static_edit_item">
                         <p>
                           {area ? area.name + " এর - " : ""} সাব-এরিয়া সিলেক্ট
                           করুন
@@ -357,10 +357,9 @@ export default function StaticCustomerEdit({ single }) {
                             : ""}
                         </select>
                       </div>
-                    </div>
-                    <div className="row mt-4">
+
                       {userType === "simple-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div className="static_edit_item">
                           <FtextField
                             type="text"
                             label="কিউ নাম"
@@ -369,16 +368,17 @@ export default function StaticCustomerEdit({ single }) {
                         </div>
                       )}
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {userType === "simple-queue" && (
+                      {userType === "simple-queue" && (
+                        <div className="static_edit_item">
                           <FtextField
                             type="text"
                             label="আইপি এড্রেস"
                             name="target"
-                            className=""
                           />
-                        )}
-                        {userType === "firewall-queue" && (
+                        </div>
+                      )}
+                      {userType === "firewall-queue" && (
+                        <div className="static_edit_item">
                           <>
                             <FtextField
                               type="text"
@@ -386,17 +386,17 @@ export default function StaticCustomerEdit({ single }) {
                               name="ipAddress"
                             />
                           </>
-                        )}
-                      </div>
+                        </div>
+                      )}
                       {userType === "firewall-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div className="static_edit_item">
                           <>
                             <p className="comstomerFieldsTitle">
                               প্যাকেজ সিলেক্ট করুন
                             </p>
                             <select
                               name="firewallPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-100"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -421,15 +421,15 @@ export default function StaticCustomerEdit({ single }) {
                         </div>
                       )}
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {userType === "simple-queue" && (
+                      {userType === "simple-queue" && (
+                        <div className="static_edit_item">
                           <>
                             <p className="comstomerFieldsTitle">
                               আপলোড প্যাকেজ
                             </p>
                             <select
                               name="upPackage"
-                              className="form-select mw-50 mb-3"
+                              className="form-select mw-100 "
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -451,124 +451,109 @@ export default function StaticCustomerEdit({ single }) {
                                 )}
                             </select>
                           </>
-                        )}
+                        </div>
+                      )}
+
+                      {userType === "simple-queue" && (
+                        <div className="static_edit_item">
+                          <p>ডাউনলোড প্যাকেজ</p>
+                          <select
+                            name="downPackage"
+                            className="form-select mw-100 mt-0 mb-3"
+                            aria-label="Default select example"
+                            onChange={selectMikrotikPackage}
+                          >
+                            <option value={"0"}>...</option>
+                            {ppPackage &&
+                              ppPackage?.map(
+                                (val, key) =>
+                                  val.packageType === "queue" && (
+                                    <option
+                                      selected={
+                                        val.id === customer?.mikrotikPackage
+                                      }
+                                      key={key}
+                                      value={val.id}
+                                    >
+                                      {val.name}
+                                    </option>
+                                  )
+                              )}
+                          </select>
+                        </div>
+                      )}
+                      <div className="static_edit_item">
+                        <FtextField
+                          type="number"
+                          label="মাসিক ফি"
+                          name="monthlyFee"
+                          min={0}
+                          value={monthlyFee}
+                          onChange={(e) => setMonthlyFee(e.target.value)}
+                        />
                       </div>
-                      <div className="row mt-3">
-                        {userType === "simple-queue" && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
-                            <p className="comstomerFieldsTitle">
-                              ডাউনলোড প্যাকেজ
-                            </p>
-                            <select
-                              name="downPackage"
-                              className="form-select mw-50 mb-3"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value={"0"}>...</option>
-                              {ppPackage &&
-                                ppPackage?.map(
-                                  (val, key) =>
-                                    val.packageType === "queue" && (
-                                      <option
-                                        selected={
-                                          val.id === customer?.mikrotikPackage
-                                        }
-                                        key={key}
-                                        value={val.id}
-                                      >
-                                        {val.name}
-                                      </option>
-                                    )
-                                )}
-                            </select>
-                          </div>
-                        )}
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                      {!bpSettings?.hasMikrotik && (
+                        <div className="static_edit_item">
                           <FtextField
                             type="number"
-                            label="মাসিক ফি"
-                            name="monthlyFee"
-                            min={0}
-                            value={monthlyFee}
-                            onChange={(e) => setMonthlyFee(e.target.value)}
+                            label="পূর্বের বকেয়া"
+                            name="balance"
                           />
                         </div>
-                        {!bpSettings?.hasMikrotik && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
-                            <FtextField
-                              type="number"
-                              label="পূর্বের বকেয়া"
-                              name="balance"
+                      )}
+
+                      <div className="static_edit_item">
+                        <FtextField type="text" label="নাম" name="name" />
+                      </div>
+                      <div className="static_edit_item">
+                        <FtextField type="text" label="মোবাইল" name="mobile" />
+                      </div>
+                      <div className="static_edit_item">
+                        <FtextField type="text" label="ঠিকানা" name="address" />
+                      </div>
+                      <div className="static_edit_item">
+                        <FtextField type="text" label="ইমেইল" name="email" />
+                      </div>
+                      <div className="static_edit_item">
+                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+
+                        <div className="timeDate">
+                          <input
+                            value={billDate}
+                            onChange={(e) => setBillDate(e.target.value)}
+                            type="date"
+                          />
+                          <input
+                            className="billTime"
+                            value={billTime}
+                            onChange={(e) => setBilltime(e.target.value)}
+                            type="time"
+                          />
+                        </div>
+                      </div>
+                      <div className="static_edit_item">
+                        {bpSettings?.hasMikrotik && (
+                          <div className="autoDisable">
+                            <label>অটোমেটিক সংযোগ বন্ধ</label>
+                            <input
+                              type="checkBox"
+                              checked={autoDisable}
+                              onChange={(e) => setAutoDisable(e.target.checked)}
                             />
                           </div>
                         )}
                       </div>
-                      <div className="row mt-3">
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField type="text" label="নাম" name="name" />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label="মোবাইল"
-                            name="mobile"
-                          />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label="ঠিকানা"
-                            name="address"
-                          />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField type="text" label="ইমেইল" name="email" />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <p className="customerFieldsTitle">বিলিং সাইকেল</p>
 
-                          <div className="timeDate">
-                            <input
-                              value={billDate}
-                              onChange={(e) => setBillDate(e.target.value)}
-                              type="date"
-                            />
-                            <input
-                              className="billTime"
-                              value={billTime}
-                              onChange={(e) => setBilltime(e.target.value)}
-                              type="time"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          {bpSettings?.hasMikrotik && (
-                            <div className="autoDisable">
-                              <label>অটোমেটিক সংযোগ বন্ধ</label>
-                              <input
-                                type="checkBox"
-                                checked={autoDisable}
-                                onChange={(e) =>
-                                  setAutoDisable(e.target.checked)
-                                }
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </div>
                       <div className="pppoeStatus">
                         <p>স্ট্যাটাস</p>
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="staus"
+                            name="status"
                             value={"active"}
-                            checked={
-                              !qDisable && customer?.status !== "expired"
-                            }
-                            onChange={(e) => setQdisable(false)}
+                            checked={status === "active"}
+                            onChange={(e) => setStatus("active")}
                           />
                           <label
                             className="form-check-label"
@@ -583,8 +568,8 @@ export default function StaticCustomerEdit({ single }) {
                             type="radio"
                             id="inlineRadio2"
                             value={"inactive"}
-                            checked={qDisable && customer?.status !== "expired"}
-                            onChange={(e) => setQdisable(true)}
+                            checked={status === "inactive"}
+                            onChange={(e) => setStatus("inactive")}
                           />
                           <label
                             className="form-check-label"
@@ -600,7 +585,7 @@ export default function StaticCustomerEdit({ single }) {
                               className="form-check-input"
                               type="radio"
                               id="inlineRadio2"
-                              checked={customer?.status === "expired"}
+                              checked={status === "expired"}
                               disabled
                             />
                             <label
@@ -612,23 +597,23 @@ export default function StaticCustomerEdit({ single }) {
                           </div>
                         )}
                       </div>
-                      <div className="modal-footer" style={{ border: "none" }}>
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          data-bs-dismiss="modal"
-                          disabled={isLoading}
-                        >
-                          বাতিল করুন
-                        </button>
-                        <button
-                          type="submit"
-                          className="btn btn-success"
-                          disabled={isLoading}
-                        >
-                          {isLoading ? <Loader /> : "সেভ করুন"}
-                        </button>
-                      </div>
+                    </div>
+                    <div className="modal-footer" style={{ border: "none" }}>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        disabled={isLoading}
+                      >
+                        বাতিল করুন
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? <Loader /> : "সেভ করুন"}
+                      </button>
                     </div>
                   </Form>
                 )}

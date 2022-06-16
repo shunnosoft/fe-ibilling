@@ -13,9 +13,18 @@ const PrintCustomer = React.forwardRef((props, ref) => {
   // console.log(ispOwnerData);
   return (
     <div className="mt-3 p-4" ref={ref}>
-      <h2 className="text-center">{ispOwnerData.company}</h2>
-      <h5 className="text-center">মোবাইল {ispOwnerData.mobile}</h5>
-      <h6 className="text-center text-mute">গ্রাহক রিপোর্ট ডিটেইলস</h6>
+      <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
+        <div className="logo_side">
+          <div className="company_logo">
+            <img src="/assets/img/logo.png" alt="Company Logo" />
+          </div>
+          <div className="company_name">{ispOwnerData.company}</div>
+        </div>
+        <div className="details_side">
+          <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
+          {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
+        </div>
+      </div>
       <ul className="d-flex justify-content-evenly">
         <li>এরিয়াঃ {filterData.area}</li>
         <li>সাবএরিয়াঃ {filterData.subArea}</li>
@@ -31,7 +40,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
             <th scope="col">স্ট্যাটাস</th>
             <th scope="col">পেমেন্ট</th>
             <th scope="col">প্যাকেজ</th>
-            <th scope="col">মাসিক ফি</th>
+            <th scope="col">মাসিক-ফি</th>
             <th scope="col">ব্যালান্স</th>
             <th scope="col">বিল সাইকেল</th>
           </tr>

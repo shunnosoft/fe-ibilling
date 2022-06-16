@@ -308,22 +308,20 @@ export default function Customer() {
     setStatus(e.target.value);
   };
 
-  if (status) {
-    const splitStatus = status.split(".")[1];
-    if (splitStatus === "active") {
+  if (filterOptions.status) {
+    if (filterOptions.status === "active") {
       customerStatus = "এক্টিভ";
-    } else if (splitStatus === "inactive") {
+    } else if (filterOptions.status === "inactive") {
       customerStatus = "ইনএক্টিভ";
     }
   }
 
-  if (paymentStatus) {
-    const splitStatus = paymentStatus.split(".")[1];
-    if (splitStatus === "unpaid") {
+  if (filterOptions.paymentStatus) {
+    if (filterOptions.paymentStatus === "unpaid") {
       customerPaymentStatus = "বকেয়া";
-    } else if (splitStatus === "paid") {
+    } else if (filterOptions.paymentStatus === "paid") {
       customerPaymentStatus = "পরিশোধ";
-    } else if (splitStatus === "expired") {
+    } else if (filterOptions.paymentStatus === "expired") {
       customerPaymentStatus = "মেয়াদোত্তীর্ণ";
     }
   }
@@ -440,7 +438,7 @@ export default function Customer() {
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMMM DD YYYY hh:mm A");
+          return moment(value).format("MMM DD YYYY hh:mm A");
         },
       },
 
@@ -815,32 +813,37 @@ export default function Customer() {
                             আন-পেইড
                           </option>
                         </select>
-                        <select
-                          className="form-select"
-                          onChange={(e) => {
-                            mikrotikHandler(e.target.value);
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.mikrotik === ""}
-                            value=""
-                            defaultValue
+                        {bpSettings?.hasMikrotik && (
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              mikrotikHandler(e.target.value);
+                            }}
                           >
-                            মাইক্রোটিক
-                          </option>
+                            <option
+                              selected={filterOptions.mikrotik === ""}
+                              value=""
+                              defaultValue
+                            >
+                              মাইক্রোটিক
+                            </option>
 
-                          {mikrotiks.map((m, i) => {
-                            return (
-                              <option
-                                key={i}
-                                selected={filterOptions.mikrotik === `${m.id}`}
-                                value={m.id}
-                              >
-                                {m.name}
-                              </option>
-                            );
-                          })}
-                        </select>
+                            {mikrotiks.map((m, i) => {
+                              return (
+                                <option
+                                  key={i}
+                                  selected={
+                                    filterOptions.mikrotik === `${m.id}`
+                                  }
+                                  value={m.id}
+                                >
+                                  {m.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        )}
+
                         <select
                           className="form-select"
                           onChange={(e) => {
