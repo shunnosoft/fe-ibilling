@@ -111,8 +111,7 @@ export default function StaticCustomerEdit({ single }) {
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
       .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে")
-      .required("মোবাইল নম্বর লিখুন"),
+      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
     address: Yup.string(),
     email: Yup.string().email("ইমেইল সঠিক নয়"),
     nid: Yup.string(),

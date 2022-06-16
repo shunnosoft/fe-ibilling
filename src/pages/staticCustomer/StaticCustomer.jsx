@@ -16,6 +16,8 @@ import {
   CashStack,
   ChatText,
   PersonPlusFill,
+  FileExcelFill,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -367,22 +369,20 @@ export default function Customer() {
     subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
   }
 
-  if (status) {
-    const splitStatus = status.split(".")[1];
-    if (splitStatus === "active") {
+  if (filterOptions.status) {
+    if (filterOptions.status === "active") {
       customerStatus = "এক্টিভ";
-    } else if (splitStatus === "inactive") {
+    } else if (filterOptions.status === "inactive") {
       customerStatus = "ইনএক্টিভ";
     }
   }
 
-  if (paymentStatus) {
-    const splitStatus = paymentStatus.split(".")[1];
-    if (splitStatus === "unpaid") {
+  if (filterOptions.paymentStatus) {
+    if (filterOptions.paymentStatus === "unpaid") {
       customerPaymentStatus = "বকেয়া";
-    } else if (splitStatus === "paid") {
+    } else if (filterOptions.paymentStatus === "paid") {
       customerPaymentStatus = "পরিশোধ";
-    } else if (splitStatus === "expired") {
+    } else if (filterOptions.paymentStatus === "expired") {
       customerPaymentStatus = "মেয়াদোত্তীর্ণ";
     }
   }
@@ -607,34 +607,65 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div className="d-flex">
-                    <div className="me-3">স্ট্যাটিক গ্রাহক </div>
+                  <div className="me-3">স্ট্যাটিক গ্রাহক </div>
+                  <div
+                    className="d-flex"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "end",
+                    }}
+                  >
                     {role === "ispOwner" && (
-                      <div
-                        title="স্ট্যাটিক গ্রাহক যুক্ত"
-                        className="header_icon"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addStaticCustomerModal"
-                      >
-                        <PersonPlusFill />
-                      </div>
+                      <>
+                        <div className="settingbtn me-2">
+                          <Link
+                            to={`/packageSetting`}
+                            className="mikrotikConfigureButtom"
+                            style={{
+                              height: "40px",
+                              fontSize: "20px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            প্যাকেজ সেটিং{" "}
+                            <ArrowRightShort style={{ fontSize: "19px" }} />
+                          </Link>
+                        </div>
+                        <div className="addAndSettingIcon">
+                          <CSVLink
+                            data={customerForCsV}
+                            filename={ispOwnerData.company}
+                            headers={headers}
+                            title="BTRC রিপোর্ট ডাউনলোড"
+                          >
+                            <FileExcelFill className="addcutmButton" />
+                          </CSVLink>
+                        </div>
+
+                        <div className="addAndSettingIcon">
+                          <ReactToPrint
+                            documentTitle="গ্রাহক লিস্ট"
+                            trigger={() => (
+                              <PrinterFill
+                                title="প্রিন্ট "
+                                className="addcutmButton"
+                              />
+                            )}
+                            content={() => componentRef.current}
+                          />
+                        </div>
+
+                        <PersonPlusFill
+                          title="স্ট্যাটিক গ্রাহক যুক্ত"
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addStaticCustomerModal"
+                        />
+                      </>
                     )}
-                  </div>
-                  <div className="settingbtn">
-                    <Link
-                      to={`/packageSetting`}
-                      className="mikrotikConfigureButtom"
-                      style={{
-                        height: "40px",
-                        fontSize: "20px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      প্যাকেজ সেটিং{" "}
-                      <ArrowRightShort style={{ fontSize: "19px" }} />
-                    </Link>
                   </div>
                 </div>
               </FourGround>
@@ -862,59 +893,22 @@ export default function Customer() {
                           })}
                         </select>
                       </div>
-                      {permission?.customerAdd || role === "ispOwner" ? (
-                        <>
-                          {/* <div className="addNewCollector">
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={customerForCsV}
-                                filename={ispOwnerData.company}
-                                headers={headers}
-                                title="BTRC রিপোর্ট ডাউনলোড"
-                              >
-                                <FileExcelFill className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-                          </div> */}
-                          {/* <div className="addNewCollector">
-                            <div className="addAndSettingIcon">
-                              <ReactToPrint
-                                documentTitle="customer-list"
-                                trigger={() => (
-                                  <PrinterFill
-                                    title="প্রিন্ট "
-                                    className="addcutmButton"
-                                  />
-                                )}
-                                content={() => componentRef.current}
-                              />
-                            </div>
-                          </div>
-                          <div className="addNewCollector">
-                            <div className="addAndSettingIcon">
-                              <PersonPlusFill
-                                className="addcutmButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#customerModal"
-                                title="নতুন গ্রাহক"
-                              />
-                            </div>
-                          </div> */}
-                        </>
-                      ) : (
-                        ""
-                      )}
                     </div>
 
-                    {isDeleting ? (
+                    {isDeleting && (
                       <div className="deletingAction">
                         <Loader /> <b>Deleting...</b>
                       </div>
-                    ) : (
-                      ""
                     )}
                   </div>
-
+                  {/* print report */}
+                  <div style={{ display: "none" }}>
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={Customers}
+                      ref={componentRef}
+                    />
+                  </div>
                   <div className="filterresetbtn">
                     {/* <button onClick={handleActiveFilter}>filter</button> */}
                     <button

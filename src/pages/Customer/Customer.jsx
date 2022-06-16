@@ -311,22 +311,20 @@ export default function Customer() {
     setStatus(e.target.value);
   };
 
-  if (status) {
-    const splitStatus = status.split(".")[1];
-    if (splitStatus === "active") {
+  if (filterOptions.status) {
+    if (filterOptions.status === "active") {
       customerStatus = "এক্টিভ";
-    } else if (splitStatus === "inactive") {
+    } else if (filterOptions.status === "inactive") {
       customerStatus = "ইনএক্টিভ";
     }
   }
 
-  if (paymentStatus) {
-    const splitStatus = paymentStatus.split(".")[1];
-    if (splitStatus === "unpaid") {
+  if (filterOptions.paymentStatus) {
+    if (filterOptions.paymentStatus === "unpaid") {
       customerPaymentStatus = "বকেয়া";
-    } else if (splitStatus === "paid") {
+    } else if (filterOptions.paymentStatus === "paid") {
       customerPaymentStatus = "পরিশোধ";
-    } else if (splitStatus === "expired") {
+    } else if (filterOptions.paymentStatus === "expired") {
       customerPaymentStatus = "মেয়াদোত্তীর্ণ";
     }
   }
