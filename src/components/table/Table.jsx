@@ -1,8 +1,7 @@
 // import React from "react";
 import React, { forwardRef, useEffect, useRef } from "react";
 import { Pagination } from "react-bootstrap";
-import { ArrowDownUp } from "react-bootstrap-icons";
-// import { Pagination, Pagination.Item, PaginationLink } from "reactstrap";
+import { ArrowDownUp, PenFill, TrashFill } from "react-bootstrap-icons";
 import {
   useTable,
   useSortBy,
@@ -13,26 +12,26 @@ import {
 import TdLoader from "../common/TdLoader";
 import GlobalFilter from "./GlobalFilter";
 
-// const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
-//   const defaultRef = useRef();
-//   const resolvedRef = ref || defaultRef;
+const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
+  const defaultRef = useRef();
+  const resolvedRef = ref || defaultRef;
 
-//   useEffect(() => {
-//     resolvedRef.current.indeterminate = indeterminate;
-//   }, [resolvedRef, indeterminate]);
+  useEffect(() => {
+    resolvedRef.current.indeterminate = indeterminate;
+  }, [resolvedRef, indeterminate]);
 
-//   return (
-//     <>
-//       <input
-//         class="form-check-input"
-//         type="checkbox"
-//         id="selectRows"
-//         ref={resolvedRef}
-//         {...rest}
-//       />
-//     </>
-//   );
-// });
+  return (
+    <>
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="selectRows"
+        ref={resolvedRef}
+        {...rest}
+      />
+    </>
+  );
+});
 const Table = (props) => {
   const { columns, data, isLoading, customComponent } = props;
   const {
@@ -80,11 +79,17 @@ const Table = (props) => {
     //   ]);
     // }
   );
+  const { globalFilter, pageIndex, pageSize, selectedRowIds } = state;
+
   useEffect(() => {
     setPageSize(100);
   }, []);
 
-  const { globalFilter, pageIndex, pageSize, selectedRowIds } = state;
+  useEffect(() => {
+    if (props.bulkState) {
+      props?.bulkState.setBulkCustomer(selectedFlatRows);
+    }
+  }, [selectedFlatRows]);
   return (
     <>
       <GlobalFilter
@@ -93,7 +98,21 @@ const Table = (props) => {
         setFilter={setGlobalFilter}
         customComponent={customComponent}
       />
-      <div className="table-responsive-lg mt-4">
+      {selectedFlatRows.length > 0 && (
+        <div className="d-flex">
+          {/* <div
+            className="bulk_operation_button text-warning "
+            data-bs-toggle="modal"
+            data-bs-target={`#${props.bulkState.modalId}`}
+          >
+            <PenFill />
+          </div> */}
+          <div className="bulk_operation_button mx-4 text-danger">
+            <TrashFill />
+          </div>
+        </div>
+      )}
+      <div className="table-responsive-lg">
         <table
           className="table table-striped table-borderless"
           {...getTableProps()}

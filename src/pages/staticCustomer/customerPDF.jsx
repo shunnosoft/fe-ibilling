@@ -10,6 +10,9 @@ const PrintCustomer = React.forwardRef((props, ref) => {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
+  const userType = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
+  );
   // console.log(ispOwnerData);
   return (
     <div className="mt-3 p-4" ref={ref}>
@@ -36,6 +39,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           <tr className="spetialSortingRow">
             <th scope="col">আইডি</th>
             <th scope="col">নাম</th>
+            <th scope="col">আইপি</th>
             <th scope="col">মোবাইল</th>
             <th scope="col">স্ট্যাটাস</th>
             <th scope="col">পেমেন্ট</th>
@@ -50,6 +54,11 @@ const PrintCustomer = React.forwardRef((props, ref) => {
             <tr key={key} id={val.id}>
               <td className="prin_td">{val.customerId}</td>
               <td className="prin_td">{val.name}</td>
+              <td className="prin_td">
+                {userType === "firewall-queue"
+                  ? val.queue.address
+                  : val.queue.target}
+              </td>
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>

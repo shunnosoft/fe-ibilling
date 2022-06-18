@@ -14,6 +14,7 @@ import {
   PenFill,
   ThreeDots,
   CardChecklist,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { getIspOwners } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -21,8 +22,16 @@ import EditModal from "./modal/EditModal";
 import "./home.css";
 import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
+import ReactToPrint from "react-to-print";
+import { useRef } from "react";
+import CustomerPdf from "./CustomerPDF";
+import apiLink from "../../api/apiLink";
+import PrintCustomer from "./CustomerPDF";
 
 export default function Home() {
+  //print customer ref
+  // const componentRef = useRef();
+
   // loading
   const [isLoading, setIsLoading] = useState(false);
   // import dispatch
@@ -50,7 +59,7 @@ export default function Home() {
   // api call
   useEffect(() => {
     getIspOwners(dispatch, setIsLoading);
-  }, [dispatch]);
+  }, []);
 
   // edit modal method
   const editModal = (ispOwnerId) => {
@@ -129,75 +138,103 @@ export default function Home() {
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
-        Cell: ({ row: { original } }) => (
-          <div className="text-center">
-            <>
-              <ThreeDots
-                className="dropdown-toggle ActionDots"
-                id="areaDropdown"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />
-              <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerDetails"
-                  onClick={() => {
-                    detailsModal(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PersonFill />
-                      <p className="actionP">Details</p>
+        Cell: ({ row: { original } }) => {
+          const componentRef = useRef();
+          return (
+            <div className="text-center">
+              <>
+                <ThreeDots
+                  className="dropdown-toggle ActionDots"
+                  id="areaDropdown"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                />
+                <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#showCustomerDetails"
+                    onClick={() => {
+                      detailsModal(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PersonFill />
+                        <p className="actionP">Details</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
 
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#clientEditModal"
-                  onClick={() => {
-                    editModal(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">Edit</p>
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#clientEditModal"
+                    onClick={() => {
+                      editModal(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">Edit</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
 
-                <li>
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PersonBoundingBox />
-                      <Link to={"/admin/isp-owner/invoice-list/" + original.id}>
-                        <p className="actionP text-white">Invoice</p>
-                      </Link>
+                  <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PersonBoundingBox />
+                        <Link
+                          to={"/admin/isp-owner/invoice-list/" + original.id}
+                        >
+                          <p className="actionP text-white">Invoice</p>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                </li>
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#clientNoteModal"
-                  onClick={() => {
-                    noteModal(original.id, original.company);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CardChecklist />
-                      <p className="actionP">Note</p>
+                  </li>
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#clientNoteModal"
+                    onClick={() => {
+                      noteModal(original.id, original.company);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CardChecklist />
+                        <p className="actionP">Note</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              </ul>
-            </>
-          </div>
-        ),
+                  </li>
+                  {/* <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ReactToPrint
+                          documentTitle={`${original.name} customer list`}
+                          trigger={() => (
+                            <div>
+                              {" "}
+                              <PrinterFill /> &nbsp; Download Customer
+                            </div>
+                          )}
+                          content={() => componentRef.current}
+                        />
+                      </div>
+                    </div>
+                    <div style={{ display: "none" }}>
+                      <PrintCustomer
+                        customers={customer}
+                        ref={componentRef}
+                        ispOwnerData={original}
+                      />
+                    </div>
+                  </li> */}
+                </ul>
+              </>
+            </div>
+          );
+        },
       },
     ],
     []
