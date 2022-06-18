@@ -5,12 +5,23 @@ import { Pencil } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../components/common/Loader";
+import { Editor } from "react-draft-wysiwyg";
+import {
+  EditorState,
+  convertFromHTML,
+  convertToRaw,
+  ContentState,
+} from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
 import {
   addComment,
   getComments,
   getSingleComment,
   getSingleComments,
 } from "../../../features/apiCallAdmin";
+import htmlToDraft from "html-to-draftjs";
 
 const Note = ({ ownerId, companyName }) => {
   // import dispatch
@@ -30,6 +41,16 @@ const Note = ({ ownerId, companyName }) => {
 
   // get message form textare field
   const [addNote, setAddNote] = useState("");
+  // const [editorState, setEditorState] = useState(() =>
+  //   EditorState.createEmpty()
+  // );
+
+  // const initialNote = editorState;
+  // const convertNote = draftToHtml(
+  //   convertToRaw(initialNote.getCurrentContent())
+  // );
+  // const editorJSON = JSON.stringify(convertToRaw(editorState.getCurrentContent));
+  // console.log(convertNote);
 
   // set error value
   const [errMsg, setErrMsg] = useState("");
@@ -65,10 +86,14 @@ const Note = ({ ownerId, companyName }) => {
 
   // validation check
   const handleRequired = () => {
-    if (!addNote) {
+    if (addNote === "<p></p>") {
       setErrMsg("Write Comment !");
     }
   };
+
+  // useEffect(() => {
+  //   console.log(editorState);
+  // }, [editorState]);
 
   // handle submit
   const handleSubmit = (event) => {
@@ -81,8 +106,8 @@ const Note = ({ ownerId, companyName }) => {
         status,
         ispOwner: ownerId,
       };
-
       addComment(data, setIsloading, dispatch);
+      console.log(data);
       setName("");
       setCommentType("");
       setStatus("");
@@ -109,6 +134,19 @@ const Note = ({ ownerId, companyName }) => {
   const singleComment = useSelector(
     (state) => state.admin?.singleComment?.results
   );
+
+  // const contentBlock = htmlToDraft(addNote);
+  // useEffect(() => {
+  //   if (contentBlock) {
+  //     const contentState = ContentState.createFromBlockArray(
+  //       contentBlock.contentBlocks
+  //     );
+  //     const editorState = EditorState.createWithContent(contentState);
+
+  //     console.log(typeof editorState);
+  //     setEditorState(editorState);
+  //   }
+  // }, []);
 
   return (
     <>
@@ -190,7 +228,14 @@ const Note = ({ ownerId, companyName }) => {
                               <Pencil />
                             </span> */}
                           </div>
-                          <p className="mt-2">{data.comment}</p>
+                          <p
+                            className="mt-2"
+                            // dangerouslySetInnerHTML={{
+                            //   __html: data.comment,
+                            // }}
+                          >
+                            {data?.comment}
+                          </p>
                         </div>
                         <br />
                       </>
@@ -256,6 +301,21 @@ const Note = ({ ownerId, companyName }) => {
                 </div>
 
                 <div class="mb-3">
+                  <div>
+                    {/* <Editor
+                      editorState={editorState}
+                      onEditorStateChange={(newState) => {
+                        setEditorState(newState);
+                        setAddNote(
+                          draftToHtml(
+                            convertToRaw(newState.getCurrentContent())
+                          )
+                        );
+                      }}
+                      value={addNote}
+                      onBlur={handleRequired}
+                    /> */}
+                  </div>
                   <textarea
                     class="form-control"
                     id="exampleFormControlTextarea1"
