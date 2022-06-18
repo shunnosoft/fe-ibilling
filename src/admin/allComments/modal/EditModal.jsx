@@ -71,18 +71,18 @@ const EditModal = ({ id }) => {
                 aria-label="Default select example"
                 onChange={statusHandle}
               >
-                <option value="pending" selected={data?.state === "pending"}>
+                <option value="pending" selected={data?.status === "pending"}>
                   Pending
                 </option>
                 <option
                   value="processing"
-                  selected={data?.state === "processing"}
+                  selected={data?.status === "processing"}
                 >
                   Processing
                 </option>
                 <option
                   value="completed"
-                  selected={data?.state === "completed"}
+                  selected={data?.status === "completed"}
                 >
                   Completed
                 </option>

@@ -33,15 +33,10 @@ const adminSlice = createSlice({
       state.comments = payload;
     },
     editCommentSuccess: (state, { payload }) => {
-      // const ispOwner = state.ispOwners.find(
-      //   (item) => item.id === payload.ownerId
-      // );
-
       // ispOwner.comments = payload.data;
       state.comments[
         state.comments.findIndex((item) => item.id === payload.id)
-      ] = state.comments;
-      state.updateAdminSuccess = true;
+      ] = payload;
     },
   },
 });

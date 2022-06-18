@@ -4,3 +4,11 @@
 .see-more:hover {
   text-decoration: underline;
 }
+
+.company-name {
+  cursor: pointer;
+}
+
+.company-name:hover {
+  color: rgb(91, 91, 247);
+}

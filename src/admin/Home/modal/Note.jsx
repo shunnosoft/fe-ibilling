@@ -12,7 +12,7 @@ import {
   getSingleComments,
 } from "../../../features/apiCallAdmin";
 
-const Note = ({ ownerId, ownerName }) => {
+const Note = ({ ownerId, companyName }) => {
   // import dispatch
   const dispatch = useDispatch();
 
@@ -124,8 +124,7 @@ const Note = ({ ownerId, ownerName }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Write some note for {ownerName}
-                {/* <i className="text-secondary">{singleData?.name}</i> */}
+                Write some note for {companyName}
               </h5>
               <div className="d-flex">
                 <button

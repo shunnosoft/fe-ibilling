@@ -10,6 +10,13 @@ const addClass = {
   prepaid: "info",
   complainManagement: "danger",
   smsBalance: "success",
+
+  pending: "primary",
+  processing: "secondary",
+  completed: "success",
+  support: "primary",
+  feature: "info",
+  migration: "warning",
 };
 
 export const badge = (item) => {

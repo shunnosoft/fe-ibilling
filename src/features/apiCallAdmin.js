@@ -121,8 +121,9 @@ export const editComments = async (dispatch, setIsLoading, data, commentId) => {
   try {
     const res = await apiLink.patch(`admin/comment/${commentId}`, data);
     setIsLoading(false);
+    console.log(res.data.comment);
     document.querySelector("#editComment").click();
-    dispatch(editCommentSuccess(res.data));
+    dispatch(editCommentSuccess(res.data.comment));
   } catch (error) {
     console.log(error.response);
   }

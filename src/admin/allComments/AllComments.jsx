@@ -10,6 +10,8 @@ import useDash from "../../assets/css/dash.module.css";
 import "./allComments.css";
 import DetailsModal from "./modal/DetailsModal";
 import EditModal from "./modal/EditModal";
+import { badge } from "../../components/common/Utils";
+import Note from "../Home/modal/Note";
 
 const AllComments = () => {
   // loading state
@@ -17,6 +19,12 @@ const AllComments = () => {
 
   // initial customer id state
   const [commentID, setCommentID] = useState();
+
+  // initial owner Id state
+  const [ownerId, setOwnerId] = useState();
+
+  // initial company name state
+  const [companyName, setCompanyName] = useState();
 
   // import dispatch
   const dispatch = useDispatch();
@@ -44,6 +52,12 @@ const AllComments = () => {
     setCommentID(commentId);
   };
 
+  const showIndividualComment = (ispOwnerId, companyName) => {
+    console.log(ispOwnerId, companyName);
+    setOwnerId(ispOwnerId);
+    setCompanyName(companyName);
+  };
+
   // table column
   const columns = React.useMemo(
     () => [
@@ -55,28 +69,47 @@ const AllComments = () => {
       },
 
       {
-        accessor: "name",
         Header: "Name",
+        accessor: "name",
       },
       {
         Header: "Comapny",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
-          return <div>{company[value]}</div>;
+          return (
+            <div
+              className="company-name"
+              data-bs-toggle="modal"
+              data-bs-target="#clientNoteModal"
+              onClick={() => {
+                showIndividualComment(value, company[value]);
+              }}
+            >
+              {company[value]}
+            </div>
+          );
         },
       },
       {
         Header: "Comment Type",
         accessor: "commentType",
         Cell: ({ cell: { value } }) => {
-          return <div class="badge bg-info">{value}</div>;
+          return (
+            <div>
+              <span>{badge(value)}</span>
+            </div>
+          );
         },
       },
       {
         Header: "Status",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
-          return <div class="badge bg-primary">{value}</div>;
+          return (
+            <div>
+              <span>{badge(value)}</span>
+            </div>
+          );
         },
       },
       {
@@ -182,6 +215,7 @@ const AllComments = () => {
           </div>
         </div>
       </FontColor>
+      <Note ownerId={ownerId} companyName={companyName} />
       <DetailsModal id={commentID} isLoading={isLoading} />
       <EditModal id={commentID} />
     </>
