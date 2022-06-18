@@ -1,0 +1,84 @@
+// import React, { useState } from "react";
+// import moment from "moment";
+// import FormatNumber from "../../components/common/NumberFormat";
+// import { badge } from "../../components/common/Utils";
+// import { useEffect } from "react";
+// import apiLink from "../../api/apiLink";
+
+// const PrintCustomer = React.forwardRef((props, ref) => {
+//   const { customerState, ispOwnerData } = props;
+
+//   const [customers, setCustomers] = useState([]);
+
+//   useEffect(
+//     () => async () => {
+//       try {
+//         const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
+//         setCustomers(res.data);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     },
+//     [customerState]
+//   );
+
+//   return (
+//     <div ref={ref}>
+//       <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
+//         <div className="logo_side">
+//           <div className="company_logo">
+//             <img src="/assets/img/logo.png" alt="Company Logo" />
+//           </div>
+//           <div className="company_name">{ispOwnerData.company}</div>
+//         </div>
+//         <div className="details_side">
+//           <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
+//           {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
+//         </div>
+//       </div>
+
+//       <table className="table table-striped ">
+//         <thead>
+//           <tr className="spetialSortingRow">
+//             <th scope="col">আইডি</th>
+//             <th scope="col">নাম</th>
+//             <th scope="col">মোবাইল</th>
+//             <th scope="col">স্ট্যাটাস</th>
+//             <th scope="col">পেমেন্ট</th>
+//             <th scope="col">মাসিক ফি</th>
+//             <th scope="col">ব্যালান্স</th>
+//             <th scope="col">বিল সাইকেল</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {customers.map((val, key) => (
+//             <tr key={key} id={val.id}>
+//               <td className="prin_td">{val.customerId}</td>
+//               <td className="prin_td">{val.name}</td>
+//               <td className="prin_td">{val.mobile}</td>
+//               <td className="prin_td">{badge(val.status)}</td>
+//               <td className="prin_td">{badge(val.paymentStatus)}</td>
+//               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
+//               <td className="prin_td">
+//                 <strong>{FormatNumber(val.balance)}</strong>
+//               </td>
+//               <td className="prin_td">
+//                 {moment(val.billingCycle).format("DD-MM-YYYY")}
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//       {/* <div className="pdf_footer_line"></div>
+//       <div className="signature_text text-mute">সাক্ষর এবং তারিখ</div>
+//       <div className="signature_container">
+//         <div className="p-3 signature_wraper">
+//           <div className="signamture_field">ম্যানেজার</div>
+//           <div className="signamture_field">এডমিন</div>
+//         </div>
+//       </div> */}
+//     </div>
+//   );
+// });
+
+// export default PrintCustomer;

@@ -116,6 +116,9 @@ export default function Customer() {
   });
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
+  //bulk state
+  const [bulkCustomer, setBulkCustomer] = useState([]);
   // get customer api call
   useEffect(() => {
     if (
@@ -954,6 +957,7 @@ export default function Customer() {
                     isLoading={isLoading}
                     columns={columns}
                     data={Customers1}
+                    // bulkState={{ setBulkCustomer, modalId: "customerModal" }}
                   ></Table>
                 </div>
               </FourGround>

@@ -208,3 +208,7 @@
 .prin_td {
   font-size: 10px !important;
 }
+
+.bulk_operation_button {
+  cursor: pointer;
+}
