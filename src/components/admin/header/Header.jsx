@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
-import { ArrowClockwise, BoxArrowLeft } from "react-bootstrap-icons";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import {
+  ArrowClockwise,
+  BoxArrowLeft,
+  PersonBoundingBox,
+} from "react-bootstrap-icons";
 
 // internal imports
 import "./header.css";
@@ -171,6 +175,20 @@ export default function Header(props) {
                         লগআউট
                       </div>
                     </li>
+                    {/* {userRole === "ispOwner" || userRole === "manager" ? (
+                      <Link to="/activity">
+                        <li className="profileList logOutLi">
+                          <div className="dropdown-item logOutTxt">
+                            <span className="dropdownIcon">
+                              <PersonBoundingBox />
+                            </span>
+                            এক্টিভিটি
+                          </div>
+                        </li>
+                      </Link>
+                    ) : (
+                      ""
+                    )} */}
                   </ul>
                 </div>
               ) : pathName === "/register" ||

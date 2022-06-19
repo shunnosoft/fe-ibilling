@@ -22,6 +22,7 @@ import storage from "redux-persist/lib/storage";
 import resellerParchaseSmsSlice from "../features/resellerParchaseSmsSlice";
 import resellerSmsRequestSlice from "../features/resellerSmsRequestSlice";
 import resellerCustomerAdminSlice from "../features/resellerCustomerAdminSlice";
+import activityLogSlice from "../features/activityLogSlice";
 
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
   resellerSmsRequest: resellerSmsRequestSlice,
   resellerCustomer: resellerCustomerAdminSlice,
   companyName: adminSlice,
+  activityLog: activityLogSlice,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
