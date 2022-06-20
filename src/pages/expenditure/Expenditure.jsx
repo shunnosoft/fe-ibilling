@@ -150,6 +150,10 @@ export default function Expenditure() {
         accessor: "expenditureName",
       },
       {
+        Header: "খরচের বিবরণ",
+        accessor: "description",
+      },
+      {
         Header: "পরিমান",
         accessor: "amount",
       },
