@@ -79,6 +79,31 @@ const customerSliec = createSlice({
       state.customer = [];
       state.staticCustomer = [];
     },
+    bulkDelete: (state, { payload }) => {
+      const customers = [...state.customer];
+      const updatedCustomer = [];
+      for (let i = 0; i < customers.length; i++) {
+        const element = customers[i];
+        for (let j = 0; j < payload.length; j++) {
+          if (element.id !== payload[j]) {
+            updatedCustomer.push(element);
+          }
+        }
+      }
+      state.customer = updatedCustomer;
+    },
+    bulkUpdate: (state, { payload }) => {
+      const customers = [...state.customer];
+      for (let i = 0; i < customers.length; i++) {
+        const element = customers[i];
+        for (let j = 0; j < payload.length; j++) {
+          if (element.id === payload[j]) {
+            customers[i] = payload[j];
+          }
+        }
+      }
+      state.customer = customers;
+    },
   },
 });
 
@@ -95,6 +120,8 @@ export const {
   editStaticCustomerSuccess,
   deleteStaticCustomerSuccess,
   getStaticCustomerActiveSuccess,
+  bulkDelete,
+  bulkUpdate,
 } = customerSliec.actions;
 
 export default customerSliec.reducer;

@@ -43,6 +43,8 @@ import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/CustomerDelete";
 import apiLink from "../../api/apiLink";
+import BulkSubAreaEdit from "./customerCRUD/bulkOpration/bulkSubAreaEdit";
+
 // import apiLink from ""
 export default function Customer() {
   const dispatch = useDispatch();
@@ -117,8 +119,6 @@ export default function Customer() {
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
-  //bulk state
-  const [bulkCustomer, setBulkCustomer] = useState([]);
   // get customer api call
   useEffect(() => {
     if (
@@ -161,29 +161,6 @@ export default function Customer() {
     }
   }, [collectorArea, role]);
   // end collector filter
-
-  // useEffect(() => {
-  //   const keys = [
-  //     "monthlyFee",
-  //     "customerId",
-  //     "name",
-  //     "mobile",
-  //     "address",
-  //     "paymentStatus",
-  //     "status",
-  //     "balance",
-  //     "subArea",
-  //   ];
-  //   setCustomers(
-  //     (isFilterRunning ? filterdCus : cus).filter((item) =>
-  //       keys.some((key) =>
-  //         typeof item[key] === "string"
-  //           ? item[key]?.toString().toLowerCase().includes(cusSearch)
-  //           : item[key]?.toString().includes(cusSearch)
-  //       )
-  //     )
-  //   );
-  // }, [cus, cusSearch, filterdCus, isFilterRunning]);
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
@@ -394,6 +371,17 @@ export default function Customer() {
 
     setSingleData(customerId);
   };
+
+  //bulk-operations
+  const [bulkCustomer, setBulkCustomer] = useState([]);
+  const bulkDeleteHandler = () => {
+    const ids = bulkCustomer.map((item) => {
+      return item.original.id;
+    });
+    console.log(ids);
+  };
+
+  // bulk operation end
 
   const columns = React.useMemo(
     () => [
@@ -664,7 +652,7 @@ export default function Customer() {
                 setMikrotikCheck={setMikrotikCheck}
               />
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
-
+              <BulkSubAreaEdit bulkCustomer={bulkCustomer} />
               {/* Model finish */}
 
               <FourGround>
@@ -950,14 +938,17 @@ export default function Customer() {
                     >
                       রিসেট
                     </button>
-                    {/* <button onClick={handleFilterReset}>reset</button> */}
                   </div>
 
                   <Table
                     isLoading={isLoading}
                     columns={columns}
                     data={Customers1}
-                    // bulkState={{ setBulkCustomer, modalId: "customerModal" }}
+                    bulkState={{
+                      setBulkCustomer,
+                      modalId: "customerBulkModal",
+                      bulkDeleteHandler,
+                    }}
                   ></Table>
                 </div>
               </FourGround>

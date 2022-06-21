@@ -100,14 +100,17 @@ const Table = (props) => {
       />
       {selectedFlatRows.length > 0 && (
         <div className="d-flex">
-          {/* <div
+          <div
             className="bulk_operation_button text-warning "
             data-bs-toggle="modal"
             data-bs-target={`#${props.bulkState.modalId}`}
           >
             <PenFill />
-          </div> */}
-          <div className="bulk_operation_button mx-4 text-danger">
+          </div>
+          <div
+            onClick={props.bulkState?.bulkDeleteHandler}
+            className="bulk_operation_button mx-4 text-danger"
+          >
             <TrashFill />
           </div>
         </div>
