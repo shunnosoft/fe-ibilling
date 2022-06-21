@@ -16,14 +16,9 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
-// import Loader from "../../components/common/Loader";
-import Pagination from "../../components/Pagination";
-
-import TdLoader from "../../components/common/TdLoader";
 
 import {
   getAllExpenditure,
-  getCollector,
   getExpenditureSectors,
 } from "../../features/apiCalls";
 import CreateExpenditure from "./CreateExpenditure";
@@ -34,6 +29,7 @@ import EditPourpose from "./EditPourpose";
 import PrintExpenditure from "./expenditurePDF";
 import ReactToPrint from "react-to-print";
 import Table from "../../components/table/Table";
+import { Tab, Tabs } from "react-bootstrap";
 
 export default function Expenditure() {
   const componentRef = useRef();
@@ -41,42 +37,25 @@ export default function Expenditure() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  const [collSearch, setCollSearch] = useState("");
   const expenditures = useSelector(
     (state) => state.expenditure.allExpenditures
   );
   const expenditurePurpose = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );
+  const role = useSelector((state) => state.persistedReducer.auth.role);
 
-  let serial = 0;
-  let seriall = 0;
   // pagination
-  const [initialExp, setInitialExp] = useState(expenditures);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [expenditurePage, setExpenditurePage] = useState(5);
+  const [allExpenditures, setAllExpenditure] = useState(expenditures);
   const [singleExp, setSingleExp] = useState({});
   const [singlePurpose, setSinglePurpose] = useState({});
-  const lastIndex = currentPage * expenditurePage;
-  const [purpose, setPurpose] = useState(expenditurePurpose);
-  const firstIndex = lastIndex - expenditurePage;
-  const currentExpenditure = initialExp.slice(firstIndex, lastIndex);
-  const [allExpenditures, setallExpenditure] = useState(currentExpenditure);
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
-  );
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-  const [whatToShow, setWhatToShow] = useState("expenditure");
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+
+  //set the expenditurePurpose name to expenditure
   useLayoutEffect(() => {
-    setPurpose(expenditurePurpose);
     const temp = [];
-    expenditures?.map((e) => {
-      expenditurePurpose?.map((ep) => {
+    expenditures?.forEach((e) => {
+      expenditurePurpose?.forEach((ep) => {
         if (ep.id === e.expenditurePurpose) {
-          // console.log({ ...e, namee: ep.name });
           temp.push({
             ...e,
             expenditureName: ep.name,
@@ -86,51 +65,13 @@ export default function Expenditure() {
       });
       return temp;
     });
-    // console.log(temp);
-    setInitialExp(temp);
+    setAllExpenditure(temp);
   }, [expenditures, expenditurePurpose]);
+
   useEffect(() => {
     getAllExpenditure(dispatch, ispOwnerId);
     getExpenditureSectors(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch]);
-
-  useEffect(() => {
-    const keys = ["amount", "expenditureName", "createdAt"];
-    if (collSearch !== "") {
-      setallExpenditure(
-        initialExp?.filter((item) =>
-          keys.some((key) =>
-            typeof item[key] === "string"
-              ? item[key].toString().toLowerCase().includes(collSearch)
-              : item[key].toString().includes(collSearch)
-          )
-        )
-      );
-    } else {
-      setallExpenditure(initialExp);
-    }
-  }, [collSearch, initialExp]);
-
-  const searchPurpose = (e) => {
-    const keys = ["name"];
-    if (e !== "") {
-      setPurpose(
-        expenditurePurpose?.filter((item) =>
-          keys.some((key) =>
-            typeof item[key] === "string"
-              ? item[key].toString().toLowerCase().includes(e)
-              : item[key].toString().includes(e)
-          )
-        )
-      );
-    } else {
-      setPurpose(expenditurePurpose);
-    }
-  };
-
-  const searchHandler = (e) => {
-    setCollSearch(e.toString().toLowerCase());
-  };
 
   const getTotalExpenditure = () => {
     const total = allExpenditures.reduce((pre, curr) => pre + curr.amount, 0);
@@ -148,6 +89,10 @@ export default function Expenditure() {
       {
         Header: "খরচের খাত",
         accessor: "expenditureName",
+      },
+      {
+        Header: "খরচের বিবরণ",
+        accessor: "description",
       },
       {
         Header: "পরিমান",
@@ -279,121 +224,92 @@ export default function Expenditure() {
 
   return (
     <>
-      <CreateExpenditure></CreateExpenditure>
-      <CreatePourpose></CreatePourpose>
-      <EditExpenditure singleExp={singleExp}></EditExpenditure>
-      <EditPourpose singlePurpose={singlePurpose}></EditPourpose>
       <Sidebar />
+
+      {/* import modal  */}
+      <CreateExpenditure />
+      <CreatePourpose />
+      <EditExpenditure singleExp={singleExp} />
+      <EditPourpose singlePurpose={singlePurpose} />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">খরচ</h2>
-
-              {/* modals */}
-
-              <FourGround>
-                <div className="collectorWrapper">
-                  <div className="addCollector">
-                    <div className="addNewCollector">
-                      <div className="displexFlexSys">
-                        <div className="addAndSettingIcon d-flex justify-content-end">
-                          <div title="খরচ অ্যাড ">
-                            <PlusCircleDotted
-                              className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#createExpenditure"
-                            />
-                          </div>
-
-                          <div title="খরচের খাত অ্যাড">
-                            <PlusCircleFill
-                              className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#createPourpose"
-                            />
-                          </div>
-                          <div title="প্রিন্ট">
-                            <ReactToPrint
-                              documentTitle="খরচ রিপোর্ট"
-                              trigger={() => (
-                                <PrinterFill
-                                  title="প্রিন্ট "
-                                  className="addcutmButton"
-                                />
-                              )}
-                              content={() => componentRef.current}
-                            />
-                          </div>
-                        </div>
-                      </div>
+              <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="me-3">খরচ</div>
+                <div
+                  className="d-flex"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "end",
+                  }}
+                >
+                  <>
+                    <div title="খরচ অ্যাড ">
+                      <PlusCircleDotted
+                        className="addcutmButton"
+                        data-bs-toggle="modal"
+                        data-bs-target="#createExpenditure"
+                      />
                     </div>
-                  </div>
-
-                  {/* print report */}
-                  <div style={{ display: "none" }}>
-                    <PrintExpenditure
-                      ref={componentRef}
-                      allExpenditures={allExpenditures}
-                    />
-                  </div>
-
-                  <div
-                    className="btn-group"
-                    role="group"
-                    aria-label="Basic radio toggle button group"
-                    style={{ width: "100%" }}
-                  >
-                    <input
-                      type="radio"
-                      className="btn-check"
-                      name="btnradio"
-                      id="btnradio1"
-                      autocomplete="off"
-                      checked={whatToShow === "expenditure"}
-                      onClick={() => {
-                        setWhatToShow("expenditure");
-                      }}
-                    />
-                    <label
-                      className="btn shadow-none btn-outline-primary custombtngroup"
-                      for="btnradio1"
-                    >
-                      খরচ
-                    </label>
-
-                    <input
-                      type="radio"
-                      className="btn-check"
-                      name="btnradio"
-                      id="btnradio2"
-                      autocomplete="off"
-                      checked={whatToShow === "expenditurePurpose"}
-                      onClick={() => {
-                        setWhatToShow("expenditurePurpose");
-                      }}
-                    />
-                    <label
-                      className="btn btn-outline-primary shadow-none custombtngroup"
-                      for="btnradio2"
-                    >
-                      খরচ খাত
-                    </label>
-                  </div>
-
-                  {whatToShow === "expenditure" ? (
-                    <Table
-                      customComponent={customComponent}
-                      data={allExpenditures}
-                      columns={columns}
-                    ></Table>
-                  ) : whatToShow === "expenditurePurpose" ? (
-                    <Table data={purpose} columns={columns2}></Table>
-                  ) : (
-                    ""
-                  )}
+                    <div title="খরচের খাত অ্যাড">
+                      <PlusCircleFill
+                        className="addcutmButton"
+                        data-bs-toggle="modal"
+                        data-bs-target="#createPourpose"
+                      />
+                    </div>
+                    <div title="প্রিন্ট">
+                      <ReactToPrint
+                        documentTitle="খরচ রিপোর্ট"
+                        trigger={() => (
+                          <PrinterFill
+                            title="প্রিন্ট "
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
+                  </>
                 </div>
+              </div>
+              <FourGround>
+                {/* print report */}
+                <div style={{ display: "none" }}>
+                  <PrintExpenditure
+                    ref={componentRef}
+                    allExpenditures={allExpenditures}
+                  />
+                </div>
+                {/* </div> */}
+
+                <Tabs
+                  defaultActiveKey="expenditure"
+                  id="uncontrolled-tab-example"
+                  className=" mt-1"
+                >
+                  <Tab eventKey="expenditure" title="খরচ">
+                    <FourGround>
+                      <Table
+                        customComponent={customComponent}
+                        data={allExpenditures}
+                        columns={columns}
+                      ></Table>
+                    </FourGround>
+                  </Tab>
+
+                  <Tab eventKey="expenditurePurpose" title="খরচ খাত">
+                    <FourGround>
+                      <Table
+                        data={expenditurePurpose}
+                        columns={columns2}
+                      ></Table>
+                    </FourGround>
+                  </Tab>
+                </Tabs>
               </FourGround>
               <Footer />
             </FontColor>
