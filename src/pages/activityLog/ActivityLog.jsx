@@ -8,7 +8,8 @@ import { useEffect } from "react";
 import { getActvityLog } from "../../features/activityLogApi";
 import moment from "moment";
 import { Eye } from "react-bootstrap-icons";
-import Table from "../../components/table/Table";
+import Table from "./table/Table";
+import Details from "./modal/Details";
 
 const ActivityLog = () => {
   // import dispatch
@@ -17,58 +18,81 @@ const ActivityLog = () => {
   // initial loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // initial comment id state
+  const [activityLogId, setActivityLogId] = useState();
+
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
 
+  // get all data from redux
   const data = useSelector(
     (state) => state?.persistedReducer?.activityLog?.activityLog
   );
   console.log(data);
 
+  // api call
   useEffect(() => {
     getActvityLog(dispatch, setIsLoading, ispOwnerId);
   }, []);
 
+  // table columns
   const columns = React.useMemo(
     () => [
       {
-        Header: "Serial",
+        Header: "#",
         id: "row",
+        width: "8%",
+        maxWidth: 100,
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
 
       {
-        accessor: "action",
         Header: "অ্যাকশন",
-      },
-      {
-        Header: "সময়",
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+        minWidth: 300,
+        maxWidth: 1000,
+        width: "82%",
+        accessor: (value) => {
+          return (
+            <div>
+              <span>{value.action}</span>
+              <span className="text-primary"> at </span>
+              <small className="text-secondary">
+                {moment(value.createdAt).format("MMM DD YYYY hh:mm A")}
+              </small>
+            </div>
+          );
         },
       },
       {
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">ভিউ</div>,
+        width: "10%",
+        maxWidth: 200,
+        minWidth: 100,
         id: "option",
 
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <button className="btn btn-sm btn-primary">
-              {" "}
-              <Eye />{" "}
-            </button>
-          </div>
-        ),
+        Cell: ({ row: { original } }) => {
+          return (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                onClick={() => setActivityLogId(original.id)}
+                data-bs-toggle="modal"
+                data-bs-target="#showActivityLogDetails"
+                className="btn btn-sm btn-outline-primary"
+              >
+                <Eye />
+              </button>
+            </div>
+          );
+        },
       },
     ],
     []
@@ -93,6 +117,7 @@ const ActivityLog = () => {
           </div>
         </div>
       </div>
+      <Details activityId={activityLogId} />
     </>
   );
 };

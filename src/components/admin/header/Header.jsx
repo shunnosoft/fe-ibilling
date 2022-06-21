@@ -167,15 +167,8 @@ export default function Header(props) {
                         </li>
                       );
                     })}
-                    <li className="profileList logOutLi" onClick={handleLogOut}>
-                      <div className="dropdown-item logOutTxt">
-                        <span className="dropdownIcon">
-                          <BoxArrowLeft />
-                        </span>
-                        লগআউট
-                      </div>
-                    </li>
-                    {/* {userRole === "ispOwner" || userRole === "manager" ? (
+
+                    {userRole === "ispOwner" || userRole === "manager" ? (
                       <Link to="/activity">
                         <li className="profileList logOutLi">
                           <div className="dropdown-item logOutTxt">
@@ -188,7 +181,16 @@ export default function Header(props) {
                       </Link>
                     ) : (
                       ""
-                    )} */}
+                    )}
+
+                    <li className="profileList logOutLi" onClick={handleLogOut}>
+                      <div className="dropdown-item logOutTxt">
+                        <span className="dropdownIcon">
+                          <BoxArrowLeft />
+                        </span>
+                        লগআউট
+                      </div>
+                    </li>
                   </ul>
                 </div>
               ) : pathName === "/register" ||
