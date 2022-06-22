@@ -269,7 +269,7 @@ export default function CollectorReport() {
                     </div>
                     <div className="submitdiv d-grid gap-2">
                       <button
-                        className="btn fs-5 btn-success w-100"
+                        className="btn btn-outline-primary w-140 mt-2"
                         type="button"
                         onClick={onClickFilter}
                       >

@@ -1,7 +1,13 @@
 // import React from "react";
 import React, { forwardRef, useEffect, useRef } from "react";
 import { Pagination } from "react-bootstrap";
-import { ArrowDownUp, PenFill, TrashFill } from "react-bootstrap-icons";
+import {
+  ArrowDown,
+  ArrowDownUp,
+  ArrowUp,
+  PenFill,
+  TrashFill,
+} from "react-bootstrap-icons";
 import {
   useTable,
   useSortBy,
@@ -47,6 +53,7 @@ const Table = (props) => {
     gotoPage,
     pageCount,
     setPageSize,
+    pageOptions,
     state,
     setGlobalFilter,
     selectedFlatRows,
@@ -113,7 +120,22 @@ const Table = (props) => {
                     column.id === "selection" ? (
                       ""
                     ) : (
-                      <ArrowDownUp key={column.id} className="arrowDownUp" />
+                      <>
+                        <ArrowDown
+                          key={column.id}
+                          className={`arrowDown sorting-data text-primary ${
+                            column.isSorted &&
+                            (column.isSortedDesc ? "text-danger" : "")
+                          } `}
+                        />
+                        <ArrowUp
+                          key={column.id}
+                          className={`arrowUp sorting-data text-primary ${
+                            column.isSorted &&
+                            (column.isSortedDesc ? "" : "text-danger")
+                          } `}
+                        />
+                      </>
                     )}
                   </th>
                 ))}
@@ -177,9 +199,12 @@ const Table = (props) => {
           ></Pagination.Prev>
 
           <Pagination.Item active>{pageIndex + 1}</Pagination.Item>
-          <Pagination.Ellipsis />
-          {/* <Pagination.Item>{pageOptions.length}</Pagination.Item> */}
-          <Pagination.Next onClick={() => nextPage()}></Pagination.Next>
+          <Pagination.Item>of</Pagination.Item>
+          <Pagination.Item>{pageOptions.length}</Pagination.Item>
+          <Pagination.Next
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+          ></Pagination.Next>
           <Pagination.Last
             onClick={() => gotoPage(pageCount - 1)}
             disabled={!canNextPage}
