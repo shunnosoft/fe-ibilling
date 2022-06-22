@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
 import RootBulkModal from "./bulkModal";
 
-const BulkSubAreaEdit = ({ bulkCustomer }) => {
+const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   const areas = useSelector((state) => state?.persistedReducer?.area?.area);
   const [isLoading, setIsLoading] = useState();
   const [subArea, setSubArea] = useState("");
@@ -85,7 +85,7 @@ const BulkSubAreaEdit = ({ bulkCustomer }) => {
   };
 
   return (
-    <RootBulkModal header="Edit SubArea">
+    <RootBulkModal modalId={modalId} header="আপডেট এরিয়া">
       <form onSubmit={submitHandler}>
         <div>
           <p>এরিয়া সিলেক্ট করুন</p>
