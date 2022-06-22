@@ -192,7 +192,7 @@ export default function StaticCustomerEdit({ single }) {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    const { balance, ipAddress, queueName, target, ...rest } = data;
+    const { ipAddress, queueName, target, ...rest } = data;
     const mainData = {
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
@@ -201,10 +201,17 @@ export default function StaticCustomerEdit({ single }) {
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
-      balance: -balance,
       ...rest,
       monthlyFee: monthlyFee,
     };
+
+    if (
+      mainData.balance === "" ||
+      mainData.balance === undefined ||
+      mainData === null
+    ) {
+      delete mainData.balance;
+    }
 
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
