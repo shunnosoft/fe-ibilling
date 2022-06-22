@@ -470,7 +470,7 @@ export default function Diposit() {
                         </div>
                         <div className="submitDiv">
                           <button
-                            className="btn btn-success mt-2"
+                            className="btn btn-outline-primary w-140 mt-2"
                             type="button"
                             onClick={onClickFilter}
                           >

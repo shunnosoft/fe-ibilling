@@ -411,7 +411,7 @@ export default function Home() {
                   ))}
                 </select>
                 <button
-                  className="btn btn-success mt-2 chartFilteritem"
+                  className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
                   type="button"
                   onClick={handleFilterHandler}
                 >

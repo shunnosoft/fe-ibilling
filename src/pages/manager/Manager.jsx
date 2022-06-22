@@ -129,9 +129,19 @@ export default function Manager() {
             <ReadModals managerDetails={manager} />
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">
-                  {manager?.name} (ম্যানেজার) প্রোফাইল
-                </h2>
+                <div className="d-flex justify-content-between collectorTitle px-5">
+                  <h2 className="">{manager?.name} (ম্যানেজার) প্রোফাইল</h2>
+                  {!manager?.name && (
+                    <div
+                      title="ম্যানেজার যুক্ত করুন"
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  )}
+                </div>
               </FourGround>
               {/* edit manager */}
               <WriteModals manager={manager} />
@@ -228,7 +238,7 @@ export default function Manager() {
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">
-                    {manager?.name ? (
+                    {manager?.name && (
                       <div className="managerDetails">
                         <div className="managerProfile">
                           <img
@@ -325,17 +335,6 @@ export default function Manager() {
                           >
                             {isLoading ? <Loader /> : " আপডেট"}
                           </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="addNewCollector">
-                        <p>অ্যাড ম্যানেজার</p>
-                        <div className="addAndSettingIcon">
-                          <PersonPlusFill
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                          />
                         </div>
                       </div>
                     )}

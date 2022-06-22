@@ -3,13 +3,11 @@ import "../collector/collector.css";
 import "./configmikrotik.css";
 import {
   PlugFill,
-  ArrowClockwise,
   PencilFill,
   ArrowLeftShort,
   ThreeDots,
   PenFill,
   ArchiveFill,
-  PersonSquare,
   PersonCheckFill,
   BagCheckFill,
   PersonLinesFill,
@@ -25,15 +23,11 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
-import TdLoader from "../../components/common/TdLoader";
 import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal";
 
 import Loader from "../../components/common/Loader";
 import {
   fetchActivepppoeUser,
-  fetchMikrotik,
-  fetchMikrotikSyncUser,
-  syncMikrotikStaticUser,
   fetchpppoePackage,
   fetchpppoeUser,
   fetchPackagefromDatabase,
@@ -412,7 +406,14 @@ export default function ConfigMikrotik() {
               {/* modals */}
               <ConfigMikrotikModal mik={singleMik} />
               <FourGround>
-                <h2 className="collectorTitle">মাইক্রোটিক কনফিগারেশন</h2>
+                <div className="d-flex collectorTitle px-4">
+                  <div className="AllMikrotik mt-1" onClick={gotoAllMiktorik}>
+                    <ArrowLeftShort className="arrowLeftSize" />
+                    <span style={{ marginLeft: "3px" }}>মাইক্রোটিক</span>
+                  </div>
+
+                  <div className="mx-auto">মাইক্রোটিক কনফিগারেশন</div>
+                </div>
               </FourGround>
 
               <FourGround>
@@ -558,10 +559,10 @@ export default function ConfigMikrotik() {
                       </div>
                     </div>
 
-                    <div className="AllMikrotik" onClick={gotoAllMiktorik}>
+                    {/* <div className="AllMikrotik" onClick={gotoAllMiktorik}>
                       <ArrowLeftShort className="arrowLeftSize" />
                       <span style={{ marginLeft: "3px" }}>সকল মাইক্রোটিক</span>
-                    </div>
+                    </div> */}
 
                     {/* PPPoE Package */}
                     {whatYouWantToShow === "showMikrotikPackage" ? (

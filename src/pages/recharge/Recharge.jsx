@@ -286,16 +286,15 @@ export default function RechargeHistoryofReseller() {
                           // max="2018-12-31"
                         />
                       </div>
-                    </div>
-
-                    <div className="submitdiv d-grid gap-2">
+                      {/* <div className="submitdiv d-grid gap-2"> */}
                       <button
-                        className="btn fs-5 btn-success w-100"
+                        className="btn btn-outline-primary w-140 mt-2 "
                         type="button"
                         onClick={onClickFilter}
                       >
                         ফিল্টার
                       </button>
+                      {/* </div> */}
                     </div>
 
                     {/* table */}

@@ -406,7 +406,7 @@ export default function Report() {
                       </div>
                       <div>
                         <button
-                          className="btn btn-success mt-2"
+                          className="btn btn-outline-primary w-140 mt-2"
                           type="button"
                           onClick={onClickFilter}
                         >

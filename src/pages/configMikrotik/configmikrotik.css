@@ -13,10 +13,11 @@
   padding: 20px 0;
 }
 .AllMikrotik {
+  padding: 0px 9px 0px 2px;
   background: #0ba36a;
   border: none;
   cursor: pointer;
-  width: 135px;
+  /* width: 135px; */
   font-size: 14px;
   color: white;
   display: flex;

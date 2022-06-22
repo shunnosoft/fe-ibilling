@@ -83,14 +83,6 @@ const StaticActiveCustomer = () => {
         Header: "ম্যাক এড্রেস",
         accessor: "macAddress",
       },
-
-      // {
-      //   Header: "বিল সাইকেল",
-      //   accessor: "billingCycle",
-      //   Cell: ({ cell: { value } }) => {
-      //     return moment(value).format("DD-MM-YY hh:mm A");
-      //   },
-      // },
     ],
     []
   );
@@ -107,23 +99,23 @@ const StaticActiveCustomer = () => {
               <FourGround>
                 <h2 className="collectorTitle">স্ট্যাটিক এক্টিভ গ্রাহক</h2>
                 <div className="collectorWrapper">
-                  <div className="d-flex justiy-content-center">
-                    <div className="mikrotik-filter mx-3">
-                      <h6>মাইক্রোটিক সিলেক্ট করুন</h6>
+                  <div className="d-flex justify-content-center">
+                    <div className="mikrotik-filter">
+                      <h6 className="mb-0">মাইক্রোটিক সিলেক্ট করুন</h6>
                       <select
                         id="selectMikrotikOption"
                         onChange={mikrotiSelectionHandler}
-                        className="form-select"
+                        className="form-select mt-0"
                       >
                         {mikrotik.map((item) => (
                           <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
                     </div>
-                    <div className="customer-filter">
-                      <h6>গ্রাহক সিলেক্ট করুন</h6>
+                    <div className="customer-filter ms-4">
+                      <h6 className="mb-0">গ্রাহক সিলেক্ট করুন</h6>
                       <select
-                        className="form-select"
+                        className="form-select mt-0"
                         aria-label="Default select example"
                         onChange={(event) =>
                           setFilterStatus(event.target.value)
