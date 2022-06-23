@@ -386,23 +386,28 @@ export default function Customer() {
   const columns = React.useMemo(
     () => [
       {
+        width: "8%",
         Header: "আইডি",
         accessor: "customerId",
       },
       {
+        width: "11%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "11%",
         Header: "PPPoE",
         accessor: "pppoe.name",
       },
       {
+        width: "12%",
         Header: "মোবাইল",
         accessor: "mobile",
       },
 
       {
+        width: "9%",
         Header: "স্ট্যাটাস",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -410,6 +415,7 @@ export default function Customer() {
         },
       },
       {
+        width: "9%",
         Header: "পেমেন্ট",
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -417,14 +423,17 @@ export default function Customer() {
         },
       },
       {
+        width: "10%",
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
       },
       {
+        width: "9%",
         Header: "ব্যালান্স",
         accessor: "balance",
       },
       {
+        width: "13%",
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
@@ -433,6 +442,7 @@ export default function Customer() {
       },
 
       {
+        width: "8%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -939,17 +949,18 @@ export default function Customer() {
                       রিসেট
                     </button>
                   </div>
-
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={Customers1}
-                    bulkState={{
-                      setBulkCustomer,
-                      modalId: "customerBulkModal",
-                      bulkDeleteHandler,
-                    }}
-                  ></Table>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={Customers1}
+                      bulkState={{
+                        setBulkCustomer,
+                        modalId: "customerBulkModal",
+                        bulkDeleteHandler,
+                      }}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

@@ -24,7 +24,7 @@ function Invoice() {
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-  console.log(ispOwnerId);
+
   const invoices = useSelector(
     (state) => state?.persistedReducer?.invoice?.invoices
   );
@@ -36,12 +36,14 @@ function Invoice() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "10%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "16%",
         Header: "টাইপ",
         accessor: "reseller.name",
         Cell: ({ row: { original } }) => (
@@ -57,11 +59,13 @@ function Invoice() {
         ),
       },
       {
+        width: "16%",
         Header: "	পরিমাণ",
         accessor: "amount",
         Cell: ({ row: { original } }) => <td>{original.amount} Tk</td>,
       },
       {
+        width: "16%",
         Header: "স্ট্যাটাস",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -70,20 +74,15 @@ function Invoice() {
       },
 
       {
+        width: "26%",
         Header: "ইনভয়েস তৈরির তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("DD-MM-YYYY hh:mm:ss A");
         },
       },
-      // {
-      //   Header: "পেমেন্টের শেষ তারিখ",
-      //   accessor: "dueDate",
-      //   Cell: ({ cell: { value } }) => {
-      //     return moment(value).format("DD-MM-YYYY hh:mm:ss A");
-      //   },
-      // },
       {
+        width: "15%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -125,13 +124,13 @@ function Invoice() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">ইনভয়েস </h2>
+                <h2 className="collectorTitle">ইনভয়েস</h2>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   {/* table */}
-                  <div className="invoice-table">
+                  <div className="table-section">
                     <Table data={invoices} columns={columns2}></Table>
                   </div>
                 </div>

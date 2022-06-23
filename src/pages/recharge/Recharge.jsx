@@ -183,12 +183,14 @@ export default function RechargeHistoryofReseller() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "17%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "30%",
         Header: "নাম",
         accessor: "reseller.name",
         Cell: ({ cell: { value } }) => {
@@ -196,6 +198,8 @@ export default function RechargeHistoryofReseller() {
         },
       },
       {
+        width: "36%",
+        width: "17%",
         Header: "পরিমান",
         accessor: "amount",
       },
@@ -204,7 +208,7 @@ export default function RechargeHistoryofReseller() {
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
@@ -298,12 +302,13 @@ export default function RechargeHistoryofReseller() {
                     </div>
 
                     {/* table */}
-
-                    <Table
-                      customComponent={customComponent}
-                      data={mainData}
-                      columns={columns2}
-                    ></Table>
+                    <div className="table-section">
+                      <Table
+                        customComponent={customComponent}
+                        data={mainData}
+                        columns={columns2}
+                      ></Table>
+                    </div>
                   </div>
                 </FourGround>
               ) : (

@@ -417,13 +417,16 @@ export default function Customer() {
       {
         Header: "আইডি",
         accessor: "customerId",
+        width: "8%",
       },
       {
         Header: "নাম",
         accessor: "name",
+        width: "10%",
       },
       {
         Header: "IP",
+        width: "13%",
         accessor: (field) =>
           field.userType === "firewall-queue"
             ? field.queue.address
@@ -433,10 +436,12 @@ export default function Customer() {
       {
         Header: "মোবাইল",
         accessor: "mobile",
+        width: "12%",
       },
 
       {
         Header: "স্ট্যাটাস",
+        width: "9%",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -444,6 +449,7 @@ export default function Customer() {
       },
       {
         Header: "পেমেন্ট",
+        width: "9%",
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -451,14 +457,17 @@ export default function Customer() {
       },
       {
         Header: "মাসিক ফি",
+        width: "10%",
         accessor: "monthlyFee",
       },
       {
         Header: "ব্যালান্স",
+        width: "9%",
         accessor: "balance",
       },
       {
         Header: "বিল সাইকেল",
+        width: "12%",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
@@ -466,6 +475,7 @@ export default function Customer() {
       },
 
       {
+        width: "8%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -936,12 +946,13 @@ export default function Customer() {
                     </button>
                     {/* <button onClick={handleFilterReset}>reset</button> */}
                   </div>
-
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={Customers1}
-                  ></Table>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={Customers1}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

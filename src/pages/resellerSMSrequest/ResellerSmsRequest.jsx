@@ -60,18 +60,29 @@ const ResellerSmsRequest = () => {
   // table columns
   const columns = React.useMemo(() => [
     {
+      width: "10%",
+      Header: "#",
+      id: "row",
+      accessor: (row) => Number(row.id + 1),
+      Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+    },
+    {
+      width: "25%",
       Header: "নাম",
       accessor: "reseller.name",
     },
     {
+      width: "12%",
       Header: "পরিমান",
       accessor: "smsAmount",
     },
     {
+      width: "15%",
       Header: "টাকার পরিমান",
       accessor: "smsCost",
     },
     {
+      width: "15%",
       Header: "স্ট্যাটাস",
       accessor: "status",
       Cell: ({ row: { original } }) => (
@@ -89,12 +100,14 @@ const ResellerSmsRequest = () => {
       ),
     },
     {
+      width: "23%",
       Header: "তারিখ",
       accessor: "createdAt",
       Cell: ({ row: { original } }) =>
-        moment(original.createdAt).format("DD-MM-YYYY"),
+        moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
     },
     {
+      width: "10%",
       Header: () => <div className="text-center">অ্যাকশন</div>,
       id: "option",
 
@@ -126,49 +139,6 @@ const ResellerSmsRequest = () => {
               >
                 <XCircle />
               </button>
-              {/* <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle={original.status === "pending" && "dropdown"}
-              aria-expanded="false"
-            />
-
-            <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-              <li
-                onClick={() => {
-                  acceptHandle(
-                    original?.id,
-                    original?.reseller?.id,
-                    original?.status
-                  );
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <ArrowRightCircle />
-                    <p className="actionP">একসেপ্ট</p>
-                  </div>
-                </div>
-              </li>
-
-              <li
-                onClick={() => {
-                  acceptHandle(
-                    original?.id,
-                    original?.reseller?.id,
-                    "rejected"
-                  );
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <Eraser />
-                    <p className="actionP">রিজেক্ট</p>
-                  </div>
-                </div>
-              </li>
-            </ul> */}
             </>
           )}
         </div>
@@ -191,7 +161,9 @@ const ResellerSmsRequest = () => {
               <div class="card">
                 <div class="card-body">
                   <div className="recdharge_sms">
-                    <Table data={data} columns={columns} />
+                    <div className="table-section">
+                      <Table data={data} columns={columns} />
+                    </div>
                   </div>
                 </div>
               </div>

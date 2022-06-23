@@ -884,7 +884,8 @@ export const fetchpppoePackage = async (dispatch, IDs, mtkName) => {
   }
 };
 
-export const fetchPackagefromDatabase = async (dispatch, IDs) => {
+export const fetchPackagefromDatabase = async (dispatch, IDs, setIsLoading) => {
+  setIsLoading(true);
   if (IDs.mikrotikId) {
     dispatch(resetPackagefromDatabase());
     dispatch(mtkIsLoading(true));
@@ -901,6 +902,7 @@ export const fetchPackagefromDatabase = async (dispatch, IDs) => {
       console.log(error.response);
     }
   }
+  setIsLoading(false);
 };
 
 // Edit pppoe Package
@@ -1182,13 +1184,15 @@ export const depositAcceptReject = async (
   }
 };
 
-export const getAllBills = async (dispatch, ispOwnerId) => {
+export const getAllBills = async (dispatch, ispOwnerId, setIsLoading) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get(`/bill/${ispOwnerId}`);
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 //my deposit
@@ -1470,13 +1474,15 @@ export const getResellerBalance = async (
 };
 
 //expenditure
-export const getAllExpenditure = async (dispatch, ispOwnerId) => {
+export const getAllExpenditure = async (dispatch, ispOwnerId, setIsLoading) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get(`/staff/expenditures/${ispOwnerId}`);
     dispatch(getExpenditureSuccess(res.data));
   } catch (error) {
     console.log(error);
   }
+  setIsLoading(false);
 };
 
 export const addExpenditure = async (dispatch, data, setLoading, resetForm) => {
@@ -1512,13 +1518,19 @@ export const editExpenditure = async (dispatch, data, setLoading) => {
 };
 
 // expenditure pourpose
-export const getExpenditureSectors = async (dispatch, ispOwnerId) => {
+export const getExpenditureSectors = async (
+  dispatch,
+  ispOwnerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get(`/staff/expenditurePurposes/${ispOwnerId}`);
     dispatch(getExpenditureSectorsSuccess(res.data));
   } catch (error) {
     console.log(error);
   }
+  setIsLoading(false);
 };
 
 export const addExpenditurePourpose = async (
