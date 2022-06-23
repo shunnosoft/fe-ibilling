@@ -122,14 +122,12 @@ const Table = (props) => {
                     ) : (
                       <>
                         <ArrowDown
-                          key={column.id}
                           className={`arrowDown sorting-data text-primary ${
                             column.isSorted &&
                             (column.isSortedDesc ? "" : "text-danger")
                           } `}
                         />
                         <ArrowUp
-                          key={column.id}
                           className={`arrowUp sorting-data text-primary ${
                             column.isSorted &&
                             (column.isSortedDesc ? "text-danger" : "")

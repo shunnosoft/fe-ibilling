@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import Loader from "../../../../components/common/Loader";
+import { bulkDeleteCustomer } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 
 const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
   // loading state
   const [isLoading, setIsloading] = useState(false);
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
-
+  const dispatch = useDispatch();
   // DELETE handler
   const bulkDeleteHandler = () => {
     let checkCondition = true;
@@ -17,14 +19,15 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
 
     // send data for api
     const data = {
-      ids: bulkCustomer.map((item) => {
+      customerIds: bulkCustomer.map((item) => {
         return item.original.id;
       }),
-      mikrotik: mikrotikCheck,
     };
 
     // api call
     if (checkCondition) {
+      bulkDeleteCustomer(dispatch, data, mikrotikCheck, setIsloading);
+      console.log(data);
     }
   };
 

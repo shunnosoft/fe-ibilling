@@ -1,19 +1,28 @@
 import React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import Loader from "../../../../components/common/Loader";
+import { bulkStatusEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 
 const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("");
+  const dispatch = useDispatch();
 
   const changeStatus = (e) => {
     e.preventDefault();
     if (status) {
       const data = {
-        ids: bulkCustomer.map((item) => item.original.id),
+        customerIds: bulkCustomer.map((item) => item.original.id),
+        status: status,
       };
-      console.log(data);
+      const confirm = window.confirm(
+        "আপনি কি " + bulkCustomer.length + "টি গ্রাহকের স্টাটাস আপডেট করতে চান?"
+      );
+      if (confirm) {
+        bulkStatusEdit(dispatch, data, setIsLoading);
+      }
     }
   };
 
