@@ -3,7 +3,7 @@ import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
 
-// import { Link } from "react-router-dom";
+//internal import
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -17,6 +17,7 @@ import {
   FileExcelFill,
   PrinterFill,
   ChatText,
+  TrashFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -44,6 +45,9 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/CustomerDelete";
 import apiLink from "../../api/apiLink";
 import BulkSubAreaEdit from "./customerCRUD/bulkOpration/bulkSubAreaEdit";
+import BulkBillingCycleEdit from "./customerCRUD/bulkOpration/bulkBillingCycleEdit";
+import BulkStatusEdit from "./customerCRUD/bulkOpration/bulkStatusEdit";
+import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
 
 // import apiLink from ""
 export default function Customer() {
@@ -374,12 +378,6 @@ export default function Customer() {
 
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
-  const bulkDeleteHandler = () => {
-    const ids = bulkCustomer.map((item) => {
-      return item.original.id;
-    });
-    console.log(ids);
-  };
 
   // bulk operation end
 
@@ -662,7 +660,28 @@ export default function Customer() {
                 setMikrotikCheck={setMikrotikCheck}
               />
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
-              <BulkSubAreaEdit bulkCustomer={bulkCustomer} />
+
+              {/* bulk Modal */}
+
+              <BulkSubAreaEdit
+                bulkCustomer={bulkCustomer}
+                modalId="customerBulkEdit"
+              />
+              <BulkBillingCycleEdit
+                bulkCustomer={bulkCustomer}
+                modalId="customerBillingCycle"
+              />
+
+              <BulkStatusEdit
+                bulkCustomer={bulkCustomer}
+                modalId="bulkStatusEdit"
+              />
+              <BulkCustomerDelete
+                bulkCustomer={bulkCustomer}
+                modalId="bulkDeleteCustomer"
+              />
+              {/* bulk Modal end */}
+
               {/* Model finish */}
 
               <FourGround>
@@ -957,7 +976,6 @@ export default function Customer() {
                       bulkState={{
                         setBulkCustomer,
                         modalId: "customerBulkModal",
-                        bulkDeleteHandler,
                       }}
                     ></Table>
                   </div>
@@ -968,6 +986,54 @@ export default function Customer() {
           </div>
         </div>
       </div>
+      {bulkCustomer.length > 0 && (
+        <div className="bulkActionButton">
+          <button
+            className="bulk_action_button"
+            title="এডিট এরিয়া"
+            data-bs-toggle="modal"
+            data-bs-target="#customerBulkEdit"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title">এডিট এরিয়া</span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title="এডিট স্টাটাস"
+            data-bs-toggle="modal"
+            data-bs-target="#bulkStatusEdit"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title">এডিট স্টাটাস</span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title="এডিট বিলিং সাইকেল"
+            data-bs-toggle="modal"
+            data-bs-target="#customerBillingCycle"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-magic"></i>
+            <span className="button_title">এডিট বিলিং সাইকেল</span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title="গ্রাহক ডিলিট"
+            data-bs-toggle="modal"
+            data-bs-target="#bulkDeleteCustomer"
+            type="button"
+            class="btn btn-danger btn-floating btn-sm"
+          >
+            <i class="fas fa-trash-alt"></i>
+            <span className="button_title">গ্রাহক ডিলিট</span>
+          </button>
+        </div>
+      )}
     </>
   );
 }

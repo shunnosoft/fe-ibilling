@@ -212,3 +212,38 @@
 .bulk_operation_button {
   cursor: pointer;
 }
+
+/* for floating button  */
+
+.bulkActionButton {
+  position: fixed;
+  width: 42px;
+  top: 50vh;
+  right: 13px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.bulkActionButton button {
+  margin: 3px;
+  font-size: 12px;
+  position: relative;
+}
+
+span.button_title {
+  position: absolute;
+  width: 110px;
+  transition: all 0.3s;
+  left: 1000px;
+  color: #fff;
+  background: inherit;
+  padding: 1px 5px;
+  border-radius: 5px;
+  bottom: 3px;
+  font-weight: 600;
+}
+
+.bulkActionButton button:hover span.button_title {
+  left: -106px;
+}
