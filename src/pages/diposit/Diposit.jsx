@@ -60,6 +60,7 @@ export default function Diposit() {
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
+  console.log(mainData);
 
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
 
@@ -221,12 +222,14 @@ export default function Diposit() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "12%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "22%",
         Header: "নাম",
         accessor: "name",
         Cell: ({ row: { original } }) => (
@@ -236,6 +239,7 @@ export default function Diposit() {
         ),
       },
       {
+        width: "22%",
         Header: "মোট",
         accessor: "amount",
         Cell: ({ row: { original } }) => (
@@ -244,8 +248,8 @@ export default function Diposit() {
       },
 
       {
-        Header: <div className="text-center">অ্যাকশন</div>,
-        id: "option1",
+        width: "22%",
+        Header: "অ্যাকশন",
 
         Cell: ({ row: { original } }) => (
           <div
@@ -294,10 +298,11 @@ export default function Diposit() {
         ),
       },
       {
+        width: "22%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
@@ -306,17 +311,20 @@ export default function Diposit() {
   const columns2 = React.useMemo(
     () => [
       {
+        width: "8%",
         Header: "সিরিয়াল",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "22%",
         Header: "পরিমান",
         accessor: "amount",
         Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
+        width: "22%",
         Header: "স্টেটাস",
         accessor: "status",
         Cell: ({ row: { original } }) => (
@@ -332,6 +340,7 @@ export default function Diposit() {
       },
 
       {
+        width: "22%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -362,6 +371,7 @@ export default function Diposit() {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -370,135 +380,143 @@ export default function Diposit() {
                 <h2 className="collectorTitle">ডিপোজিট</h2>
               </FourGround>
 
-              <Tabs
-                defaultActiveKey="profile"
-                id="uncontrolled-tab-example"
-                className="mb-3"
-              >
-                {(userRole === "manager" || userRole === "collector") && (
-                  <Tab eventKey="home" title="ডিপোজিট করুন">
-                    <FourGround>
-                      <div className="managerDipositToIsp">
-                        <Formik
-                          initialValues={{
-                            amount: "",
-                            balance: balancee, //put the value from api
-                          }}
-                          validationSchema={BillValidatoin}
-                          onSubmit={(values) => {
-                            billDipositHandler(values);
-                          }}
-                          enableReinitialize
-                        >
-                          {() => (
-                            <Form>
-                              <div className="displayGridForDiposit">
-                                <FtextField
-                                  type="text"
-                                  name="balance"
-                                  label="মোট ব্যালান্স"
-                                  disabled
-                                />
-                                <FtextField
-                                  type="text"
-                                  name="amount"
-                                  label="ডিপোজিট পরিমান"
-                                />
-                                <button
-                                  type="submit"
-                                  className="btn btn-success dipositSubmitBtn"
-                                >
-                                  {isLoading ? <Loader></Loader> : " সাবমিট"}
-                                </button>
-                              </div>
-                            </Form>
-                          )}
-                        </Formik>
-                      </div>
-                    </FourGround>
-                  </Tab>
-                )}
+              <FourGround>
+                <div className="collectorWrapper">
+                  <div className="addCollector">
+                    <Tabs
+                      defaultActiveKey="profile"
+                      id="uncontrolled-tab-example"
+                      className="mb-3"
+                    >
+                      {(userRole === "manager" || userRole === "collector") && (
+                        <Tab eventKey="home" title="ডিপোজিট করুন">
+                          <div className="managerDipositToIsp">
+                            <Formik
+                              initialValues={{
+                                amount: "",
+                                balance: balancee, //put the value from api
+                              }}
+                              validationSchema={BillValidatoin}
+                              onSubmit={(values) => {
+                                billDipositHandler(values);
+                              }}
+                              enableReinitialize
+                            >
+                              {() => (
+                                <Form>
+                                  <div className="displayGridForDiposit">
+                                    <FtextField
+                                      type="text"
+                                      name="balance"
+                                      label="মোট ব্যালান্স"
+                                      disabled
+                                    />
+                                    <FtextField
+                                      type="text"
+                                      name="amount"
+                                      label="ডিপোজিট পরিমান"
+                                    />
+                                    <button
+                                      type="submit"
+                                      className="btn btn-success dipositSubmitBtn"
+                                    >
+                                      {isLoading ? (
+                                        <Loader></Loader>
+                                      ) : (
+                                        " সাবমিট"
+                                      )}
+                                    </button>
+                                  </div>
+                                </Form>
+                              )}
+                            </Formik>
+                          </div>
+                        </Tab>
+                      )}
 
-                <Tab eventKey="profile" title="ডিপোজিট">
-                  <FourGround>
-                    <div>
-                      <div className="selectFilteringg">
-                        {userRole === "ispOwner" && (
-                          <select
-                            className="form-select"
-                            onChange={(e) => onChangeCollector(e.target.value)}
-                          >
-                            <option value="" defaultValue>
-                              সকল কালেক্টর{" "}
-                            </option>
-                            {collectors?.map((c, key) => (
-                              <option key={key} value={c.user}>
-                                {c.name}
-                              </option>
-                            ))}
-                          </select>
-                        )}
-                        <div className="dateDiv  ">
-                          <input
-                            className="form-select"
-                            type="date"
-                            id="start"
-                            name="trip-start"
-                            value={moment(dateStart).format("YYYY-MM-DD")}
-                            onChange={(e) => {
-                              setStartDate(e.target.value);
-                            }}
-                            // value="2018-07-22"
-                            // min="2018-01-01"
-                            // max="2018-12-31"
-                          />
+                      <Tab eventKey="profile" title="ডিপোজিট">
+                        <div>
+                          <div className="selectFilteringg">
+                            {userRole === "ispOwner" && (
+                              <select
+                                className="form-select"
+                                onChange={(e) =>
+                                  onChangeCollector(e.target.value)
+                                }
+                              >
+                                <option value="" defaultValue>
+                                  সকল কালেক্টর{" "}
+                                </option>
+                                {collectors?.map((c, key) => (
+                                  <option key={key} value={c.user}>
+                                    {c.name}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                            <div className="dateDiv  ">
+                              <input
+                                className="form-select"
+                                type="date"
+                                id="start"
+                                name="trip-start"
+                                value={moment(dateStart).format("YYYY-MM-DD")}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                }}
+                                // value="2018-07-22"
+                                // min="2018-01-01"
+                                // max="2018-12-31"
+                              />
+                            </div>
+                            <div className="dateDiv">
+                              <input
+                                className="form-select"
+                                type="date"
+                                id="end"
+                                name="trip-start"
+                                value={moment(dateEnd).format("YYYY-MM-DD")}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                }}
+                                // value="2018-07-22"
+                                // min="2018-01-01"
+                                // max="2018-12-31"
+                              />
+                            </div>
+                            <div className="submitDiv">
+                              <button
+                                className="btn btn-outline-primary w-140 mt-2"
+                                type="button"
+                                onClick={onClickFilter}
+                              >
+                                ফিল্টার
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                        <div className="dateDiv">
-                          <input
-                            className="form-select"
-                            type="date"
-                            id="end"
-                            name="trip-start"
-                            value={moment(dateEnd).format("YYYY-MM-DD")}
-                            onChange={(e) => {
-                              setEndDate(e.target.value);
-                            }}
-                            // value="2018-07-22"
-                            // min="2018-01-01"
-                            // max="2018-12-31"
-                          />
+                        <div className="table-section">
+                          <Table
+                            customComponent={customComponent}
+                            columns={columns}
+                            data={mainData}
+                          ></Table>
                         </div>
-                        <div className="submitDiv">
-                          <button
-                            className="btn btn-outline-primary w-140 mt-2"
-                            type="button"
-                            onClick={onClickFilter}
-                          >
-                            ফিল্টার
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <Table
-                      customComponent={customComponent}
-                      columns={columns}
-                      data={mainData}
-                    ></Table>
-                  </FourGround>
-                </Tab>
+                      </Tab>
 
-                {(userRole === "manager" || userRole === "collector") && (
-                  <Tab eventKey="contact" title="নিজ ডিপোজিট">
-                    <FourGround>
-                      <Table
-                        customComponent={customComponent}
-                        data={ownDeposits}
-                        columns={columns2}
-                      ></Table>
-                    </FourGround>
-                  </Tab>
-                )}
-              </Tabs>
+                      {(userRole === "manager" || userRole === "collector") && (
+                        <Tab eventKey="contact" title="নিজ ডিপোজিট">
+                          <Table
+                            customComponent={customComponent}
+                            data={ownDeposits}
+                            columns={columns2}
+                          ></Table>
+                        </Tab>
+                      )}
+                    </Tabs>
+                  </div>
+                </div>
+              </FourGround>
 
               <Footer />
             </FontColor>

@@ -85,37 +85,45 @@ export default function Reseller() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "13%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "12%",
         Header: "মোবাইল",
         accessor: "mobile",
       },
       {
+        width: "19%",
         Header: "এড্রেস",
         accessor: "address",
       },
 
       {
+        width: "19%",
         Header: "ইমেইল",
         accessor: "email",
       },
       {
+        width: "8%",
         Header: "গ্রাহক",
         accessor: "customerCount",
       },
       {
+        width: "13%",
         Header: "রিচার্জ ব্যালান্স",
         accessor: "rechargeBalance",
       },
       {
+        width: "8%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -271,12 +279,13 @@ export default function Reseller() {
                       </div>
                     )}
                   </div>
-
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={reseller}
-                  ></Table>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={reseller}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

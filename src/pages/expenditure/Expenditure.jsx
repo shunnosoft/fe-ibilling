@@ -32,6 +32,7 @@ import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
 
 export default function Expenditure() {
+  const [isLoading, setIsloading] = useState(false);
   const componentRef = useRef();
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
@@ -69,8 +70,8 @@ export default function Expenditure() {
   }, [expenditures, expenditurePurpose]);
 
   useEffect(() => {
-    getAllExpenditure(dispatch, ispOwnerId);
-    getExpenditureSectors(dispatch, ispOwnerId);
+    getAllExpenditure(dispatch, ispOwnerId, setIsloading);
+    getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   }, [ispOwnerId, dispatch]);
 
   const getTotalExpenditure = () => {
@@ -81,33 +82,39 @@ export default function Expenditure() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "10%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "18%",
         Header: "খরচের খাত",
         accessor: "expenditureName",
       },
       {
+        width: "18%",
         Header: "খরচের বিবরণ",
         accessor: "description",
       },
       {
+        width: "18%",
         Header: "পরিমান",
         accessor: "amount",
       },
 
       {
+        width: "21%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
 
       {
+        width: "15%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -151,25 +158,29 @@ export default function Expenditure() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "20%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "30%",
         Header: "খরচের খাত",
         accessor: "name",
       },
 
       {
+        width: "30%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
 
       {
+        width: "20%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -286,33 +297,39 @@ export default function Expenditure() {
                 </div>
                 {/* </div> */}
 
-                <Tabs
-                  defaultActiveKey="expenditure"
-                  id="uncontrolled-tab-example"
-                  className=" mt-1"
-                >
-                  <Tab eventKey="expenditure" title="খরচ">
-                    <FourGround>
-                      <Table
-                        customComponent={customComponent}
-                        data={allExpenditures}
-                        columns={columns}
-                      ></Table>
-                    </FourGround>
-                  </Tab>
+                <div className="collectorWrapper">
+                  <div className="addCollector">
+                    <Tabs
+                      defaultActiveKey="expenditure"
+                      id="uncontrolled-tab-example"
+                      className=" mt-1"
+                    >
+                      <Tab eventKey="expenditure" title="খরচ">
+                        <div className="table-section">
+                          <Table
+                            isLoading={isLoading}
+                            customComponent={customComponent}
+                            data={allExpenditures}
+                            columns={columns}
+                          ></Table>
+                        </div>
+                      </Tab>
 
-                  <Tab eventKey="expenditurePurpose" title="খরচ খাত">
-                    <FourGround>
-                      <Table
-                        data={expenditurePurpose}
-                        columns={columns2}
-                      ></Table>
-                    </FourGround>
-                  </Tab>
-                </Tabs>
+                      <Tab eventKey="expenditurePurpose" title="খরচ খাত">
+                        <div className="table-section">
+                          <Table
+                            isLoading={isLoading}
+                            data={expenditurePurpose}
+                            columns={columns2}
+                          ></Table>
+                        </div>
+                      </Tab>
+                    </Tabs>
+                  </div>
+                </div>
               </FourGround>
-              <Footer />
             </FontColor>
+            <Footer />
           </div>
         </div>
       </div>

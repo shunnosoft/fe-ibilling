@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
+import { bulksubAreaEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 
 const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   const areas = useSelector((state) => state?.persistedReducer?.area?.area);
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [subArea, setSubArea] = useState("");
-
+  const dispatch = useDispatch();
   //state for selected value
   const [selectedValue, setSelectedValue] = useState({
     area: "",
@@ -65,10 +66,17 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
 
     if (selectedValue.area && selectedValue.subArea) {
       const data = {
-        ids: bulkCustomer.map((item) => item.original.id),
-        area: selectedValue.area,
-        subArea: selectedValue.subArea,
+        customerIds: bulkCustomer.map((item) => item.original.id),
+        subAreaId: selectedValue.subArea,
       };
+      const confirm = window.confirm(
+        "আপনি কি " +
+          bulkCustomer.length +
+          "টি গ্রাহকের সাব এরিয়া আপডেট করতে চান?"
+      );
+      if (confirm) {
+        bulksubAreaEdit(dispatch, data, setIsLoading);
+      }
     }
   };
   const subAreaEditHandler = (e) => {

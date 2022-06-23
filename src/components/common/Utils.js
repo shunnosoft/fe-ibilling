@@ -3,7 +3,7 @@ const addClass = {
   unpaid: "warning text-dark",
   expired: "danger",
 
-  active: "light text-dark",
+  active: "primary",
   inactive: "secondary",
 
   new: "secondary",
@@ -20,7 +20,5 @@ const addClass = {
 };
 
 export const badge = (item) => {
-  return (
-    <span className={`badge rounded-pill bg-${addClass[item]}`}>{item}</span>
-  );
+  return <span className={`badge   bg-${addClass[item]}`}>{item}</span>;
 };

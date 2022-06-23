@@ -15,6 +15,7 @@ import ActionButton from "./ActionButton";
 import StaffEdit from "./staffModal/staffEdit";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import { badge } from "../../components/common/Utils";
 
 const Staff = () => {
   const dispatch = useDispatch();
@@ -52,12 +53,14 @@ const Staff = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "20%",
         Header: "নাম",
         accessor: "name",
       },
@@ -66,18 +69,25 @@ const Staff = () => {
       //   accessor: "address",
       // },
       {
+        width: "20%",
         Header: "মোবাইল",
         accessor: "mobile",
       },
       {
-        Header: "স্টেটাস",
+        width: "20%",
+        Header: "স্ট্যাটাস",
         accessor: "status",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
       },
       {
+        width: "20%",
         Header: "স্যালারি",
         accessor: "salary",
       },
       {
+        width: "12%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
@@ -163,11 +173,13 @@ const Staff = () => {
                       </div>
                     )}
                   </div>
-                  <Table
-                    isLoading={tableLoading}
-                    columns={columns}
-                    data={getAllStaffs}
-                  />
+                  <div className="table-section">
+                    <Table
+                      isLoading={tableLoading}
+                      columns={columns}
+                      data={getAllStaffs}
+                    />
+                  </div>
                 </div>
               </FourGround>
             </FontColor>

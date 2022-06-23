@@ -95,7 +95,7 @@ export default function StaticCustomerEdit({ single }) {
       mikrotikId: customer?.mikrotik,
     };
     if (bpSettings?.hasMikrotik) {
-      fetchPackagefromDatabase(dispatch, IDs);
+      fetchPackagefromDatabase(dispatch, IDs, setIsloading);
     }
   }, [customer?.mikrotik]);
 

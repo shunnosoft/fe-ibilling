@@ -112,7 +112,12 @@ const Table = (props) => {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, i) => (
-                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    {...column.getHeaderProps({
+                      style: { width: column.width, cursor: "pointer" },
+                    })}
+                  >
                     {column.render("Header")}
 
                     {column.id === "option" ||
@@ -122,14 +127,12 @@ const Table = (props) => {
                     ) : (
                       <>
                         <ArrowDown
-                          key={column.id}
                           className={`arrowDown sorting-data text-primary ${
                             column.isSorted &&
                             (column.isSortedDesc ? "" : "text-danger")
                           } `}
                         />
                         <ArrowUp
-                          key={column.id}
                           className={`arrowUp sorting-data text-primary ${
                             column.isSorted &&
                             (column.isSortedDesc ? "text-danger" : "")
@@ -153,7 +156,15 @@ const Table = (props) => {
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell, i) => {
                       return (
-                        <td key={i} className="align-middle">
+                        <td
+                          {...cell.getCellProps({
+                            style: {
+                              width: cell.column.width,
+                            },
+                          })}
+                          key={i}
+                          className="align-middle"
+                        >
                           {cell.render("Cell")}
                         </td>
                       );
@@ -171,46 +182,47 @@ const Table = (props) => {
           )}
         </table>
       </div>
+      {data?.length > 100 && (
+        <div className="d-flex justify-content-between">
+          <div className="col-md-2">
+            <select
+              className="form-select"
+              aria-label="Default select example"
+              value={pageSize}
+              onChange={(event) => setPageSize(Number(event.target.value))}
+            >
+              {[100, 200, 500, 1000].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div className="d-flex justify-content-between">
-        <div className="col-md-2">
-          <select
-            className="form-select"
-            aria-label="Default select example"
-            value={pageSize}
-            onChange={(event) => setPageSize(Number(event.target.value))}
-          >
-            {[100, 200, 500, 1000].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                {pageSize}
-              </option>
-            ))}
-          </select>
+          <Pagination aria-label="Page navigation example">
+            <Pagination.First
+              disabled={!canPreviousPage}
+              onClick={() => gotoPage(0)}
+            ></Pagination.First>
+            <Pagination.Prev
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+            ></Pagination.Prev>
+
+            <Pagination.Item active>{pageIndex + 1}</Pagination.Item>
+            <Pagination.Item>of</Pagination.Item>
+            <Pagination.Item>{pageOptions.length}</Pagination.Item>
+            <Pagination.Next
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+            ></Pagination.Next>
+            <Pagination.Last
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            ></Pagination.Last>
+          </Pagination>
         </div>
-
-        <Pagination aria-label="Page navigation example">
-          <Pagination.First
-            disabled={!canPreviousPage}
-            onClick={() => gotoPage(0)}
-          ></Pagination.First>
-          <Pagination.Prev
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          ></Pagination.Prev>
-
-          <Pagination.Item active>{pageIndex + 1}</Pagination.Item>
-          <Pagination.Item>of</Pagination.Item>
-          <Pagination.Item>{pageOptions.length}</Pagination.Item>
-          <Pagination.Next
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          ></Pagination.Next>
-          <Pagination.Last
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-          ></Pagination.Last>
-        </Pagination>
-      </div>
+      )}
     </>
   );
 };

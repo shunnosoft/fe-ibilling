@@ -114,16 +114,19 @@ export default function SubArea() {
   const columns = React.useMemo(
     () => [
       {
+        width: "30%",
         Header: "সিরিয়াল",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "40%",
         Header: "সাব-এরিয়া",
         accessor: "name",
       },
       {
+        width: "30%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
