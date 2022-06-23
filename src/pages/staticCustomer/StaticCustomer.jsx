@@ -499,26 +499,25 @@ export default function Customer() {
                   </div>
                 </div>
               </li>
-              {permission?.billPosting || role === "ispOwner" ? (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#collectCustomerBillModal"
-                  onClick={() => {
-                    getSpecificCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <Wallet />
-                      <p className="actionP">বিল গ্রহণ</p>
-                    </div>
-                  </div>
-                </li>
-              ) : (
-                ""
-              )}
 
-              {role === "ispOwner" && (
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#collectCustomerBillModal"
+                onClick={() => {
+                  getSpecificCustomer(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <Wallet />
+                    <p className="actionP">বিল গ্রহণ</p>
+                  </div>
+                </div>
+              </li>
+
+              {(role === "ispOwner" ||
+                role === "manager" ||
+                role === "collector") && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#editStaticCustomerModal"
