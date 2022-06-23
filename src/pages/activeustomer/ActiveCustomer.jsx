@@ -115,16 +115,19 @@ export default function ConfigMikrotik() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "10%",
         Header: "স্ট্যাটাস",
         Cell: <Wifi color="green" />,
       },
       {
+        width: "16%",
         Header: "নাম",
         accessor: "name",
         // Cell: ({ row: { original } }) => (
@@ -141,10 +144,12 @@ export default function ConfigMikrotik() {
         // ),
       },
       {
+        width: "15%",
         Header: "এড্রেস",
         accessor: "address",
       },
       {
+        width: "17%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -158,6 +163,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
+        width: "17%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -172,6 +178,7 @@ export default function ConfigMikrotik() {
       },
 
       {
+        width: "17%",
         Header: "আপ টাইম",
         accessor: "uptime",
 
@@ -196,12 +203,14 @@ export default function ConfigMikrotik() {
   const columns3 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "11%",
         Header: "স্ট্যাটাস",
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -215,14 +224,17 @@ export default function ConfigMikrotik() {
         ),
       },
       {
+        width: "20%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "12%",
         Header: "প্যাকেজ",
         accessor: "profile",
       },
       {
+        width: "12%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -238,6 +250,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
+        width: "12%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -253,6 +266,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
+        width: "25%",
         Header: "Last Link Up Time",
         accessor: "lastLinkUpTime",
       },
@@ -337,49 +351,53 @@ export default function ConfigMikrotik() {
                     </div>
 
                     {/* PPPoE users */}
-                    {whatYouWantToShow === "showActiveMikrotikUser" && (
-                      <Table columns={columns2} data={activeUser}></Table>
-                    )}
+                    <div className="table-section">
+                      {whatYouWantToShow === "showActiveMikrotikUser" && (
+                        <Table columns={columns2} data={activeUser}></Table>
+                      )}
+                    </div>
 
                     {/* Active PPPoE users */}
-                    {whatYouWantToShow === "showAllMikrotikUser" && (
-                      // <>
-                      //   <h2
-                      //     style={{
-                      //       width: "100%",
-                      //       textAlign: "center",
-                      //       marginTop: "50px",
-                      //     }}
-                      //   >
-                      //     সকল গ্রাহক
-                      //   </h2>
-                      //   <div
-                      //     className="LeftSideMikrotik"
-                      //     style={{
-                      //       widhth: "100%",
-                      //       display: "flex",
-                      //       alignItems: "center",
-                      //       justifyContent: "flex-end",
-                      //     }}
-                      //   >
-                      //     <select
-                      //       id="selectMikrotikOption"
-                      //       onChange={filterIt}
-                      //       className="form-select"
-                      //       style={{ marginBottom: "-10px" }}
-                      //     >
-                      //       <option value={""}>সকল গ্রাহক</option>;
-                      //       <option value={"true"}>অনলাইন</option>;
-                      //       <option value={"false"}>অফলাইন</option>;
-                      //     </select>
-                      //   </div>
+                    <div className="table-section">
+                      {whatYouWantToShow === "showAllMikrotikUser" && (
+                        // <>
+                        //   <h2
+                        //     style={{
+                        //       width: "100%",
+                        //       textAlign: "center",
+                        //       marginTop: "50px",
+                        //     }}
+                        //   >
+                        //     সকল গ্রাহক
+                        //   </h2>
+                        //   <div
+                        //     className="LeftSideMikrotik"
+                        //     style={{
+                        //       widhth: "100%",
+                        //       display: "flex",
+                        //       alignItems: "center",
+                        //       justifyContent: "flex-end",
+                        //     }}
+                        //   >
+                        //     <select
+                        //       id="selectMikrotikOption"
+                        //       onChange={filterIt}
+                        //       className="form-select"
+                        //       style={{ marginBottom: "-10px" }}
+                        //     >
+                        //       <option value={""}>সকল গ্রাহক</option>;
+                        //       <option value={"true"}>অনলাইন</option>;
+                        //       <option value={"false"}>অফলাইন</option>;
+                        //     </select>
+                        //   </div>
 
-                      <Table
-                        isLoading={loading}
-                        columns={columns3}
-                        data={allUsers}
-                      ></Table>
-                    )}
+                        <Table
+                          isLoading={loading}
+                          columns={columns3}
+                          data={allUsers}
+                        ></Table>
+                      )}
+                    </div>
                   </div>
                 </div>
               </FourGround>

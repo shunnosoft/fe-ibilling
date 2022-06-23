@@ -80,7 +80,7 @@ export default function CustomerEdit(props) {
     };
 
     if (bpSettings?.hasMikrotik) {
-      fetchPackagefromDatabase(dispatch, IDs);
+      fetchPackagefromDatabase(dispatch, IDs, setIsloading);
     }
   }, [bpSettings, ispOwnerId, dispatch, data]);
 

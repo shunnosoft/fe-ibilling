@@ -85,16 +85,19 @@ export default function Area() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "25%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "25%",
         Header: "এরিয়া",
         accessor: "name",
       },
       {
+        width: "25%",
         Header: <div className="text-center">সাব-এরিয়া</div>,
         id: "option1",
 
@@ -114,6 +117,7 @@ export default function Area() {
         ),
       },
       {
+        width: "25%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 

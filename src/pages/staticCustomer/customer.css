@@ -224,3 +224,12 @@
   margin: 10px 13px;
   width: 20rem;
 }
+
+.table-section th,
+.table-section td {
+  text-align: center;
+}
+
+.table-section-th th {
+  text-align: center;
+}

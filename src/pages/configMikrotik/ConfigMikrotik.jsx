@@ -116,7 +116,7 @@ export default function ConfigMikrotik() {
     // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
     // fetchActivepppoeUser(dispatch, IDs);
     dispatch(resetMikrotikUserAndPackage());
-    fetchPackagefromDatabase(dispatch, IDs, singleMik?.name);
+    fetchPackagefromDatabase(dispatch, IDs, setIsloading, singleMik?.name);
   }, [ispOwner, mikrotikId, dispatch]);
 
   // get single pppoe package
@@ -236,21 +236,25 @@ export default function ConfigMikrotik() {
   const columns1 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "20%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "30%",
         Header: "প্যাকেজ",
         accessor: "name",
       },
       {
+        width: "25%",
         Header: "রেট",
         accessor: "rate",
       },
 
       {
+        width: "25%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -310,20 +314,24 @@ export default function ConfigMikrotik() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "10%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "17%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "18%",
         Header: "এড্রেস",
         accessor: "address",
       },
       {
+        width: "15%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -337,6 +345,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
+        width: "15%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -351,6 +360,7 @@ export default function ConfigMikrotik() {
       },
 
       {
+        width: "25%",
         Header: "আপ টাইম",
         accessor: "uptime",
 
@@ -375,22 +385,26 @@ export default function ConfigMikrotik() {
   const columns3 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "20%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "25%",
         Header: "নাম",
         accessor: "name",
       },
       {
-        Header: "কলার আইডি",
-        accessor: "callerId",
-      },
-      {
+        width: "30%",
         Header: "প্যাকেজ",
         accessor: "profile",
+      },
+      {
+        width: "25%",
+        Header: "কলার আইডি",
+        accessor: "callerId",
       },
     ],
     []
@@ -570,7 +584,11 @@ export default function ConfigMikrotik() {
                         <h2 style={{ width: "100%", textAlign: "center" }}>
                           প্যাকেজ
                         </h2>
-                        <Table columns={columns1} data={pppoePackage}></Table>
+                        <Table
+                          isLoading={isLoading}
+                          columns={columns1}
+                          data={pppoePackage}
+                        ></Table>
                       </>
                     ) : (
                       ""
@@ -582,7 +600,11 @@ export default function ConfigMikrotik() {
                         <h2 style={{ width: "100%", textAlign: "center" }}>
                           এক্টিভ গ্রাহক
                         </h2>
-                        <Table columns={columns2} data={activeUser}></Table>
+                        <Table
+                          isLoading={isLoading}
+                          columns={columns2}
+                          data={activeUser}
+                        ></Table>
                       </>
                     ) : (
                       ""
@@ -595,6 +617,7 @@ export default function ConfigMikrotik() {
                           সকল গ্রাহক
                         </h2>
                         <Table
+                          isLoading={isLoading}
                           columns={columns3}
                           data={allMikrotikUsers}
                         ></Table>

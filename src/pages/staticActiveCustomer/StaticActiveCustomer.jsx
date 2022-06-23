@@ -53,12 +53,14 @@ const StaticActiveCustomer = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "10%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "20%",
         Header: "স্ট্যাটাস",
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -72,14 +74,17 @@ const StaticActiveCustomer = () => {
         ),
       },
       {
+        width: "20%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "20%",
         Header: "এড্রেস",
         accessor: "address",
       },
       {
+        width: "30%",
         Header: "ম্যাক এড্রেস",
         accessor: "macAddress",
       },
@@ -127,12 +132,13 @@ const StaticActiveCustomer = () => {
                       </select>
                     </div>
                   </div>
-
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={staticActiveCustomer}
-                  />
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={staticActiveCustomer}
+                    />
+                  </div>
                 </div>
               </FourGround>
             </FontColor>

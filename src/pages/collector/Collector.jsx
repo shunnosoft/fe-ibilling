@@ -100,29 +100,35 @@ export default function Collector() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "19%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "19%",
         Header: "এড্রেস",
         accessor: "address",
       },
       {
+        width: "19%",
         Header: "মোবাইল",
         accessor: "mobile",
       },
       {
+        width: "23%",
         Header: "ইমেইল",
         accessor: "email",
       },
 
       {
+        width: "12%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -205,20 +211,22 @@ export default function Collector() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <div className="collectorTitle d-flex justify-content-between px-5">
-                <div>কালেক্টর</div>
-                {permission?.collectorAdd ||
-                  (role === "ispOwner" && (
-                    <div
-                      title="কালেক্টর এড করুন"
-                      className="header_icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#collectorModal"
-                    >
-                      <PersonPlusFill />
-                    </div>
-                  ))}
-              </div>
+              <FourGround>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>কালেক্টর</div>
+                  {permission?.collectorAdd ||
+                    (role === "ispOwner" && (
+                      <div
+                        title="কালেক্টর এড করুন"
+                        className="header_icon"
+                        data-bs-toggle="modal"
+                        data-bs-target="#collectorModal"
+                      >
+                        <PersonPlusFill />
+                      </div>
+                    ))}
+                </div>
+              </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
@@ -235,7 +243,9 @@ export default function Collector() {
                       </div>
                     </div>
                   </div> */}
-                  <Table columns={columns} data={collector}></Table>
+                  <div className="table-section">
+                    <Table columns={columns} data={collector}></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

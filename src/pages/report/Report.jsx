@@ -19,6 +19,8 @@ import Table from "../../components/table/Table";
 export default function Report() {
   const componentRef = useRef();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // const cus = useSelector(state => state.customer.customer);
   // console.log(cus.length)
   const ispOwnerId = useSelector(
@@ -58,7 +60,7 @@ export default function Report() {
   const [billType, setBillType] = useState("");
 
   useEffect(() => {
-    getAllBills(dispatch, ispOwnerId);
+    getAllBills(dispatch, ispOwnerId, setIsLoading);
     let collectors = [];
 
     allCollector.map((item) =>
@@ -234,33 +236,39 @@ export default function Report() {
   const columns = useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "17%",
         Header: "আইডি",
         accessor: "customer.customerId",
       },
       {
+        width: "17%",
         Header: "গ্রাহক",
         accessor: "customer.name",
       },
       {
+        width: "17%",
         Header: "প্যাকেজ",
         accessor: "customer.mikrotikPackage.name",
       },
       {
+        width: "17%",
         Header: "বিল",
         accessor: "amount",
       },
 
       {
+        width: "24%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY hh:mm:ss A");
+          return moment(value).format("MMM DD YYYY hh:mm:ss a");
         },
       },
     ],
@@ -298,10 +306,6 @@ export default function Report() {
                   />
                 </div>
               </FourGround>
-
-              {/* Model start */}
-
-              {/* Model finish */}
 
               <FourGround>
                 <div className="collectorWrapper">
@@ -440,12 +444,14 @@ export default function Report() {
                     </div>
                   </div>
                   {/* table */}
-
-                  <Table
-                    customComponent={customComponent}
-                    columns={columns}
-                    data={mainData}
-                  ></Table>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      customComponent={customComponent}
+                      columns={columns}
+                      data={mainData}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />
