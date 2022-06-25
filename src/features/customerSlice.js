@@ -80,29 +80,57 @@ const customerSliec = createSlice({
       state.staticCustomer = [];
     },
     bulkDelete: (state, { payload }) => {
-      const customers = [...state.customer];
+      //get the user type
+      const userType = payload[0].userType;
+      let customers;
+      //get the value from state based on userType
+      if (userType === "pppoe") {
+        customers = [...state.customer];
+      } else if (userType === "simple-queue") {
+        customers = [...state.staticCustomer];
+      }
       const updatedCustomer = [];
+      //loop through existing customer
       for (let i = 0; i < customers.length; i++) {
         const element = customers[i];
+        console.log({ element, payload });
         for (let j = 0; j < payload.length; j++) {
-          if (element.id !== payload[j]) {
+          if (element.id !== payload[j].id) {
             updatedCustomer.push(element);
           }
         }
       }
-      state.customer = updatedCustomer;
+      //update the state based on userType with modified state
+      if (userType === "pppoe") {
+        state.customer = [...updatedCustomer];
+      } else if (userType === "simple-queue" || userType === "firewall-queue") {
+        state.staticCustomer = [...updatedCustomer];
+      }
     },
     bulkUpdate: (state, { payload }) => {
-      const customers = [...state.customer];
+      //get the user type
+      const userType = payload[0].userType;
+      let customers;
+      //get the value from state based on userType
+      if (userType === "pppoe") {
+        customers = [...state.customer];
+      } else if (userType === "simple-queue") {
+        customers = [...state.staticCustomer];
+      }
       for (let i = 0; i < customers.length; i++) {
         const element = customers[i];
         for (let j = 0; j < payload.length; j++) {
-          if (element.id === payload[j]) {
+          if (element.id === payload[j].id) {
             customers[i] = payload[j];
           }
         }
       }
-      state.customer = customers;
+      //update the state based on userType with modified state
+      if (userType === "pppoe") {
+        state.customer = [...customers];
+      } else if (userType === "simple-queue" || userType === "firewall-queue") {
+        state.staticCustomer = [...customers];
+      }
     },
   },
 });

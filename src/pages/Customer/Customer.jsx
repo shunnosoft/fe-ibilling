@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
-
 //internal import
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -17,7 +16,6 @@ import {
   FileExcelFill,
   PrinterFill,
   ChatText,
-  TrashFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,9 +29,7 @@ import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
-import Loader from "../../components/common/Loader";
 import {
-  deleteACustomer,
   getCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
@@ -48,7 +44,7 @@ import BulkSubAreaEdit from "./customerCRUD/bulkOpration/bulkSubAreaEdit";
 import BulkBillingCycleEdit from "./customerCRUD/bulkOpration/bulkBillingCycleEdit";
 import BulkStatusEdit from "./customerCRUD/bulkOpration/bulkStatusEdit";
 import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
-
+import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 // import apiLink from ""
 export default function Customer() {
   const dispatch = useDispatch();
@@ -67,7 +63,6 @@ export default function Customer() {
   const ispOwner = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state?.persistedReducer?.auth?.userData
@@ -98,14 +93,11 @@ export default function Customer() {
   const nonMikrotikPackages = useSelector((state) => state.package.packages);
 
   const [isLoading, setIsloading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
   const [Customers, setCustomers] = useState(cus);
-  const [status, setStatus] = useState("");
   const [allArea, setAreas] = useState([]);
   const [singleCustomer, setSingleCustomer] = useState("");
   const [customerReportData, setId] = useState([]);
-  const [isSorted, setSorted] = useState(false);
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
   const [singleData, setSingleData] = useState();
@@ -287,10 +279,6 @@ export default function Customer() {
     subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
   }
 
-  const handleChangeStatus = (e) => {
-    setStatus(e.target.value);
-  };
-
   if (filterOptions.status) {
     if (filterOptions.status === "active") {
       customerStatus = "এক্টিভ";
@@ -383,6 +371,21 @@ export default function Customer() {
 
   const columns = React.useMemo(
     () => [
+      {
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: "4%",
+      },
       {
         width: "8%",
         Header: "আইডি",
@@ -769,7 +772,6 @@ export default function Customer() {
                         <select
                           className="form-select"
                           onChange={(e) => {
-                            handleChangeStatus(e);
                             setFilterOption({
                               ...filterOptions,
                               status: e.target.value,
@@ -929,14 +931,6 @@ export default function Customer() {
                         )}
                       </div>
                     </div>
-
-                    {isDeleting ? (
-                      <div className="deletingAction">
-                        <Loader /> <b>Deleting...</b>
-                      </div>
-                    ) : (
-                      ""
-                    )}
                   </div>
                   {/* table */}
                   {/* print report */}
@@ -975,7 +969,6 @@ export default function Customer() {
                       data={Customers1}
                       bulkState={{
                         setBulkCustomer,
-                        modalId: "customerBulkModal",
                       }}
                     ></Table>
                   </div>
@@ -1010,7 +1003,7 @@ export default function Customer() {
             <i class="fas fa-edit"></i>
             <span className="button_title">এডিট স্টাটাস</span>
           </button>
-          <button
+          {/* <button
             className="bulk_action_button"
             title="এডিট বিলিং সাইকেল"
             data-bs-toggle="modal"
@@ -1020,7 +1013,7 @@ export default function Customer() {
           >
             <i class="fas fa-magic"></i>
             <span className="button_title">এডিট বিলিং সাইকেল</span>
-          </button>
+          </button> */}
           <button
             className="bulk_action_button"
             title="গ্রাহক ডিলিট"

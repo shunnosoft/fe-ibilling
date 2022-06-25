@@ -1,13 +1,7 @@
 // import React from "react";
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Pagination } from "react-bootstrap";
-import {
-  ArrowDown,
-  ArrowDownUp,
-  ArrowUp,
-  PenFill,
-  TrashFill,
-} from "react-bootstrap-icons";
+import { ArrowDown, ArrowUp } from "react-bootstrap-icons";
 import {
   useTable,
   useSortBy,
@@ -18,26 +12,6 @@ import {
 import TdLoader from "../common/TdLoader";
 import GlobalFilter from "./GlobalFilter";
 
-const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
-  const defaultRef = useRef();
-  const resolvedRef = ref || defaultRef;
-
-  useEffect(() => {
-    resolvedRef.current.indeterminate = indeterminate;
-  }, [resolvedRef, indeterminate]);
-
-  return (
-    <>
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="selectRows"
-        ref={resolvedRef}
-        {...rest}
-      />
-    </>
-  );
-});
 const Table = (props) => {
   const { columns, data, isLoading, customComponent } = props;
   const {
@@ -63,27 +37,8 @@ const Table = (props) => {
     useSortBy,
     usePagination,
     useRowSelect
-    // (hooks) => {
-    //   hooks.visibleColumns.push((columns) => [
-    //     {
-    //       id: "selection",
-    //       Header: ({ getToggleAllPageRowsSelectedProps }) => (
-    //         <IndeterminateCheckbox
-    //           customeStyle={true}
-    //           {...getToggleAllPageRowsSelectedProps()}
-    //         />
-    //       ),
-    //       Cell: ({ row }) => (
-    //         <div>
-    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-    //         </div>
-    //       ),
-    //     },
-    //     ...columns,
-    //   ]);
-    // }
   );
-  const { globalFilter, pageIndex, pageSize, selectedRowIds } = state;
+  const { globalFilter, pageIndex, pageSize } = state;
 
   useEffect(() => {
     setPageSize(100);

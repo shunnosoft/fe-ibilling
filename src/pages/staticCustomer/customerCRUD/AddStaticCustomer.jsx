@@ -82,7 +82,7 @@ export default function AddStaticCustomer() {
       };
       //ToDo
       if (bpSettings?.hasMikrotik) {
-        fetchPackagefromDatabase(dispatch, IDs);
+        fetchPackagefromDatabase(dispatch, IDs, setIsloading);
       }
     }
     setSingleMikrotik(id);

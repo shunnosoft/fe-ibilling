@@ -27,18 +27,14 @@ import ReactToPrint from "react-to-print";
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import CustomerPost from "./customerCRUD/AddStaticCustomer";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import StaticCustomerEdit from "./customerCRUD/StaticCustomerEdit";
-import Loader from "../../components/common/Loader";
 import {
   getStaticCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
-import arraySort from "array-sort";
 import CustomerReport from "./customerCRUD/showCustomerReport";
-import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
@@ -46,6 +42,11 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
 import AddStaticCustomer from "./customerCRUD/AddStaticCustomer";
 import apiLink from "../../api/apiLink";
+import BulkSubAreaEdit from "../Customer/customerCRUD/bulkOpration/bulkSubAreaEdit";
+import BulkBillingCycleEdit from "../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
+import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
+import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
+import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 
 export default function Customer() {
   const [mikrotikPac, setMikrotikPac] = useState([]);
@@ -69,11 +70,8 @@ export default function Customer() {
   );
 
   const [isLoading, setIsloading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
-  const permission = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.permissions
-  );
+
   const [filterOptions, setFilterOption] = useState({
     status: "",
     paymentStatus: "",
@@ -83,8 +81,7 @@ export default function Customer() {
     mikrotik: "",
   });
   const [Customers, setCustomers] = useState(cus);
-  // const [filterdCus, setFilter] = useState(Customers);
-  // const [isFilterRunning, setRunning] = useState(false);
+
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const [singleData, setSingleData] = useState();
@@ -209,8 +206,6 @@ export default function Customer() {
     getStaticCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
 
-  const [isSorted, setSorted] = useState(false);
-
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
 
@@ -233,35 +228,6 @@ export default function Customer() {
     }
   };
 
-  // useEffect(() => {
-  //   const temp = [];
-  //   cus.map((customer) => {
-  //     allareas.map((area) => {
-  //       area.subAreas.map((sub) => {
-  //         if (customer.subArea === sub.id) {
-  //           temp.push({
-  //             ...customer,
-  //             area: area.id,
-  //             profile: customer.pppoe.profile,
-  //           });
-  //         } else {
-  //           const check = temp.some((item) => item.id === customer.id);
-  //           if (!check) {
-  //             temp.push({
-  //               ...customer,
-  //               area: "noArea",
-  //               profile: customer.pppoe?.profile,
-  //             });
-  //           }
-  //         }
-  //       });
-  //     });
-  //   });
-
-  //   setCustomers(temp);
-  //   setCustomers1(temp);
-  //   setCustomers2(temp);
-  // }, [cus, allareas]);
   useEffect(() => {
     const temp = [];
     cus.map((customer) => {
@@ -290,9 +256,6 @@ export default function Customer() {
       }
     });
 
-    // temp.map((t) => {
-    //   if (t.area === "noArea") console.log(t);
-    // });
     setCustomers(temp);
     setCustomers1(temp);
     setCustomers2(temp);
@@ -414,6 +377,21 @@ export default function Customer() {
 
   const columns = React.useMemo(
     () => [
+      {
+        width: "4%",
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+      },
       {
         width: "8%",
         Header: "আইডি",
@@ -605,6 +583,9 @@ export default function Customer() {
     []
   );
 
+  //bulk operations
+  const [bulkCustomer, setBulkCustomer] = useState([]);
+
   return (
     <>
       <Sidebar />
@@ -694,6 +675,26 @@ export default function Customer() {
                 single={singleCustomer}
                 sendCustomer="staticCustomer"
               />
+              {/* bulk Modal */}
+
+              <BulkSubAreaEdit
+                bulkCustomer={bulkCustomer}
+                modalId="customerBulkEdit"
+              />
+              <BulkBillingCycleEdit
+                bulkCustomer={bulkCustomer}
+                modalId="customerBillingCycle"
+              />
+
+              <BulkStatusEdit
+                bulkCustomer={bulkCustomer}
+                modalId="bulkStatusEdit"
+              />
+              <BulkCustomerDelete
+                bulkCustomer={bulkCustomer}
+                modalId="bulkDeleteCustomer"
+              />
+              {/* bulk Modal end */}
 
               {/* Model finish */}
 
@@ -908,12 +909,6 @@ export default function Customer() {
                         </select>
                       </div>
                     </div>
-
-                    {isDeleting && (
-                      <div className="deletingAction">
-                        <Loader /> <b>Deleting...</b>
-                      </div>
-                    )}
                   </div>
                   {/* print report */}
                   <div style={{ display: "none" }}>
@@ -950,6 +945,9 @@ export default function Customer() {
                       isLoading={isLoading}
                       columns={columns}
                       data={Customers1}
+                      bulkState={{
+                        setBulkCustomer,
+                      }}
                     ></Table>
                   </div>
                 </div>
@@ -959,6 +957,54 @@ export default function Customer() {
           </div>
         </div>
       </div>
+      {bulkCustomer.length > 0 && (
+        <div className="bulkActionButton">
+          <button
+            className="bulk_action_button"
+            title="এডিট এরিয়া"
+            data-bs-toggle="modal"
+            data-bs-target="#customerBulkEdit"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title">এডিট এরিয়া</span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title="এডিট স্টাটাস"
+            data-bs-toggle="modal"
+            data-bs-target="#bulkStatusEdit"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title">এডিট স্টাটাস</span>
+          </button>
+          {/* <button
+            className="bulk_action_button"
+            title="এডিট বিলিং সাইকেল"
+            data-bs-toggle="modal"
+            data-bs-target="#customerBillingCycle"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-magic"></i>
+            <span className="button_title">এডিট বিলিং সাইকেল</span>
+          </button> */}
+          <button
+            className="bulk_action_button"
+            title="গ্রাহক ডিলিট"
+            data-bs-toggle="modal"
+            data-bs-target="#bulkDeleteCustomer"
+            type="button"
+            class="btn btn-danger btn-floating btn-sm"
+          >
+            <i class="fas fa-trash-alt"></i>
+            <span className="button_title">গ্রাহক ডিলিট</span>
+          </button>
+        </div>
+      )}
     </>
   );
 }

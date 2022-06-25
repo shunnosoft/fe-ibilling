@@ -1,5 +1,5 @@
 import apiLink from "../../api/apiLink";
-import { bulkDelete } from "../customerSlice";
+import { bulkDelete, bulkUpdate } from "../customerSlice";
 import { toast } from "react-toastify";
 
 export const bulkDeleteCustomer = async (
@@ -9,13 +9,13 @@ export const bulkDeleteCustomer = async (
   setIsLoading
 ) => {
   try {
+    console.log(data);
     setIsLoading(true);
-    const res = await apiLink.delete(
-      `/customer/bulk/?mikrotik=${mikrotik}`,
-      data
-    );
+    const res = await apiLink.delete(`/customer/bulk/?mikrotik=${mikrotik}`, {
+      data,
+    });
     console.log(res);
-    // dispatch(bulkDelete(data));
+    dispatch(bulkDelete(res.data.data));
     document.querySelector("#bulkDeleteCustomer").click();
     setIsLoading(false);
     toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
@@ -31,8 +31,7 @@ export const bulksubAreaEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.patch("/customer/bulk-subArea", data);
-    console.log(res);
-    // dispatch(bulkDelete(data));
+    dispatch(bulkUpdate(res.data.data));
     document.querySelector("#customerBulkEdit").click();
     setIsLoading(false);
     toast.success("কাস্টমার সাবএরিয়া আপডেট সফল হয়েছে!");
@@ -48,9 +47,9 @@ export const bulksubAreaEdit = async (dispatch, data, setIsLoading) => {
 export const bulkStatusEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);
-    const res = await apiLink.patch("/customer/bulk-subArea", data);
+    const res = await apiLink.patch("/customer/bulk-status", data);
     console.log(res);
-    // dispatch(bulkDelete(data));
+    dispatch(bulkUpdate(res.data.data));
     document.querySelector("#bulkStatusEdit").click();
     setIsLoading(false);
     toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
