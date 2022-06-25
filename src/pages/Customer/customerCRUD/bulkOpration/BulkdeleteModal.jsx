@@ -26,8 +26,11 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
 
     // api call
     if (checkCondition) {
-      bulkDeleteCustomer(dispatch, data, mikrotikCheck, setIsloading);
-      console.log(data);
+      const confirm = window.confirm(
+        data.customerIds.length + "টি গ্রাহক ডিলিট করতে চান?"
+      );
+      if (confirm)
+        bulkDeleteCustomer(dispatch, data, mikrotikCheck, setIsloading);
     }
   };
 
