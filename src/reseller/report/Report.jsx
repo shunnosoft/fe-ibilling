@@ -39,7 +39,7 @@ export default function Report() {
     (state) => state.persistedReducer.payment.allBills
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  // const [singleArea, setArea] = useState({});
+  const [isLoading, setisLoading] = useState(false);
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [mainData, setMainData] = useState(allBills);
@@ -63,7 +63,7 @@ export default function Report() {
     setCurrentPage(pageNumber);
   };
   useEffect(() => {
-    getAllBills(dispatch, userData.id);
+    getAllBills(dispatch, userData.id, setisLoading);
     setSubArea(subAreas.map((i) => i.id));
 
     if (collectors.length === allCollector.length) {
@@ -182,29 +182,34 @@ export default function Report() {
   const columns = useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "15%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "20%",
         Header: "আইডি",
         accessor: "customer.customerId",
       },
       {
+        width: "20%",
         Header: "গ্রাহক",
         accessor: "customer.name",
       },
       {
+        width: "20%",
         Header: "বিল",
         accessor: "amount",
       },
 
       {
+        width: "25%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY hh:mm:ss A");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
@@ -221,7 +226,7 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">বিল রিপোর্ট </h2>
+                <div className="collectorTitle">বিল রিপোর্ট </div>
               </FourGround>
 
               {/* Model start */}
@@ -248,7 +253,7 @@ export default function Report() {
                       </select>
                       {userRole !== "collector" ? (
                         <select
-                          className="form-select"
+                          className="form-select mx-3"
                           onChange={(e) => onChangeCollector(e.target.value)}
                         >
                           <option value="" defaultValue>
@@ -264,43 +269,37 @@ export default function Report() {
                         ""
                       )}
 
-                      <div className="dateDiv  ">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="start"
-                          name="trip-start"
-                          value={moment(dateStart).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setStartDate(e.target.value);
-                          }}
-                          // value="2018-07-22"
+                      <input
+                        className="form-select"
+                        type="date"
+                        id="start"
+                        name="trip-start"
+                        value={moment(dateStart).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                        }}
+                        // value="2018-07-22"
 
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                      <div className="dateDiv">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="end"
-                          name="trip-start"
-                          value={moment(dateEnd).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setEndDate(e.target.value);
-                          }}
+                        // min="2018-01-01"
+                        // max="2018-12-31"
+                      />
+                      <input
+                        className="form-select mx-3"
+                        type="date"
+                        id="end"
+                        name="trip-start"
+                        value={moment(dateEnd).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                        }}
 
-                          // value="2018-07-22"
+                        // value="2018-07-22"
 
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                    </div>
-                    <div className="submitdiv d-grid gap-2">
+                        // min="2018-01-01"
+                        // max="2018-12-31"
+                      />
                       <button
-                        className="btn fs-5 btn-success w-100"
+                        className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
                         type="button"
                         onClick={onClickFilter}
                       >
@@ -310,7 +309,11 @@ export default function Report() {
                   </div>
                   {/* table */}
 
-                  <Table columns={columns} data={currentCustomers}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={currentCustomers}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

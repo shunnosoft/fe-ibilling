@@ -62,17 +62,20 @@ const AllComments = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Serial",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
 
       {
+        width: "12%",
         Header: "Name",
         accessor: "name",
       },
       {
+        width: "12%",
         Header: "Comapny",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
@@ -91,7 +94,8 @@ const AllComments = () => {
         },
       },
       {
-        Header: "Comment Type",
+        width: "10%",
+        Header: "Type",
         accessor: "commentType",
         Cell: ({ cell: { value } }) => {
           return (
@@ -102,6 +106,7 @@ const AllComments = () => {
         },
       },
       {
+        width: "8%",
         Header: "Status",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -113,6 +118,7 @@ const AllComments = () => {
         },
       },
       {
+        width: "28%",
         Header: "Comment",
         Cell: ({ row: { original } }) => {
           return (
@@ -135,14 +141,16 @@ const AllComments = () => {
       },
 
       {
+        width: "12%",
         Header: "CreatedAt",
         accessor: "createdAt",
         Cell: ({ row: { original } }) => {
-          return moment(original).format("DD-MM-YY hh:mm A");
+          return moment(original).format("MMM DD YYYY hh:mm a");
         },
       },
 
       {
+        width: "8%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
@@ -205,11 +213,13 @@ const AllComments = () => {
                 <h2 className="dashboardTitle text-center">All Comments</h2>
               </div>
               <div className="card-body">
-                <Table
-                  columns={columns}
-                  data={comments}
-                  isLoading={isLoading}
-                />
+                <div className="table-section-th">
+                  <Table
+                    columns={columns}
+                    data={comments}
+                    isLoading={isLoading}
+                  />
+                </div>
               </div>
             </div>
           </div>

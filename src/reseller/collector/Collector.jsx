@@ -93,29 +93,35 @@ export default function Collector() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "15%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "22%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "23%",
         Header: "এড্রেস",
         accessor: "address",
       },
       {
+        width: "20%",
         Header: "মোবাইল",
         accessor: "mobile",
       },
       {
+        width: "20%",
         Header: "ইমেইল",
         accessor: "email",
       },
 
       {
+        width: "20%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -167,18 +173,6 @@ export default function Collector() {
               ) : (
                 ""
               )}
-              {/* {role==="ispOwner"? <li
-                                      onClick={() => {
-                                        deleteCollectorHandler(val.id);
-                                      }}
-                                    >
-                                      <div className="dropdown-item actionManager">
-                                        <div className="customerAction">
-                                          <ArchiveFill />
-                                          <p className="actionP">ডিলিট</p>
-                                        </div>
-                                      </div>
-                                    </li>:""} */}
             </ul>
           </div>
         ),
@@ -194,7 +188,21 @@ export default function Collector() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">কালেক্টর</h2>
+              <div className="collectorTitle d-flex justify-content-between px-5">
+                <div>কালেক্টর</div>
+
+                {userData.permission?.customerAdd || role === "ispOwner" ? (
+                  <div
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectorModal"
+                  >
+                    <PersonPlusFill />
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
 
               {/* modals */}
               <CollectorPost />
@@ -203,35 +211,14 @@ export default function Collector() {
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
-                    <div className="addNewCollector">
-                      <div className="displexFlexSys">
-                        <div className="addAndSettingIcon">
-                          {userData.permission?.customerAdd ||
-                          role === "ispOwner" ? (
-                            <PersonPlusFill
-                              className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#collectorModal"
-                            />
-                          ) : (
-                            ""
-                          )}
-                          {/* <GearFill
-                            className="addcutmButton"
-                            // data-bs-toggle="modal"
-                            // data-bs-target="#exampleModal"
-                          /> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   {/* table */}
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={collector}
-                  ></Table>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={collector}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

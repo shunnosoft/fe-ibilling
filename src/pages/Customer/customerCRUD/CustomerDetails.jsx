@@ -77,7 +77,7 @@ export default function CustomerDetails({ single }) {
                     মাসিক ফি:<b> {FormatNumber(data?.monthlyFee)}</b>
                   </h6>
                   <h6>
-                    ব্যাল্যান্স:<b> {FormatNumber(data?.balance)}</b>
+                    ব্যালেন্স:<b> {FormatNumber(data?.balance)}</b>
                   </h6>
                   <h6>
                     বিলিং সাইকেল:{" "}
@@ -85,7 +85,7 @@ export default function CustomerDetails({ single }) {
                       {moment(data?.billingCycle).format("DD-MM-YYYY hh:mm A")}
                     </b>
                   </h6>
-                  {bpSettings.hasMikrotik && (
+                  {bpSettings?.hasMikrotik && (
                     <h6>
                       অটোমেটিক সংযোগ বন্ধ:{" "}
                       <b>{data?.autoDisable ? "YES" : "NO"}</b>

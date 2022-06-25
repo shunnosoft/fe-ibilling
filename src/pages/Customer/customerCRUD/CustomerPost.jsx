@@ -149,7 +149,7 @@ export default function CustomerModal() {
       balance: -balance,
       ...rest,
     };
-    if (!bpSettings.hasMikrotik) {
+    if (!bpSettings?.hasMikrotik) {
       delete mainData.mikrotik;
     }
     // console.log(mainData);
@@ -208,7 +208,7 @@ export default function CustomerModal() {
                 {(formik) => (
                   <Form>
                     <div className="mikrotikSection">
-                      {bpSettings.hasMikrotik ? (
+                      {bpSettings?.hasMikrotik ? (
                         <div>
                           <p className="comstomerFieldsTitle">
                             মাইক্রোটিক সিলেক্ট করুন
@@ -265,7 +265,7 @@ export default function CustomerModal() {
                         //   })
                         // }}
                       />
-                      {bpSettings.hasMikrotik ? (
+                      {bpSettings?.hasMikrotik ? (
                         ""
                       ) : (
                         <FtextField
@@ -360,7 +360,7 @@ export default function CustomerModal() {
                           />
                         </div>
                       </div>
-                      {bpSettings.hasMikrotik && (
+                      {bpSettings?.hasMikrotik && (
                         <div className="displayGrid3">
                           <div className="autoDisable">
                             <label>অটোমেটিক সংযোগ বন্ধ</label>

@@ -47,13 +47,13 @@ export default function CollectorReport() {
   const [subAreaIds, setSubArea] = useState([]);
   const [mainData, setMainData] = useState(allBills);
   const [mainData2, setMainData2] = useState(allBills);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [isSorted, setSorted] = useState(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getCollectorBill(dispatch);
+    getCollectorBill(dispatch, setIsLoading);
   }, [dispatch]);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function CollectorReport() {
         ],
       };
 
-      let found = areas?.find((area) => area.id === item.area.id);
+      let found = areas?.find((area) => area.id === item.area?.id);
       if (found) {
         found.subAreas.push({ id: item.id, name: item.name });
 
@@ -189,30 +189,27 @@ export default function CollectorReport() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
+        width: "25%",
         Header: "আইডি",
         accessor: "customer.customerId",
-        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
+        width: "25%",
         Header: "গ্রাহক",
         accessor: "customer.name",
       },
       {
+        width: "25%",
         Header: "বিল",
         accessor: "amount",
       },
 
       {
+        width: "25%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
@@ -255,7 +252,7 @@ export default function CollectorReport() {
                         ))}
                       </select>
                       <select
-                        className="form-select"
+                        className="form-select mx-3"
                         onChange={(e) => onChangeSubArea(e.target.value)}
                       >
                         <option value="" defaultValue>
@@ -268,38 +265,28 @@ export default function CollectorReport() {
                         ))}
                       </select>
 
-                      <div className="dateDiv  ">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="start"
-                          name="trip-start"
-                          value={moment(dateStart).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setStartDate(e.target.value);
-                          }}
-                          // value="2018-07-22"
-
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                      <div className="dateDiv">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="end"
-                          name="trip-start"
-                          value={moment(dateEnd).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setEndDate(e.target.value);
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="submitdiv d-grid gap-2">
+                      <input
+                        className="form-select"
+                        type="date"
+                        id="start"
+                        name="trip-start"
+                        value={moment(dateStart).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                        }}
+                      />
+                      <input
+                        className="form-select mx-3"
+                        type="date"
+                        id="end"
+                        name="trip-start"
+                        value={moment(dateEnd).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                        }}
+                      />
                       <button
-                        className="btn fs-5 btn-success w-100"
+                        className="btn btn-outline-primary w-140 mt-2"
                         type="button"
                         onClick={onClickFilter}
                       >
@@ -308,7 +295,13 @@ export default function CollectorReport() {
                     </div>
                   </div>
                   {/* table */}
-                  <Table data={mainData} columns={columns2}></Table>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      data={mainData}
+                      columns={columns2}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

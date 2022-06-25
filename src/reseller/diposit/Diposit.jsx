@@ -216,18 +216,21 @@ export default function Diposit() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "25%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "25%",
         Header: "পরিমান",
         accessor: "amount",
         Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
-        Header: "স্টেটাস",
+        width: "25%",
+        Header: "স্ট্যাটাস",
         accessor: "status",
         Cell: ({ row: { original } }) => (
           <div>
@@ -242,10 +245,11 @@ export default function Diposit() {
       },
 
       {
+        width: "25%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
@@ -254,12 +258,14 @@ export default function Diposit() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        width: "12%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "22%",
         Header: "নাম",
         accessor: "name",
         Cell: ({ row: { original } }) => (
@@ -269,12 +275,14 @@ export default function Diposit() {
         ),
       },
       {
+        width: "22%",
         Header: "মোট",
         accessor: "amount",
         Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
 
       {
+        width: "22%",
         Header: <div className="text-center">অ্যাকশন</div>,
         id: "option1",
 
@@ -325,10 +333,11 @@ export default function Diposit() {
         ),
       },
       {
+        width: "22%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
@@ -387,7 +396,7 @@ export default function Diposit() {
                             />
                             <button
                               type="submit"
-                              className="btn btn-success dipositSubmitBtn"
+                              className="btn btn-outline-primary w-140 dipositSubmitBtn"
                             >
                               {isLoading ? <Loader></Loader> : " সাবমিট"}
                             </button>
@@ -403,11 +412,13 @@ export default function Diposit() {
 
               {/* table */}
               {userRole === "collector" ? (
-                <Table
-                  customComponent={customComponent}
-                  data={mainData}
-                  columns={columns2}
-                ></Table>
+                <FourGround>
+                  <Table
+                    customComponent={customComponent}
+                    data={mainData}
+                    columns={columns2}
+                  ></Table>
+                </FourGround>
               ) : (
                 ""
               )}
@@ -431,44 +442,28 @@ export default function Diposit() {
                         </select>
                       )}
 
-                      <div className="dateDiv  ">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="start"
-                          name="trip-start"
-                          value={moment(dateStart).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setStartDate(e.target.value);
-                          }}
-                          // value="2018-07-22"
-
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                      <div className="dateDiv">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="end"
-                          name="trip-start"
-                          value={moment(dateEnd).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setEndDate(e.target.value);
-                          }}
-
-                          // value="2018-07-22"
-
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="submitdiv d-grid gap-2">
+                      <input
+                        className="form-select mx-3"
+                        type="date"
+                        id="start"
+                        name="trip-start"
+                        value={moment(dateStart).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                        }}
+                      />
+                      <input
+                        className="form-select me-3"
+                        type="date"
+                        id="end"
+                        name="trip-start"
+                        value={moment(dateEnd).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                        }}
+                      />
                       <button
-                        className="btn fs-5 btn-success w-100"
+                        className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
                         type="button"
                         onClick={onClickFilter}
                       >
@@ -476,12 +471,16 @@ export default function Diposit() {
                       </button>
                     </div>
 
+                    <div className="submitdiv d-grid gap-2"></div>
+
                     {/* table */}
-                    <Table
-                      customComponent={customComponent}
-                      data={ownDeposits}
-                      columns={columns}
-                    ></Table>
+                    <div className="tableSection">
+                      <Table
+                        customComponent={customComponent}
+                        data={ownDeposits}
+                        columns={columns}
+                      ></Table>
+                    </div>
                   </div>
                 </FourGround>
               ) : (

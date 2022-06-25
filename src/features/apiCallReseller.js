@@ -309,13 +309,15 @@ export const depositAcceptReject = async (
   }
 };
 
-export const getAllBills = async (dispatch, resellerId) => {
+export const getAllBills = async (dispatch, resellerId, setIsLoading) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get(`/reseller/bills/${resellerId}`);
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 //my deposit

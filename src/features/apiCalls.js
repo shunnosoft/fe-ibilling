@@ -1208,7 +1208,8 @@ export const getMyDeposit = async (dispatch) => {
 
 //Collector Bills
 
-export const getCollectorBill = async (dispatch) => {
+export const getCollectorBill = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get("/bill/monthlyBill");
 
@@ -1216,6 +1217,7 @@ export const getCollectorBill = async (dispatch) => {
   } catch (error) {
     console.log(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 //recharge

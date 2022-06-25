@@ -150,23 +150,28 @@ export default function Customer() {
   const columns = React.useMemo(
     () => [
       {
+        width: "8%",
         Header: "আইডি",
         accessor: "customerId",
       },
       {
+        width: "10%",
         Header: "নাম",
         accessor: "name",
       },
       {
+        width: "10%",
         Header: "PPPoE",
         accessor: "pppoe.name",
       },
       {
+        width: "12%",
         Header: "মোবাইল",
         accessor: "mobile",
       },
 
       {
+        width: "9%",
         Header: "স্ট্যাটাস",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -174,6 +179,7 @@ export default function Customer() {
         },
       },
       {
+        width: "9%",
         Header: "পেমেন্ট",
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -181,14 +187,17 @@ export default function Customer() {
         },
       },
       {
+        width: "10%",
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
       },
       {
-        Header: "ব্যালান্স",
+        width: "9%",
+        Header: "ব্যালেন্স",
         accessor: "balance",
       },
       {
+        width: "12%",
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
@@ -197,6 +206,7 @@ export default function Customer() {
       },
 
       {
+        width: "7%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
@@ -314,7 +324,16 @@ export default function Customer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">গ্রাহক </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <h2>গ্রাহক </h2>
+                  <div
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerModal"
+                  >
+                    <PersonPlusFill />
+                  </div>
+                </div>
               </FourGround>
 
               {/* Model start */}
@@ -369,15 +388,7 @@ export default function Customer() {
                         </select>
                       </div>
 
-                      <div className="addNewCollector">
-                        <div className="addAndSettingIcon">
-                          <PersonPlusFill
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#customerModal"
-                          />
-                        </div>
-                      </div>
+                      <div className="addNewCollector"></div>
                     </div>
 
                     {isDeleting ? (
@@ -388,12 +399,13 @@ export default function Customer() {
                       ""
                     )}
                   </div>
-
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={Customers}
-                  ></Table>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={Customers}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />

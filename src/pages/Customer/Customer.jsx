@@ -126,7 +126,7 @@ export default function Customer() {
   // get customer api call
   useEffect(() => {
     if (
-      !bpSettings.hasMikrotik &&
+      !bpSettings?.hasMikrotik &&
       (role === "manager" || role === "ispOwner")
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch);
@@ -151,11 +151,11 @@ export default function Customer() {
           ],
         };
 
-        let found = areas?.find((area) => area.id === item.area.id);
+        let found = areas?.find((area) => area?.id === item.area?.id);
         if (found) {
-          found.subAreas.push({ id: item.id, name: item.name });
+          found.subAreas.push({ id: item?.id, name: item?.name });
 
-          return (areas[areas.findIndex((item) => item.id === found.id)] =
+          return (areas[areas.findIndex((item) => item.id === found?.id)] =
             found);
         } else {
           return areas.push(area);
@@ -389,12 +389,12 @@ export default function Customer() {
         accessor: "customerId",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: "নাম",
         accessor: "name",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: "PPPoE",
         accessor: "pppoe.name",
       },
@@ -427,11 +427,11 @@ export default function Customer() {
       },
       {
         width: "9%",
-        Header: "ব্যালান্স",
+        Header: "ব্যালেন্স",
         accessor: "balance",
       },
       {
-        width: "13%",
+        width: "12%",
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
@@ -440,7 +440,7 @@ export default function Customer() {
       },
 
       {
-        width: "8%",
+        width: "7%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 

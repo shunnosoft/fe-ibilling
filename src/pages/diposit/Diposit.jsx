@@ -311,21 +311,21 @@ export default function Diposit() {
   const columns2 = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "25%",
         Header: "সিরিয়াল",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "22%",
+        width: "25%",
         Header: "পরিমান",
         accessor: "amount",
         Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
-        width: "22%",
-        Header: "স্টেটাস",
+        width: "25%",
+        Header: "স্ট্যাটাস",
         accessor: "status",
         Cell: ({ row: { original } }) => (
           <div>
@@ -340,11 +340,11 @@ export default function Diposit() {
       },
 
       {
-        width: "22%",
+        width: "25%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],

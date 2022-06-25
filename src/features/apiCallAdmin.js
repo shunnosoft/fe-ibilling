@@ -42,13 +42,19 @@ export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
 };
 
 //  get invoice list
-export const getIspOwnerInvoice = async (ispOwnerId, dispatch) => {
+export const getIspOwnerInvoice = async (
+  ispOwnerId,
+  dispatch,
+  setIsLoading
+) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get("/admin/invoices/" + ispOwnerId);
     dispatch(getIspOwnerInvoicesSuccess(res.data));
   } catch (error) {
     console.log(error);
   }
+  setIsLoading(false);
 };
 
 //  update invoice

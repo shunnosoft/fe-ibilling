@@ -158,9 +158,9 @@ export default function Home() {
           ],
         };
 
-        let found = areas?.find((area) => area.id === item.area.id);
+        let found = areas?.find((area) => area.id === item?.area?.id);
         if (found) {
-          found.subAreas.push({ id: item.id, name: item.name });
+          found.subAreas.push({ id: item?.id, name: item?.name });
 
           return (areas[areas.findIndex((item) => item.id === found.id)] =
             found);

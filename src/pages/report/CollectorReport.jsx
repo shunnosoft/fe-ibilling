@@ -1,19 +1,10 @@
+import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
-import {
-  ArchiveFill,
-  ArrowDownUp,
-  PenFill,
-  PersonFill,
-  ThreeDots,
-  Wallet,
-} from "react-bootstrap-icons";
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
@@ -21,6 +12,7 @@ import "./report.css";
 import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
 import { getCollectorBill } from "../../features/apiCalls";
+import Table from "../../components/table/Table";
 
 export default function CollectorReport() {
   //   const allArea = useSelector(state => state.area.area);
@@ -41,9 +33,11 @@ export default function CollectorReport() {
     (state) => state.persistedReducer.collector.collectorBill
   );
 
+  const [isLoading, setIsLoading] = useState(false);
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
   const [mainData, setMainData] = useState(allBills);
+  console.log(mainData);
   const [mainData2, setMainData2] = useState(allBills);
 
   const [isSorted, setSorted] = useState(false);
@@ -51,7 +45,7 @@ export default function CollectorReport() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getCollectorBill(dispatch);
+    getCollectorBill(dispatch, setIsLoading);
   }, [dispatch]);
 
   useEffect(() => {
@@ -59,17 +53,17 @@ export default function CollectorReport() {
 
     collectorArea?.map((item) => {
       let area = {
-        id: item.area.id,
-        name: item.area.name,
+        id: item?.area?.id,
+        name: item?.area?.name,
         subAreas: [
           {
-            id: item.id,
-            name: item.name,
+            id: item?.id,
+            name: item?.name,
           },
         ],
       };
 
-      let found = areas?.find((area) => area.id === item.area.id);
+      let found = areas?.find((area) => area?.id === item.area?.id);
       if (found) {
         found.subAreas.push({ id: item.id, name: item.name });
 
@@ -166,6 +160,12 @@ export default function CollectorReport() {
     return count.toString();
   }, [mainData]);
 
+  const customComponent = (
+    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+      <div>বিলঃ {addAllBills()} টাকা</div>
+    </div>
+  );
+
   const onSearch = (e) => {
     const keys = ["amount", "name", "customerId", "createdAt"];
 
@@ -184,10 +184,38 @@ export default function CollectorReport() {
     setMainData(arr);
   };
 
-  const toggleSort = (item) => {
-    setMainData(arraySort(mainData2, item, { reverse: isSorted }));
-    setSorted(!isSorted);
-  };
+  const columns = React.useMemo(() => [
+    {
+      width: "15%",
+      Header: "#",
+      id: "row",
+      accessor: (row) => Number(row.id + 1),
+      Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+    },
+    {
+      width: "20%",
+      Header: "আইডি",
+      accessor: "customer.customerId",
+    },
+    {
+      width: "20%",
+      Header: "গ্রাহক",
+      accessor: "customer.name",
+    },
+    {
+      width: "20%",
+      Header: "পরিমান",
+      accessor: "amount",
+    },
+    {
+      width: "25%",
+      Header: "তারিখ",
+      accessor: "createdAt",
+      Cell: ({ cell: { value } }) => {
+        return moment(value).format("MMM DD YYYY hh:mm a");
+      },
+    },
+  ]);
 
   return (
     <>
@@ -201,10 +229,6 @@ export default function CollectorReport() {
               <FourGround>
                 <h2 className="collectorTitle">বিল রিপোর্ট </h2>
               </FourGround>
-
-              {/* Model start */}
-
-              {/* Model finish */}
 
               <FourGround>
                 <div className="collectorWrapper">
@@ -225,7 +249,7 @@ export default function CollectorReport() {
                         ))}
                       </select>
                       <select
-                        className="form-select"
+                        className="form-select mx-3"
                         onChange={(e) => onChangeSubArea(e.target.value)}
                       >
                         <option value="" defaultValue>
@@ -238,36 +262,27 @@ export default function CollectorReport() {
                         ))}
                       </select>
 
-                      <div className="dateDiv  ">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="start"
-                          name="trip-start"
-                          value={moment(dateStart).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setStartDate(e.target.value);
-                          }}
-                          // value="2018-07-22"
+                      <input
+                        className="form-select"
+                        type="date"
+                        id="start"
+                        name="trip-start"
+                        value={moment(dateStart).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                        }}
+                      />
+                      <input
+                        className="form-select mx-3"
+                        type="date"
+                        id="end"
+                        name="trip-start"
+                        value={moment(dateEnd).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                        }}
+                      />
 
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                      <div className="dateDiv">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="end"
-                          name="trip-start"
-                          value={moment(dateEnd).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setEndDate(e.target.value);
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="submitdiv d-grid gap-2">
                       <button
                         className="btn btn-outline-primary w-140 mt-2"
                         type="button"
@@ -276,106 +291,15 @@ export default function CollectorReport() {
                         ফিল্টার
                       </button>
                     </div>
-
-                    <div className="row searchCollector">
-                      <div className="col-sm-8">
-                        <h4 className="allCollector">
-                          বিলঃ
-                          <span className="allCollectorSpan">
-                            {addAllBills()} টাকা
-                          </span>
-                        </h4>
-                      </div>
-
-                      <div className="col-sm-4">
-                        <div className=" collectorSearch">
-                          <input
-                            type="text"
-                            className="search"
-                            placeholder="সার্চ"
-                            onChange={(e) => onSearch(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   {/* table */}
-                  <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr className="spetialSortingRow">
-                          <th
-                            onClick={() => toggleSort("customer.customerId")}
-                            scope="col"
-                          >
-                            আইডি
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th
-                            onClick={() => toggleSort("customer.name")}
-                            scope="col"
-                          >
-                            গ্রাহক
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                          <th onClick={() => toggleSort("amount")} scope="col">
-                            বিল
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-
-                          <th
-                            onClick={() => toggleSort("createdAt")}
-                            scope="col"
-                          >
-                            তারিখ
-                            <ArrowDownUp className="arrowDownUp" />
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {false ? (
-                          <tr>
-                            <TdLoader colspan={9} />
-                          </tr>
-                        ) : mainData?.length === undefined ? (
-                          ""
-                        ) : (
-                          mainData.map((val, key) => (
-                            <tr key={key} id={val?.id}>
-                              <td>{val?.customer?.customerId}</td>
-                              <td>{val?.customer?.name}</td>
-                              <td>{val?.amount}</td>
-                              <td>
-                                {moment(val?.createdAt).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-
-                    {/* Pagination */}
-                    <div className="paginationSection">
-                      <select
-                        className="form-select paginationFormSelect"
-                        aria-label="Default select example"
-                        // onChange={(e) => setCustomerPerPage(e.target.value)}
-                      >
-                        <option value="5">৫ জন</option>
-                        <option value="10">১০ জন</option>
-                        <option value="100">১০০ জন</option>
-                        <option value="200">২০০ জন</option>
-                        <option value="500">৫০০ জন</option>
-                        <option value="1000">১০০০ জন</option>
-                      </select>
-                      <Pagination
-                      // customerPerPage={customerPerPage}
-                      // totalCustomers={Customers.length}
-                      // paginate={paginate}
-                      />
-                    </div>
+                  <div className="table-section">
+                    <Table
+                      customComponent={customComponent}
+                      columns={columns}
+                      data={mainData}
+                      isLoading={isLoading}
+                    />
                   </div>
                 </div>
               </FourGround>

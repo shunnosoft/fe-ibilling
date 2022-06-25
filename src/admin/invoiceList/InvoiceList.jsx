@@ -12,6 +12,7 @@ import { getIspOwnerInvoice } from "../../features/apiCallAdmin";
 import InvoiceEditModal from "./modal/InvoiceEditModal";
 
 const InvoiceList = () => {
+  const [isLoading, setIsLoading] = useState(false);
   // import dispatch
   const dispatch = useDispatch();
 
@@ -31,40 +32,46 @@ const InvoiceList = () => {
 
   // dispatch data to api
   useEffect(() => {
-    getIspOwnerInvoice(ispOwnerId, dispatch);
+    getIspOwnerInvoice(ispOwnerId, dispatch, setIsLoading);
   }, []);
 
   // table column
   const columns = React.useMemo(
     () => [
       {
-        Header: "Serial",
+        width: "10%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
 
       {
+        width: "15%",
         accessor: "type",
         Header: "Type",
       },
       {
+        width: "15%",
         accessor: "amount",
         Header: "Amount",
       },
       {
+        width: "15%",
         accessor: "createdAt",
         Header: "Create Date",
         Cell: ({ row: { original } }) =>
           moment(original.createdAt).format("DD/MM/YYYY"),
       },
       {
+        width: "15%",
         accessor: "dueDate",
         Header: "Due Date",
         Cell: ({ row: { original } }) =>
           moment(original.dueDate).format("DD/MM/YYYY"),
       },
       {
+        width: "15%",
         Header: "Payment Status",
         Cell: ({ row: { original } }) => (
           <div
@@ -87,6 +94,7 @@ const InvoiceList = () => {
       },
 
       {
+        width: "15%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
@@ -147,7 +155,11 @@ const InvoiceList = () => {
                 <div className="dashboardField">
                   <div className="invoice">
                     {invoiceList.length > 0 && (
-                      <Table columns={columns} data={invoiceList} />
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={invoiceList}
+                      />
                     )}
                   </div>
                 </div>

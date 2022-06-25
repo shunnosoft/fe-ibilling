@@ -80,29 +80,35 @@ export default function Home() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Serial",
+        width: "8%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
 
       {
+        width: "13%",
         accessor: "name",
         Header: "Name",
       },
       {
+        width: "12%",
         accessor: "mobile",
         Header: "Mobile",
       },
       {
+        width: "16%",
         accessor: "company",
         Header: "Comapny",
       },
       {
+        width: "15%",
         accessor: "address",
         Header: "Address",
       },
       {
+        width: "15%",
         Header: "Payment Status",
         Cell: ({ row: { original } }) => (
           <div
@@ -127,14 +133,16 @@ export default function Home() {
       },
 
       {
+        width: "13%",
         Header: "CreatedAt",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YY hh:mm A");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
 
       {
+        width: "8%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 

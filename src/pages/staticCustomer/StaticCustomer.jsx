@@ -108,21 +108,21 @@ export default function Customer() {
 
       collectorArea?.map((item) => {
         let area = {
-          id: item.area.id,
-          name: item.area.name,
+          id: item.area?.id,
+          name: item.area?.name,
           subAreas: [
             {
-              id: item.id,
-              name: item.name,
+              id: item?.id,
+              name: item?.name,
             },
           ],
         };
 
-        let found = areas?.find((area) => area.id === item.area.id);
+        let found = areas?.find((area) => area.id === item.area?.id);
         if (found) {
-          found.subAreas.push({ id: item.id, name: item.name });
+          found.subAreas.push({ id: item?.id, name: item?.name });
 
-          return (areas[areas.findIndex((item) => item.id === found.id)] =
+          return (areas[areas.findIndex((item) => item?.id === found?.id)] =
             found);
         } else {
           return areas.push(area);
@@ -415,18 +415,18 @@ export default function Customer() {
   const columns = React.useMemo(
     () => [
       {
+        width: "8%",
         Header: "আইডি",
         accessor: "customerId",
-        width: "8%",
       },
       {
+        width: "10%",
         Header: "নাম",
         accessor: "name",
-        width: "10%",
       },
       {
+        width: "12%",
         Header: "IP",
-        width: "13%",
         accessor: (field) =>
           field.userType === "firewall-queue"
             ? field.queue.address
@@ -434,40 +434,40 @@ export default function Customer() {
       },
 
       {
+        width: "12%",
         Header: "মোবাইল",
         accessor: "mobile",
-        width: "12%",
       },
 
       {
+        width: "8%",
         Header: "স্ট্যাটাস",
-        width: "9%",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
       },
       {
+        width: "8%",
         Header: "পেমেন্ট",
-        width: "9%",
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
       },
       {
-        Header: "মাসিক ফি",
         width: "10%",
+        Header: "মাসিক ফি",
         accessor: "monthlyFee",
       },
       {
-        Header: "ব্যালান্স",
         width: "9%",
+        Header: "ব্যালেন্স",
         accessor: "balance",
       },
       {
-        Header: "বিল সাইকেল",
         width: "12%",
+        Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
@@ -475,7 +475,7 @@ export default function Customer() {
       },
 
       {
-        width: "8%",
+        width: "7%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 
