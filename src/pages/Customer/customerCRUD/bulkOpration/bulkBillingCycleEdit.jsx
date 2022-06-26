@@ -3,19 +3,22 @@ import RootBulkModal from "./bulkModal";
 import moment from "moment";
 import Loader from "../../../../components/common/Loader";
 import DatePicker from "react-datepicker";
+import { bulkBillingCycleEdit } from "../../../../features/actions/bulkOperationApi";
+import { useDispatch } from "react-redux";
 
 const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
   const [isLoading, setIsLoading] = useState();
   const [billDate, setBillDate] = useState(new Date());
   //   const [billTime, setBilltime] = useState(new Date());
-
+  const dispatch = useDispatch();
   const billingCycleHandler = (e) => {
     e.preventDefault();
     if (billDate) {
       const data = {
-        ids: bulkCustomer.map((item) => item.original.id),
+        customerIds: bulkCustomer.map((item) => item.original.id),
         billingCycle: billDate.toISOString(),
       };
+      bulkBillingCycleEdit(dispatch, data, setIsLoading);
       console.log(data);
     }
   };

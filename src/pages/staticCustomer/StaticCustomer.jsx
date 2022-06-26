@@ -98,7 +98,11 @@ export default function Customer() {
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
+  const permission = useSelector(
+    (state) => state?.persistedReducer?.auth?.userData.permissions
+  );
 
+  console.log(permission);
   useEffect(() => {
     if (role === "collector") {
       let areas = [];
@@ -487,25 +491,23 @@ export default function Customer() {
                   </div>
                 </div>
               </li>
-
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#collectCustomerBillModal"
-                onClick={() => {
-                  getSpecificCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <Wallet />
-                    <p className="actionP">বিল গ্রহণ</p>
+              {(permission?.billPosting || role === "ispOwner") && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#collectCustomerBillModal"
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <Wallet />
+                      <p className="actionP">বিল গ্রহণ</p>
+                    </div>
                   </div>
-                </div>
-              </li>
-
-              {(role === "ispOwner" ||
-                role === "manager" ||
-                role === "collector") && (
+                </li>
+              )}
+              {(role === "ispOwner" || permission.customerEdit) && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#editStaticCustomerModal"
@@ -538,7 +540,7 @@ export default function Customer() {
                 </li>
               )}
 
-              {role === "ispOwner" ? (
+              {role === "ispOwner" || permission.customerDelete ? (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#staticCustomerDelete"
@@ -557,7 +559,8 @@ export default function Customer() {
                 ""
               )}
 
-              {original.mobile && role === "ispOwner" ? (
+              {original.mobile &&
+              (role === "ispOwner" || permission.sendSMS) ? (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerMessageModal"
@@ -647,13 +650,14 @@ export default function Customer() {
                             content={() => componentRef.current}
                           />
                         </div>
-
-                        <PersonPlusFill
-                          title="স্ট্যাটিক গ্রাহক যুক্ত"
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#addStaticCustomerModal"
-                        />
+                        {(role === "ispOwner" || permission.addCustomer) && (
+                          <PersonPlusFill
+                            title="স্ট্যাটিক গ্রাহক যুক্ত"
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addStaticCustomerModal"
+                          />
+                        )}
                       </>
                     )}
                   </div>
@@ -965,7 +969,7 @@ export default function Customer() {
             data-bs-toggle="modal"
             data-bs-target="#customerBulkEdit"
             type="button"
-            class="btn btn-warning btn-floating btn-sm"
+            class="btn btn-primary btn-floating btn-sm"
           >
             <i class="fas fa-edit"></i>
             <span className="button_title">এডিট এরিয়া</span>
@@ -976,12 +980,12 @@ export default function Customer() {
             data-bs-toggle="modal"
             data-bs-target="#bulkStatusEdit"
             type="button"
-            class="btn btn-warning btn-floating btn-sm"
+            class="btn btn-dark btn-floating btn-sm"
           >
             <i class="fas fa-edit"></i>
             <span className="button_title">এডিট স্টাটাস</span>
           </button>
-          {/* <button
+          <button
             className="bulk_action_button"
             title="এডিট বিলিং সাইকেল"
             data-bs-toggle="modal"
@@ -989,9 +993,9 @@ export default function Customer() {
             type="button"
             class="btn btn-warning btn-floating btn-sm"
           >
-            <i class="fas fa-magic"></i>
+            <i class="fas fa-edit"></i>
             <span className="button_title">এডিট বিলিং সাইকেল</span>
-          </button> */}
+          </button>
           <button
             className="bulk_action_button"
             title="গ্রাহক ডিলিট"

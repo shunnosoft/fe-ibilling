@@ -61,3 +61,20 @@ export const bulkStatusEdit = async (dispatch, data, setIsLoading) => {
     }
   }
 };
+export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch("/customer/bulk-billing-cycle", data);
+    console.log(res);
+    dispatch(bulkUpdate(res.data.data));
+    document.querySelector("#customerBillingCycle").click();
+    setIsLoading(false);
+    toast.success("কাস্টমার বিলিং সাইকেল আপডেট হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#customerBillingCycle").click();
+      toast.error(err.response.data.message);
+    }
+  }
+};

@@ -367,8 +367,6 @@ export default function Customer() {
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
-  // bulk operation end
-
   const columns = React.useMemo(
     () => [
       {
@@ -987,7 +985,7 @@ export default function Customer() {
             data-bs-toggle="modal"
             data-bs-target="#customerBulkEdit"
             type="button"
-            class="btn btn-warning btn-floating btn-sm"
+            class="btn btn-primary btn-floating btn-sm"
           >
             <i class="fas fa-edit"></i>
             <span className="button_title">এডিট এরিয়া</span>
@@ -998,12 +996,12 @@ export default function Customer() {
             data-bs-toggle="modal"
             data-bs-target="#bulkStatusEdit"
             type="button"
-            class="btn btn-warning btn-floating btn-sm"
+            class="btn btn-dark btn-floating btn-sm"
           >
             <i class="fas fa-edit"></i>
             <span className="button_title">এডিট স্টাটাস</span>
           </button>
-          {/* <button
+          <button
             className="bulk_action_button"
             title="এডিট বিলিং সাইকেল"
             data-bs-toggle="modal"
@@ -1011,9 +1009,9 @@ export default function Customer() {
             type="button"
             class="btn btn-warning btn-floating btn-sm"
           >
-            <i class="fas fa-magic"></i>
+            <i class="fas fa-edit"></i>
             <span className="button_title">এডিট বিলিং সাইকেল</span>
-          </button> */}
+          </button>
           <button
             className="bulk_action_button"
             title="গ্রাহক ডিলিট"
