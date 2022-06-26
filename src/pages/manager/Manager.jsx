@@ -47,7 +47,7 @@ export default function Manager() {
 
   useEffect(() => {
     getManger(dispatch, ispOwnerId);
-  }, [dispatch, ispOwnerId]);
+  }, [ispOwnerId]);
 
   const [permissions, setPermissions] = useState(
     managerPermission(manager?.permissions)

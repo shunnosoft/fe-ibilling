@@ -75,6 +75,7 @@ import RActiveCustomer from "./reseller/activeustomer/ActiveCustomer";
 import { toast } from "react-toastify";
 import AllComments from "./admin/allComments/AllComments";
 import ActivityLog from "./pages/activityLog/ActivityLog";
+import "./language/i18n/i18n";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);

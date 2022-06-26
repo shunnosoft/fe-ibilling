@@ -412,7 +412,7 @@ export default function Customer() {
       },
 
       {
-        width: "12%",
+        width: "13%",
         Header: "মোবাইল",
         accessor: "mobile",
       },
@@ -426,7 +426,7 @@ export default function Customer() {
         },
       },
       {
-        width: "8%",
+        width: "9%",
         Header: "পেমেন্ট",
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -434,8 +434,8 @@ export default function Customer() {
         },
       },
       {
-        width: "10%",
-        Header: "মাসিক ফি",
+        width: "8%",
+        Header: "মাসিক",
         accessor: "monthlyFee",
       },
       {
