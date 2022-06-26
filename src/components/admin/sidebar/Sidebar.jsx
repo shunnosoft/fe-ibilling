@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./sidebar.css";
 
 import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
@@ -6,35 +6,24 @@ import {
   List,
   ArrowLeft,
   HouseDoorFill,
-  Wallet2,
   People,
   PeopleFill,
-  GeoAlt,
-  Wifi,
   WalletFill,
   GraphUpArrow,
   Messenger,
   PersonLinesFill,
-  PersonBoundingBox,
   Cash,
   Gear,
   PersonCheck,
-  CashStack,
   Envelope,
   ChatDots,
   Person,
   PersonVideo,
-  PersonVideo2,
-  PersonVideo3,
   BarChartFill,
   CashCoin,
   PersonBadgeFill,
-  PersonSquare,
   PersonCircle,
-  PersonWorkspace,
-  EnvelopeOpen,
   ChatSquareDots,
-  Bag,
   ReceiptCutoff,
   Basket3Fill,
   GeoAltFill,
@@ -45,8 +34,11 @@ import activeClass from "../../../assets/css/active.module.css";
 // import { billData } from "./billData";
 import { useSelector } from "react-redux";
 import { Accordion } from "react-bootstrap";
+// the hook
+import { useTranslation } from "react-i18next";
 
 export default function Sidebar() {
+  const { t, i18n } = useTranslation();
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
   const user = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser
@@ -149,7 +141,7 @@ export default function Sidebar() {
                     }
                   >
                     <div className="sidebarIcon">{<HouseDoorFill />}</div>
-                    <span className="sidebarLinksName">{"ড্যাশবোর্ড"}</span>
+                    <span className="sidebarLinksName">{t("dashboard")}</span>
                   </li>
                 </FontColor>
               </NavLink>
@@ -171,7 +163,7 @@ export default function Sidebar() {
                       id={window.location.pathname === "/area" ? "active" : ""}
                     >
                       <div className="sidebarIcon">{<GeoAltFill />}</div>
-                      <span className="sidebarLinksName">{"এরিয়া "}</span>
+                      <span className="sidebarLinksName">{t("area")}</span>
                     </li>
                   </FontColor>
                 </NavLink>
@@ -194,7 +186,7 @@ export default function Sidebar() {
                       }
                     >
                       <div className="sidebarIcon">{<EjectFill />}</div>
-                      <span className="sidebarLinksName">{"প্যাকেজ"}</span>
+                      <span className="sidebarLinksName">{t("package")}</span>
                     </li>
                   </FontColor>
                 </NavLink>
@@ -217,7 +209,7 @@ export default function Sidebar() {
                       }
                     >
                       <div className="sidebarIcon">{<Basket3Fill />}</div>
-                      <span className="sidebarLinksName">{"মাইক্রোটিক"}</span>
+                      <span className="sidebarLinksName">{t("mikrotik")}</span>
                     </li>
                   </FontColor>
                 </NavLink>
@@ -233,7 +225,7 @@ export default function Sidebar() {
                       onClick={() => handleActiveAccordian("0")}
                     >
                       <div className="sidebarIcon">{<PeopleFill />}</div>
-                      <span className="sidebarLinksName">গ্রাহক</span>
+                      <span className="sidebarLinksName">{t("customer")}</span>
                     </Accordion.Header>
                     <Accordion.Body>
                       <NavLink
@@ -261,7 +253,9 @@ export default function Sidebar() {
                             }
                           >
                             <div className="sidebarIcon">{<People />}</div>
-                            <span className="sidebarLinksName">{"PPPoE"}</span>
+                            <span className="sidebarLinksName">
+                              {t("PPPoE")}
+                            </span>
                           </li>
                         </FontColor>
                       </NavLink>
@@ -301,7 +295,7 @@ export default function Sidebar() {
                                 {<PersonCheck />}
                               </div>
                               <span className="sidebarLinksName">
-                                {"এক্টিভ PPPoE"}
+                                {t("active PPPoE")}
                               </span>
                             </li>
                           </FontColor>
@@ -332,7 +326,7 @@ export default function Sidebar() {
                                 {<PersonVideo />}
                               </div>
                               <span className="sidebarLinksName">
-                                {"স্ট্যাটিক"}
+                                {t("static")}
                               </span>
                             </li>
                           </FontColor>
@@ -363,7 +357,7 @@ export default function Sidebar() {
                                 {<PersonCheck />}
                               </div>
                               <span className="sidebarLinksName">
-                                {"এক্টিভ স্ট্যাটিক"}
+                                {t("active static")}
                               </span>
                             </li>
                           </FontColor>
@@ -380,7 +374,7 @@ export default function Sidebar() {
                       onClick={() => handleActiveAccordian("1")}
                     >
                       <div className="sidebarIcon">{<BarChartFill />}</div>
-                      <span className="sidebarLinksName">রিপোর্ট</span>
+                      <span className="sidebarLinksName">{t("report")}</span>
                     </Accordion.Header>
                     <Accordion.Body>
                       <NavLink
@@ -411,7 +405,7 @@ export default function Sidebar() {
                               {<GraphUpArrow />}
                             </div>
                             <span className="sidebarLinksName">
-                              {"কালেকশন"}
+                              {t("collection")}
                             </span>
                           </li>
                         </FontColor>
@@ -443,7 +437,7 @@ export default function Sidebar() {
                           >
                             <div className="sidebarIcon">{<CashCoin />}</div>
                             <span className="sidebarLinksName">
-                              {"ডিপোজিট"}
+                              {t("diposit")}
                             </span>
                           </li>
                         </FontColor>
@@ -456,7 +450,7 @@ export default function Sidebar() {
                       onClick={() => handleActiveAccordian("2")}
                     >
                       <div className="sidebarIcon">{<PersonLinesFill />}</div>
-                      <span className="sidebarLinksName">স্টাফ</span>
+                      <span className="sidebarLinksName">{t("staff")}</span>
                     </Accordion.Header>
                     <Accordion.Body>
                       {userRole === "ispOwner" ? (
@@ -478,7 +472,7 @@ export default function Sidebar() {
                             >
                               <div className="sidebarIcon">{<Person />}</div>
                               <span className="sidebarLinksName">
-                                {"ম্যানেজার"}
+                                {t("manager")}
                               </span>
                             </li>
                           </FontColor>
@@ -514,7 +508,7 @@ export default function Sidebar() {
                             >
                               <div className="sidebarIcon">{<People />}</div>
                               <span className="sidebarLinksName">
-                                {"কালেক্টর"}
+                                {t("collector")}
                               </span>
                             </li>
                           </FontColor>
@@ -544,7 +538,7 @@ export default function Sidebar() {
                                 {<PersonBadgeFill />}
                               </div>
                               <span className="sidebarLinksName">
-                                {"কর্মী"}
+                                {t("labors")}
                               </span>
                             </li>
                           </FontColor>
@@ -560,7 +554,9 @@ export default function Sidebar() {
                         onClick={() => handleActiveAccordian("3")}
                       >
                         <div className="sidebarIcon">{<PersonCircle />}</div>
-                        <span className="sidebarLinksName">রিসেলার</span>
+                        <span className="sidebarLinksName">
+                          {t("reseller")}
+                        </span>
                       </Accordion.Header>
                       <Accordion.Body>
                         {bpSettings?.hasReseller &&
@@ -584,7 +580,7 @@ export default function Sidebar() {
                               >
                                 <div className="sidebarIcon">{<People />}</div>
                                 <span className="sidebarLinksName">
-                                  {"রিসেলার"}
+                                  {t("reseller")}
                                 </span>
                               </li>
                             </FontColor>
@@ -620,7 +616,7 @@ export default function Sidebar() {
                               >
                                 <div className="sidebarIcon">{<Cash />}</div>
                                 <span className="sidebarLinksName">
-                                  {"রিচার্জ হিস্ট্রি"}
+                                  {t("recharge history")}
                                 </span>
                               </li>
                             </FontColor>
@@ -651,7 +647,7 @@ export default function Sidebar() {
                                   {<ChatSquareDots />}
                                 </div>
                                 <span className="sidebarLinksName">
-                                  {"মেসেজ রিকোয়েস্ট"}
+                                  {t("message request")}
                                 </span>
                               </li>
                             </FontColor>
@@ -668,7 +664,7 @@ export default function Sidebar() {
                       onClick={() => handleActiveAccordian("4")}
                     >
                       <div className="sidebarIcon">{<Messenger />}</div>
-                      <span className="sidebarLinksName">মেসেজ</span>
+                      <span className="sidebarLinksName">{t("message")}</span>
                     </Accordion.Header>
                     <Accordion.Body>
                       {userRole === "ispOwner" ||
@@ -692,7 +688,7 @@ export default function Sidebar() {
                             >
                               <div className="sidebarIcon">{<ChatDots />}</div>
                               <span className="sidebarLinksName">
-                                {"বাল্ক মেসেজ"}
+                                {t("bulk message")}
                               </span>
                             </li>
                           </FontColor>
@@ -731,7 +727,7 @@ export default function Sidebar() {
                                   {<Envelope />}
                                 </div>
                                 <span className="sidebarLinksName">
-                                  {"মেসেজ"}
+                                  {t("message")}
                                 </span>
                               </li>
                             </FontColor>
@@ -759,7 +755,7 @@ export default function Sidebar() {
                             >
                               <div className="sidebarIcon">{<Gear />}</div>
                               <span className="sidebarLinksName">
-                                {"মেসেজ সেটিংস"}
+                                {t("message setting")}
                               </span>
                             </li>
                           </FontColor>
@@ -776,7 +772,7 @@ export default function Sidebar() {
                         onClick={() => handleActiveAccordian("5")}
                       >
                         <div className="sidebarIcon">{<WalletFill />}</div>
-                        <span className="sidebarLinksName">একাউন্টস</span>
+                        <span className="sidebarLinksName">{t("account")}</span>
                       </Accordion.Header>
                       <Accordion.Body>
                         <NavLink
@@ -796,7 +792,9 @@ export default function Sidebar() {
                               }
                             >
                               <div className="sidebarIcon">{<CashCoin />}</div>
-                              <span className="sidebarLinksName">{"খরচ"}</span>
+                              <span className="sidebarLinksName">
+                                {t("cost")}
+                              </span>
                             </li>
                           </FontColor>
                         </NavLink>
@@ -821,7 +819,7 @@ export default function Sidebar() {
                                 {<ReceiptCutoff />}
                               </div>
                               <span className="sidebarLinksName">
-                                {"ইনভয়েস"}
+                                {t("invoice")}
                               </span>
                             </li>
                           </FontColor>

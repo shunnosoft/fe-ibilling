@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 import Loader from "../../common/Loader";
 import { getResellerBalance } from "../../../features/apiCalls";
+import i18n from "../../../language/i18n/i18n";
 
 export default function Header(props) {
   // const userRole = useSelector(state => state.auth.role);
@@ -51,6 +52,20 @@ export default function Header(props) {
   const handleLogOut = async () => {
     userLogout(dispatch);
   };
+
+  // change laguage settings
+  const [getLang, setGetLang] = useState("bn");
+
+  useEffect(() => {
+    setGetLang(localStorage.getItem("netFee:lang"));
+    i18n.changeLanguage(localStorage.getItem("netFee:lang"));
+  }, [getLang]);
+
+  const selectLanguage = (event) => {
+    setGetLang(event.target.value);
+    localStorage.setItem("netFee:lang", event.target.value);
+  };
+  // end change language settings
 
   const icon =
     props.theme === "light" ? (
@@ -131,44 +146,64 @@ export default function Header(props) {
               </div>
 
               {currentUser ? (
-                <div className="dropdown">
-                  <button
-                    type="button"
-                    className="dropdown-toggle profileDropdownBtn"
-                    data-bs-toggle="dropdown"
+                <>
+                  {/* change language select box */}
+                  <select
+                    onChange={selectLanguage}
+                    className="me-2"
+                    style={{
+                      border: "none",
+                      fontSize: "15px",
+                      backgroundColor: "transparent",
+                    }}
                   >
-                    {userData?.name}
-                    {/* {userRole === "ispOwner" ? "( Admin )" : ""}
+                    <option value="bn" selected={getLang === "bn"}>
+                      বাং
+                    </option>
+                    <option value="en" selected={getLang === "en"}>
+                      EN
+                    </option>
+                  </select>
+                  {/* end change language select box */}
+
+                  <div className="dropdown">
+                    <button
+                      type="button"
+                      className="dropdown-toggle profileDropdownBtn"
+                      data-bs-toggle="dropdown"
+                    >
+                      {userData?.name}
+                      {/* {userRole === "ispOwner" ? "( Admin )" : ""}
                     {userRole === "collector" ? "( Staff )" : ""}
                     {userRole === "manager" ? "( Manager )" : ""} */}
 
-                    <img
-                      src="./assets/img/noAvater.jpg"
-                      alt=""
-                      className="profileDropdownImg"
-                    />
-                  </button>
+                      <img
+                        src="./assets/img/noAvater.jpg"
+                        alt=""
+                        className="profileDropdownImg"
+                      />
+                    </button>
 
-                  <ul className="dropdown-menu">
-                    {HeaderData.map((val, key) => {
-                      return (
-                        <li key={key} className="profileList">
-                          <NavLink
-                            to={
-                              userRole === "reseller"
-                                ? val.resellerLink
-                                : val.link
-                            }
-                            className="dropdown-item"
-                          >
-                            <span className="dropdownIcon">{val.icon}</span>
-                            {val.name}
-                          </NavLink>
-                        </li>
-                      );
-                    })}
+                    <ul className="dropdown-menu">
+                      {HeaderData.map((val, key) => {
+                        return (
+                          <li key={key} className="profileList">
+                            <NavLink
+                              to={
+                                userRole === "reseller"
+                                  ? val.resellerLink
+                                  : val.link
+                              }
+                              className="dropdown-item"
+                            >
+                              <span className="dropdownIcon">{val.icon}</span>
+                              {val.name}
+                            </NavLink>
+                          </li>
+                        );
+                      })}
 
-                    {/* {userRole === "ispOwner" || userRole === "manager" ? (
+                      {/* {userRole === "ispOwner" || userRole === "manager" ? (
                       <Link to="/activity">
                         <li className="profileList logOutLi">
                           <div className="dropdown-item logOutTxt">
@@ -183,16 +218,20 @@ export default function Header(props) {
                       ""
                     )} */}
 
-                    <li className="profileList logOutLi" onClick={handleLogOut}>
-                      <div className="dropdown-item logOutTxt">
-                        <span className="dropdownIcon">
-                          <BoxArrowLeft />
-                        </span>
-                        লগআউট
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+                      <li
+                        className="profileList logOutLi"
+                        onClick={handleLogOut}
+                      >
+                        <div className="dropdown-item logOutTxt">
+                          <span className="dropdownIcon">
+                            <BoxArrowLeft />
+                          </span>
+                          লগআউট
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </>
               ) : pathName === "/register" ||
                 pathName === "/netfee" ||
                 pathName === "/terms-conditions" ||

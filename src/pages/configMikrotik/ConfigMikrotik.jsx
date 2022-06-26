@@ -194,7 +194,7 @@ export default function ConfigMikrotik() {
       fetchpppoeUser(dispatch, IDs, singleMik?.name, setIsloading);
       setWhatYouWantToShow("showAllMikrotikUser");
     } else if (original === "showMikrotikPackage") {
-      fetchPackagefromDatabase(dispatch, IDs, singleMik?.name);
+      fetchPackagefromDatabase(dispatch, IDs, setIsloading);
       setWhatYouWantToShow("showMikrotikPackage");
     }
 
