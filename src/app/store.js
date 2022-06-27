@@ -23,7 +23,6 @@ import resellerParchaseSmsSlice from "../features/resellerParchaseSmsSlice";
 import resellerSmsRequestSlice from "../features/resellerSmsRequestSlice";
 import resellerCustomerAdminSlice from "../features/resellerCustomerAdminSlice";
 import activityLogSlice from "../features/activityLogSlice";
-
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -66,6 +65,7 @@ const store = configureStore({
       immutableCheck: false,
       serializableCheck: false,
     }),
+  devTools: process.env.NODE_ENV !== "production",
 });
 
 export default store;
