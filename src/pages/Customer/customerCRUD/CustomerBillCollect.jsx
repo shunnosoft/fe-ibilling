@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
+import moment from "moment";
 
 export default function CustomerBillCollect({ single }) {
   const billRef = useRef();
@@ -44,6 +45,7 @@ export default function CustomerBillCollect({ single }) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [agent, setAgent] = useState("");
+  const [noteCheck, setNoteCheck] = useState(false);
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -67,6 +69,10 @@ export default function CustomerBillCollect({ single }) {
     billCollect(dispatch, sendingData, setLoading);
     setAmount(data.amount);
   };
+  const dataDate = moment().add(4, "days");
+  const currentDate = moment().toISOString();
+
+  console.log(dataDate.diff(currentDate, "days"));
 
   return (
     <div>
@@ -86,7 +92,7 @@ export default function CustomerBillCollect({ single }) {
                   className="modal-title"
                   id="customerModalDetails"
                 >
-                  বিল গ্রহণ
+                  রিচার্জ করুন
                 </h5>
                 <button
                   type="button"
@@ -122,7 +128,7 @@ export default function CustomerBillCollect({ single }) {
                           />
                         </div>
 
-                        <div className="d-inline w-100 mb-3">
+                        {/* <div className="d-inline w-100 mb-3">
                           <label
                             htmlFor="receiver_type"
                             className="form-control-label changeLabelFontColor"
@@ -137,43 +143,13 @@ export default function CustomerBillCollect({ single }) {
                             aria-label="Default select example"
                             onChange={(e) => setAgent(e.target.value)}
                           >
-                            <option selected defaultValue={"select one"}>
-                              মাধ্যম সিলেক্ট করুন
-                            </option>
-                            <option>হ্যান্ড ক্যাশ</option>
+                            <option selected>হ্যান্ড ক্যাশ</option>
                             <option>বিকাশ</option>
                             <option>রকেট</option>
                             <option>নগদ</option>
                             <option>ব্যাংক একাউন্ট</option>
-                            {/* <option>বিকাশ</option>
-                          <option>বিকাশ</option> */}
                           </select>
-                        </div>
-                      </div>
-                      <div className="bill_collect_form mb-1">
-                        <div className="me-3" style={{ width: "100%" }}>
-                          <label className="form-control-label changeLabelFontColor">
-                            শুরুর তারিখ
-                          </label>
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="dd/MM/yyyy"
-                          />
-                        </div>
-                        <div cla style={{ width: "100%" }}>
-                          <label className="form-control-label changeLabelFontColor">
-                            শেষ তারিখ
-                          </label>
-
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            dateFormat="dd/MM/yyyy"
-                          />
-                        </div>
+                        </div>*/}
                       </div>
                       <label className="form-control-label changeLabelFontColor">
                         ধরণ
@@ -186,6 +162,57 @@ export default function CustomerBillCollect({ single }) {
                         <option value="connectionFee">কানেকশন ফি</option>
                       </select>
 
+                      {/* <div className="mb-2 mt-3">
+                        <input
+                          type="checkbox"
+                          className="form-check-input me-1"
+                          id="addNOte"
+                          onChange={(e) => setNoteCheck(e.target.checked)}
+                        />
+                        <label
+                          className="form-check-label changeLabelFontColor"
+                          htmlFor="addNOte"
+                        >
+                          নোট এবং তারিখ
+                        </label>
+                      </div> 
+                      {noteCheck && (
+                        <div className="bill_collect_form mb-1">
+                          <div class="form-floating me-3">
+                            <textarea
+                              cols={200}
+                              class="form-control shadow-none"
+                              placeholder="নোট লিখুন"
+                              id="noteField"
+                            ></textarea>
+                            <label for="noteField">নোট এড করুন</label>
+                          </div>
+                          <div className="me-3" style={{ width: "100%" }}>
+                            <label className="form-control-label changeLabelFontColor">
+                              শুরুর তারিখ
+                            </label>
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="dd/MM/yyyy"
+                            />
+                          </div>
+                          <div cla style={{ width: "100%" }}>
+                            <label className="form-control-label changeLabelFontColor">
+                              শেষ তারিখ
+                            </label>
+
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={endDate}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="dd/MM/yyyy"
+                            />
+                          </div>
+                        </div>
+                      )}
+*/}
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : "সাবমিট"}

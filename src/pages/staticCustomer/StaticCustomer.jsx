@@ -502,7 +502,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <Wallet />
-                      <p className="actionP">বিল গ্রহণ</p>
+                      <p className="actionP">রিচার্জ</p>
                     </div>
                   </div>
                 </li>
@@ -609,8 +609,8 @@ export default function Customer() {
                       justifyContent: "end",
                     }}
                   >
-                    {role === "ispOwner" && (
-                      <>
+                    <>
+                      {role === "ispOwner" && (
                         <div className="settingbtn me-2">
                           <Link
                             to={`/packageSetting`}
@@ -627,39 +627,44 @@ export default function Customer() {
                             <ArrowRightShort style={{ fontSize: "19px" }} />
                           </Link>
                         </div>
-                        <div className="addAndSettingIcon">
-                          <CSVLink
-                            data={customerForCsV}
-                            filename={ispOwnerData.company}
-                            headers={headers}
-                            title="BTRC রিপোর্ট ডাউনলোড"
-                          >
-                            <FileExcelFill className="addcutmButton" />
-                          </CSVLink>
-                        </div>
+                      )}
+                      {(role === "ispOwner" || permission.customerAdd) && (
+                        <>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={customerForCsV}
+                              filename={ispOwnerData.company}
+                              headers={headers}
+                              title="BTRC রিপোর্ট ডাউনলোড"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
 
-                        <div className="addAndSettingIcon">
-                          <ReactToPrint
-                            documentTitle="গ্রাহক লিস্ট"
-                            trigger={() => (
-                              <PrinterFill
-                                title="প্রিন্ট "
-                                className="addcutmButton"
-                              />
-                            )}
-                            content={() => componentRef.current}
-                          />
-                        </div>
-                        {(role === "ispOwner" || permission.addCustomer) && (
-                          <PersonPlusFill
-                            title="স্ট্যাটিক গ্রাহক যুক্ত"
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addStaticCustomerModal"
-                          />
-                        )}
-                      </>
-                    )}
+                          <div className="addAndSettingIcon">
+                            <ReactToPrint
+                              documentTitle="গ্রাহক লিস্ট"
+                              trigger={() => (
+                                <PrinterFill
+                                  title="প্রিন্ট "
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => componentRef.current}
+                            />
+                          </div>
+                        </>
+                      )}
+
+                      {(role === "ispOwner" || permission.customerAdd) && (
+                        <PersonPlusFill
+                          title="স্ট্যাটিক গ্রাহক যুক্ত"
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addStaticCustomerModal"
+                        />
+                      )}
+                    </>
                   </div>
                 </div>
               </FourGround>

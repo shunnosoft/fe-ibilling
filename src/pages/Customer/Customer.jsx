@@ -486,7 +486,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <Wallet />
-                      <p className="actionP">বিল গ্রহণ</p>
+                      <p className="actionP">রিচার্জ</p>
                     </div>
                   </div>
                 </li>
