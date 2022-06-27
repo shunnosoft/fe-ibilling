@@ -247,3 +247,10 @@ span.button_title {
 .bulkActionButton button:hover span.button_title {
   left: -106px;
 }
+
+/* bill collect ui  */
+.bill_collect_form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

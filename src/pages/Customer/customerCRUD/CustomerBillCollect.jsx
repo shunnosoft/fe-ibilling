@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 //internal imports
@@ -8,6 +8,7 @@ import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
 import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
+import DatePicker from "react-datepicker";
 
 export default function CustomerBillCollect({ single }) {
   const billRef = useRef();
@@ -38,6 +39,12 @@ export default function CustomerBillCollect({ single }) {
   );
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
+
+  //billing date
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [agent, setAgent] = useState("");
+
   const BillValidatoin = Yup.object({
     amount: Yup.number()
       .min(10, "দশ টাকার নিচে বিল গ্রহন যোগ্য নয়")
@@ -72,7 +79,7 @@ export default function CustomerBillCollect({ single }) {
           aria-hidden="true"
         >
           <div className="modal-dialog modal-dialog-scrollable">
-            <div className="modal-content">
+            <div className="modal-content p-3">
               <div className="modal-header">
                 <h5
                   style={{ color: "#0abb7a" }}
@@ -106,11 +113,73 @@ export default function CustomerBillCollect({ single }) {
                     <Form>
                       <h4>Name:{data?.name}</h4>
                       <h4>ID:{data?.customerId}</h4>
+                      <div className="bill_collect_form">
+                        <div className="w-100 me-3">
+                          <FtextField
+                            type="number"
+                            name="amount"
+                            label="পরিমান"
+                          />
+                        </div>
 
-                      <FtextField type="number" name="amount" label="পরিমান" />
-                      <label>ধরণ</label>
+                        <div className="d-inline w-100 mb-3">
+                          <label
+                            htmlFor="receiver_type"
+                            className="form-control-label changeLabelFontColor"
+                          >
+                            মাধ্যম
+                          </label>
+
+                          <select
+                            as="select"
+                            id="receiver_type"
+                            className="form-select mt-0 mw-100"
+                            aria-label="Default select example"
+                            onChange={(e) => setAgent(e.target.value)}
+                          >
+                            <option selected defaultValue={"select one"}>
+                              মাধ্যম সিলেক্ট করুন
+                            </option>
+                            <option>হ্যান্ড ক্যাশ</option>
+                            <option>বিকাশ</option>
+                            <option>রকেট</option>
+                            <option>নগদ</option>
+                            <option>ব্যাংক একাউন্ট</option>
+                            {/* <option>বিকাশ</option>
+                          <option>বিকাশ</option> */}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="bill_collect_form mb-1">
+                        <div className="me-3" style={{ width: "100%" }}>
+                          <label className="form-control-label changeLabelFontColor">
+                            শুরুর তারিখ
+                          </label>
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                          />
+                        </div>
+                        <div cla style={{ width: "100%" }}>
+                          <label className="form-control-label changeLabelFontColor">
+                            শেষ তারিখ
+                          </label>
+
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                          />
+                        </div>
+                      </div>
+                      <label className="form-control-label changeLabelFontColor">
+                        ধরণ
+                      </label>
                       <select
-                        className="form-select"
+                        className="form-select mt-0 mw-100"
                         onChange={(e) => setBillType(e.target.value)}
                       >
                         <option value="bill">বিল</option>
