@@ -16,7 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { PrinterFill } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 export default function Report() {
+  const { t } = useTranslation();
   const componentRef = useRef();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -352,7 +354,7 @@ export default function Report() {
                           onChange={(e) => onChangeArea(e.target.value)}
                         >
                           <option value={JSON.stringify({})} defaultValue>
-                            সকল এরিয়া{" "}
+                            {t("allArea")}
                           </option>
                           {allArea.map((area, key) => (
                             <option key={key} value={JSON.stringify(area)}>
@@ -368,7 +370,7 @@ export default function Report() {
                           onChange={(e) => onChangeSubArea(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            সকল সাব এরিয়া{" "}
+                            {t("subArea")}
                           </option>
                           {singleArea?.subAreas?.map((sub, key) => (
                             <option key={key} value={sub.id}>
@@ -385,7 +387,7 @@ export default function Report() {
                             onChange={(e) => onChangeCollector(e.target.value)}
                           >
                             <option value="" defaultValue>
-                              সকল কালেক্টর{" "}
+                              {t("all collector")}
                             </option>
                             {collectors?.map((c, key) => (
                               <option key={key} value={c.user}>
@@ -435,11 +437,13 @@ export default function Report() {
                           onChange={(e) => setBillType(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            বিল টাইপ{" "}
+                            {t("billType")}
                           </option>
 
-                          <option value="connectionFee">সংযোগ ফি</option>
-                          <option value="bill">মাসিক বিল</option>
+                          <option value="connectionFee">
+                            {t("connectionFee")}
+                          </option>
+                          <option value="bill"> {t("monthBill")} </option>
                         </select>
                       </div>
                       <div>
@@ -448,7 +452,7 @@ export default function Report() {
                           type="button"
                           onClick={onClickFilter}
                         >
-                          ফিল্টার
+                          {t("filter")}
                         </button>
                       </div>
                     </div>

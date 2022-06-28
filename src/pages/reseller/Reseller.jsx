@@ -37,8 +37,10 @@ import Table from "../../components/table/Table";
 import { Link } from "react-router-dom";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
+import { useTranslation } from "react-i18next";
 
 export default function Reseller() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const ispOwnerId = useSelector(
@@ -254,7 +256,7 @@ export default function Reseller() {
               {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>রিসেলার</div>
+                  <div> {t("reseller")} </div>
                   {role === "ispOwner" && (
                     <div
                       title="রিসেলার এড করুন"
