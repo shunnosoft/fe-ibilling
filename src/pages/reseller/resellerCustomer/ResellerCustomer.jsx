@@ -103,21 +103,27 @@ const ResellerCustomer = () => {
       {
         Header: "আইডি",
         accessor: "customerId",
+        width: "8%",
       },
       {
         Header: "নাম",
         accessor: "name",
+        width: "10%",
       },
       {
         Header: "PPPoE",
         accessor: "pppoe.name",
+        width: "10%",
       },
       {
         Header: "মোবাইল",
         accessor: "mobile",
+        width: "12%",
       },
 
       {
+        width: "9%",
+
         Header: "স্ট্যাটাস",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -125,6 +131,7 @@ const ResellerCustomer = () => {
         },
       },
       {
+        width: "9%",
         Header: "পেমেন্ট",
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -136,14 +143,20 @@ const ResellerCustomer = () => {
         accessor: "pppoe.profile",
       },
       {
+        width: "10%",
+
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
       },
       {
+        width: "9%",
+
         Header: "ব্যালান্স",
         accessor: "balance",
       },
       {
+        width: "12%",
+
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
@@ -152,6 +165,8 @@ const ResellerCustomer = () => {
       },
 
       {
+        width: "7%",
+
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
