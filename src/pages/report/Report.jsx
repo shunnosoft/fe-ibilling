@@ -243,24 +243,58 @@ export default function Report() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "আইডি",
         accessor: "customer.customerId",
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "গ্রাহক",
         accessor: "customer.name",
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "প্যাকেজ",
         accessor: "customer.mikrotikPackage.name",
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "বিল",
         accessor: "amount",
+      },
+      {
+        width: "8%",
+        Header: "মাধ্যম",
+        accessor: "medium",
+      },
+      {
+        width: "10%",
+        Header: "কালেক্টর",
+        accessor: "name",
+      },
+      {
+        width: "20%",
+        Header: "নোট",
+        accessor: (data) => {
+          return {
+            note: data.note,
+            start: data.start,
+            end: data.end,
+          };
+        },
+        Cell: ({ cell: { value } }) => {
+          return (
+            <>
+              <p>{value.note && value.note}</p>
+              {value?.start && value?.end && (
+                <span className="badge bg-secondary">
+                  {moment(value.start).format("DD/MM/YY")}--
+                  {moment(value.end).format("DD/MM/YY")}
+                </span>
+              )}
+            </>
+          );
+        },
       },
 
       {

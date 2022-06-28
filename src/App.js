@@ -76,6 +76,7 @@ import { toast } from "react-toastify";
 import AllComments from "./admin/allComments/AllComments";
 import ActivityLog from "./pages/activityLog/ActivityLog";
 import "./language/i18n/i18n";
+import RstaticCustomer from "./reseller/staticCustomer/StaticCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -188,6 +189,10 @@ function App() {
               <Route path="reseller/diposit" element={<RDiposit />} />
               <Route path="reseller/sms-receharge" element={<RecehargeSMS />} />
               <Route path="reseller/customer" element={<RCustomer />} />
+              <Route
+                path="reseller/staticCustomer"
+                element={<RstaticCustomer />}
+              />
 
               <Route path="*" element={<NotFound />} />
             </Route>

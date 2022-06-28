@@ -15,6 +15,8 @@ import {
   deleteCustomerSuccess,
   editCustomerSuccess,
   getCustomerSuccess,
+  getStaticCustomerActiveSuccess,
+  getStaticCustomerSuccess,
   updateBalance,
 } from "./customerSlice";
 
@@ -211,7 +213,6 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 //Bill
 
 export const billCollect = async (dispatch, billData, setLoading) => {
-  console.log(billData);
   setLoading(true);
   try {
     const res = await apiLink.post("/reseller/monthlyBill", billData);
@@ -219,12 +220,10 @@ export const billCollect = async (dispatch, billData, setLoading) => {
     dispatch(updateBalance(res.data));
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
-
     toast.success("বিল গ্রহণ সফল হয়েছে।");
   } catch (error) {
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
-
     toast.error(error.response?.data.message);
   }
 };
@@ -397,5 +396,23 @@ export const getMikrotikPackages = async (dispatch, ispOwnerId) => {
     dispatch(getAllMikrotikPakages(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
+  }
+};
+
+//static customer
+
+export const getStaticCustomerApi = async (
+  dispatch,
+  reseller,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(`/reseller/static/customer/${reseller}`);
+    dispatch(getStaticCustomerSuccess(res.data));
+    setIsloading(false);
+  } catch (error) {
+    console.log(error.message);
+    setIsloading(false);
   }
 };

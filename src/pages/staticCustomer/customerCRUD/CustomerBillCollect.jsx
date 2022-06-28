@@ -35,10 +35,11 @@ export default function CustomerBillCollect({ single }) {
   const [isLoading, setLoading] = useState(false);
 
   //billing date
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [agent, setAgent] = useState("");
+  const [startDate, setStartDate] = useState(false);
+  const [endDate, setEndDate] = useState(false);
+  const [medium, setMedium] = useState("cash");
   const [noteCheck, setNoteCheck] = useState(false);
+  const [note, setNote] = useState("");
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -58,8 +59,13 @@ export default function CustomerBillCollect({ single }) {
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
       userType: data?.userType,
-      // note:note
+      medium,
     };
+    if (note) sendingData.note = note;
+    if (startDate && endDate) {
+      sendingData.start = startDate.toISOString();
+      sendingData.end = endDate.toISOString();
+    }
     billCollect(dispatch, sendingData, setLoading);
   };
 
@@ -73,7 +79,7 @@ export default function CustomerBillCollect({ single }) {
           aria-labelledby="customerModalDetails"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-dialog-scrollable">
+          <div className="modal-dialog modal-dialog-scrollable modal-lg">
             <div className="modal-content">
               <div className="modal-header">
                 <h5
@@ -110,7 +116,7 @@ export default function CustomerBillCollect({ single }) {
                       <h4>ID:{data?.customerId}</h4>
 
                       <FtextField type="number" name="amount" label="পরিমান" />
-                      {/* <div className="d-inline w-100 mb-3">
+                      <div className="d-inline w-100 mb-3">
                         <label
                           htmlFor="receiver_type"
                           className="form-control-label changeLabelFontColor"
@@ -123,15 +129,17 @@ export default function CustomerBillCollect({ single }) {
                           id="receiver_type"
                           className="form-select mt-0 mw-100"
                           aria-label="Default select example"
-                          onChange={(e) => setAgent(e.target.value)}
+                          onChange={(e) => setMedium(e.target.value)}
                         >
-                          <option selected>হ্যান্ড ক্যাশ</option>
-                          <option>বিকাশ</option>
-                          <option>রকেট</option>
-                          <option>নগদ</option>
-                          <option>ব্যাংক একাউন্ট</option>
+                          <option value="cash" selected>
+                            হ্যান্ড ক্যাশ
+                          </option>
+                          <option value="bKash">বিকাশ</option>
+                          <option value="rocket">রকেট</option>
+                          <option value="nagod">নগদ</option>
+                          <option value="others">অন্য</option>
                         </select>
-                      </div> */}
+                      </div>
                       <label>ধরণ</label>
                       <select
                         className="form-select"
@@ -140,7 +148,7 @@ export default function CustomerBillCollect({ single }) {
                         <option value="bill">বিল</option>
                         <option value="connectionFee">কানেকশন ফি</option>
                       </select>
-                      {/* <div className="mb-2 mt-3">
+                      <div className="mb-2 mt-3">
                         <input
                           type="checkbox"
                           className="form-check-input me-1"
@@ -153,21 +161,25 @@ export default function CustomerBillCollect({ single }) {
                         >
                           নোট এবং তারিখ
                         </label>
-                      </div> */}
-                      {/* {noteCheck && (
+                      </div>
+                      {noteCheck && (
                         <div className="bill_collect_form mb-1">
                           <div class="form-floating me-3">
-                            <FtextField
-                              type="text"
-                              name="text"
-                              label="নোট এড করুন"
-                            />
+                            <textarea
+                              cols={200}
+                              class="form-control shadow-none"
+                              placeholder="নোট লিখুন"
+                              id="noteField"
+                              onChange={(e) => setNote(e.target.value)}
+                            ></textarea>
+                            <label for="noteField">নোট এড করুন</label>
                           </div>
                           <div className="me-3" style={{ width: "100%" }}>
                             <label className="form-control-label changeLabelFontColor">
                               শুরুর তারিখ
                             </label>
                             <DatePicker
+                              selected={startDate}
                               className="form-control mw-100"
                               onChange={(date) => setStartDate(date)}
                               dateFormat="dd/MM/yyyy"
@@ -180,6 +192,7 @@ export default function CustomerBillCollect({ single }) {
                             </label>
 
                             <DatePicker
+                              selected={endDate}
                               className="form-control mw-100"
                               onChange={(date) => setEndDate(date)}
                               dateFormat="dd/MM/yyyy"
@@ -187,7 +200,7 @@ export default function CustomerBillCollect({ single }) {
                             />
                           </div>
                         </div>
-                      )} */}
+                      )}
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : "সাবমিট"}

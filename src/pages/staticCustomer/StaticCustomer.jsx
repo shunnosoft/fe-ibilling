@@ -102,7 +102,6 @@ export default function Customer() {
     (state) => state?.persistedReducer?.auth?.userData.permissions
   );
 
-  console.log(permission);
   useEffect(() => {
     if (role === "collector") {
       let areas = [];

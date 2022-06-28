@@ -1,36 +1,28 @@
-import { useRef, useState } from "react";
-import { Field, Form, Formik } from "formik";
+import { useState } from "react";
+import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 //internal imports
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCalls";
+import { billCollect } from "../../../features/apiCallReseller";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
-import moment from "moment";
 
 export default function CustomerBillCollect({ single }) {
-  const billRef = useRef();
-  // get all customer
   const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
+    (state) => state?.persistedReducer?.customer?.staticCustomer
   );
 
-  // find editable data
   const data = customer.find((item) => item.id === single);
 
   const [billType, setBillType] = useState("bill");
-  const [amount, setAmount] = useState(null);
-  // const [defaultAmount, setDefault] = useState(single.monthlyFee);
 
   const ispOwner = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
   const currentUser = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser
   );
@@ -58,25 +50,21 @@ export default function CustomerBillCollect({ single }) {
   const customerBillHandler = (formValue) => {
     const sendingData = {
       amount: formValue.amount,
-      name: userData.name,
       collectedBy: currentUser?.user.role,
       billType: billType,
+      name: userData.name,
       customer: data?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
-      userType: data?.userType,
       medium,
     };
     if (note) sendingData.note = note;
-
     if (startDate && endDate) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
-
     billCollect(dispatch, sendingData, setLoading);
-    // setAmount(data.amount);
   };
 
   return (
@@ -90,7 +78,7 @@ export default function CustomerBillCollect({ single }) {
           aria-hidden="true"
         >
           <div className="modal-dialog modal-dialog-scrollable modal-lg">
-            <div className="modal-content p-3">
+            <div className="modal-content">
               <div className="modal-header">
                 <h5
                   style={{ color: "#0abb7a" }}
@@ -124,51 +112,40 @@ export default function CustomerBillCollect({ single }) {
                     <Form>
                       <h4>Name:{data?.name}</h4>
                       <h4>ID:{data?.customerId}</h4>
-                      <div className="bill_collect_form">
-                        <div className="w-100 me-3">
-                          <FtextField
-                            type="number"
-                            name="amount"
-                            label="পরিমান"
-                          />
-                        </div>
 
-                        <div className="d-inline w-100 mb-3">
-                          <label
-                            htmlFor="receiver_type"
-                            className="form-control-label changeLabelFontColor"
-                          >
-                            মাধ্যম
-                          </label>
+                      <FtextField type="number" name="amount" label="পরিমান" />
+                      <div className="d-inline w-100 mb-3">
+                        <label
+                          htmlFor="receiver_type"
+                          className="form-control-label changeLabelFontColor"
+                        >
+                          মাধ্যম
+                        </label>
 
-                          <select
-                            as="select"
-                            id="receiver_type"
-                            className="form-select mt-0 mw-100"
-                            aria-label="Default select example"
-                            onChange={(e) => setMedium(e.target.value)}
-                          >
-                            <option value="cash" selected>
-                              হ্যান্ড ক্যাশ
-                            </option>
-                            <option value="bKash">বিকাশ</option>
-                            <option value="rocket">রকেট</option>
-                            <option value="nagod">নগদ</option>
-                            <option value="others">অন্য</option>
-                          </select>
-                        </div>
+                        <select
+                          as="select"
+                          id="receiver_type"
+                          className="form-select mt-0 mw-100"
+                          aria-label="Default select example"
+                          onChange={(e) => setMedium(e.target.value)}
+                        >
+                          <option value="cash" selected>
+                            হ্যান্ড ক্যাশ
+                          </option>
+                          <option value="bKash">বিকাশ</option>
+                          <option value="rocket">রকেট</option>
+                          <option value="nagod">নগদ</option>
+                          <option value="others">অন্য</option>
+                        </select>
                       </div>
-                      <label className="form-control-label changeLabelFontColor">
-                        ধরণ
-                      </label>
+                      <label>ধরণ</label>
                       <select
-                        className="form-select mt-0 mw-100"
+                        className="form-select"
                         onChange={(e) => setBillType(e.target.value)}
                       >
                         <option value="bill">বিল</option>
                         <option value="connectionFee">কানেকশন ফি</option>
                       </select>
-
                       <div className="mb-2 mt-3">
                         <input
                           type="checkbox"
@@ -200,8 +177,8 @@ export default function CustomerBillCollect({ single }) {
                               শুরুর তারিখ
                             </label>
                             <DatePicker
-                              className="form-control mw-100"
                               selected={startDate}
+                              className="form-control mw-100"
                               onChange={(date) => setStartDate(date)}
                               dateFormat="dd/MM/yyyy"
                               placeholderText="তারিখ সিলেক্ট করুন"
@@ -213,8 +190,8 @@ export default function CustomerBillCollect({ single }) {
                             </label>
 
                             <DatePicker
-                              className="form-control mw-100"
                               selected={endDate}
+                              className="form-control mw-100"
                               onChange={(date) => setEndDate(date)}
                               dateFormat="dd/MM/yyyy"
                               placeholderText="তারিখ সিলেক্ট করুন"
@@ -222,7 +199,6 @@ export default function CustomerBillCollect({ single }) {
                           </div>
                         </div>
                       )}
-
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : "সাবমিট"}

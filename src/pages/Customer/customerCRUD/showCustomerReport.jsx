@@ -64,7 +64,7 @@ export default function CustomerReport({ single }) {
         aria-labelledby="customerModalDetails"
         aria-hidden="true"
       >
-        <div className="modal-dialog">
+        <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h5
@@ -86,12 +86,28 @@ export default function CustomerReport({ single }) {
                 <table className="table table-striped text-center">
                   <thead>
                     <tr className="spetialSortingRow">
-                      <th scope="col">প্যাকেজ</th>
-                      <th scope="col">কালেক্টর</th>
-                      <th scope="col">বিল</th>
-                      <th scope="col">তারিখ</th>
-                      <th scope="col">সময়</th>
-                      <th scope="col">একশন</th>
+                      <th style={{ width: "10%" }} scope="col">
+                        প্যাকেজ
+                      </th>
+
+                      <th style={{ width: "10%" }} scope="col">
+                        বিল
+                      </th>
+                      <th style={{ width: "30%" }} scope="col">
+                        তারিখ
+                      </th>
+                      <th style={{ width: "7%" }} scope="col">
+                        মাধ্যম
+                      </th>
+                      <th style={{ width: "15%" }} scope="col">
+                        কালেক্টর
+                      </th>
+                      <th style={{ width: "40%" }} scope="col">
+                        নোট
+                      </th>
+                      <th style={{ width: "8%" }} scope="col">
+                        একশন
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -102,18 +118,25 @@ export default function CustomerReport({ single }) {
                         return (
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>
-                            <td>{val.name}</td>
                             <td>{FormatNumber(val.amount)}</td>
                             <td>
-                              {moment(val.createdAt).format("DD-MM-YYYY")}
+                              {moment(val.createdAt).format(
+                                "DD-MM-YYYY hh:mm:ss A"
+                              )}
                             </td>
+
+                            <td>{val.medium}</td>
+                            <td>{val.name}</td>
+
                             <td>
-                              {moment(val.createdAt).format("hh:mm:ss A")}
+                              <p>{val.note}</p>
+                              {val.start && val.end && (
+                                <span className="badge bg-secondary">
+                                  {moment(val.start).format("DD/MM/YY")}--
+                                  {moment(val.end).format("DD/MM/YY")}
+                                </span>
+                              )}
                             </td>
-                            {/* 
-                          {moment()
-                            .subtract(7, "d")
-                            .isBefore(moment(val.createdAt)) && ( */}
 
                             <td className="text-center">
                               <div style={{ display: "none" }}>
