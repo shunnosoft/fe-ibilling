@@ -18,9 +18,11 @@ import { fetchActivepppoeUser, fetchpppoeUser } from "../../features/apiCalls";
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 // import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
+  const { t } = useTranslation();
   const mikrotik = useSelector(
     (state) => state.persistedReducer?.mikrotik?.mikrotik
   );
@@ -300,7 +302,7 @@ export default function ConfigMikrotik() {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">এক্টিভ গ্রাহক</h2>
+                <h2 className="collectorTitle"> {t("activeCustomer")} </h2>
               </FourGround>
 
               <FourGround>
@@ -308,7 +310,7 @@ export default function ConfigMikrotik() {
                   <div className="addCollector">
                     <div className="activeuserselection">
                       <div className="LeftSideMikrotik">
-                        <h6>মাইক্রোটিক সিলেক্ট করুন</h6>
+                        <h6> {t("selectMikrotik")} </h6>
                         <select
                           id="selectMikrotikOption"
                           onChange={mikrotiSelectionHandler}
@@ -321,22 +323,22 @@ export default function ConfigMikrotik() {
                         </select>
                       </div>
                       <div className="rightSideMikrotik">
-                        <h6>গ্রাহক সিলেক্ট করুন</h6>
+                        <h6> {t("selectCustomer")} </h6>
                         <select
                           id="selectMikrotikOption"
                           onChange={selectMikrotikOptionsHandler}
                           className="form-select"
                         >
                           <option value="showActiveMikrotikUser">
-                            এক্টিভ গ্রাহক
+                            {t("activeCustomer")}
                           </option>
                           <option value="showAllMikrotikUser">
-                            সকল গ্রাহক
+                            {t("sokolCustomer")}
                           </option>
                         </select>
                       </div>
                       <div className="rightSideMikrotik">
-                        <h5>রিফ্রেশ করুন</h5>
+                        <h5> {t("refresh")} </h5>
 
                         <div className="refreshIcon">
                           {isRefrsh ? (
