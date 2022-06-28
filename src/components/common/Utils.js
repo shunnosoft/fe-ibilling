@@ -17,6 +17,10 @@ const addClass = {
   support: "primary",
   feature: "info",
   migration: "warning",
+
+  registration: "warning",
+  monthlyServiceCharge: "success",
+  smsPurchase: "primary",
 };
 
 export const badge = (item) => {

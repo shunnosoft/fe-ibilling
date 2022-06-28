@@ -49,6 +49,8 @@ export default function Home() {
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
   // payment filter
   if (filterStatus && filterStatus !== "Select") {
     ispOwners = ispOwners.filter(
@@ -137,7 +139,7 @@ export default function Home() {
         Header: "CreatedAt",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("DD MMM YY hh:mm a");
         },
       },
 
@@ -255,7 +257,9 @@ export default function Home() {
         <div className="card">
           <div className="card-header">
             <div className="row">
-              <h2 className="dashboardTitle text-center">Admin Dashborad</h2>
+              <h2 className="dashboardTitle text-center">
+                {userRole === "admin" ? "Admin Dashborad" : "Super Admin"}
+              </h2>
             </div>
           </div>
           <div className="card-body">
@@ -269,7 +273,6 @@ export default function Home() {
                 <option value="paid">Paid</option>
                 <option value="unpaid">Unpaid</option>
               </select>
-
               <Link to={"/admin/all-comments"}>
                 <div className="all-comment-btn">
                   <button className="btn btn-outline-success">
@@ -277,6 +280,14 @@ export default function Home() {
                   </button>
                 </div>
               </Link>
+              &nbsp;
+              {userRole === "superadmin" && (
+                <Link to={"/admin/invoices"}>
+                  <div className="all-comment-btn">
+                    <button className="btn btn-outline-primary">Invoice</button>
+                  </div>
+                </Link>
+              )}
             </div>
 
             <FontColor>

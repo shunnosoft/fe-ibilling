@@ -7,6 +7,7 @@ import {
   getCommentsSuccess,
   getSingleCommentSuccess,
   editCommentSuccess,
+  getInvoicesSuccess,
 } from "./adminSlice";
 import {
   getIspOwnerInvoicesSuccess,
@@ -132,6 +133,20 @@ export const editComments = async (dispatch, setIsLoading, data, commentId) => {
     console.log(res.data.comment);
     document.querySelector("#editComment").click();
     dispatch(editCommentSuccess(res.data.comment));
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+// get all invoices
+export const getInvoices = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `admin/invoice?limit=${1000}&sortBy=${"createdAt:desc"}`
+    );
+    setIsLoading(false);
+    dispatch(getInvoicesSuccess(res.data?.invoices.results));
   } catch (error) {
     console.log(error.response);
   }

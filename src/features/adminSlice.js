@@ -7,6 +7,7 @@ const adminSlice = createSlice({
     singleComment: [],
     comments: [],
     ispOwnerIds: {},
+    invoices: [],
   },
   reducers: {
     getIspOwnersSuccess: (state, action) => {
@@ -38,6 +39,9 @@ const adminSlice = createSlice({
         state.comments.findIndex((item) => item.id === payload.id)
       ] = payload;
     },
+    getInvoicesSuccess: (state, { payload }) => {
+      state.invoices = payload;
+    },
   },
 });
 
@@ -48,6 +52,7 @@ export const {
   getSingleCommentSuccess,
   getCommentsSuccess,
   editCommentSuccess,
+  getInvoicesSuccess,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;

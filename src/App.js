@@ -74,6 +74,7 @@ import RSettings from "./reseller/settings/Settings";
 import RActiveCustomer from "./reseller/activeustomer/ActiveCustomer";
 import { toast } from "react-toastify";
 import AllComments from "./admin/allComments/AllComments";
+import AllInvoices from "./admin/allInvoices/AllInvoices";
 import ActivityLog from "./pages/activityLog/ActivityLog";
 import "./language/i18n/i18n";
 
@@ -192,7 +193,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
-        ) : userRole === "admin" ? (
+        ) : userRole === "admin" || userRole === "superadmin" ? (
           <Routes>
             <Route path="/" element={<Navigate to="/netfee" />} />
             <Route
@@ -225,6 +226,16 @@ function App() {
                 )
               }
             />
+            <Route
+              path="/netfee"
+              element={
+                !user ? (
+                  <Landing></Landing>
+                ) : (
+                  <Navigate to={"/admin/invoices"} />
+                )
+              }
+            />
             {/* <Route path="staff/:staffId" element={<StaffSalary />} /> */}
 
             <Route path="/*" element={<PrivateOutlet />}>
@@ -234,6 +245,7 @@ function App() {
                 element={<InvoiceList />}
               />
               <Route path="admin/all-comments" element={<AllComments />} />
+              <Route path="admin/invoices" element={<AllInvoices />} />
 
               <Route path="*" element={<NotFound />} />
             </Route>
