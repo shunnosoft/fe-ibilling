@@ -148,7 +148,7 @@ export default function Header(props) {
               {currentUser ? (
                 <>
                   {/* change language select box */}
-                  <select
+                  {/* <select
                     onChange={selectLanguage}
                     className="me-2"
                     style={{
@@ -163,7 +163,7 @@ export default function Header(props) {
                     <option value="en" selected={getLang === "en"}>
                       EN
                     </option>
-                  </select>
+                  </select> */}
                   {/* end change language select box */}
 
                   <div className="dropdown">
