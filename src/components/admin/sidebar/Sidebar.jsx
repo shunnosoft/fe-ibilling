@@ -305,15 +305,42 @@ export default function Sidebar() {
                       )}
                       {userRole === "ispOwner" ||
                       userRole === "manager" ||
+                      userRole === "reseller" ||
                       userRole === "collector" ? (
                         <NavLink
                           key={60}
-                          to={"/staticCustomer"}
+                          to={
+                            userRole === "reseller" ||
+                            (userRole === "collector" &&
+                              user.collector.reseller)
+                              ? "/reseller/staticCustomer"
+                              : "/staticCustomer"
+                          }
                           className={(navInfo) =>
                             navInfo.isActive ? activeClass.active : ""
                           }
                         >
                           <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname ===
+                                (userRole === "reseller"
+                                  ? "/reseller/staticCustomer"
+                                  : "/staticCustomer")
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">
+                                {<PersonVideo />}
+                              </div>
+                              <span className="sidebarLinksName">
+                                {t("static")}
+                              </span>
+                            </li>
+                          </FontColor>
+                          {/* <FontColor>
                             <li
                               className="sidebarItems"
                               id={
@@ -329,16 +356,27 @@ export default function Sidebar() {
                                 {t("static")}
                               </span>
                             </li>
-                          </FontColor>
+                          </FontColor> */}
                         </NavLink>
                       ) : (
                         ""
                       )}
+
                       {bpSettings?.hasMikrotik &&
-                      (userRole === "ispOwner" || userRole === "manager") ? (
+                      (userRole === "ispOwner" ||
+                        userRole === "manager" ||
+                        userRole === "reseller" ||
+                        (userRole === "collector" &&
+                          user.collector.reseller)) ? (
                         <NavLink
                           key={61}
-                          to={"/staticActiveCustomer"}
+                          to={
+                            userRole === "reseller" ||
+                            (userRole === "collector" &&
+                              user.collector.reseller)
+                              ? "/reseller/staticActiveCustomer"
+                              : "/staticActiveCustomer"
+                          }
                           className={(navInfo) =>
                             navInfo.isActive ? activeClass.active : ""
                           }
@@ -348,7 +386,9 @@ export default function Sidebar() {
                               className="sidebarItems"
                               id={
                                 window.location.pathname ===
-                                "/staticActiveCustomer"
+                                (userRole === "reseller"
+                                  ? "/reseller/staticActiveCustomer"
+                                  : "/staticActiveCustomer")
                                   ? "active"
                                   : ""
                               }

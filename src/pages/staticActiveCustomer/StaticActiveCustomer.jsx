@@ -6,11 +6,13 @@ import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getStaticActiveCustomer } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 // get specific customer
 
 import { Wifi, WifiOff } from "react-bootstrap-icons";
 
 const StaticActiveCustomer = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);
   const [filterStatus, setFilterStatus] = useState();
@@ -102,11 +104,11 @@ const StaticActiveCustomer = () => {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">স্ট্যাটিক এক্টিভ গ্রাহক</h2>
+                <h2 className="collectorTitle">{t("activeStaticCustomer")}</h2>
                 <div className="collectorWrapper">
                   <div className="d-flex justify-content-center">
                     <div className="mikrotik-filter">
-                      <h6 className="mb-0">মাইক্রোটিক সিলেক্ট করুন</h6>
+                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
                       <select
                         id="selectMikrotikOption"
                         onChange={mikrotiSelectionHandler}
@@ -118,7 +120,7 @@ const StaticActiveCustomer = () => {
                       </select>
                     </div>
                     <div className="customer-filter ms-4">
-                      <h6 className="mb-0">গ্রাহক সিলেক্ট করুন</h6>
+                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
                       <select
                         className="form-select mt-0"
                         aria-label="Default select example"
@@ -126,9 +128,9 @@ const StaticActiveCustomer = () => {
                           setFilterStatus(event.target.value)
                         }
                       >
-                        <option selected>সকল গ্রাহক</option>
-                        <option value={true}>একটিভ </option>
-                        <option value={false}>ইনএকটিভ </option>
+                        <option selected> {t("sokolCustomer")} </option>
+                        <option value={true}> {t("active")} </option>
+                        <option value={false}> {t("in active")} </option>
                       </select>
                     </div>
                   </div>

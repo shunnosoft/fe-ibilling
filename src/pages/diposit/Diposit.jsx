@@ -26,8 +26,10 @@ import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 export default function Diposit() {
+  const { t } = useTranslation();
   const balancee = useSelector(
     (state) => state?.persistedReducer?.payment?.balance
   );
@@ -377,7 +379,7 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">ডিপোজিট</h2>
+                <h2 className="collectorTitle"> {t("diposit")} </h2>
               </FourGround>
 
               <FourGround>
@@ -434,7 +436,7 @@ export default function Diposit() {
                         </Tab>
                       )}
 
-                      <Tab eventKey="profile" title="ডিপোজিট">
+                      <Tab eventKey="profile" title={t("diposit")}>
                         <div>
                           <div className="selectFilteringg">
                             {userRole === "ispOwner" && (
@@ -445,7 +447,7 @@ export default function Diposit() {
                                 }
                               >
                                 <option value="" defaultValue>
-                                  সকল কালেক্টর{" "}
+                                  {t("all collector")}
                                 </option>
                                 {collectors?.map((c, key) => (
                                   <option key={key} value={c.user}>
@@ -490,7 +492,7 @@ export default function Diposit() {
                                 type="button"
                                 onClick={onClickFilter}
                               >
-                                ফিল্টার
+                                {t("filter")}
                               </button>
                             </div>
                           </div>

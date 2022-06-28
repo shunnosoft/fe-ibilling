@@ -34,8 +34,10 @@ import {
   getManger,
 } from "../../features/apiCalls";
 import Loader from "../../components/common/Loader";
+import { useTranslation } from "react-i18next";
 
 export default function Manager() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const manager = useSelector(
     (state) => state.persistedReducer.manager?.manager
@@ -130,10 +132,12 @@ export default function Manager() {
             <FontColor>
               <FourGround>
                 <div className="d-flex justify-content-between collectorTitle px-5">
-                  <h2 className="">{manager?.name} (ম্যানেজার) প্রোফাইল</h2>
+                  <h2 className="">
+                    {manager?.name} ({t("manager")}) {t("profile")}
+                  </h2>
                   {!manager?.name && (
                     <div
-                      title="ম্যানেজার যুক্ত করুন"
+                      title={t("addNewManager")}
                       className="header_icon"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
@@ -157,7 +161,7 @@ export default function Manager() {
                   <div className="modal-content">
                     <div className="modal-header">
                       <h4 className="modal-title" id="exampleModalLabel">
-                        অ্যাড ম্যানেজার
+                        {t("addManager")}
                       </h4>
                       <button
                         type="button"
@@ -186,27 +190,27 @@ export default function Manager() {
                           <Form>
                             <FtextField
                               type="text"
-                              label="ম্যানেজার এর নাম"
+                              label={t("managerName")}
                               name="name"
                             />
                             <FtextField
                               type="text"
-                              label="ম্যানেজার এর মোবাইল নম্বর"
+                              label={t("managerMobile")}
                               name="mobile"
                             />
                             <FtextField
                               type="text"
-                              label="ম্যানেজার এর এড্রেস"
+                              label={t("managerMobile")}
                               name="address"
                             />
                             <FtextField
                               type="email"
-                              label="ম্যানেজার এর ইমেইল"
+                              label={t("managerEmail")}
                               name="email"
                             />
                             <FtextField
                               type="text"
-                              label="ম্যানেজার এর NID নম্বর"
+                              label={t("managerNID")}
                               name="nid"
                             />
 
@@ -217,13 +221,13 @@ export default function Manager() {
                                 className="btn btn-secondary"
                                 data-bs-dismiss="modal"
                               >
-                                বাতিল
+                                {t("cancle")}
                               </button>
                               <button
                                 type="submit"
                                 className="btn btn-primary marginLeft"
                               >
-                                সেভ করুন
+                                {t("save")}
                               </button>
                             </div>
                           </Form>
@@ -274,7 +278,7 @@ export default function Manager() {
                                   <div className="dropdown-item">
                                     <div className="ManagerAactionLi">
                                       <PenFill />
-                                      <p className="actionP">এডিট</p>
+                                      <p className="actionP"> {t("edit")}</p>
                                     </div>
                                   </div>
                                 </li>
@@ -285,7 +289,7 @@ export default function Manager() {
                                   <div className="dropdown-item">
                                     <div className="ManagerAactionLi">
                                       <PersonFill />
-                                      <p className="actionP">প্রোফাইল</p>
+                                      <p className="actionP"> {t("profile")}</p>
                                     </div>
                                   </div>
                                 </li>
@@ -311,7 +315,7 @@ export default function Manager() {
                           </div>
                         </div>
                         <div>
-                          <h4>পারমিশান পরিবর্তন করুন</h4>
+                          <h4> {t("changePermission")} </h4>
                           <hr />
 
                           {permissions.map((val, key) => (
@@ -333,7 +337,7 @@ export default function Manager() {
                             onClick={updatePermissionsHandler}
                             disabled={isLoading}
                           >
-                            {isLoading ? <Loader /> : " আপডেট"}
+                            {isLoading ? <Loader /> : t("update")}
                           </button>
                         </div>
                       </div>

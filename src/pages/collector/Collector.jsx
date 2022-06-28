@@ -23,8 +23,10 @@ import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import { useTranslation } from "react-i18next";
 
 export default function Collector() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
@@ -213,7 +215,7 @@ export default function Collector() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>কালেক্টর</div>
+                  <div>{t("collector")}</div>
                   {permission?.collectorAdd ||
                     (role === "ispOwner" && (
                       <div

@@ -16,7 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { PrinterFill } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 export default function Report() {
+  const { t } = useTranslation();
   const componentRef = useRef();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -243,24 +245,58 @@ export default function Report() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "আইডি",
         accessor: "customer.customerId",
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "গ্রাহক",
         accessor: "customer.name",
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "প্যাকেজ",
         accessor: "customer.mikrotikPackage.name",
       },
       {
-        width: "17%",
+        width: "10%",
         Header: "বিল",
         accessor: "amount",
+      },
+      {
+        width: "8%",
+        Header: "মাধ্যম",
+        accessor: "medium",
+      },
+      {
+        width: "10%",
+        Header: "কালেক্টর",
+        accessor: "name",
+      },
+      {
+        width: "20%",
+        Header: "নোট",
+        accessor: (data) => {
+          return {
+            note: data.note,
+            start: data.start,
+            end: data.end,
+          };
+        },
+        Cell: ({ cell: { value } }) => {
+          return (
+            <>
+              <p>{value.note && value.note}</p>
+              {value?.start && value?.end && (
+                <span className="badge bg-secondary">
+                  {moment(value.start).format("DD/MM/YY")}--
+                  {moment(value.end).format("DD/MM/YY")}
+                </span>
+              )}
+            </>
+          );
+        },
       },
 
       {
@@ -318,7 +354,7 @@ export default function Report() {
                           onChange={(e) => onChangeArea(e.target.value)}
                         >
                           <option value={JSON.stringify({})} defaultValue>
-                            সকল এরিয়া{" "}
+                            {t("allArea")}
                           </option>
                           {allArea.map((area, key) => (
                             <option key={key} value={JSON.stringify(area)}>
@@ -334,7 +370,7 @@ export default function Report() {
                           onChange={(e) => onChangeSubArea(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            সকল সাব এরিয়া{" "}
+                            {t("subArea")}
                           </option>
                           {singleArea?.subAreas?.map((sub, key) => (
                             <option key={key} value={sub.id}>
@@ -351,7 +387,7 @@ export default function Report() {
                             onChange={(e) => onChangeCollector(e.target.value)}
                           >
                             <option value="" defaultValue>
-                              সকল কালেক্টর{" "}
+                              {t("all collector")}
                             </option>
                             {collectors?.map((c, key) => (
                               <option key={key} value={c.user}>
@@ -401,11 +437,13 @@ export default function Report() {
                           onChange={(e) => setBillType(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            বিল টাইপ{" "}
+                            {t("billType")}
                           </option>
 
-                          <option value="connectionFee">সংযোগ ফি</option>
-                          <option value="bill">মাসিক বিল</option>
+                          <option value="connectionFee">
+                            {t("connectionFee")}
+                          </option>
+                          <option value="bill"> {t("monthBill")} </option>
                         </select>
                       </div>
                       <div>
@@ -414,7 +452,7 @@ export default function Report() {
                           type="button"
                           onClick={onClickFilter}
                         >
-                          ফিল্টার
+                          {t("filter")}
                         </button>
                       </div>
                     </div>

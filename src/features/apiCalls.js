@@ -1093,15 +1093,11 @@ export const billCollect = async (dispatch, billData, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/monthlyBill", billData);
-
-    // console.log(res.data);
-
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
     } else {
       dispatch(updateBalanceStaticCustomer(res.data));
     }
-    // document.querySelector("#billing_invoice_print").click(); //for print
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
     toast.success("বিল গ্রহণ সফল হয়েছে।");

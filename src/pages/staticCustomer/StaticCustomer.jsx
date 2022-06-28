@@ -47,8 +47,10 @@ import BulkBillingCycleEdit from "../Customer/customerCRUD/bulkOpration/bulkBill
 import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
+import { useTranslation } from "react-i18next";
 
 export default function Customer() {
+  const { t } = useTranslation();
   const [mikrotikPac, setMikrotikPac] = useState([]);
   const [Customers1, setCustomers1] = useState([]);
   const [Customers2, setCustomers2] = useState([]);
@@ -102,7 +104,6 @@ export default function Customer() {
     (state) => state?.persistedReducer?.auth?.userData.permissions
   );
 
-  console.log(permission);
   useEffect(() => {
     if (role === "collector") {
       let areas = [];
@@ -600,7 +601,7 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div className="me-3">স্ট্যাটিক গ্রাহক </div>
+                  <div className="me-3"> {t("staticCustomer")} </div>
                   <div
                     className="d-flex"
                     style={{
@@ -623,7 +624,7 @@ export default function Customer() {
                               justifyContent: "center",
                             }}
                           >
-                            প্যাকেজ সেটিং{" "}
+                            {t("packagingSetting")}
                             <ArrowRightShort style={{ fontSize: "19px" }} />
                           </Link>
                         </div>
@@ -733,7 +734,7 @@ export default function Customer() {
                             defaultValue
                             selected={filterOptions.area === ""}
                           >
-                            সকল এরিয়া
+                            {t("allArea")}
                           </option>
                           {Customers2.some((c) => c.area === "noArea") && (
                             <option
@@ -744,7 +745,7 @@ export default function Customer() {
                               })}
                               selected={filterOptions.area === "noArea"}
                             >
-                              এরিয়া বিহীন গ্রাহক
+                              {t("customerWithoutArea")}
                             </option>
                           )}
                           {(role === "collector" ? allArea : allareas)?.map(
@@ -778,7 +779,7 @@ export default function Customer() {
                             value=""
                             defaultValue
                           >
-                            সাব এরিয়া
+                            {t("subArea")}
                           </option>
                           {singleArea?.subAreas?.map((sub, key) => (
                             <option
@@ -805,25 +806,25 @@ export default function Customer() {
                             value=""
                             defaultValue
                           >
-                            স্ট্যাটাস
+                            {t("status")}
                           </option>
                           <option
                             selected={filterOptions.status === "active"}
                             value="active"
                           >
-                            এক্টিভ
+                            {t("active")}
                           </option>
                           <option
                             selected={filterOptions.status === "inactive"}
                             value="inactive"
                           >
-                            ইন-এক্টিভ
+                            {t("in active")}
                           </option>
                           <option
                             selected={filterOptions.status === "expired"}
                             value="expired"
                           >
-                            এক্সপায়ার্ড
+                            {t("expired")}
                           </option>
                         </select>
 
@@ -841,19 +842,19 @@ export default function Customer() {
                             value=""
                             defaultValue
                           >
-                            পেমেন্ট
+                            {t("payment")}
                           </option>
                           <option
                             selected={filterOptions.paymentStatus === "paid"}
                             value="paid"
                           >
-                            পেইড
+                            {t("payPaid")}
                           </option>
                           <option
                             selected={filterOptions.paymentStatus === "unpaid"}
                             value="unpaid"
                           >
-                            আন-পেইড
+                            {t("unpaid")}
                           </option>
                         </select>
                         {bpSettings?.hasMikrotik && (
@@ -868,7 +869,7 @@ export default function Customer() {
                               value=""
                               defaultValue
                             >
-                              মাইক্রোটিক
+                              {t("mikrotik")}
                             </option>
 
                             {mikrotiks.map((m, i) => {
@@ -901,7 +902,7 @@ export default function Customer() {
                             value=""
                             defaultValue
                           >
-                            প্যাকেজ
+                            {t("package")}
                           </option>
 
                           {mikrotikPac?.map((m, i) => {
