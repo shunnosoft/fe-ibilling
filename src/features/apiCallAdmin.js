@@ -8,6 +8,7 @@ import {
   getSingleCommentSuccess,
   editCommentSuccess,
   getInvoicesSuccess,
+  editInvoiceSuccessSuper,
 } from "./adminSlice";
 import {
   getIspOwnerInvoicesSuccess,
@@ -70,6 +71,28 @@ export const editIspOwnerInvoice = async (
     dispatch(editInvoiceSuccess(res.data));
     setIsloading(false);
     document.querySelector("#InvoiceEditModal").click();
+    document.querySelector("#InvoiceEditModalSuper").click();
+    toast.success("Invoice Edit Success!");
+  } catch (err) {
+    console.log(err.response);
+    if (err.response) {
+      setIsloading(false);
+      toast.error(err.response);
+    }
+  }
+};
+
+export const editInvoiceBySuperAdmin = async (
+  invoiceId,
+  data,
+  setIsloading,
+  dispatch
+) => {
+  try {
+    const res = await apiLink.patch("admin/invoice/" + invoiceId, data);
+    dispatch(editInvoiceSuccessSuper(res.data));
+    setIsloading(false);
+    document.querySelector("#InvoiceEditModalSuper").click();
     toast.success("Invoice Edit Success!");
   } catch (err) {
     console.log(err.response);

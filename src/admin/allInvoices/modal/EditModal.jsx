@@ -1,110 +1,143 @@
-import React from "react";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import moment from "moment";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import { editInvoiceBySuperAdmin } from "../../../features/apiCallAdmin";
+import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { editComments } from "../../../features/apiCallAdmin";
 
-const EditModal = ({ id }) => {
+const InvoiceEditModalSuper = ({ invoiceId }) => {
+  // form validate
+  const invoiceEditFieldValidator = Yup.object({
+    amount: Yup.number().required("Please insert amount."),
+  });
+
   // import dispatch
   const dispatch = useDispatch();
 
-  // loading state
+  //  loading local state
   const [isLoading, setIsLoading] = useState(false);
 
-  // set comment status
-  const [status, setStatus] = useState();
+  // get isp owner invoice list
+  const invoiceList = useSelector((state) => state.admin?.invoices);
 
-  // get all company name from redux
-  const company = useSelector(
-    (state) => state.persistedReducer?.companyName?.ispOwnerIds
-  );
+  // get editable invoice
+  const ispOwnerInvoice = invoiceList.find((item) => item.id === invoiceId);
 
-  // get all note in redux
-  const comments = useSelector((state) => state.admin?.comments);
-
-  // find single data
-  const data = comments.find((item) => item.id === id);
-
-  // set status in state
-  const statusHandle = (event) => {
-    setStatus(event.target.value);
-  };
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
 
   // handle submit
-  const handleSubmt = () => {
+  const handleSubmit = (values) => {
     const data = {
-      status,
+      dueDate: moment(values.dueDate + " " + values.time).toISOString(),
     };
-    editComments(dispatch, setIsLoading, data, id);
+
+    if (role === "superadmin") {
+      data.amount = values.amount;
+      data.status = values.paymentStatus;
+    }
+
+    // edit api call
+    editInvoiceBySuperAdmin(invoiceId, data, setIsLoading, dispatch);
   };
 
   return (
-    <div
-      className="modal fade"
-      id="editComment"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h4
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="customerModalDetails"
-            >
-              {company[data?.ispOwner]}
-            </h4>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div className="status-section">
-              <select
-                class="form-select"
-                aria-label="Default select example"
-                onChange={statusHandle}
-              >
-                <option value="pending" selected={data?.status === "pending"}>
-                  Pending
-                </option>
-                <option
-                  value="processing"
-                  selected={data?.status === "processing"}
-                >
-                  Processing
-                </option>
-                <option
-                  value="completed"
-                  selected={data?.status === "completed"}
-                >
-                  Completed
-                </option>
-              </select>
+    <div className="edit_invoice_list">
+      <div
+        className="modal fade modal-dialog-scrollable "
+        id="InvoiceEditModalSuper"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                {/* Edit Profile */}
+                <span className="text-success"> INVOICE EDIT</span>
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
-          </div>
-          <div className="modal-footer" style={{ border: "none" }}>
-            <button
-              onClick={handleSubmt}
-              className="btn btn-success"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader /> : "Submit"}
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              Cnacel
-            </button>
+            <div className="modal-body">
+              <Formik
+                initialValues={{
+                  amount: ispOwnerInvoice?.amount,
+                  paymentStatus: ispOwnerInvoice?.status,
+                  dueDate: moment(ispOwnerInvoice?.dueDate).format(
+                    "YYYY-MM-DD"
+                  ),
+
+                  time: moment(ispOwnerInvoice?.dueDate).format("HH:mm"),
+                }}
+                validationSchema={invoiceEditFieldValidator}
+                enableReinitialize
+                onSubmit={(values) => {
+                  handleSubmit(values);
+                }}
+              >
+                {() => (
+                  <Form>
+                    {role === "superadmin" && (
+                      <div className="row">
+                        <div className="col-md-6">
+                          <FtextField
+                            type="number"
+                            name="amount"
+                            label="Amount"
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <h6 className="mb-0">Payment Status</h6>
+                          <Field
+                            as="select"
+                            className="form-select mt-1 mb-4"
+                            aria-label="Default select example"
+                            name="paymentStatus"
+                          >
+                            <option value="paid">Paid</option>
+                            <option value="unpaid">Unpaid</option>
+                          </Field>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="row timeDate">
+                      <div className="col-md-6">
+                        <FtextField type="date" name="dueDate" label="Date" />
+                      </div>
+                      <div className="col-md-6">
+                        <FtextField type="time" name="time" label="Time" />
+                      </div>
+                    </div>
+
+                    <div className="modal-footer" style={{ border: "none" }}>
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? <Loader /> : "Submit"}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        disabled={isLoading}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
           </div>
         </div>
       </div>
@@ -112,4 +145,4 @@ const EditModal = ({ id }) => {
   );
 };
 
-export default EditModal;
+export default InvoiceEditModalSuper;

@@ -42,6 +42,11 @@ const adminSlice = createSlice({
     getInvoicesSuccess: (state, { payload }) => {
       state.invoices = payload;
     },
+    editInvoiceSuccessSuper: (state, actions) => {
+      state.invoices[
+        state.invoices.findIndex((item) => item.id === actions.payload.id)
+      ] = actions.payload;
+    },
   },
 });
 
@@ -53,6 +58,7 @@ export const {
   getCommentsSuccess,
   editCommentSuccess,
   getInvoicesSuccess,
+  editInvoiceSuccessSuper,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;
