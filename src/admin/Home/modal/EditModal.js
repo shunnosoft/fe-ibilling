@@ -22,6 +22,8 @@ const ISPOwnerEditModal = ({ ownerId }) => {
 
   const [billDate, setBillDate] = useState();
 
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+
   useEffect(() => {
     setBillDate(
       moment(ispOwner?.bpSettings?.monthlyDueDate).format("YYYY-MM-DD")
@@ -85,13 +87,13 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       name: values.name,
       company: values.company,
       address: values.address,
-      smsBalance: values.smsBalance,
+
       bpSettings: {
+        ...ispOwner.bpSettings,
         packageRate: Number.parseInt(values.packageRate),
         customerLimit: Number.parseInt(values.customerLimit),
         packType: values.packType,
         pack: values.pack,
-        paymentStatus: values.paymentStatus,
         queueType: values.queueType,
         hasMikrotik: values.hasMikrotik,
         monthlyDueDate: billDate,
@@ -101,6 +103,27 @@ const ISPOwnerEditModal = ({ ownerId }) => {
         mobile: values.referenceMobile,
       },
     };
+
+    if (role === "superadmin") {
+      data.smsBalance = values.smsBalance;
+      data.bpSettings.paymentStatus = values.paymentStatus;
+    }
+
+    if (role === "admin") {
+      if (
+        Number.parseInt(values.packageRate) < ispOwner.bpSettings.packageRate
+      ) {
+        alert("রেট কমানো সম্ভব নয়");
+        return;
+      }
+      if (
+        Number.parseInt(values.customerLimit) <
+        ispOwner.bpSettings.customerLimit
+      ) {
+        alert("লিমিট কমানো সম্ভব নয়");
+        return;
+      }
+    }
 
     // console.log(data);
     // return;
@@ -169,11 +192,13 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         name="customerLimit"
                       />
 
-                      <FtextField
-                        type="text"
-                        label="SMS Balance"
-                        name="smsBalance"
-                      />
+                      {role === "superadmin" && (
+                        <FtextField
+                          type="text"
+                          label="SMS Balance"
+                          name="smsBalance"
+                        />
+                      )}
                     </div>
                     <div className="displayGrid3">
                       <div>
@@ -229,18 +254,20 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         </Field>
                       </div>
 
-                      <div>
-                        <h6 className="mb-0">Paid status</h6>
-                        <Field
-                          as="select"
-                          className="form-select mt-1 mb-4"
-                          aria-label="Default select example"
-                          name="paymentStatus"
-                        >
-                          <option value="paid">Paid</option>
-                          <option value="unpaid">Unpaid</option>
-                        </Field>
-                      </div>
+                      {role === "superadmin" && (
+                        <div>
+                          <h6 className="mb-0">Paid status</h6>
+                          <Field
+                            as="select"
+                            className="form-select mt-1 mb-4"
+                            aria-label="Default select example"
+                            name="paymentStatus"
+                          >
+                            <option value="paid">Paid</option>
+                            <option value="unpaid">Unpaid</option>
+                          </Field>
+                        </div>
+                      )}
 
                       <div>
                         <h6 className="mb-0">Queue Type</h6>
