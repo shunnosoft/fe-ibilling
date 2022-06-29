@@ -25,13 +25,18 @@ const InvoiceEditModal = ({ invoiceId }) => {
   // get editable invoice
   const ispOwnerInvoice = invoiceList.find((item) => item.id === invoiceId);
 
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+
   // handle submit
   const handleSubmit = (values) => {
     const data = {
-      amount: values.amount,
-      status: values.paymentStatus,
       dueDate: moment(values.dueDate + " " + values.time).toISOString(),
     };
+
+    if (role === "superadmin") {
+      data.amount = values.amount;
+      data.status = values.paymentStatus;
+    }
 
     // edit api call
     editIspOwnerInvoice(invoiceId, data, setIsLoading, dispatch);
@@ -79,27 +84,29 @@ const InvoiceEditModal = ({ invoiceId }) => {
               >
                 {() => (
                   <Form>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <FtextField
-                          type="number"
-                          name="amount"
-                          label="Amount"
-                        />
+                    {role === "superadmin" && (
+                      <div className="row">
+                        <div className="col-md-6">
+                          <FtextField
+                            type="number"
+                            name="amount"
+                            label="Amount"
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <h6 className="mb-0">Payment Status</h6>
+                          <Field
+                            as="select"
+                            className="form-select mt-1 mb-4"
+                            aria-label="Default select example"
+                            name="paymentStatus"
+                          >
+                            <option value="paid">Paid</option>
+                            <option value="unpaid">Unpaid</option>
+                          </Field>
+                        </div>
                       </div>
-                      <div className="col-md-6">
-                        <h6 className="mb-0">Payment Status</h6>
-                        <Field
-                          as="select"
-                          className="form-select mt-1 mb-4"
-                          aria-label="Default select example"
-                          name="paymentStatus"
-                        >
-                          <option value="paid">Paid</option>
-                          <option value="unpaid">Unpaid</option>
-                        </Field>
-                      </div>
-                    </div>
+                    )}
 
                     <div className="row timeDate">
                       <div className="col-md-6">

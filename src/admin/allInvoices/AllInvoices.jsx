@@ -2,23 +2,22 @@ import React, { useEffect, useState } from "react";
 import { FontColor } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import { getComments } from "../../features/apiCallAdmin";
+import { getInvoices } from "../../features/apiCallAdmin";
 import moment from "moment";
 import Table from "../../components/table/Table";
 import { PenFill, PersonFill, ThreeDots } from "react-bootstrap-icons";
 import useDash from "../../assets/css/dash.module.css";
-import "./allComments.css";
+import "./allInvoices.css";
 import DetailsModal from "./modal/DetailsModal";
 import EditModal from "./modal/EditModal";
 import { badge } from "../../components/common/Utils";
-import Note from "../Home/modal/Note";
 
-const AllComments = () => {
+const AllInvoices = () => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
   // initial customer id state
-  const [commentID, setCommentID] = useState();
+  const [invoiceID, setInvoiceID] = useState();
 
   // initial owner Id state
   const [ownerId, setOwnerId] = useState();
@@ -31,11 +30,11 @@ const AllComments = () => {
 
   // get note api call
   useEffect(() => {
-    getComments(dispatch, setIsLoading);
+    getInvoices(dispatch, setIsLoading);
   }, []);
 
   // get all note in redux
-  const comments = useSelector((state) => state.admin?.comments);
+  const invoices = useSelector((state) => state.admin?.invoices);
 
   // get all company name from redux
   const company = useSelector(
@@ -43,16 +42,16 @@ const AllComments = () => {
   );
 
   // handle delete
-  const detailsModal = (commentId) => {
-    setCommentID(commentId);
+  const detailsModal = (invoiceId) => {
+    setInvoiceID(invoiceId);
   };
 
   // handle edit
-  const handleEdit = (commentId) => {
-    setCommentID(commentId);
+  const handleEdit = (invoiceId) => {
+    setInvoiceID(invoiceId);
   };
 
-  const showIndividualComment = (ispOwnerId, companyName) => {
+  const showIndividualInvoice = (ispOwnerId, companyName) => {
     console.log(ispOwnerId, companyName);
     setOwnerId(ispOwnerId);
     setCompanyName(companyName);
@@ -71,11 +70,6 @@ const AllComments = () => {
 
       {
         width: "12%",
-        Header: "Name",
-        accessor: "name",
-      },
-      {
-        width: "12%",
         Header: "Comapny",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
@@ -85,7 +79,7 @@ const AllComments = () => {
               data-bs-toggle="modal"
               data-bs-target="#clientNoteModal"
               onClick={() => {
-                showIndividualComment(value, company[value]);
+                // showIndividualInvoice(value, company[value]);
               }}
             >
               {company[value]}
@@ -96,7 +90,7 @@ const AllComments = () => {
       {
         width: "10%",
         Header: "Type",
-        accessor: "commentType",
+        accessor: "type",
         Cell: ({ cell: { value } }) => {
           return (
             <div>
@@ -118,32 +112,28 @@ const AllComments = () => {
         },
       },
       {
-        width: "28%",
-        Header: "Comment",
-        Cell: ({ row: { original } }) => {
-          return (
-            <div>
-              {original.comment && original.comment.slice(0, 50)}
-              <span
-                className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#detailsComment"
-                onClick={() => {
-                  detailsModal(original.id);
-                }}
-              >
-                {" "}
-                {original.comment && "...see more"}
-              </span>
-            </div>
-          );
-        },
+        width: "12%",
+        Header: "SMS",
+        accessor: "numberOfSms",
+      },
+      {
+        width: "14%",
+        Header: "Amount",
+        accessor: "amount",
       },
 
       {
         width: "12%",
         Header: "CreatedAt",
         accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD MMM YY hh:mm a");
+        },
+      },
+      {
+        width: "12%",
+        Header: "Due Date",
+        accessor: "dueDate",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("DD MMM YY hh:mm a");
         },
@@ -167,7 +157,7 @@ const AllComments = () => {
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#detailsComment"
+                  data-bs-target="#detailsInvoice"
                   onClick={() => {
                     detailsModal(original.id);
                   }}
@@ -182,7 +172,7 @@ const AllComments = () => {
 
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#editComment"
+                  data-bs-target="#editInvoice"
                   onClick={() => {
                     handleEdit(original.id);
                   }}
@@ -210,13 +200,13 @@ const AllComments = () => {
           <div className={useDash.dashboardWrapper}>
             <div className="card">
               <div className="card-header">
-                <h2 className="dashboardTitle text-center">All Comments</h2>
+                <h2 className="dashboardTitle text-center">All Invoices</h2>
               </div>
               <div className="card-body">
                 <div className="table-section-th">
                   <Table
                     columns={columns}
-                    data={comments}
+                    data={invoices}
                     isLoading={isLoading}
                   />
                 </div>
@@ -225,11 +215,11 @@ const AllComments = () => {
           </div>
         </div>
       </FontColor>
-      <Note ownerId={ownerId} companyName={companyName} />
-      <DetailsModal id={commentID} isLoading={isLoading} />
-      <EditModal id={commentID} />
+
+      {/* <DetailsModal id={invoiceID} isLoading={isLoading} /> */}
+      {/* <EditModal id={invoiceID} /> */}
     </>
   );
 };
 
-export default AllComments;
+export default AllInvoices;

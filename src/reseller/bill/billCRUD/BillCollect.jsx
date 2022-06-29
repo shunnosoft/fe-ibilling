@@ -17,7 +17,7 @@ export default function CustomerBillCollect({ singleCustomer }) {
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
-      .min(10, "দশ টাকার নিচে বিল গ্রহন যোগ্য নয়")
+      .min(0, "বিল গ্রহন যোগ্য নয়")
       .integer("দশামিক গ্রহনযোগ্য নয়"),
   });
 

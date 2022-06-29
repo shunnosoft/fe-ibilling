@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
+import moment from "moment";
 
 const ISPOwnerEditModal = ({ ownerId }) => {
   // import dispatch from react redux
@@ -18,6 +19,16 @@ const ISPOwnerEditModal = ({ ownerId }) => {
 
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
+
+  const [billDate, setBillDate] = useState();
+
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+
+  useEffect(() => {
+    setBillDate(
+      moment(ispOwner?.bpSettings?.monthlyDueDate).format("YYYY-MM-DD")
+    );
+  }, [ispOwner]);
 
   //  isp owner form validation
   const ispOwnerValidator = Yup.object({
@@ -76,21 +87,46 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       name: values.name,
       company: values.company,
       address: values.address,
-      smsBalance: values.smsBalance,
+
       bpSettings: {
+        ...ispOwner.bpSettings,
         packageRate: Number.parseInt(values.packageRate),
         customerLimit: Number.parseInt(values.customerLimit),
         packType: values.packType,
         pack: values.pack,
-        paymentStatus: values.paymentStatus,
         queueType: values.queueType,
         hasMikrotik: values.hasMikrotik,
+        monthlyDueDate: billDate,
       },
       reference: {
         name: values.referenceName,
         mobile: values.referenceMobile,
       },
     };
+
+    if (role === "superadmin") {
+      data.smsBalance = values.smsBalance;
+      data.bpSettings.paymentStatus = values.paymentStatus;
+    }
+
+    if (role === "admin") {
+      if (
+        Number.parseInt(values.packageRate) < ispOwner.bpSettings.packageRate
+      ) {
+        alert("রেট কমানো সম্ভব নয়");
+        return;
+      }
+      if (
+        Number.parseInt(values.customerLimit) <
+        ispOwner.bpSettings.customerLimit
+      ) {
+        alert("লিমিট কমানো সম্ভব নয়");
+        return;
+      }
+    }
+
+    // console.log(data);
+    // return;
 
     // api call
     updateOwner(ownerId, data, setIsLoading, dispatch);
@@ -156,11 +192,13 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         name="customerLimit"
                       />
 
-                      <FtextField
-                        type="text"
-                        label="SMS Balance"
-                        name="smsBalance"
-                      />
+                      {role === "superadmin" && (
+                        <FtextField
+                          type="text"
+                          label="SMS Balance"
+                          name="smsBalance"
+                        />
+                      )}
                     </div>
                     <div className="displayGrid3">
                       <div>
@@ -216,18 +254,20 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         </Field>
                       </div>
 
-                      <div>
-                        <h6 className="mb-0">Paid status</h6>
-                        <Field
-                          as="select"
-                          className="form-select mt-1 mb-4"
-                          aria-label="Default select example"
-                          name="paymentStatus"
-                        >
-                          <option value="paid">Paid</option>
-                          <option value="unpaid">Unpaid</option>
-                        </Field>
-                      </div>
+                      {role === "superadmin" && (
+                        <div>
+                          <h6 className="mb-0">Paid status</h6>
+                          <Field
+                            as="select"
+                            className="form-select mt-1 mb-4"
+                            aria-label="Default select example"
+                            name="paymentStatus"
+                          >
+                            <option value="paid">Paid</option>
+                            <option value="unpaid">Unpaid</option>
+                          </Field>
+                        </div>
+                      )}
 
                       <div>
                         <h6 className="mb-0">Queue Type</h6>
@@ -240,6 +280,19 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                           <option value="simple-queue">Simple Queue</option>
                           <option value="firewall-queue">Firewall Queue</option>
                         </Field>
+                      </div>
+
+                      <div className="monthlyDueDate">
+                        <p className="customerFieldsTitle">ইনভয়েস ডেট</p>
+
+                        <div className="timeDate">
+                          <Field
+                            value={billDate}
+                            onChange={(e) => setBillDate(e.target.value)}
+                            type="date"
+                            name="monthlyDueDate"
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="displayGrid3">
