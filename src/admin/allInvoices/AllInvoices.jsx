@@ -9,7 +9,7 @@ import { PenFill, PersonFill, ThreeDots } from "react-bootstrap-icons";
 import useDash from "../../assets/css/dash.module.css";
 import "./allInvoices.css";
 import DetailsModal from "./modal/DetailsModal";
-import EditModal from "./modal/EditModal";
+import InvoiceEditModal from "./modal/EditModal";
 import { badge } from "../../components/common/Utils";
 
 const AllInvoices = () => {
@@ -17,7 +17,7 @@ const AllInvoices = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // initial customer id state
-  const [invoiceID, setInvoiceID] = useState();
+  const [invoiceId, setInvoiceId] = useState();
 
   // initial owner Id state
   const [ownerId, setOwnerId] = useState();
@@ -43,18 +43,22 @@ const AllInvoices = () => {
 
   // handle delete
   const detailsModal = (invoiceId) => {
-    setInvoiceID(invoiceId);
+    setInvoiceId(invoiceId);
   };
 
   // handle edit
   const handleEdit = (invoiceId) => {
-    setInvoiceID(invoiceId);
+    setInvoiceId(invoiceId);
   };
 
   const showIndividualInvoice = (ispOwnerId, companyName) => {
-    console.log(ispOwnerId, companyName);
     setOwnerId(ispOwnerId);
     setCompanyName(companyName);
+  };
+
+  // invoice edit method
+  const invoiceEditModal = (invoiceId) => {
+    setInvoiceId(invoiceId);
   };
 
   // table column
@@ -172,9 +176,9 @@ const AllInvoices = () => {
 
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#editInvoice"
+                  data-bs-target="#InvoiceEditModalSuper"
                   onClick={() => {
-                    handleEdit(original.id);
+                    invoiceEditModal(original.id);
                   }}
                 >
                   <div className="dropdown-item">
@@ -216,8 +220,8 @@ const AllInvoices = () => {
         </div>
       </FontColor>
 
-      {/* <DetailsModal id={invoiceID} isLoading={isLoading} /> */}
-      {/* <EditModal id={invoiceID} /> */}
+      {/* <DetailsModal id={invoiceId} isLoading={isLoading} /> */}
+      <InvoiceEditModal invoiceId={invoiceId} />
     </>
   );
 };

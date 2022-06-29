@@ -103,7 +103,7 @@ const EditModal = ({ id }) => {
               data-bs-dismiss="modal"
               disabled={isLoading}
             >
-              Cnacel
+              Cancel
             </button>
           </div>
         </div>

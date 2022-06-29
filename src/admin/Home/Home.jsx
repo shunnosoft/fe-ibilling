@@ -82,7 +82,7 @@ export default function Home() {
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -90,27 +90,52 @@ export default function Home() {
       },
 
       {
-        width: "13%",
+        width: "15%",
+        accessor: "company",
+        Header: "Comapny",
+      },
+
+      {
+        width: "15%",
         accessor: "name",
         Header: "Name",
       },
       {
-        width: "12%",
+        width: "15%",
         accessor: "mobile",
         Header: "Mobile",
       },
       {
-        width: "16%",
-        accessor: "company",
-        Header: "Comapny",
+        width: "5%",
+        accessor: "bpSettings.hasMikrotik",
+        Header: "MTK",
+        Cell: ({ cell: { value } }) => {
+          return value ? "" : "NO";
+        },
       },
+      {
+        width: "5%",
+        accessor: "smsBalance",
+        Header: "SMS",
+      },
+      {
+        width: "5%",
+        accessor: "bpSettings.customerLimit",
+        Header: "Customer",
+      },
+      {
+        width: "5%",
+        accessor: "bpSettings.packageRate",
+        Header: "Rate",
+      },
+
       {
         width: "15%",
         accessor: "address",
         Header: "Address",
       },
       {
-        width: "15%",
+        width: "5%",
         Header: "Payment Status",
         Cell: ({ row: { original } }) => (
           <div
@@ -135,7 +160,7 @@ export default function Home() {
       },
 
       {
-        width: "13%",
+        width: "8%",
         Header: "CreatedAt",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -144,7 +169,7 @@ export default function Home() {
       },
 
       {
-        width: "8%",
+        width: "5%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 

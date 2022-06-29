@@ -99,7 +99,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
         monthlyDueDate: billDate,
       },
       reference: {
-        name: values.referenceName,
+        ...ispOwner.reference,
         mobile: values.referenceMobile,
       },
     };
@@ -107,6 +107,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
     if (role === "superadmin") {
       data.smsBalance = values.smsBalance;
       data.bpSettings.paymentStatus = values.paymentStatus;
+      data.reference.name = values.referenceName;
     }
 
     if (role === "admin") {
@@ -296,11 +297,13 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                       </div>
                     </div>
                     <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label="Reference Name"
-                        name="referenceName"
-                      />
+                      {role === "superadmin" && (
+                        <FtextField
+                          type="text"
+                          label="Reference Name"
+                          name="referenceName"
+                        />
+                      )}
 
                       <FtextField
                         type="text"
@@ -337,7 +340,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        Cnacel
+                        Cancel
                       </button>
                     </div>
                   </Form>
