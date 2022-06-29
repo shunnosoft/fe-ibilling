@@ -19,8 +19,10 @@ import {
   acceptedStatus,
 } from "../../features/resellerSmsRequestApi";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 const ResellerSmsRequest = () => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -156,7 +158,7 @@ const ResellerSmsRequest = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">রিসেলার এসএমএস রিকোয়েস্ট</h2>
+                <h2 className="collectorTitle"> {t("resellerSmsRequest")} </h2>
               </FourGround>
               <div class="card">
                 <div class="card-body">

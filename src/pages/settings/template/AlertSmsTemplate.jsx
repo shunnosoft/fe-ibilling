@@ -5,8 +5,10 @@ import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
+import { useTranslation } from "react-i18next";
 
 function AlertSmsTemplate() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [totalText, setTotalText] = useState("");
 
@@ -41,7 +43,7 @@ function AlertSmsTemplate() {
       }
     } else {
       if ((upperText + "\n" + bottomText).length + item.length > 334) {
-        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        toast.error(t("exceedSMSLimit"));
         return;
       } else {
         smsTemplet.push(item);
@@ -123,7 +125,7 @@ function AlertSmsTemplate() {
       );
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
-      toast.success("এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে");
+      toast.success(t("alertSMStemplateSaveAlert"));
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -225,7 +227,7 @@ function AlertSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4>এলার্ট SMS টেমপ্লেট</h4>
+          <h4> {t("alertSMStemplate")} </h4>
           <div>
             <input
               name="billConfirmation"
@@ -234,7 +236,7 @@ function AlertSmsTemplate() {
               value={"on"}
               onChange={radioCheckHandler}
             />{" "}
-            অন {"              "}
+            {t("on")} {"              "}
             <input
               name="billConfirmation"
               type="radio"
@@ -242,7 +244,7 @@ function AlertSmsTemplate() {
               value={"off"}
               onChange={radioCheckHandler}
             />{" "}
-            অফ
+            {t("off")}
           </div>
 
           <div className="billconfirm">
@@ -358,7 +360,7 @@ function AlertSmsTemplate() {
                 name=""
                 id=""
               >
-                <option value="">টেমপ্লেট সিলেক্ট</option>
+                <option value=""> {t("selectTemplate")} </option>
                 {smstempletDay
                   .filter((s, i) => days.includes(i + 1))
                   .map((item, index) => {
@@ -380,7 +382,7 @@ function AlertSmsTemplate() {
                   daySettingHandler(e.target.value);
                 }}
               />
-              <label className="mx-3">{"এক দিন"}</label>
+              <label className="mx-3">{t("billDueOneDay")}</label>
               <input
                 type="checkbox"
                 className="getValueUsingClass"
@@ -390,7 +392,7 @@ function AlertSmsTemplate() {
                   daySettingHandler(e.target.value);
                 }}
               />
-              <label className="mx-3">{"দুই দিন"}</label>
+              <label className="mx-3">{t("billDueTwoDay")}</label>
               <input
                 type="checkbox"
                 className="getValueUsingClass"
@@ -400,7 +402,7 @@ function AlertSmsTemplate() {
                   daySettingHandler(e.target.value);
                 }}
               />
-              <label className="mx-3">{"তিন দিন"}</label>
+              <label className="mx-3">{t("billDueThreeDay")}</label>
               <input
                 type="checkbox"
                 className="getValueUsingClass"
@@ -410,7 +412,7 @@ function AlertSmsTemplate() {
                   daySettingHandler(e.target.value);
                 }}
               />
-              <label className="mx-3">{"চার  দিন"}</label>
+              <label className="mx-3">{t("billDueFourDay")}</label>
               <input
                 type="checkbox"
                 className="getValueUsingClass"
@@ -420,7 +422,7 @@ function AlertSmsTemplate() {
                   daySettingHandler(e.target.value);
                 }}
               />
-              <label className="mx-3">{"পাঁচ দিন"}</label>
+              <label className="mx-3">{t("billDueFiveDay")}</label>
               <input
                 type="checkbox"
                 className="getValueUsingClass"
@@ -430,7 +432,7 @@ function AlertSmsTemplate() {
                   daySettingHandler(e.target.value);
                 }}
               />
-              <label className="mx-3">{"ছয় দিন"}</label>
+              <label className="mx-3">{t("billDueSixDay")}</label>
               <input
                 type="checkbox"
                 className="getValueUsingClass"
@@ -440,14 +442,14 @@ function AlertSmsTemplate() {
                   daySettingHandler(e.target.value);
                 }}
               />
-              <label className="mx-3">{"সাত দিন"}</label>
+              <label className="mx-3">{t("billDueSevenDay")}</label>
             </div>
-            <p style={{ marginTop: "20px" }}>বিল সাইকেল শেষ হতে বাকিঃ</p>
+            <p style={{ marginTop: "20px" }}> {t("dueToFinishBillCycle")} </p>
           </div>
 
           <div className="smsCount">
             <span className="smsLength">
-              অক্ষরঃ {(smsTemplet + bottomText).length}
+              {t("letter")} {(smsTemplet + bottomText).length}
             </span>
             <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
           </div>
@@ -456,7 +458,7 @@ function AlertSmsTemplate() {
             id="messageTextArea"
             rows="6"
             className="form-control mt-4"
-            placeholder="মেসেজ লিখুন..."
+            placeholder={t("messageLikhun")}
             ref={textRef}
             value={bottomText}
             // onClick={insertMyText}
@@ -471,7 +473,7 @@ function AlertSmsTemplate() {
             // onClick={handleSendMessage}
             className="btn btn-success"
           >
-            {loading ? <Loader></Loader> : "সেভ"}
+            {loading ? <Loader></Loader> : t("save")}
           </button>
         </div>
       </form>

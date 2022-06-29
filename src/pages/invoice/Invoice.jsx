@@ -17,8 +17,10 @@ import { getInvoices } from "../../features/apiCalls";
 import { showModal } from "../../features/uiSlice";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
+import { useTranslation } from "react-i18next";
 
 function Invoice() {
+  const { t } = useTranslation();
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
@@ -124,7 +126,7 @@ function Invoice() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">ইনভয়েস</h2>
+                <h2 className="collectorTitle"> {t("invoice")} </h2>
               </FourGround>
 
               <FourGround>

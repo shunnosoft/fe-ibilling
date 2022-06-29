@@ -23,10 +23,12 @@ import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 // import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function RechargeHistoryofReseller() {
   // const balancee = useSelector(state => state.payment.balance);
   // const allDeposit = useSelector(state => state.payment.allDeposit);
+  const { t } = useTranslation();
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   const rechargeHistory = useSelector(
@@ -234,7 +236,7 @@ export default function RechargeHistoryofReseller() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">রিচার্জ হিস্ট্রি</h2>
+                <h2 className="collectorTitle"> {t("rechargeHistory")} </h2>
               </FourGround>
 
               {userRole !== "collector" ? (
@@ -247,7 +249,7 @@ export default function RechargeHistoryofReseller() {
                           onChange={(e) => onChangeReseller(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            সকল রিসেলার{" "}
+                            {t("allReseller")}
                           </option>
                           {collectors?.map((c, key) => (
                             <option key={key} value={c.id}>
@@ -296,7 +298,7 @@ export default function RechargeHistoryofReseller() {
                         type="button"
                         onClick={onClickFilter}
                       >
-                        ফিল্টার
+                        {t("filter")}
                       </button>
                       {/* </div> */}
                     </div>

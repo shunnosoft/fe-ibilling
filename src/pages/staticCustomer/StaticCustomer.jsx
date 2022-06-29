@@ -937,7 +937,7 @@ export default function Customer() {
                       type="button"
                       onClick={handleActiveFilter}
                     >
-                      ফিল্টার
+                      {t("filter")}
                     </button>
                     <button
                       style={{
@@ -948,7 +948,7 @@ export default function Customer() {
                       type="button"
                       onClick={handleFilterReset}
                     >
-                      রিসেট
+                      {t("reset")}
                     </button>
                     {/* <button onClick={handleFilterReset}>reset</button> */}
                   </div>

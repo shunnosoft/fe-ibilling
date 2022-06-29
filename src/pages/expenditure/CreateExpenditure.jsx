@@ -7,7 +7,9 @@ import { FtextField } from "../../components/common/FtextField";
 import { Plus, PlusSquare } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addExpenditure, getExpenditureSectors } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 export default function CreateExpenditure() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [pourpose, setPourpose] = useState("");
   const expSectors = useSelector(
@@ -63,7 +65,7 @@ export default function CreateExpenditure() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন খরচ অ্যাড
+                {t("newExpenseAdd")}
               </h5>
               <button
                 type="button"
@@ -100,7 +102,7 @@ export default function CreateExpenditure() {
                         id=""
                         onChange={handleSelect}
                       >
-                        <option value="">খরচ খাত সিলেক্ট করুন</option>
+                        <option value=""> {t("selectExpenseSector")} </option>
                         {expSectors?.map((exp, key) => {
                           return (
                             <option
@@ -136,13 +138,13 @@ export default function CreateExpenditure() {
                       <FtextField
                         style={{ marginRight: "10px" }}
                         type="number"
-                        label="পরিমাণ"
+                        label={t("amount")}
                         name="amount"
                       ></FtextField>
                     </div>
 
                     <div>
-                      <h6>খরচের বিবরণ </h6>
+                      <h6> {t("expenseDetails")} </h6>
                       <textarea
                         name="description"
                         ref={desRef}
@@ -161,14 +163,14 @@ export default function CreateExpenditure() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>
