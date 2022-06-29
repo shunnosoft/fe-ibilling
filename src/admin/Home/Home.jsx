@@ -96,12 +96,12 @@ export default function Home() {
       },
 
       {
-        width: "15%",
+        width: "12%",
         accessor: "name",
         Header: "Name",
       },
       {
-        width: "15%",
+        width: "10%",
         accessor: "mobile",
         Header: "Mobile",
       },
@@ -169,6 +169,15 @@ export default function Home() {
       },
 
       {
+        width: "8%",
+        Header: "Bill Date",
+        accessor: "bpSettings.monthlyDueDate",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("DD MMM YY hh:mm a");
+        },
+      },
+
+      {
         width: "5%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
@@ -221,7 +230,12 @@ export default function Home() {
                       <div className="customerAction">
                         <PersonBoundingBox />
                         <Link
-                          to={"/admin/isp-owner/invoice-list/" + original.id}
+                          to={
+                            "/admin/isp-owner/invoice-list/" +
+                            original.id +
+                            "?company=" +
+                            original.company
+                          }
                         >
                           <p className="actionP text-white">Invoice</p>
                         </Link>
