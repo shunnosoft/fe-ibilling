@@ -1293,8 +1293,13 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
       invoice &&
       new Date(invoice?.dueDate).getTime() < new Date().getTime()
     ) {
+      let invoiceType = "";
+      if (invoice.type === "registration") invoiceType = "রেজিস্ট্রেশন ফি";
+      else if (invoice.type === "monthlyServiceCharge")
+        invoiceType = "মাসিক সার্ভিস চার্জ";
+
       let con = window.confirm(
-        `নেটফি রেজিস্ট্রেশন ফি ${invoice.amount} Tk পরিশোধের শেষ সময় ${moment(
+        `নেটফি ${invoiceType} ${invoice.amount} Tk পরিশোধের শেষ সময় ${moment(
           invoice.dueDate
         ).format(
           "DD-MM-YYYY hh:mm:ss A"
