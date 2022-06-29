@@ -11,8 +11,10 @@ import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
 import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
+import { useTranslation } from "react-i18next";
 
 export default function AddStaticCustomer() {
+  const { t } = useTranslation();
   // get user bp setting
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
@@ -148,7 +150,7 @@ export default function AddStaticCustomer() {
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
+      return alert(t("selectSubArea"));
     }
     const { balance, ipAddress, queueName, target, ...rest } = data;
     const mainData = {

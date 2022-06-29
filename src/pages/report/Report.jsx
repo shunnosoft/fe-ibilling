@@ -326,7 +326,7 @@ export default function Report() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>বিল রিপোর্ট</div>
+                  <div> {t("billReport")} </div>
                   <ReactToPrint
                     documentTitle="বিল রিপোর্ট"
                     trigger={() => (

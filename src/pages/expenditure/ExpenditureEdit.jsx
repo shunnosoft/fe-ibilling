@@ -11,7 +11,9 @@ import {
   editExpenditure,
   getExpenditureSectors,
 } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 export default function EditExpenditure({ singleExp }) {
+  const { t } = useTranslation();
   // console.log(singleExp);
   const [isLoading, setIsLoading] = useState(false);
   const [pourpose, setPourpose] = useState("");
@@ -70,7 +72,7 @@ export default function EditExpenditure({ singleExp }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                খরচ এডিট
+                {t("editExpenditure")}
               </h5>
               <button
                 type="button"
@@ -107,7 +109,7 @@ export default function EditExpenditure({ singleExp }) {
                         id=""
                         onChange={handleSelect}
                       >
-                        <option value="">খরচ খাত সিলেক্ট করুন</option>
+                        <option value=""> {t("selectExpenseSector")} </option>
                         {expSectors?.map((exp, key) => {
                           return (
                             <option
@@ -149,7 +151,7 @@ export default function EditExpenditure({ singleExp }) {
                     </div>
 
                     <div>
-                      <h6>খরচের বিবরণ </h6>
+                      <h6> {t("expenseDetails")} </h6>
                       <textarea
                         name="description"
                         ref={desRef}
@@ -170,14 +172,14 @@ export default function EditExpenditure({ singleExp }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

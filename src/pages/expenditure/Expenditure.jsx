@@ -30,8 +30,10 @@ import PrintExpenditure from "./expenditurePDF";
 import ReactToPrint from "react-to-print";
 import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 export default function Expenditure() {
+  const { t } = useTranslation();
   const [isLoading, setIsloading] = useState(false);
   const componentRef = useRef();
   const dispatch = useDispatch();
@@ -248,7 +250,7 @@ export default function Expenditure() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div className="me-3">খরচ</div>
+                <div className="me-3"> {t("expense")} </div>
                 <div
                   className="d-flex"
                   style={{
@@ -304,7 +306,7 @@ export default function Expenditure() {
                       id="uncontrolled-tab-example"
                       className=" mt-1"
                     >
-                      <Tab eventKey="expenditure" title="খরচ">
+                      <Tab eventKey="expenditure" title={t("expense")}>
                         <div className="table-section">
                           <Table
                             isLoading={isLoading}
@@ -315,7 +317,10 @@ export default function Expenditure() {
                         </div>
                       </Tab>
 
-                      <Tab eventKey="expenditurePurpose" title="খরচ খাত">
+                      <Tab
+                        eventKey="expenditurePurpose"
+                        title={t("expenseSector")}
+                      >
                         <div className="table-section">
                           <Table
                             isLoading={isLoading}

@@ -541,7 +541,9 @@ export default function Message() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"তিন দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueThreeDay")}
+                                    </label>
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
@@ -550,7 +552,9 @@ export default function Message() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"পাঁচ দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueFiveDay")}
+                                    </label>
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
@@ -559,7 +563,9 @@ export default function Message() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"সাত দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueSevenDay")}
+                                    </label>
                                   </div>
                                 ) : (
                                   ""
@@ -578,7 +584,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="allCustomer"
                                 >
-                                  সকল গ্রাহক
+                                  {t("sokolCustomer")}
                                 </label>
                               </div>
                               <div>
@@ -594,7 +600,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="paid"
                                 >
-                                  পেইড
+                                  {t("payPaid")}
                                 </label>
                               </div>
                               <div>
@@ -610,7 +616,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="unpaid"
                                 >
-                                  আনপেইড
+                                  {t("unpaid")}
                                 </label>
                               </div>
                               <div>
@@ -626,7 +632,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="activee"
                                 >
-                                  এক্টিভ
+                                  {t("active")}
                                 </label>
                               </div>
                               <div>
@@ -642,7 +648,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="inactive"
                                 >
-                                  ইন-একটিভ
+                                  {t("in active")}
                                 </label>
                               </div>
                               <div>
@@ -658,7 +664,7 @@ export default function Message() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="expire"
                                 >
-                                  এক্সপায়ার্ড
+                                  {t("expired")}
                                 </label>
                               </div>
                             </div>
@@ -782,7 +788,7 @@ export default function Message() {
                       </div>
                       <div className="smsCount">
                         <span className="smsLength">
-                          অক্ষরঃ {(smsTemplet + bottomText).length}
+                          {t("letter")} {(smsTemplet + bottomText).length}
                         </span>
                         <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
                       </div>
@@ -790,20 +796,18 @@ export default function Message() {
                         id="messageTextArea"
                         rows="6"
                         className="form-control mt-4"
-                        placeholder="মেসেজ লিখুন..."
+                        placeholder={t("messageLikhun")}
                         value={bottomText}
                         // onClick={insertMyText}
                         maxLength={335 - upperText.length}
                         onChange={(e) => setBottomText(e.target.value)}
-                      >
-                        {" "}
-                      </textarea>
+                      ></textarea>
                       <hr />
                       <button
                         onClick={handleSendMessage}
                         className="btn btn-success"
                       >
-                        সেন্ড মেসেজ
+                        {t("sendMessage")}
                       </button>
                     </div>
                   </div>

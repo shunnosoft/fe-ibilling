@@ -10,8 +10,10 @@ import "../collector/collector.css";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
 import { addExpenditurePourpose } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function CreatePourpose() {
+  const { t } = useTranslation();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +58,7 @@ export default function CreatePourpose() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন খাত অ্যাড করুন
+                {t("addNewExpenditureSector")}
               </h5>
               <button
                 type="button"
@@ -80,7 +82,7 @@ export default function CreatePourpose() {
                   <Form>
                     <FtextField
                       type="text"
-                      label=" খরচ খাতের নাম"
+                      label={t("expenditureSectorsName")}
                       name="name"
                     />
 
@@ -90,14 +92,14 @@ export default function CreatePourpose() {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>
