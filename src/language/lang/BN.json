@@ -73,5 +73,22 @@
   "save": " সেভ করুন",
   "edit": "এডিট",
   "changePermission": "পারমিশান পরিবর্তন করুন",
-  "update": "আপডেট"
+  "update": "আপডেট",
+  "rechargeHistory": "রিচার্জ হিস্ট্রি",
+  "allReseller": "সকল রিসেলার",
+  "resellerSmsRequest": "রিসেলার এসএমএস রিকোয়েস্ট",
+  "notFoundCustomer": "কোন গ্রাহক পাওয়া যায়নি",
+  "sampleSMS": "স্যাম্পল SMS",
+  "getSMS": "জন গ্রাহক মেসেজ পাবে।",
+  "expenseSMS": "টি SMS খরচ হবে।",
+  "successAlertSMS": "সফলভাবে SMS পাঠানো হয়েছে।",
+  "unseccessAlertSMS": "দুঃখিত, আপনার পর্যাপ্ত SMS ব্যাল্যান্স নেই। দয়া করে SMS রিচার্জ করুন।",
+  "exceedSMSLimit": "মেসেজের অক্ষর লিমিট অতিক্রম করেছে ",
+  "SMSboard": "মেসেজ বোর্ড",
+  "SMSbalance": "এসএমএস ব্যালান্সঃ",
+  "buySMS": "এসএমএস কিনুন",
+  "billDueExpire": " বিল ডেট শেষ হতে বাকিঃ",
+  "billDueOneDay": "এক দিন",
+  "billDueTwoDay": "দুই দিন",
+  "billDueThreeDay": "তিন দিন"
 }
