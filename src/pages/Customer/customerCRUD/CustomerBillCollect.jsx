@@ -67,6 +67,7 @@ export default function CustomerBillCollect({ single }) {
       collectorId: currentUserId, //when collector is logged in
       userType: data?.userType,
       medium,
+      package: data.pppoe.profile,
     };
     if (note) sendingData.note = note;
 
@@ -74,8 +75,8 @@ export default function CustomerBillCollect({ single }) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
-
-    billCollect(dispatch, sendingData, setLoading);
+    console.log(sendingData);
+    // billCollect(dispatch, sendingData, setLoading);
     // setAmount(data.amount);
   };
 

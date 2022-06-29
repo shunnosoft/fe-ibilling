@@ -8,42 +8,44 @@ export default function ActionButton({
 }) {
   return (
     <>
-      <ThreeDots
-        className="dropdown-toggle ActionDots"
-        id="areaDropdown"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      />
-      <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-        <li
-          data-bs-toggle="modal"
-          data-bs-target="#areaEditModal"
-          onClick={() => {
-            getSpecificArea(data.id);
-          }}
-        >
-          <div className="dropdown-item">
-            <div className="customerAction">
-              <PenFill />
-              <p className="actionP">এডিট</p>
+      <div className="dropdown">
+        <ThreeDots
+          className="dropdown-toggle ActionDots"
+          id="areaDropdown"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        />
+        <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+          <li
+            data-bs-toggle="modal"
+            data-bs-target="#areaEditModal"
+            onClick={() => {
+              getSpecificArea(data.id);
+            }}
+          >
+            <div className="dropdown-item">
+              <div className="customerAction">
+                <PenFill />
+                <p className="actionP">এডিট</p>
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
 
-        <li
-          onClick={() => {
-            deleteSingleArea(data.id, data.ispOwner);
-          }}
-        >
-          <div className="dropdown-item actionManager">
-            <div className="customerAction">
-              <ArchiveFill />
-              <p className="actionP">ডিলিট</p>
+          <li
+            onClick={() => {
+              deleteSingleArea(data.id, data.ispOwner);
+            }}
+          >
+            <div className="dropdown-item actionManager">
+              <div className="customerAction">
+                <ArchiveFill />
+                <p className="actionP">ডিলিট</p>
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
     </>
   );
 }

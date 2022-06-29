@@ -177,75 +177,77 @@ const ResellerCustomer = () => {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul className="dropdown-menu" aria-labelledby="customerDrop">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#resellerCustomerModalDetails"
-                onClick={() => {
-                  getSpecificCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PersonFill />
-                    <p className="actionP">প্রোফাইল</p>
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resellerCustomerModalDetails"
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">প্রোফাইল</p>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
 
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#CustomerEditModal"
-                onClick={() => {
-                  getSpecificCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PenFill />
-                    <p className="actionP">এডিট</p>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#CustomerEditModal"
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">এডিট</p>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
 
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#showCustomerReport"
-                onClick={() => {
-                  getSpecificCustomerReport(original);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <CashStack />
-                    <p className="actionP">রিপোর্ট</p>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#showCustomerReport"
+                  onClick={() => {
+                    getSpecificCustomerReport(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">রিপোর্ট</p>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
 
-              <li
-                onClick={() => {
-                  let con = window.confirm(
-                    `${original.name} গ্রাহক ডিলিট করতে চান?`
-                  );
-                  con && deleteCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item actionManager">
-                  <div className="customerAction">
-                    <ArchiveFill />
-                    <p className="actionP">ডিলিট</p>
+                <li
+                  onClick={() => {
+                    let con = window.confirm(
+                      `${original.name} গ্রাহক ডিলিট করতে চান?`
+                    );
+                    con && deleteCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">ডিলিট</p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            </ul>
+                </li>
+              </ul>
+            </div>
           </div>
         ),
       },

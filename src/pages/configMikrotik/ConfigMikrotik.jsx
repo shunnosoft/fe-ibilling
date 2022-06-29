@@ -35,7 +35,6 @@ import {
 } from "../../features/apiCalls";
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 import apiLink from "../../api/apiLink";
-import { clearMikrotik } from "../../features/mikrotikSlice";
 import { useLayoutEffect } from "react";
 import Table from "../../components/table/Table";
 import CustomerSync from "./configMikrotikModals/CustomerSync";
@@ -44,9 +43,6 @@ import CustomerSync from "./configMikrotikModals/CustomerSync";
 export default function ConfigMikrotik() {
   const navigate = useNavigate();
 
-  let serial = 0;
-  let serial2 = 0;
-  let serial3 = 0;
   const { ispOwner, mikrotikId } = useParams();
   const mikrotik = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
@@ -55,9 +51,6 @@ export default function ConfigMikrotik() {
     ? mikrotik.find((item) => item.id === mikrotikId)
     : {};
 
-  const [search, setSearch] = useState("");
-  const [search2, setSearch2] = useState("");
-  const [search3, setSearch3] = useState("");
   const allMikrotikUsers = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
@@ -76,7 +69,6 @@ export default function ConfigMikrotik() {
 
   const [isLoading, setIsloading] = useState(false);
   const [isLoadingPac, setIsLoadingPac] = useState(false);
-  const [isLoadingCus, setIsLoadingCus] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
@@ -85,8 +77,6 @@ export default function ConfigMikrotik() {
     "showMikrotikPackage"
   );
   const [inActiveCustomer, setInActiveCustomer] = useState(false);
-  const [refresh, setRefresh] = useState(0);
-  const [refresh2, setRefresh2] = useState(0);
   // const [syncUserRefresh, setSyncUserRefresh] = useState(0);
   const dispatch = useDispatch();
 
@@ -266,45 +256,47 @@ export default function ConfigMikrotik() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul
-              className="dropdown-menu"
-              aria-labelledby="pppoePackageDropdown"
-            >
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#pppoePackageEditModal"
-                onClick={() => {
-                  getSpecificPPPoEPackage(original.id);
-                }}
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="pppoePackageDropdown"
               >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PenFill />
-                    <p className="actionP">এডিট</p>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#pppoePackageEditModal"
+                  onClick={() => {
+                    getSpecificPPPoEPackage(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">এডিট</p>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
 
-              <li
-                onClick={() => {
-                  deleteSinglePPPoEpackage(original.mikrotik, original.id);
-                }}
-              >
-                <div className="dropdown-item actionManager">
-                  <div className="customerAction">
-                    <ArchiveFill />
-                    <p className="actionP">ডিলিট</p>
+                <li
+                  onClick={() => {
+                    deleteSinglePPPoEpackage(original.mikrotik, original.id);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">ডিলিট</p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            </ul>
+                </li>
+              </ul>
+            </div>
           </div>
         ),
       },

@@ -1,8 +1,7 @@
 import React from "react";
 import moment from "moment";
-const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
+const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
   const { billingData, ispOwnerData, customerData, paymentDate } = props;
-  console.log(billingData);
   return (
     <>
       <div ref={ref}>
@@ -96,12 +95,12 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
             </tbody>
           </table>
 
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <strong>নোটঃ</strong>{" "}
-            {moment(billingData?.startDate).format("MMM/DD/YYYY")}-
-            {moment(billingData?.endDate).format("MMM/DD/YYYY")} সময়কালীন বিল
+            {moment(billingData?.startDate).format("DD/MM/YYYY")}-
+            {moment(billingData?.endDate).format("DD/MM/YYYY")} সময়কালীন বিল
             পরিশোধ করা হয়েছে।
-          </div>
+          </div> */}
 
           <div className="page-footer">
             <div className="signature_container">
@@ -116,4 +115,4 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
     </>
   );
 });
-export default BillCollectInvoiceWithNote;
+export default BillCollectInvoiceWithoutNote;

@@ -1561,9 +1561,11 @@ export const addExpenditurePourpose = async (
 export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   try {
-    const res = await apiLink.patch(`/staff/expenditurePurpose`, data);
+    const res = await apiLink.patch(
+      `/staff/expenditurePurpose/` + data.id,
+      data
+    );
     dispatch(editExpenditureSectorsSuccess(res.data));
-    // console.log(res.data);
     setIsloading(false);
     document.querySelector("#editPurpose").click();
 

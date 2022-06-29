@@ -470,116 +470,118 @@ export default function Customer() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul className="dropdown-menu" aria-labelledby="customerDrop">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#showCustomerDetails"
-                onClick={() => {
-                  getSpecificCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PersonFill />
-                    <p className="actionP">প্রোফাইল</p>
-                  </div>
-                </div>
-              </li>
-              {(permission?.billPosting || role === "ispOwner") && (
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#collectCustomerBillModal"
+                  data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
                   }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <Wallet />
-                      <p className="actionP">রিচার্জ</p>
+                      <PersonFill />
+                      <p className="actionP">প্রোফাইল</p>
                     </div>
                   </div>
                 </li>
-              )}
-              {(role === "ispOwner" || permission.customerEdit) && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editStaticCustomerModal"
-                  onClick={() => {
-                    getSpecificCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">এডিট</p>
+                {(permission?.billPosting || role === "ispOwner") && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectCustomerBillModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <Wallet />
+                        <p className="actionP">রিচার্জ</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )}
-              {role !== "collector" && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerReport"
-                  onClick={() => {
-                    getSpecificCustomerReport(original);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CashStack />
-                      <p className="actionP">রিপোর্ট</p>
+                  </li>
+                )}
+                {(role === "ispOwner" || permission.customerEdit) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#editStaticCustomerModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">এডিট</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )}
+                  </li>
+                )}
+                {role !== "collector" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#showCustomerReport"
+                    onClick={() => {
+                      getSpecificCustomerReport(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CashStack />
+                        <p className="actionP">রিপোর্ট</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
 
-              {role === "ispOwner" || permission.customerDelete ? (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#staticCustomerDelete"
-                  onClick={() => {
-                    customerDelete(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">ডিলিট</p>
+                {role === "ispOwner" || permission.customerDelete ? (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticCustomerDelete"
+                    onClick={() => {
+                      customerDelete(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">ডিলিট</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ) : (
-                ""
-              )}
+                  </li>
+                ) : (
+                  ""
+                )}
 
-              {original.mobile &&
-              (role === "ispOwner" || permission.sendSMS) ? (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerMessageModal"
-                  onClick={() => {
-                    getSpecificCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <ChatText />
-                      <p className="actionP">মেসেজ</p>
+                {original.mobile &&
+                (role === "ispOwner" || permission.sendSMS) ? (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">মেসেজ</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ) : (
-                ""
-              )}
-            </ul>
+                  </li>
+                ) : (
+                  ""
+                )}
+              </ul>
+            </div>
           </div>
         ),
       },

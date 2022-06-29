@@ -1,16 +1,12 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Loader from "../../components/common/Loader";
 import * as Yup from "yup";
 import "./expenditure.css";
 import { FtextField } from "../../components/common/FtextField";
-import { Plus, PlusSquare } from "react-bootstrap-icons";
+
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addExpenditure,
-  editExpenditure,
-  getExpenditureSectors,
-} from "../../features/apiCalls";
+import { editExpenditure } from "../../features/apiCalls";
 export default function EditExpenditure({ singleExp }) {
   // console.log(singleExp);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,11 +16,7 @@ export default function EditExpenditure({ singleExp }) {
     (state) => state.expenditure.expenditurePourposes
   );
   const dispatch = useDispatch();
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
   const desRef = useRef();
   const collectorValidator = Yup.object({
     amount: Yup.number().required("***"),

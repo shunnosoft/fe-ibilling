@@ -58,6 +58,7 @@ export default function CustomerBillCollect({ single }) {
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
       medium,
+      package: data.pppoe.profile,
     };
     if (note) sendingData.note = note;
     if (startDate && endDate) {

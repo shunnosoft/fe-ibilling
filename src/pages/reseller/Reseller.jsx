@@ -137,100 +137,102 @@ export default function Reseller() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
-              <Link to={`/reseller/customer/${original.id}`}>
-                <li>
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PeopleFill />
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
+                <Link to={`/reseller/customer/${original.id}`}>
+                  <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PeopleFill />
 
-                      <p className="actionP">গ্রাহক</p>
+                        <p className="actionP">গ্রাহক</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              </Link>
+                  </li>
+                </Link>
 
-              <li
-                data-bs-toggle="modal"
-                href="#resellerRechargeModal"
-                role="button"
-                onClick={() => {
-                  getSpecificReseller(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <Wallet />
-                    <p className="actionP">রিচার্জ</p>
-                  </div>
-                </div>
-              </li>
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#resellerDetailsModal"
-                onClick={() => {
-                  getSpecificReseller(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PersonFill />
-                    <p className="actionP">প্রোফাইল</p>
-                  </div>
-                </div>
-              </li>
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#resellerModalEdit"
-                onClick={() => {
-                  getSpecificReseller(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PenFill />
-                    <p className="actionP">এডিট</p>
-                  </div>
-                </div>
-              </li>
-
-              <li
-                onClick={() => {
-                  deleteSingleReseller(original.ispOwner, original.id);
-                }}
-              >
-                <div className="dropdown-item actionManager">
-                  <div className="customerAction">
-                    <ArchiveFill />
-                    <p className="actionP">ডিলিট</p>
-                  </div>
-                </div>
-              </li>
-
-              {original.mobile && (
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#customerMessageModal"
+                  href="#resellerRechargeModal"
+                  role="button"
                   onClick={() => {
-                    handleSingleMessage(original.id);
+                    getSpecificReseller(original.id);
                   }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <ChatText />
-                      <p className="actionP">মেসেজ</p>
+                      <Wallet />
+                      <p className="actionP">রিচার্জ</p>
                     </div>
                   </div>
                 </li>
-              )}
-            </ul>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resellerDetailsModal"
+                  onClick={() => {
+                    getSpecificReseller(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">প্রোফাইল</p>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resellerModalEdit"
+                  onClick={() => {
+                    getSpecificReseller(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">এডিট</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li
+                  onClick={() => {
+                    deleteSingleReseller(original.ispOwner, original.id);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">ডিলিট</p>
+                    </div>
+                  </div>
+                </li>
+
+                {original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      handleSingleMessage(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">মেসেজ</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
         ),
       },

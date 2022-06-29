@@ -280,18 +280,18 @@ export default function ConfigMikrotik() {
     setAllUsers(allMikrotikUsers);
   }, [allMikrotikUsers]);
 
-  const filterIt = (e) => {
-    let temp;
-    if (e.target.value === "") {
-      setAllUsers(allMikrotikUsers);
-    } else if (e.target.value === "true") {
-      temp = allMikrotikUsers.filter((item) => item.running == true);
-      setAllUsers(temp);
-    } else if (e.target.value === "false") {
-      temp = allMikrotikUsers.filter((item) => item.running != true);
-      setAllUsers(temp);
-    }
-  };
+  // const filterIt = (e) => {
+  //   let temp;
+  //   if (e.target.value === "") {
+  //     setAllUsers(allMikrotikUsers);
+  //   } else if (e.target.value === "true") {
+  //     temp = allMikrotikUsers.filter((item) => item.running == true);
+  //     setAllUsers(temp);
+  //   } else if (e.target.value === "false") {
+  //     temp = allMikrotikUsers.filter((item) => item.running != true);
+  //     setAllUsers(temp);
+  //   }
+  // };
   return (
     <>
       <Sidebar />

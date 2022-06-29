@@ -12,7 +12,6 @@ import { PrinterFill, TrashFill } from "react-bootstrap-icons";
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
   const billRef = useRef();
-  const dispatch = useDispatch();
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -81,38 +80,24 @@ export default function CustomerReport({ single }) {
                 <table className="table table-striped ">
                   <thead>
                     <tr className="spetialSortingRow">
-                      <th style={{ width: "10%" }} scope="col">
-                        প্যাকেজ
-                      </th>
-
-                      <th style={{ width: "10%" }} scope="col">
-                        বিল
-                      </th>
-                      <th style={{ width: "30%" }} scope="col">
-                        তারিখ
-                      </th>
-                      <th style={{ width: "7%" }} scope="col">
-                        মাধ্যম
-                      </th>
-                      <th style={{ width: "15%" }} scope="col">
-                        কালেক্টর
-                      </th>
-                      <th style={{ width: "40%" }} scope="col">
-                        নোট
-                      </th>
-                      <th style={{ width: "8%" }} scope="col">
-                        একশন
-                      </th>
+                      <th scope="col">প্যাকেজ</th>
+                      <th scope="col">বিল</th>
+                      <th scope="col">তারিখ</th>
+                      <th scope="col">মাধ্যম</th>
+                      <th scope="col">কালেক্টর</th>
+                      <th scope="col">নোট</th>
+                      <th scope="col">একশন</th>
                     </tr>
                   </thead>
                   <tbody>
                     {customerReport?.map((val, index) => {
                       return (
                         <tr className="spetialSortingRow" key={index}>
+                          <td>{val.package}</td>
                           <td>{FormatNumber(val.amount)}</td>
                           <td>
                             {moment(val.createdAt).format(
-                              "DD-MM-YYYY hh:mm:ss A"
+                              "MMM-DD-YYYY hh:mm:ss A"
                             )}
                           </td>
 
@@ -122,15 +107,12 @@ export default function CustomerReport({ single }) {
                             <p>{val.note}</p>
                             {val.start && val.end && (
                               <span className="badge bg-secondary">
-                                {moment(val.start).format("DD/MM/YY")}--
-                                {moment(val.end).format("DD/MM/YY")}
+                                {moment(val.start).format("MMM/DD/YY")}--
+                                {moment(val.end).format("MMM/DD/YY")}
                               </span>
                             )}
                           </td>
-                          <td>
-                            {moment(val.start).format("MM/DD/YY")}-
-                            {moment(val.end).format("MM/DD/YY")}
-                          </td>
+
                           <td className="text-center">
                             <div style={{ display: "none" }}>
                               <BillCollectInvoice

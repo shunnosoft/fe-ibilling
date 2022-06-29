@@ -12,17 +12,12 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import MikrotikPost from "./mikrotikModals/MikrotikPost";
-// import { fetchMikrotik } from "../../features/mikrotikSlice";
-// import { getMikrotik } from "../../features/mikrotikSlice";
-import TdLoader from "../../components/common/TdLoader";
 import { fetchMikrotik } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
-import { Button } from "react-bootstrap";
 
 export default function Mikrotik() {
-  let serial = 0;
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
-  const [msearch, setMsearch] = useState("");
+
   const dispatch = useDispatch();
   let allmikrotiks = [];
   allmikrotiks = useSelector(

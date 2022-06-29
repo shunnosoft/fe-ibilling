@@ -142,63 +142,65 @@ export default function Collector() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul className="dropdown-menu" aria-labelledby="customerDrop">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#showCollectorDetails"
-                onClick={() => {
-                  getSpecificCollector(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PersonFill />
-                    <p className="actionP">প্রোফাইল</p>
-                  </div>
-                </div>
-              </li>
-              {permission?.collectorEdit || role === "ispOwner" ? (
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#collectorEditModal"
+                  data-bs-target="#showCollectorDetails"
                   onClick={() => {
                     getSpecificCollector(original.id);
                   }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <PersonFill />
+                      <p className="actionP">প্রোফাইল</p>
                     </div>
                   </div>
                 </li>
-              ) : (
-                ""
-              )}
-              {original.mobile && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerMessageModal"
-                  onClick={() => {
-                    handleSingleMessage(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <ChatText />
-                      <p className="actionP">মেসেজ</p>
+                {permission?.collectorEdit || role === "ispOwner" ? (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectorEditModal"
+                    onClick={() => {
+                      getSpecificCollector(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">এডিট</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )}
-            </ul>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      handleSingleMessage(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">মেসেজ</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
         ),
       },

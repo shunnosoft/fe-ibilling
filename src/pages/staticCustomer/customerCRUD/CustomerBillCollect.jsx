@@ -60,6 +60,7 @@ export default function CustomerBillCollect({ single }) {
       collectorId: currentUserId, //when collector is logged in
       userType: data?.userType,
       medium,
+      package: data.queue.package,
     };
     if (note) sendingData.note = note;
     if (startDate && endDate) {

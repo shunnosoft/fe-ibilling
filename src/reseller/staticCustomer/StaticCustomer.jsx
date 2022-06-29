@@ -162,9 +162,12 @@ export default function RstaticCustomer() {
         accessor: "name",
       },
       {
-        width: "10%",
-        Header: "PPPoE",
-        accessor: "pppoe.name",
+        width: "12%",
+        Header: "IP",
+        accessor: (field) =>
+          field.userType === "firewall-queue"
+            ? field.queue.address
+            : field.queue.target,
       },
       {
         width: "12%",
@@ -253,7 +256,7 @@ export default function RstaticCustomer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <Wallet />
-                      <p className="actionP">বিল গ্রহণ</p>
+                      <p className="actionP">রিচার্জ</p>
                     </div>
                   </div>
                 </li>

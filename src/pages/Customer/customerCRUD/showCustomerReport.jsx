@@ -8,11 +8,13 @@ import { toast } from "react-toastify";
 import { PrinterFill, TrashFill } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { editCustomerSuccess } from "../../../features/customerSlice";
-import BillCollectInvoice from "./customerBillCollectInvoicePDF";
 import ReactToPrint from "react-to-print";
+import BillCollectInvoiceWithNote from "./customerBillCollectInvoicePDF";
+import BillCollectInvoiceWithoutNote from "./customerBillReportPDFwithNote";
 
 export default function CustomerReport({ single }) {
-  const billRef = useRef();
+  const billRefwithNote = useRef();
+  const billRefwithOutNote = useRef();
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -121,7 +123,7 @@ export default function CustomerReport({ single }) {
                             <td>{FormatNumber(val.amount)}</td>
                             <td>
                               {moment(val.createdAt).format(
-                                "DD-MM-YYYY hh:mm:ss A"
+                                "MMM-DD-YYYY hh:mm:ss A"
                               )}
                             </td>
 
@@ -132,52 +134,97 @@ export default function CustomerReport({ single }) {
                               <p>{val.note}</p>
                               {val.start && val.end && (
                                 <span className="badge bg-secondary">
-                                  {moment(val.start).format("DD/MM/YY")}--
-                                  {moment(val.end).format("DD/MM/YY")}
+                                  {moment(val.start).format("MMM/DD/YY")}--
+                                  {moment(val.end).format("MMM/DD/YY")}
                                 </span>
                               )}
                             </td>
-
-                            <td className="text-center">
-                              <div style={{ display: "none" }}>
-                                <BillCollectInvoice
-                                  ref={billRef}
-                                  customerData={single}
-                                  billingData={{
-                                    amount: val.amount,
-                                    billType: val.billType,
-                                    paymentDate: val.createdAt,
-                                  }}
-                                  ispOwnerData={ispOwnerData}
-                                />
-                              </div>
-                              <div>
-                                <ReactToPrint
-                                  documentTitle="বিল ইনভয়েস"
-                                  trigger={() => (
-                                    <div
-                                      title="প্রিন্ট বিল ইনভয়েস"
-                                      style={{ cursor: "pointer" }}
-                                    >
-                                      <PrinterFill />
-                                    </div>
-                                  )}
-                                  content={() => billRef.current}
-                                />
-                              </div>
-                              <div title="ডিলিট রিপোর্ট">
-                                <button
-                                  className="border-0 bg-transparent"
-                                  onClick={() => deletReport(val.id)}
-                                >
-                                  <TrashFill
-                                    color="#dc3545"
-                                    style={{ cursor: "pointer" }}
+                            {/* conditional rendering because print component doesnot perform with conditon  */}
+                            {val.start && val.end ? (
+                              <td className="text-center">
+                                <div style={{ display: "none" }}>
+                                  <BillCollectInvoiceWithNote
+                                    ref={billRefwithNote}
+                                    customerData={single}
+                                    billingData={{
+                                      amount: val.amount,
+                                      billType: val.billType,
+                                      paymentDate: val.createdAt,
+                                      medium: val.medium,
+                                      startDate: val.start,
+                                      endDate: val.end,
+                                    }}
+                                    ispOwnerData={ispOwnerData}
                                   />
-                                </button>
-                              </div>
-                            </td>
-                            {/* )} */}
+                                </div>
+                                <div>
+                                  <ReactToPrint
+                                    documentTitle="বিল ইনভয়েস"
+                                    trigger={() => (
+                                      <div
+                                        title="প্রিন্ট বিল ইনভয়েস"
+                                        style={{ cursor: "pointer" }}
+                                      >
+                                        <PrinterFill />
+                                      </div>
+                                    )}
+                                    content={() => billRefwithNote.current}
+                                  />
+                                </div>
+                                <div title="ডিলিট রিপোর্ট">
+                                  <button
+                                    className="border-0 bg-transparent"
+                                    onClick={() => deletReport(val.id)}
+                                  >
+                                    <TrashFill
+                                      color="#dc3545"
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </button>
+                                </div>
+                              </td>
+                            ) : (
+                              <td className="text-center">
+                                <div style={{ display: "none" }}>
+                                  <BillCollectInvoiceWithoutNote
+                                    ref={billRefwithOutNote}
+                                    customerData={single}
+                                    billingData={{
+                                      amount: val.amount,
+                                      billType: val.billType,
+                                      paymentDate: val.createdAt,
+                                      medium: val.medium,
+                                    }}
+                                    ispOwnerData={ispOwnerData}
+                                  />
+                                </div>
+                                <div>
+                                  <ReactToPrint
+                                    documentTitle="বিল ইনভয়েস"
+                                    trigger={() => (
+                                      <div
+                                        title="প্রিন্ট বিল ইনভয়েস"
+                                        style={{ cursor: "pointer" }}
+                                      >
+                                        <PrinterFill />
+                                      </div>
+                                    )}
+                                    content={() => billRefwithOutNote.current}
+                                  />
+                                </div>
+                                <div title="ডিলিট রিপোর্ট">
+                                  <button
+                                    className="border-0 bg-transparent"
+                                    onClick={() => deletReport(val.id)}
+                                  >
+                                    <TrashFill
+                                      color="#dc3545"
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </button>
+                                </div>
+                              </td>
+                            )}
                           </tr>
                         );
                       })
