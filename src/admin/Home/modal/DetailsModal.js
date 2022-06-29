@@ -190,7 +190,7 @@ const DetailsModal = ({ ownerId }) => {
                     </i>
                   </h6>
                   <h6>
-                    Monthly Due Date:{" "}
+                    Invoice Date:{" "}
                     <i className="text-danger">
                       {ownerData?.bpSettings?.monthlyDueDate &&
                         moment(ownerData?.bpSettings?.monthlyDueDate).format(

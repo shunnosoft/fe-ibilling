@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
+import moment from "moment";
 
 const ISPOwnerEditModal = ({ ownerId }) => {
   // import dispatch from react redux
@@ -18,6 +19,14 @@ const ISPOwnerEditModal = ({ ownerId }) => {
 
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
+
+  const [billDate, setBillDate] = useState();
+
+  useEffect(() => {
+    setBillDate(
+      moment(ispOwner?.bpSettings?.monthlyDueDate).format("YYYY-MM-DD")
+    );
+  }, [ispOwner]);
 
   //  isp owner form validation
   const ispOwnerValidator = Yup.object({
@@ -85,12 +94,16 @@ const ISPOwnerEditModal = ({ ownerId }) => {
         paymentStatus: values.paymentStatus,
         queueType: values.queueType,
         hasMikrotik: values.hasMikrotik,
+        monthlyDueDate: billDate,
       },
       reference: {
         name: values.referenceName,
         mobile: values.referenceMobile,
       },
     };
+
+    // console.log(data);
+    // return;
 
     // api call
     updateOwner(ownerId, data, setIsLoading, dispatch);
@@ -240,6 +253,19 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                           <option value="simple-queue">Simple Queue</option>
                           <option value="firewall-queue">Firewall Queue</option>
                         </Field>
+                      </div>
+
+                      <div className="monthlyDueDate">
+                        <p className="customerFieldsTitle">ইনভয়েস ডেট</p>
+
+                        <div className="timeDate">
+                          <Field
+                            value={billDate}
+                            onChange={(e) => setBillDate(e.target.value)}
+                            type="date"
+                            name="monthlyDueDate"
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="displayGrid3">
