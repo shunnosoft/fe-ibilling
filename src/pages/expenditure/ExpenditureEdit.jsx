@@ -4,7 +4,7 @@ import Loader from "../../components/common/Loader";
 import * as Yup from "yup";
 import "./expenditure.css";
 import { FtextField } from "../../components/common/FtextField";
-
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { editExpenditure } from "../../features/apiCalls";
 export default function EditExpenditure({ singleExp }) {
