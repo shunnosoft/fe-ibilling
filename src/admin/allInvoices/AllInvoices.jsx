@@ -28,18 +28,27 @@ const AllInvoices = () => {
   // import dispatch
   const dispatch = useDispatch();
 
-  // get note api call
-  useEffect(() => {
-    getInvoices(dispatch, setIsLoading);
-  }, []);
-
   // get all note in redux
-  const invoices = useSelector((state) => state.admin?.invoices);
+
+  let invoices = useSelector((state) => state.admin?.invoices);
 
   // get all company name from redux
   const company = useSelector(
     (state) => state.persistedReducer?.companyName?.ispOwnerIds
   );
+
+  // set filter status
+  const [filterStatus, setFilterStatus] = useState(null);
+
+  // payment filter
+  if (filterStatus && filterStatus !== "All") {
+    invoices = invoices.filter((value) => value.status === filterStatus);
+  }
+
+  // get note api call
+  useEffect(() => {
+    getInvoices(dispatch, setIsLoading);
+  }, []);
 
   // handle delete
   const detailsModal = (invoiceId) => {
@@ -65,7 +74,7 @@ const AllInvoices = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -73,7 +82,7 @@ const AllInvoices = () => {
       },
 
       {
-        width: "12%",
+        width: "10%",
         Header: "Comapny",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
@@ -92,7 +101,7 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "10%",
+        width: "15%",
         Header: "Type",
         accessor: "type",
         Cell: ({ cell: { value } }) => {
@@ -104,7 +113,7 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "8%",
+        width: "10%",
         Header: "Status",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -116,18 +125,18 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "12%",
+        width: "5%",
         Header: "SMS",
         accessor: "numberOfSms",
       },
       {
-        width: "14%",
+        width: "15%",
         Header: "Amount",
         accessor: "amount",
       },
 
       {
-        width: "12%",
+        width: "8%",
         Header: "CreatedAt",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -135,16 +144,24 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "12%",
-        Header: "Due Date",
+        width: "8%",
+        Header: "LastDate",
         accessor: "dueDate",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("DD MMM YY hh:mm a");
         },
       },
-
       {
         width: "8%",
+        Header: "PaidAt",
+        accessor: "paidAt",
+        Cell: ({ cell: { value } }) => {
+          return value ? moment(value).format("DD MMM YY hh:mm a") : "";
+        },
+      },
+
+      {
+        width: "6%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
@@ -207,6 +224,17 @@ const AllInvoices = () => {
                 <h2 className="dashboardTitle text-center">All Invoices</h2>
               </div>
               <div className="card-body">
+                <div className="d-flex">
+                  <select
+                    className="form-select mt-0 me-3"
+                    aria-label="Default select example"
+                    onChange={(event) => setFilterStatus(event.target.value)}
+                  >
+                    <option selected>All</option>
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                  </select>
+                </div>
                 <div className="table-section-th">
                   <Table
                     columns={columns}

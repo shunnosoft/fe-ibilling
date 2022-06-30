@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
 import { FontColor } from "../../assets/js/theme";
@@ -19,8 +19,14 @@ const InvoiceList = () => {
   // get owner id in params
   const { ispOwnerId } = useParams();
 
+  console.log(ispOwnerId);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(searchParams.get("company"));
+
   // set invoice id
   const [invoiceId, setInvoiceId] = useState("");
+  const [ispOwner, setIspOwner] = useState({});
 
   // get invoice list
   const invoiceList = useSelector((state) => state.ownerInvoice?.ownerInvoice);
@@ -61,14 +67,14 @@ const InvoiceList = () => {
         accessor: "createdAt",
         Header: "Create Date",
         Cell: ({ row: { original } }) =>
-          moment(original.createdAt).format("DD/MM/YYYY"),
+          moment(original.createdAt).format("DD MMM YY hh:mm a"),
       },
       {
         width: "15%",
         accessor: "dueDate",
         Header: "Due Date",
         Cell: ({ row: { original } }) =>
-          moment(original.dueDate).format("DD/MM/YYYY"),
+          moment(original.dueDate).format("DD MMM YY hh:mm a"),
       },
       {
         width: "15%",
@@ -148,7 +154,7 @@ const InvoiceList = () => {
             <div className="card">
               <div className="card-header">
                 <h2 className="dashboardTitle text-center">
-                  ISP Owner Invoice
+                  Invoices of {searchParams.get("company")}
                 </h2>
               </div>
               <div className="card-body">

@@ -126,6 +126,15 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       }
     }
 
+    data.bpSettings.monthlyDueDate = moment(data.bpSettings.monthlyDueDate).set(
+      {
+        hour: 23,
+        minute: 59,
+        second: 0,
+        millisecond: 0,
+      }
+    );
+
     // console.log(data);
     // return;
 

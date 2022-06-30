@@ -18,7 +18,7 @@ const addClass = {
   feature: "info",
   migration: "warning",
 
-  registration: "warning",
+  registration: "info",
   monthlyServiceCharge: "success",
   smsPurchase: "primary",
 };
