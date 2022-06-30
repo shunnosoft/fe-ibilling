@@ -75,9 +75,8 @@ export default function CustomerBillCollect({ single }) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
-    console.log(sendingData);
-    // billCollect(dispatch, sendingData, setLoading);
-    // setAmount(data.amount);
+    billCollect(dispatch, sendingData, setLoading);
+    setAmount(data.amount);
   };
 
   return (
