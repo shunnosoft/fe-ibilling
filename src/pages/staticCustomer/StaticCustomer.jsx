@@ -592,6 +592,20 @@ export default function Customer() {
   //bulk operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
+  //free users filter
+
+  const handleFreeUser = (value) => {
+    let getFreeUser;
+    if (value === "freeUser") {
+      getFreeUser = cus.filter((item) => item.monthlyFee === parseInt("0"));
+    } else if (value === "nonFreeUser") {
+      getFreeUser = cus.filter((item) => item.monthlyFee !== parseInt("0"));
+    } else {
+      return setCustomers1(cus);
+    }
+    setCustomers1(getFreeUser);
+  };
+
   return (
     <>
       <Sidebar />
@@ -930,26 +944,38 @@ export default function Customer() {
                       ref={componentRef}
                     />
                   </div>
-                  <div className="filterresetbtn">
+                  <div className="filterresetbtn d-flex justify-content-between">
                     {/* <button onClick={handleActiveFilter}>filter</button> */}
-                    <button
-                      className="btn btn-success mt-2"
-                      type="button"
-                      onClick={handleActiveFilter}
-                    >
-                      {t("filter")}
-                    </button>
-                    <button
-                      style={{
-                        marginLeft: "7px",
-                        width: "150px",
-                      }}
-                      className="btn btn-secondary mt-2"
-                      type="button"
-                      onClick={handleFilterReset}
-                    >
-                      {t("reset")}
-                    </button>
+                    <div>
+                      <button
+                        className="btn btn-success mt-2"
+                        type="button"
+                        onClick={handleActiveFilter}
+                      >
+                        {t("filter")}
+                      </button>
+                      <button
+                        style={{
+                          marginLeft: "7px",
+                          width: "150px",
+                        }}
+                        className="btn btn-secondary mt-2"
+                        type="button"
+                        onClick={handleFilterReset}
+                      >
+                        {t("reset")}
+                      </button>
+                    </div>
+                    <div>
+                      <select
+                        onChange={(e) => handleFreeUser(e.target.value)}
+                        className="form-select"
+                      >
+                        <option value="allUser">সকল গ্রাহক</option>
+                        <option value="freeUser">ফ্রি গ্রাহক</option>
+                        <option value="nonFreeUser">নন ফ্রি গ্রাহক</option>
+                      </select>
+                    </div>
                     {/* <button onClick={handleFilterReset}>reset</button> */}
                   </div>
                   <div className="table-section">

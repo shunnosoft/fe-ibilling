@@ -8,10 +8,16 @@ import { toast } from "react-toastify";
 import BillCollectInvoice from "../../Customer/customerCRUD/customerBillCollectInvoicePDF";
 import ReactToPrint from "react-to-print";
 import { PrinterFill, TrashFill } from "react-bootstrap-icons";
+import BillCollectInvoiceWithNote from "../../Customer/customerCRUD/customerBillCollectInvoicePDF";
+import BillCollectInvoiceWithoutNote from "../../Customer/customerCRUD/customerBillReportPDFwithNote";
+import TdLoader from "../../../components/common/TdLoader";
 
 export default function CustomerReport({ single }) {
   const [customerReport, setCustomerReport] = useState([]);
-  const billRef = useRef();
+  const billRefwithNote = useRef();
+  const billRefwithOutNote = useRef();
+  const [isLoading, setIsLoading] = useState(false);
+
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -79,17 +85,31 @@ export default function CustomerReport({ single }) {
               <div className="table-responsive-lg">
                 <table className="table table-striped ">
                   <thead>
-                    <tr className="spetialSortingRow">
-                      <th scope="col">প্যাকেজ</th>
-                      <th scope="col">বিল</th>
-                      <th scope="col">তারিখ</th>
-                      <th scope="col">মাধ্যম</th>
-                      <th scope="col">কালেক্টর</th>
-                      <th scope="col">নোট</th>
-                      <th scope="col">একশন</th>
+                    <tr className="spetialSortingRow text-center">
+                      <th style={{ width: "10%" }} scope="col">
+                        প্যাকেজ
+                      </th>
+                      <th style={{ width: "10%" }} scope="col">
+                        বিল
+                      </th>
+                      <th style={{ width: "19%" }} scope="col">
+                        তারিখ
+                      </th>
+                      <th style={{ width: "8%" }} scope="col">
+                        মাধ্যম
+                      </th>
+                      <th style={{ width: "15%" }} scope="col">
+                        কালেক্টর
+                      </th>
+                      <th style={{ width: "25%" }} scope="col">
+                        নোট
+                      </th>
+                      <th style={{ width: "10%" }} scope="col">
+                        একশন
+                      </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  {/* <tbody>
                     {customerReport?.map((val, index) => {
                       return (
                         <tr className="spetialSortingRow" key={index}>
@@ -126,7 +146,7 @@ export default function CustomerReport({ single }) {
                                 ispOwnerData={ispOwnerData}
                               />
                             </div>
-                            {/* <div>
+                            <div>
                               <ReactToPrint
                                 documentTitle="বিল ইনভয়েস"
                                 trigger={() => (
@@ -139,7 +159,7 @@ export default function CustomerReport({ single }) {
                                 )}
                                 content={() => billRef.current}
                               />
-                            </div> */}
+                            </div>
                             <div title="ডিলিট রিপোর্ট">
                               <button
                                 className="border-0 bg-transparent"
@@ -155,6 +175,129 @@ export default function CustomerReport({ single }) {
                         </tr>
                       );
                     })}
+                  </tbody> */}
+                  <tbody>
+                    {isLoading ? (
+                      <TdLoader colspan={5} />
+                    ) : customerReport.length > 0 ? (
+                      customerReport.map((val, index) => {
+                        console.log(val);
+                        return (
+                          <tr className="spetialSortingRow" key={index}>
+                            <td>{val.package}</td>
+                            <td>{FormatNumber(val.amount)}</td>
+                            <td>
+                              {moment(val.createdAt).format(
+                                "MMM-DD-YYYY hh:mm:ss A"
+                              )}
+                            </td>
+
+                            <td>{val.medium}</td>
+                            <td>{val.name}</td>
+
+                            <td>
+                              <p>{val.note}</p>
+                              {val.start && val.end && (
+                                <span className="badge bg-secondary">
+                                  {moment(val.start).format("MMM/DD/YY")}--
+                                  {moment(val.end).format("MMM/DD/YY")}
+                                </span>
+                              )}
+                            </td>
+                            {/* conditional rendering because print component doesnot perform with conditon  */}
+                            {val.start && val.end ? (
+                              <td className="text-center">
+                                <div style={{ display: "none" }}>
+                                  <BillCollectInvoiceWithNote
+                                    ref={billRefwithNote}
+                                    customerData={single}
+                                    billingData={{
+                                      amount: val.amount,
+                                      billType: val.billType,
+                                      paymentDate: val.createdAt,
+                                      medium: val.medium,
+                                      startDate: val.start,
+                                      endDate: val.end,
+                                    }}
+                                    ispOwnerData={ispOwnerData}
+                                  />
+                                </div>
+                                <div>
+                                  <ReactToPrint
+                                    documentTitle="বিল ইনভয়েস"
+                                    trigger={() => (
+                                      <div
+                                        title="প্রিন্ট বিল ইনভয়েস"
+                                        style={{ cursor: "pointer" }}
+                                      >
+                                        <PrinterFill />
+                                      </div>
+                                    )}
+                                    content={() => billRefwithNote.current}
+                                  />
+                                </div>
+                                <div title="ডিলিট রিপোর্ট">
+                                  <button
+                                    className="border-0 bg-transparent"
+                                    onClick={() => deletReport(val.id)}
+                                  >
+                                    <TrashFill
+                                      color="#dc3545"
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </button>
+                                </div>
+                              </td>
+                            ) : (
+                              <td className="text-center">
+                                <div style={{ display: "none" }}>
+                                  <BillCollectInvoiceWithoutNote
+                                    ref={billRefwithOutNote}
+                                    customerData={single}
+                                    billingData={{
+                                      amount: val.amount,
+                                      billType: val.billType,
+                                      paymentDate: val.createdAt,
+                                      medium: val.medium,
+                                    }}
+                                    ispOwnerData={ispOwnerData}
+                                  />
+                                </div>
+                                <div>
+                                  <ReactToPrint
+                                    documentTitle="বিল ইনভয়েস"
+                                    trigger={() => (
+                                      <div
+                                        title="প্রিন্ট বিল ইনভয়েস"
+                                        style={{ cursor: "pointer" }}
+                                      >
+                                        <PrinterFill />
+                                      </div>
+                                    )}
+                                    content={() => billRefwithOutNote.current}
+                                  />
+                                </div>
+                                <div title="ডিলিট রিপোর্ট">
+                                  <button
+                                    className="border-0 bg-transparent"
+                                    onClick={() => deletReport(val.id)}
+                                  >
+                                    <TrashFill
+                                      color="#dc3545"
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </button>
+                                </div>
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <td colSpan={5}>
+                        <h5 className="text-center">কোন ডাটা পাওয়া যাই নি !</h5>
+                      </td>
+                    )}
                   </tbody>
                 </table>
               </div>

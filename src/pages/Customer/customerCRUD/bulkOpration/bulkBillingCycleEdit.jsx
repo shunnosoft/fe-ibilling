@@ -8,8 +8,8 @@ import { useDispatch } from "react-redux";
 
 const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
   const [isLoading, setIsLoading] = useState();
-  const [billDate, setBillDate] = useState(new Date());
-  //   const [billTime, setBilltime] = useState(new Date());
+  const [billDate, setBillDate] = useState(false);
+
   const dispatch = useDispatch();
   const billingCycleHandler = (e) => {
     e.preventDefault();
@@ -19,7 +19,6 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
         billingCycle: billDate.toISOString(),
       };
       bulkBillingCycleEdit(dispatch, data, setIsLoading);
-      console.log(data);
     }
   };
 
@@ -35,6 +34,7 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
             dateFormat="dd/MM/yyyy h:mm a"
             showTimeSelect
             timeIntervals={1}
+            placeholderText="তারিখ সিলেক্ট করুন"
           />
         </div>
 

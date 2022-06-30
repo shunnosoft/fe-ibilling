@@ -2,7 +2,6 @@ import React from "react";
 import moment from "moment";
 const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
   const { billingData, ispOwnerData, customerData, paymentDate } = props;
-  console.log(billingData);
   return (
     <>
       <div ref={ref}>

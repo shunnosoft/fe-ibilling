@@ -65,7 +65,6 @@ export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.patch("/customer/bulk-billing-cycle", data);
-    console.log(res);
     dispatch(bulkUpdate(res.data.data));
     document.querySelector("#customerBillingCycle").click();
     setIsLoading(false);
