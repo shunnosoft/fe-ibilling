@@ -1,33 +1,35 @@
+import { t } from "i18next";
+
 export const collectorData = [
   {
     id: 1,
     name: "name",
-    label: "নাম",
+    label: t("name"),
     type: "text",
   },
   {
     id: 2,
     name: "mobile",
-    label: "মোবাইল",
+    label: t("mobile"),
     type: "text",
     disabled: true,
   },
   {
     id: 3,
     name: "email",
-    label: "ইমেইল",
+    label: t("email"),
     type: "email",
   },
   {
     id: 4,
     name: "address",
-    label: "ঠিকানা",
+    label: t("address"),
     type: "text",
   },
   {
     id: 5,
     name: "nid",
-    label: "জাতীয় পরিচয়পত্র নম্বর",
+    label: t("NIDno"),
     type: "text",
   },
   //   {

@@ -10,9 +10,11 @@ import { FtextField } from "../../../components/common/FtextField";
 import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
 import { postReseller } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 // import { postReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerPost() {
+  const { t } = useTranslation();
   // const [Check, setCheck] = useState(RBD);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
@@ -129,7 +131,7 @@ export default function ResellerPost() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন রিসেলার অ্যাড করুন
+                {t("addNewReseller")}
               </h5>
               <button
                 type="button"
@@ -255,7 +257,7 @@ export default function ResellerPost() {
 
                         {/* Status */}
                         <div className="form-check ">
-                          <p className="radioTitle">স্ট্যাটাস</p>
+                          <p className="radioTitle">{t("status")}</p>
                           {RADIO.map((val, key) => (
                             <div key={key} className="form-check">
                               <FtextField
@@ -269,12 +271,12 @@ export default function ResellerPost() {
                           ))}
                         </div>
                         <div className="form-check ">
-                          <p className="radioTitle">শেয়ার (%)</p>
+                          <p className="radioTitle"> {t("share")} </p>
 
                           <FtextField
                             key="commissionRate"
                             type="number"
-                            label="রিসেলার"
+                            label={t("reseller")}
                             name="commissionRate"
                             min={0}
                           />
@@ -282,7 +284,7 @@ export default function ResellerPost() {
                       </div>
                     </div>
 
-                    <b className="mt-2">মাইক্রোটিক সিলেক্ট</b>
+                    <b className="mt-2"> {t("selectMikrotik")} </b>
                     <div className="AllAreaClass">
                       {mikrotikpakages?.mikrotiks?.map((item) => (
                         <div key={item.id}>
@@ -315,7 +317,7 @@ export default function ResellerPost() {
                         </div>
                       ))}
                     </div>
-                    <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <b className="mt-2"> {t("selectArea")} </b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
                         <div key={key}>
@@ -341,7 +343,7 @@ export default function ResellerPost() {
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                       <button
                         type="button"
@@ -349,7 +351,7 @@ export default function ResellerPost() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                     </div>
                   </Form>

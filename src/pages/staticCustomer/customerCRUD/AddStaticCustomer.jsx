@@ -212,7 +212,7 @@ export default function AddStaticCustomer() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন গ্রাহক অ্যাড করুন
+                {t("addNewCustomer")}
               </h5>
               <button
                 type="button"
@@ -245,7 +245,7 @@ export default function AddStaticCustomer() {
                     <div className="row">
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <p className="comstomerFieldsTitle">
-                          মাইক্রোটিক সিলেক্ট করুন
+                          {t("selectMikrotik")}
                         </p>
                         <select
                           className="form-select mw-100"
@@ -263,7 +263,7 @@ export default function AddStaticCustomer() {
                         </select>
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
-                        <p>এরিয়া সিলেক্ট করুন</p>
+                        <p> {t("selectArea")} </p>
                         <select
                           className="form-select mw-100"
                           aria-label="Default select example"
@@ -281,8 +281,8 @@ export default function AddStaticCustomer() {
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <p>
-                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
-                          সিলেক্ট করুন
+                          {subArea ? subArea.name + " এর - " : ""}{" "}
+                          {t("selectSubArea")}
                         </p>
                         <select
                           className="form-select mw-100"
@@ -306,7 +306,7 @@ export default function AddStaticCustomer() {
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
-                            label="কিউ নাম"
+                            label={t("queueName")}
                             name="queueName"
                           />
                         </div>
@@ -316,7 +316,7 @@ export default function AddStaticCustomer() {
                         {userType === "simple-queue" && (
                           <FtextField
                             type="text"
-                            label="আইপি এড্রেস"
+                            label={t("ipAddress")}
                             name="target"
                           />
                         )}
@@ -324,7 +324,7 @@ export default function AddStaticCustomer() {
                           <>
                             <FtextField
                               type="text"
-                              label="আইপি এড্রেস"
+                              label={t("ipAddress")}
                               name="ipAddress"
                             />
                           </>
@@ -334,7 +334,7 @@ export default function AddStaticCustomer() {
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <>
                             <p className="comstomerFieldsTitle">
-                              প্যাকেজ সিলেক্ট করুন
+                              {t("selectPackage")}
                             </p>
                             <select
                               name="firewallPackage"
@@ -361,7 +361,7 @@ export default function AddStaticCustomer() {
                         {userType === "simple-queue" && (
                           <>
                             <p className="comstomerFieldsTitle">
-                              আপলোড প্যাকেজ
+                              {t("uploadPackge")}
                             </p>
                             <select
                               name="upPackage"
@@ -387,7 +387,7 @@ export default function AddStaticCustomer() {
                         {userType === "simple-queue" && (
                           <div className="col-lg-4 col-md-4 col-xs-6">
                             <p className="comstomerFieldsTitle">
-                              ডাউনলোড প্যাকেজ
+                              {t("downloadPackge")}
                             </p>
                             <select
                               name="downPackage"
@@ -411,7 +411,7 @@ export default function AddStaticCustomer() {
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="number"
-                            label="মাসিক ফি"
+                            label={t("monthFee")}
                             name="monthlyFee"
                             min={0}
                             value={monthlyFee}
@@ -422,7 +422,7 @@ export default function AddStaticCustomer() {
                           <div className="col-lg-4 col-md-4 col-xs-6">
                             <FtextField
                               type="number"
-                              label="পূর্বের বকেয়া"
+                              label={t("prevDue")}
                               name="balance"
                             />
                           </div>
@@ -430,34 +430,44 @@ export default function AddStaticCustomer() {
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
-                            label="জাতীয় পরিচয়পত্র নং"
+                            label={t("NIDno")}
                             name="nid"
                           />
                         </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField type="text" label="নাম" name="name" />
+                          <FtextField
+                            type="text"
+                            label={t("name")}
+                            name="name"
+                          />
                         </div>
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
-                            label="মোবাইল"
+                            label={t("mobile")}
                             name="mobile"
                           />
                         </div>
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
-                            label="ঠিকানা"
+                            label={t("address")}
                             name="address"
                           />
                         </div>
                         <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField type="text" label="ইমেইল" name="email" />
+                          <FtextField
+                            type="text"
+                            label={t("email")}
+                            name="email"
+                          />
                         </div>
                         <div className="col-lg-4 col-md-4 col-xs-6">
-                          <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+                          <p className="customerFieldsTitle">
+                            {t("billingCycle")}
+                          </p>
 
                           <div className="timeDate">
                             <input
@@ -476,7 +486,7 @@ export default function AddStaticCustomer() {
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           {bpSettings?.hasMikrotik && (
                             <div className="autoDisable">
-                              <label>অটোমেটিক সংযোগ বন্ধ</label>
+                              <label> {t("automaticConnectionOff")} </label>
                               <input
                                 type="checkBox"
                                 checked={autoDisable}
@@ -497,14 +507,14 @@ export default function AddStaticCustomer() {
                             data-bs-dismiss="modal"
                             disabled={isLoading}
                           >
-                            বাতিল করুন
+                            {t("cancle")}
                           </button>
                           <button
                             type="submit"
                             className="btn btn-success"
                             disabled={isLoading}
                           >
-                            {isLoading ? <Loader /> : "সেভ করুন"}
+                            {isLoading ? <Loader /> : t("save")}
                           </button>
                         </div>
                       </div>
