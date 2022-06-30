@@ -112,9 +112,10 @@ function BillConfirmationSmsTemplate() {
       "ID: CUSTOMER_ID",
       "NAME: CUSTOMER_NAME",
       "BILL: AMOUNT",
-      "LAST DATE: BILL_DATE",
-      // "NOTE : BILL_NOTE",
-      // "DUE : BILL_DUE",
+      "DATE: BILL_DATE",
+      "MONTH: BILL_MONTH",
+      "NOTE : BILL_NOTE",
+      "DUE : BILL_DUE",
     ];
     var found = [];
 
@@ -123,9 +124,10 @@ function BillConfirmationSmsTemplate() {
       .replace("ID: CUSTOMER_ID", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
-      .replace("LAST DATE: BILL_DATE", "");
-    // .replace("NOTE: BILL_NOTE", "")
-    // .replace("DUE: BILL_DUE", "");
+      .replace("DATE: BILL_DATE", "")
+      .replace("MONTH: BILL_MONTH", "")
+      .replace("NOTE: BILL_NOTE", "")
+      .replace("DUE: BILL_DUE", "");
 
     setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
 
@@ -246,24 +248,24 @@ function BillConfirmationSmsTemplate() {
                     {"BILL: AMOUNT"}
                   </label>
                 </div>
-                {/* <div className="radioselect">
-                <input
-                  id="5"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  checked={matchFound.includes("LAST DATE: BILL_DATE")}
-                  value={"LAST DATE: BILL_DATE"}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="5">
-                  {"LAST DATE: BILL_DATE"}
-                </label>
-              </div> */}
+                <div className="radioselect">
+                  <input
+                    id="5"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    checked={matchFound.includes("DATE: BILL_DATE")}
+                    value={"DATE: BILL_DATE"}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="5">
+                    {"DATE: BILL_DATE"}
+                  </label>
+                </div>
               </div>
               <div>
-                {/* <div>
+                <div>
                   <div className="radioselect">
                     <input
                       id="1"
@@ -294,7 +296,22 @@ function BillConfirmationSmsTemplate() {
                       {"DUE: BILL_DUE"}
                     </label>
                   </div>
-                </div> */}
+                  <div className="radioselect">
+                    <input
+                      id="1"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      value={"MONTH: BILL_MONTH"}
+                      checked={matchFound.includes("MONTH: BILL_MONTH")}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="1">
+                      {"MONTH: BILL_MONTH"}
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

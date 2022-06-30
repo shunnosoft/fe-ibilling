@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Field, Form, Formik } from "formik";
+import { useState } from "react";
+import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 //internal imports
@@ -9,10 +9,26 @@ import { useDispatch } from "react-redux";
 import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
-import moment from "moment";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+const animatedComponents = makeAnimated();
+
+const options = [
+  { value: "January", label: "জানুয়ারী" },
+  { value: "February", label: "ফেব্রুয়ারী" },
+  { value: "March", label: "মার্চ" },
+  { value: "April", label: "এপ্রিল" },
+  { value: "May", label: "মে" },
+  { value: "June", label: "জুন" },
+  { value: "July", label: "জুলাই" },
+  { value: "August", label: "আগস্ট" },
+  { value: "September", label: "সেপ্টেম্বর" },
+  { value: "October", label: "অক্টোবর" },
+  { value: "November", label: "নভেম্বর" },
+  { value: "December", label: "ডিসেম্বর" },
+];
 
 export default function CustomerBillCollect({ single }) {
-  const billRef = useRef();
   // get all customer
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -47,6 +63,7 @@ export default function CustomerBillCollect({ single }) {
   const [medium, setMedium] = useState("cash");
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(null);
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -75,10 +92,15 @@ export default function CustomerBillCollect({ single }) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
+    if (selectedMonth.length > 0) {
+      const monthValues = selectedMonth.map((item) => {
+        return item.value;
+      });
+      sendingData.month = monthValues.join(",");
+    }
     billCollect(dispatch, sendingData, setLoading);
     setAmount(data.amount);
   };
-
   return (
     <div>
       <div>
@@ -184,45 +206,63 @@ export default function CustomerBillCollect({ single }) {
                         </label>
                       </div>
                       {noteCheck && (
-                        <div className="bill_collect_form mb-1">
-                          <div class="form-floating me-3">
-                            <textarea
-                              cols={200}
-                              class="form-control shadow-none"
-                              placeholder="নোট লিখুন"
-                              id="noteField"
-                              onChange={(e) => setNote(e.target.value)}
-                            ></textarea>
-                            <label for="noteField">নোট এড করুন</label>
-                          </div>
-                          <div className="me-3" style={{ width: "100%" }}>
-                            <label className="form-control-label changeLabelFontColor">
-                              শুরুর তারিখ
-                            </label>
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="তারিখ সিলেক্ট করুন"
-                            />
-                          </div>
-                          <div cla style={{ width: "100%" }}>
-                            <label className="form-control-label changeLabelFontColor">
-                              শেষ তারিখ
-                            </label>
+                        <>
+                          <div className="bill_collect_form mb-1">
+                            <div class="form-floating me-3">
+                              <textarea
+                                cols={200}
+                                class="form-control shadow-none"
+                                placeholder="নোট লিখুন"
+                                id="noteField"
+                                onChange={(e) => setNote(e.target.value)}
+                              ></textarea>
+                              <label for="noteField">নোট এড করুন</label>
+                            </div>
+                            <div className="me-3" style={{ width: "100%" }}>
+                              <label className="form-control-label changeLabelFontColor">
+                                শুরুর তারিখ
+                              </label>
+                              <DatePicker
+                                className="form-control mw-100"
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="তারিখ সিলেক্ট করুন"
+                              />
+                            </div>
+                            <div cla style={{ width: "100%" }}>
+                              <label className="form-control-label changeLabelFontColor">
+                                শেষ তারিখ
+                              </label>
 
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={endDate}
-                              onChange={(date) => setEndDate(date)}
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="তারিখ সিলেক্ট করুন"
-                            />
+                              <DatePicker
+                                className="form-control mw-100"
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="তারিখ সিলেক্ট করুন"
+                              />
+                            </div>
                           </div>
-                        </div>
+                          <label
+                            className="form-check-label changeLabelFontColor"
+                            htmlFor="selectMonth"
+                          >
+                            মাস সিলেক্ট করুন
+                          </label>
+                          <Select
+                            className="w-50 mt-1"
+                            defaultValue={selectedMonth}
+                            onChange={setSelectedMonth}
+                            options={options}
+                            isMulti={true}
+                            placeholder="মাস সিলেক্ট করুন"
+                            isSearchable
+                            components={animatedComponents}
+                            id="selectMonth"
+                          />
+                        </>
                       )}
-
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : "সাবমিট"}
