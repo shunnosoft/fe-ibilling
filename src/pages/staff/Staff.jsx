@@ -16,8 +16,10 @@ import StaffEdit from "./staffModal/staffEdit";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { badge } from "../../components/common/Utils";
+import { useTranslation } from "react-i18next";
 
 const Staff = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -123,7 +125,7 @@ const Staff = () => {
               <StaffEdit staffId={staffId} />
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>কর্মচারী</div>
+                  <div> {t("staff")} </div>
                   {(role === "ispOwner" || role === "reseller") && (
                     <div
                       title="কর্মচারী এড করুন"

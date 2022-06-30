@@ -13,7 +13,9 @@ import {
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 export default function CustomerModal() {
+  const { t } = useTranslation();
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings
   );
@@ -124,7 +126,7 @@ export default function CustomerModal() {
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
+      return alert(t("selectSubArea"));
     }
     const { Pname, Ppassword, Pprofile, Pcomment, balance, ...rest } = data;
     const mainData = {
@@ -174,7 +176,7 @@ export default function CustomerModal() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন গ্রাহক অ্যাড করুন
+                {t("addNewCustomer")}
               </h5>
               <button
                 type="button"
@@ -211,7 +213,7 @@ export default function CustomerModal() {
                       {bpSettings?.hasMikrotik ? (
                         <div>
                           <p className="comstomerFieldsTitle">
-                            মাইক্রোটিক সিলেক্ট করুন
+                            {t("selectMikrotik")}
                           </p>
                           <select
                             className="form-select"
@@ -235,7 +237,7 @@ export default function CustomerModal() {
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
-                          প্যাকেজ সিলেক্ট করুন
+                          {t("selectPackage")}
                         </p>
                         <select
                           className="form-select mb-3"
@@ -253,7 +255,7 @@ export default function CustomerModal() {
                       </div>
                       <FtextField
                         type="number"
-                        label="মাসিক ফি"
+                        label={t("monthFee")}
                         name="monthlyFee"
                         min={0}
                         // value={packageRate?.rate}
@@ -270,25 +272,33 @@ export default function CustomerModal() {
                       ) : (
                         <FtextField
                           type="number"
-                          label="পূর্বের বকেয়া"
+                          label={t("prevDue")}
                           name="balance"
                         />
                       )}
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
                       <FtextField
                         type="text"
-                        label="পাসওয়ার্ড"
+                        label={t("PPPoEName")}
+                        name="Pname"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("password")}
                         name="Ppassword"
                       />
-                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                      <FtextField
+                        type="text"
+                        label={t("comment")}
+                        name="Pcomment"
+                      />
                     </div>
 
                     <div className="displayGrid3">
                       <div>
-                        <p>এরিয়া সিলেক্ট করুন</p>
+                        <p> {t("selectArea")} </p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -307,8 +317,8 @@ export default function CustomerModal() {
 
                       <div>
                         <p>
-                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
-                          সিলেক্ট করুন
+                          {subArea ? subArea.name + " এর - " : ""}{" "}
+                          {t("selectSubArea")}
                         </p>
                         <select
                           className="form-select"
@@ -327,23 +337,29 @@ export default function CustomerModal() {
                         </select>
                       </div>
 
-                      <FtextField
-                        type="text"
-                        label="জাতীয় পরিচয়পত্র নং"
-                        name="nid"
-                      />
+                      <FtextField type="text" label={t("NIDno")} name="nid" />
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label="নাম" name="name" />
-                      <FtextField type="text" label="মোবাইল" name="mobile" />
-                      <FtextField type="text" label="ঠিকানা" name="address" />
+                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("mobile")}
+                        name="mobile"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("address")}
+                        name="address"
+                      />
                     </div>
                     <div className="newDisplay">
-                      <FtextField type="text" label="ইমেইল" name="email" />
+                      <FtextField type="text" label={t("email")} name="email" />
 
                       <div className="billCycle">
-                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+                        <p className="customerFieldsTitle">
+                          {t("billingCycle")}
+                        </p>
 
                         <div className="timeDate">
                           <input
@@ -363,7 +379,7 @@ export default function CustomerModal() {
                       {bpSettings?.hasMikrotik && (
                         <div className="displayGrid3">
                           <div className="autoDisable">
-                            <label>অটোমেটিক সংযোগ বন্ধ</label>
+                            <label> {t("automaticConnectionOff")} </label>
                             <input
                               type="checkBox"
                               checked={autoDisable}
@@ -381,14 +397,14 @@ export default function CustomerModal() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

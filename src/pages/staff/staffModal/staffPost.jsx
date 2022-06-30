@@ -9,8 +9,10 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { Card } from "react-bootstrap";
 import { addStaff } from "../../../features/apiCallStaff";
+import { useTranslation } from "react-i18next";
 
 export default function StaffPost() {
+  const { t } = useTranslation();
   // const [Check, setCheck] = useState(RBD);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
@@ -67,7 +69,7 @@ export default function StaffPost() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                কর্মচারী অ্যাড করুন
+                {t("addNewStaff")}
               </h5>
               <button
                 type="button"
@@ -104,39 +106,47 @@ export default function StaffPost() {
                     {/* first part */}
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label="নাম" name="name" />
-                      <FtextField type="text" label="মোবাইল" name="mobile" />
-                      <FtextField type="text" label="ইমেইল" name="email" />
+                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("mobile")}
+                        name="mobile"
+                      />
+                      <FtextField type="text" label={t("email")} name="email" />
                     </div>
 
                     <div className="displayGrid3">
                       <FtextField
                         type="text"
-                        label="পিতার নাম"
+                        label={t("parentName")}
                         name="fatherName"
                       />
-                      <FtextField type="text" label="NID নম্বর" name="nid" />
-                      <FtextField type="text" label="ঠিকানা" name="address" />
+                      <FtextField type="text" label={t("NIDno")} name="nid" />
+                      <FtextField
+                        type="text"
+                        label={t("address")}
+                        name="address"
+                      />
                     </div>
 
                     <Card>
                       <Card.Body>
-                        <Card.Title>রেফারেন্সকারীর তথ্য দিন</Card.Title>
+                        <Card.Title> {t("referenceInformation")} </Card.Title>
                         <Card.Text>
                           <div className="displayGrid3">
                             <FtextField
                               type="text"
-                              label="রেফারেন্স নাম"
+                              label={t("referenceName")}
                               name="refName"
                             />
                             <FtextField
                               type="text"
-                              label="রেফারেন্স মোবাইল"
+                              label={t("referenceMobile")}
                               name="refMobile"
                             />
                             <FtextField
                               type="text"
-                              label="রেফারেন্স্কারীর ইমেইল"
+                              label={t("referenceEmail")}
                               name="refEmail"
                             />
                           </div>
@@ -144,17 +154,17 @@ export default function StaffPost() {
                           <div className="displayGrid3">
                             <FtextField
                               type="text"
-                              label="রেফারেন্সকারীর NID নম্বর"
+                              label={t("referenceNID")}
                               name="refNid"
                             />
                             <FtextField
                               type="text"
-                              label="রেফারেন্সকারীর এড্রেস"
+                              label={t("referenceAddress")}
                               name="refAddress"
                             />
                             <FtextField
                               type="text"
-                              label="রেফারেন্স রিলেশন"
+                              label={t("referenceRelation")}
                               name="refRelation"
                             />
                           </div>
@@ -168,7 +178,7 @@ export default function StaffPost() {
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                       <button
                         type="button"
@@ -176,7 +186,7 @@ export default function StaffPost() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                     </div>
                   </Form>
