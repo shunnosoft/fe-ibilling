@@ -112,10 +112,10 @@ function BillConfirmationSmsTemplate() {
       "ID: CUSTOMER_ID",
       "NAME: CUSTOMER_NAME",
       "BILL: AMOUNT",
-      "DATE: BILL_DATE",
+      "DATE: BILL_NOTE_DATE",
       "MONTH: BILL_MONTH",
-      "NOTE : BILL_NOTE",
-      "DUE : BILL_DUE",
+      "NOTE: BILL_NOTE",
+      "DUE: BILL_DUE",
     ];
     var found = [];
 
@@ -124,7 +124,7 @@ function BillConfirmationSmsTemplate() {
       .replace("ID: CUSTOMER_ID", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
-      .replace("DATE: BILL_DATE", "")
+      .replace("DATE: BILL_NOTE_DATE", "")
       .replace("MONTH: BILL_MONTH", "")
       .replace("NOTE: BILL_NOTE", "")
       .replace("DUE: BILL_DUE", "");
@@ -248,42 +248,12 @@ function BillConfirmationSmsTemplate() {
                     {"BILL: AMOUNT"}
                   </label>
                 </div>
-                <div className="radioselect">
-                  <input
-                    id="5"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={matchFound.includes("DATE: BILL_DATE")}
-                    value={"DATE: BILL_DATE"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="5">
-                    {"DATE: BILL_DATE"}
-                  </label>
-                </div>
               </div>
               <div>
                 <div>
                   <div className="radioselect">
                     <input
-                      id="1"
-                      type="checkbox"
-                      className="getValueUsingClass"
-                      value={"NOTE: BILL_NOTE"}
-                      checked={matchFound.includes("NOTE: BILL_NOTE")}
-                      onChange={(e) => {
-                        itemSettingHandler(e.target.value);
-                      }}
-                    />
-                    <label className="templatelabel" htmlFor="1">
-                      {"NOTE: BILL_NOTE"}
-                    </label>
-                  </div>
-                  <div className="radioselect">
-                    <input
-                      id="1"
+                      id="6"
                       type="checkbox"
                       className="getValueUsingClass"
                       value={"DUE: BILL_DUE"}
@@ -298,7 +268,23 @@ function BillConfirmationSmsTemplate() {
                   </div>
                   <div className="radioselect">
                     <input
-                      id="1"
+                      id="5"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      value={"NOTE: BILL_NOTE"}
+                      checked={matchFound.includes("NOTE: BILL_NOTE")}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="1">
+                      {"NOTE: BILL_NOTE"}
+                    </label>
+                  </div>
+
+                  <div className="radioselect">
+                    <input
+                      id="7"
                       type="checkbox"
                       className="getValueUsingClass"
                       value={"MONTH: BILL_MONTH"}
@@ -309,6 +295,21 @@ function BillConfirmationSmsTemplate() {
                     />
                     <label className="templatelabel" htmlFor="1">
                       {"MONTH: BILL_MONTH"}
+                    </label>
+                  </div>
+                  <div className="radioselect">
+                    <input
+                      id="5"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      checked={matchFound.includes("DATE: BILL_NOTE_DATE")}
+                      value={"DATE: BILL_NOTE_DATE"}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="5">
+                      {"DATE: BILL_NOTE_DATE"}
                     </label>
                   </div>
                 </div>
