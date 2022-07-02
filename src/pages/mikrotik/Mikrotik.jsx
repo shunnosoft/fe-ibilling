@@ -14,8 +14,10 @@ import Footer from "../../components/admin/footer/Footer";
 import MikrotikPost from "./mikrotikModals/MikrotikPost";
 import { fetchMikrotik } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function Mikrotik() {
+  const { t } = useTranslation();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
 
   const dispatch = useDispatch();
@@ -91,7 +93,7 @@ export default function Mikrotik() {
               {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>মাইক্রোটিক</div>
+                  <div> {t("mikrotik")} </div>
                   <div
                     title="মাইক্রোটিক এড করুন"
                     className="header_icon"

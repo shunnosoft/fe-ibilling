@@ -11,6 +11,7 @@ import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import { useTranslation } from "react-i18next";
 const animatedComponents = makeAnimated();
 
 const options = [
@@ -29,6 +30,7 @@ const options = [
 ];
 
 export default function CustomerBillCollect({ single }) {
+  const { t } = useTranslation();
   // get all customer
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -130,7 +132,7 @@ export default function CustomerBillCollect({ single }) {
                   className="modal-title"
                   id="customerModalDetails"
                 >
-                  রিচার্জ করুন
+                  {t("recharge")}
                 </h5>
                 <button
                   type="button"
@@ -163,7 +165,7 @@ export default function CustomerBillCollect({ single }) {
                           <FtextField
                             type="number"
                             name="amount"
-                            label="পরিমান"
+                            label={t("amount")}
                           />
                         </div>
 
@@ -172,7 +174,7 @@ export default function CustomerBillCollect({ single }) {
                             htmlFor="receiver_type"
                             className="form-control-label changeLabelFontColor"
                           >
-                            মাধ্যম
+                            {t("medium")}
                           </label>
 
                           <select
@@ -183,24 +185,26 @@ export default function CustomerBillCollect({ single }) {
                             onChange={(e) => setMedium(e.target.value)}
                           >
                             <option value="cash" selected>
-                              হ্যান্ড ক্যাশ
+                              {t("handCash")}
                             </option>
-                            <option value="bKash">বিকাশ</option>
-                            <option value="rocket">রকেট</option>
-                            <option value="nagod">নগদ</option>
-                            <option value="others">অন্য</option>
+                            <option value="bKash"> {t("bKash")} </option>
+                            <option value="rocket"> {t("rocket")} </option>
+                            <option value="nagod"> {t("nagad")} </option>
+                            <option value="others"> {t("others")} </option>
                           </select>
                         </div>
                       </div>
                       <label className="form-control-label changeLabelFontColor">
-                        ধরণ
+                        {t("billType")}
                       </label>
                       <select
                         className="form-select mt-0 mw-100"
                         onChange={(e) => setBillType(e.target.value)}
                       >
-                        <option value="bill">বিল</option>
-                        <option value="connectionFee">কানেকশন ফি</option>
+                        <option value="bill"> {t("bill")} </option>
+                        <option value="connectionFee">
+                          {t("connectionFee")}
+                        </option>
                       </select>
 
                       <div className="mb-2 mt-3">
@@ -215,7 +219,7 @@ export default function CustomerBillCollect({ single }) {
                           className="form-check-label changeLabelFontColor"
                           htmlFor="addNOte"
                         >
-                          নোট এবং তারিখ
+                          {t("noteAndDate")}
                         </label>
                       </div>
                       {noteCheck && (
@@ -229,23 +233,23 @@ export default function CustomerBillCollect({ single }) {
                                 id="noteField"
                                 onChange={(e) => setNote(e.target.value)}
                               ></textarea>
-                              <label for="noteField">নোট এড করুন</label>
+                              <label for="noteField"> {t("addNote")} </label>
                             </div>
                             <div className="me-3" style={{ width: "100%" }}>
                               <label className="form-control-label changeLabelFontColor">
-                                শুরুর তারিখ
+                                {t("startDate")}
                               </label>
                               <DatePicker
                                 className="form-control mw-100"
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
                                 dateFormat="dd/MM/yyyy"
-                                placeholderText="তারিখ সিলেক্ট করুন"
+                                placeholderText={t("selectDate")}
                               />
                             </div>
                             <div cla style={{ width: "100%" }}>
                               <label className="form-control-label changeLabelFontColor">
-                                শেষ তারিখ
+                                {t("endDate")}
                               </label>
 
                               <DatePicker
@@ -253,7 +257,7 @@ export default function CustomerBillCollect({ single }) {
                                 selected={endDate}
                                 onChange={(date) => setEndDate(date)}
                                 dateFormat="dd/MM/yyyy"
-                                placeholderText="তারিখ সিলেক্ট করুন"
+                                placeholderText={t("selectDate")}
                               />
                             </div>
                           </div>
@@ -261,7 +265,7 @@ export default function CustomerBillCollect({ single }) {
                             className="form-check-label changeLabelFontColor"
                             htmlFor="selectMonth"
                           >
-                            মাস সিলেক্ট করুন
+                            {t("selectMonth")}
                           </label>
                           <Select
                             className="w-50 mt-1"
@@ -269,7 +273,7 @@ export default function CustomerBillCollect({ single }) {
                             onChange={setSelectedMonth}
                             options={options}
                             isMulti={true}
-                            placeholder="মাস সিলেক্ট করুন"
+                            placeholder={t("selectMonth")}
                             isSearchable
                             components={animatedComponents}
                             id="selectMonth"
@@ -278,7 +282,7 @@ export default function CustomerBillCollect({ single }) {
                       )}
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
-                          {isLoading ? <Loader /> : "সাবমিট"}
+                          {isLoading ? <Loader /> : t("submit")}
                         </button>
                       </div>
                     </Form>

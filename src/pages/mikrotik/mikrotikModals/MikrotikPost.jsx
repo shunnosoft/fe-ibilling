@@ -10,8 +10,10 @@ import Loader from "../../../components/common/Loader";
 import { postMikrotik } from "../../../features/apiCalls";
 // import { postMikrotik } from "../../../features/mikrotikSlice";
 // import { fetchMikrotik } from "../../../features/mikrotikSlice";
+import { useTranslation } from "react-i18next";
 
 export default function MikrotikPost() {
+  const { t } = useTranslation();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -49,7 +51,7 @@ export default function MikrotikPost() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন মাইক্রোটিক অ্যাড করুন
+                {t("addNewMikrotik")}
               </h5>
               <button
                 type="button"
@@ -75,17 +77,21 @@ export default function MikrotikPost() {
               >
                 {() => (
                   <Form>
-                    <FtextField type="text" label="নাম" name="name" />
-                    <FtextField type="text" label="ইউজারনেম" name="username" />
+                    <FtextField type="text" label={t("name")} name="name" />
                     <FtextField
                       type="text"
-                      label="মাইক্রোটিক আইপি"
+                      label={t("userName")}
+                      name="username"
+                    />
+                    <FtextField
+                      type="text"
+                      label={t("mikrotikIP")}
                       name="host"
                     />
-                    <FtextField type="text" label="পোর্ট" name="port" />
+                    <FtextField type="text" label={t("port")} name="port" />
                     <FtextField
                       type="password"
-                      label="পাসওয়ার্ড"
+                      label={t("password")}
                       name="password"
                     />
 
@@ -95,10 +101,10 @@ export default function MikrotikPost() {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button type="submit" className="btn btn-success">
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

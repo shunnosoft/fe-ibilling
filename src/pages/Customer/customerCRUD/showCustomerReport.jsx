@@ -11,8 +11,10 @@ import { editCustomerSuccess } from "../../../features/customerSlice";
 import ReactToPrint from "react-to-print";
 import BillCollectInvoiceWithNote from "./customerBillCollectInvoicePDF";
 import BillCollectInvoiceWithoutNote from "./customerBillReportPDFwithNote";
+import { useTranslation } from "react-i18next";
 
 export default function CustomerReport({ single }) {
+  const { t } = useTranslation();
   const billRefwithNote = useRef();
   const billRefwithOutNote = useRef();
   const ispOwnerData = useSelector(
@@ -40,7 +42,7 @@ export default function CustomerReport({ single }) {
   }, [single]);
 
   const deletReport = async (reportId) => {
-    const con = window.confirm("আপনি কি বিল ডিলিট করতে চান?");
+    const con = window.confirm(t("deleteAlert"));
     if (con) {
       try {
         const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
@@ -49,7 +51,7 @@ export default function CustomerReport({ single }) {
         );
         setCustomerReport(updatedState);
         dispatch(editCustomerSuccess(res.data.customer));
-        toast.success("বিল ডিলিট সফল হয়েছে");
+        toast.success(t("deleteAlertSuccess"));
       } catch (error) {
         toast.error(error.response?.data?.message);
         console.log(error);
@@ -74,7 +76,7 @@ export default function CustomerReport({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {single?.name} - রিপোর্ট
+                {single?.name} - {t("report")}
               </h5>
               <button
                 type="button"
@@ -89,26 +91,26 @@ export default function CustomerReport({ single }) {
                   <thead>
                     <tr className="spetialSortingRow">
                       <th style={{ width: "10%" }} scope="col">
-                        প্যাকেজ
+                        {t("package")}
                       </th>
 
                       <th style={{ width: "10%" }} scope="col">
-                        বিল
+                        {t("bill")}
                       </th>
                       <th style={{ width: "30%" }} scope="col">
-                        তারিখ
+                        {t("date")}
                       </th>
                       <th style={{ width: "7%" }} scope="col">
-                        মাধ্যম
+                        {t("medium")}
                       </th>
                       <th style={{ width: "15%" }} scope="col">
-                        কালেক্টর
+                        {t("collector")}
                       </th>
                       <th style={{ width: "40%" }} scope="col">
-                        নোট
+                        {t("note")}
                       </th>
                       <th style={{ width: "8%" }} scope="col">
-                        একশন
+                        {t("action")}
                       </th>
                     </tr>
                   </thead>
@@ -162,7 +164,7 @@ export default function CustomerReport({ single }) {
                                     documentTitle="বিল ইনভয়েস"
                                     trigger={() => (
                                       <div
-                                        title="প্রিন্ট বিল ইনভয়েস"
+                                        title={t("printInvoiceBill")}
                                         style={{ cursor: "pointer" }}
                                       >
                                         <PrinterFill />
@@ -171,7 +173,7 @@ export default function CustomerReport({ single }) {
                                     content={() => billRefwithNote.current}
                                   />
                                 </div>
-                                <div title="ডিলিট রিপোর্ট">
+                                <div title={t("deleteReport")}>
                                   <button
                                     className="border-0 bg-transparent"
                                     onClick={() => deletReport(val.id)}
@@ -203,7 +205,7 @@ export default function CustomerReport({ single }) {
                                     documentTitle="বিল ইনভয়েস"
                                     trigger={() => (
                                       <div
-                                        title="প্রিন্ট বিল ইনভয়েস"
+                                        title={t("printInvoiceBill")}
                                         style={{ cursor: "pointer" }}
                                       >
                                         <PrinterFill />
@@ -212,7 +214,7 @@ export default function CustomerReport({ single }) {
                                     content={() => billRefwithOutNote.current}
                                   />
                                 </div>
-                                <div title="ডিলিট রিপোর্ট">
+                                <div title={t("deleteReport")}>
                                   <button
                                     className="border-0 bg-transparent"
                                     onClick={() => deletReport(val.id)}

@@ -14,8 +14,10 @@ import {
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 export default function CustomerEdit(props) {
+  const { t } = useTranslation();
   // get all customer
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -161,7 +163,7 @@ export default function CustomerEdit(props) {
     const subArea2 = document.getElementById("subAreaIdFromEdit").value;
     if (subArea2 === "") {
       setIsloading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
+      return alert(t("selectSubArea"));
     }
 
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
@@ -235,7 +237,7 @@ export default function CustomerEdit(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {data?.name} - এর প্রোফাইল এডিট করুন
+                {data?.name} {t("editProfile")}
               </h5>
               <button
                 type="button"
@@ -273,7 +275,7 @@ export default function CustomerEdit(props) {
                       {bpSettings?.hasMikrotik ? (
                         <div>
                           <p className="comstomerFieldsTitle">
-                            মাইক্রোটিক সিলেক্ট করুন
+                            {t("selectMikrotik")}
                           </p>
                           <select
                             className="form-select"
@@ -294,7 +296,7 @@ export default function CustomerEdit(props) {
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
-                          প্যাকেজ সিলেক্ট করুন
+                          {t("selectPackage")}
                         </p>
                         <select
                           className="form-select mb-3"
@@ -316,7 +318,7 @@ export default function CustomerEdit(props) {
                       <FtextField
                         type="number"
                         min={0}
-                        label="মাসিক ফি"
+                        label={t("monthFee")}
                         name="monthlyFee"
                       />
 
@@ -325,25 +327,33 @@ export default function CustomerEdit(props) {
                       ) : (
                         <FtextField
                           type="number"
-                          label="ব্যাল্যান্স"
+                          label={t("balance")}
                           name="balance"
                         />
                       )}
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
                       <FtextField
                         type="text"
-                        label="পাসওয়ার্ড"
+                        label={`PPPoE ${t("name")}`}
+                        name="Pname"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("password")}
                         name="Ppassword"
                       />
-                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                      <FtextField
+                        type="text"
+                        label={t("comment")}
+                        name="Pcomment"
+                      />
                     </div>
 
                     <div className="displayGrid3">
                       <div>
-                        <p>এরিয়া সিলেক্ট করুন</p>
+                        <p> {t("selectArea")} </p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -364,7 +374,7 @@ export default function CustomerEdit(props) {
                       </div>
 
                       <div>
-                        <p>সাব-এরিয়া সিলেক্ট করুন</p>
+                        <p> {t("selectSubArea")} </p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -384,23 +394,30 @@ export default function CustomerEdit(props) {
                         </select>
                       </div>
 
-                      <FtextField
-                        type="text"
-                        label="জাতীয় পরিচয়পত্র নং"
-                        name="nid"
-                      />
+                      <FtextField type="text" label={t("NIDno")} name="nid" />
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label="নাম" name="name" />
-                      <FtextField type="text" label="মোবাইল" name="mobile" />
-                      <FtextField type="text" label="ঠিকানা" name="address" />
+                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("mobile")}
+                        name="mobile"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("address")}
+                        name="address"
+                      />
                     </div>
                     <div className="newDisplay">
-                      <FtextField type="text" label="ইমেইল" name="email" />
+                      <FtextField type="text" label={t("email")} name="email" />
 
                       <div className="billCycle">
-                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+                        <p className="customerFieldsTitle">
+                          {" "}
+                          {t("billingCycle")}{" "}
+                        </p>
 
                         <div className="timeDate">
                           <input
@@ -423,7 +440,7 @@ export default function CustomerEdit(props) {
                       </div>
                       {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
-                          <label>অটোমেটিক সংযোগ বন্ধ</label>
+                          <label> {t("automaticConnectionOff")} </label>
                           <input
                             type="checkBox"
                             checked={autoDisable}
@@ -434,7 +451,7 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeStatus">
-                      <p>স্ট্যাটাস</p>
+                      <p>{t("status")}</p>
                       <div className="form-check form-check-inline">
                         <input
                           className="form-check-input"
@@ -448,7 +465,7 @@ export default function CustomerEdit(props) {
                           className="form-check-label"
                           htmlFor="inlineRadio1"
                         >
-                          এক্টিভ
+                          {t("active")}
                         </label>
                       </div>
                       <div className="form-check form-check-inline">
@@ -464,7 +481,7 @@ export default function CustomerEdit(props) {
                           className="form-check-label"
                           htmlFor="inlineRadio2"
                         >
-                          ইন-এক্টিভ
+                          {t("in active")}
                         </label>
                       </div>
                       {data?.status === "expired" && (
@@ -480,7 +497,7 @@ export default function CustomerEdit(props) {
                             className="form-check-label"
                             htmlFor="inlineRadio2"
                           >
-                            এক্সপায়ার্ড
+                            {t("expired")}
                           </label>
                         </div>
                       )}
@@ -493,14 +510,14 @@ export default function CustomerEdit(props) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>
