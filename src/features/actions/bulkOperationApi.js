@@ -77,3 +77,20 @@ export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
     }
   }
 };
+
+export const bulkAutoConnectionEdit = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch("/customer/bulk-auto-disable", data);
+    console.log(res);
+    dispatch(bulkUpdate(res.data.data));
+    document.querySelector("#autoDisableEditModal").click();
+    setIsLoading(false);
+    toast.success("কাস্টমার  আটো ডিজেবল আপডেট সফল হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      toast.error(err.response.data.message);
+    }
+  }
+};

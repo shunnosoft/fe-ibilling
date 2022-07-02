@@ -71,6 +71,15 @@ export default function CustomerBillCollect({ single }) {
       .integer("দশামিক গ্রহনযোগ্য নয়"),
   });
 
+  //form resetFunction
+  const resetForm = () => {
+    setStartDate(false);
+    setEndDate(false);
+    setNote("");
+    setNoteCheck(false);
+    setSelectedMonth(null);
+  };
+
   // bill amount
   const customerBillHandler = (formValue) => {
     const sendingData = {
@@ -92,15 +101,17 @@ export default function CustomerBillCollect({ single }) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
-    if (selectedMonth.length > 0) {
+    if (selectedMonth?.length > 0) {
       const monthValues = selectedMonth.map((item) => {
         return item.value;
       });
       sendingData.month = monthValues.join(",");
     }
-    billCollect(dispatch, sendingData, setLoading);
+
+    billCollect(dispatch, sendingData, setLoading, resetForm);
     setAmount(data.amount);
   };
+
   return (
     <div>
       <div>
@@ -126,6 +137,7 @@ export default function CustomerBillCollect({ single }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={resetForm}
                 ></button>
               </div>
               <div className="modal-body">
@@ -196,6 +208,7 @@ export default function CustomerBillCollect({ single }) {
                           type="checkbox"
                           className="form-check-input me-1"
                           id="addNOte"
+                          checked={noteCheck}
                           onChange={(e) => setNoteCheck(e.target.checked)}
                         />
                         <label

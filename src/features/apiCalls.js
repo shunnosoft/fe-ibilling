@@ -1088,8 +1088,12 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 
 //Bill
 
-export const billCollect = async (dispatch, billData, setLoading) => {
-  // console.log(billData);
+export const billCollect = async (
+  dispatch,
+  billData,
+  setLoading,
+  resetForm = null
+) => {
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/monthlyBill", billData);
@@ -1101,6 +1105,7 @@ export const billCollect = async (dispatch, billData, setLoading) => {
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
     toast.success("বিল গ্রহণ সফল হয়েছে।");
+    resetForm();
   } catch (error) {
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();

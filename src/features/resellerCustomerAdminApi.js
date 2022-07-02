@@ -18,6 +18,23 @@ export const getResellerCustomer = async (dispatch, reseller, setIsloading) => {
   }
 };
 
+// Static Customers
+export const getStaticResellerCustomer = async (
+  dispatch,
+  reseller,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(`/reseller/static/customer/${reseller}`);
+    dispatch(getResellerCustomerSuccess(res.data));
+    setIsloading(false);
+  } catch (error) {
+    console.log(error.message);
+    setIsloading(false);
+  }
+};
+
 export const editResellerCustomer = async (
   dispatch,
   sendingData,

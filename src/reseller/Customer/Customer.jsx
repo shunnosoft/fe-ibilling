@@ -137,6 +137,33 @@ export default function Customer() {
     }
   }, [dispatch, resellerId, userData, role]);
 
+  //get possible total monthly fee
+  const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
+  const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
+  const [totalDue, setTotalDue] = useState(0);
+  const [hasDue, setDue] = useState(false);
+
+  useEffect(() => {
+    if (cus) {
+      let totalMonthlyFee = 0;
+      let totalDue = 0;
+      let advanceFee = 0;
+      for (let i = 0; i < cus.length; i++) {
+        totalMonthlyFee += cus[i].monthlyFee;
+        if (cus[i].balance < 0) {
+          totalDue += Math.abs(cus[i].balance);
+        }
+        if (cus[i].balance > 0) {
+          advanceFee += cus[i].balance;
+        }
+      }
+      if (totalDue > 0) setDue(true);
+      setTotalMonthlyFee(totalMonthlyFee - advanceFee);
+      setTotalDue(totalDue);
+      setTotalFeeWithDue(totalMonthlyFee + totalDue - advanceFee);
+    }
+  }, [cus]);
+
   const [subAreaIds, setSubArea] = useState([]);
 
   useEffect(() => {
@@ -326,6 +353,15 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <h2>গ্রাহক </h2>
+                  <div className="h6 d-flex justify-content-center align-items-start">
+                    <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
+                    {hasDue && (
+                      <>
+                        <p>পূর্বের মোট বকেয়া: {totalDue}</p>
+                        <p>মোট সম্ভাব্য বিল (বকেয়া সহ): {totalFeeWithDue}</p>
+                      </>
+                    )}
+                  </div>
                   <div
                     className="header_icon"
                     data-bs-toggle="modal"

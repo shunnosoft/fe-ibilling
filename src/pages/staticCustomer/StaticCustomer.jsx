@@ -48,6 +48,7 @@ import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
+import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -133,6 +134,33 @@ export default function Customer() {
       setAreas(areas);
     }
   }, [collectorArea, role]);
+
+  //get possible total monthly fee
+  const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
+  const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
+  const [totalDue, setTotalDue] = useState(0);
+
+  const [hasDue, setDue] = useState(false);
+  useEffect(() => {
+    if (cus) {
+      let totalMonthlyFee = 0;
+      let totalDue = 0;
+      let advanceFee = 0;
+      for (let i = 0; i < cus.length; i++) {
+        totalMonthlyFee += cus[i].monthlyFee;
+        if (cus[i].balance < 0) {
+          totalDue += Math.abs(cus[i].balance);
+        }
+        if (cus[i].balance > 0) {
+          advanceFee += cus[i].balance;
+        }
+      }
+      if (totalDue > 0) setDue(true);
+      setTotalMonthlyFee(totalMonthlyFee - advanceFee);
+      setTotalDue(totalDue);
+      setTotalFeeWithDue(totalMonthlyFee + totalDue - advanceFee);
+    }
+  }, [cus]);
 
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
@@ -618,6 +646,16 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="me-3"> {t("staticCustomer")} </div>
+                  <div className="h6 d-flex justify-content-center align-items-start">
+                    <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
+                    {hasDue && (
+                      <>
+                        <p>পূর্বের মোট বকেয়া: {totalDue}</p>
+
+                        <p>মোট সম্ভাব্য বিল (বকেয়া সহ): {totalFeeWithDue}</p>
+                      </>
+                    )}
+                  </div>
                   <div
                     className="d-flex"
                     style={{
@@ -719,6 +757,10 @@ export default function Customer() {
               <BulkCustomerDelete
                 bulkCustomer={bulkCustomer}
                 modalId="bulkDeleteCustomer"
+              />
+              <BulkAutoConnectionEdit
+                bulkCustomer={bulkCustomer}
+                modalId="autoDisableEditModal"
               />
               {/* bulk Modal end */}
 
@@ -1029,6 +1071,17 @@ export default function Customer() {
           >
             <i class="fas fa-edit"></i>
             <span className="button_title">এডিট বিলিং সাইকেল</span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title="অটো সংযোগ অন/অফ"
+            data-bs-toggle="modal"
+            data-bs-target="#autoDisableEditModal"
+            type="button"
+            class="btn btn-primary btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
           <button
             className="bulk_action_button"

@@ -46,6 +46,7 @@ import BulkStatusEdit from "./customerCRUD/bulkOpration/bulkStatusEdit";
 import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
+import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 
 // import apiLink from ""
 export default function Customer() {
@@ -114,6 +115,10 @@ export default function Customer() {
     package: "",
     mikrotik: "",
   });
+  const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
+  const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
+  const [totalDue, setTotalDue] = useState(0);
+  const [hasDue, setDue] = useState(false);
   const [freeUser, setFreeUser] = useState("");
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
@@ -128,6 +133,28 @@ export default function Customer() {
     }
     getCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
+
+  //get possible total monthly fee
+  useEffect(() => {
+    if (cus) {
+      let totalMonthlyFee = 0;
+      let totalDue = 0;
+      let advanceFee = 0;
+      for (let i = 0; i < cus.length; i++) {
+        totalMonthlyFee += cus[i].monthlyFee;
+        if (cus[i].balance < 0) {
+          totalDue += Math.abs(cus[i].balance);
+        }
+        if (cus[i].balance > 0) {
+          advanceFee += cus[i].balance;
+        }
+      }
+      if (totalDue > 0) setDue(true);
+      setTotalMonthlyFee(totalMonthlyFee - advanceFee);
+      setTotalDue(totalDue);
+      setTotalFeeWithDue(totalMonthlyFee + totalDue - advanceFee);
+    }
+  }, [cus]);
 
   // collector filter
   useEffect(() => {
@@ -620,7 +647,17 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>{t("customer")} </div>
+                  <div>{t("customer")}</div>
+                  <div className="h6 d-flex justify-content-center align-items-start">
+                    <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
+                    {hasDue && (
+                      <>
+                        <p>পূর্বের মোট বকেয়া: {totalDue}</p>
+                        <p>মোট সম্ভাব্য বিল (বকেয়া সহ): {totalFeeWithDue}</p>
+                      </>
+                    )}
+                  </div>
+
                   {permission?.customerAdd || role === "ispOwner" ? (
                     <div
                       style={{
@@ -700,6 +737,11 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="bulkDeleteCustomer"
               />
+              <BulkAutoConnectionEdit
+                bulkCustomer={bulkCustomer}
+                modalId="autoDisableEditModal"
+              />
+
               {/* bulk Modal end */}
 
               {/* Model finish */}
@@ -1042,6 +1084,17 @@ export default function Customer() {
           >
             <i class="fas fa-edit"></i>
             <span className="button_title"> {t("editBillingCycle")} </span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title="অটো সংযোগ অন/অফ"
+            data-bs-toggle="modal"
+            data-bs-target="#autoDisableEditModal"
+            type="button"
+            class="btn btn-primary btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
           <button
             className="bulk_action_button"

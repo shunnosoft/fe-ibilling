@@ -57,10 +57,21 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
               </tr>
               <tr>
                 <td className="font-weight-bold">
-                  নামঃ {customerData.name} <br />
-                  {customerData.mobile && `মোবাইলঃ ${customerData.mobile}`}
+                  নামঃ {customerData.name}
+                  {customerData.mobile && (
+                    <>
+                      <br />
+                      মোবাইলঃ {customerData.mobile}
+                    </>
+                  )}
+                  {customerData.address && (
+                    <>
+                      <br />
+                      ঠিকানাঃ {customerData.address}
+                    </>
+                  )}
                   <br />
-                  {customerData.address && `ঠিকানা ${customerData.address}`}
+                  {`PPPOE নামঃ ${customerData.pppoe.name}`}
                 </td>
               </tr>
             </tbody>

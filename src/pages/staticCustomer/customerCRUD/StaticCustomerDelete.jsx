@@ -17,14 +17,23 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // DELETE handler
   const deleteStaticCustomer = (customerId) => {
+    let checkCondition = true;
+
+    if (mikrotikCheck) {
+      checkCondition = window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
+    }
+
     // send data for api
     const data = {
       ispID: ispOwnerId,
       customerID: customerId,
       mikrotik: mikrotikCheck,
     };
+
     // api call
-    deleteStaticCustomerApi(dispatch, data, setIsloading);
+    if (checkCondition) {
+      deleteStaticCustomerApi(dispatch, data, setIsloading);
+    }
   };
 
   return (
@@ -81,9 +90,6 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               </button>
               <button
                 onClick={() => {
-                  if (mikrotikCheck) {
-                    window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
-                  }
                   deleteStaticCustomer(single.id);
                 }}
                 className="btn btn-success"
