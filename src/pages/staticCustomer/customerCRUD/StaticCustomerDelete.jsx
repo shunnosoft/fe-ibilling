@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { deleteStaticCustomerApi } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -43,7 +45,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               className="modal-title"
               id="customerModalDetails"
             >
-              গ্রাহক ডিলিট
+              {t("customerDelete")}
             </h5>
             <button
               type="button"
@@ -53,7 +55,9 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
             ></button>
           </div>
           <div className="modal-body">
-            <h5>{single?.name} গ্রাহক কে ডিলিট করুন</h5>
+            <h5>
+              {single?.name} {t("customerDelete")}
+            </h5>
 
             <div class="form-check mt-4">
               <input
@@ -64,9 +68,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 onChange={(event) => setMikrotikCheck(event.target.checked)}
               />
               <label class="form-check-label" for="flexCheckDefault">
-                <small className="text-secondary">
-                  মাইক্রোটিক থেকে ডিলিট করতে চান ?
-                </small>
+                <small className="text-secondary">{t("deleteMikrotik")}</small>
               </label>
             </div>
 
@@ -77,19 +79,19 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 data-bs-dismiss="modal"
                 disabled={isLoading}
               >
-                বাতিল করুন
+                {t("cancle")}
               </button>
               <button
                 onClick={() => {
                   if (mikrotikCheck) {
-                    window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
+                    window.confirm(t("deleteMikrotik"));
                   }
                   deleteStaticCustomer(single.id);
                 }}
                 className="btn btn-success"
                 disabled={isLoading}
               >
-                {isLoading ? <Loader /> : "ডিলিট"}
+                {isLoading ? <Loader /> : t("delete")}
               </button>
             </div>
           </div>

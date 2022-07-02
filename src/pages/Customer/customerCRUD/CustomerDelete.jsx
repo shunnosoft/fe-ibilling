@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { deleteACustomer } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
+  const { t } = useTranslation();
   // get all customer
   const customers = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -28,7 +30,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
     let checkCondition = true;
 
     if (mikrotikCheck) {
-      checkCondition = window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
+      checkCondition = window.confirm(t("deleteMikrotik"));
     }
 
     // send data for api
@@ -60,7 +62,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               className="modal-title"
               id="customerModalDetails"
             >
-              গ্রাহক ডিলিট
+              {t("customerDelete")}
             </h5>
             <button
               type="button"
@@ -70,7 +72,9 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
             ></button>
           </div>
           <div className="modal-body">
-            <h5>{singleData?.name} গ্রাহক কে ডিলিট করুন</h5>
+            <h5>
+              {singleData?.name} {t("deleteCustomer")}{" "}
+            </h5>
 
             <div class="form-check mt-4">
               <input
@@ -81,9 +85,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 onChange={(event) => setMikrotikCheck(event.target.checked)}
               />
               <label class="form-check-label" for="flexCheckDefault">
-                <small className="text-secondary">
-                  মাইক্রোটিক থেকে ডিলিট করতে চান ?
-                </small>
+                <small className="text-secondary">{t("deleteMikrotik")}</small>
               </label>
             </div>
 
@@ -94,7 +96,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 data-bs-dismiss="modal"
                 disabled={isLoading}
               >
-                বাতিল করুন
+                {t("cancle")}
               </button>
               <button
                 onClick={() => {
@@ -103,7 +105,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 className="btn btn-success"
                 disabled={isLoading}
               >
-                {isLoading ? <Loader /> : "ডিলিট"}
+                {isLoading ? <Loader /> : t("delete")}
               </button>
             </div>
           </div>

@@ -11,8 +11,10 @@ import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
 import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
+import { useTranslation } from "react-i18next";
 
 export default function StaticCustomerEdit({ single }) {
+  const { t } = useTranslation();
   const customer = useSelector((state) =>
     state?.persistedReducer?.customer?.staticCustomer.find(
       (item) => item.id === single
@@ -257,7 +259,7 @@ export default function StaticCustomerEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                গ্রাহক আপডেট করুন
+                {t("updateCustomer")}
               </h5>
               <button
                 type="button"
@@ -290,7 +292,7 @@ export default function StaticCustomerEdit({ single }) {
                     <div className="static_customer_edit_modal">
                       <div className="static_edit_item">
                         <p className="comstomerFieldsTitle">
-                          মাইক্রোটিক সিলেক্ট করুন
+                          {t("selectMikrotik")}
                         </p>
                         <select
                           className="form-select mw-100"
@@ -313,7 +315,7 @@ export default function StaticCustomerEdit({ single }) {
                         </select>
                       </div>
                       <div className="static_edit_item">
-                        <p>এরিয়া সিলেক্ট করুন</p>
+                        <p> {t("selectArea")} </p>
                         <select
                           className="form-select mw-100"
                           aria-label="Default select example"
@@ -369,7 +371,7 @@ export default function StaticCustomerEdit({ single }) {
                         <div className="static_edit_item">
                           <FtextField
                             type="text"
-                            label="কিউ নাম"
+                            label={t("queueName")}
                             name="queueName"
                           />
                         </div>
@@ -379,7 +381,7 @@ export default function StaticCustomerEdit({ single }) {
                         <div className="static_edit_item">
                           <FtextField
                             type="text"
-                            label="আইপি এড্রেস"
+                            label={t("ip")}
                             name="target"
                           />
                         </div>
@@ -389,7 +391,7 @@ export default function StaticCustomerEdit({ single }) {
                           <>
                             <FtextField
                               type="text"
-                              label="আইপি এড্রেস"
+                              label={t("ip")}
                               name="ipAddress"
                             />
                           </>
@@ -399,7 +401,7 @@ export default function StaticCustomerEdit({ single }) {
                         <div className="static_edit_item">
                           <>
                             <p className="comstomerFieldsTitle">
-                              প্যাকেজ সিলেক্ট করুন
+                              {t("selectPackage")}
                             </p>
                             <select
                               name="firewallPackage"
@@ -432,7 +434,7 @@ export default function StaticCustomerEdit({ single }) {
                         <div className="static_edit_item">
                           <>
                             <p className="comstomerFieldsTitle">
-                              আপলোড প্যাকেজ
+                              {t("uploadPackge")}
                             </p>
                             <select
                               name="upPackage"
@@ -463,7 +465,7 @@ export default function StaticCustomerEdit({ single }) {
 
                       {userType === "simple-queue" && (
                         <div className="static_edit_item">
-                          <p>ডাউনলোড প্যাকেজ</p>
+                          <p> {t("downloadPackge")} </p>
                           <select
                             name="downPackage"
                             className="form-select mw-100 mt-0 mb-3"
@@ -492,7 +494,7 @@ export default function StaticCustomerEdit({ single }) {
                       <div className="static_edit_item">
                         <FtextField
                           type="number"
-                          label="মাসিক ফি"
+                          label={t("monthFee")}
                           name="monthlyFee"
                           min={0}
                           value={monthlyFee}
@@ -503,26 +505,40 @@ export default function StaticCustomerEdit({ single }) {
                         <div className="static_edit_item">
                           <FtextField
                             type="number"
-                            label="পূর্বের বকেয়া"
+                            label={t("prevDue")}
                             name="balance"
                           />
                         </div>
                       )}
 
                       <div className="static_edit_item">
-                        <FtextField type="text" label="নাম" name="name" />
+                        <FtextField type="text" label={t("name")} name="name" />
                       </div>
                       <div className="static_edit_item">
-                        <FtextField type="text" label="মোবাইল" name="mobile" />
+                        <FtextField
+                          type="text"
+                          label={t("mobile")}
+                          name="mobile"
+                        />
                       </div>
                       <div className="static_edit_item">
-                        <FtextField type="text" label="ঠিকানা" name="address" />
+                        <FtextField
+                          type="text"
+                          label={t("address")}
+                          name="address"
+                        />
                       </div>
                       <div className="static_edit_item">
-                        <FtextField type="text" label="ইমেইল" name="email" />
+                        <FtextField
+                          type="text"
+                          label={t("email")}
+                          name="email"
+                        />
                       </div>
                       <div className="static_edit_item">
-                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+                        <p className="customerFieldsTitle">
+                          {t("billingCycle")}{" "}
+                        </p>
 
                         <div className="timeDate">
                           <input
@@ -541,7 +557,7 @@ export default function StaticCustomerEdit({ single }) {
                       <div className="static_edit_item">
                         {bpSettings?.hasMikrotik && (
                           <div className="autoDisable">
-                            <label>অটোমেটিক সংযোগ বন্ধ</label>
+                            <label> {t("automaticConnectionOff")} </label>
                             <input
                               type="checkBox"
                               checked={autoDisable}
@@ -552,7 +568,7 @@ export default function StaticCustomerEdit({ single }) {
                       </div>
 
                       <div className="pppoeStatus">
-                        <p>স্ট্যাটাস</p>
+                        <p> {t("status")} </p>
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
@@ -566,7 +582,7 @@ export default function StaticCustomerEdit({ single }) {
                             className="form-check-label"
                             htmlFor="inlineRadio1"
                           >
-                            এক্টিভ
+                            {t("active")}
                           </label>
                         </div>
                         <div className="form-check form-check-inline">
@@ -582,7 +598,7 @@ export default function StaticCustomerEdit({ single }) {
                             className="form-check-label"
                             htmlFor="inlineRadio2"
                           >
-                            ইন-এক্টিভ
+                            {t("in active")}
                           </label>
                         </div>
 
@@ -599,7 +615,7 @@ export default function StaticCustomerEdit({ single }) {
                               className="form-check-label"
                               htmlFor="inlineRadio2"
                             >
-                              এক্সপায়ার্ড
+                              {t("expired")}
                             </label>
                           </div>
                         )}
@@ -612,14 +628,14 @@ export default function StaticCustomerEdit({ single }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

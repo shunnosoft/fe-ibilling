@@ -4,8 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
+import { useTranslation } from "react-i18next";
 
 export default function CustomerDetails({ single }) {
+  const { t } = useTranslation();
   // get all customer
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -34,7 +36,7 @@ export default function CustomerDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {data?.name} - প্রোফাইল
+                {data?.name} - {t("profile")}
               </h5>
               <button
                 type="button"
@@ -47,47 +49,47 @@ export default function CustomerDetails({ single }) {
               <h2 className="ProfileName">{data?.name}</h2>
               <div className="profileMain">
                 <div>
-                  <h5>গ্রাহক</h5>
+                  <h5> {t("customer")}</h5>
                   <hr />
                   <h6>
-                    গ্রাহক আইডি: <b>{data?.customerId}</b>
+                    {t("customerId")} : <b>{data?.customerId}</b>
                   </h6>
                   <h6>
-                    নাম: <b>{data?.name}</b>
+                    {t("name")} : <b>{data?.name}</b>
                   </h6>
                   <h6>
-                    মোবাইল: <b>{data?.mobile}</b>
+                    {t("mobile")} : <b>{data?.mobile}</b>
                   </h6>
                   <h6>
-                    ঠিকানা: <b>{data?.address}</b>
+                    {t("address")} : <b>{data?.address}</b>
                   </h6>
                   <h6>
-                    ইমেইল: <b> {data?.email}</b>
+                    {t("email")} : <b> {data?.email}</b>
                   </h6>
                   <h6>
-                    জাতীয় পরিচয়পত্র: <b>{data?.nid}</b>
+                    {t("NIDno")} : <b>{data?.nid}</b>
                   </h6>
                   <h6>
-                    স্ট্যাটাস: <b>{badge(data?.status)}</b>
+                    {t("status")} : <b>{badge(data?.status)}</b>
                   </h6>
                   <h6>
-                    পেমেন্ট: <b>{badge(data?.paymentStatus)}</b>
+                    {t("payment")} : <b>{badge(data?.paymentStatus)}</b>
                   </h6>
                   <h6>
-                    মাসিক ফি:<b> {FormatNumber(data?.monthlyFee)}</b>
+                    {t("monthFee")} :<b> {FormatNumber(data?.monthlyFee)}</b>
                   </h6>
                   <h6>
-                    ব্যালেন্স:<b> {FormatNumber(data?.balance)}</b>
+                    {t("balance")} :<b> {FormatNumber(data?.balance)}</b>
                   </h6>
                   <h6>
-                    বিলিং সাইকেল:{" "}
+                    {t("billingCycle")} :{" "}
                     <b>
                       {moment(data?.billingCycle).format("DD-MM-YYYY hh:mm A")}
                     </b>
                   </h6>
                   {bpSettings?.hasMikrotik && (
                     <h6>
-                      অটোমেটিক সংযোগ বন্ধ:{" "}
+                      {t("automaticConnectionOff")} :{" "}
                       <b>{data?.autoDisable ? "YES" : "NO"}</b>
                     </h6>
                   )}
@@ -96,19 +98,19 @@ export default function CustomerDetails({ single }) {
                   <h5>PPPoE</h5>
                   <hr />
                   <h6>
-                    ইউজারনেম: <b>{data?.pppoe?.name}</b>
+                    {t("userName")} : <b>{data?.pppoe?.name}</b>
                   </h6>
                   <h6>
                     <h6>
-                      পাসওয়ার্ড: <b>{data?.pppoe?.password}</b>
+                      {t("password")} : <b>{data?.pppoe?.password}</b>
                     </h6>
-                    প্রোফাইল: <b> {data?.pppoe?.profile}</b>
+                    {t("profile")} : <b> {data?.pppoe?.profile}</b>
                   </h6>
                   <h6>
-                    সার্ভিস: <b>{data?.pppoe?.service}</b>
+                    {t("service")} : <b>{data?.pppoe?.service}</b>
                   </h6>
                   <h6>
-                    কমেন্ট: <b>{data?.pppoe?.comment}</b>
+                    {t("comment")} : <b>{data?.pppoe?.comment}</b>
                   </h6>
                 </div>
               </div>
