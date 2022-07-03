@@ -6,6 +6,7 @@ import {
   ChatText,
 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ActionButton = ({
   data,
@@ -13,6 +14,7 @@ const ActionButton = ({
   editHandler,
   handleSingleMessage,
 }) => {
+  const { t } = useTranslation();
   return (
     <>
       <div className="dropdown">
@@ -35,7 +37,7 @@ const ActionButton = ({
             <div className="dropdown-item">
               <div className="customerAction">
                 <PenFill />
-                <p className="actionP">এডিট</p>
+                <p className="actionP"> {t("edit")} </p>
               </div>
             </div>
           </li>
@@ -44,7 +46,7 @@ const ActionButton = ({
               <div className="dropdown-item actionManager">
                 <div className="customerAction">
                   <CurrencyDollar />
-                  <p className="actionP">স্যালারি</p>
+                  <p className="actionP"> {t("salary")} </p>
                 </div>
               </div>
             </li>
@@ -57,7 +59,7 @@ const ActionButton = ({
             <div className="dropdown-item actionManager">
               <div className="customerAction">
                 <ArchiveFill />
-                <p className="actionP">ডিলিট</p>
+                <p className="actionP"> {t("delete")} </p>
               </div>
             </div>
           </li>
@@ -72,7 +74,7 @@ const ActionButton = ({
               <div className="dropdown-item">
                 <div className="customerAction">
                   <ChatText />
-                  <p className="actionP">মেসেজ</p>
+                  <p className="actionP"> {t("message")} </p>
                 </div>
               </div>
             </li>

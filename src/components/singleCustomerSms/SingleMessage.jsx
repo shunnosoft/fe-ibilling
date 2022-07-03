@@ -4,8 +4,10 @@ import Loader from "../common/Loader";
 import { smsCount } from "../common/UtilityMethods";
 import apiLink from "../../api/apiLink";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const SingleMessage = ({ single, sendCustomer }) => {
+  const { t } = useTranslation();
   // get current user from redux
   const cureentAuth = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser?.ispOwner
@@ -88,7 +90,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
   // validation check
   const hadleRequired = () => {
     if (!messageLength) {
-      setErrMsg("এসএমএস পরিমান দিন");
+      setErrMsg(t("smsAmount"));
     }
   };
 
@@ -113,11 +115,11 @@ const SingleMessage = ({ single, sendCustomer }) => {
         // owner api call
         const owner = await apiLink.get(`/ispOwner/${cureentAuth?.id}`);
 
-        alert(`স্যাম্পল SMS:\n\n${messageLength}`);
+        alert(`${t("sampleSMS")} :\n\n${messageLength}`);
         if (owner.data.smsBalance >= smsAmount) {
           // message confirm alert
           let condition = window.confirm(
-            `${data.name} গ্রাহক মেসেজ পাবে। ${smsAmount} টি SMS খরচ হবে।`
+            `${data.name}  ${t("getSMS")} ${smsAmount} ${t("expenseSMS")} `
           );
           if (condition) {
             // sms api call
@@ -129,9 +131,9 @@ const SingleMessage = ({ single, sendCustomer }) => {
             setIsloading(false);
             if (res.data.status) {
               document.querySelector("#customerMessageModal").click();
-              toast.success("সফলভাবে SMS পাঠানো হয়েছে।");
+              toast.success(t("successAlertSMS"));
             } else {
-              toast.error("সমস যায়নি");
+              toast.error(t("sendingProblem"));
             }
           }
         }
@@ -139,7 +141,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
         toast.error(error.response.message);
       }
     } else {
-      setErrMsg("এসএমএস পরিমান দিন");
+      setErrMsg(t("smsAmount"));
     }
   };
   return (
@@ -154,7 +156,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} কে মেসেজ করুন
+              {data?.name} {t("sendingMessage")}
             </h5>
             <button
               type="button"
@@ -172,11 +174,11 @@ const SingleMessage = ({ single, sendCustomer }) => {
                     for="exampleFormControlTextarea1"
                     class="form-label fw-bold mb-0"
                   >
-                    মেসেজ
+                    {t("message")}
                   </label>
                   <div className="smsCount mt-0">
                     <span className="smsLength">
-                      অক্ষরঃ {messageLength.length}
+                      {t("letter")} {messageLength.length}
                     </span>
                     <span>SMS: {smsAmount}</span>
                   </div>
@@ -185,7 +187,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
                   class="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
-                  placeholder="মেসেজ লিখুন"
+                  placeholder={t("messageLikhun")}
                   onChange={handleChange}
                   onBlur={hadleRequired}
                 ></textarea>
@@ -200,14 +202,14 @@ const SingleMessage = ({ single, sendCustomer }) => {
                   data-bs-dismiss="modal"
                   disabled={isLoading}
                 >
-                  বাতিল করুন
+                  {t("cancle")}
                 </button>
                 <button
                   type="submit"
                   className="btn btn-success"
                   disabled={isLoading}
                 >
-                  {isLoading ? <Loader /> : "সেন্ড মেসেজ"}
+                  {isLoading ? <Loader /> : t("sendMessage")}
                 </button>
               </div>
             </form>

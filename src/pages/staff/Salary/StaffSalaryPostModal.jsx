@@ -8,8 +8,10 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { addSalaryApi } from "../../../features/apiCallStaff";
+import { useTranslation } from "react-i18next";
 
 export default function StaffSalaryPostModal({ staffId }) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
@@ -54,7 +56,7 @@ export default function StaffSalaryPostModal({ staffId }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                স্যালারি অ্যাড করুন
+                {t("addSalary")}
               </h5>
               <button
                 type="button"
@@ -83,16 +85,24 @@ export default function StaffSalaryPostModal({ staffId }) {
                     {/* first part */}
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label="এমাউন্ট" name="amount" />
-                      <FtextField type="text" label="বকেয়া" name="due" />
+                      <FtextField
+                        type="text"
+                        label={t("amount")}
+                        name="amount"
+                      />
+                      <FtextField type="text" label={t("due")} name="due" />
                       <FtextField
                         type="date"
-                        label="মাস এবং বছর সিলেক্ট করুন"
+                        label={t("selectMonthAndYear")}
                         name="date"
                       />
                     </div>
 
-                    <FtextField type="text" label="মন্তব্য" name="remarks" />
+                    <FtextField
+                      type="text"
+                      label={t("comment")}
+                      name="remarks"
+                    />
 
                     <div className="modal-footer modalFooterEdit">
                       <button
@@ -100,7 +110,7 @@ export default function StaffSalaryPostModal({ staffId }) {
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                       <button
                         type="button"
@@ -108,7 +118,7 @@ export default function StaffSalaryPostModal({ staffId }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                     </div>
                   </Form>

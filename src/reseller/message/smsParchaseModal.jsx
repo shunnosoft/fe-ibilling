@@ -4,8 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import "./message.css";
 
 import { purchaseSms } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 function SmsParchase() {
+  const { t } = useTranslation();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setIsloading] = useState(false);
@@ -23,7 +25,7 @@ function SmsParchase() {
   const submitHandler = (e) => {
     // console.log(amount, count);
     if (count * userData.smsRate < 100) {
-      alert("দুঃখিত, ১০০ টাকার নিচে এসএমএস ক্রয় করা সম্ভব নয়।");
+      alert(t("unsuccessSMSalertPurchageModal"));
     } else {
       let data = {
         amount,
@@ -50,7 +52,7 @@ function SmsParchase() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                এসএমএস পার্চেজ বোর্ড
+                {t("smsPurchageBoard")}
               </h5>
               <button
                 type="button"
@@ -63,14 +65,14 @@ function SmsParchase() {
               <div className="smsPerchase">
                 <div className="smsbuy">
                   <div className="amountsms">
-                    <span className="kroymullo">ক্রয়মূল্যঃ </span>
+                    <span className="kroymullo"> {t("purchagePrice")} </span>
                     <span className="price">
                       <strong> {amount} Tk</strong>
                     </span>
                   </div>
 
                   <div className="numsms">
-                    <span className="smsspan">এসএমএস সংখ্যাঃ </span>
+                    <span className="smsspan"> {t("sms")} </span>
                     <input
                       onChange={(e) => changeHandler(e.target.value)}
                       className="smsinput"
@@ -85,13 +87,13 @@ function SmsParchase() {
                     data-bs-dismiss="modal"
                     className="smsparchasebtn button2"
                   >
-                    বাতিল করুন
+                    {t("cancle")}
                   </button>
                   <button
                     className="smsparchasebtn button1"
                     onClick={(e) => submitHandler(e)}
                   >
-                    কিনুন
+                    {t("buySMS")}
                   </button>
                 </div>
               </div>
