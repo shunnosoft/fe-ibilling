@@ -223,5 +223,18 @@
   "PPPoEPackageSync": "PPPoE গ্রাহক সিংক",
   "staticCustomerSync": "স্ট্যাটিক গ্রাহক সিংক",
   "select": "সিলেক্ট করুন",
-  "PPPoEPackage": "PPPoE প্যাকেজ"
+  "PPPoEPackage": "PPPoE প্যাকেজ",
+  "id": "আইডি",
+  "payment": "পেমেন্ট",
+  "mountly": "মাসিক",
+  "balance": "ব্যালেন্স",
+  "billingCycle": "বিল ডেট",
+  "editSubArea": "সাব-এরিয়া এডিট করুন",
+  "subAreaName": "সাব-এরিয়া নাম",
+  "cancle": "বাতিল করুন",
+  "save": "সেভ করুন",
+  "ofSubArea": "এর সাব-এরিয়া",
+  "addSubArea": "সাব-এরিয়া এড করুন",
+  "doYouWantDeleteSubArea": "আপনি কি সাব-এরিয়া ডিলিট করতে চান?",
+  "haveSubAreasCustomers": "এই সাব-এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না"
 }

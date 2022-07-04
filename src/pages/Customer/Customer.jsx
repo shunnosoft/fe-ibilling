@@ -416,28 +416,28 @@ export default function Customer() {
       },
       {
         width: "8%",
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customerId",
       },
       {
         width: "10%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "10%",
-        Header: "PPPoE",
+        Header: t("PPPoE"),
         accessor: "pppoe.name",
       },
       {
         width: "12%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
 
       {
         width: "9%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -445,7 +445,7 @@ export default function Customer() {
       },
       {
         width: "9%",
-        Header: "পেমেন্ট",
+        Header: t("payment"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -453,17 +453,17 @@ export default function Customer() {
       },
       {
         width: "10%",
-        Header: "মাসিক ফি",
+        Header: t("mountly"),
         accessor: "monthlyFee",
       },
       {
         width: "9%",
-        Header: "ব্যালেন্স",
+        Header: t("balance"),
         accessor: "balance",
       },
       {
         width: "12%",
-        Header: "বিল সাইকেল",
+        Header: t("billingCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
@@ -472,7 +472,7 @@ export default function Customer() {
 
       {
         width: "7%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -600,7 +600,7 @@ export default function Customer() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   const mikrotikHandler = async (id) => {

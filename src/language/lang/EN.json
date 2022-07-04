@@ -221,5 +221,18 @@
   "PPPoEPackageSync": "PPPoE Package Sync",
   "staticCustomerSync": "Static Customer Sync",
   "select": "Select",
-  "PPPoEPackage": "PPPoE Package"
+  "PPPoEPackage": "PPPoE Package",
+  "id": "ID",
+  "payment": "Payment",
+  "mountly": "Mountly",
+  "balance": "Balance",
+  "billingCycle": "Billing Date",
+  "editSubArea": "Edit Sub Area",
+  "subAreaName": "Sub Area Name",
+  "cancle": "Cancle",
+  "save": "Save",
+  "ofSubArea": "Sub Areas",
+  "addSubArea": "Add Sub Area",
+  "doYouWantDeleteSubArea": "Do you want to delete your Sub Area ?",
+  "haveSubAreasCustomers": "You can't delete Sub Area cause contain customers"
 }
