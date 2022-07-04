@@ -25,8 +25,10 @@ import { FtextField } from "../../components/common/FtextField";
 import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function SubArea() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { areaId } = useParams();
   const area = useSelector((state) => state.persistedReducer.area.area);
@@ -96,9 +98,9 @@ export default function SubArea() {
       }
     });
     if (isCustomer) {
-      toast.warn("এই সাব-এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না");
+      toast.warn(t("doNotDeleteSubAreaAlert"));
     } else {
-      let con = window.confirm("আপনি কি সাব-এরিয়া ডিলিট করতে চান?");
+      let con = window.confirm(t("deleteSubAreaAlert"));
       if (con) {
         setIsLoading(true);
         const IDs = {
@@ -206,7 +208,7 @@ export default function SubArea() {
                   <div className="modal-content">
                     <div className="modal-header">
                       <h5 className="modal-title" id="exampleModalLabel">
-                        সাব-এরিয়া এডিট করুন
+                        {t("editSubArea")}
                       </h5>
                       <button
                         type="button"
@@ -230,7 +232,7 @@ export default function SubArea() {
                           <Form>
                             <FtextField
                               type="text"
-                              label="সাব-এরিয়া নাম"
+                              label={t("nameSubArea")}
                               name="name"
                             />
 
@@ -240,14 +242,14 @@ export default function SubArea() {
                                 className="btn btn-secondary"
                                 data-bs-dismiss="modal"
                               >
-                                বাতিল করুন
+                                {t("cancle")}
                               </button>
                               <button
                                 type="submit"
                                 className="btn btn-success customBtn"
                                 disabled={isLoading}
                               >
-                                {isLoading ? <Loader /> : "সেভ করুন"}
+                                {isLoading ? <Loader /> : t("save")}
                               </button>
                             </div>
                           </Form>
@@ -262,9 +264,11 @@ export default function SubArea() {
                 <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
                   <div className="allSubArea mt-0" onClick={gotoAllArea}>
                     <ArrowLeftShort className="arrowLeftSize" />
-                    <span style={{ marginLeft: "3px" }}>এরিয়া</span>
+                    <span style={{ marginLeft: "3px" }}> {t("area")} </span>
                   </div>
-                  <div>{name || ""} এর সাব-এরিয়া</div>
+                  <div>
+                    {name || ""} - {t("subArea")}
+                  </div>
                   <div
                     title="সাব-এরিয়া এড করুন"
                     className="header_icon"

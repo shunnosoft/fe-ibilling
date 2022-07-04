@@ -25,8 +25,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { FetchAreaSuccess } from "../../features/areaSlice";
 // import { managerFetchSuccess } from "../../features/managerSlice";
 import FormatNumber from "../../components/common/NumberFormat";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
+  const { t } = useTranslation();
   const role = useSelector((state) => state.persistedReducer.auth.role);
   const resellerId = useSelector(
     (state) => state.persistedReducer.auth.userData.id
@@ -198,7 +200,7 @@ export default function Home() {
         <div className="home">
           {/* card section */}
           <div className="row">
-            <h2 className="dashboardTitle">ড্যাশবোর্ড</h2>
+            <h2 className="dashboardTitle"> {t("dashboard")} </h2>
             <div className="col-md-3" key={1}>
               <div id="card1" className="dataCard">
                 <ThreeDotsVertical className="ThreeDots" />
@@ -206,11 +208,12 @@ export default function Home() {
                   <People />
                 </div>
                 <div className="chartSection">
-                  <p style={{ fontSize: "18px" }}>মোট গ্রাহক</p>
+                  <p style={{ fontSize: "18px" }}> {t("total customer")} </p>
                   <h2>{FormatNumber(customerStat.total)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    নতুন গ্রাহকঃ {FormatNumber(customerStat.newCustomer)}
+                    {t("new customer")} :{" "}
+                    {FormatNumber(customerStat.newCustomer)}
                   </p>
                 </div>
               </div>
@@ -223,11 +226,11 @@ export default function Home() {
                   <PersonCheckFill />
                 </div>
                 <div className="chartSection">
-                  <p style={{ fontSize: "18px" }}>এক্টিভ</p>
+                  <p style={{ fontSize: "18px" }}> {t("active")} </p>
                   <h2>{FormatNumber(customerStat.active)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    ইন-এক্টিভ {FormatNumber(customerStat.inactive)}
+                    {t("in active")} : {FormatNumber(customerStat.inactive)}
                   </p>
                 </div>
               </div>
@@ -240,11 +243,11 @@ export default function Home() {
                   <BarChartFill />
                 </div>
                 <div className="chartSection">
-                  <p style={{ fontSize: "18px" }}>পরিশোধ</p>
+                  <p style={{ fontSize: "18px" }}> {t("paid")} </p>
                   <h2>{FormatNumber(customerStat.paid)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    বকেয়াঃ {FormatNumber(customerStat.unpaid)}
+                    {t("due")} : {FormatNumber(customerStat.unpaid)}
                   </p>
                 </div>
               </div>
@@ -257,11 +260,11 @@ export default function Home() {
                   <Coin />
                 </div>
                 <div className="chartSection">
-                  <p style={{ fontSize: "18px" }}>মোট আদায়</p>
+                  <p style={{ fontSize: "18px" }}> {t("total collection")} </p>
                   <h2>৳ {FormatNumber(totalCollection)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    আজঃ ৳ {FormatNumber(todayCollection)}
+                    {t("today collection")} ৳ {FormatNumber(todayCollection)}
                   </p>
                 </div>
               </div>
@@ -274,7 +277,7 @@ export default function Home() {
           <FourGround>
             <div className="ChartsHeadernew">
               <div className="selectGraph">
-                <h3>কালেকশন</h3>
+                <h3> {t("collection")} </h3>
                 <div>
                   <input
                     type="radio"
@@ -282,7 +285,7 @@ export default function Home() {
                     checked={showGraphData === "amount" && "checked"}
                     onChange={() => setShowGraphData("amount")}
                   />
-                   <label htmlFor="html">এমাউন্ট</label>
+                   <label htmlFor="html"> {t("amount")} </label>
                 </div>
                 <div>
                   <input
@@ -290,7 +293,7 @@ export default function Home() {
                     name="graphSelectRadio"
                     onChange={() => setShowGraphData("bill")}
                   />
-                    <label htmlFor="css">বিল</label>
+                    <label htmlFor="css"> {t("bill")} </label>
                 </div>
               </div>
 
@@ -302,7 +305,7 @@ export default function Home() {
                     className="form-select chartFilteritem"
                     onChange={(e) => setCurrentCollector(e.target.value)}
                   >
-                    <option value="">সকল কালেক্টর</option>
+                    <option value=""> {t("all collector")} </option>
                     {collectors?.map((c, key) => (
                       <option key={key} value={c.user}>
                         {c.name}
@@ -338,7 +341,7 @@ export default function Home() {
                   type="button"
                   onClick={handleFilterHandler}
                 >
-                  ফিল্টার
+                  {t("filter")}
                 </button>
               </div>
             </div>

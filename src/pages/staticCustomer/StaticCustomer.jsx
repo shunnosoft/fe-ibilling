@@ -647,12 +647,20 @@ export default function Customer() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="me-3"> {t("staticCustomer")} </div>
                   <div className="h6 d-flex justify-content-center align-items-start">
-                    <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
+                    <p>
+                      {" "}
+                      {t("totalPossibilityBill")} : {totalMonthlyFee}
+                    </p>
                     {hasDue && (
                       <>
-                        <p>পূর্বের মোট বকেয়া: {totalDue}</p>
+                        <p>
+                          {" "}
+                          {t("totalPrevDue")} : {totalDue}
+                        </p>
 
-                        <p>মোট সম্ভাব্য বিল (বকেয়া সহ): {totalFeeWithDue}</p>
+                        <p>
+                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
+                        </p>
                       </>
                     )}
                   </div>
@@ -1013,9 +1021,11 @@ export default function Customer() {
                         onChange={(e) => handleFreeUser(e.target.value)}
                         className="form-select"
                       >
-                        <option value="allUser">সকল গ্রাহক</option>
-                        <option value="freeUser">ফ্রি গ্রাহক</option>
-                        <option value="nonFreeUser">নন ফ্রি গ্রাহক</option>
+                        <option value="allUser"> {t("sokolCustomer")} </option>
+                        <option value="freeUser"> {t("freeCustomer")} </option>
+                        <option value="nonFreeUser">
+                          {t("nonFreeCustomer")}
+                        </option>
                       </select>
                     </div>
                     {/* <button onClick={handleFilterReset}>reset</button> */}
