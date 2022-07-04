@@ -38,7 +38,9 @@ import Table from "../../components/table/Table";
 import CustomerBillCollect from "./staticCustomerCrud/CustomerBillCollect";
 import AddStaticCustomer from "./staticCustomerCrud/StaticCustomerPost";
 import CustomerDetails from "../../pages/staticCustomer/customerCRUD/CustomerDetails";
+import { useTranslation } from "react-i18next";
 export default function RstaticCustomer() {
+  const { t } = useTranslation();
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
@@ -358,13 +360,19 @@ export default function RstaticCustomer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <h2>গ্রাহক </h2>
+                  <h2> {t("customer")} </h2>
                   <div className="h6 d-flex justify-content-center align-items-start">
-                    <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
+                    <p>
+                      {t("totalPossibilityBill")} : {totalMonthlyFee}
+                    </p>
                     {hasDue && (
                       <>
-                        <p>পূর্বের মোট বকেয়া: {totalDue}</p>
-                        <p>মোট সম্ভাব্য বিল (বকেয়া সহ): {totalFeeWithDue}</p>
+                        <p>
+                          {t("totalPrevDue")} : {totalDue}
+                        </p>
+                        <p>
+                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
+                        </p>
                       </>
                     )}
                   </div>
@@ -400,7 +408,7 @@ export default function RstaticCustomer() {
                           onChange={(e) => handleSubAreaChange(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            এরিয়া
+                            {t("area")}
                           </option>
                           {subAreas?.map((sub, key) => (
                             <option key={key} value={sub.id}>
@@ -413,21 +421,21 @@ export default function RstaticCustomer() {
                           onChange={handleStatusChange}
                         >
                           <option value="" defaultValue>
-                            স্ট্যাটাস
+                            {t("status")}
                           </option>
-                          <option value="active">এক্টিভ</option>
-                          <option value="inactive">ইন-এক্টিভ</option>
-                          <option value="expired">এক্সপায়ার্ড</option>
+                          <option value="active"> {t("active")} </option>
+                          <option value="inactive"> {t("in active")} </option>
+                          <option value="expired"> {t("expired")} </option>
                         </select>
                         <select
                           className="form-select"
                           onChange={handlePaymentChange}
                         >
                           <option value="" defaultValue>
-                            পেমেন্ট
+                            {t("payment")}
                           </option>
-                          <option value="paid">পেইড</option>
-                          <option value="unpaid">আন-পেইড</option>
+                          <option value="paid"> {t("paid")} </option>
+                          <option value="unpaid"> {t("unpaid")} </option>
                         </select>
                       </div>
 

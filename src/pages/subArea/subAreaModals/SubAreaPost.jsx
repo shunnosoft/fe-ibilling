@@ -9,8 +9,10 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 
 import { addSubArea } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function SubAreaPost({ name, id }) {
+  const { t } = useTranslation();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,7 +49,7 @@ export default function SubAreaPost({ name, id }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {name || ""} এর সাব-এরিয়া অ্যাড করুন
+                {name || ""} - {t("addSubArea")}
               </h5>
               <button
                 type="button"
@@ -68,7 +70,11 @@ export default function SubAreaPost({ name, id }) {
               >
                 {() => (
                   <Form>
-                    <FtextField type="text" label="সাব-এরিয়া নাম" name="name" />
+                    <FtextField
+                      type="text"
+                      label={t("nameSubArea")}
+                      name="name"
+                    />
 
                     <div className="modal-footer">
                       <button
@@ -76,14 +82,14 @@ export default function SubAreaPost({ name, id }) {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

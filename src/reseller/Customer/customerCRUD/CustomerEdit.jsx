@@ -13,7 +13,10 @@ import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 export default function CustomerEdit({ single }) {
+  const { t } = useTranslation();
+
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
   );
@@ -82,17 +85,17 @@ export default function CustomerEdit({ single }) {
 
   // customer validator
   const customerValidator = Yup.object({
-    name: Yup.string().required("গ্রাহকের নাম লিখুন"),
+    name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয়"),
+    email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
-    monthlyFee: Yup.string().required("মাসিক ফি লিখুন"),
-    Pname: Yup.string().required("PPPoE নাম লিখুন"),
-    Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
+    monthlyFee: Yup.string().required(t("writeMonthFee")),
+    Pname: Yup.string().required(t("writePPPoEName")),
+    Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
   });
 
@@ -203,7 +206,7 @@ export default function CustomerEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {data?.name} - এর প্রোফাইল এডিট করুন
+                {data?.name} - {t("editProfile")}
               </h5>
               <button
                 type="button"
@@ -238,7 +241,7 @@ export default function CustomerEdit({ single }) {
                     <div className="mikrotikSection">
                       <div>
                         <p className="comstomerFieldsTitle">
-                          মাইক্রোটিক সিলেক্ট করুন
+                          {t("selectMikrotik")}
                         </p>
                         <select
                           className="form-select"
@@ -256,7 +259,7 @@ export default function CustomerEdit({ single }) {
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
-                          প্যাকেজ সিলেক্ট করুন
+                          {t("selectPackage")}
                         </p>
                         <select
                           className="form-select mb-3"
@@ -283,25 +286,33 @@ export default function CustomerEdit({ single }) {
                       </div>
                       <FtextField
                         type="text"
-                        label="মাসিক ফি"
+                        label={t("monthFee")}
                         name="monthlyFee"
                         min={packageRate?.rate || data?.monthlyFee}
                       />
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField type="text" label="PPPoE নাম" name="Pname" />
                       <FtextField
                         type="text"
-                        label="পাসওয়ার্ড"
+                        label={t("PPPoEName")}
+                        name="Pname"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("password")}
                         name="Ppassword"
                       />
-                      <FtextField type="text" label="কমেন্ট" name="Pcomment" />
+                      <FtextField
+                        type="text"
+                        label={t("comment")}
+                        name="Pcomment"
+                      />
                     </div>
 
                     <div className="displayGrid3">
                       <div>
-                        <p>এরিয়া সিলেক্ট করুন</p>
+                        <p> {t("selectArea")} </p>
                         <select
                           className="form-select"
                           aria-label="Default select example"
@@ -320,23 +331,29 @@ export default function CustomerEdit({ single }) {
                         </select>
                       </div>
 
-                      <FtextField
-                        type="text"
-                        label="জাতীয় পরিচয়পত্র নং"
-                        name="nid"
-                      />
+                      <FtextField type="text" label={t("NIDno")} name="nid" />
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label="নাম" name="name" />
-                      <FtextField type="text" label="মোবাইল" name="mobile" />
-                      <FtextField type="text" label="ঠিকানা" name="address" />
+                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("mobile")}
+                        name="mobile"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("address")}
+                        name="address"
+                      />
                     </div>
                     <div className="newDisplay">
-                      <FtextField type="text" label="ইমেইল" name="email" />
+                      <FtextField type="text" label={t("email")} name="email" />
 
                       <div className="billCycle">
-                        <p className="customerFieldsTitle">বিলিং সাইকেল</p>
+                        <p className="customerFieldsTitle">
+                          {t("billingCycle")}
+                        </p>
 
                         <div className="timeDate">
                           <input
@@ -354,7 +371,7 @@ export default function CustomerEdit({ single }) {
                         </div>
                       </div>
                       <div className="autoDisable">
-                        <label>অটোমেটিক সংযোগ বন্ধ</label>
+                        <label> {t("automaticConnectionOff")} </label>
                         <input
                           type="checkBox"
                           checked={autoDisable}
@@ -364,7 +381,7 @@ export default function CustomerEdit({ single }) {
                     </div>
 
                     <div className="pppoeStatus">
-                      <p>স্ট্যাটাস</p>
+                      <p> {t("status")} </p>
                       <div className="form-check form-check-inline">
                         <input
                           className="form-check-input"
@@ -378,7 +395,7 @@ export default function CustomerEdit({ single }) {
                           className="form-check-label"
                           htmlFor="inlineRadio1"
                         >
-                          এক্টিভ
+                          {t("active")}
                         </label>
                       </div>
                       <div className="form-check form-check-inline">
@@ -394,7 +411,7 @@ export default function CustomerEdit({ single }) {
                           className="form-check-label"
                           htmlFor="inlineRadio2"
                         >
-                          ইন-এক্টিভ
+                          {t("in active")}
                         </label>
                       </div>
                       {data?.status === "expired" && (
@@ -410,7 +427,7 @@ export default function CustomerEdit({ single }) {
                             className="form-check-label"
                             htmlFor="inlineRadio2"
                           >
-                            এক্সপায়ার্ড
+                            {t("expired")}
                           </label>
                         </div>
                       )}
@@ -423,14 +440,14 @@ export default function CustomerEdit({ single }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

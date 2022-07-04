@@ -8,8 +8,10 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { editArea } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function AreaEdit({ oneArea }) {
+  const { t } = useTranslation();
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
@@ -47,7 +49,7 @@ export default function AreaEdit({ oneArea }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                এরিয়া এডিট করুন
+                {t("editArea")}
               </h5>
               <button
                 type="button"
@@ -71,7 +73,7 @@ export default function AreaEdit({ oneArea }) {
                   <Form>
                     <FtextField
                       type="text"
-                      label="এরিয়া নাম এডিট করুন"
+                      label={t("editAreaName")}
                       name="name"
                     />
 
@@ -81,14 +83,14 @@ export default function AreaEdit({ oneArea }) {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

@@ -25,9 +25,10 @@ import { FtextField } from "../../components/common/FtextField";
 import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function SubArea() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { areaId } = useParams();
   const area = useSelector((state) => state.persistedReducer.area.area);

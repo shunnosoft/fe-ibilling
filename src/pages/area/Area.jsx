@@ -24,7 +24,6 @@ import { useTranslation } from "react-i18next";
 
 export default function Area() {
   const { t } = useTranslation();
-
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const [loading, setIsloading] = useState(false);
   const dispatch = useDispatch();
@@ -62,9 +61,9 @@ export default function Area() {
       });
     });
     if (isCustomer) {
-      toast.warn("এই এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না");
+      toast.warn(t("doNotDeleteAreaAlert"));
     } else {
-      let con = window.confirm("আপনি কি এরিয়া ডিলিট করতে চান?");
+      let con = window.confirm(t("wantToDeleteArea"));
       if (con) {
         setIsLoading(true);
         const IDs = {
@@ -161,7 +160,7 @@ export default function Area() {
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>এরিয়া</div>
+                  <div> {t("area")} </div>
                   <div
                     title="এরিয়া এড করুন"
                     className="header_icon"
