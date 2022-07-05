@@ -13,7 +13,9 @@ import CreateCustomerSmsTemplate from "./template/CreateCustomerSmsTemplate";
 import CustomerInactiveSmsTemplate from "./template/CustomerInactiveSmsTemplate";
 import { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 export default function RSettings() {
+  const { t } = useTranslation();
   const [settingSelect, setSettingSelect] = useState("confirmation");
   const selectSettingHandler = (e) => {
     setSettingSelect(e.target.value);
@@ -27,7 +29,7 @@ export default function RSettings() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">সেটিংস</h2>
+                <h2 className="collectorTitle">{t("message setting")}</h2>
               </FourGround>
 
               <FourGround>
@@ -40,7 +42,7 @@ export default function RSettings() {
                     <Tab
                       className="mt-5"
                       eventKey="billConfirmation"
-                      title="বিল কনফার্মেশন SMS"
+                      title={t("billConfirmSMS")}
                     >
                       <FourGround>
                         <BillConfirmationSmsTemplate></BillConfirmationSmsTemplate>
@@ -50,7 +52,7 @@ export default function RSettings() {
                     <Tab
                       className="mt-5"
                       eventKey="alertSms"
-                      title="এলার্ট SMS"
+                      title={t("alertSMS")}
                     >
                       <FourGround>
                         <AlertSmsTemplate></AlertSmsTemplate>
@@ -60,7 +62,7 @@ export default function RSettings() {
                     <Tab
                       className="mt-5"
                       eventKey="newCustomer"
-                      title="নতুন গ্রাহক SMS"
+                      title={t("newCustomerSMS")}
                     >
                       <FourGround>
                         <CreateCustomerSmsTemplate></CreateCustomerSmsTemplate>
@@ -70,7 +72,7 @@ export default function RSettings() {
                     <Tab
                       className="mt-5"
                       eventKey="inactiveCustomer"
-                      title="গ্রাহক ইন-এক্টিভ SMS"
+                      title={t("customerInactiveSMS")}
                     >
                       <FourGround>
                         <CustomerInactiveSmsTemplate></CustomerInactiveSmsTemplate>

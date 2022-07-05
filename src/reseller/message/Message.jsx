@@ -19,6 +19,7 @@ import useDash from "../../assets/css/dash.module.css";
 import apiLink from "../../api/apiLink";
 import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { getSubAreas } from "../../features/apiCallReseller";
+import { useTranslation } from "react-i18next";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -61,6 +62,7 @@ const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
 };
 
 export default function RMessage() {
+  const { t } = useTranslation();
   const reset = useForceUpdate();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [sms, setSms] = useState("");
@@ -284,14 +286,14 @@ export default function RMessage() {
       });
 
       if (items.length === 0) {
-        alert(`কোন গ্রাহক পাওয়া যায়নি।`);
+        alert(`${t("notFoundCustomer")}`);
         return;
       }
 
-      alert(`স্যাম্পল SMS:\n${items[0]?.message}`);
+      alert(`${t("sampleSMS")} :\n${items[0]?.message}`);
       if (reseller.data.smsBalance >= totalSmsCount) {
         let con = window.confirm(
-          `${items.length} জন গ্রাহক মেসেজ পাবে। ${totalSmsCount} টি SMS খরচ হবে।`
+          `${items.length} ${t("getSMS")} ${totalSmsCount} ${t("expenseSMS")}`
         );
         if (con && items.length) {
           // post
@@ -304,14 +306,12 @@ export default function RMessage() {
             setSubAreaIds([]);
             setDays([]);
             smsRef.current.value = "";
-            toast.success("সফলভাবে SMS পাঠানো হয়েছে।");
+            toast.success(t("successAlertSMS"));
             window.location.reload();
           }
         }
       } else {
-        toast.error(
-          "দুঃখিত, আপনার পর্যাপ্ত SMS ব্যাল্যান্স নেই। দয়া করে SMS রিচার্জ করুন।"
-        );
+        toast.error(t("unseccessAlertSMS"));
       }
     } catch (error) {
       console.log(error);
@@ -329,7 +329,7 @@ export default function RMessage() {
       }
     } else {
       if ((upperText + "\n" + bottomText).length + item.length > 480) {
-        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        toast.error(t("exceedSMSLimit"));
         return;
       } else {
         smsTemplet.push(item);
@@ -384,7 +384,7 @@ export default function RMessage() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">মেসেজ বোর্ড</h2>
+                <h2 className="collectorTitle">{t("SMSboard")}</h2>
               </FourGround>
 
               <FourGround>
@@ -393,7 +393,7 @@ export default function RMessage() {
                     <div className="smsbal">
                       <div className="refreshDiv">
                         <div className="balancetext">
-                          এসএমএস ব্যালান্সঃ
+                          {t("SMSbalance")}
                           <strong className="mainsmsbalance">{sms}</strong>
                         </div>
                         <div title="রিফ্রেশ করুন" className="refreshIcon">
@@ -413,7 +413,7 @@ export default function RMessage() {
                           data-bs-target="#smsparchase"
                           className="buysms"
                         >
-                          এসএমএস কিনুন
+                          {t("buySMS")}
                         </button>
                       )}
                     </div>
@@ -424,7 +424,7 @@ export default function RMessage() {
                           <p></p>
                           <input
                             type="text"
-                            placeholder="মোবাইল নম্বর"
+                            placeholder={t("mobile")}
                             className="form-control"
                             ref={mobileNumRef}
                           />
@@ -451,7 +451,7 @@ export default function RMessage() {
                               htmlFor={"selectAll"}
                               className="areaParent"
                             >
-                              {"সকল এরিয়া"}
+                              {t("allArea")}
                             </label>
                           </div>
                           <div className="AllAreaClass mb-4">
@@ -496,7 +496,7 @@ export default function RMessage() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="bilDateEnd"
                                 >
-                                  বিল ডেট শেষ হতে বাকিঃ
+                                  {t("billDueExpire")}
                                 </label>
                                 {smsReceiverType === "unpaidCustomerByDate" ? (
                                   <div style={{}} className="displayFlex">
@@ -508,7 +508,9 @@ export default function RMessage() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"এক দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueOneDay")}
+                                    </label>
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
@@ -517,7 +519,9 @@ export default function RMessage() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"দুই দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueTwoDay")}
+                                    </label>
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
@@ -526,7 +530,9 @@ export default function RMessage() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"তিন দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueThreeDay")}
+                                    </label>
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
@@ -535,7 +541,9 @@ export default function RMessage() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"পাঁচ দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueFiveDay")}
+                                    </label>
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
@@ -544,7 +552,9 @@ export default function RMessage() {
                                         daySettingHandler(e.target.value);
                                       }}
                                     />
-                                    <label className="mx-3">{"সাত দিন"}</label>
+                                    <label className="mx-3">
+                                      {t("billDueSevenDay")}
+                                    </label>
                                   </div>
                                 ) : (
                                   ""
@@ -563,7 +573,7 @@ export default function RMessage() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="allCustomer"
                                 >
-                                  সকল গ্রাহক
+                                  {t("sokolCustomer")}
                                 </label>
                               </div>
                               <div>
@@ -579,7 +589,7 @@ export default function RMessage() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="paid"
                                 >
-                                  পেইড
+                                  {t("paid")}
                                 </label>
                               </div>
                               <div>
@@ -595,7 +605,7 @@ export default function RMessage() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="unpaid"
                                 >
-                                  আনপেইড
+                                  {t("unpaid")}
                                 </label>
                               </div>
                               <div>
@@ -611,7 +621,7 @@ export default function RMessage() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="activee"
                                 >
-                                  এক্টিভ
+                                  {t("acitve")}
                                 </label>
                               </div>
                               <div>
@@ -627,7 +637,7 @@ export default function RMessage() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="inactive"
                                 >
-                                  ইন-একটিভ
+                                  {t("in active")}
                                 </label>
                               </div>
                               <div>
@@ -643,7 +653,7 @@ export default function RMessage() {
                                   className="form-check-lebel ms-2"
                                   htmlFor="expire"
                                 >
-                                  এক্সপায়ার্ড
+                                  {t("expired")}
                                 </label>
                               </div>
                             </div>
@@ -767,7 +777,7 @@ export default function RMessage() {
                       </div>
                       <div className="smsCount">
                         <span className="smsLength">
-                          অক্ষরঃ {(smsTemplet + bottomText).length}
+                          {t("letter")} {(smsTemplet + bottomText).length}
                         </span>
                         <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
                       </div>
@@ -775,7 +785,7 @@ export default function RMessage() {
                         id="messageTextArea"
                         rows="6"
                         className="form-control mt-4"
-                        placeholder="মেসেজ লিখুন..."
+                        placeholder={t("messageLikhun")}
                         value={bottomText}
                         // onClick={insertMyText}
                         maxLength={335 - upperText.length}
@@ -788,7 +798,7 @@ export default function RMessage() {
                         onClick={handleSendMessage}
                         className="btn btn-success"
                       >
-                        সেন্ড মেসেজ
+                        {t("sendMessage")}
                       </button>
                     </div>
                   </div>

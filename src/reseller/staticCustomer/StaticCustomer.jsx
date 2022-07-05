@@ -183,12 +183,12 @@ export default function RstaticCustomer() {
     () => [
       {
         width: "8%",
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customerId",
       },
       {
         width: "10%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
@@ -201,13 +201,13 @@ export default function RstaticCustomer() {
       },
       {
         width: "12%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
 
       {
         width: "9%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -215,7 +215,7 @@ export default function RstaticCustomer() {
       },
       {
         width: "9%",
-        Header: "পেমেন্ট",
+        Header: t("payment"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -223,17 +223,17 @@ export default function RstaticCustomer() {
       },
       {
         width: "10%",
-        Header: "মাসিক ফি",
+        Header: t("monthFee"),
         accessor: "monthlyFee",
       },
       {
         width: "9%",
-        Header: "ব্যালেন্স",
+        Header: t("balance"),
         accessor: "balance",
       },
       {
         width: "12%",
-        Header: "বিল সাইকেল",
+        Header: t("billingCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMMM DD YYYY hh:mm A");
@@ -242,7 +242,7 @@ export default function RstaticCustomer() {
 
       {
         width: "7%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center"> {t("action")} </div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -271,7 +271,7 @@ export default function RstaticCustomer() {
                 <div className="dropdown-item">
                   <div className="customerAction">
                     <PersonFill />
-                    <p className="actionP">প্রোফাইল</p>
+                    <p className="actionP"> {t("profile")} </p>
                   </div>
                 </div>
               </li>
@@ -286,7 +286,7 @@ export default function RstaticCustomer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <Wallet />
-                      <p className="actionP">রিচার্জ</p>
+                      <p className="actionP"> {t("useMemoRecharge")} </p>
                     </div>
                   </div>
                 </li>
@@ -347,7 +347,7 @@ export default function RstaticCustomer() {
         ),
       },
     ],
-    []
+    [t]
   );
   return (
     <>

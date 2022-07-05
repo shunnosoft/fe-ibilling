@@ -1,8 +1,10 @@
 import React from "react";
 import "../../Customer/customer.css";
 import "../collector.css";
+import { useTranslation } from "react-i18next";
 
 export default function CollectorDetails({ single }) {
+  const { t } = useTranslation();
   return (
     <div>
       <div
@@ -20,7 +22,7 @@ export default function CollectorDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {single.name} এর প্রোফাইল
+                {single.name} {t("erProfile")}
               </h5>
               <button
                 type="button"
@@ -41,31 +43,31 @@ export default function CollectorDetails({ single }) {
                 <thead>
                   <tr>
                     <th scope="col" className="thSt">
-                      মোবাইল:
+                      {t("mobile")} :
                     </th>
                     <th scope="col">{single.mobile}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      এড্রেস:
+                      {t("address")} :
                     </th>
                     <th scope="col">{single.address}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      ইমেইল:
+                      {t("email")} :
                     </th>
                     <th scope="col">{single.email}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      NID নম্বর:
+                      {t("NIDno")} :
                     </th>
                     <th scope="col">{single.nid}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      স্ট্যাটাস:
+                      {t("status")} :
                     </th>
                     <th scope="col">{single.status}</th>
                   </tr>

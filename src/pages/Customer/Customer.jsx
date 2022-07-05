@@ -649,11 +649,17 @@ export default function Customer() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>{t("customer")}</div>
                   <div className="h6 d-flex justify-content-center align-items-start">
-                    <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
+                    <p>
+                      {t("totalPossibilityBill")}: {totalMonthlyFee}
+                    </p>
                     {hasDue && (
                       <>
-                        <p>পূর্বের মোট বকেয়া: {totalDue}</p>
-                        <p>মোট সম্ভাব্য বিল (বকেয়া সহ): {totalFeeWithDue}</p>
+                        <p>
+                          {t("totalPrevDue")} : {totalDue}
+                        </p>
+                        <p>
+                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
+                        </p>
                       </>
                     )}
                   </div>
@@ -671,7 +677,7 @@ export default function Customer() {
                           data={customerForCsV}
                           filename={ispOwnerData.company}
                           headers={headers}
-                          title="BTRC রিপোর্ট ডাউনলোড"
+                          title={t("downloadBTRCreport")}
                         >
                           <FileExcelFill className="addcutmButton" />
                         </CSVLink>
@@ -682,7 +688,7 @@ export default function Customer() {
                           documentTitle="গ্রাহক লিস্ট"
                           trigger={() => (
                             <PrinterFill
-                              title="প্রিন্ট "
+                              title={t("print")}
                               className="addcutmButton"
                             />
                           )}
@@ -695,7 +701,7 @@ export default function Customer() {
                           className="addcutmButton"
                           data-bs-toggle="modal"
                           data-bs-target="#customerModal"
-                          title="নতুন গ্রাহক"
+                          title={t("newCustomer")}
                         />
                       </div>
                     </div>

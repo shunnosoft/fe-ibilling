@@ -26,8 +26,10 @@ import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 import Table from "../../components/table/Table";
 import { getMikrotik } from "../../features/apiCallReseller";
 // import TdLoader from "../../components/common/TdLoader";
+import { useTranslation } from "react-i18next";
 
 export default function RActiveCustomer() {
+  const { t } = useTranslation();
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const mikrotik = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
@@ -133,10 +135,10 @@ export default function RActiveCustomer() {
   const [isRefrsh, setIsRefrsh] = useState(false);
   const refreshHandler = () => {
     if (!selectedMikrotikId) {
-      toast.warn("মাইক্রোটিক সিলেক্ট করুন");
+      toast.warn(t("selectMikrotik"));
       return 0;
     } else if (whatYouWantToShow === "customerSelect") {
-      toast.warn("গ্রাহক সিলেক্ট করুন");
+      toast.warn(t("selectCustomer"));
       return 0;
     }
     const IDs = {
@@ -161,17 +163,17 @@ export default function RActiveCustomer() {
   const columns2 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        Header: t("serial"),
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         Cell: <Wifi color="green" />,
       },
       {
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
         // Cell: ({ row: { original } }) => (
         //   <div
@@ -187,7 +189,7 @@ export default function RActiveCustomer() {
         // ),
       },
       {
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
       {
@@ -218,7 +220,7 @@ export default function RActiveCustomer() {
       },
 
       {
-        Header: "আপ টাইম",
+        Header: t("upTime"),
         accessor: "uptime",
 
         Cell: ({ row: { original } }) => (
@@ -237,18 +239,18 @@ export default function RActiveCustomer() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns3 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        Header: t("serial"),
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
           <div>
@@ -261,11 +263,11 @@ export default function RActiveCustomer() {
         ),
       },
       {
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "profile",
       },
       // {
@@ -303,7 +305,7 @@ export default function RActiveCustomer() {
       //   accessor: "lastLinkUpTime",
       // },
     ],
-    []
+    [t]
   );
   const [allUsers, setAllUsers] = useState(allMikrotikUsers);
   useEffect(() => {
@@ -332,7 +334,7 @@ export default function RActiveCustomer() {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">এক্টিভ গ্রাহক</h2>
+                <h2 className="collectorTitle">{t("activeCustomer")}</h2>
               </FourGround>
 
               <FourGround>
@@ -347,7 +349,7 @@ export default function RActiveCustomer() {
                           className="form-select"
                           style={{ marginBottom: "-10px" }}
                         >
-                          <option value={""}>মাইক্রোটিক সিলেক্ট</option>
+                          <option value={""}>{t("selectMikrotik")}</option>
                           {mikrotik.map((m) => {
                             return (
                               <option
@@ -367,12 +369,14 @@ export default function RActiveCustomer() {
                           onChange={selectMikrotikOptionsHandler}
                           className="form-select"
                         >
-                          <option value="customerSelect">গ্রাহক সিলেক্ট</option>
+                          <option value="customerSelect">
+                            {t("selectCustomer")}
+                          </option>
                           <option value="showActiveMikrotikUser">
-                            এক্টিভ গ্রাহক
+                            {t("activeCustomer")}
                           </option>
                           <option value="showAllMikrotikUser">
-                            সকল গ্রাহক
+                            {t("sokolCustomer")}
                           </option>
                         </select>
                       </div>

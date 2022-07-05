@@ -9,7 +9,9 @@ import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import "../message/message.css";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 export default function Settings() {
+  const { t } = useTranslation();
   const [day, setDay] = useState(0);
   const daySettingHandler = (e) => {
     setDay(e);
@@ -59,7 +61,7 @@ export default function Settings() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">এস এম এস টেমপ্লেট</h2>
+                <h2 className="collectorTitle">{t("SMStemplate")}</h2>
               </FourGround>
 
               <FourGround>
@@ -77,7 +79,7 @@ export default function Settings() {
                               daySettingHandler(e.target.value);
                             }}
                           />
-                          <label>{"একদিন"}</label>
+                          <label>{t("billDueOneDay")}</label>
                           <input
                             checked={day === "2"}
                             type="checkbox"
@@ -87,7 +89,7 @@ export default function Settings() {
                               daySettingHandler(e.target.value);
                             }}
                           />
-                          <label>{"দুইদিন"}</label>
+                          <label>{t("billDueTwoDay")}</label>
                           <input
                             type="checkbox"
                             checked={day === "3"}
@@ -97,7 +99,7 @@ export default function Settings() {
                               daySettingHandler(e.target.value);
                             }}
                           />
-                          <label>{"তিনদিন"}</label>
+                          <label>{t("billDueThreeDay")}</label>
                           <input
                             ref={ssref}
                             type="checkbox"
@@ -105,7 +107,7 @@ export default function Settings() {
                             value={"5"}
                             onChange={handle}
                           />
-                          <label>{"পাঁচদিন"}</label>
+                          <label>{t("billDueFiveDay")}</label>
                           <input
                             type="checkbox"
                             checked={day === "7"}
@@ -115,7 +117,7 @@ export default function Settings() {
                               daySettingHandler(e.target.value);
                             }}
                           />
-                          <label>{"সাতদিন"}</label>
+                          <label>{t("billDueSevenDay")}</label>
                           <button>submit</button>
                         </div>
                         <div>
@@ -132,7 +134,7 @@ export default function Settings() {
                           id="messageTextArea"
                           rows="6"
                           className="form-control mt-4"
-                          placeholder="মেসেজ লিখুন..."
+                          placeholder={t("messageLikhun")}
                           ref={textRef}
                           value={totalText}
                           onClick={insertMyText}
@@ -146,7 +148,7 @@ export default function Settings() {
                           // onClick={handleSendMessage}
                           className="btn btn-success"
                         >
-                          সেন্ড মেসেজ
+                          {t("sendMessage")}
                         </button>
                       </div>
                     </div>

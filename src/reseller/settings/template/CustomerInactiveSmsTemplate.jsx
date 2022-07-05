@@ -5,8 +5,10 @@ import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { smsCount } from "../../../components/common/UtilityMethods";
+import { useTranslation } from "react-i18next";
 
 function CustomerInactiveSmsTemplate() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [totalText, setTotalText] = useState("");
 
@@ -47,7 +49,7 @@ function CustomerInactiveSmsTemplate() {
       }
     } else {
       if (totalText.length + item.length > 334) {
-        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        toast.error(t("exceedSMSLimit"));
         return;
       }
       matchFound.push(item);
@@ -89,7 +91,7 @@ function CustomerInactiveSmsTemplate() {
       );
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
-      toast.success("গ্রাহক ইন-এক্টিভ SMS টেমপ্লেট সেভ সফল হয়েছে");
+      toast.success(t("customerInactiveTemplateAlert"));
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -153,7 +155,7 @@ function CustomerInactiveSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4>গ্রাহক ইন-এক্টিভ SMS টেমপ্লেট</h4>
+          <h4>{t("customerInactiveSMSTemplate")}</h4>
           <div>
             <input
               name="billConfirmation"
@@ -162,7 +164,7 @@ function CustomerInactiveSmsTemplate() {
               value={"on"}
               onChange={radioCheckHandler}
             />{" "}
-            অন {"              "}
+            {t("on")} {"              "}
             <input
               name="billConfirmation"
               type="radio"
@@ -170,7 +172,7 @@ function CustomerInactiveSmsTemplate() {
               value={"off"}
               onChange={radioCheckHandler}
             />{" "}
-            অফ
+            {t("off")}
           </div>
           <div className="billconfirm">
             <div className="showthesequence">
@@ -260,7 +262,7 @@ function CustomerInactiveSmsTemplate() {
           </div>
           <div className="smsCount">
             <span className="smsLength">
-              অক্ষরঃ {(matchFound + bottomText).length}
+              {t("letter")} {(matchFound + bottomText).length}
             </span>
             <span>SMS: {smsCount(matchFound + bottomText)}</span>
           </div>
@@ -269,7 +271,7 @@ function CustomerInactiveSmsTemplate() {
             id="messageTextArea"
             rows="6"
             className="form-control mt-4"
-            placeholder="মেসেজ লিখুন..."
+            placeholder={t("messageLikhun")}
             ref={textRef}
             value={bottomText}
             // onClick={insertMyText}
@@ -284,7 +286,7 @@ function CustomerInactiveSmsTemplate() {
             // onClick={handleSendMessage}
             className="btn btn-success"
           >
-            {loading ? <Loader></Loader> : "সেভ"}
+            {loading ? <Loader></Loader> : t("save")}
           </button>
         </div>
       </form>
