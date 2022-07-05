@@ -648,7 +648,7 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>{t("customer")}</div>
-                  <div className="h6 d-flex justify-content-center align-items-start">
+                  <div className="h6 d-flex justify-content-center align-items-start flex-column">
                     <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
                     {hasDue && (
                       <>

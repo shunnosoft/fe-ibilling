@@ -100,9 +100,6 @@
 .table {
   --bs-table-striped-color: inherit !important;
   color: inherit !important;
-
-  table-layout: fixed;
-  word-wrap: break-word;
 }
 
 .tableWrapper {
