@@ -5,8 +5,10 @@ import Loader from "../../../components/common/Loader";
 import { recharge } from "../../../features/apiCalls";
 
 import "../../message/message.css";
+import { useTranslation } from "react-i18next";
 
 function Recharge({ reseller }) {
+  const { t } = useTranslation();
   // console.log(reseller);
   const rechargeRef = useRef(Number);
   const dispatch = useDispatch();
@@ -38,7 +40,7 @@ function Recharge({ reseller }) {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  রিচার্জ বোর্ড
+                  {t("messageBoard")}
                 </h5>
                 <button
                   type="button"
@@ -51,7 +53,7 @@ function Recharge({ reseller }) {
                 <div className="smsPerchase">
                   <div className="smsbuy">
                     <div className="numsms">
-                      <span className="smsspan">রিচার্জের পরিমানঃ</span>
+                      <span className="smsspan"> {t("rechargeAmount")} </span>
                       <input
                         ref={rechargeRef}
                         className="smsinput"
@@ -65,13 +67,13 @@ function Recharge({ reseller }) {
                       data-bs-dismiss="modal"
                       className="smsparchasebtn button2"
                     >
-                      বাতিল করুন
+                      {t("cancle")}
                     </button>
                     <button
                       className="smsparchasebtn button1"
                       onClick={rechargeHandler}
                     >
-                      {isLoading ? <Loader></Loader> : " রিচার্জ করুন"}
+                      {isLoading ? <Loader></Loader> : t("recharge")}
                     </button>
                   </div>
                 </div>

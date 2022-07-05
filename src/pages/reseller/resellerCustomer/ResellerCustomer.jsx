@@ -22,9 +22,12 @@ import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
 import { deleteACustomer } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
+import { useTranslation } from "react-i18next";
+
 // get specific customer
 
 const ResellerCustomer = () => {
+  const { t } = useTranslation();
   const [singleCustomer, setSingleCustomer] = useState("");
   // get specific customer Report
   const [customerReportId, setcustomerReportId] = useState([]);
@@ -265,7 +268,7 @@ const ResellerCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">গ্রাহক </h2>
+                <h2 className="collectorTitle"> {t("customer")} </h2>
               </FourGround>
               <div className="card">
                 <div className="card-body">
@@ -276,10 +279,10 @@ const ResellerCustomer = () => {
                       aria-label="Default select example"
                       onChange={(event) => setFilterStatus(event.target.value)}
                     >
-                      <option selected>স্ট্যাটাস</option>
-                      <option value="active">এক্টিভ</option>
-                      <option value="inactive">ইন-এক্টিভ</option>
-                      <option value="expired">এক্সপায়ার্ড</option>
+                      <option selected> {t("status")} </option>
+                      <option value="active"> {t("active")} </option>
+                      <option value="inactive"> {t("in active")} </option>
+                      <option value="expired"> {t("expired")} </option>
                     </select>
                     {/* end status filter */}
 
@@ -289,9 +292,9 @@ const ResellerCustomer = () => {
                       aria-label="Default select example"
                       onChange={(event) => setFilterPayment(event.target.value)}
                     >
-                      <option selected>পেমেন্ট</option>
-                      <option value="paid">পেইড</option>
-                      <option value="unpaid">আন-পেইড</option>
+                      <option selected> {t("payment")} </option>
+                      <option value="paid"> {t("paid")} </option>
+                      <option value="unpaid"> {t("unpaid")} </option>
                     </select>
                     {/* end payment status filter */}
                   </div>

@@ -13,8 +13,10 @@ import {
   addExpenditurePourpose,
   editExpenditurePourpose,
 } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function EditPourpose({ singlePurpose }) {
+  const { t } = useTranslation();
   // console.log(singlePurpose);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +50,7 @@ export default function EditPourpose({ singlePurpose }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                খরচ খাত এডিট করুন
+                {t("editExpenditureSector")}
               </h5>
               <button
                 type="button"
@@ -73,7 +75,7 @@ export default function EditPourpose({ singlePurpose }) {
                   <Form>
                     <FtextField
                       type="text"
-                      label=" খরচ খাতের নাম"
+                      label={t("expenditureSectorsName")}
                       name="name"
                     />
 
@@ -83,14 +85,14 @@ export default function EditPourpose({ singlePurpose }) {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

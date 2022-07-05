@@ -8,12 +8,14 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { editPPPoEpackageRate } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 // import {
 //   editPPPoEpackageRate,
 //   fetchpppoePackage,
 // } from "../../../features/mikrotikSlice";
 
 export default function PPPoEpackageEditModal({ singlePackage }) {
+  const { t } = useTranslation();
   const pppoePackage = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoePackage
   );
@@ -56,7 +58,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {data?.name} - রেট এডিট করুন
+                {data?.name} - {t("rateEdit")}
               </h5>
               <button
                 type="button"
@@ -81,7 +83,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
                     <FtextField
                       min={0}
                       type="number"
-                      label="রেট এডিট করুন"
+                      label={t("editRate")}
                       name="rate"
                     />
 
@@ -91,14 +93,14 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

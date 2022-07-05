@@ -23,8 +23,10 @@ import arraySort from "array-sort";
 import { getCollectorBill } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
+// import { useTranslation } from "react-i18next";
 
 export default function CollectorReport() {
+  // const { t } = useTranslation();
   //   const allArea = useSelector(state => state.area.area);
   const [allArea, setAreas] = useState([]);
   const collectorArea = useSelector(

@@ -25,8 +25,10 @@ import { FtextField } from "../../components/common/FtextField";
 import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function SubArea() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { areaId } = useParams();
   const area = useSelector((state) => state.persistedReducer.area.area);
@@ -96,9 +98,9 @@ export default function SubArea() {
       }
     });
     if (isCustomer) {
-      toast.warn("এই সাব-এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না");
+      toast.warn(t("haveSubAreasCustomers"));
     } else {
-      let con = window.confirm("আপনি কি সাব-এরিয়া ডিলিট করতে চান?");
+      let con = window.confirm(t("doYouWantDeleteSubArea"));
       if (con) {
         setIsLoading(true);
         const IDs = {
@@ -115,19 +117,19 @@ export default function SubArea() {
     () => [
       {
         width: "30%",
-        Header: "সিরিয়াল",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
         width: "40%",
-        Header: "সাব-এরিয়া",
+        Header: t("subArea"),
         accessor: "name",
       },
       {
         width: "30%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -158,7 +160,7 @@ export default function SubArea() {
                 <div className="dropdown-item">
                   <div className="customerAction">
                     <PenFill />
-                    <p className="actionP">এডিট</p>
+                    <p className="actionP">{t("edit")}</p>
                   </div>
                 </div>
               </li>
@@ -171,7 +173,7 @@ export default function SubArea() {
                 <div className="dropdown-item actionManager">
                   <div className="customerAction">
                     <ArchiveFill />
-                    <p className="actionP">ডিলিট</p>
+                    <p className="actionP">{t("delete")}</p>
                   </div>
                 </div>
               </li>
@@ -180,7 +182,7 @@ export default function SubArea() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   return (
@@ -206,7 +208,7 @@ export default function SubArea() {
                   <div className="modal-content">
                     <div className="modal-header">
                       <h5 className="modal-title" id="exampleModalLabel">
-                        সাব-এরিয়া এডিট করুন
+                        {t("editSubArea")}
                       </h5>
                       <button
                         type="button"
@@ -230,7 +232,7 @@ export default function SubArea() {
                           <Form>
                             <FtextField
                               type="text"
-                              label="সাব-এরিয়া নাম"
+                              label={t("subAreaName")}
                               name="name"
                             />
 
@@ -240,14 +242,14 @@ export default function SubArea() {
                                 className="btn btn-secondary"
                                 data-bs-dismiss="modal"
                               >
-                                বাতিল করুন
+                                {t("cancle")}
                               </button>
                               <button
                                 type="submit"
                                 className="btn btn-success customBtn"
                                 disabled={isLoading}
                               >
-                                {isLoading ? <Loader /> : "সেভ করুন"}
+                                {isLoading ? <Loader /> : t("save")}
                               </button>
                             </div>
                           </Form>
@@ -262,11 +264,13 @@ export default function SubArea() {
                 <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
                   <div className="allSubArea mt-0" onClick={gotoAllArea}>
                     <ArrowLeftShort className="arrowLeftSize" />
-                    <span style={{ marginLeft: "3px" }}>এরিয়া</span>
+                    <span style={{ marginLeft: "3px" }}>{t("area")}</span>
                   </div>
-                  <div>{name || ""} এর সাব-এরিয়া</div>
+                  <div>
+                    {name || ""} {t("ofSubArea")}
+                  </div>
                   <div
-                    title="সাব-এরিয়া এড করুন"
+                    title={t("addSubArea")}
                     className="header_icon"
                     data-bs-toggle="modal"
                     data-bs-target="#subAreaModal"
@@ -290,55 +294,6 @@ export default function SubArea() {
                     </div>
                   </div>
 
-                  {/* table */}
-                  {/* <div className="table-responsive-lg">
-                    <table className="table table-striped ">
-                      <thead>
-                        <tr>
-                          <th scope="col">সিরিয়াল</th>
-                          <th scope="col">সাব-এরিয়া</th>
-                          <th scope="col" style={{ textAlign: "center" }}>
-                            অ্যাকশন
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {subAreas?.length === 0 ? (
-                          <tr>
-                            <td colSpan="3" className="noAraFound">
-                              {name || ""} এর কোনো সাব-এরিয়া পাওয়া যায়নি{"   "}
-                              <EmojiFrown />
-                            </td>
-                          </tr>
-                        ) : (
-                          subAreas
-                            ?.filter((val) => {
-                              return val.name
-                                ?.toString()
-                                ?.toLowerCase()
-                                .includes(search.toString().toLowerCase());
-                            })
-                            .map((val, key) => (
-                              <tr key={key}>
-                                <td style={{ paddingLeft: "30px" }}>
-                                  {++serial}
-                                </td>
-                                <td>{val.name}</td>
-                                <td style={{ textAlign: "center" }}>
-                                  <ThreeDots
-                                    className="dropdown-toggle ActionDots"
-                                    id="areaDropdown"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  />
-                                </td>
-                              </tr>
-                            ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div> */}
                   <Table columns={columns} data={subAreas}></Table>
                 </div>
               </FourGround>

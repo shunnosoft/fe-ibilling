@@ -1,11 +1,13 @@
 import React from "react";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
+import { useTranslation } from "react-i18next";
 
 export default function ActionButton({
   getSpecificArea,
   deleteSingleArea,
   data,
 }) {
+  const { t } = useTranslation();
   return (
     <>
       <div className="dropdown">
@@ -27,7 +29,7 @@ export default function ActionButton({
             <div className="dropdown-item">
               <div className="customerAction">
                 <PenFill />
-                <p className="actionP">এডিট</p>
+                <p className="actionP"> {t("edit")}</p>
               </div>
             </div>
           </li>
@@ -40,7 +42,7 @@ export default function ActionButton({
             <div className="dropdown-item actionManager">
               <div className="customerAction">
                 <ArchiveFill />
-                <p className="actionP">ডিলিট</p>
+                <p className="actionP"> {t("delete")} </p>
               </div>
             </div>
           </li>

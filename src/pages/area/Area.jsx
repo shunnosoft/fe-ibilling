@@ -19,8 +19,11 @@ import AreaEdit from "./areaModals/AreaEdit";
 import { deleteArea, getArea, getCustomer } from "../../features/apiCalls";
 import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function Area() {
+  const { t } = useTranslation();
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const [loading, setIsloading] = useState(false);
   const dispatch = useDispatch();
@@ -58,9 +61,9 @@ export default function Area() {
       });
     });
     if (isCustomer) {
-      toast.warn("এই এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না");
+      toast.warn(t("doNotDeleteAreaAlert"));
     } else {
-      let con = window.confirm("আপনি কি এরিয়া ডিলিট করতে চান?");
+      let con = window.confirm(t("wantToDeleteArea"));
       if (con) {
         setIsLoading(true);
         const IDs = {
@@ -93,12 +96,12 @@ export default function Area() {
       },
       {
         width: "25%",
-        Header: "এরিয়া",
+        Header: t("area"),
         accessor: "name",
       },
       {
         width: "25%",
-        Header: <div className="text-center">সাব-এরিয়া</div>,
+        Header: <div className="text-center">{t("subArea")}</div>,
         id: "option1",
 
         Cell: ({ row: { original } }) => (
@@ -110,7 +113,7 @@ export default function Area() {
             }}
           >
             <Link to={`/subArea/${original.id}`} className="gotoSubAreaBtn">
-              সাব-এরিয়া
+              {t("subArea")}
               <ArrowRightShort style={{ fontSize: "19px" }} />
             </Link>
           </div>
@@ -118,7 +121,7 @@ export default function Area() {
       },
       {
         width: "25%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -138,7 +141,7 @@ export default function Area() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   return (
@@ -157,7 +160,7 @@ export default function Area() {
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>এরিয়া</div>
+                  <div> {t("area")} </div>
                   <div
                     title="এরিয়া এড করুন"
                     className="header_icon"

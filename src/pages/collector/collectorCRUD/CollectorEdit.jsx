@@ -9,6 +9,8 @@ import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
 import { editCollector } from "../../../features/apiCalls";
 import { collectorPermission } from "./collectorPermission";
+import { useTranslation } from "react-i18next";
+
 // import { getArea } from "../../../features/areaSlice";
 // import {
 //   editCollector,
@@ -16,6 +18,7 @@ import { collectorPermission } from "./collectorPermission";
 // } from "../../../features/collectorSlice";
 
 export default function CollectorEdit({ single }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
@@ -100,7 +103,7 @@ export default function CollectorEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {single?.name} - এর প্রোফাইল এডিট করুন
+                {single?.name} {t("editProfile")}
               </h5>
               <button
                 type="button"
@@ -143,7 +146,7 @@ export default function CollectorEdit({ single }) {
 
                       {/* status */}
                       <div className="form-check customerFormCheck">
-                        <p>স্টেটাস</p>
+                        <p> {t("status")} </p>
                         <div className="form-check form-check-inline">
                           <FtextField
                             label="Active"
@@ -167,7 +170,7 @@ export default function CollectorEdit({ single }) {
                     </div>
 
                     {/* area */}
-                    <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <b className="mt-2"> {t("selectArea")} </b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
                         <div key={key}>
@@ -190,7 +193,7 @@ export default function CollectorEdit({ single }) {
                       ))}
                     </div>
 
-                    <b className="mt-2">পারমিশান পরিবর্তন করুন</b>
+                    <b className="mt-2"> {t("changePermission")} </b>
                     <div className="AllAreaClass">
                       {permissions.map((val, key) => (
                         <div className="CheckboxContainer" key={key}>
@@ -214,14 +217,14 @@ export default function CollectorEdit({ single }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

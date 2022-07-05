@@ -9,8 +9,10 @@ import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { fetchpppoePackage } from "../../../features/apiCalls";
 import { editResellerCustomer } from "../../../features/resellerCustomerAdminApi";
+import { useTranslation } from "react-i18next";
 
 const ResellerCustomerEdit = ({ customerId }) => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -122,7 +124,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              এডিট করুন
+              {t("edit")}
             </h5>
             <button
               type="button"
@@ -135,7 +137,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
             <div className="wrapper-body">
               <div class="align-items-center">
                 <div class="col-auto">
-                  <label class="form-label mb-0">মাইক্রোটিক সিলেক্ট</label>
+                  <label class="form-label mb-0"> {t("selectMikrotik")} </label>
                 </div>
                 <div className="col-auto">
                   <select
@@ -153,7 +155,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
 
               <div class=" align-items-center">
                 <div class="col-auto">
-                  <label class="form-label mb-0">প্যাকেজ সিলেক্ট</label>
+                  <label class="form-label mb-0"> {t("selectPackage")} </label>
                 </div>
                 <div className="col-auto">
                   <select
@@ -178,7 +180,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
 
               <div class="align-items-center">
                 <div class="col-auto">
-                  <label class="form-label mb-0">মাসিক ফি</label>
+                  <label class="form-label mb-0"> {t("monthFee")} </label>
                 </div>
                 <div class="col-auto">
                   <input
@@ -268,14 +270,14 @@ const ResellerCustomerEdit = ({ customerId }) => {
               data-bs-dismiss="modal"
               disabled={isLoading}
             >
-              বাতিল
+              {t("cancle")}
             </button>
             <button
               onClick={handleSubmit}
               className="btn btn-success"
               disabled={isLoading}
             >
-              {isLoading ? <Loader /> : "সাবমিট"}
+              {isLoading ? <Loader /> : t("submit")}
             </button>
           </div>
         </div>
