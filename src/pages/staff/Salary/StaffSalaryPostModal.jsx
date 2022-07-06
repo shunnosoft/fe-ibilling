@@ -118,7 +118,7 @@ export default function StaffSalaryPostModal({ staffId }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                     </div>
                   </Form>

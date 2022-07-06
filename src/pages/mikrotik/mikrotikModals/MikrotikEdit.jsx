@@ -100,7 +100,7 @@ export default function MikrotikEdit() {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                       <button type="submit" className="btn btn-success">
                         {isLoading ? <Loader /> : t("save")}

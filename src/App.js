@@ -80,6 +80,7 @@ import "./language/i18n/i18n";
 import RstaticCustomer from "./reseller/staticCustomer/StaticCustomer";
 
 import ClientPage from "./ownerCustomer/index";
+import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -442,6 +443,16 @@ function App() {
                 element={
                   userRole === "ispOwner" ? (
                     <ResellerCustomer />
+                  ) : (
+                    <Navigate to={"/home"}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path="reseller/customer/"
+                element={
+                  userRole === "ispOwner" ? (
+                    <AllResellerCustomer />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
                   )

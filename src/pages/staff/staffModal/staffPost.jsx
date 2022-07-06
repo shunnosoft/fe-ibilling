@@ -186,7 +186,7 @@ export default function StaffPost() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                     </div>
                   </Form>

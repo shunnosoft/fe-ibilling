@@ -89,7 +89,7 @@ export default function CustomerModal() {
       };
       //ToDo
       if (bpSettings?.hasMikrotik) {
-        fetchPackagefromDatabase(dispatch, IDs);
+        fetchPackagefromDatabase(dispatch, IDs, setIsloading);
       }
     }
     setSingleMikrotik(id);
@@ -397,7 +397,7 @@ export default function CustomerModal() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                       <button
                         type="submit"

@@ -67,7 +67,7 @@ function Recharge({ reseller }) {
                       data-bs-dismiss="modal"
                       className="smsparchasebtn button2"
                     >
-                      {t("cancle")}
+                      {t("cancel")}
                     </button>
                     <button
                       className="smsparchasebtn button1"

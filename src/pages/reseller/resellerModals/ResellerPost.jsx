@@ -45,24 +45,10 @@ export default function ResellerPost() {
     status: Yup.string().required("স্ট্যাটাস সিলেক্ট করুন"),
     commissionRate: Yup.number()
       .integer()
-      .min(1, "সর্বনিম্ন শেয়ার ১% ")
-      .max(99, "সর্বোচ্চ শেয়ার ৯৯%")
+      .min(0, "সর্বনিম্ন শেয়ার 0% ")
+      .max(100, "সর্বোচ্চ শেয়ার 100%")
       .required("রিসেলার শেয়ার দিন"),
   });
-
-  // const handleChange = (e) => {
-  //   const { name, checked } = e.target;
-  //   if (name === "allChecked") {
-  //     let temp = Check.map((event) => ({ ...event, isChecked: checked }));
-  //     setCheck(temp);
-  //   } else {
-  //     let temp = Check.map((event) =>
-  //       event.value === name ? { ...event, isChecked: checked } : event
-  //     );
-  //     console.log(temp);
-  //     setCheck(temp);
-  //   }
-  // };
 
   const resellerHandler = async (data, resetForm) => {
     let commision = data.commissionRate;
@@ -144,40 +130,14 @@ export default function ResellerPost() {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  // ispOwner:
-                  name: "", //*
-                  mobile: "", //*
-                  email: "", //*
-                  nid: "", //*
+                  name: "",
+                  mobile: "",
+                  email: "",
+                  nid: "",
                   website: "",
                   address: "",
-                  // ['prepaid', 'postpaid', 'both'], /*
-                  status: "active", //['new', 'active', 'inactive', 'banned', 'deleted'],
-                  commissionRate: 0, //number
-                  // rechargeBalance: "", //number
-                  // smsRate: "", //number
-                  // commissionType: "", //['global', 'individual'],
-                  // refName: "",
-                  // refMobile: "",
-                  // customerAdd: "",
-                  // customerEdit: "",
-                  // customerDelete: "",
-                  // monthlyFeeEdit: "",
-                  // billEdit: "",
-                  // billPosting: "",
-                  // accounts: "",
-                  // inventory: "",
-                  // webLogin: "",
-                  // viewCustomerList: "",
-                  // sendSMS: "",
-                  // customerActivate: "",
-                  // customerDeactivate: "",
-                  // print: "",
-                  // collectorAdd: "",
-                  // collectorEdit: "",
-                  // viewTotalReport: "",
-                  // viewCollectorReport: "",
-                  // fileExport: "",
+                  status: "active",
+                  commissionRate: 0,
                 }}
                 validationSchema={resellerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -351,7 +311,7 @@ export default function ResellerPost() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                     </div>
                   </Form>
