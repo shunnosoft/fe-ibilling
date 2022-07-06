@@ -355,7 +355,11 @@ export default function ConfigMikrotik() {
                     {/* PPPoE users */}
                     <div className="table-section">
                       {whatYouWantToShow === "showActiveMikrotikUser" && (
-                        <Table columns={columns2} data={activeUser}></Table>
+                        <Table
+                          isLoading={loading}
+                          columns={columns2}
+                          data={activeUser}
+                        ></Table>
                       )}
                     </div>
 
