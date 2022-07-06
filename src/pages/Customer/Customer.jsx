@@ -515,7 +515,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PersonFill />
-                      <p className="actionP">প্রোফাইল</p>
+                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -530,7 +530,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <Wallet />
-                        <p className="actionP">রিচার্জ</p>
+                        <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
                   </li>
@@ -549,7 +549,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PenFill />
-                        <p className="actionP">এডিট</p>
+                        <p className="actionP">{t("edit")}</p>
                       </div>
                     </div>
                   </li>
@@ -567,7 +567,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <CashStack />
-                      <p className="actionP">রিপোর্ট</p>
+                      <p className="actionP">{t("report")}</p>
                     </div>
                   </div>
                 </li>
@@ -583,7 +583,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ArchiveFill />
-                        <p className="actionP">ডিলিট</p>
+                        <p className="actionP">{t("delete")}</p>
                       </div>
                     </div>
                   </li>

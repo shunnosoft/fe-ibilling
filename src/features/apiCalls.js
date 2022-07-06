@@ -98,6 +98,7 @@ import {
   getExpenditureSuccess,
 } from "./expenditureSlice";
 import { deleteReCustomer } from "./resellerCustomerAdminSlice";
+
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());

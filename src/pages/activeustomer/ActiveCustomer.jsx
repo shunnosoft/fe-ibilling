@@ -125,29 +125,17 @@ export default function ConfigMikrotik() {
       },
       {
         width: "10%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         Cell: <Wifi color="green" />,
       },
       {
         width: "16%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
-        // Cell: ({ row: { original } }) => (
-        //   <div
-        //     style={{
-        //       display: "flex",
-        //     }}
-        //   >
-        //     <div style={{ marginRight: "5px" }}>
-        //       <Wifi />
-        //     </div>
-        //     {original?.name}
-        //   </div>
-        // ),
       },
       {
         width: "15%",
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
       {
@@ -181,7 +169,7 @@ export default function ConfigMikrotik() {
 
       {
         width: "17%",
-        Header: "আপ টাইম",
+        Header: t("upTime"),
         accessor: "uptime",
 
         Cell: ({ row: { original } }) => (
@@ -200,7 +188,7 @@ export default function ConfigMikrotik() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns3 = React.useMemo(
     () => [
@@ -213,7 +201,7 @@ export default function ConfigMikrotik() {
       },
       {
         width: "11%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
           <div>
@@ -227,12 +215,12 @@ export default function ConfigMikrotik() {
       },
       {
         width: "20%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "12%",
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "profile",
       },
       {
@@ -273,25 +261,13 @@ export default function ConfigMikrotik() {
         accessor: "lastLinkUpTime",
       },
     ],
-    []
+    [t]
   );
   const [allUsers, setAllUsers] = useState(allMikrotikUsers);
   useEffect(() => {
     setAllUsers(allMikrotikUsers);
   }, [allMikrotikUsers]);
 
-  // const filterIt = (e) => {
-  //   let temp;
-  //   if (e.target.value === "") {
-  //     setAllUsers(allMikrotikUsers);
-  //   } else if (e.target.value === "true") {
-  //     temp = allMikrotikUsers.filter((item) => item.running == true);
-  //     setAllUsers(temp);
-  //   } else if (e.target.value === "false") {
-  //     temp = allMikrotikUsers.filter((item) => item.running != true);
-  //     setAllUsers(temp);
-  //   }
-  // };
   return (
     <>
       <Sidebar />

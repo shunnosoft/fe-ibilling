@@ -235,18 +235,18 @@ export default function ConfigMikrotik() {
       },
       {
         width: "30%",
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "name",
       },
       {
         width: "25%",
-        Header: "রেট",
+        Header: t("rate"),
         accessor: "rate",
       },
 
       {
         width: "25%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -279,7 +279,7 @@ export default function ConfigMikrotik() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -292,7 +292,7 @@ export default function ConfigMikrotik() {
                   <div className="dropdown-item actionManager">
                     <div className="customerAction">
                       <ArchiveFill />
-                      <p className="actionP">ডিলিট</p>
+                      <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
                 </li>
@@ -302,7 +302,7 @@ export default function ConfigMikrotik() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns2 = React.useMemo(
     () => [
@@ -315,12 +315,12 @@ export default function ConfigMikrotik() {
       },
       {
         width: "17%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "18%",
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
       {
@@ -354,7 +354,7 @@ export default function ConfigMikrotik() {
 
       {
         width: "25%",
-        Header: "আপ টাইম",
+        Header: t("upTime"),
         accessor: "uptime",
 
         Cell: ({ row: { original } }) => (
@@ -373,7 +373,7 @@ export default function ConfigMikrotik() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns3 = React.useMemo(
     () => [
@@ -386,21 +386,21 @@ export default function ConfigMikrotik() {
       },
       {
         width: "25%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "30%",
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "profile",
       },
       {
         width: "25%",
-        Header: "কলার আইডি",
+        Header: t("colorId"),
         accessor: "callerId",
       },
     ],
-    []
+    [t]
   );
   return (
     <>
