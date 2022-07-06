@@ -240,6 +240,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
                       value={"inactive"}
                       onChange={(e) => setStatus(e.target.value)}
                       checked={status === "inactive"}
+                      disabled
                     />
                     <label className="form-check-label" htmlFor="inlineRadio2">
                       ইন-এক্টিভ

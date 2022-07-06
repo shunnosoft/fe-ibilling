@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
   PersonPlusFill,
-  GearFill,
   ThreeDots,
   PenFill,
   ArchiveFill,
   PersonFill,
   Wallet,
-  Person,
   PeopleFill,
   ChatText,
 } from "react-bootstrap-icons";
@@ -36,7 +34,7 @@ import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
 import { Link } from "react-router-dom";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
-import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
+// import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
 import { useTranslation } from "react-i18next";
 
 export default function Reseller() {

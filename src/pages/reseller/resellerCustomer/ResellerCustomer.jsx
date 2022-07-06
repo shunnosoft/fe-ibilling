@@ -67,9 +67,11 @@ const ResellerCustomer = () => {
 
   // status filter
   if (filterStatus && filterStatus !== "স্ট্যাটাস") {
-    resellerCustomer = resellerCustomer.filter(
-      (value) => value.status === filterStatus
-    );
+    if (filterStatus !== "all") {
+      resellerCustomer = resellerCustomer.filter(
+        (value) => value.status === filterStatus
+      );
+    }
   }
 
   // payment status filter
@@ -279,7 +281,10 @@ const ResellerCustomer = () => {
                       aria-label="Default select example"
                       onChange={(event) => setFilterStatus(event.target.value)}
                     >
-                      <option selected> {t("status")} </option>
+                      <option selected value="all">
+                        {" "}
+                        {t("status")}{" "}
+                      </option>
                       <option value="active"> {t("active")} </option>
                       <option value="inactive"> {t("in active")} </option>
                       <option value="expired"> {t("expired")} </option>
