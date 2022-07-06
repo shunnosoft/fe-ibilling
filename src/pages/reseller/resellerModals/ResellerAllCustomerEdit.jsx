@@ -12,7 +12,7 @@ import { editResellerCustomer } from "../../../features/resellerCustomerAdminApi
 import { useTranslation } from "react-i18next";
 import { useRef } from "react";
 
-const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
+const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
@@ -29,11 +29,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   // initial fix package rate
   const [fixPackageRate, setFixPackageRate] = useState();
 
-  const resellerCustomers = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
-  );
-
-  const resellerAllCustomer = useSelector(
+  const resellerCustomer = useSelector(
     (state) => state?.persistedReducer?.resellerCustomer?.allResellerCustomer
   );
 
@@ -47,15 +43,6 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
 
   // find profile package
   const findPackage = ppPackage.find((item) => item.id === packageRate);
-
-  // get all data from redux state
-  let resellerCustomer;
-  if (allCustomer) {
-    resellerCustomer = resellerAllCustomer;
-  }
-  if (!allCustomer) {
-    resellerCustomer = resellerCustomers;
-  }
 
   // get single customer
   const data = resellerCustomer.find((item) => item.id === customerId);
@@ -127,16 +114,11 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
       alert("রিসেলার গ্রাহকের মাসিক ফি বাড়ানো যাবে");
       return monthlyFeeRef.current.focus();
     }
-    let resellerId;
-    if (allCustomer) {
-      resellerId = data.reseller.id;
-    } else {
-      resellerId = data.reseller;
-    }
+    // console.log({ resellerId, data });
     editResellerCustomer(
       dispatch,
       sendingData,
-      resellerId,
+      data.reseller.id,
       customerId,
       setIsLoading,
       allCustomer
@@ -319,4 +301,4 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   );
 };
 
-export default ResellerCustomerEdit;
+export default ResellerAllCustomerEdit;

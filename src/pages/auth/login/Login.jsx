@@ -101,7 +101,7 @@ export default function Login() {
                     </button>
                     <NavLink to="/">
                       <button
-                        className="w-45 btn  btn-secondary mt-4 cstm-login-cancle"
+                        className="w-45 btn  btn-secondary mt-4 cstm-login-cancel"
                         type="button"
                       >
                         বাতিল

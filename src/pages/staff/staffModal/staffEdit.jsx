@@ -204,7 +204,7 @@ export default function StaffEdit({ staffId }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                     </div>
                   </Form>

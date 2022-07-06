@@ -1,9 +1,28 @@
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
 import {
+  editAllResellerCustomerSuccess,
   editResellerCustomerSuccess,
+  getAllResellerCustomerSuccess,
   getResellerCustomerSuccess,
 } from "./resellerCustomerAdminSlice";
+
+//get all reseller customers
+export const getAllResellerCustomer = async (
+  dispatch,
+  ispOwner,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(`/reseller/all-customer/${ispOwner}`);
+    dispatch(getAllResellerCustomerSuccess(res.data.customers));
+    setIsloading(false);
+  } catch (error) {
+    console.log(error.message);
+    setIsloading(false);
+  }
+};
 
 //Customers
 export const getResellerCustomer = async (dispatch, reseller, setIsloading) => {
@@ -40,7 +59,8 @@ export const editResellerCustomer = async (
   sendingData,
   reseller,
   customerId,
-  setIsLoading
+  setIsLoading,
+  isAllCustomer = null
 ) => {
   setIsLoading(true);
   try {
@@ -48,8 +68,11 @@ export const editResellerCustomer = async (
       `/reseller/customer/${reseller}/${customerId}`,
       sendingData
     );
-    console.log(res.data);
-    dispatch(editResellerCustomerSuccess(res.data));
+    if (isAllCustomer) {
+      dispatch(editAllResellerCustomerSuccess(res.data));
+    } else {
+      dispatch(editResellerCustomerSuccess(res.data));
+    }
     setIsLoading(false);
     toast.success("কাস্টমার এডিট সফল হয়েছে!");
     document.querySelector("#CustomerEditModal").click();

@@ -13,7 +13,8 @@ import BillCollectInvoiceWithNote from "./customerBillCollectInvoicePDF";
 import BillCollectInvoiceWithoutNote from "./customerBillReportPDFwithNote";
 import { useTranslation } from "react-i18next";
 
-export default function CustomerReport({ single }) {
+export default function CustomerReport(props) {
+  const { single } = props;
   const { t } = useTranslation();
   const billRefwithNote = useRef();
   const billRefwithOutNote = useRef();
@@ -58,7 +59,7 @@ export default function CustomerReport({ single }) {
       }
     }
   };
-
+  console.log(props?.hideReportDelete);
   return (
     <div>
       <div
@@ -173,17 +174,19 @@ export default function CustomerReport({ single }) {
                                     content={() => billRefwithNote.current}
                                   />
                                 </div>
-                                <div title={t("deleteReport")}>
-                                  <button
-                                    className="border-0 bg-transparent"
-                                    onClick={() => deletReport(val.id)}
-                                  >
-                                    <TrashFill
-                                      color="#dc3545"
-                                      style={{ cursor: "pointer" }}
-                                    />
-                                  </button>
-                                </div>
+                                {!props?.hideReportDelete && (
+                                  <div title={t("deleteReport")}>
+                                    <button
+                                      className="border-0 bg-transparent"
+                                      onClick={() => deletReport(val.id)}
+                                    >
+                                      <TrashFill
+                                        color="#dc3545"
+                                        style={{ cursor: "pointer" }}
+                                      />
+                                    </button>
+                                  </div>
+                                )}
                               </td>
                             ) : (
                               <td className="text-center">
@@ -214,17 +217,20 @@ export default function CustomerReport({ single }) {
                                     content={() => billRefwithOutNote.current}
                                   />
                                 </div>
-                                <div title={t("deleteReport")}>
-                                  <button
-                                    className="border-0 bg-transparent"
-                                    onClick={() => deletReport(val.id)}
-                                  >
-                                    <TrashFill
-                                      color="#dc3545"
-                                      style={{ cursor: "pointer" }}
-                                    />
-                                  </button>
-                                </div>
+                                {!props?.hideReportDelete && (
+                                  <div title={t("deleteReport")}>
+                                    <button
+                                      className="border-0 bg-transparent"
+                                      onClick={() => deletReport(val.id)}
+                                      disabled={props?.hideReportDelete}
+                                    >
+                                      <TrashFill
+                                        color="#dc3545"
+                                        style={{ cursor: "pointer" }}
+                                      />
+                                    </button>
+                                  </div>
+                                )}
                               </td>
                             )}
                           </tr>

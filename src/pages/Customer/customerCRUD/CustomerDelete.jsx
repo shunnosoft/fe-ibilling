@@ -96,7 +96,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 data-bs-dismiss="modal"
                 disabled={isLoading}
               >
-                {t("cancle")}
+                {t("cancel")}
               </button>
               <button
                 onClick={() => {
