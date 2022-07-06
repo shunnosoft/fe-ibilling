@@ -203,20 +203,20 @@ export default function Header(props) {
                         );
                       })}
 
-                      {/* {userRole === "ispOwner" || userRole === "manager" ? (
-                      <Link to="/activity">
-                        <li className="profileList logOutLi">
-                          <div className="dropdown-item logOutTxt">
-                            <span className="dropdownIcon">
-                              <PersonBoundingBox />
-                            </span>
-                            এক্টিভিটি
-                          </div>
-                        </li>
-                      </Link>
-                    ) : (
-                      ""
-                    )} */}
+                      {userRole === "ispOwner" || userRole === "manager" ? (
+                        <Link to="/activity">
+                          <li className="profileList logOutLi">
+                            <div className="dropdown-item logOutTxt">
+                              <span className="dropdownIcon">
+                                <PersonBoundingBox />
+                              </span>
+                              এক্টিভিটি
+                            </div>
+                          </li>
+                        </Link>
+                      ) : (
+                        ""
+                      )}
 
                       <li
                         className="profileList logOutLi"

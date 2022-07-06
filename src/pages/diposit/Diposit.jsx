@@ -96,21 +96,6 @@ export default function Diposit() {
     (state) => state?.persistedReducer?.collector?.collector
   );
 
-  // useEffect(()=>{
-
-  //   var arr = []
-  //   allDeposit.forEach((original)=>{
-  //     var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === original.user))
-
-  //     if(match) {
-  //       arr.push({...original,name:match.name})
-  //     }
-
-  //   })
-  //   setMainData(arr)
-  //   setMainData2(arr)
-  // },[allCollector,allDeposit,userRole,manager])
-
   const getTotalDeposit = useCallback(() => {
     const initialValue = 0;
     const sumWithInitial = mainData.reduce(
@@ -170,15 +155,6 @@ export default function Diposit() {
           Date.parse(original.createdAt) <= Date.parse(initialToday)
       )
     );
-
-    // Temp varialbe for search
-    // setMainData2(
-    //   getNames().filter(
-    //     (original) =>
-    //       Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
-    //       Date.parse(original.createdAt) <= Date.parse(initialToday)
-    //   )
-    // );
   }, [getNames]);
 
   useEffect(() => {
@@ -232,17 +208,17 @@ export default function Diposit() {
       },
       {
         width: "22%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
         Cell: ({ row: { original } }) => (
           <div>
-            নাম {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
+            {t("nam")} {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
           </div>
         ),
       },
       {
         width: "22%",
-        Header: "মোট",
+        Header: t("total"),
         accessor: "amount",
         Cell: ({ row: { original } }) => (
           <div>৳ {FormatNumber(original.amount)}</div>
@@ -251,7 +227,7 @@ export default function Diposit() {
 
       {
         width: "22%",
-        Header: "অ্যাকশন",
+        Header: t("action"),
 
         Cell: ({ row: { original } }) => (
           <div
@@ -274,24 +250,24 @@ export default function Diposit() {
                         depositAcceptRejectHandler("accepted", original.id);
                       }}
                     >
-                      গ্রহণ
+                      {t("accept")}
                     </button>
                     <button
                       onClick={() => {
                         depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
-                      বাতিল
+                      {t("cancle")}
                     </button>
                   </div>
                 )
               ) : (
                 <>
                   {original.status === "accepted" && (
-                    <span className="statusClass">গ্রহণ করা হয়েছে</span>
+                    <span className="statusClass">{t("accepted")}</span>
                   )}
                   {original.status === "rejected" && (
-                    <span className="rejectClass">বাতিল হয়েছে</span>
+                    <span className="rejectClass">{t("cancled")}</span>
                   )}
                 </>
               )}
@@ -301,41 +277,41 @@ export default function Diposit() {
       },
       {
         width: "22%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
-    []
+    [t]
   );
   const columns2 = React.useMemo(
     () => [
       {
         width: "25%",
-        Header: "সিরিয়াল",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
         width: "25%",
-        Header: "পরিমান",
+        Header: t("amount"),
         accessor: "amount",
         Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
         width: "25%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ row: { original } }) => (
           <div>
             {original.status === "accepted" && (
-              <span className="statusClass">গ্রহণ করা হয়েছে</span>
+              <span className="statusClass">{t("accepted")}</span>
             )}
             {original.status === "rejected" && (
-              <span className="rejectClass">বাতিল হয়েছে</span>
+              <span className="rejectClass">{t("cancled")}</span>
             )}
           </div>
         ),
@@ -343,27 +319,29 @@ export default function Diposit() {
 
       {
         width: "25%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
-    []
+    [t]
   );
 
   const customComponent = (
     <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
       {userRole === "ispOwner" || userRole === "manager" ? (
         <div style={{ marginRight: "10px" }}>
-          মোট ডিপোজিটঃ {getTotalDeposit()} টাকা
+          {t("totalDiposit")} {getTotalDeposit()} {t("tk")}
         </div>
       ) : (
         ""
       )}
       {userRole !== "ispOwner" ? (
-        <div>নিজ ডিপোজিটঃ {getTotalOwnDeposit()} টাকা</div>
+        <div>
+          {t("newDiposit")} {getTotalOwnDeposit()} {t("tk")}
+        </div>
       ) : (
         ""
       )}
@@ -391,7 +369,7 @@ export default function Diposit() {
                       className="mb-3"
                     >
                       {(userRole === "manager" || userRole === "collector") && (
-                        <Tab eventKey="home" title="ডিপোজিট করুন">
+                        <Tab eventKey="home" title={t("diposit")}>
                           <div className="managerDipositToIsp">
                             <Formik
                               initialValues={{
@@ -410,13 +388,13 @@ export default function Diposit() {
                                     <FtextField
                                       type="text"
                                       name="balance"
-                                      label="মোট ব্যালান্স"
+                                      label={t("totalBalance")}
                                       disabled
                                     />
                                     <FtextField
                                       type="text"
                                       name="amount"
-                                      label="ডিপোজিট পরিমান"
+                                      label={t("dipositAmount")}
                                     />
                                     <button
                                       type="submit"
@@ -425,7 +403,7 @@ export default function Diposit() {
                                       {isLoading ? (
                                         <Loader></Loader>
                                       ) : (
-                                        " সাবমিট"
+                                        t("submit")
                                       )}
                                     </button>
                                   </div>
@@ -507,7 +485,7 @@ export default function Diposit() {
                       </Tab>
 
                       {(userRole === "manager" || userRole === "collector") && (
-                        <Tab eventKey="contact" title="নিজ ডিপোজিট">
+                        <Tab eventKey="contact" title={t("ownDeposit")}>
                           <Table
                             customComponent={customComponent}
                             data={ownDeposits}

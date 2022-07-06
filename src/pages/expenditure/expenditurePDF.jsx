@@ -3,11 +3,12 @@ import { ArrowDownUp } from "react-bootstrap-icons";
 import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 let serial = 0;
 
-
 const PrintExpenditure = React.forwardRef((props, ref) => {
+  const { t } = useTranslation();
   const { allExpenditures } = props;
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
@@ -23,17 +24,23 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
             <div className="company_name">{ispOwnerData.company}</div>
           </div>
           <div className="details_side">
-            <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
-            {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
+            <p>
+              {t("companyName")} {ispOwnerData.company}
+            </p>
+            {ispOwnerData.address && (
+              <p>
+                {t("address")} : {ispOwnerData?.address}
+              </p>
+            )}
           </div>
         </div>
         <table className="table table-striped ">
           <thead>
             <tr>
-              <th>সিরিয়াল</th>
-              <th>খরচের খাত</th>
-              <th>পরিমান</th>
-              <th>তারিখ</th>
+              <th>{t("serial")}</th>
+              <th>{t("expenseSector")}</th>
+              <th>{t("amount")}</th>
+              <th>{t("date")}</th>
             </tr>
           </thead>
           <tbody>
@@ -50,8 +57,8 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
         <div className="page-footer">
           <div className="signature_container">
             <div className="p-3 signature_wraper">
-              <div className="signamture_field">ম্যানেজার</div>
-              <div className="signamture_field">এডমিন</div>
+              <div className="signamture_field">{t("manager")}</div>
+              <div className="signamture_field">{t("admin")}</div>
             </div>
           </div>
         </div>

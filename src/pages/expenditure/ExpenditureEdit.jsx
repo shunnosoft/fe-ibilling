@@ -136,7 +136,7 @@ export default function EditExpenditure({ singleExp }) {
                       <FtextField
                         style={{ marginRight: "10px" }}
                         type="number"
-                        label="পরিমাণ"
+                        label={t("amount")}
                         name="amount"
                       ></FtextField>
                     </div>

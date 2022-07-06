@@ -161,7 +161,7 @@ export default function CustomerReport({ single }) {
                                 </div>
                                 <div>
                                   <ReactToPrint
-                                    documentTitle="বিল ইনভয়েস"
+                                    documentTitle={t("billIvoice")}
                                     trigger={() => (
                                       <div
                                         title={t("printInvoiceBill")}
@@ -202,7 +202,7 @@ export default function CustomerReport({ single }) {
                                 </div>
                                 <div>
                                   <ReactToPrint
-                                    documentTitle="বিল ইনভয়েস"
+                                    documentTitle={t("billIvoice")}
                                     trigger={() => (
                                       <div
                                         title={t("printInvoiceBill")}
@@ -232,7 +232,7 @@ export default function CustomerReport({ single }) {
                       })
                     ) : (
                       <td colSpan={5}>
-                        <h5 className="text-center">কোন ডাটা পাওয়া যাই নি !</h5>
+                        <h5 className="text-center">{t("doNotGetAnyData")}</h5>
                       </td>
                     )}
                   </tbody>

@@ -502,7 +502,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PersonFill />
-                      <p className="actionP">প্রোফাইল</p>
+                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -517,7 +517,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <Wallet />
-                        <p className="actionP">রিচার্জ</p>
+                        <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
                   </li>
@@ -536,7 +536,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PenFill />
-                        <p className="actionP">এডিট</p>
+                        <p className="actionP">{t("edit")}</p>
                       </div>
                     </div>
                   </li>
@@ -554,7 +554,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <CashStack />
-                      <p className="actionP">রিপোর্ট</p>
+                      <p className="actionP">{t("report")}</p>
                     </div>
                   </div>
                 </li>
@@ -570,7 +570,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ArchiveFill />
-                        <p className="actionP">ডিলিট</p>
+                        <p className="actionP">{t("delete")}</p>
                       </div>
                     </div>
                   </li>
@@ -1033,9 +1033,11 @@ export default function Customer() {
                         onChange={(e) => handleFreeUser(e.target.value)}
                         className="form-select"
                       >
-                        <option value="allUser">সকল গ্রাহক</option>
-                        <option value="freeUser">ফ্রি গ্রাহক</option>
-                        <option value="nonFreeUser">নন ফ্রি গ্রাহক</option>
+                        <option value="allUser">{t("sokolCustomer")}</option>
+                        <option value="freeUser">{t("freeCustomer")}</option>
+                        <option value="nonFreeUser">
+                          {t("nonFreeCustomer")}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -1060,7 +1062,7 @@ export default function Customer() {
         <div className="bulkActionButton">
           <button
             className="bulk_action_button"
-            title="এডিট এরিয়া"
+            title={t("editArea")}
             data-bs-toggle="modal"
             data-bs-target="#customerBulkEdit"
             type="button"
@@ -1071,7 +1073,7 @@ export default function Customer() {
           </button>
           <button
             className="bulk_action_button"
-            title="এডিট স্টাটাস"
+            title={t("editStatus")}
             data-bs-toggle="modal"
             data-bs-target="#bulkStatusEdit"
             type="button"
@@ -1082,7 +1084,7 @@ export default function Customer() {
           </button>
           <button
             className="bulk_action_button"
-            title="এডিট বিলিং সাইকেল"
+            title={t("editBillingCycle")}
             data-bs-toggle="modal"
             data-bs-target="#customerBillingCycle"
             type="button"
@@ -1093,7 +1095,7 @@ export default function Customer() {
           </button>
           <button
             className="bulk_action_button"
-            title="অটো সংযোগ অন/অফ"
+            title={t("autoConnectOnOff")}
             data-bs-toggle="modal"
             data-bs-target="#autoDisableEditModal"
             type="button"
@@ -1104,7 +1106,7 @@ export default function Customer() {
           </button>
           <button
             className="bulk_action_button"
-            title="গ্রাহক ডিলিট"
+            title={t("customerDelete")}
             data-bs-toggle="modal"
             data-bs-target="#bulkDeleteCustomer"
             type="button"

@@ -239,44 +239,37 @@ export default function Report() {
     () => [
       {
         width: "8%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        width: "10%",
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "10%",
-        Header: "গ্রাহক",
+        width: "12%",
+        Header: t("customer"),
         accessor: "customer.name",
       },
       {
         width: "10%",
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "customer.mikrotikPackage.name",
       },
       {
         width: "10%",
-        Header: "বিল",
+        Header: t("bill"),
         accessor: "amount",
       },
       {
-        width: "8%",
-        Header: "মাধ্যম",
+        width: "10%",
+        Header: t("agent"),
         accessor: "medium",
       },
       {
-        width: "10%",
-        Header: "কালেক্টর",
+        width: "11%",
+        Header: t("collector"),
         accessor: "name",
       },
       {
-        width: "20%",
-        Header: "নোট",
+        width: "27%",
+        Header: t("note"),
         accessor: (data) => {
           return {
             note: data.note,
@@ -300,19 +293,21 @@ export default function Report() {
       },
 
       {
-        width: "24%",
-        Header: "তারিখ",
+        width: "12%",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm:ss a");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
-    []
+    [t]
   );
 
   const customComponent = (
-    <div style={{ fontSize: "20px" }}>মোট বিলঃ {addAllBills()} টাকা</div>
+    <div style={{ fontSize: "20px" }}>
+      {t("totalBill")} {addAllBills()} {t("tk")}
+    </div>
   );
 
   return (

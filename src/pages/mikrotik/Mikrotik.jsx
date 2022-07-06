@@ -42,22 +42,22 @@ export default function Mikrotik() {
       },
       {
         width: "22%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "22%",
-        Header: "হোস্ট",
+        Header: t("host"),
         accessor: "host",
       },
       {
         width: "20%",
-        Header: "পোর্ট",
+        Header: t("port"),
         accessor: "port",
       },
       {
         width: "21%",
-        Header: <div className="text-center">অ্যাকশন</div>,
+        Header: <div className="text-center">{t("action")}</div>,
         id: "option1",
 
         Cell: ({ row: { original } }) => (
@@ -72,13 +72,13 @@ export default function Mikrotik() {
               to={`/mikrotik/${original.ispOwner}/${original.id}`}
               className="mikrotikConfigureButtom"
             >
-              কনফিগার <ArrowRightShort style={{ fontSize: "19px" }} />
+              {t("configure")} <ArrowRightShort style={{ fontSize: "19px" }} />
             </Link>
           </div>
         ),
       },
     ],
-    []
+    [t]
   );
   return (
     <>
@@ -95,7 +95,7 @@ export default function Mikrotik() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div> {t("mikrotik")} </div>
                   <div
-                    title="মাইক্রোটিক এড করুন"
+                    title={t("addMikrotik")}
                     className="header_icon"
                     data-bs-toggle="modal"
                     data-bs-target="#MikrotikModal"

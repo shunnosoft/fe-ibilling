@@ -10,8 +10,10 @@ import "../Customer/customer.css";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
 import { editPackagewithoutmikrotik } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function EditPackage(props) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const ispOwnerId = useSelector(
@@ -20,12 +22,12 @@ export default function EditPackage(props) {
 
   //validator
   const collectorValidator = Yup.object({
-    name: Yup.string().required("প্যাকেজ এর নাম দিন"),
+    name: Yup.string().required(t("enterPackageName")),
 
     rate: Yup.number()
       .integer()
-      .min(1, "সর্বনিম্ন প্যাকেজ রেট 1")
-      .required("প্যাকেজ রেট দিন"),
+      .min(1, t("minimumPackageRate1"))
+      .required(t("enterPackageRate")),
 
     // refName: Yup.string().required("রেফারেন্স নাম"),
     // refMobile: Yup.string()
@@ -59,7 +61,7 @@ export default function EditPackage(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                প্যাকেজ ইডিট
+                {t("editPackage")}
               </h5>
               <button
                 type="button"
@@ -86,13 +88,13 @@ export default function EditPackage(props) {
                       <div className="newDisplayforpackage">
                         <FtextField
                           type="text"
-                          label="প্যাকেজ এর নাম"
+                          label={t("packageName")}
                           name="name"
                         />
                         <FtextField
                           min={0}
                           type="number"
-                          label="প্যাকেজ রেট"
+                          label={t("packageRate")}
                           name="rate"
                         />
                       </div>
@@ -105,14 +107,14 @@ export default function EditPackage(props) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

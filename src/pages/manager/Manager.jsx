@@ -57,17 +57,17 @@ export default function Manager() {
 
   const managerValidate = Yup.object({
     name: Yup.string()
-      .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
-      .required("ম্যানেজার এর নাম দিন"),
+      .min(3, t("minimumContaining3letter"))
+      .required(t("enterManagerName")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("ম্যানেজার এর মোবাইল নম্বর দিন "),
-    address: Yup.string().required("ম্যানেজার এর  এড্রেস দিন "),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("enterManagerNumber")),
+    address: Yup.string().required(t("enterManagerAddress")),
     email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-    nid: Yup.string().required("ম্যানেজার এর NID দিন"),
+      .email(t("incorrectEmail"))
+      .required(t("enterManagerEmail")),
+    nid: Yup.string().required(t("enterManagerNID")),
   });
 
   const addManagerHandle = (data) => {

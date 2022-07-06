@@ -1,6 +1,8 @@
 import React from "react";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
+  const { t } = useTranslation();
   const { billingData, ispOwnerData, customerData, paymentDate } = props;
   return (
     <>
@@ -13,8 +15,15 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
             <div className="company_name">{ispOwnerData.company}</div>
           </div>
           <div className="details_side">
-            <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
-            {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
+            <p>
+              {t("companyName")}
+              {ispOwnerData.company}
+            </p>
+            {ispOwnerData.address && (
+              <p>
+                {t("address")} : {ispOwnerData?.address}
+              </p>
+            )}
           </div>
         </div>
 
@@ -53,25 +62,25 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
           <table>
             <tbody>
               <tr>
-                <td>গ্রাহক ডাটা</td>
+                <td>{t("customerData")}</td>
               </tr>
               <tr>
                 <td className="font-weight-bold">
-                  নামঃ {customerData.name}
+                  {t("name")} : {customerData.name}
                   {customerData.mobile && (
                     <>
                       <br />
-                      মোবাইলঃ {customerData.mobile}
+                      {t("mobile")} : {customerData.mobile}
                     </>
                   )}
                   {customerData.address && (
                     <>
                       <br />
-                      ঠিকানাঃ {customerData.address}
+                      {t("address")} : {customerData.address}
                     </>
                   )}
                   <br />
-                  {`PPPOE নামঃ ${customerData.pppoe.name}`}
+                  {`PPPOE ${t("name")}: ${customerData.pppoe.name}`}
                 </td>
               </tr>
             </tbody>
@@ -79,18 +88,20 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
           <table className="table table-bordered mt-2">
             <tbody>
               <tr>
-                <th>বিল টাইপ</th>
-                <th>বিলের ধরণ</th>
-                <th>প্যাকেজ</th>
-                <th>এমাউন্ট</th>
-                <th>মাধ্যম</th>
-                <th style={{ width: "30%" }}>পরিশোধের তারিখ</th>
+                <th>{t("billType")}</th>
+                <th>{t("billDhoron")}</th>
+                <th>{t("package")}</th>
+                <th>{t("amount")}</th>
+                <th>{t("medium")}</th>
+                <th style={{ width: "30%" }}>{t("paidDate")}</th>
               </tr>
 
               <tr>
                 <td>{customerData?.billPayType}</td>
                 <td>
-                  {billingData?.billType == "bill" ? "বিল" : "কানেকশন ফি"}
+                  {billingData?.billType == "bill"
+                    ? t("bill")
+                    : t("connectionFee")}
                 </td>
 
                 <td>
@@ -116,8 +127,8 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
           <div className="page-footer">
             <div className="signature_container">
               <div className="p-3 signature_wraper">
-                <div className="signamture_field">প্রোপাইটার</div>
-                <div className="signamture_field">কাস্টমার</div>
+                <div className="signamture_field">{t("Proprietor")}</div>
+                <div className="signamture_field">{t("customer")}</div>
               </div>
             </div>
           </div>

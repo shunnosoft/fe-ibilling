@@ -394,7 +394,7 @@ export default function Message() {
                           {t("SMSbalance")}
                           <strong className="mainsmsbalance">{sms}</strong>
                         </div>
-                        <div title="রিফ্রেশ করুন" className="refreshIcon">
+                        <div title={t("refresh")} className="refreshIcon">
                           {isRefrsh ? (
                             <Loader></Loader>
                           ) : (
@@ -422,7 +422,7 @@ export default function Message() {
                           <p></p>
                           <input
                             type="text"
-                            placeholder="মোবাইল নম্বর"
+                            placeholder={t("mobile")}
                             className="form-control"
                             ref={mobileNumRef}
                           />

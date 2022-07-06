@@ -6,10 +6,11 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getActvityLog } from "../../features/activityLogApi";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import moment from "moment";
 import { Eye } from "react-bootstrap-icons";
-import Table from "./table/Table";
 import Details from "./modal/Details";
+import Table from "../../components/table/Table";
 
 const ActivityLog = () => {
   // import dispatch
@@ -30,10 +31,17 @@ const ActivityLog = () => {
   const data = useSelector(
     (state) => state?.persistedReducer?.activityLog?.activityLog
   );
+
   console.log(data);
+
+  // get owner users
+  const ownerUsers = useSelector(
+    (state) => state?.persistedReducer?.ownerUsers?.ownerUser
+  );
 
   // api call
   useEffect(() => {
+    getOwnerUsers(dispatch, ispOwnerId);
     getActvityLog(dispatch, setIsLoading, ispOwnerId);
   }, []);
 
@@ -44,16 +52,23 @@ const ActivityLog = () => {
         Header: "#",
         id: "row",
         width: "8%",
-        maxWidth: 100,
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "name",
+        width: "20%",
+        accessor: "user",
+        Cell: ({ cell: { value } }) => {
+          const performer = ownerUsers.find((item) => item[value]);
+
+          return <div>{performer && performer[value].name}</div>;
+        },
       },
 
       {
         Header: "অ্যাকশন",
-        minWidth: 300,
-        maxWidth: 1000,
-        width: "82%",
+        width: "62%",
         accessor: (value) => {
           return (
             <div>
@@ -69,8 +84,6 @@ const ActivityLog = () => {
       {
         Header: () => <div className="text-center">ভিউ</div>,
         width: "10%",
-        maxWidth: 200,
-        minWidth: 100,
         id: "option",
 
         Cell: ({ row: { original } }) => {
@@ -95,7 +108,7 @@ const ActivityLog = () => {
         },
       },
     ],
-    []
+    [ownerUsers]
   );
 
   return (
