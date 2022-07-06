@@ -63,7 +63,7 @@ const StaticActiveCustomer = () => {
       },
       {
         width: "20%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
           <div>
@@ -77,21 +77,21 @@ const StaticActiveCustomer = () => {
       },
       {
         width: "20%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "20%",
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
       {
         width: "30%",
-        Header: "ম্যাক এড্রেস",
+        Header: t("macAddress"),
         accessor: "macAddress",
       },
     ],
-    []
+    [t]
   );
 
   return (

@@ -39,8 +39,10 @@ import { useLayoutEffect } from "react";
 import Table from "../../components/table/Table";
 import CustomerSync from "./configMikrotikModals/CustomerSync";
 // import TdLoader from "../../components/common/TdLoader";
+import { useTranslation } from "react-i18next";
 
 export default function ConfigMikrotik() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { ispOwner, mikrotikId } = useParams();
@@ -88,8 +90,7 @@ export default function ConfigMikrotik() {
         i.rate === 0 && i.name !== "default-encryption" && i.name !== "default"
     );
     if (zeroRate.length !== 0) {
-      toast.warn(`${zeroRate[0].name} প্যাকেজ
-      এর রেট আপডেট করুন`);
+      toast.warn(`${zeroRate[0].name}  ${t("updateMikrotikRate")}`);
     }
   }, [pppoePackage]);
 
@@ -121,7 +122,7 @@ export default function ConfigMikrotik() {
 
   // delete single pppoe package
   const deleteSinglePPPoEpackage = async (mikrotikID, Id) => {
-    const con = window.confirm("আপনি কি প্যাকেজ ডিলিট করতে চান?");
+    const con = window.confirm(t("doWantDeletePackage"));
     if (con) {
       setIsDeleting(true);
       const IDs = {
@@ -215,7 +216,7 @@ export default function ConfigMikrotik() {
   // };
 
   const syncPackage = () => {
-    if (window.confirm("আপনি কি মাইক্রোটিকের প্যাকেজ সিংক করতে চান?")) {
+    if (window.confirm(t("syncMikrotikPackage"))) {
       const IDs = {
         ispOwner: ispOwner,
         mikrotikId: mikrotikId,
@@ -234,18 +235,18 @@ export default function ConfigMikrotik() {
       },
       {
         width: "30%",
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "name",
       },
       {
         width: "25%",
-        Header: "রেট",
+        Header: t("rate"),
         accessor: "rate",
       },
 
       {
         width: "25%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -278,7 +279,7 @@ export default function ConfigMikrotik() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -291,7 +292,7 @@ export default function ConfigMikrotik() {
                   <div className="dropdown-item actionManager">
                     <div className="customerAction">
                       <ArchiveFill />
-                      <p className="actionP">ডিলিট</p>
+                      <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
                 </li>
@@ -301,7 +302,7 @@ export default function ConfigMikrotik() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns2 = React.useMemo(
     () => [
@@ -314,12 +315,12 @@ export default function ConfigMikrotik() {
       },
       {
         width: "17%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "18%",
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
       {
@@ -353,7 +354,7 @@ export default function ConfigMikrotik() {
 
       {
         width: "25%",
-        Header: "আপ টাইম",
+        Header: t("upTime"),
         accessor: "uptime",
 
         Cell: ({ row: { original } }) => (
@@ -372,7 +373,7 @@ export default function ConfigMikrotik() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns3 = React.useMemo(
     () => [
@@ -385,21 +386,21 @@ export default function ConfigMikrotik() {
       },
       {
         width: "25%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "30%",
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "profile",
       },
       {
         width: "25%",
-        Header: "কলার আইডি",
+        Header: t("colorId"),
         accessor: "callerId",
       },
     ],
-    []
+    [t]
   );
   return (
     <>
@@ -415,10 +416,10 @@ export default function ConfigMikrotik() {
                 <div className="d-flex collectorTitle px-4">
                   <div className="AllMikrotik mt-1" onClick={gotoAllMiktorik}>
                     <ArrowLeftShort className="arrowLeftSize" />
-                    <span style={{ marginLeft: "3px" }}>মাইক্রোটিক</span>
+                    <span style={{ marginLeft: "3px" }}> {t("mikrotik")} </span>
                   </div>
 
-                  <div className="mx-auto">মাইক্রোটিক কনফিগারেশন</div>
+                  <div className="mx-auto"> {t("mikrotikConfiguration")} </div>
                 </div>
               </FourGround>
 
@@ -433,7 +434,7 @@ export default function ConfigMikrotik() {
                           <div className="CheckingClass">
                             <Loader />{" "}
                             <h6 style={{ paddingTop: "2px" }}>
-                              কানেকশন চেক করা হচ্ছে ....
+                              {t("checkConnection")}
                             </h6>{" "}
                           </div>
                         ) : (
@@ -445,7 +446,8 @@ export default function ConfigMikrotik() {
                             className="btn btn-outline-primary me-2"
                             onClick={MikrotikConnectionTest}
                           >
-                            কানেকশন চেক <PlugFill className="rotating" />
+                            {t("checkConnection")}{" "}
+                            <PlugFill className="rotating" />
                           </button>
                           <button
                             title="মাইক্রোটিক এডিট"
@@ -453,7 +455,7 @@ export default function ConfigMikrotik() {
                             data-bs-target="#configMikrotikModal"
                             className="btn btn-outline-primary me-2  "
                           >
-                            এডিট <PencilFill />
+                            {t("edit")} <PencilFill />
                           </button>
 
                           {/* <Trash2Fill
@@ -477,7 +479,7 @@ export default function ConfigMikrotik() {
                               title="প্যাকেজ সিংক"
                               className="btn btn-outline-primary me-2 "
                             >
-                              প্যাকেজ সিংক <BagCheckFill />
+                              {t("packageSync")} <BagCheckFill />
                             </button>
                           )}
 
@@ -496,7 +498,7 @@ export default function ConfigMikrotik() {
                               title="PPPoE গ্রাহক সিংক"
                               className="btn btn-outline-primary me-2 "
                             >
-                              PPPoE গ্রাহক সিংক <PersonCheckFill />
+                              {t("PPPoEPackageSync")} <PersonCheckFill />
                             </button>
                           )}
 
@@ -515,7 +517,7 @@ export default function ConfigMikrotik() {
                               title="স্ট্যাটিক গ্রাহক সিংক"
                               className="btn btn-outline-primary me-2 "
                             >
-                              স্ট্যাটিক গ্রাহক সিংক <PersonLinesFill />
+                              {t("staticCustomerSync")} <PersonLinesFill />
                             </button>
                           )}
 
@@ -532,33 +534,34 @@ export default function ConfigMikrotik() {
                       <div className="d-flex mt-3">
                         <div className="mikrotikDetails me-5">
                           <p>
-                            নামঃ <b>{singleMik?.name || "..."}</b>
+                            {t("name")} : <b>{singleMik?.name || "..."}</b>
                           </p>
                           <p>
-                            আইপিঃ <b>{singleMik.host || "..."}</b>
+                            {t("ip")} : <b>{singleMik.host || "..."}</b>
                           </p>
                           <p>
-                            ইউজারনেমঃ <b>{singleMik.username || "..."}</b>
+                            {t("userName")} :{" "}
+                            <b>{singleMik.username || "..."}</b>
                           </p>
                           <p>
-                            পোর্টঃ <b>{singleMik.port || "..."}</b>
+                            {t("port")} : <b>{singleMik.port || "..."}</b>
                           </p>
                         </div>
                         <div className="rightSideMikrotik ms-5">
-                          <h4>সিলেক্ট করুন</h4>
+                          <h4> {t("select")} </h4>
                           <select
                             id="selectMikrotikOption"
                             onChange={selectMikrotikOptionsHandler}
                             className="form-select"
                           >
                             <option value="showMikrotikPackage">
-                              PPPoE প্যাকেজ
+                              {t("PPPoEPackage")}
                             </option>
                             <option value="showAllMikrotikUser">
-                              সকল গ্রাহক
+                              {t("sokolCustomer")}
                             </option>
                             <option value="showActiveMikrotikUser">
-                              এক্টিভ গ্রাহক
+                              {t("activeCustomer")}
                             </option>
                           </select>
                         </div>
@@ -574,7 +577,7 @@ export default function ConfigMikrotik() {
                     {whatYouWantToShow === "showMikrotikPackage" ? (
                       <>
                         <h2 style={{ width: "100%", textAlign: "center" }}>
-                          প্যাকেজ
+                          {t("package")}
                         </h2>
                         <Table
                           isLoading={isLoading}
@@ -590,7 +593,7 @@ export default function ConfigMikrotik() {
                     {whatYouWantToShow === "showActiveMikrotikUser" ? (
                       <>
                         <h2 style={{ width: "100%", textAlign: "center" }}>
-                          এক্টিভ গ্রাহক
+                          {t("activeCustomer")}
                         </h2>
                         <Table
                           isLoading={isLoading}
@@ -606,7 +609,7 @@ export default function ConfigMikrotik() {
                     {whatYouWantToShow === "showAllMikrotikUser" ? (
                       <>
                         <h2 style={{ width: "100%", textAlign: "center" }}>
-                          সকল গ্রাহক
+                          {t("sokolCustome")}
                         </h2>
                         <Table
                           isLoading={isLoading}

@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import apiLink from "../../../api/apiLink";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
-
+import { useTranslation } from "react-i18next";
 export default function CustomerReport({ single }) {
+  const { t } = useTranslation();
   const [customerReport, setCustomerReport] = useState([]);
   useEffect(() => {
     const getCustoemrReport = async () => {
@@ -36,7 +37,7 @@ export default function CustomerReport({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {single?.name} - রিপোর্ট
+                {single?.name} - {t("report")}
               </h5>
               <button
                 type="button"
@@ -50,11 +51,11 @@ export default function CustomerReport({ single }) {
                 <table className="table table-striped ">
                   <thead>
                     <tr className="spetialSortingRow">
-                      <th scope="col">বিল</th>
-                      <th scope="col">তারিখ</th>
-                      <th scope="col">মাধ্যম</th>
-                      <th scope="col">কালেক্টর</th>
-                      <th scope="col">নোট</th>
+                      <th scope="col"> {t("bill")} </th>
+                      <th scope="col"> {t("date")} </th>
+                      <th scope="col"> {t("medium")} </th>
+                      <th scope="col"> {t("collector")} </th>
+                      <th scope="col"> {t("note")} </th>
                     </tr>
                   </thead>
                   <tbody>

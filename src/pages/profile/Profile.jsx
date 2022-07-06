@@ -15,8 +15,10 @@ import { passwordUpdate, profileUpdate } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Profile() {
+  const { t } = useTranslation();
   // const role = useSelector(state=>state.persistedReducer.auth.currentUser?.user.role);
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.userData
@@ -68,14 +70,14 @@ export default function Profile() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">প্রোফাইল</h2>
+                <h2 className="collectorTitle"> {t("profile")} </h2>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="profileWrapper">
                     <div className="profileUpdate">
-                      <h5 className="mb-4">প্রোফাইল আপডেট</h5>
+                      <h5 className="mb-4"> {t("updateProfile")} </h5>
                       <Formik
                         initialValues={{
                           name: currentUser?.name || "",
@@ -92,39 +94,43 @@ export default function Profile() {
                       >
                         {() => (
                           <Form>
-                            <FtextField type="text" label={`নাম`} name="name" />
                             <FtextField
                               type="text"
-                              label={`কোম্পানি`}
+                              label={t("name")}
+                              name="name"
+                            />
+                            <FtextField
+                              type="text"
+                              label={t("company")}
                               name="company"
                             />
 
                             <FtextField
                               type="email"
-                              label={`ইমেইল`}
+                              label={t("email")}
                               name="email"
                             />
                             <FtextField
                               type="text"
-                              label={`মোবাইল`}
+                              label={t("mobile")}
                               name="mobile"
                               disabled={true}
                             />
                             <FtextField
                               type="text"
-                              label={`ঠিকানা`}
+                              label={t("address")}
                               name="address"
                             />
                             <FtextField
                               type="text"
-                              label={`সিগনেচার`}
+                              label={t("signature")}
                               name="signature"
                             />
                             <button
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                              {isLoading ? <Loader /> : " আপডেট"}
+                              {isLoading ? <Loader /> : t("update")}
                             </button>
                           </Form>
                         )}
@@ -132,7 +138,7 @@ export default function Profile() {
                     </div>
                     <div className="passwordUpdate">
                       <h5 className="mb-4 marginTop20">
-                        পাসওয়ার্ড পরিবর্তন করুন
+                        {t("changePassword")}
                       </h5>
                       <Formik
                         initialValues={{
@@ -149,23 +155,23 @@ export default function Profile() {
                             <FtextField
                               type="password"
                               name="oldPassword"
-                              label="পুরাতন পাসওয়ার্ড"
+                              label={t("oldPassword")}
                             />
                             <FtextField
                               type="password"
                               name="newPassword"
-                              label="নতুন পাসওয়ার্ড"
+                              label={t("newPassword")}
                             />
                             <FtextField
                               type="password"
                               name="confrimPassword"
-                              label="পুনরায় নতুন পাসওয়ার্ড লিখুন"
+                              label={t("againNewPassword")}
                             />
                             <button
                               type="submit"
                               className="btn btn-success mt-2"
                             >
-                              {isLoadingpass ? <Loader /> : "পাসওয়ার্ড আপডেট"}
+                              {isLoadingpass ? <Loader /> : t("updatePassword")}
                             </button>
                           </Form>
                         )}

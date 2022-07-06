@@ -82,6 +82,7 @@ export default function Customer() {
     subArea: "",
     package: "",
     mikrotik: "",
+    freeUser: "",
   });
   const [Customers, setCustomers] = useState(cus);
 
@@ -310,6 +311,18 @@ export default function Customer() {
       );
     }
 
+    if (filterOptions.freeUser) {
+      if (filterOptions.freeUser === "freeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee === parseInt("0")
+        );
+      } else if (filterOptions.freeUser === "nonFreeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee !== parseInt("0")
+        );
+      }
+    }
+
     if (filterOptions.subArea) {
       tempCustomers = tempCustomers.filter(
         (customer) => customer.subArea === filterOptions.subArea
@@ -427,17 +440,17 @@ export default function Customer() {
       },
       {
         width: "8%",
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customerId",
       },
       {
         width: "10%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "12%",
-        Header: "IP",
+        Header: t("ip"),
         accessor: (field) =>
           field.userType === "firewall-queue"
             ? field.queue.address
@@ -446,13 +459,13 @@ export default function Customer() {
 
       {
         width: "13%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
 
       {
         width: "8%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -460,7 +473,7 @@ export default function Customer() {
       },
       {
         width: "9%",
-        Header: "পেমেন্ট",
+        Header: t("payment"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -468,17 +481,17 @@ export default function Customer() {
       },
       {
         width: "8%",
-        Header: "মাসিক",
+        Header: t("mountly"),
         accessor: "monthlyFee",
       },
       {
         width: "9%",
-        Header: "ব্যালেন্স",
+        Header: t("balance"),
         accessor: "balance",
       },
       {
         width: "12%",
-        Header: "বিল সাইকেল",
+        Header: t("billingCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
@@ -487,7 +500,7 @@ export default function Customer() {
 
       {
         width: "7%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -517,7 +530,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PersonFill />
-                      <p className="actionP">প্রোফাইল</p>
+                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -532,7 +545,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <Wallet />
-                        <p className="actionP">রিচার্জ</p>
+                        <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
                   </li>
@@ -548,7 +561,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PenFill />
-                        <p className="actionP">এডিট</p>
+                        <p className="actionP">{t("edit")}</p>
                       </div>
                     </div>
                   </li>
@@ -564,7 +577,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <CashStack />
-                        <p className="actionP">রিপোর্ট</p>
+                        <p className="actionP">{t("report")}</p>
                       </div>
                     </div>
                   </li>
@@ -581,7 +594,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ArchiveFill />
-                        <p className="actionP">ডিলিট</p>
+                        <p className="actionP">{t("delete")}</p>
                       </div>
                     </div>
                   </li>
@@ -601,7 +614,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ChatText />
-                        <p className="actionP">মেসেজ</p>
+                        <p className="actionP">{t("message")}</p>
                       </div>
                     </div>
                   </li>
@@ -614,7 +627,7 @@ export default function Customer() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   //bulk operations
@@ -646,13 +659,18 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="me-3"> {t("staticCustomer")} </div>
-                  <div className="h6 d-flex justify-content-center align-items-start">
+                  <div className="h6 d-flex justify-content-center align-items-start flex-column">
                     <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
                     {hasDue && (
                       <>
-                        <p>পূর্বের মোট বকেয়া: {totalDue}</p>
+                        <p>
+                          {" "}
+                          {t("totalPrevDue")} : {totalDue}
+                        </p>
 
-                        <p>মোট সম্ভাব্য বিল (বকেয়া সহ): {totalFeeWithDue}</p>
+                        <p>
+                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
+                        </p>
                       </>
                     )}
                   </div>
@@ -975,6 +993,35 @@ export default function Customer() {
                             );
                           })}
                         </select>
+
+                        <select
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              freeUser: e.target.value,
+                            })
+                          }
+                          className="form-select"
+                        >
+                          <option
+                            selected={filterOptions.freeUser === "allUser"}
+                            value="allUser"
+                          >
+                            সকল গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "freeUser"}
+                            value="freeUser"
+                          >
+                            ফ্রি গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "nonFreeUser"}
+                            value="nonFreeUser"
+                          >
+                            নন ফ্রি গ্রাহক
+                          </option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -1007,16 +1054,6 @@ export default function Customer() {
                       >
                         {t("reset")}
                       </button>
-                    </div>
-                    <div>
-                      <select
-                        onChange={(e) => handleFreeUser(e.target.value)}
-                        className="form-select"
-                      >
-                        <option value="allUser">সকল গ্রাহক</option>
-                        <option value="freeUser">ফ্রি গ্রাহক</option>
-                        <option value="nonFreeUser">নন ফ্রি গ্রাহক</option>
-                      </select>
                     </div>
                     {/* <button onClick={handleFilterReset}>reset</button> */}
                   </div>

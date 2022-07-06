@@ -114,12 +114,12 @@ export default function Customer() {
     subArea: "",
     package: "",
     mikrotik: "",
+    freeUser: "",
   });
   const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
   const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
   const [totalDue, setTotalDue] = useState(0);
   const [hasDue, setDue] = useState(false);
-  const [freeUser, setFreeUser] = useState("");
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
@@ -223,6 +223,18 @@ export default function Customer() {
       );
     }
 
+    if (filterOptions.freeUser) {
+      if (filterOptions.freeUser === "freeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee === parseInt("0")
+        );
+      } else if (filterOptions.freeUser === "nonFreeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee !== parseInt("0")
+        );
+      }
+    }
+
     if (filterOptions.status) {
       tempCustomers = tempCustomers.filter(
         (customer) => customer.status === filterOptions.status
@@ -256,6 +268,7 @@ export default function Customer() {
       area: "",
       subArea: "",
       package: "",
+      isFree: "",
     });
     setCustomers1(Customers2);
   };
@@ -416,28 +429,28 @@ export default function Customer() {
       },
       {
         width: "8%",
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customerId",
       },
       {
         width: "10%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "10%",
-        Header: "PPPoE",
+        Header: t("PPPoE"),
         accessor: "pppoe.name",
       },
       {
         width: "12%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
 
       {
         width: "9%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -445,7 +458,7 @@ export default function Customer() {
       },
       {
         width: "9%",
-        Header: "পেমেন্ট",
+        Header: t("payment"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -453,17 +466,17 @@ export default function Customer() {
       },
       {
         width: "10%",
-        Header: "মাসিক ফি",
+        Header: t("mountly"),
         accessor: "monthlyFee",
       },
       {
         width: "9%",
-        Header: "ব্যালেন্স",
+        Header: t("balance"),
         accessor: "balance",
       },
       {
         width: "12%",
-        Header: "বিল সাইকেল",
+        Header: t("billingCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
@@ -472,7 +485,7 @@ export default function Customer() {
 
       {
         width: "7%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -502,7 +515,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PersonFill />
-                      <p className="actionP">প্রোফাইল</p>
+                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -517,7 +530,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <Wallet />
-                        <p className="actionP">রিচার্জ</p>
+                        <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
                   </li>
@@ -536,7 +549,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PenFill />
-                        <p className="actionP">এডিট</p>
+                        <p className="actionP">{t("edit")}</p>
                       </div>
                     </div>
                   </li>
@@ -554,7 +567,7 @@ export default function Customer() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <CashStack />
-                      <p className="actionP">রিপোর্ট</p>
+                      <p className="actionP">{t("report")}</p>
                     </div>
                   </div>
                 </li>
@@ -570,7 +583,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ArchiveFill />
-                        <p className="actionP">ডিলিট</p>
+                        <p className="actionP">{t("delete")}</p>
                       </div>
                     </div>
                   </li>
@@ -600,7 +613,7 @@ export default function Customer() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   const mikrotikHandler = async (id) => {
@@ -648,7 +661,7 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>{t("customer")}</div>
-                  <div className="h6 d-flex justify-content-center align-items-start">
+                  <div className="h6 d-flex justify-content-center align-items-start flex-column">
                     <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
                     {hasDue && (
                       <>
@@ -988,6 +1001,34 @@ export default function Customer() {
                             })}
                           </select>
                         )}
+                        <select
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              freeUser: e.target.value,
+                            })
+                          }
+                          className="form-select"
+                        >
+                          <option
+                            selected={filterOptions.freeUser === "allUser"}
+                            value="allUser"
+                          >
+                            সকল গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "freeUser"}
+                            value="freeUser"
+                          >
+                            ফ্রি গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "nonFreeUser"}
+                            value="nonFreeUser"
+                          >
+                            নন ফ্রি গ্রাহক
+                          </option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -1021,16 +1062,6 @@ export default function Customer() {
                       >
                         {t("reset")}
                       </button>
-                    </div>
-                    <div>
-                      <select
-                        onChange={(e) => handleFreeUser(e.target.value)}
-                        className="form-select"
-                      >
-                        <option value="allUser">সকল গ্রাহক</option>
-                        <option value="freeUser">ফ্রি গ্রাহক</option>
-                        <option value="nonFreeUser">নন ফ্রি গ্রাহক</option>
-                      </select>
                     </div>
                   </div>
                   <div className="table-section">

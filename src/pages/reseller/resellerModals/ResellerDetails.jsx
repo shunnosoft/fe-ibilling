@@ -1,7 +1,9 @@
 import React from "react";
 import "../reseller.css";
+import { useTranslation } from "react-i18next";
 
 export default function ResellerDetails({ reseller }) {
+  const { t } = useTranslation();
   return (
     <div>
       <div>
@@ -16,7 +18,7 @@ export default function ResellerDetails({ reseller }) {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  প্রোফাইল
+                  {t("profile")}
                 </h5>
                 <button
                   type="button"
@@ -32,20 +34,22 @@ export default function ResellerDetails({ reseller }) {
                     alt=""
                   />
                   <h5>{reseller.name || "N/A"}</h5>
-                  <p>ওয়েবসাইট: {reseller.website || "N/A"}</p>
+                  <p>
+                    {t("website")} {reseller.website || "N/A"}
+                  </p>
                 </div>
                 <div className="ResellerDetails">
                   <h4>
-                    স্ট্যাটাস: <b> {reseller.status || "N/A"} </b>
+                    {t("status")} : <b> {reseller.status || "N/A"} </b>
                   </h4>
                   <h4>
-                    ইমেইল: <b> {reseller.email || "N/A"} </b>
+                    {t("email")} : <b> {reseller.email || "N/A"} </b>
                   </h4>
                   <h4>
-                    মোবাইল: <b> {reseller.mobile || "N/A"}</b>
+                    {t("mobile")} : <b> {reseller.mobile || "N/A"}</b>
                   </h4>
                   <h4>
-                    এড্রেস: <b>{reseller.address || "N/A"}</b>
+                    {t("address")} : <b>{reseller.address || "N/A"}</b>
                   </h4>
                   <h4>
                     NID: <b>{reseller.nid || "N/A"}</b>

@@ -11,8 +11,11 @@ import {
 } from "react-table";
 import TdLoader from "../common/TdLoader";
 import GlobalFilter from "./GlobalFilter";
+import "./style/style.css";
+import { useTranslation } from "react-i18next";
 
 const Table = (props) => {
+  const { t } = useTranslation();
   const { columns, data, isLoading, customComponent } = props;
   const {
     getTableProps,
@@ -131,7 +134,7 @@ const Table = (props) => {
           ) : (
             <tr>
               <td colSpan={columns.length}>
-                <h5 className="text-center">কোন ডাটা পাওয়া যায় নি !</h5>
+                <h5 className="text-center"> {t("noDataFound")} </h5>
               </td>
             </tr>
           )}

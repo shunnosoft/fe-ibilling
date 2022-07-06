@@ -23,6 +23,7 @@ import resellerParchaseSmsSlice from "../features/resellerParchaseSmsSlice";
 import resellerSmsRequestSlice from "../features/resellerSmsRequestSlice";
 import resellerCustomerAdminSlice from "../features/resellerCustomerAdminSlice";
 import activityLogSlice from "../features/activityLogSlice";
+import getIspOwnerUsersSlice from "../features/getIspOwnerUsersSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -47,6 +48,7 @@ const rootReducer = combineReducers({
   resellerCustomer: resellerCustomerAdminSlice,
   companyName: adminSlice,
   activityLog: activityLogSlice,
+  ownerUsers: getIspOwnerUsersSlice,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

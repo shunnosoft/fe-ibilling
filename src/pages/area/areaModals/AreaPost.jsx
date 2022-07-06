@@ -9,8 +9,10 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 
 import { addArea } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function AreaPost() {
+  const { t } = useTranslation();
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
@@ -47,7 +49,7 @@ export default function AreaPost() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন এরিয়া অ্যাড করুন
+                {t("addNewArea")}
               </h5>
               <button
                 type="button"
@@ -69,7 +71,7 @@ export default function AreaPost() {
               >
                 {(formik) => (
                   <Form>
-                    <FtextField type="text" label="এরিয়া নাম" name="name" />
+                    <FtextField type="text" label={t("areaName")} name="name" />
 
                     <div className="modal-footer">
                       <button
@@ -77,14 +79,14 @@ export default function AreaPost() {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

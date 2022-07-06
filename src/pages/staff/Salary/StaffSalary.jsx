@@ -20,8 +20,10 @@ import StaffSalaryPostModal from "./StaffSalaryPostModal";
 import StaffSalaryEditModal from "./StaffSalaryEditModal";
 import { getSalaryApi } from "../../../features/apiCallStaff";
 import Table from "../../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function StaffSalary() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { staffId } = useParams();
 
@@ -132,7 +134,7 @@ export default function StaffSalary() {
             <FontColor>
               <FourGround>
                 <h2 className="collectorTitle">
-                  ({staff?.name}) কর্মচারীর প্রোফাইল
+                  ({staff?.name}) {t("staffProfile")}
                 </h2>
               </FourGround>
               {/* edit manager */}
@@ -158,7 +160,7 @@ export default function StaffSalary() {
                         style={{ height: "50px" }}
                         variant="primary"
                       >
-                        পে স্যালারি
+                        {t("paySalary")}
                       </Button>
                     )}
                   </div>

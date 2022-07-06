@@ -1,13 +1,18 @@
+import { t } from "i18next";
+import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import ReactDatePicker from "react-datepicker";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { fetchpppoePackage } from "../../../features/apiCalls";
 import { editResellerCustomer } from "../../../features/resellerCustomerAdminApi";
+import { useTranslation } from "react-i18next";
 
 const ResellerCustomerEdit = ({ customerId }) => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -30,6 +35,15 @@ const ResellerCustomerEdit = ({ customerId }) => {
 
   // get single customer
   const data = resellerCustomer.find((item) => item.id === customerId);
+  const [status, setStatus] = useState("");
+  const [autoDisable, setAutoDisable] = useState("");
+  const [billDate, setBillDate] = useState(new Date());
+
+  useEffect(() => {
+    setStatus(data?.status);
+    setAutoDisable(data?.autoDisable);
+    data?.billingCycle && setBillDate(moment(data.billingCycle).toDate());
+  }, [data]);
 
   // get mikrotik
   const getMikrotik = useSelector(
@@ -77,6 +91,9 @@ const ResellerCustomerEdit = ({ customerId }) => {
       mikrotik: singleMikrotik?.id,
       mikrotikPackage: packageId,
       monthlyFee: packages?.rate,
+      autoDisable: autoDisable,
+      billingCycle: billDate.toISOString(),
+      status,
       pppoe: {
         name: data?.pppoe?.name,
         password: data?.pppoe?.password,
@@ -97,17 +114,17 @@ const ResellerCustomerEdit = ({ customerId }) => {
 
   return (
     <div
-      className="modal fade modal-dialog-scrollable "
+      className="modal fade "
       id="CustomerEditModal"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-lg">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              এডিট করুন
+              {t("edit")}
             </h5>
             <button
               type="button"
@@ -120,7 +137,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
             <div className="wrapper-body">
               <div class="align-items-center">
                 <div class="col-auto">
-                  <label class="form-label mb-0">মাইক্রোটিক সিলেক্ট</label>
+                  <label class="form-label mb-0"> {t("selectMikrotik")} </label>
                 </div>
                 <div className="col-auto">
                   <select
@@ -138,7 +155,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
 
               <div class=" align-items-center">
                 <div class="col-auto">
-                  <label class="form-label mb-0">প্যাকেজ সিলেক্ট</label>
+                  <label class="form-label mb-0"> {t("selectPackage")} </label>
                 </div>
                 <div className="col-auto">
                   <select
@@ -163,7 +180,7 @@ const ResellerCustomerEdit = ({ customerId }) => {
 
               <div class="align-items-center">
                 <div class="col-auto">
-                  <label class="form-label mb-0">মাসিক ফি</label>
+                  <label class="form-label mb-0"> {t("monthFee")} </label>
                 </div>
                 <div class="col-auto">
                   <input
@@ -172,6 +189,76 @@ const ResellerCustomerEdit = ({ customerId }) => {
                     class="form-control"
                     value={packages?.rate}
                   />
+                </div>
+              </div>
+              <div className="d-flex justify-content-evenly align-items-center">
+                <div className="billCycle">
+                  <div className="me-3 mt-2">
+                    <label className="form-control-label">
+                      {t("billingCycle")}
+                    </label>
+                    <ReactDatePicker
+                      className="form-control"
+                      selected={billDate}
+                      onChange={(date) => setBillDate(date)}
+                      dateFormat="dd/MM/yyyy h:mm"
+                      showTimeSelect
+                      minDate={billDate}
+                    />
+                  </div>
+                </div>
+                <div className="autoDisable mt-4 m-75 me-3">
+                  <label htmlFor="auto_disabled">অটোমেটিক সংযোগ বন্ধ</label>
+                  <input
+                    id="auto_disabled"
+                    type="checkBox"
+                    checked={autoDisable}
+                    onChange={(e) => setAutoDisable(e.target.checked)}
+                  />
+                </div>
+                <div className="pppoeStatus mt-4 mw-100">
+                  {/* <p>স্ট্যাটাস পরিবর্তন</p> */}
+                  <div className="form-check form-check-inline mw-100">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="staus"
+                      value={"active"}
+                      onChange={(e) => setStatus(e.target.value)}
+                      checked={status === "active"}
+                      id="activeStatus"
+                    />
+                    <label className="form-check-label" htmlFor="activeStatus">
+                      এক্টিভ
+                    </label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      id="inlineRadio2"
+                      value={"inactive"}
+                      onChange={(e) => setStatus(e.target.value)}
+                      checked={status === "inactive"}
+                    />
+                    <label className="form-check-label" htmlFor="inlineRadio2">
+                      ইন-এক্টিভ
+                    </label>
+                  </div>
+                  {data?.status === "expired" && (
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="expired"
+                        disabled
+                        checked={status === "expired"}
+                      />
+                      <label className="form-check-label" htmlFor="expired">
+                        এক্সপায়ার্ড
+                      </label>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -183,14 +270,14 @@ const ResellerCustomerEdit = ({ customerId }) => {
               data-bs-dismiss="modal"
               disabled={isLoading}
             >
-              বাতিল
+              {t("cancle")}
             </button>
             <button
               onClick={handleSubmit}
               className="btn btn-success"
               disabled={isLoading}
             >
-              {isLoading ? <Loader /> : "সাবমিট"}
+              {isLoading ? <Loader /> : t("submit")}
             </button>
           </div>
         </div>
