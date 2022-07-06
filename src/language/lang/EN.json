@@ -270,5 +270,21 @@
   "editMkrotik": "Edit Mkrotik",
   "rateEdit": " Rate Edit",
   "doNotDeleteAreaAlert": "Cannot be deleted as there are customers in this area",
-  "wantToDeleteArea": "Do you want to delete Area ?"
+  "wantToDeleteArea": "Do you want to delete Area ?",
+  "host": "Host",
+  "configure": "Configure",
+  "rate": "Rate",
+  "upTime": "Up Time",
+  "colorId": "Color Id",
+  "macAddress": "Mac Address",
+  "agent": "Agent",
+  "colletor": "Collectior",
+  "totalBill": "Total Bill",
+  "nam": "Name",
+  "total": "Total",
+  "accept": "Accept",
+  "accepted": "Accepted",
+  "cancled": "Cancled",
+  "totalDiposit": "Total Diposits",
+  "newDiposit": "New Diposits"
 }

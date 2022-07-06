@@ -11,6 +11,7 @@ import {
 } from "react-table";
 import TdLoader from "../common/TdLoader";
 import GlobalFilter from "./GlobalFilter";
+import "./style/style.css";
 import { useTranslation } from "react-i18next";
 
 const Table = (props) => {
