@@ -7,7 +7,6 @@ const getOwnerUserSlice = createSlice({
   },
   reducers: {
     getOwnerUserSuccess: (state, action) => {
-      console.log(action);
       state.ownerUser = action.payload;
     },
   },

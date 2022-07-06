@@ -32,8 +32,6 @@ const ActivityLog = () => {
     (state) => state?.persistedReducer?.activityLog?.activityLog
   );
 
-  console.log(data);
-
   // get owner users
   const ownerUsers = useSelector(
     (state) => state?.persistedReducer?.ownerUsers?.ownerUser
@@ -62,7 +60,12 @@ const ActivityLog = () => {
         Cell: ({ cell: { value } }) => {
           const performer = ownerUsers.find((item) => item[value]);
 
-          return <div>{performer && performer[value].name}</div>;
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
         },
       },
 

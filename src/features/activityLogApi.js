@@ -7,7 +7,6 @@ export const getActvityLog = async (dispatch, setIsLoading, ispOwnerId) => {
     const res = await apiLink.get(
       `ispOwner/activity-log/${ispOwnerId}?limit=${1000}&sortBy=${"createdAt:desc"}`
     );
-    console.log(res.data?.results);
     setIsLoading(false);
     dispatch(getActivityLogSlice(res.data?.results));
   } catch (error) {
