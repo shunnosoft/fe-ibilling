@@ -40,6 +40,7 @@ export default function CreateExpenditure() {
         amount: formdata.amount,
         description: desRef.current.value,
         expenditurePurpose: pourpose,
+        ispOwner: ispOwnerId,
       };
       userRole === "ispOwner"
         ? (data.ispOwner = userData.id)

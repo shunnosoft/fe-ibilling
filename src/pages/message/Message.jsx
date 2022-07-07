@@ -163,7 +163,7 @@ export default function Message() {
         if (
           smsReceiverType === "unpaidCustomerByDate" &&
           customer.mobile &&
-          customer.paymentStatus === "unpaid" &&
+          customer.monthlyFee > customer.balance &&
           days.includes(dueDate.diff(now, "days"))
         ) {
           let sms = makeMessageObj(
