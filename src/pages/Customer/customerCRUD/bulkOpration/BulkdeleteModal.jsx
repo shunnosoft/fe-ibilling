@@ -3,8 +3,10 @@ import { useDispatch } from "react-redux";
 import Loader from "../../../../components/common/Loader";
 import { bulkDeleteCustomer } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
+import { useTranslation } from "react-i18next";
 
 const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
+  const { t } = useTranslation();
   // loading state
   const [isLoading, setIsloading] = useState(false);
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
@@ -14,7 +16,7 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
     let checkCondition = true;
 
     if (mikrotikCheck) {
-      checkCondition = window.confirm("মাইক্রোটিক থেকে ডিলিট করতে চান?");
+      checkCondition = window.confirm(t("deleteMikrotik"));
     }
 
     // send data for api
@@ -48,9 +50,7 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
           onChange={(event) => setMikrotikCheck(event.target.checked)}
         />
         <label class="form-check-label" for="flexCheckDefault">
-          <small className="text-secondary">
-            মাইক্রোটিক থেকে ডিলিট করতে চান ?
-          </small>
+          <small className="text-secondary">{t("deleteMikrotik")}</small>
         </label>
       </div>
 
@@ -61,14 +61,14 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
           data-bs-dismiss="modal"
           disabled={isLoading}
         >
-          বাতিল করুন
+          {t("cancle")}
         </button>
         <button
           onClick={bulkDeleteHandler}
           className="btn btn-success"
           disabled={isLoading}
         >
-          {isLoading ? <Loader /> : "ডিলিট"}
+          {isLoading ? <Loader /> : t("delete")}
         </button>
       </div>
     </RootBulkModal>

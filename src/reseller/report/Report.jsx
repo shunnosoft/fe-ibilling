@@ -17,8 +17,10 @@ import { ArrowDownUp } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCallReseller";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function Report() {
+  const { t } = useTranslation();
   // const cus = useSelector(state => state.customer.customer);
   // console.log(cus.length)
 
@@ -190,23 +192,23 @@ export default function Report() {
       },
       {
         width: "20%",
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customer.customerId",
       },
       {
         width: "20%",
-        Header: "গ্রাহক",
+        Header: t("customer"),
         accessor: "customer.name",
       },
       {
         width: "20%",
-        Header: "বিল",
+        Header: t("bill"),
         accessor: "amount",
       },
 
       {
         width: "25%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
@@ -226,7 +228,7 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle">বিল রিপোর্ট </div>
+                <div className="collectorTitle">{t("billReport")} </div>
               </FourGround>
 
               {/* Model start */}
@@ -243,7 +245,7 @@ export default function Report() {
                         onChange={(e) => onChangeSubArea(e.target.value)}
                       >
                         <option value="" defaultValue>
-                          সকল এরিয়া{" "}
+                          {t("allArea")}
                         </option>
                         {subAreas?.map((sub, key) => (
                           <option key={key} value={sub.id}>
@@ -257,7 +259,7 @@ export default function Report() {
                           onChange={(e) => onChangeCollector(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            সকল কালেক্টর{" "}
+                            {t("all collector")}{" "}
                           </option>
                           {collectors?.map((c, key) => (
                             <option key={key} value={c.user}>
@@ -303,7 +305,7 @@ export default function Report() {
                         type="button"
                         onClick={onClickFilter}
                       >
-                        ফিল্টার
+                        {t("filter")}
                       </button>
                     </div>
                   </div>

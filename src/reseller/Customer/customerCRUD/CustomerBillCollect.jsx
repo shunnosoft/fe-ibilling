@@ -208,7 +208,7 @@ export default function CustomerBillCollect({ single }) {
                               <textarea
                                 cols={200}
                                 class="form-control shadow-none"
-                                placeholder="নোট লিখুন"
+                                placeholder={t("writeNote")}
                                 id="noteField"
                                 onChange={(e) => setNote(e.target.value)}
                               ></textarea>

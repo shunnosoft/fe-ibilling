@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
 import { bulksubAreaEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
+import { useTranslation } from "react-i18next";
 
 const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
+  const { t } = useTranslation();
   const areas = useSelector((state) => state?.persistedReducer?.area?.area);
   const [isLoading, setIsLoading] = useState(false);
   const [subArea, setSubArea] = useState("");
@@ -53,13 +55,13 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
     if (!selectedValue.area) {
       setError({
         ...error,
-        area: "এরিয়া সিলেক্ট করুন",
+        area: t("selectArea"),
       });
     } else if (!selectedValue.subArea) {
       setError((prev) => {
         return {
           ...prev,
-          subArea: "সাবএরিয়া সিলেক্ট করুন",
+          subArea: t("selectSubArea"),
         };
       });
     }
@@ -70,9 +72,9 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
         subAreaId: selectedValue.subArea,
       };
       const confirm = window.confirm(
-        "আপনি কি " +
+        t("areYouWantToUpdate") +
           bulkCustomer.length +
-          "টি গ্রাহকের সাব এরিয়া আপডেট করতে চান?"
+          t("updateCustomerSubArea")
       );
       if (confirm) {
         bulksubAreaEdit(dispatch, data, setIsLoading);
@@ -93,17 +95,17 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header="আপডেট এরিয়া">
+    <RootBulkModal modalId={modalId} header={t("updateArea")}>
       <form onSubmit={submitHandler}>
         <div>
-          <p>এরিয়া সিলেক্ট করুন</p>
+          <p>{t("selectArea")}</p>
           <select
             className="form-select mw-100"
             aria-label="Default select example"
             name="area"
             onChange={selectArea}
           >
-            <option value="">এরিয়া সিলেক্ট করুন</option>
+            <option value="">{t("selectArea")}</option>
             {areas.length > 0 &&
               areas.map((val, key) => (
                 <option key={key} value={val.id}>
@@ -115,7 +117,9 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
         </div>
 
         <div>
-          <p>{subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া সিলেক্ট করুন</p>
+          <p>
+            {subArea ? subArea.name + " এর - " : ""} {t("selectSubArea")}
+          </p>
           <select
             className="form-select mw-100"
             aria-label="Default select example"
@@ -123,7 +127,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
             id="subAreaId"
             onChange={subAreaEditHandler}
           >
-            <option value="">সাব-এরিয়া সিলেক্ট করুন</option>
+            <option value="">{t("selectSubArea")}</option>
             {subArea?.subAreas &&
               subArea.subAreas.map((val, key) => (
                 <option key={key} value={val.id}>
@@ -141,14 +145,14 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
             data-bs-dismiss="modal"
             disabled={isLoading}
           >
-            বাতিল করুন
+            {t("cancle")}
           </button>
           <button
             type="submit"
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : "সেভ করুন"}
+            {isLoading ? <Loader /> : t("save")}
           </button>
         </div>
       </form>

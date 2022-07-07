@@ -26,8 +26,10 @@ import moment from "moment";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function Diposit() {
+  const { t } = useTranslation();
   const balancee = useSelector(
     (state) => state.persistedReducer.payment.balance
   );
@@ -224,21 +226,21 @@ export default function Diposit() {
       },
       {
         width: "25%",
-        Header: "পরিমান",
+        Header: t("amount"),
         accessor: "amount",
         Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
         width: "25%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ row: { original } }) => (
           <div>
             {original?.status === "accepted" && (
-              <span className="statusClass">গ্রহণ করা হয়েছে</span>
+              <span className="statusClass"> {t("acceptable")}</span>
             )}
             {original?.status === "rejected" && (
-              <span className="rejectClass">বাতিল হয়েছে</span>
+              <span className="rejectClass">{t("rejected")}</span>
             )}
           </div>
         ),
@@ -246,14 +248,14 @@ export default function Diposit() {
 
       {
         width: "25%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
-    []
+    [t]
   );
   const columns = React.useMemo(
     () => [
@@ -266,24 +268,26 @@ export default function Diposit() {
       },
       {
         width: "22%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
         Cell: ({ row: { original } }) => (
           <div>
-            নাম {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
+            {t("name")}
+            {userRole ===
+              `ispOwner" ? "(${t("manager")})" : "(${t("collector")})`}
           </div>
         ),
       },
       {
         width: "22%",
-        Header: "মোট",
+        Header: t("total"),
         accessor: "amount",
         Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
 
       {
         width: "22%",
-        Header: <div className="text-center">অ্যাকশন</div>,
+        Header: <div className="text-center"> {t("action")} </div>,
         id: "option1",
 
         Cell: ({ row: { original } }) => (
@@ -307,24 +311,24 @@ export default function Diposit() {
                         depositAcceptRejectHandler("accepted", original.id);
                       }}
                     >
-                      গ্রহণ
+                      {t("accept")}
                     </button>
                     <button
                       onClick={() => {
                         depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
-                      বাতিল
+                      {t("cancle")}
                     </button>
                   </div>
                 )
               ) : (
                 <>
                   {original.status === "accepted" && (
-                    <span className="statusClass">গ্রহণ করা হয়েছে</span>
+                    <span className="statusClass">{t("acceptable")}</span>
                   )}
                   {original.status === "rejected" && (
-                    <span className="rejectClass">বাতিল হয়েছে</span>
+                    <span className="rejectClass">{t("rejected")}</span>
                   )}
                 </>
               )}
@@ -334,22 +338,24 @@ export default function Diposit() {
       },
       {
         width: "22%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
-    []
+    [t]
   );
   const customComponent = (
     <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
       {userRole !== "reseller" ? (
-        <div>নিজ ডিপোজিটঃ {getTotalOwnDeposit()} টাকা</div>
+        <div>
+          {t("ownDeposit")} {getTotalOwnDeposit()} {t("tk")}
+        </div>
       ) : (
         <div style={{ marginRight: "10px" }}>
-          মোট ডিপোজিটঃ {getTotalDeposit()} টাকা
+          {t("totalDeposit")} {getTotalDeposit()} {t("tk")}
         </div>
       )}
     </div>
@@ -363,7 +369,7 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">ডিপোজিট</h2>
+                <h2 className="collectorTitle">{t("diposit")}</h2>
               </FourGround>
 
               {userRole !== "reseller" ? (
@@ -392,13 +398,13 @@ export default function Diposit() {
                             <FtextField
                               type="text"
                               name="amount"
-                              label="ডিপোজিট পরিমান"
+                              label={t("dipositAmount")}
                             />
                             <button
                               type="submit"
                               className="btn btn-outline-primary w-140 dipositSubmitBtn"
                             >
-                              {isLoading ? <Loader></Loader> : " সাবমিট"}
+                              {isLoading ? <Loader></Loader> : t("submit")}
                             </button>
                           </div>
                         </Form>
@@ -432,7 +438,7 @@ export default function Diposit() {
                           onChange={(e) => onChangeCollector(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            সকল কালেক্টর{" "}
+                            {t("all collector")}{" "}
                           </option>
                           {collectors?.map((c, key) => (
                             <option key={key} value={c.user}>
@@ -467,7 +473,7 @@ export default function Diposit() {
                         type="button"
                         onClick={onClickFilter}
                       >
-                        ফিল্টার
+                        {t("filter")}
                       </button>
                     </div>
 

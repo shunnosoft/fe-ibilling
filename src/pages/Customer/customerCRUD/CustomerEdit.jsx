@@ -112,20 +112,20 @@ export default function CustomerEdit(props) {
 
   // customer validator
   const customerValidator = Yup.object({
-    name: Yup.string().required("গ্রাহকের নাম লিখুন"),
+    name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয়"),
+    email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     monthlyFee: Yup.number()
       .integer()
-      .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-      .required("প্যাকেজ রেট দিন"),
-    Pname: Yup.string().required("PPPoE নাম লিখুন"),
-    Ppassword: Yup.string().required("PPPoE পাসওয়ার্ড লিখুন"),
+      .min(0, t("minimumPackageRate"))
+      .required(t("enterPackageRate")),
+    Pname: Yup.string().required(t("writePPPoEName")),
+    Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
     // balance: Yup.number().integer(),
   });

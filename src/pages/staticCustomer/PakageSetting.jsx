@@ -24,8 +24,10 @@ import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
 import { NavLink } from "react-router-dom";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function PackageSetting() {
+  const { t } = useTranslation();
   // get all package list
   let packages = useSelector((state) => state?.package?.packages);
 
@@ -86,7 +88,7 @@ export default function PackageSetting() {
 
   // delete handle function
   const deletePackageHandler = (packageId) => {
-    const con = window.confirm("আপনি কি প্যাকেজ ডিলিট করতে চান?");
+    const con = window.confirm(t("doWantDeletePackage"));
     if (con) {
       setIsDeleting(true);
       deleteStaticPackage(dispatch, packageId);
@@ -177,7 +179,7 @@ export default function PackageSetting() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <h2 className="collectorTitle">স্ট্যাটিক প্যাকেজে সেটিং </h2>
+              <h2 className="collectorTitle">{t("staticPackageSetting")} </h2>
 
               <FourGround>
                 <div className="collectorWrapper">
@@ -204,7 +206,7 @@ export default function PackageSetting() {
                                 setFilterStatus(event.target.value)
                               }
                             >
-                              <option selected>মাইক্রোটিক</option>
+                              <option selected>{t("mikrotik")}</option>
                               {mikrotik.map((item) => (
                                 <option value={item.id}>{item.name}</option>
                               ))}

@@ -28,15 +28,15 @@ export default function CollectorPost() {
 
   //validator
   const collectorValidator = Yup.object({
-    name: Yup.string().required("নাম ***"),
+    name: Yup.string().required(t("enterName")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর *** ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর *** "),
-    address: Yup.string().required("ঠিকানা ***"),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল ***"),
-    nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
-    status: Yup.string().required("স্টেটাস ***"),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("enterMobile")),
+    address: Yup.string().required(t("enterAddress")),
+    email: Yup.string().email(t("incorrectEmail")).required(t("enterEmail")),
+    nid: Yup.string().required(t("enterNID")),
+    status: Yup.string().required(t("enterStatus")),
 
     // refName: Yup.string().required("রেফারেন্স নাম"),
     // refMobile: Yup.string()

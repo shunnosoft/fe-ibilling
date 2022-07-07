@@ -370,7 +370,7 @@ export default function Diposit() {
                       className="mb-3"
                     >
                       {(userRole === "manager" || userRole === "collector") && (
-                        <Tab eventKey="home" title="ডিপোজিট করুন">
+                        <Tab eventKey="home" title={t("diposit")}>
                           <div className="managerDipositToIsp">
                             <Formik
                               initialValues={{
@@ -389,13 +389,13 @@ export default function Diposit() {
                                     <FtextField
                                       type="text"
                                       name="balance"
-                                      label="মোট ব্যালান্স"
+                                      label={t("totalBalance")}
                                       disabled
                                     />
                                     <FtextField
                                       type="text"
                                       name="amount"
-                                      label="ডিপোজিট পরিমান"
+                                      label={t("dipositAmount")}
                                     />
                                     <button
                                       type="submit"
@@ -404,7 +404,7 @@ export default function Diposit() {
                                       {isLoading ? (
                                         <Loader></Loader>
                                       ) : (
-                                        " সাবমিট"
+                                        t("submit")
                                       )}
                                     </button>
                                   </div>
@@ -486,7 +486,7 @@ export default function Diposit() {
                       </Tab>
 
                       {(userRole === "manager" || userRole === "collector") && (
-                        <Tab eventKey="contact" title="নিজ ডিপোজিট">
+                        <Tab eventKey="contact" title={t("ownDeposit")}>
                           <Table
                             customComponent={customComponent}
                             data={ownDeposits}

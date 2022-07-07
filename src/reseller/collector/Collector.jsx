@@ -23,8 +23,10 @@ import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 export default function Collector() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [collSearch, setCollSearch] = useState("");
   const collector = useSelector(
@@ -101,28 +103,28 @@ export default function Collector() {
       },
       {
         width: "22%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "23%",
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
       {
         width: "20%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
       {
         width: "20%",
-        Header: "ইমেইল",
+        Header: t("email"),
         accessor: "email",
       },
 
       {
         width: "20%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -151,7 +153,7 @@ export default function Collector() {
                 <div className="dropdown-item">
                   <div className="customerAction">
                     <PersonFill />
-                    <p className="actionP">প্রোফাইল</p>
+                    <p className="actionP">{t("profile")}</p>
                   </div>
                 </div>
               </li>
@@ -166,7 +168,7 @@ export default function Collector() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -178,7 +180,7 @@ export default function Collector() {
         ),
       },
     ],
-    []
+    [t]
   );
   return (
     <>
@@ -189,7 +191,7 @@ export default function Collector() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div>কালেক্টর</div>
+                <div>{t("collector")}</div>
 
                 {userData.permission?.customerAdd || role === "ispOwner" ? (
                   <div

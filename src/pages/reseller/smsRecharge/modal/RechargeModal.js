@@ -4,8 +4,10 @@ import { parchaseSms } from "../../../../features/resellerParchaseSmsApi";
 import { useDispatch } from "react-redux";
 import FormatNumber from "../../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const RechargeModal = ({ status }) => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -21,10 +23,10 @@ const RechargeModal = ({ status }) => {
   // handle required
   const hadleRequired = () => {
     if (!smsAmount) {
-      setErrMsg("এসএমএস পরিমান দিন");
+      setErrMsg(t("smsAmount"));
     }
     if (smsAmount < 100 && smsAmount > 10000) {
-      setErrMsg("সর্বনিম্ন  ১০০ টি এবং সর্বোচ্চ ১০,০০০ কিনতে পারবেন");
+      setErrMsg(t("youCanBuyMin100AndMax10000"));
     }
   };
 
@@ -51,10 +53,10 @@ const RechargeModal = ({ status }) => {
         // console.log(data);
         parchaseSms(data, setIsLoading, dispatch);
       } else {
-        setErrMsg("সর্বনিম্ন  ১০০ টি এবং সর্বোচ্চ ১০,০০০ কিনতে পারবেন");
+        setErrMsg(t("youCanBuyMin100AndMax10000"));
       }
     } else {
-      toast.error("স্ট্যাটাস পেন্ডিং থাকা যাবে না");
+      toast.error(t("statusCannotBePending"));
     }
   };
 
@@ -70,7 +72,7 @@ const RechargeModal = ({ status }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-              এসএমএস কিনুন
+              {t("buySMS")}
             </h5>
             <button
               type="button"
@@ -82,7 +84,7 @@ const RechargeModal = ({ status }) => {
           <div class="modal-body">
             <form onSubmit={handleSubmit}>
               <h5>
-                টাকার পরিমান:
+                {t("moneyAmount")} :
                 <span class="badge bg-info">
                   {smsAmount >= 100 && smsAmount <= 10000
                     ? FormatNumber(msgPrice)
@@ -91,7 +93,7 @@ const RechargeModal = ({ status }) => {
               </h5>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">
-                  পরিমান
+                  {t("amount")}
                 </label>
                 <input
                   value={smsAmount}
@@ -112,7 +114,7 @@ const RechargeModal = ({ status }) => {
                   className="btn btn-success"
                   disabled={isLoading || status.length !== 0}
                 >
-                  {isLoading ? <Loader /> : "সাবমিট"}
+                  {isLoading ? <Loader /> : t("submit")}
                 </button>
                 <button
                   type="button"
@@ -120,7 +122,7 @@ const RechargeModal = ({ status }) => {
                   data-bs-dismiss="modal"
                   disabled={isLoading}
                 >
-                  বাতিল
+                  {t("cancle")}
                 </button>
               </div>
             </form>

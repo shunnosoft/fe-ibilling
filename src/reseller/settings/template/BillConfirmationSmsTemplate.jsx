@@ -5,8 +5,10 @@ import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { smsCount } from "../../../components/common/UtilityMethods";
+import { useTranslation } from "react-i18next";
 
 function BillConfirmationSmsTemplate() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [totalText, setTotalText] = useState("");
 
@@ -49,7 +51,7 @@ function BillConfirmationSmsTemplate() {
       }
     } else {
       if (totalText.length + item.length > 334) {
-        toast.error("মেসেজের অক্ষর লিমিট অতিক্রম করেছে ");
+        toast.error(t("exceedSMSLimit"));
         return;
       }
       matchFound.push(item);
@@ -91,7 +93,7 @@ function BillConfirmationSmsTemplate() {
       );
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
-      toast.success("বিল কনফার্মেশন SMS টেমপ্লেট সেভ সফল হয়েছে");
+      toast.success(t("billConfirmationSaveSuccess"));
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -161,7 +163,7 @@ function BillConfirmationSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4>বিল কনফার্মেশন SMS টেমপ্লেট</h4>
+          <h4>{t("billConfirmSMStemplate")}</h4>
           <div>
             <input
               name="billConfirmation"
@@ -170,7 +172,7 @@ function BillConfirmationSmsTemplate() {
               value={"on"}
               onChange={radioCheckHandler}
             />{" "}
-            অন {"              "}
+            {t("on")} {"              "}
             <input
               name="billConfirmation"
               type="radio"
@@ -178,7 +180,7 @@ function BillConfirmationSmsTemplate() {
               value={"off"}
               onChange={radioCheckHandler}
             />{" "}
-            অফ
+            {t("off")}
           </div>
           <div className="billconfirm">
             <div className="showthesequence">
@@ -320,7 +322,7 @@ function BillConfirmationSmsTemplate() {
           </div>
           <div className="smsCount">
             <span className="smsLength">
-              অক্ষরঃ {(matchFound + bottomText).length}
+              {t("letter")} {(matchFound + bottomText).length}
             </span>
             <span>SMS: {smsCount(matchFound + bottomText)}</span>
           </div>
@@ -329,7 +331,7 @@ function BillConfirmationSmsTemplate() {
             id="messageTextArea"
             rows="6"
             className="form-control mt-4"
-            placeholder="মেসেজ লিখুন..."
+            placeholder={t("messageLikhun")}
             ref={textRef}
             value={bottomText}
             // onClick={insertMyText}
@@ -344,7 +346,7 @@ function BillConfirmationSmsTemplate() {
             // onClick={handleSendMessage}
             className="btn btn-success"
           >
-            {loading ? <Loader></Loader> : "সেভ"}
+            {loading ? <Loader></Loader> : t("save")}
           </button>
         </div>
       </form>

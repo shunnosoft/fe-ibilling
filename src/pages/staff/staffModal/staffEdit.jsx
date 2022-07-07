@@ -26,12 +26,12 @@ export default function StaffEdit({ staffId }) {
 
   //validator
   const resellerValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("enterName")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
-    email: Yup.string().email("ইমেইল সঠিক নয় "),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("writeMobileNumber")),
+    email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     website: Yup.string(),
     address: Yup.string(),

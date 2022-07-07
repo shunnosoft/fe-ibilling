@@ -23,10 +23,10 @@ import arraySort from "array-sort";
 import { getCollectorBill } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
-// import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export default function CollectorReport() {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   //   const allArea = useSelector(state => state.area.area);
   const [allArea, setAreas] = useState([]);
   const collectorArea = useSelector(
@@ -192,30 +192,30 @@ export default function CollectorReport() {
     () => [
       {
         width: "25%",
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customer.customerId",
       },
       {
         width: "25%",
-        Header: "গ্রাহক",
+        Header: t("customer"),
         accessor: "customer.name",
       },
       {
         width: "25%",
-        Header: "বিল",
+        Header: t("bill"),
         accessor: "amount",
       },
 
       {
         width: "25%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
-    []
+    [t]
   );
 
   return (
@@ -228,7 +228,7 @@ export default function CollectorReport() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> বিল রিপোর্ট </h2>
+                <h2 className="collectorTitle"> {t("billReport")} </h2>
               </FourGround>
 
               {/* Model start */}
@@ -245,7 +245,7 @@ export default function CollectorReport() {
                         onChange={(e) => onChangeArea(e.target.value)}
                       >
                         <option value={JSON.stringify({})} defaultValue>
-                          সকল এরিয়া{" "}
+                          {t("allArea")}{" "}
                         </option>
                         {allArea.map((area, key) => (
                           <option key={key} value={JSON.stringify(area)}>
@@ -258,7 +258,7 @@ export default function CollectorReport() {
                         onChange={(e) => onChangeSubArea(e.target.value)}
                       >
                         <option value="" defaultValue>
-                          সকল সাব এরিয়া{" "}
+                          {t("allSubArea")}{" "}
                         </option>
                         {singleArea?.subAreas?.map((sub, key) => (
                           <option key={key} value={sub.id}>
@@ -292,7 +292,7 @@ export default function CollectorReport() {
                         type="button"
                         onClick={onClickFilter}
                       >
-                        ফিল্টার
+                        {t("filter")}
                       </button>
                     </div>
                   </div>

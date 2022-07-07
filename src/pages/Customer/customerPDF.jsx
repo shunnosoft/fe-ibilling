@@ -3,8 +3,10 @@ import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const PrintCustomer = React.forwardRef((props, ref) => {
+  const { t } = useTranslation();
   const { currentCustomers, filterData } = props;
   const ispOwnerData = useSelector(
     (state) => state?.persistedReducer?.auth?.userData
@@ -20,29 +22,43 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           <div className="company_name">{ispOwnerData.company}</div>
         </div>
         <div className="details_side">
-          <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
-          {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
+          <p>
+            {t("companyName")} {ispOwnerData.company}
+          </p>
+          {ispOwnerData.address && (
+            <p>
+              {t("address")} {ispOwnerData?.address}
+            </p>
+          )}
         </div>
       </div>
 
       <ul className="d-flex justify-content-evenly filter_list">
-        <li>এরিয়াঃ {filterData.area}</li>
-        <li>সাবএরিয়াঃ {filterData.subArea}</li>
-        <li>স্টাটাসঃ {filterData.status}</li>
-        <li>পেমেন্টঃ {filterData.payment}</li>
+        <li>
+          {t("area")} : {filterData.area}
+        </li>
+        <li>
+          {t("subArea")} : {filterData.subArea}
+        </li>
+        <li>
+          {t("status")} : {filterData.status}
+        </li>
+        <li>
+          {t("payment")} : {filterData.payment}
+        </li>
       </ul>
       <table className="table table-striped ">
         <thead>
           <tr className="spetialSortingRow">
-            <th scope="col">আইডি</th>
-            <th scope="col">নাম</th>
-            <th scope="col">মোবাইল</th>
-            <th scope="col">স্ট্যাটাস</th>
-            <th scope="col">পেমেন্ট</th>
-            <th scope="col">প্যাকেজ</th>
-            <th scope="col">মাসিক ফি</th>
-            <th scope="col">ব্যালান্স</th>
-            <th scope="col">বিল সাইকেল</th>
+            <th scope="col">{t("id")}</th>
+            <th scope="col">{t("name")}</th>
+            <th scope="col">{t("mobile")}</th>
+            <th scope="col">{t("status")}</th>
+            <th scope="col">{t("payment")}</th>
+            <th scope="col">{t("package")}</th>
+            <th scope="col">{t("monthFee")}</th>
+            <th scope="col">{t("balance")}</th>
+            <th scope="col">{t("billingCycle")}</th>
           </tr>
         </thead>
         <tbody>

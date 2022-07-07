@@ -19,11 +19,11 @@ export default function MikrotikEdit() {
 
   //validator
   const mikrotikValidator = Yup.object({
-    name: Yup.string().required("নাম দিতে হবে"),
-    username: Yup.string().required("ইউজারনেম দিতে হবে "),
-    host: Yup.string().required("মাইক্রোটিক আইপি দিতে হবে"),
-    port: Yup.string().required("পোর্ট দিতে হবে"),
-    password: Yup.string().required("পাসওয়ার্ড দিতে হবে"),
+    name: Yup.string().required(t("enterName")),
+    username: Yup.string().required(t("enterUserName")),
+    host: Yup.string().required(t("enterMikrotikIP")),
+    port: Yup.string().required(t("enterPort")),
+    password: Yup.string().required(t("enterPassword")),
   });
 
   // mikrotik handler

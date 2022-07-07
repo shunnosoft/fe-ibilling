@@ -109,13 +109,13 @@ export default function StaticCustomerEdit({ single }) {
   }, [customer]);
 
   const customerValidator = Yup.object({
-    name: Yup.string().required("গ্রাহকের নাম লিখুন"),
+    name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
-      .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয়"),
+    email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     // monthlyFee: Yup.number()
     //   .integer()
@@ -337,8 +337,8 @@ export default function StaticCustomerEdit({ single }) {
                       </div>
                       <div className="static_edit_item">
                         <p>
-                          {area ? area.name + " এর - " : ""} সাব-এরিয়া সিলেক্ট
-                          করুন
+                          {area ? area.name + " এর - " : ""}{" "}
+                          {t("selectSubArea")}
                         </p>
                         <select
                           className="form-select mw-100"

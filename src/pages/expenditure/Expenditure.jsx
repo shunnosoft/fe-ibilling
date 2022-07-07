@@ -228,10 +228,12 @@ export default function Expenditure() {
   const customComponent = (
     <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
       {role === "ispOwner" ? (
-        <div>মোট খরচ {getTotalExpenditure()} টাকা</div>
+        <div>
+          {t("totalExpenditure")} {getTotalExpenditure()} {t("tk")}
+        </div>
       ) : (
         <div style={{ marginRight: "10px" }}>
-          মোট খরচ {getTotalExpenditure()} টাকা
+          {t("totalExpenditure")} {getTotalExpenditure()} {t("tk")}
         </div>
       )}
     </div>
@@ -262,26 +264,26 @@ export default function Expenditure() {
                   }}
                 >
                   <>
-                    <div title="খরচ অ্যাড ">
+                    <div title={t("addExpense")}>
                       <PlusCircleDotted
                         className="addcutmButton"
                         data-bs-toggle="modal"
                         data-bs-target="#createExpenditure"
                       />
                     </div>
-                    <div title="খরচের খাত অ্যাড">
+                    <div title={t("addExpenseSector")}>
                       <PlusCircleFill
                         className="addcutmButton"
                         data-bs-toggle="modal"
                         data-bs-target="#createPourpose"
                       />
                     </div>
-                    <div title="প্রিন্ট">
+                    <div title={t("print")}>
                       <ReactToPrint
-                        documentTitle="খরচ রিপোর্ট"
+                        documentTitle={t("expenseReport")}
                         trigger={() => (
                           <PrinterFill
-                            title="প্রিন্ট "
+                            title={t("print")}
                             className="addcutmButton"
                           />
                         )}

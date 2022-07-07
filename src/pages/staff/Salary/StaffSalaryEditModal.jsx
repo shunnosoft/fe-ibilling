@@ -20,7 +20,7 @@ export default function StaffSalaryEditModal({ salaryId }) {
 
   //validator
   const salaryValidaiton = Yup.object({
-    amount: Yup.string().required("এমাউন্ট দিন"),
+    amount: Yup.string().required(t("enterAmount")),
   });
 
   const staffSalaryEditHandler = (data, resetForm) => {

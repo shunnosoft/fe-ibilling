@@ -4,8 +4,10 @@ import { useDispatch } from "react-redux";
 import Loader from "../../../../components/common/Loader";
 import { bulkStatusEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
+import { useTranslation } from "react-i18next";
 
 const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("");
   const dispatch = useDispatch();
@@ -18,7 +20,9 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
         status: status,
       };
       const confirm = window.confirm(
-        "আপনি কি " + bulkCustomer.length + "টি গ্রাহকের স্টাটাস আপডেট করতে চান?"
+        t("areYouWantToUpdateStatus") +
+          bulkCustomer.length +
+          t("updateStatusSubArea")
       );
       if (confirm) {
         bulkStatusEdit(dispatch, data, setIsLoading);
@@ -27,7 +31,7 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header="আপডেট স্টাটাস">
+    <RootBulkModal modalId={modalId} header={t("updateStatus")}>
       <form onSubmit={changeStatus}>
         <div className="form-check form-check-inline">
           <input
@@ -39,7 +43,7 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
             id="activeCustomer"
           />
           <label className="form-check-label" htmlFor="activeCustomer">
-            এক্টিভ
+            {t("acitve")}
           </label>
         </div>
         <div className="form-check form-check-inline">
@@ -52,7 +56,7 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
             onChange={(e) => setStatus(e.target.value)}
           />
           <label className="form-check-label" htmlFor="inactive">
-            ইন-এক্টিভ
+            {t("in active")}
           </label>
         </div>
 
@@ -63,14 +67,14 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
             data-bs-dismiss="modal"
             disabled={isLoading}
           >
-            বাতিল করুন
+            {t("cancle")}
           </button>
           <button
             type="submit"
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : "সেভ করুন"}
+            {isLoading ? <Loader /> : t("save")}
           </button>
         </div>
       </form>

@@ -9,8 +9,10 @@ import "../Customer/customer.css";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
 import { addQueuePackage } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function CreatePackage() {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
   // const area = useSelector((state) => state.persistedReducer.area.area);
@@ -34,13 +36,13 @@ export default function CreatePackage() {
 
   // form validator
   const collectorValidator = Yup.object({
-    mikrotik: Yup.string().required("মাইক্রোটিক সিলেক্ট করুন"),
-    name: Yup.string().required("প্যাকেজ এর নাম দিন"),
+    mikrotik: Yup.string().required(t("selectMikrotik")),
+    name: Yup.string().required(t("enterPackageName")),
 
     rate: Yup.number()
       .integer()
-      .min(1, "সর্বনিম্ন প্যাকেজ রেট 1")
-      .required("প্যাকেজ রেট দিন"),
+      .min(1, t("minimumPackageRate1"))
+      .required(t("enterPackageRate")),
 
     // refName: Yup.string().required("রেফারেন্স নাম"),
     // refMobile: Yup.string()
@@ -76,7 +78,7 @@ export default function CreatePackage() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন স্ট্যাটিক প্যাকেজ
+                {t("newStaticPackage")}
               </h5>
               <button
                 type="button"
@@ -110,7 +112,7 @@ export default function CreatePackage() {
                             htmlFor="mikrotik"
                             className="changeLabelFontColor"
                           >
-                            মাইক্রোটিক
+                            {t("mikrotik")}
                           </label>
                           <Field
                             className="form-select select-box"
@@ -132,13 +134,13 @@ export default function CreatePackage() {
 
                         <FtextField
                           type="text"
-                          label="প্যাকেজ এর নাম"
+                          label={t("packageName")}
                           name="name"
                         />
                         <FtextField
                           min={0}
                           type="number"
-                          label="প্যাকেজ রেট"
+                          label={t("packageRate")}
                           name="rate"
                         />
                       </div>
@@ -151,14 +153,14 @@ export default function CreatePackage() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

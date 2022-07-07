@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -9,6 +10,7 @@ import {
 import RootBulkModal from "./bulkModal";
 
 const BulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [autoDisable, setAutoDisable] = useState(false);
   const dispatch = useDispatch();
@@ -23,12 +25,16 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
     let confirm;
     if (autoDisable) {
       confirm = window.confirm(
-        "আপনি কি " + bulkCustomer.length + "টি গ্রাহকের আটো ডিজেবল অন করতে চান?"
+        t("areYouWantToOnAutoDisable") +
+          bulkCustomer.length +
+          t("onAutoDisable")
       );
     }
     if (!autoDisable) {
       confirm = window.confirm(
-        "আপনি কি " + bulkCustomer.length + "টি গ্রাহকের আটো ডিজেবল অফ করতে চান?"
+        t("areYouWantToOffAutoDisable") +
+          bulkCustomer.length +
+          t("offAutoDisable")
       );
     }
     if (confirm) {
@@ -37,10 +43,10 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header="আপডেট স্টাটাস">
+    <RootBulkModal modalId={modalId} header={t("updateStatus")}>
       <form onSubmit={changeStatus}>
         <div className="autoDisable">
-          <label>অটোমেটিক সংযোগ বন্ধ</label>
+          <label>{t("automaticConnectionOff")}</label>
           <input
             type="checkBox"
             checked={autoDisable}
@@ -55,14 +61,14 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
             data-bs-dismiss="modal"
             disabled={isLoading}
           >
-            বাতিল করুন
+            {t("cancle")}
           </button>
           <button
             type="submit"
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : "সেভ করুন"}
+            {isLoading ? <Loader /> : t("save")}
           </button>
         </div>
       </form>

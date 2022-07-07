@@ -21,8 +21,8 @@ export default function StaffSalaryPostModal({ staffId }) {
 
   //validator
   const salaryValidaiton = Yup.object({
-    amount: Yup.string().required("এমাউন্ট দিন"),
-    due: Yup.string().required("বকেয়া উল্লেখ করুন না থাকলে 0 দিন"),
+    amount: Yup.string().required(t("enterAmount")),
+    due: Yup.string().required(t("mentionDue")),
   });
 
   const staffSalaryHandler = (data, resetForm) => {

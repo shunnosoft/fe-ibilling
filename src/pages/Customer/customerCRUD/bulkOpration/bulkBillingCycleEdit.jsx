@@ -5,8 +5,10 @@ import Loader from "../../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import { bulkBillingCycleEdit } from "../../../../features/actions/bulkOperationApi";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState();
   const [billDate, setBillDate] = useState(false);
 
@@ -23,9 +25,9 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header="আপডেট বিলিং সাইকেল">
+    <RootBulkModal modalId={modalId} header={t("updateBillingCycle")}>
       <form onSubmit={billingCycleHandler}>
-        <p className="customerFieldsTitle">সিলেক্ট ডেট</p>
+        <p className="customerFieldsTitle">{t("selectDate")}</p>
         <div className="mb-3">
           <DatePicker
             className="form-control"
@@ -34,7 +36,7 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
             dateFormat="dd/MM/yyyy h:mm a"
             showTimeSelect
             timeIntervals={1}
-            placeholderText="তারিখ সিলেক্ট করুন"
+            placeholderText={t("selectDate")}
           />
         </div>
 
@@ -45,14 +47,14 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
             data-bs-dismiss="modal"
             disabled={isLoading}
           >
-            বাতিল করুন
+            {t("cancle")}
           </button>
           <button
             type="submit"
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : "সেভ করুন"}
+            {isLoading ? <Loader /> : t("save")}
           </button>
         </div>
       </form>

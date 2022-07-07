@@ -35,15 +35,15 @@ export default function CollectorEdit({ single }) {
 
   //validator
   const collectorValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("enterName")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
-    address: Yup.string().required("ঠিকানা দিন"),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("ইমেইল দিন"),
-    nid: Yup.string().required("জাতীয় পরিচয়পত্র নম্বর"),
-    status: Yup.string().required("স্টেটাস দিন"),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("writeMobileNumber")),
+    address: Yup.string().required(t("enterAddress")),
+    email: Yup.string().email(t("incorrectEmail")).required(t("enterEmail")),
+    nid: Yup.string().required(t("enterNID")),
+    status: Yup.string().required(t("enterStatus")),
   });
 
   const setAreaHandler = () => {

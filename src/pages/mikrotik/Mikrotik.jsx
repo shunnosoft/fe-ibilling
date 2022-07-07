@@ -95,7 +95,7 @@ export default function Mikrotik() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div> {t("mikrotik")} </div>
                   <div
-                    title="মাইক্রোটিক এড করুন"
+                    title={t("addMikrotik")}
                     className="header_icon"
                     data-bs-toggle="modal"
                     data-bs-target="#MikrotikModal"

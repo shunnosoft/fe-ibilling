@@ -9,6 +9,7 @@ import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
 import { editCollector } from "../../../features/apiCallReseller";
 import { collectorPermission } from "./collectorPermission";
+import { useTranslation } from "react-i18next";
 // import { getArea } from "../../../features/areaSlice";
 // import {
 //   editCollector,
@@ -16,6 +17,7 @@ import { collectorPermission } from "./collectorPermission";
 // } from "../../../features/collectorSlice";
 
 export default function CollectorEdit({ single }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const area = useSelector((state) => state.persistedReducer.area.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
@@ -35,13 +37,13 @@ export default function CollectorEdit({ single }) {
 
   //validator
   const collectorValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("writeMobileNumber")),
     address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয় "),
+    email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     status: Yup.string(),
   });
@@ -101,7 +103,7 @@ export default function CollectorEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {single?.name} - এর প্রোফাইল এডিট করুন kkk
+                {single?.name} - {t("editProfile")}
               </h5>
               <button
                 type="button"
@@ -145,7 +147,7 @@ export default function CollectorEdit({ single }) {
 
                       {/* status */}
                       <div className="form-check customerFormCheck">
-                        <p>স্টেটাস</p>
+                        <p>{t("status")}</p>
                         <div className="form-check form-check-inline">
                           <FtextField
                             label="Active"
@@ -169,7 +171,7 @@ export default function CollectorEdit({ single }) {
                     </div>
 
                     {/* area */}
-                    <b className="mt-2">এরিয়া সিলেক্ট</b>
+                    <b className="mt-2">{t("selectArea")}</b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
                         <div key={key}>
@@ -213,14 +215,14 @@ export default function CollectorEdit({ single }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success customBtn"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

@@ -13,10 +13,12 @@ import { getPackagewithoutmikrotik } from "../../features/apiCalls";
 import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 // import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 
 export default function Package() {
+  const { t } = useTranslation();
   const packages = useSelector((state) => state.package.packages);
   // console.log(packages)
   const dispatch = useDispatch();
@@ -132,10 +134,10 @@ export default function Package() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div>প্যাকেজ</div>
+                <div>{t("package")}</div>
                 {role === "ispOwner" && (
                   <div
-                    title="প্যাকেজ এড করুন"
+                    title={t("addPackage")}
                     className="header_icon"
                     data-bs-toggle="modal"
                     data-bs-target="#createPackage"

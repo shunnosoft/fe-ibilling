@@ -9,7 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getParchaseHistory } from "../../../features/resellerParchaseSmsApi";
 import moment from "moment";
 import Table from "../../../components/table/Table";
+import { useTranslation } from "react-i18next";
 const RecehargeSMS = () => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -32,43 +34,46 @@ const RecehargeSMS = () => {
   }, []);
 
   // table columns
-  const columns = React.useMemo(() => [
-    {
-      width: "25%",
-      Header: "পরিমান",
-      accessor: "smsAmount",
-    },
-    {
-      width: "25%",
-      Header: "টাকার পরিমান",
-      accessor: "smsCost",
-    },
-    {
-      width: "25%",
-      Header: "স্ট্যাটাস",
-      accessor: "status",
-      Cell: ({ row: { original } }) => (
-        <div>
-          {original.status === "accepted" && (
-            <span className="badge bg-success">{original.status}</span>
-          )}
-          {original.status === "pending" && (
-            <span className="badge bg-warning">{original.status}</span>
-          )}
-          {original.status === "rejected" && (
-            <span className="badge bg-danger">{original.status}</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      width: "25%",
-      Header: "তারিখ",
-      accessor: "createdAt",
-      Cell: ({ row: { original } }) =>
-        moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
-    },
-  ]);
+  const columns = React.useMemo(
+    () => [
+      {
+        width: "25%",
+        Header: t("amount"),
+        accessor: "smsAmount",
+      },
+      {
+        width: "25%",
+        Header: t("moneyAmount"),
+        accessor: "smsCost",
+      },
+      {
+        width: "25%",
+        Header: t("status"),
+        accessor: "status",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original.status === "accepted" && (
+              <span className="badge bg-success">{original.status}</span>
+            )}
+            {original.status === "pending" && (
+              <span className="badge bg-warning">{original.status}</span>
+            )}
+            {original.status === "rejected" && (
+              <span className="badge bg-danger">{original.status}</span>
+            )}
+          </div>
+        ),
+      },
+      {
+        width: "25%",
+        Header: t("date"),
+        accessor: "createdAt",
+        Cell: ({ row: { original } }) =>
+          moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
@@ -80,7 +85,7 @@ const RecehargeSMS = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>এসএমএস হিস্ট্রি</div>
+                  <div>{t("smsHistory")}</div>
                   <div
                     className="header_icon"
                     data-bs-toggle="modal"

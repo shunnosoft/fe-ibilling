@@ -31,16 +31,16 @@ export default function Profile() {
   const [isLoadingpass, setIsLoadingpass] = useState(false);
 
   const passwordValidator = Yup.object({
-    oldPassword: Yup.string().required("পুরাতন পাসওয়ার্ড ***"),
+    oldPassword: Yup.string().required(`${t("oldPassword")} ***`),
     newPassword: Yup.string()
-      .required("নতুন পাসওয়ার্ড ***")
+      .required(`${t("newPassword")} ***`)
       .matches(
         /^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$/,
         "Must Contain 8 Characters,   One Alphabat, One Number"
       ),
     confrimPassword: Yup.string().oneOf(
       [Yup.ref("newPassword"), null],
-      "পাসওয়ার্ড মিলে নি"
+      `${t("doNotMatchPassword")}`
     ),
   });
   const dispatch = useDispatch();
