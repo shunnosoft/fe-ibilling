@@ -226,10 +226,10 @@ export default function CustomerReport({ single }) {
                                 </div>
                                 <div>
                                   <ReactToPrint
-                                    documentTitle="বিল ইনভয়েস"
+                                    documentTitle={t("billIvoice")}
                                     trigger={() => (
                                       <div
-                                        title="প্রিন্ট বিল ইনভয়েস"
+                                        title={t("printInvoiceBill")}
                                         style={{ cursor: "pointer" }}
                                       >
                                         <PrinterFill />
@@ -238,7 +238,7 @@ export default function CustomerReport({ single }) {
                                     content={() => billRefwithNote.current}
                                   />
                                 </div>
-                                <div title="ডিলিট রিপোর্ট">
+                                <div title={t("deleteReport")}>
                                   <button
                                     className="border-0 bg-transparent"
                                     onClick={() => deletReport(val.id)}
@@ -267,7 +267,7 @@ export default function CustomerReport({ single }) {
                                 </div>
                                 <div>
                                   <ReactToPrint
-                                    documentTitle="বিল ইনভয়েস"
+                                    documentTitle={t("billIvoice")}
                                     trigger={() => (
                                       <div
                                         title={t("printInvoiceBill")}
