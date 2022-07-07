@@ -227,9 +227,9 @@ export default function Report() {
   }
 
   const filterData = {
-    area: singleArea?.name ? singleArea.name : "সকল",
-    subArea: subArea ? subArea.name : "সকল",
-    collector: collector?.name ? collector.name : "সকল",
+    area: singleArea?.name ? singleArea.name : t("all"),
+    subArea: subArea ? subArea.name : t("all"),
+    collector: collector?.name ? collector.name : t("all"),
     startDate: dateStart,
     endDate: dateEnd,
     totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
@@ -323,12 +323,12 @@ export default function Report() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div> {t("billReport")} </div>
                   <ReactToPrint
-                    documentTitle="বিল রিপোর্ট"
+                    documentTitle={t("billReport")}
                     trigger={() => (
                       <button
                         className="header_icon border-0"
                         type="button"
-                        title="ডাউনলোড পিডিএফ"
+                        title={t("downloadPdf")}
                       >
                         <PrinterFill />
                       </button>

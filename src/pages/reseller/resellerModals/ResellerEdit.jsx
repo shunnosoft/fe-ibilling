@@ -42,21 +42,21 @@ export default function ResellerEdit({ reseller }) {
 
   //validator
   const resellerValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("enterName")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
-    email: Yup.string().email("ইমেইল সঠিক নয় "),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("writeMobileNumber")),
+    email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     website: Yup.string(),
     address: Yup.string(),
-    status: Yup.string().required("স্ট্যাটাস সিলেক্ট করুন"),
+    status: Yup.string().required(t("selectStatus")),
     commissionRate: Yup.number()
       .integer()
-      .min(1, "সর্বনিম্ন শেয়ার ১% ")
-      .max(99, "সর্বোচ্চ শেয়ার ৯৯%")
-      .required("রিসেলার শেয়ার দিন"),
+      .min(1, t("minimumShare"))
+      .max(99, t("maximumShare"))
+      .required(t("enterResellerShare")),
   });
 
   // const handleChange = (e) => {

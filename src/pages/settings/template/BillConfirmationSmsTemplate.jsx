@@ -329,7 +329,7 @@ function BillConfirmationSmsTemplate() {
             id="messageTextArea"
             rows="6"
             className="form-control mt-4"
-            placeholder="মেসেজ লিখুন..."
+            placeholder={t("messageLikhun")}
             ref={textRef}
             value={bottomText}
             // onClick={insertMyText}

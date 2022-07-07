@@ -41,7 +41,7 @@ const StaticActiveCustomer = () => {
   };
 
   // filter
-  if (filterStatus && filterStatus !== "সকল গ্রাহক") {
+  if (filterStatus && filterStatus !== t("sokolCustomer")) {
     staticActiveCustomer = staticActiveCustomer.filter(
       (value) => value.complete === JSON.parse(filterStatus)
     );

@@ -65,7 +65,7 @@ export default function PackageSetting() {
   const [filterStatus, setFilterStatus] = useState(null);
 
   // filter mikrotk
-  if (filterStatus && filterStatus !== "মাইক্রোটিক") {
+  if (filterStatus && filterStatus !== t("mikrotik")) {
     packages = packages.filter((value) => value.mikrotik === filterStatus);
   }
 

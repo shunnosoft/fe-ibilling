@@ -3,8 +3,10 @@ import { ArrowDownUp } from "react-bootstrap-icons";
 import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const PrintReport = React.forwardRef((props, ref) => {
+  const { t } = useTranslation();
   const { currentCustomers, filterData } = props;
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
@@ -22,38 +24,53 @@ const PrintReport = React.forwardRef((props, ref) => {
             <div className="company_name">{ispOwnerData.company}</div>
           </div>
           <div className="details_side">
-            <p>কোম্পানির নামঃ {ispOwnerData.company}</p>
-            {ispOwnerData.address && <p>এড্রেসঃ {ispOwnerData?.address}</p>}
+            <p>
+              {t("companyName")} {ispOwnerData.company}
+            </p>
+            {ispOwnerData.address && (
+              <p>
+                {t("address")} : {ispOwnerData?.address}
+              </p>
+            )}
           </div>
         </div>
 
         <ul className="d-flex justify-content-around filter_list">
-          <li>এরিয়াঃ {filterData.area}</li>
-          <li>সাবএরিয়াঃ {filterData.subArea}</li>
-          <li>কালেক্টরঃ {filterData.collector}</li>
           <li>
-            তারিখঃ {startDate} - {endDate}
+            {t("area")} : {filterData.area}
           </li>
-          <li>মোট বিলঃ{filterData.totalBill}</li>
+          <li>
+            {t("subArea")} : {filterData.subArea}
+          </li>
+          <li>
+            {t("collector")} : {filterData.collector}
+          </li>
+          <li>
+            {t("date")} : {startDate} - {endDate}
+          </li>
+          <li>
+            {t("totalBill")}
+            {filterData.totalBill}
+          </li>
         </ul>
         <table className="table table-striped">
           <thead>
             <tr className="spetialSortingRow">
               <th style={{ fontFamily: "sans-serif" }} scope="col">
-                আইডি
+                {t("id")}
                 <ArrowDownUp className="arrowDownUp" />
               </th>
               <th style={{ fontFamily: "sans-serif" }} scope="col">
-                গ্রাহক
+                {t("customer")}
                 <ArrowDownUp className="arrowDownUp" />
               </th>
               <th style={{ fontFamily: "sans-serif" }} scope="col">
-                বিল
+                {t("bill")}
                 <ArrowDownUp className="arrowDownUp" />
               </th>
 
               <th style={{ fontFamily: "sans-serif" }} scope="col">
-                তারিখ
+                {t("date")}
                 <ArrowDownUp className="arrowDownUp" />
               </th>
             </tr>
@@ -74,8 +91,8 @@ const PrintReport = React.forwardRef((props, ref) => {
         <div className="page-footer">
           <div className="signature_container">
             <div className="p-3 signature_wraper">
-              <div className="signamture_field">ম্যানেজার</div>
-              <div className="signamture_field">এডমিন</div>
+              <div className="signamture_field">{t("manager")}</div>
+              <div className="signamture_field">{t("admin")}</div>
             </div>
           </div>
         </div>

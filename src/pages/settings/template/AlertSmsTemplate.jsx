@@ -165,7 +165,7 @@ function AlertSmsTemplate() {
         value: (settings?.sms?.template?.alert7 || "") + "\nalert7",
       },
     ];
-  }, [settings]);
+  }, [settings, t]);
 
   const dayTempletHandler = (e) => {
     let temp2 = e.target.value

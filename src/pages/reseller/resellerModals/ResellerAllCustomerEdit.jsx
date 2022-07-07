@@ -111,7 +111,7 @@ const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
       },
     };
     if (parseInt(monthlyFee) > packages?.rate) {
-      alert("রিসেলার গ্রাহকের মাসিক ফি বাড়ানো যাবে");
+      alert(t("canNotIncreaseResellerMonthlyFee"));
       return monthlyFeeRef.current.focus();
     }
     // console.log({ resellerId, data });
@@ -222,7 +222,9 @@ const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
                   </div>
                 </div>
                 <div className="autoDisable mt-4 m-75 me-3">
-                  <label htmlFor="auto_disabled">অটোমেটিক সংযোগ বন্ধ</label>
+                  <label htmlFor="auto_disabled">
+                    {t("automaticConnectionOff")}
+                  </label>
                   <input
                     id="auto_disabled"
                     type="checkBox"
@@ -243,7 +245,7 @@ const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
                       id="activeStatus"
                     />
                     <label className="form-check-label" htmlFor="activeStatus">
-                      এক্টিভ
+                      {t("active")}
                     </label>
                   </div>
                   <div className="form-check form-check-inline">
@@ -257,7 +259,7 @@ const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
                       disabled
                     />
                     <label className="form-check-label" htmlFor="inlineRadio2">
-                      ইন-এক্টিভ
+                      {t("in active")}
                     </label>
                   </div>
                   {data?.status === "expired" && (
@@ -270,7 +272,7 @@ const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
                         checked={status === "expired"}
                       />
                       <label className="form-check-label" htmlFor="expired">
-                        এক্সপায়ার্ড
+                        {t("expired")}
                       </label>
                     </div>
                   )}

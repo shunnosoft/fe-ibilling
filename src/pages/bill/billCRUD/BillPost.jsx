@@ -9,9 +9,13 @@ import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { addCustomer, fetchpppoePackage } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function CustomerModal() {
-  const auth = useSelector((state) => state?.persistedReducer?.auth?.currentUser);
+  const { t } = useTranslation();
+  const auth = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser
+  );
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const Getmikrotik = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.mikrotik
@@ -27,18 +31,18 @@ export default function CustomerModal() {
 
   // customer validator
   const customerValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("enterName")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-      .required("মোবাইল নম্বর দিন "),
-    address: Yup.string().required("নাম দিন"),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("writeMobileNumber")),
+    address: Yup.string().required(t("enterName")),
     email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
-    nid: Yup.string().required("NID দিন"),
-    monthlyFee: Yup.string().required("Montly Fee দিন"),
-    Pname: Yup.string().required("PPPoE নাম"),
+      .email(t("incorrectEmail"))
+      .required(t("enterManagerEmail")),
+    nid: Yup.string().required(t("enterNID")),
+    monthlyFee: Yup.string().required(t("enterMonthlyFee")),
+    Pname: Yup.string().required(t("PPPoEName")),
     Ppassword: Yup.string().required("PPPoE Password"),
     Pprofile: Yup.string().required("PPPoE Profile"),
     Pcomment: Yup.string().required("Comment"),
@@ -88,7 +92,7 @@ export default function CustomerModal() {
     const subArea = document.getElementById("subAreaId").value;
     if (subArea === "") {
       setIsloading(false);
-      return alert("সাব-এরিয়া সিলেক্ট করতে হবে");
+      return alert(t("selectSubArea"));
     }
     const { ispOwner } = auth;
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
@@ -126,7 +130,7 @@ export default function CustomerModal() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                নতুন গ্রাহক অ্যাড করুন
+                {t("addNewCustomer")}
               </h5>
               <button
                 type="button"
@@ -161,15 +165,23 @@ export default function CustomerModal() {
                   <Form>
                     <div className="customerGrid">
                       <div className="sectionOne">
-                        <FtextField type="text" label="নাম" name="name" />
-                        <FtextField type="text" label="মোবাইল" name="mobile" />
-                        <FtextField type="text" label="এড্রেস" name="address" />
-                        <FtextField type="text" label="ইমেইল" name="email" />
+                        <FtextField type="text" label={t("name")} name="name" />
                         <FtextField
                           type="text"
-                          label="জাতীয় পরিচয়পত্র নং"
-                          name="nid"
+                          label={t("mobile")}
+                          name="mobile"
                         />
+                        <FtextField
+                          type="text"
+                          label={t("address")}
+                          name="address"
+                        />
+                        <FtextField
+                          type="text"
+                          label={t("email")}
+                          name="email"
+                        />
+                        <FtextField type="text" label={t("NIDno")} name="nid" />
                         {/* <div className="form-check customerFormCheck">
                           <p>স্টেটাস</p>
                           <div className="form-check form-check-inline">
@@ -237,11 +249,11 @@ export default function CustomerModal() {
                         /> */}
                         <FtextField
                           type="text"
-                          label="মাসিক ফি"
+                          label={t("monthFee")}
                           name="monthlyFee"
                         />
                         <p className="comstomerFieldsTitle">
-                          এরিয়া সিলেক্ট করুন
+                          {t("selectArea")}
                         </p>
                         <select
                           className="form-select"
@@ -259,8 +271,8 @@ export default function CustomerModal() {
                         </select>
 
                         <p className="comstomerFieldsTitle mt-3">
-                          {subArea ? subArea.name + " এর - " : ""} সাব-এরিয়া
-                          সিলেক্ট করুন
+                          {subArea ? subArea.name + " এর - " : ""}{" "}
+                          {t("selectSubArea")}
                         </p>
                         <select
                           className="form-select"
@@ -279,7 +291,7 @@ export default function CustomerModal() {
                         </select>
 
                         <p className="comstomerFieldsTitle mt-3">
-                          মাইক্রোটিক সিলেক্ট করুন
+                          {t("selectMikrotik")}
                         </p>
                         <select
                           className="form-select"
@@ -298,7 +310,7 @@ export default function CustomerModal() {
 
                         {/* pppoe package */}
                         <p className="comstomerFieldsTitle mt-3">
-                          PPPoE প্যাকেজ সিলেক্ট করুন
+                          {t("selectPPPoEPackage")}
                         </p>
                         <select
                           className="form-select"
@@ -318,17 +330,17 @@ export default function CustomerModal() {
                       <div className="section3">
                         <FtextField
                           type="text"
-                          label="PPPoE নাম"
+                          label={t("PPPoEName")}
                           name="Pname"
                         />
                         <FtextField
                           type="text"
-                          label="পাসওয়ার্ড"
+                          label={t("password")}
                           name="Ppassword"
                         />
                         <FtextField
                           type="text"
-                          label="প্রোফাইল"
+                          label={t("profile")}
                           name="Pprofile"
                         />
                         <FtextField
@@ -345,14 +357,14 @@ export default function CustomerModal() {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button
                         type="submit"
                         className="btn btn-success"
                         disabled={isLoading}
                       >
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

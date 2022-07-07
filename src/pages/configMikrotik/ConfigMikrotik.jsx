@@ -609,7 +609,7 @@ export default function ConfigMikrotik() {
                     {whatYouWantToShow === "showAllMikrotikUser" ? (
                       <>
                         <h2 style={{ width: "100%", textAlign: "center" }}>
-                          {t("sokolCustome")}
+                          {t("sokolCustomer")}
                         </h2>
                         <Table
                           isLoading={isLoading}

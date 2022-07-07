@@ -188,38 +188,41 @@ export default function CollectorReport() {
     setMainData(arr);
   };
 
-  const columns = React.useMemo(() => [
-    {
-      width: "15%",
-      Header: "#",
-      id: "row",
-      accessor: (row) => Number(row.id + 1),
-      Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-    },
-    {
-      width: "20%",
-      Header: "আইডি",
-      accessor: "customer.customerId",
-    },
-    {
-      width: "20%",
-      Header: "গ্রাহক",
-      accessor: "customer.name",
-    },
-    {
-      width: "20%",
-      Header: "পরিমান",
-      accessor: "amount",
-    },
-    {
-      width: "25%",
-      Header: "তারিখ",
-      accessor: "createdAt",
-      Cell: ({ cell: { value } }) => {
-        return moment(value).format("MMM DD YYYY hh:mm a");
+  const columns = React.useMemo(
+    () => [
+      {
+        width: "15%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
-    },
-  ]);
+      {
+        width: "20%",
+        Header: t("id"),
+        accessor: "customer.customerId",
+      },
+      {
+        width: "20%",
+        Header: t("customer"),
+        accessor: "customer.name",
+      },
+      {
+        width: "20%",
+        Header: t("amount"),
+        accessor: "amount",
+      },
+      {
+        width: "25%",
+        Header: t("date"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm a");
+        },
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
