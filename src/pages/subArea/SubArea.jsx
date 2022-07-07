@@ -44,7 +44,7 @@ export default function SubArea() {
   );
 
   const linemanValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("enterName")),
   });
 
   const dispatch = useDispatch();

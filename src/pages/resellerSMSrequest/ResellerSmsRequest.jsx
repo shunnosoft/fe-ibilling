@@ -60,93 +60,96 @@ const ResellerSmsRequest = () => {
   };
 
   // table columns
-  const columns = React.useMemo(() => [
-    {
-      width: "10%",
-      Header: "#",
-      id: "row",
-      accessor: (row) => Number(row.id + 1),
-      Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-    },
-    {
-      width: "25%",
-      Header: "নাম",
-      accessor: "reseller.name",
-    },
-    {
-      width: "12%",
-      Header: "পরিমান",
-      accessor: "smsAmount",
-    },
-    {
-      width: "15%",
-      Header: "টাকার পরিমান",
-      accessor: "smsCost",
-    },
-    {
-      width: "15%",
-      Header: "স্ট্যাটাস",
-      accessor: "status",
-      Cell: ({ row: { original } }) => (
-        <div>
-          {original.status === "accepted" && (
-            <span className="badge bg-success">{original.status}</span>
-          )}
-          {original.status === "pending" && (
-            <span className="badge bg-warning">{original.status}</span>
-          )}
-          {original.status === "rejected" && (
-            <span className="badge bg-danger">{original.status}</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      width: "23%",
-      Header: "তারিখ",
-      accessor: "createdAt",
-      Cell: ({ row: { original } }) =>
-        moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
-    },
-    {
-      width: "10%",
-      Header: () => <div className="text-center">অ্যাকশন</div>,
-      id: "option",
+  const columns = React.useMemo(
+    () => [
+      {
+        width: "10%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        width: "25%",
+        Header: t("name"),
+        accessor: "reseller.name",
+      },
+      {
+        width: "12%",
+        Header: t("amount"),
+        accessor: "smsAmount",
+      },
+      {
+        width: "15%",
+        Header: t("moneyAmount"),
+        accessor: "smsCost",
+      },
+      {
+        width: "15%",
+        Header: t("status"),
+        accessor: "status",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original.status === "accepted" && (
+              <span className="badge bg-success">{original.status}</span>
+            )}
+            {original.status === "pending" && (
+              <span className="badge bg-warning">{original.status}</span>
+            )}
+            {original.status === "rejected" && (
+              <span className="badge bg-danger">{original.status}</span>
+            )}
+          </div>
+        ),
+      },
+      {
+        width: "23%",
+        Header: t("date"),
+        accessor: "createdAt",
+        Cell: ({ row: { original } }) =>
+          moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
+      },
+      {
+        width: "10%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
 
-      Cell: ({ row: { original } }) => (
-        <div className="text-center">
-          {original.status === "pending" && (
-            <>
-              <button
-                className="btn btn-sm bg-success text-white shadow"
-                onClick={() => {
-                  acceptHandle(
-                    original?.id,
-                    original?.reseller?.id,
-                    original?.status
-                  );
-                }}
-              >
-                <CheckCircle />
-              </button>
-              <button
-                className="btn btn-sm bg-danger text-white shadow ms-2"
-                onClick={() => {
-                  acceptHandle(
-                    original?.id,
-                    original?.reseller?.id,
-                    "rejected"
-                  );
-                }}
-              >
-                <XCircle />
-              </button>
-            </>
-          )}
-        </div>
-      ),
-    },
-  ]);
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            {original.status === "pending" && (
+              <>
+                <button
+                  className="btn btn-sm bg-success text-white shadow"
+                  onClick={() => {
+                    acceptHandle(
+                      original?.id,
+                      original?.reseller?.id,
+                      original?.status
+                    );
+                  }}
+                >
+                  <CheckCircle />
+                </button>
+                <button
+                  className="btn btn-sm bg-danger text-white shadow ms-2"
+                  onClick={() => {
+                    acceptHandle(
+                      original?.id,
+                      original?.reseller?.id,
+                      "rejected"
+                    );
+                  }}
+                >
+                  <XCircle />
+                </button>
+              </>
+            )}
+          </div>
+        ),
+      },
+    ],
+    [t]
+  );
 
   return (
     <>

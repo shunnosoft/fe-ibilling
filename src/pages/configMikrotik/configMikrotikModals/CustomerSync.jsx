@@ -5,6 +5,7 @@ import {
   fetchMikrotikSyncUser,
   syncMikrotikStaticUser,
 } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 const CustomerSync = ({
   mikrotikId,
@@ -13,6 +14,7 @@ const CustomerSync = ({
   inActiveCustomer,
   setInActiveCustomer,
 }) => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -53,8 +55,8 @@ const CustomerSync = ({
               id="customerModalDetails"
             >
               {customerType === "PPPoE"
-                ? "PPPoE গ্রাহক সিঙ্ক করুন"
-                : "স্ট্যাটিক গ্রাহক সিঙ্ক করুন"}
+                ? t("PPPoEPackageSync")
+                : t("staticCustomerSync")}
             </h5>
             <button
               type="button"
@@ -74,7 +76,7 @@ const CustomerSync = ({
               />
               <label class="form-check-label" for="flexCheckDefault">
                 <small className="text-secondary">
-                  ইন-এক্টিভ গ্রাহক সহ সিঙ্ক করতে চান ?
+                  {t("doYouWantToSyncWithInActiveCustomer")}
                 </small>
               </label>
             </div>
@@ -86,14 +88,14 @@ const CustomerSync = ({
                 data-bs-dismiss="modal"
                 disabled={isLoading}
               >
-                বাতিল করুন
+                {t("cancle")}
               </button>
               <button
                 onClick={syncCostomer}
                 className="btn btn-success"
                 disabled={isLoading}
               >
-                {isLoading ? <Loader /> : "সিঙ্ক"}
+                {isLoading ? <Loader /> : t("sync")}
               </button>
             </div>
           </div>

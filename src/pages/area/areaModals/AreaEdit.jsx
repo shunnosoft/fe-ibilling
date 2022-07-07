@@ -21,7 +21,7 @@ export default function AreaEdit({ oneArea }) {
 
   //validator
   const areaEditValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("enterName")),
   });
 
   const areaEditHandler = async (data) => {

@@ -442,7 +442,7 @@ export default function ConfigMikrotik() {
                         )}
                         <div className="addAndSettingIcon">
                           <button
-                            title="কানেকশন চেক"
+                            title={t("checkConnection")}
                             className="btn btn-outline-primary me-2"
                             onClick={MikrotikConnectionTest}
                           >
@@ -450,7 +450,7 @@ export default function ConfigMikrotik() {
                             <PlugFill className="rotating" />
                           </button>
                           <button
-                            title="মাইক্রোটিক এডিট"
+                            title={t("editMkrotik")}
                             data-bs-toggle="modal"
                             data-bs-target="#configMikrotikModal"
                             className="btn btn-outline-primary me-2  "
@@ -476,7 +476,7 @@ export default function ConfigMikrotik() {
                                   i.name !== "default"
                               )}
                               onClick={syncPackage}
-                              title="প্যাকেজ সিংক"
+                              title={t("packageSync")}
                               className="btn btn-outline-primary me-2 "
                             >
                               {t("packageSync")} <BagCheckFill />
@@ -495,7 +495,7 @@ export default function ConfigMikrotik() {
                                 setInActiveCustomer(false);
                                 setCustomerType("PPPoE");
                               }}
-                              title="PPPoE গ্রাহক সিংক"
+                              title={t("PPPoEPackageSync")}
                               className="btn btn-outline-primary me-2 "
                             >
                               {t("PPPoEPackageSync")} <PersonCheckFill />
@@ -514,7 +514,7 @@ export default function ConfigMikrotik() {
                                 setInActiveCustomer(false);
                                 setCustomerType("static");
                               }}
-                              title="স্ট্যাটিক গ্রাহক সিংক"
+                              title={t("staticCustomerSync")}
                               className="btn btn-outline-primary me-2 "
                             >
                               {t("staticCustomerSync")} <PersonLinesFill />
@@ -609,7 +609,7 @@ export default function ConfigMikrotik() {
                     {whatYouWantToShow === "showAllMikrotikUser" ? (
                       <>
                         <h2 style={{ width: "100%", textAlign: "center" }}>
-                          {t("sokolCustome")}
+                          {t("sokolCustomer")}
                         </h2>
                         <Table
                           isLoading={isLoading}

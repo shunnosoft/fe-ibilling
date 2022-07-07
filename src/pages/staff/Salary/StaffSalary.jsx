@@ -53,30 +53,30 @@ export default function StaffSalary() {
   const columns = useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        Header: t("serial"),
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "বছর",
+        Header: t("year"),
         accessor: "year",
       },
       {
-        Header: "মাস",
+        Header: t("month"),
         accessor: "month",
       },
       {
-        Header: "পরিমাণ",
+        Header: t("amount"),
         accessor: "amount",
       },
       {
-        Header: "বকেয়া",
+        Header: t("due"),
         accessor: "due",
       },
 
       {
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -100,7 +100,7 @@ export default function StaffSalary() {
                 <div className="dropdown-item">
                   <div className="customerAction">
                     <PenFill />
-                    <p className="actionP">এডিট</p>
+                    <p className="actionP">{t("edit")}</p>
                   </div>
                 </div>
               </li>
@@ -112,7 +112,7 @@ export default function StaffSalary() {
                 <div className="dropdown-item actionManager">
                   <div className="customerAction">
                     <ArchiveFill />
-                    <p className="actionP">ডিলিট</p>
+                    <p className="actionP">{t("delete")}</p>
                   </div>
                 </div>
               </li>
@@ -121,7 +121,7 @@ export default function StaffSalary() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   return (

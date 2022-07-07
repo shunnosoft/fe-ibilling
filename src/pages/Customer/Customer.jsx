@@ -324,27 +324,27 @@ export default function Customer() {
 
   if (filterOptions.status) {
     if (filterOptions.status === "active") {
-      customerStatus = "এক্টিভ";
+      customerStatus = t("active");
     } else if (filterOptions.status === "inactive") {
-      customerStatus = "ইনএক্টিভ";
+      customerStatus = t("in active");
     }
   }
 
   if (filterOptions.paymentStatus) {
     if (filterOptions.paymentStatus === "unpaid") {
-      customerPaymentStatus = "বকেয়া";
+      customerPaymentStatus = t("due");
     } else if (filterOptions.paymentStatus === "paid") {
-      customerPaymentStatus = "পরিশোধ";
+      customerPaymentStatus = t("paid");
     } else if (filterOptions.paymentStatus === "expired") {
-      customerPaymentStatus = "মেয়াদোত্তীর্ণ";
+      customerPaymentStatus = t("expired");
     }
   }
 
   const filterData = {
-    area: singleArea?.name ? singleArea.name : "সকল এরিয়া",
-    subArea: subArea ? subArea.name : "সকল সাবএরিয়া",
-    status: customerStatus ? customerStatus : "সকল গ্রাহক",
-    payment: customerPaymentStatus ? customerPaymentStatus : "সকল গ্রাহক",
+    area: singleArea?.name ? singleArea.name : t("allArea"),
+    subArea: subArea ? subArea.name : t("allSubArea"),
+    status: customerStatus ? customerStatus : t("sokolCustomer"),
+    payment: customerPaymentStatus ? customerPaymentStatus : t("sokolCustomer"),
   };
 
   //export customer data
@@ -602,7 +602,7 @@ export default function Customer() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ChatText />
-                        <p className="actionP">মেসেজ</p>
+                        <p className="actionP">{t("message")}</p>
                       </div>
                     </div>
                   </li>
@@ -1020,19 +1020,19 @@ export default function Customer() {
                             selected={filterOptions.freeUser === "allUser"}
                             value="allUser"
                           >
-                            সকল গ্রাহক
+                            {t("sokolCustomer")}
                           </option>
                           <option
                             selected={filterOptions.freeUser === "freeUser"}
                             value="freeUser"
                           >
-                            ফ্রি গ্রাহক
+                            {t("freeCustomer")}
                           </option>
                           <option
                             selected={filterOptions.freeUser === "nonFreeUser"}
                             value="nonFreeUser"
                           >
-                            নন ফ্রি গ্রাহক
+                            {t("nonFreeCustomer")}
                           </option>
                         </select>
                       </div>

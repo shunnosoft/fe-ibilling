@@ -43,7 +43,6 @@ export default function Expenditure() {
   const expenditures = useSelector(
     (state) => state.expenditure.allExpenditures
   );
-  console.log(expenditures);
   const expenditurePurpose = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );
@@ -98,17 +97,17 @@ export default function Expenditure() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "18%",
-        Header: "খরচের খাত",
+        width: "20%",
+        Header: t("expenseSector"),
         accessor: "expenditureName",
       },
       {
-        width: "25%",
-        Header: "খরচের বিবরণ",
+        width: "23%",
+        Header: t("expenseDefination"),
         accessor: "description",
       },
       {
-        Header: "নাম",
+        Header: t("nam"),
         width: "20%",
         accessor: "user",
         Cell: ({ cell: { value } }) => {
@@ -124,13 +123,13 @@ export default function Expenditure() {
       },
       {
         width: "10%",
-        Header: "পরিমান",
+        Header: t("amount"),
         accessor: "amount",
       },
 
       {
         width: "12%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
@@ -139,7 +138,7 @@ export default function Expenditure() {
 
       {
         width: "7%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -168,7 +167,7 @@ export default function Expenditure() {
                 <div className="dropdown-item">
                   <div className="customerAction">
                     <Tools />
-                    <p className="actionP">এডিট</p>
+                    <p className="actionP">{t("edit")}</p>
                   </div>
                 </div>
               </li>
@@ -177,7 +176,7 @@ export default function Expenditure() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns2 = React.useMemo(
     () => [
@@ -190,13 +189,13 @@ export default function Expenditure() {
       },
       {
         width: "30%",
-        Header: "খরচের খাত",
+        Header: t("expenseSector"),
         accessor: "name",
       },
 
       {
         width: "30%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
@@ -205,7 +204,7 @@ export default function Expenditure() {
 
       {
         width: "20%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -235,7 +234,7 @@ export default function Expenditure() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <Tools />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -245,7 +244,7 @@ export default function Expenditure() {
         ),
       },
     ],
-    []
+    [t]
   );
   const customComponent = (
     <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>

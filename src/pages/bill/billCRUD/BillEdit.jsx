@@ -11,8 +11,10 @@ import { FtextField } from "../../../components/common/FtextField";
 // import { fetchCustomer } from "../../../features/customerSlice";
 import Loader from "../../../components/common/Loader";
 import { editCustomer } from "../../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function CustomerEdit({ single }) {
+  const { t } = useTranslation();
   const CUSTOMER = single;
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
@@ -24,7 +26,7 @@ export default function CustomerEdit({ single }) {
   const customerEditValidator = Yup.object({
     name: Yup.string(),
     address: Yup.string(),
-    email: Yup.string().email("ইমেইল সঠিক নয় "),
+    email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     balance: Yup.string(),
     monthlyFee: Yup.string(),
@@ -73,7 +75,7 @@ export default function CustomerEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {`${CUSTOMER.name}`} এর তথ্য এডিট করুন
+                {`${CUSTOMER.name}`} {t("informationEdit")}
               </h5>
               <button
                 type="button"
@@ -102,13 +104,17 @@ export default function CustomerEdit({ single }) {
               >
                 {() => (
                   <Form>
-                    <FtextField type="text" label={`নাম`} name="name" />
-                    <FtextField type="text" label={`এড্রেস`} name="address" />
-                    <FtextField type="text" label={`ইমেইল`} name="email" />
-                    <FtextField type="text" label={`NID নম্বর`} name="nid" />
+                    <FtextField type="text" label={t("name")} name="name" />
+                    <FtextField
+                      type="text"
+                      label={t("address")}
+                      name="address"
+                    />
+                    <FtextField type="text" label={t("email")} name="email" />
+                    <FtextField type="text" label={t("NIDno")} name="nid" />
 
                     <div className="form-check customerFormCheck">
-                      <p>বিল পরিশোধের ধরণ</p>
+                      <p>{t("billPaymentType")}</p>
                       <div className="form-check form-check-inline">
                         <FtextField
                           label="Prepaid"
@@ -132,12 +138,12 @@ export default function CustomerEdit({ single }) {
                     </div>
                     <FtextField
                       type="text"
-                      label={`ব্যালান্স`}
+                      label={t("balance")}
                       name="balance"
                     />
                     <FtextField
                       type="text"
-                      label={`মাসিক ফি`}
+                      label={t("monthFee")}
                       name="monthlyFee"
                     />
                     <div className="modal-footer">
@@ -146,10 +152,10 @@ export default function CustomerEdit({ single }) {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        বাতিল করুন
+                        {t("cancle")}
                       </button>
                       <button type="submit" className="btn btn-success">
-                        {isLoading ? <Loader /> : "সেভ করুন"}
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

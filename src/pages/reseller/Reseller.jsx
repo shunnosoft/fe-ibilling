@@ -94,38 +94,38 @@ export default function Reseller() {
       },
       {
         width: "13%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "12%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
       {
         width: "19%",
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
 
       {
         width: "19%",
-        Header: "ইমেইল",
+        Header: t("email"),
         accessor: "email",
       },
       {
         width: "8%",
-        Header: "গ্রাহক",
+        Header: t("customer"),
         accessor: "customerCount",
       },
       {
         width: "13%",
-        Header: "রিচার্জ ব্যালান্স",
+        Header: t("rechargeBalance"),
         accessor: "rechargeBalance",
       },
       {
         width: "8%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -151,7 +151,7 @@ export default function Reseller() {
                       <div className="customerAction">
                         <PeopleFill />
 
-                        <p className="actionP">গ্রাহক</p>
+                        <p className="actionP">{t("customer")}</p>
                       </div>
                     </div>
                   </li>
@@ -168,7 +168,7 @@ export default function Reseller() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <Wallet />
-                      <p className="actionP">রিচার্জ</p>
+                      <p className="actionP">{t("useMemoRecharge")}</p>
                     </div>
                   </div>
                 </li>
@@ -182,7 +182,7 @@ export default function Reseller() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PersonFill />
-                      <p className="actionP">প্রোফাইল</p>
+                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -196,7 +196,7 @@ export default function Reseller() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -209,7 +209,7 @@ export default function Reseller() {
                   <div className="dropdown-item actionManager">
                     <div className="customerAction">
                       <ArchiveFill />
-                      <p className="actionP">ডিলিট</p>
+                      <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
                 </li>
@@ -225,7 +225,7 @@ export default function Reseller() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ChatText />
-                        <p className="actionP">মেসেজ</p>
+                        <p className="actionP">{t("message")}</p>
                       </div>
                     </div>
                   </li>
@@ -236,7 +236,7 @@ export default function Reseller() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   return (
@@ -272,12 +272,12 @@ export default function Reseller() {
                             justifyContent: "center",
                           }}
                         >
-                          সকল রিসেলার কাস্টমার
+                          {t("allResellerCustomer")}
                           <ArrowRightShort style={{ fontSize: "19px" }} />
                         </Link>
                       </div>
                       <div
-                        title="রিসেলার এড করুন"
+                        title={t("addReseller")}
                         className="header_icon"
                         data-bs-toggle="modal"
                         data-bs-target="#resellerModal"

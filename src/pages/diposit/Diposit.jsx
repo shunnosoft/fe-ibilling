@@ -213,7 +213,9 @@ export default function Diposit() {
         Cell: ({ row: { original } }) => (
           <div>
             {original.name}{" "}
-            {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
+            {userRole === "ispOwner"
+              ? `(${t("manager")})`
+              : `(${t("collector")})`}
           </div>
         ),
       },
