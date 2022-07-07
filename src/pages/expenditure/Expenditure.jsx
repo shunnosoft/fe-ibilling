@@ -43,9 +43,16 @@ export default function Expenditure() {
   const expenditures = useSelector(
     (state) => state.expenditure.allExpenditures
   );
+  console.log(expenditures);
   const expenditurePurpose = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );
+
+  // get owner users
+  const ownerUsers = useSelector(
+    (state) => state?.persistedReducer?.ownerUsers?.ownerUser
+  );
+
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // pagination
@@ -84,7 +91,7 @@ export default function Expenditure() {
   const columns = React.useMemo(
     () => [
       {
-        width: "10%",
+        width: "8%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -96,18 +103,33 @@ export default function Expenditure() {
         accessor: "expenditureName",
       },
       {
-        width: "18%",
+        width: "25%",
         Header: "খরচের বিবরণ",
         accessor: "description",
       },
       {
-        width: "18%",
+        Header: "নাম",
+        width: "20%",
+        accessor: "user",
+        Cell: ({ cell: { value } }) => {
+          const performer = ownerUsers.find((item) => item[value]);
+
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
+        },
+      },
+      {
+        width: "10%",
         Header: "পরিমান",
         accessor: "amount",
       },
 
       {
-        width: "21%",
+        width: "12%",
         Header: "তারিখ",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -116,7 +138,7 @@ export default function Expenditure() {
       },
 
       {
-        width: "15%",
+        width: "7%",
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
 

@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -29,7 +30,7 @@ export default function Details({ activityId }) {
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
     >
-      <div className="modal-dialog modal-xl">
+      <div className={`modal-dialog ${checkOp != "add" && "modal-xl"}`}>
         <div className="modal-content">
           <div className="modal-header">
             <h5
@@ -122,18 +123,24 @@ export default function Details({ activityId }) {
                         key === "billingCycle" ||
                         key === "balance" ||
                         key === "autoDisable" ||
+                        key === "amount" ||
+                        key === "description" ||
                         typeof key === "object"
                       ) {
                         renderValue.push(
                           <h6>
-                            {key} :{" "}
-                            <span>
+                            <b>{key} : </b>
+                            <i>
                               {typeof activityLogData === "boolean"
                                 ? activityLogData
                                   ? "true"
                                   : "false"
+                                : key === "createdAt" || key === "billingCycle"
+                                ? moment(activityLogData).format(
+                                    "MMM DD YYYY hh:mm a"
+                                  )
                                 : activityLogData}
-                            </span>
+                            </i>
                           </h6>
                         );
                       }
@@ -155,8 +162,16 @@ export default function Details({ activityId }) {
                         ) {
                           renderValue.push(
                             <h6>
-                              {key}: {key2} :{" "}
-                              <span>{activityLogData[key2]}</span>
+                              <b>
+                                {key} {key2} :{" "}
+                              </b>
+                              <i>
+                                {key === "createdAt" || key === "billingCycle"
+                                  ? moment(activityLogData[key2]).format(
+                                      "MMM DD YYYY hh:mm a"
+                                    )
+                                  : activityLogData[key2]}
+                              </i>
                             </h6>
                           );
                         }
@@ -165,9 +180,6 @@ export default function Details({ activityId }) {
                   }
                 }
                 return renderValue;
-                // else{
-
-                // }
               })}
           </div>
         </div>
