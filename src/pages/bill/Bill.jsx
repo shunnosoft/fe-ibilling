@@ -33,8 +33,10 @@ import BillEdit from "./billCRUD/BillEdit";
 import Loader from "../../components/common/Loader";
 import TdLoader from "../../components/common/TdLoader";
 import { deleteACustomer, getCustomer } from "../../features/apiCalls";
+import { useTranslation } from "react-i18next";
 
 export default function Bill() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const auth = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser
@@ -106,7 +108,7 @@ export default function Bill() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">বিল </h2>
+                <h2 className="collectorTitle">{t("bill")} </h2>
               </FourGround>
 
               {/* Model start */}
@@ -121,7 +123,7 @@ export default function Bill() {
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <div className="addNewCollector">
-                      <p>নতুন গ্রাহক অ্যাড করুন </p>
+                      <p>{t("addNewCustomer")} </p>
 
                       <div className="addAndSettingIcon">
                         <PersonPlusFill
@@ -135,7 +137,7 @@ export default function Bill() {
                     <div className="row searchCollector">
                       <div className="col-sm-8">
                         <h4 className="allCollector">
-                          মোট গ্রাহক :{" "}
+                          {t("total customer")}:{" "}
                           <span>{Customers?.length || "NULL"}</span>
                         </h4>
                       </div>
@@ -146,7 +148,7 @@ export default function Bill() {
                           <input
                             type="text"
                             className="search"
-                            placeholder="সার্চ"
+                            placeholder={t("search")}
                             onChange={(e) => setCusSearch(e.target.value)}
                           />
                         </div>
@@ -165,16 +167,16 @@ export default function Bill() {
                     <table className="table table-striped ">
                       <thead>
                         <tr>
-                          <th scope="col">আইডি</th>
-                          <th scope="col">নাম</th>
-                          <th scope="col">মোবাইল</th>
-                          <th scope="col">এড্রেস</th>
-                          <th scope="col">স্ট্যাটাস</th>
+                          <th scope="col">{t("id")}</th>
+                          <th scope="col">{t("name")}</th>
+                          <th scope="col">{t("mobile")}</th>
+                          <th scope="col">{t("address")}</th>
+                          <th scope="col">{t("status")}</th>
                           <th scope="col">PPPoE</th>
-                          <th scope="col">ব্যালান্স</th>
-                          <th scope="col">মাসিক ফি</th>
+                          <th scope="col">{t("balance")}</th>
+                          <th scope="col">{t("monthFee")}</th>
                           <th scope="col" className="centeringTD">
-                            অ্যাকশন
+                            {t("action")}
                           </th>
                         </tr>
                       </thead>
@@ -225,7 +227,9 @@ export default function Bill() {
                                     <div className="dropdown-item">
                                       <div className="customerAction">
                                         <PersonFill />
-                                        <p className="actionP">প্রোফাইল</p>
+                                        <p className="actionP">
+                                          {t("profile")}
+                                        </p>
                                       </div>
                                     </div>
                                   </li>
@@ -239,7 +243,9 @@ export default function Bill() {
                                     <div className="dropdown-item">
                                       <div className="customerAction">
                                         <Wallet />
-                                        <p className="actionP">বিল গ্রহণ</p>
+                                        <p className="actionP">
+                                          {t("collectBill")}
+                                        </p>
                                       </div>
                                     </div>
                                   </li>
@@ -253,7 +259,7 @@ export default function Bill() {
                                     <div className="dropdown-item">
                                       <div className="customerAction">
                                         <PenFill />
-                                        <p className="actionP">এডিট</p>
+                                        <p className="actionP">{t("edit")}</p>
                                       </div>
                                     </div>
                                   </li>
@@ -266,7 +272,7 @@ export default function Bill() {
                                     <div className="dropdown-item actionManager">
                                       <div className="customerAction">
                                         <ArchiveFill />
-                                        <p className="actionP">ডিলিট</p>
+                                        <p className="actionP">{t("delete")}</p>
                                       </div>
                                     </div>
                                   </li>

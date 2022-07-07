@@ -92,23 +92,23 @@ export default function Expenditure() {
       },
       {
         width: "18%",
-        Header: "খরচের খাত",
+        Header: t("expenseSector"),
         accessor: "expenditureName",
       },
       {
         width: "18%",
-        Header: "খরচের বিবরণ",
+        Header: t("expenseDefination"),
         accessor: "description",
       },
       {
         width: "18%",
-        Header: "পরিমান",
+        Header: t("amount"),
         accessor: "amount",
       },
 
       {
         width: "21%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
@@ -117,7 +117,7 @@ export default function Expenditure() {
 
       {
         width: "15%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -146,7 +146,7 @@ export default function Expenditure() {
                 <div className="dropdown-item">
                   <div className="customerAction">
                     <Tools />
-                    <p className="actionP">এডিট</p>
+                    <p className="actionP">{t("edit")}</p>
                   </div>
                 </div>
               </li>
@@ -155,7 +155,7 @@ export default function Expenditure() {
         ),
       },
     ],
-    []
+    [t]
   );
   const columns2 = React.useMemo(
     () => [
@@ -168,13 +168,13 @@ export default function Expenditure() {
       },
       {
         width: "30%",
-        Header: "খরচের খাত",
+        Header: t("expenseSector"),
         accessor: "name",
       },
 
       {
         width: "30%",
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
@@ -183,7 +183,7 @@ export default function Expenditure() {
 
       {
         width: "20%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -213,7 +213,7 @@ export default function Expenditure() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <Tools />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -223,7 +223,7 @@ export default function Expenditure() {
         ),
       },
     ],
-    []
+    [t]
   );
   const customComponent = (
     <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>

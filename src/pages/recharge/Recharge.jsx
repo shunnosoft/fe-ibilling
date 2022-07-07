@@ -193,7 +193,7 @@ export default function RechargeHistoryofReseller() {
       },
       {
         width: "30%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "reseller.name",
         Cell: ({ cell: { value } }) => {
           return <div>{userRole === "ispOwner" ? value : userData?.name}</div>;
@@ -202,27 +202,29 @@ export default function RechargeHistoryofReseller() {
       {
         width: "36%",
         width: "17%",
-        Header: "পরিমান",
+        Header: t("amount"),
         accessor: "amount",
       },
 
       {
-        Header: "তারিখ",
+        Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
     ],
-    []
+    [t]
   );
   const customComponent = (
     <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
       {userRole === "ispOwner" ? (
-        <div>মোট রিচার্জঃ {getTotalRecharge()} টাকা</div>
+        <div>
+          {t("totalRecharge")} {getTotalRecharge()} {t("tk")}
+        </div>
       ) : (
         <div style={{ marginRight: "10px" }}>
-          মোট রিচার্জঃ {getTotalRecharge()} টাকা
+          {t("totalRecharge")} {getTotalRecharge()} {t("tk")}
         </div>
       )}
     </div>

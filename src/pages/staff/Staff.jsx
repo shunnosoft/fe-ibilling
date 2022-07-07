@@ -63,7 +63,7 @@ const Staff = () => {
       },
       {
         width: "20%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       // {
@@ -72,12 +72,12 @@ const Staff = () => {
       // },
       {
         width: "20%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
       {
         width: "20%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -85,12 +85,12 @@ const Staff = () => {
       },
       {
         width: "20%",
-        Header: "স্যালারি",
+        Header: t("salary"),
         accessor: "salary",
       },
       {
         width: "12%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
           <div
@@ -110,7 +110,7 @@ const Staff = () => {
         ),
       },
     ],
-    []
+    [t]
   );
   return (
     <>
@@ -128,7 +128,7 @@ const Staff = () => {
                   <div> {t("staff")} </div>
                   {(role === "ispOwner" || role === "reseller") && (
                     <div
-                      title="কর্মচারী এড করুন"
+                      title={t("addStaff")}
                       className="header_icon"
                       data-bs-toggle="modal"
                       data-bs-target="#staffModal"

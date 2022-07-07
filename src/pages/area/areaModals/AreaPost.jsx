@@ -21,7 +21,7 @@ export default function AreaPost() {
 
   //validator
   const linemanValidator = Yup.object({
-    name: Yup.string().required("নাম দিন"),
+    name: Yup.string().required(t("enterName")),
   });
 
   // POST

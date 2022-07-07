@@ -110,28 +110,28 @@ export default function Collector() {
       },
       {
         width: "19%",
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
       },
       {
         width: "19%",
-        Header: "এড্রেস",
+        Header: t("address"),
         accessor: "address",
       },
       {
         width: "19%",
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
       },
       {
         width: "23%",
-        Header: "ইমেইল",
+        Header: t("email"),
         accessor: "email",
       },
 
       {
         width: "12%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -161,7 +161,7 @@ export default function Collector() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PersonFill />
-                      <p className="actionP">প্রোফাইল</p>
+                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -176,7 +176,7 @@ export default function Collector() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PenFill />
-                        <p className="actionP">এডিট</p>
+                        <p className="actionP">{t("edit")}</p>
                       </div>
                     </div>
                   </li>
@@ -194,7 +194,7 @@ export default function Collector() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <ChatText />
-                        <p className="actionP">মেসেজ</p>
+                        <p className="actionP">{t("message")}</p>
                       </div>
                     </div>
                   </li>
@@ -205,7 +205,7 @@ export default function Collector() {
         ),
       },
     ],
-    []
+    [t]
   );
   return (
     <>

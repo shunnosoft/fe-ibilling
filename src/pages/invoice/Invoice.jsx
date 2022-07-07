@@ -46,29 +46,29 @@ function Invoice() {
       },
       {
         width: "16%",
-        Header: "টাইপ",
+        Header: t("type"),
         accessor: "reseller.name",
         Cell: ({ row: { original } }) => (
           <td>
             {original.type === "registration"
-              ? "রেজিস্ট্রেশন"
+              ? t("registration")
               : original.type === "migration"
-              ? "প্যাকেজ মাইগ্রেশন"
+              ? t("packageMigration")
               : original.type === "smsPurchase"
-              ? "এসএমএস"
-              : "মাসিক ফি"}
+              ? t("message")
+              : t("monthFee")}
           </td>
         ),
       },
       {
         width: "16%",
-        Header: "	পরিমাণ",
+        Header: t("amount"),
         accessor: "amount",
         Cell: ({ row: { original } }) => <td>{original.amount} Tk</td>,
       },
       {
         width: "16%",
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -77,7 +77,7 @@ function Invoice() {
 
       {
         width: "26%",
-        Header: "ইনভয়েস তৈরির তারিখ",
+        Header: t("invoiceDate"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("DD-MM-YYYY hh:mm:ss A");
@@ -85,7 +85,7 @@ function Invoice() {
       },
       {
         width: "15%",
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -113,7 +113,7 @@ function Invoice() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   return (

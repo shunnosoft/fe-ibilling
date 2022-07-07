@@ -99,22 +99,22 @@ export default function PackageSetting() {
   const columns1 = React.useMemo(
     () => [
       {
-        Header: "সিরিয়াল",
+        Header: t("serial"),
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "name",
       },
       {
-        Header: "রেট",
+        Header: t("rate"),
         accessor: "rate",
       },
 
       {
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
@@ -144,7 +144,7 @@ export default function PackageSetting() {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -157,7 +157,7 @@ export default function PackageSetting() {
                 <div className="dropdown-item actionManager">
                   <div className="customerAction">
                     <ArchiveFill />
-                    <p className="actionP">ডিলিট</p>
+                    <p className="actionP">{t("delete")}</p>
                   </div>
                 </div>
               </li>
