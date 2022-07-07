@@ -20,8 +20,6 @@ export default function Details({ activityId }) {
   }, [singleData]);
   console.log(value);
   const checkOp = value[0]?.op;
-  // const addCheck = value[0]?.op;
-  console.log(checkOp);
 
   return (
     <div
@@ -109,34 +107,59 @@ export default function Details({ activityId }) {
               value.map((item) => {
                 let renderValue = [];
                 for (const key in item.val) {
-                  console.log(key);
                   const activityLogData = item.val[key];
 
                   if (typeof activityLogData !== "object") {
                     if (activityLogData) {
-                      renderValue.push(
-                        <h6>
-                          {key} :{" "}
-                          <span>
-                            {typeof activityLogData === "boolean"
-                              ? activityLogData
-                                ? "true"
-                                : "false"
-                              : activityLogData}
-                          </span>
-                        </h6>
-                      );
+                      if (
+                        key === "address" ||
+                        key === "name" ||
+                        key === "email" ||
+                        key === "monthlyFee" ||
+                        key === "mobile" ||
+                        key === "customerId" ||
+                        key === "createdAt" ||
+                        key === "billingCycle" ||
+                        key === "balance" ||
+                        key === "autoDisable" ||
+                        typeof key === "object"
+                      ) {
+                        renderValue.push(
+                          <h6>
+                            {key} :{" "}
+                            <span>
+                              {typeof activityLogData === "boolean"
+                                ? activityLogData
+                                  ? "true"
+                                  : "false"
+                                : activityLogData}
+                            </span>
+                          </h6>
+                        );
+                      }
                     }
                   } else {
                     for (const key2 in activityLogData) {
                       if (activityLogData[key2]) {
-                        console.log(activityLogData);
-
-                        renderValue.push(
-                          <h6>
-                            {key}: {key2} : <span>{activityLogData[key2]}</span>
-                          </h6>
-                        );
+                        // console.log(activityLogData);
+                        if (
+                          key2 === "name" ||
+                          key2 === "type" ||
+                          key2 === "target" ||
+                          key2 === "address" ||
+                          key2 === "billingCycle" ||
+                          key2 === "createdAt" ||
+                          key2 === "customerId" ||
+                          key2 === "email" ||
+                          key2 === "mobile"
+                        ) {
+                          renderValue.push(
+                            <h6>
+                              {key}: {key2} :{" "}
+                              <span>{activityLogData[key2]}</span>
+                            </h6>
+                          );
+                        }
                       }
                     }
                   }
