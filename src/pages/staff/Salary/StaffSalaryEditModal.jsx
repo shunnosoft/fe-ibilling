@@ -114,7 +114,7 @@ export default function StaffSalaryEditModal({ salaryId }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                     </div>
                   </Form>

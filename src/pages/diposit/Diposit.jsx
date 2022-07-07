@@ -212,7 +212,8 @@ export default function Diposit() {
         accessor: "name",
         Cell: ({ row: { original } }) => (
           <div>
-            {t("nam")} {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
+            {original.name}{" "}
+            {userRole === "ispOwner" ? "(ম্যানেজার)" : "(কালেক্টর)"}
           </div>
         ),
       },
@@ -257,7 +258,7 @@ export default function Diposit() {
                         depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
-                      {t("cancle")}
+                      {t("cancel")}
                     </button>
                   </div>
                 )

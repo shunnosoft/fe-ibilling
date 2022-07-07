@@ -93,7 +93,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
                         className="btn btn-secondary"
                         data-bs-dismiss="modal"
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                       <button
                         type="submit"

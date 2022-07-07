@@ -114,12 +114,12 @@ export default function Customer() {
     subArea: "",
     package: "",
     mikrotik: "",
+    freeUser: "",
   });
   const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
   const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
   const [totalDue, setTotalDue] = useState(0);
   const [hasDue, setDue] = useState(false);
-  const [freeUser, setFreeUser] = useState("");
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
@@ -223,6 +223,18 @@ export default function Customer() {
       );
     }
 
+    if (filterOptions.freeUser) {
+      if (filterOptions.freeUser === "freeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee === parseInt("0")
+        );
+      } else if (filterOptions.freeUser === "nonFreeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee !== parseInt("0")
+        );
+      }
+    }
+
     if (filterOptions.status) {
       tempCustomers = tempCustomers.filter(
         (customer) => customer.status === filterOptions.status
@@ -256,6 +268,7 @@ export default function Customer() {
       area: "",
       subArea: "",
       package: "",
+      isFree: "",
     });
     setCustomers1(Customers2);
   };
@@ -648,7 +661,7 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>{t("customer")}</div>
-                  <div className="h6 d-flex justify-content-center align-items-start">
+                  <div className="h6 d-flex justify-content-center align-items-start flex-column">
                     <p>মোট সম্ভাব্য বিল (বর্তমান মাস): {totalMonthlyFee}</p>
                     {hasDue && (
                       <>
@@ -988,6 +1001,34 @@ export default function Customer() {
                             })}
                           </select>
                         )}
+                        <select
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              freeUser: e.target.value,
+                            })
+                          }
+                          className="form-select"
+                        >
+                          <option
+                            selected={filterOptions.freeUser === "allUser"}
+                            value="allUser"
+                          >
+                            সকল গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "freeUser"}
+                            value="freeUser"
+                          >
+                            ফ্রি গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "nonFreeUser"}
+                            value="nonFreeUser"
+                          >
+                            নন ফ্রি গ্রাহক
+                          </option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -1021,16 +1062,6 @@ export default function Customer() {
                       >
                         {t("reset")}
                       </button>
-                    </div>
-                    <div>
-                      <select
-                        onChange={(e) => handleFreeUser(e.target.value)}
-                        className="form-select"
-                      >
-                        <option value="allUser">সকল গ্রাহক</option>
-                        <option value="freeUser">ফ্রি গ্রাহক</option>
-                        <option value="nonFreeUser">নন ফ্রি গ্রাহক</option>
-                      </select>
                     </div>
                   </div>
                   <div className="table-section">

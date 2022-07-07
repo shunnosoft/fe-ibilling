@@ -361,12 +361,14 @@ export default function CustomerEdit({ single }) {
                             onChange={(e) => setBillDate(e.target.value)}
                             type="date"
                             min={moment().format("YYYY-MM-DD")}
+                            disabled
                           />
                           <input
                             className="billTime"
                             value={billTime}
                             onChange={(e) => setBilltime(e.target.value)}
                             type="time"
+                            disabled
                           />
                         </div>
                       </div>
@@ -376,6 +378,7 @@ export default function CustomerEdit({ single }) {
                           type="checkBox"
                           checked={autoDisable}
                           onChange={(e) => setAutoDisable(e.target.checked)}
+                          disabled
                         />
                       </div>
                     </div>
@@ -390,6 +393,7 @@ export default function CustomerEdit({ single }) {
                           value={"active"}
                           onChange={(e) => setStatus(e.target.value)}
                           checked={status === "active"}
+                          disabled
                         />
                         <label
                           className="form-check-label"
@@ -440,7 +444,7 @@ export default function CustomerEdit({ single }) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                       <button
                         type="submit"

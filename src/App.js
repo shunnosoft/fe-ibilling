@@ -79,6 +79,9 @@ import ActivityLog from "./pages/activityLog/ActivityLog";
 import "./language/i18n/i18n";
 import RstaticCustomer from "./reseller/staticCustomer/StaticCustomer";
 
+import ClientPage from "./ownerCustomer/index";
+import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCustomer";
+
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
@@ -398,7 +401,16 @@ function App() {
               <Route path="staff/:staffId" element={<StaffSalary />} />
 
               <Route path="settings" element={<Settings />} />
-              <Route path="home" element={<Dashboard />} />
+              <Route
+                path="home"
+                element={
+                  userRole !== "customer" ? (
+                    <Dashboard />
+                  ) : (
+                    <Navigate to="/isp/customer" />
+                  )
+                }
+              />
               <Route path="area" element={<Area />} />
               {/* <Route path="bill" element={<Bill />} /> */}
               <Route path="diposit" element={<Diposit />} />
@@ -431,6 +443,16 @@ function App() {
                 element={
                   userRole === "ispOwner" ? (
                     <ResellerCustomer />
+                  ) : (
+                    <Navigate to={"/home"}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path="reseller/customer/"
+                element={
+                  userRole === "ispOwner" ? (
+                    <AllResellerCustomer />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
                   )
@@ -476,6 +498,10 @@ function App() {
                 )
               }
             />
+            {/* client page  */}
+            <Route path="/*" element={<PrivateOutlet />}>
+              <Route path="isp/customer" element={<ClientPage />} />
+            </Route>
           </Routes>
         )}
       </div>

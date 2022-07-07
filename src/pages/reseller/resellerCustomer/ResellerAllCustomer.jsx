@@ -1,32 +1,28 @@
-import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { FontColor, FourGround } from "../../../assets/js/theme";
-import Sidebar from "../../../components/admin/sidebar/Sidebar";
-import { badge } from "../../../components/common/Utils";
-import { getResellerCustomer } from "../../../features/resellerCustomerAdminApi";
-import useDash from "../../../assets/css/dash.module.css";
-import Table from "../../../components/table/Table";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ArchiveFill,
   CashStack,
   PenFill,
   PersonFill,
   ThreeDots,
-  Wallet,
 } from "react-bootstrap-icons";
-import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
-import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
-import { deleteACustomer } from "../../../features/apiCalls";
-import Loader from "../../../components/common/Loader";
-import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { FontColor, FourGround } from "../../../assets/js/theme";
+import useDash from "../../../assets/css/dash.module.css";
+import Sidebar from "../../../components/admin/sidebar/Sidebar";
+import Loader from "../../../components/common/Loader";
+import { deleteACustomer } from "../../../features/apiCalls";
+import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
+import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
+import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
+import { badge } from "../../../components/common/Utils";
+import moment from "moment";
+import { getAllResellerCustomer } from "../../../features/resellerCustomerAdminApi";
+import Table from "../../../components/table/Table";
+import { ToastContainer } from "react-toastify";
 
-// get specific customer
-
-const ResellerCustomer = () => {
+const AllResellerCustomer = () => {
   const { t } = useTranslation();
   const [singleCustomer, setSingleCustomer] = useState("");
   // get specific customer Report
@@ -39,9 +35,10 @@ const ResellerCustomer = () => {
   const ispOwner = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
-
-  // get id from route
-  const { resellerId } = useParams();
+  // get reseller
+  const resellers = useSelector(
+    (state) => state?.persistedReducer?.reseller.reseller
+  );
 
   // import dispatch
   const dispatch = useDispatch();
@@ -54,16 +51,23 @@ const ResellerCustomer = () => {
 
   // payment status state
   const [filterPayment, setFilterPayment] = useState(null);
-
+  const [resellerId, setResellerId] = useState("");
   // get all data from redux state
   let resellerCustomer = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
+    (state) => state?.persistedReducer?.resellerCustomer?.allResellerCustomer
   );
-
   // get all reseller customer api call
   useEffect(() => {
-    getResellerCustomer(dispatch, resellerId, setIsLoading);
+    getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
   }, []);
+
+  if (resellerId) {
+    if (resellerId !== "all") {
+      resellerCustomer = resellerCustomer.filter(
+        (customer) => customer.reseller.id === resellerId
+      );
+    }
+  }
 
   // status filter
   if (filterStatus && filterStatus !== "স্ট্যাটাস") {
@@ -76,9 +80,11 @@ const ResellerCustomer = () => {
 
   // payment status filter
   if (filterPayment && filterPayment !== "পেমেন্ট") {
-    resellerCustomer = resellerCustomer.filter(
-      (value) => value.paymentStatus === filterPayment
-    );
+    if (filterPayment !== "all") {
+      resellerCustomer = resellerCustomer.filter(
+        (value) => value.paymentStatus === filterPayment
+      );
+    }
   }
 
   // get specific customer
@@ -103,11 +109,16 @@ const ResellerCustomer = () => {
   };
 
   // table column
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         Header: "আইডি",
         accessor: "customerId",
+        width: "8%",
+      },
+      {
+        Header: "রিসেলার নাম",
+        accessor: "reseller.name",
         width: "8%",
       },
       {
@@ -125,10 +136,8 @@ const ResellerCustomer = () => {
         accessor: "mobile",
         width: "12%",
       },
-
       {
         width: "9%",
-
         Header: "স্ট্যাটাস",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -149,19 +158,16 @@ const ResellerCustomer = () => {
       },
       {
         width: "10%",
-
         Header: "মাসিক ফি",
         accessor: "monthlyFee",
       },
       {
         width: "9%",
-
         Header: "ব্যালান্স",
         accessor: "balance",
       },
       {
         width: "12%",
-
         Header: "বিল সাইকেল",
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
@@ -171,7 +177,6 @@ const ResellerCustomer = () => {
 
       {
         width: "7%",
-
         Header: () => <div className="text-center">অ্যাকশন</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
@@ -277,6 +282,18 @@ const ResellerCustomer = () => {
                   <div className="d-flex flex-row justify-content-center">
                     {/* status filter */}
                     <select
+                      className="form-select me-3"
+                      aria-label="Default select example"
+                      onChange={(event) => setResellerId(event.target.value)}
+                    >
+                      <option selected value="all">
+                        সকল রিসেলার
+                      </option>
+                      {resellers.map((reseller) => (
+                        <option value={reseller.id}> {reseller.name} </option>
+                      ))}
+                    </select>
+                    <select
                       className="form-select"
                       aria-label="Default select example"
                       onChange={(event) => setFilterStatus(event.target.value)}
@@ -297,7 +314,10 @@ const ResellerCustomer = () => {
                       aria-label="Default select example"
                       onChange={(event) => setFilterPayment(event.target.value)}
                     >
-                      <option selected> {t("payment")} </option>
+                      <option selected value="all">
+                        {" "}
+                        {t("payment")}{" "}
+                      </option>
                       <option value="paid"> {t("paid")} </option>
                       <option value="unpaid"> {t("unpaid")} </option>
                     </select>
@@ -324,9 +344,9 @@ const ResellerCustomer = () => {
       </div>
       <ResellerCustomerDetails single={singleCustomer} />
       <CustomerReport hideReportDelete={true} single={customerReportId} />
-      <ResellerCustomerEdit allCustomer={false} customerId={singleCustomer} />
+      <ResellerCustomerEdit allCustomer={true} customerId={singleCustomer} />
     </>
   );
 };
 
-export default ResellerCustomer;
+export default AllResellerCustomer;

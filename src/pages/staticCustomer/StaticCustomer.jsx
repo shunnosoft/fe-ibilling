@@ -82,6 +82,7 @@ export default function Customer() {
     subArea: "",
     package: "",
     mikrotik: "",
+    freeUser: "",
   });
   const [Customers, setCustomers] = useState(cus);
 
@@ -308,6 +309,18 @@ export default function Customer() {
       tempCustomers = tempCustomers.filter(
         (customer) => customer.area === filterOptions.area
       );
+    }
+
+    if (filterOptions.freeUser) {
+      if (filterOptions.freeUser === "freeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee === parseInt("0")
+        );
+      } else if (filterOptions.freeUser === "nonFreeUser") {
+        tempCustomers = tempCustomers.filter(
+          (customer) => customer.monthlyFee !== parseInt("0")
+        );
+      }
     }
 
     if (filterOptions.subArea) {
@@ -980,6 +993,35 @@ export default function Customer() {
                             );
                           })}
                         </select>
+
+                        <select
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              freeUser: e.target.value,
+                            })
+                          }
+                          className="form-select"
+                        >
+                          <option
+                            selected={filterOptions.freeUser === "allUser"}
+                            value="allUser"
+                          >
+                            সকল গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "freeUser"}
+                            value="freeUser"
+                          >
+                            ফ্রি গ্রাহক
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "nonFreeUser"}
+                            value="nonFreeUser"
+                          >
+                            নন ফ্রি গ্রাহক
+                          </option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -1012,18 +1054,6 @@ export default function Customer() {
                       >
                         {t("reset")}
                       </button>
-                    </div>
-                    <div>
-                      <select
-                        onChange={(e) => handleFreeUser(e.target.value)}
-                        className="form-select"
-                      >
-                        <option value="allUser"> {t("sokolCustomer")} </option>
-                        <option value="freeUser"> {t("freeCustomer")} </option>
-                        <option value="nonFreeUser">
-                          {t("nonFreeCustomer")}
-                        </option>
-                      </select>
                     </div>
                     {/* <button onClick={handleFilterReset}>reset</button> */}
                   </div>

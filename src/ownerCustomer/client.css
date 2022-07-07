@@ -1,0 +1,180 @@
+.client_section {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background-image: linear-gradient(to right,#142a48,#273a60);
+    color:#fff
+}
+.client_wraper {
+    padding-top: 5rem;
+}
+.card-body.client_service_card {
+    padding: 1.5rem;
+    text-align: center;
+    background-image: linear-gradient(to right, #00c6ff, #0072ff);
+}
+
+.card-body.client_service_card {
+    color: #fff
+}
+
+.card_wraper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+ul.client_service_list {
+    list-style: none;
+    background: #1B2430;
+    width: 6rem;
+    margin-top: 5rem;
+    color:#fff;
+    font-weight: 700;
+    border-top-right-radius:10px ;
+    border-bottom-right-radius:10px ;
+
+}
+
+ul.client_service_list li {
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+
+}
+
+ul.client_service_list li:hover {
+    background-color: #000;
+}
+
+
+.settings_wraper {
+    position: relative;
+    transform: translate(-7rem);
+    width: 7rem ;
+}
+
+.show-menu{
+    transform: translate(0rem);
+    transition:0.5s;
+}
+.hide-menu{
+    transform: translate(-7rem);
+    transition:0.5s ;
+}
+
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+    from {
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes rotating {
+    from {
+      -ms-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -ms-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+.client_setting_icon {
+    position: absolute;
+    font-size: 2rem;
+    color: #3eff00;
+    top: -5%;
+    left: 33px;
+    cursor: pointer;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    animation: rotating 6s linear infinite;
+    -webkit-animation: rotating 6s linear infinite;
+    -moz-animation: rotating 6s linear infinite;
+    -ms-animation: rotating 6s linear infinite;
+    -o-animation: rotating 6s linear infinite;
+
+}
+
+.setting_icon_wraper {
+    width: 70px;
+    height: 70px;
+    background-color: #1B2430;
+    position: absolute;
+    top: 42%;
+    left: 60px;
+    transform: rotate(44deg);
+    border-top-right-radius: 9px;
+    z-index: -100;
+}
+.menu_icon {
+    font-size: 1.5rem;
+    color: #3eff00;
+}
+
+.client_profile {
+    width: 80%;
+    margin: auto;
+    margin-top: 5rem;
+}
+
+table.client_info_table {
+    color: #000;
+    font-weight: 700;
+}
+
+table.client_info_table td{
+    padding: 0px 10px !important;
+    color:#fff !important;
+    font-size: 1.3rem !important;
+}
+
+.client_dashboard_section{
+    margin-right: 3rem;
+    padding: 2rem
+}
+.up_downLoad {
+    display: flex;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.up_down {
+    margin-right: 20px;
+    background-color: #1B2430;
+    color: #3eff00;
+    padding: 2rem;
+    width: 19rem;
+    
+}
+/* reset password  */
+
+.password_reset_form{
+    color:#fff !important;
+    margin-top: 3rem;
+}
+
+.password_reset_form label{
+    color:#fff
+}
+
+@media screen and (max-width: 580px) {
+    .client_wraper {
+      position: fixed;
+    }
+  }

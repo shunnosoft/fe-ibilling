@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
   PersonPlusFill,
-  GearFill,
   ThreeDots,
   PenFill,
   ArchiveFill,
   PersonFill,
   Wallet,
-  Person,
   PeopleFill,
   ChatText,
+  ArrowRightShort,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -36,7 +35,7 @@ import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
 import { Link } from "react-router-dom";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
-import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
+// import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
 import { useTranslation } from "react-i18next";
 
 export default function Reseller() {
@@ -260,13 +259,31 @@ export default function Reseller() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div> {t("reseller")} </div>
                   {role === "ispOwner" && (
-                    <div
-                      title="রিসেলার এড করুন"
-                      className="header_icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#resellerModal"
-                    >
-                      <PersonPlusFill />
+                    <div className="d-flex">
+                      <div className="settingbtn me-2">
+                        <Link
+                          to={`/reseller/customer`}
+                          className="mikrotikConfigureButtom"
+                          style={{
+                            height: "40px",
+                            fontSize: "20px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          সকল রিসেলার কাস্টমার
+                          <ArrowRightShort style={{ fontSize: "19px" }} />
+                        </Link>
+                      </div>
+                      <div
+                        title="রিসেলার এড করুন"
+                        className="header_icon"
+                        data-bs-toggle="modal"
+                        data-bs-target="#resellerModal"
+                      >
+                        <PersonPlusFill />
+                      </div>
                     </div>
                   )}
                 </div>
