@@ -396,7 +396,7 @@ export default function RMessage() {
                           {t("SMSbalance")}
                           <strong className="mainsmsbalance">{sms}</strong>
                         </div>
-                        <div title="রিফ্রেশ করুন" className="refreshIcon">
+                        <div title={t("refresh")} className="refreshIcon">
                           {isRefrsh ? (
                             <Loader></Loader>
                           ) : (

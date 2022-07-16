@@ -164,7 +164,7 @@ export default function CustomerEdit({ single }) {
     const { Pname, Ppassword, Pprofile, Pcomment, monthlyFee, ...rest } =
       formValue;
     if (Number(monthlyFee) < Number(packageRate.rate)) {
-      return alert("বিল কমানো যাবে না");
+      return alert(t("billCannotBeReduced"));
     }
     const mainData = {
       singleCustomerID: data?.id,

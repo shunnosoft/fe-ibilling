@@ -8,8 +8,10 @@ import { editManager } from "../../features/apiCalls";
 // internal imports
 import { FtextField } from "../common/FtextField";
 import Loader from "../common/Loader";
+import { useTranslation } from "react-i18next";
 
 export default function WriteModals(props) {
+  const { t } = useTranslation();
   const { manager } = props;
   const dispatch = useDispatch();
   const ispOwner = useSelector(
@@ -19,12 +21,12 @@ export default function WriteModals(props) {
   // mangager validator
   const managerValidate = Yup.object({
     name: Yup.string()
-      .min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে")
-      .required("ম্যানেজার এর নাম দিন"),
-    address: Yup.string().required("ম্যানেজার এর  এড্রেস দিন "),
+      .min(3, t("minimumContaining3letter"))
+      .required(t("enterManagerName")),
+    address: Yup.string().required(t("enterManagerAddress")),
     email: Yup.string()
-      .email("ইমেইল সঠিক নয় ")
-      .required("ম্যানেজার এর ইমেইল দিতে হবে"),
+      .email(t("incorrectEmail"))
+      .required(t("enterManagerEmail")),
     image: Yup.string(),
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +46,7 @@ export default function WriteModals(props) {
         <div className="modal-content">
           <div className="modal-header">
             <h4 className="modal-title" id="exampleModalLabel">
-              এডিট ম্যানেজার
+              {t("editManager")}
             </h4>
             <button
               type="button"
@@ -71,9 +73,9 @@ export default function WriteModals(props) {
             >
               {(formik) => (
                 <Form>
-                  <FtextField type="text" label="নাম" name="name" />
-                  <FtextField type="text" label="এড্রেস" name="address" />
-                  <FtextField type="email" label="ইমেইল" name="email" />
+                  <FtextField type="text" label={t("name")} name="name" />
+                  <FtextField type="text" label={t("address")} name="address" />
+                  <FtextField type="email" label={t("email")} name="email" />
                   {/* <FtextField type="text" label="NID নম্বর" name="nid" /> */}
                   {/* <FtextField
                     type="file"
@@ -88,13 +90,13 @@ export default function WriteModals(props) {
                       className="btn btn-secondary"
                       data-bs-dismiss="modal"
                     >
-                      বাতিল
+                      {t("cancle")}
                     </button>
                     <button
                       type="submit"
                       className="btn btn-primary marginLeft"
                     >
-                      {isLoading ? <Loader /> : "সেভ করুন"}
+                      {isLoading ? <Loader /> : t("save")}
                     </button>
                   </div>
                 </Form>

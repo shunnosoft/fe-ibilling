@@ -193,7 +193,7 @@ export default function CustomerModal() {
                         userRole === "manager") && (
                         <>
                           <p className="comstomerFieldsTitle">
-                            মাইক্রোটিক সিলেক্ট করুন
+                            {t("selectMikrotik")}
                           </p>
                           <select
                             className="form-select"
@@ -211,7 +211,7 @@ export default function CustomerModal() {
                           </select>
 
                           <p className="comstomerFieldsTitle">
-                            PPPoE প্যাকেজ সিলেক্ট করুন
+                            {t("selectPPPoEPackage")}
                           </p>
                           <select
                             className="form-select mb-3"

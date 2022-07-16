@@ -17,8 +17,10 @@ import { userLogout } from "../../../features/actions/authAsyncAction";
 import Loader from "../../common/Loader";
 import { getResellerBalance } from "../../../features/apiCalls";
 import i18n from "../../../language/i18n/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function Header(props) {
+  const { t } = useTranslation();
   // const userRole = useSelector(state => state.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
   const [rechargeBalnace, setRechargeBalance] = useState(0);
@@ -104,20 +106,20 @@ export default function Header(props) {
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    এসএমএসঃ
+                    {t("message")}
                     <strong className="mainsmsbalance">{smsBalance}</strong>
                   </div>
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    ব্যালান্সঃ
+                    {t("balance")} :
                     <strong className="mainsmsbalance">
                       {rechargeBalnace.toFixed()}
                     </strong>
                   </div>
                   <div
-                    title="রিফ্রেশ করুন"
+                    title={t("refresh")}
                     style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
                     className="refreshIcon"
                   >
@@ -148,7 +150,7 @@ export default function Header(props) {
               {currentUser ? (
                 <>
                   {/* change language select box */}
-                  {/* <select
+                  <select
                     onChange={selectLanguage}
                     className="me-2"
                     style={{
@@ -163,7 +165,7 @@ export default function Header(props) {
                     <option value="en" selected={getLang === "en"}>
                       EN
                     </option>
-                  </select> */}
+                  </select>
                   {/* end change language select box */}
 
                   <div className="dropdown">
@@ -226,7 +228,7 @@ export default function Header(props) {
                           <span className="dropdownIcon">
                             <BoxArrowLeft />
                           </span>
-                          লগআউট
+                          {t("logOut")}
                         </div>
                       </li>
                     </ul>
@@ -239,11 +241,11 @@ export default function Header(props) {
                 pathName === "/about" ||
                 pathName === "/return-and-refund-policy" ? (
                 <NavLink to="/login">
-                  <p className="goToLoginPage">লগইন</p>
+                  <p className="goToLoginPage">{t("logIn")}</p>
                 </NavLink>
               ) : (
                 <NavLink to="/register">
-                  <p className="goToLoginPage">রেজিস্টার</p>
+                  <p className="goToLoginPage">{t("register")}</p>
                 </NavLink>
               )}
             </div>

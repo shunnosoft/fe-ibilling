@@ -14,8 +14,10 @@ import { asyncRegister } from "../../../features/actions/authAsyncAction";
 import allpakage from "./pakageData";
 import Loader from "../../../components/common/Loader";
 import FormatNumber from "../../../components/common/NumberFormat";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
+  const { t } = useTranslation();
   // const [packValue, setPackValue] = useState("");
   const discount = 50;
   const [pakage, setPakage] = useState(allpakage[0]);
@@ -27,25 +29,27 @@ export default function Register() {
   const [isLoading, setLoading] = useState(false);
   const validate = Yup.object({
     company: Yup.string()
-      .min(3, "সর্বনিম্ন ৩ অক্ষর থাকতে হবে ")
-      .required("প্রতিষ্ঠান এর নাম দিন"),
+      .min(3, t("minimumContaining3letter"))
+      .required(t("enterOrganizationName")),
     name: Yup.string()
-      .min(3, "সর্বনিম্ন ৩ অক্ষর থাকতে হবে")
-      .required("এডমিনের নাম দিন"),
+      .min(3, t("minimumContaining3letter"))
+      .required(t("enterAdminName")),
     address: Yup.string()
-      .min(3, "সর্বনিম্ন ৩ অক্ষর থাকতে হবে")
-      .max(100, "সর্বোচ্চ ১০০ অক্ষর থাকতে হবে")
-      .required("আপনার ঠিকানা দিন"),
+      .min(3, t("minimumContaining3letter"))
+      .max(100, t("maximumContaining100letter"))
+      .required(t("enterYourAddress")),
     mobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে  ")
-      .required("আপনার মোবাইল নম্বর দিন "),
-    email: Yup.string().email("ইমেইল সঠিক নয় ").required("আপনার ইমেইল দিন"),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("writeMobileNumber")),
+    email: Yup.string()
+      .email(t("incorrectEmail"))
+      .required(t("enterYourEmail")),
 
-    refName: Yup.string().min(3, "সর্বনিম্ন ৩টা অক্ষর থাকতে হবে"),
+    refName: Yup.string().min(3, t("minimumContaining3letter")),
     refMobile: Yup.string()
-      .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "নাম্বার ১১ ডিজিট এর বেশি হয়ে  গেছে "),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
   });
 
   const submitHandle = (values) => {
@@ -120,28 +124,32 @@ export default function Register() {
                     alt=""
                     width="150"
                   /> */}
-                  <h3 className="mb-4">রেজিস্ট্রেশন করুন </h3>
+                  <h3 className="mb-4">{t("registration")} </h3>
                   <Form>
                     <TextField
-                      label="*প্রতিষ্ঠান এর নাম"
+                      label={t("organizationName")}
                       name="company"
                       type="text"
                     />
-                    <TextField label="*এডমিনের নাম" name="name" type="text" />
-                    <TextField label="*মোবাইল" name="mobile" type="text" />
-                    <TextField label="*ইমেইল" name="email" type="email" />
-                    <TextField label="*ঠিকানা" name="address" type="text" />
+                    <TextField label={t("adminName")} name="name" type="text" />
+                    <TextField label={t("mobile")} name="mobile" type="text" />
+                    <TextField label={t("email")} name="email" type="email" />
+                    <TextField
+                      label={t("address")}
+                      name="address"
+                      type="text"
+                    />
 
                     {/* Options */}
                     <div className="discount">
                       <span className="disspan">
                         {" "}
                         <strong className="disStrong">{discount}%</strong>{" "}
-                        ডিসকাউন্ট (সাইন আপ ফি)
+                        {t("discountWithSignUpFee")}
                       </span>
                     </div>
                     <label className="form-label mt-2">
-                      আপনার পছন্দের প্যাকেজ সিলেক্ট করুন
+                      {t("selectYourPreferablePackage")}
                     </label>
 
                     {/* <option value="">প্যাকেজ সিলেক্ট করুন</option> */}
@@ -192,10 +200,11 @@ export default function Register() {
 
                     <div className="pakinfo mt-2">
                       <span>
-                        গ্রাহকঃ {FormatNumber(singlePakage[0].customer)}
+                        {t("customer")} :{" "}
+                        {FormatNumber(singlePakage[0].customer)}
                       </span>
                       <span className="insFeespan">
-                        সাইন আপ ফিঃ{" "}
+                        {t("signUpFee")} :{" "}
                         {discount > 0 ? (
                           <span
                             className={
@@ -215,7 +224,8 @@ export default function Register() {
                         </span>
                       </span>
                       <span>
-                        মাসিক ফিঃ {FormatNumber(singlePakage[0].monthly)}
+                        {t("monthFee")} :{" "}
+                        {FormatNumber(singlePakage[0].monthly)}
                       </span>
                     </div>
 
@@ -233,12 +243,12 @@ export default function Register() {
                       {/* <p className="referance-name">রেফারেন্স </p> */}
                       <div className="referanceField">
                         <TextField
-                          label="রেফারেন্স এর নাম"
+                          label={t("referenceName")}
                           name="refName"
                           type="text"
                         />
                         <TextField
-                          label="রেফারেন্স এর মোবাইল"
+                          label={t("referenceMobile")}
                           name="refMobile"
                           type="text"
                         />
@@ -246,14 +256,14 @@ export default function Register() {
                     </div>
 
                     <button type="submit" className="submitBtn">
-                      {isLoading ? <Loader></Loader> : "রেজিস্টার"}
+                      {isLoading ? <Loader></Loader> : t("register")}
                     </button>
                     <NavLink to="/">
                       <button
                         className="w-45 btn  btn-secondary registerCacleBtn"
                         type="button"
                       >
-                        বাতিল
+                        {t("cancle")}
                       </button>
                     </NavLink>
                   </Form>

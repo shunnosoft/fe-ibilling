@@ -392,7 +392,7 @@ export default function Diposit() {
                             <FtextField
                               type="text"
                               name="balance"
-                              label="মোট ব্যালান্স"
+                              label={t("totalBalance")}
                               disabled
                             />
                             <FtextField

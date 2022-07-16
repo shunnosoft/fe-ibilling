@@ -14,17 +14,19 @@ import "./login.css";
 import { useDispatch } from "react-redux";
 import { useRef } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
+  const { t } = useTranslation();
   const [passInputType, setPassInputType] = useState("password");
 
   const dispatch = useDispatch();
   const loginValidate = Yup.object({
     mobile: Yup.string()
-      .min(11, "১১ ডিজিট এর সঠিক নম্বর দিন ")
-      .max(11, "নাম্বার ১১ ডিজিট এর বেশি হয়ে  গেছে ")
-      .required("ফিল্ড ফাঁকা রাখা যাবে না "),
-    password: Yup.string().required("ফিল্ড ফাঁকা রাখা যাবে না "),
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("fieldCannotBeBlank")),
+    password: Yup.string().required(t("fieldCannotBeBlank")),
   });
 
   const handleLogin = (loginData) => {
@@ -65,9 +67,9 @@ export default function Login() {
                     <FontColor>লগইন</FontColor>
                   </h1> */}
                   <Form>
-                    <LoginField label="মোবাইল" name="mobile" type="text" />
+                    <LoginField label={t("mobile")} name="mobile" type="text" />
                     <LoginField
-                      label="পাসওয়ার্ড"
+                      label={t("password")}
                       name="password"
                       type={passInputType}
                       id="password"
@@ -97,14 +99,14 @@ export default function Login() {
                       className="btn  btn-primary mt-4 cstm-login-btn"
                       type="submit"
                     >
-                      লগইন
+                      {t("logIn")}
                     </button>
                     <NavLink to="/">
                       <button
                         className="w-45 btn  btn-secondary mt-4 cstm-login-cancel"
                         type="button"
                       >
-                        বাতিল
+                        {t("cancle")}
                       </button>
                     </NavLink>
                     <br />
@@ -114,7 +116,7 @@ export default function Login() {
                       পাসওয়ার্ড ভুলে গেছেন?
                     </NavLink> */}
                     <p className="mt-5 mb-3 text-muted">
-                      &copy; শূন্য আইটি - {new Date().getFullYear()}
+                      &copy; {t("shunnoIT")} - {new Date().getFullYear()}
                     </p>
                   </Form>
                 </div>

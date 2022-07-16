@@ -66,7 +66,7 @@ const ResellerCustomer = () => {
   }, []);
 
   // status filter
-  if (filterStatus && filterStatus !== "স্ট্যাটাস") {
+  if (filterStatus && filterStatus !== t("status")) {
     if (filterStatus !== "all") {
       resellerCustomer = resellerCustomer.filter(
         (value) => value.status === filterStatus
@@ -75,7 +75,7 @@ const ResellerCustomer = () => {
   }
 
   // payment status filter
-  if (filterPayment && filterPayment !== "পেমেন্ট") {
+  if (filterPayment && filterPayment !== t("payment")) {
     resellerCustomer = resellerCustomer.filter(
       (value) => value.paymentStatus === filterPayment
     );
@@ -106,12 +106,12 @@ const ResellerCustomer = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "আইডি",
+        Header: t("id"),
         accessor: "customerId",
         width: "8%",
       },
       {
-        Header: "নাম",
+        Header: t("name"),
         accessor: "name",
         width: "10%",
       },
@@ -121,7 +121,7 @@ const ResellerCustomer = () => {
         width: "10%",
       },
       {
-        Header: "মোবাইল",
+        Header: t("mobile"),
         accessor: "mobile",
         width: "12%",
       },
@@ -129,7 +129,7 @@ const ResellerCustomer = () => {
       {
         width: "9%",
 
-        Header: "স্ট্যাটাস",
+        Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -137,32 +137,32 @@ const ResellerCustomer = () => {
       },
       {
         width: "9%",
-        Header: "পেমেন্ট",
+        Header: t("payment"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
       },
       {
-        Header: "প্যাকেজ",
+        Header: t("package"),
         accessor: "pppoe.profile",
       },
       {
         width: "10%",
 
-        Header: "মাসিক ফি",
+        Header: t("monthFee"),
         accessor: "monthlyFee",
       },
       {
         width: "9%",
 
-        Header: "ব্যালান্স",
+        Header: t("balance"),
         accessor: "balance",
       },
       {
         width: "12%",
 
-        Header: "বিল সাইকেল",
+        Header: t("billCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMMM DD YYYY hh:mm A");
@@ -172,7 +172,7 @@ const ResellerCustomer = () => {
       {
         width: "7%",
 
-        Header: () => <div className="text-center">অ্যাকশন</div>,
+        Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
           <div
@@ -201,7 +201,7 @@ const ResellerCustomer = () => {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PersonFill />
-                      <p className="actionP">প্রোফাইল</p>
+                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -216,7 +216,7 @@ const ResellerCustomer = () => {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">এডিট</p>
+                      <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
                 </li>
@@ -231,7 +231,7 @@ const ResellerCustomer = () => {
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <CashStack />
-                      <p className="actionP">রিপোর্ট</p>
+                      <p className="actionP">{t("report")}</p>
                     </div>
                   </div>
                 </li>
@@ -239,7 +239,7 @@ const ResellerCustomer = () => {
                 <li
                   onClick={() => {
                     let con = window.confirm(
-                      `${original.name} গ্রাহক ডিলিট করতে চান?`
+                      `${original.name} ${t("wantToDeleteCustomer")}`
                     );
                     con && deleteCustomer(original.id);
                   }}
@@ -247,7 +247,7 @@ const ResellerCustomer = () => {
                   <div className="dropdown-item actionManager">
                     <div className="customerAction">
                       <ArchiveFill />
-                      <p className="actionP">ডিলিট</p>
+                      <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
                 </li>
@@ -257,7 +257,7 @@ const ResellerCustomer = () => {
         ),
       },
     ],
-    []
+    [t]
   );
 
   return (

@@ -11,9 +11,10 @@ import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
 import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function AddStaticCustomer() {
+  const { t } = useTranslation();
   // get user bp setting
   const bpSettings = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.bpSettings

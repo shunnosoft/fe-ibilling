@@ -137,31 +137,31 @@ function AlertSmsTemplate() {
   const smstempletDay = useMemo(() => {
     return [
       {
-        name: "এক দিনের টেমপ্লেট",
+        name: t("onedayTemplate"),
         value: (settings?.sms?.template?.alert1 || "") + "\nalert1",
       },
       {
-        name: "দুই দিনের টেমপ্লেট",
+        name: t("twodaysTemplate"),
         value: (settings?.sms?.template?.alert2 || "") + "\nalert2",
       },
       {
-        name: "তিন দিনের টেমপ্লেট",
+        name: t("threedaysTemplate"),
         value: (settings?.sms?.template?.alert3 || "") + "\nalert3",
       },
       {
-        name: "চার দিনের টেমপ্লেট",
+        name: t("fourdaysTemplate"),
         value: (settings?.sms?.template?.alert4 || "") + "\nalert4",
       },
       {
-        name: "পাঁচ দিনের টেমপ্লেট",
+        name: t("fivedaysTemplate"),
         value: (settings?.sms?.template?.alert5 || "") + "\nalert5",
       },
       {
-        name: "ছয় দিনের টেমপ্লেট",
+        name: t("sixdaysTemplate"),
         value: (settings?.sms?.template?.alert6 || "") + "\nalert6",
       },
       {
-        name: "সাত দিনের টেমপ্লেট",
+        name: t("sevendaysTemplate"),
         value: (settings?.sms?.template?.alert7 || "") + "\nalert7",
       },
     ];

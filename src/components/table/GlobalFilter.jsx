@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const GlobalFilter = ({ filter, setFilter, data, customComponent }) => {
+  const { t } = useTranslation();
   return (
     <div className="row searchCollector">
       <div
@@ -8,7 +10,7 @@ const GlobalFilter = ({ filter, setFilter, data, customComponent }) => {
         className="col-sm-8"
       >
         <h4 style={{ fontSize: "20px" }} className="allCollector">
-          মোট ডাটা: <span>{data ? data.length : "0"}</span>
+          {t("totalData")}: <span>{data ? data.length : "0"}</span>
         </h4>
         <div>{customComponent}</div>
       </div>
@@ -18,7 +20,7 @@ const GlobalFilter = ({ filter, setFilter, data, customComponent }) => {
           <input
             type="text"
             className="search"
-            placeholder="সার্চ করুন "
+            placeholder={t("search")}
             value={filter || ""}
             onChange={(event) => setFilter(event.target.value)}
           />

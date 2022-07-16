@@ -11,8 +11,10 @@ import moment from "moment";
 import { Eye } from "react-bootstrap-icons";
 import Details from "./modal/Details";
 import Table from "../../components/table/Table";
+import { useTranslation } from "react-i18next";
 
 const ActivityLog = () => {
+  const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
@@ -70,7 +72,7 @@ const ActivityLog = () => {
       },
 
       {
-        Header: "অ্যাকশন",
+        Header: t("action"),
         width: "62%",
         accessor: (value) => {
           return (
@@ -85,7 +87,7 @@ const ActivityLog = () => {
         },
       },
       {
-        Header: () => <div className="text-center">ভিউ</div>,
+        Header: () => <div className="text-center">{t("veiw")}</div>,
         width: "10%",
         id: "option",
 
@@ -111,7 +113,7 @@ const ActivityLog = () => {
         },
       },
     ],
-    [ownerUsers]
+    [ownerUsers, t]
   );
 
   return (
@@ -122,7 +124,7 @@ const ActivityLog = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">এক্টিভিটি</h2>
+                <h2 className="collectorTitle">{t("activity")}</h2>
               </FourGround>
               <FourGround>
                 <div className="collectorWrapper">

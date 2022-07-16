@@ -7,8 +7,10 @@ import "./account.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Account() {
+  const { t } = useTranslation();
   return (
     <>
       <Sidebar />
@@ -18,41 +20,41 @@ export default function Account() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">একাউন্ট</h2>
+                <h2 className="collectorTitle">{t("account")}</h2>
               </FourGround>
 
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="acccountWrapper">
-                    <h2>ফেব্রুয়ারী - ২০২২</h2>
+                    <h2>{t("february")} - ২০২২</h2>
                     <table className="AccountCusotomTable1">
                       <tbody>
                         <tr className="Accounttableheader">
                           <th></th>
-                          <th>ম্যাসেজ</th>
-                          <th>এসএমএস</th>
-                          <th>খরচ</th>
+                          <th>{t("message")}</th>
+                          <th>{t("SMS")}</th>
+                          <th>{t("cost")}</th>
                         </tr>
                         <tr>
-                          <td>বিল</td>
+                          <td>{t("bill")}</td>
                           <td>32</td>
                           <td>23</td>
                           <td>0 tk.</td>
                         </tr>
                         <tr>
-                          <td>এলার্ট</td>
+                          <td>{t("alert")}</td>
                           <td>00</td>
                           <td>00</td>
                           <td>0 tk.</td>
                         </tr>
                         <tr>
-                          <td>বাল্ক/কাস্টম</td>
+                          <td>{t("bulk/custom")}</td>
                           <td>00</td>
                           <td>00</td>
                           <td>0 tk.</td>
                         </tr>
                         <tr>
-                          <td>অন্যান্য</td>
+                          <td>{t("others")}</td>
                           <td>00</td>
                           <td>00</td>
                           <td>0 tk.</td>
@@ -63,15 +65,15 @@ export default function Account() {
                     <table className="AccountCusotomTable">
                       <tbody>
                         <tr>
-                          <th>ম্যাসেজ বিলঃ</th>
+                          <th>{t("messageBill")} :</th>
                           <td>2500 tk.</td>
                         </tr>
                         <tr>
-                          <th>সার্ভিস চার্জঃ</th>
+                          <th>{t("serviceCharge")} :</th>
                           <td>200 tk.</td>
                         </tr>
                         <tr>
-                          <th>মোট বিলঃ</th>
+                          <th>{t("totalBill")}</th>
                           <td>2700 tk.</td>
                         </tr>
                       </tbody>

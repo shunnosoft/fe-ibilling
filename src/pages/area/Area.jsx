@@ -162,7 +162,7 @@ export default function Area() {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div> {t("area")} </div>
                   <div
-                    title="এরিয়া এড করুন"
+                    title={t("addArea")}
                     className="header_icon"
                     data-bs-toggle="modal"
                     data-bs-target="#areaModal"

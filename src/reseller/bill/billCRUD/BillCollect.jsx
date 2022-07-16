@@ -5,8 +5,10 @@ import * as Yup from "yup";
 //internal imports
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
+import { useTranslation } from "react-i18next";
 
 export default function CustomerBillCollect({ singleCustomer }) {
+  const { t } = useTranslation();
   const [billType, setBillType] = useState("bill");
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -17,8 +19,8 @@ export default function CustomerBillCollect({ singleCustomer }) {
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
-      .min(0, "বিল গ্রহন যোগ্য নয়")
-      .integer("দশামিক গ্রহনযোগ্য নয়"),
+      .min(0, t("billNotAcceptable"))
+      .integer(t("decimalNumberNotAcceptable")),
   });
 
   // bill amount
@@ -51,7 +53,7 @@ export default function CustomerBillCollect({ singleCustomer }) {
                   className="modal-title"
                   id="customerModalDetails"
                 >
-                  বিল গ্রহণ
+                  {t("collectBill")}
                 </h5>
                 <button
                   type="button"
@@ -73,20 +75,26 @@ export default function CustomerBillCollect({ singleCustomer }) {
                 >
                   {() => (
                     <Form>
-                      <FtextField type="number" name="amount" label="পরিমান" />
+                      <FtextField
+                        type="number"
+                        name="amount"
+                        label={t("amount")}
+                      />
 
-                      <label className="mt-3">ধরণ</label>
+                      <label className="mt-3">{t("type")}</label>
                       <select
                         className="form-select"
                         onChange={(e) => setBillType(e.target.value)}
                       >
-                        <option value="bill">বিল</option>
-                        <option value="connectionFee">কানেকশন ফি</option>
+                        <option value="bill">{t("bill")}</option>
+                        <option value="connectionFee">
+                          {t("connectionFee")}
+                        </option>
                       </select>
 
                       <div className="mt-3">
                         <button type="submit" className="btn btn-success">
-                          সাবমিট
+                          {t("submit")}
                         </button>
                       </div>
                     </Form>

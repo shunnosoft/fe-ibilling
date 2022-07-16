@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { ArrowRight } from "react-bootstrap-icons";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 export default function Details({ activityId }) {
+  const { t } = useTranslation();
   const activityLogData = useSelector(
     (state) => state.persistedReducer.activityLog.activityLog
   );
@@ -38,7 +40,7 @@ export default function Details({ activityId }) {
               className="modal-title"
               id="customerModalDetails"
             >
-              ডিটেলস
+              {t("details")}
             </h5>
             <button
               type="button"
@@ -53,9 +55,9 @@ export default function Details({ activityId }) {
               <table className="table table-striped">
                 <thead>
                   <tr>
-                    <th scope="col">পাথ</th>
-                    <th scope="col">পূর্বের ভ্যালু </th>
-                    <th scope="col">বর্তমান ভ্যালু</th>
+                    <th scope="col">{t("path")}</th>
+                    <th scope="col">{t("previousValue")} </th>
+                    <th scope="col">{t("presentValue")}</th>
                   </tr>
                 </thead>
                 <tbody>

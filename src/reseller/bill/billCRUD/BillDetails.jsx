@@ -1,8 +1,10 @@
 import React from "react";
 import "../../Customer/customer.css";
+import { useTranslation } from "react-i18next";
 
 export default function CustomerDetails({ single }) {
   // const single = useSelector(state => state.customer.singleCustomer);
+  const { t } = useTranslation();
 
   return (
     <div>
@@ -21,7 +23,7 @@ export default function CustomerDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                গ্রাহক প্রোফাইল
+                {t("customerProfile")}
               </h5>
               <button
                 type="button"
@@ -36,49 +38,49 @@ export default function CustomerDetails({ single }) {
                 <thead>
                   <tr>
                     <th scope="col" className="thSt">
-                      মোবাইল:
+                      {t("mobile")} :
                     </th>
                     <th scope="col">{single.mobile}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      এড্রেস:
+                      {t("address")} :
                     </th>
                     <th scope="col">{single.address}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      ইমেইল:
+                      {t("email")} :
                     </th>
                     <th scope="col">{single.email}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      NID নম্বর:
+                      {t("NIDno")} :
                     </th>
                     <th scope="col">{single.nid}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      ব্যালান্স:
+                      {t("balance")} :
                     </th>
                     <th scope="col">{single.balance}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      মাসিক বেতন:
+                      {t("monthlyPayment")} :
                     </th>
                     <th scope="col">{single.monthlyFee}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      স্ট্যাটাস:
+                      {t("status")} :
                     </th>
                     <th scope="col">{single.status}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
-                      ইউজারের ধরণ:
+                      {t("userType")} :
                     </th>
                     <th scope="col">{single.userType}</th>
                   </tr>

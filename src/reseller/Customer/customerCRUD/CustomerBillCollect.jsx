@@ -63,8 +63,8 @@ export default function CustomerBillCollect({ single }) {
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
-      .min(0, "বিল গ্রহন যোগ্য নয়")
-      .integer("দশামিক গ্রহনযোগ্য নয়"),
+      .min(0, t("billNotAcceptable"))
+      .integer(t("decimalNumberNotAcceptable")),
   });
 
   //form resetFunction

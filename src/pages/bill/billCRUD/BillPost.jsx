@@ -345,7 +345,7 @@ export default function CustomerModal() {
                         />
                         <FtextField
                           type="text"
-                          label="কমেন্ট"
+                          label={t("comment")}
                           name="Pcomment"
                         />
                       </div>
