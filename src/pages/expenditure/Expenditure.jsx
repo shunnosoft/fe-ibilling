@@ -31,6 +31,7 @@ import ReactToPrint from "react-to-print";
 import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 
 export default function Expenditure() {
   const { t } = useTranslation();
@@ -78,6 +79,7 @@ export default function Expenditure() {
   }, [expenditures, expenditurePurpose]);
 
   useEffect(() => {
+    getOwnerUsers(dispatch, ispOwnerId);
     getAllExpenditure(dispatch, ispOwnerId, setIsloading);
     getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   }, [ispOwnerId, dispatch]);

@@ -36,6 +36,7 @@ export default function Diposit() {
   const allDeposit = useSelector(
     (state) => state?.persistedReducer?.payment?.allDeposit
   );
+
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -59,6 +60,8 @@ export default function Diposit() {
   const ownDeposits = useSelector(
     (state) => state?.persistedReducer?.payment?.myDeposit
   );
+
+  console.log(ownDeposits);
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(allDeposit);
@@ -104,10 +107,6 @@ export default function Diposit() {
     );
     return sumWithInitial.toString();
   }, [mainData]);
-
-  // useEffect(() => {
-  //   getMyDeposit(dispatch);
-  // }, [dispatch]);
 
   const getTotalOwnDeposit = useCallback(() => {
     const initialValue = 0;
@@ -417,7 +416,7 @@ export default function Diposit() {
                         </Tab>
                       )}
 
-                      <Tab eventKey="profile" title={t("diposit")}>
+                      <Tab eventKey="profile" title={t("depositReport")}>
                         <div>
                           <div className="selectFilteringg">
                             {userRole === "ispOwner" && (

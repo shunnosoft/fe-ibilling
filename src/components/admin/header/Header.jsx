@@ -15,14 +15,14 @@ import "./header.css";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 import Loader from "../../common/Loader";
-import { getResellerBalance } from "../../../features/apiCalls";
+import { getResellerBalance, getTotalbal } from "../../../features/apiCalls";
 import i18n from "../../../language/i18n/i18n";
-import { useTranslation } from "react-i18next";
+import FormatNumber from "../../common/NumberFormat";
 
 export default function Header(props) {
-  const { t } = useTranslation();
   // const userRole = useSelector(state => state.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [rechargeBalnace, setRechargeBalance] = useState(0);
   const [smsBalance, setSmsBalance] = useState(0);
   const currentUser = useSelector(
@@ -30,6 +30,9 @@ export default function Header(props) {
   );
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const balancee = useSelector(
+    (state) => state?.persistedReducer?.payment?.balance
+  );
   const dispatch = useDispatch();
   // const navigate = useNavigate();
   const pathName = useLocation().pathname;
@@ -42,13 +45,17 @@ export default function Header(props) {
   };
 
   useEffect(() => {
-    if (userRole === "reseller")
+    if (userRole === "reseller") {
       getResellerBalance(
         userData.id,
         setRechargeBalance,
         setSmsBalance,
         setIsrefresh
       );
+    }
+    if (userRole === "manager") {
+      getTotalbal(dispatch, setLoading);
+    }
   }, [userRole, userData]);
   // logout
   const handleLogOut = async () => {
@@ -106,20 +113,20 @@ export default function Header(props) {
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    {t("message")}
+                    এসএমএসঃ
                     <strong className="mainsmsbalance">{smsBalance}</strong>
                   </div>
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    {t("balance")} :
+                    ব্যালান্সঃ
                     <strong className="mainsmsbalance">
                       {rechargeBalnace.toFixed()}
                     </strong>
                   </div>
                   <div
-                    title={t("refresh")}
+                    title="রিফ্রেশ করুন"
                     style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
                     className="refreshIcon"
                   >
@@ -143,6 +150,35 @@ export default function Header(props) {
                 ""
               )}
 
+              {currentUser && userRole === "manager" ? (
+                <div style={{ marginRight: "20px" }} className="refreshDiv">
+                  <div
+                    style={{ backgroundColor: "inherit" }}
+                    className="balancetext"
+                  >
+                    ব্যালান্সঃ
+                    <strong className="mainsmsbalance">
+                      {FormatNumber(balancee)}
+                    </strong>
+                  </div>
+                  <div
+                    title="রিফ্রেশ করুন"
+                    style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
+                    className="refreshIcon"
+                  >
+                    {isRefrsh ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => getTotalbal(dispatch, setLoading)}
+                      ></ArrowClockwise>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
               <div className="darkLight" onClick={changeTHeme}>
                 {icon}
               </div>
@@ -150,7 +186,7 @@ export default function Header(props) {
               {currentUser ? (
                 <>
                   {/* change language select box */}
-                  {/* <select
+                  <select
                     onChange={selectLanguage}
                     className="me-2"
                     style={{
@@ -165,7 +201,7 @@ export default function Header(props) {
                     <option value="en" selected={getLang === "en"}>
                       EN
                     </option>
-                  </select> */}
+                  </select>
                   {/* end change language select box */}
 
                   <div className="dropdown">
@@ -228,7 +264,7 @@ export default function Header(props) {
                           <span className="dropdownIcon">
                             <BoxArrowLeft />
                           </span>
-                          {t("logOut")}
+                          লগআউট
                         </div>
                       </li>
                     </ul>
@@ -241,11 +277,11 @@ export default function Header(props) {
                 pathName === "/about" ||
                 pathName === "/return-and-refund-policy" ? (
                 <NavLink to="/login">
-                  <p className="goToLoginPage">{t("logIn")}</p>
+                  <p className="goToLoginPage">লগইন</p>
                 </NavLink>
               ) : (
                 <NavLink to="/register">
-                  <p className="goToLoginPage">{t("register")}</p>
+                  <p className="goToLoginPage">রেজিস্টার</p>
                 </NavLink>
               )}
             </div>

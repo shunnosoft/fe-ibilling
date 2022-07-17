@@ -21,8 +21,6 @@ import { useTranslation } from "react-i18next";
 
 export default function Report() {
   const { t } = useTranslation();
-  // const cus = useSelector(state => state.customer.customer);
-  // console.log(cus.length)
 
   const subAreas = useSelector((state) => state.persistedReducer.area.area);
   const allCollector = useSelector(
@@ -40,6 +38,7 @@ export default function Report() {
   const allBills = useSelector(
     (state) => state.persistedReducer.payment.allBills
   );
+
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setisLoading] = useState(false);
   const [subAreaIds, setSubArea] = useState([]);
@@ -48,17 +47,13 @@ export default function Report() {
   const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
-  // const [cusSearch, setCusSearch] = useState("");
-  // const ispOwnerId = useSelector(state => state.auth?.ispOwnerId);
   const [isSorted, setSorted] = useState(false);
-  // const [totalBill,setTotalBill]= useState("")
   const [currentPage, setCurrentPage] = useState(1);
 
   const [customerPerPage, setCustomerPerPage] = useState(50);
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
 
-  const currentCustomers = mainData.slice(firstIndex, lastIndex);
   const dispatch = useDispatch();
 
   const paginate = (pageNumber) => {
@@ -158,26 +153,12 @@ export default function Report() {
     setMainData2(arr);
   };
 
-  // const addAllBills = ()=>{
-  //   var total=0;
-  //    mainData.forEach((item)=>{
-  //      console.log(item.amount)
-  //      total=total+item.amount
-
-  //    })
-  //    return total.toString() ;
-
-  // }
   const addAllBills = useCallback(() => {
     var count = 0;
     mainData.forEach((item) => {
       count = count + item.amount;
     });
     return count.toString();
-    // mainData.reudce((preval,nextval)=>{
-    //  const res = preval+nextval.amount ;
-    //  return res.toString()
-    // },0)
   }, [mainData]);
   // console.log(addAllBills())
 
@@ -294,11 +275,6 @@ export default function Report() {
                         onChange={(e) => {
                           setEndDate(e.target.value);
                         }}
-
-                        // value="2018-07-22"
-
-                        // min="2018-01-01"
-                        // max="2018-12-31"
                       />
                       <button
                         className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
@@ -314,7 +290,7 @@ export default function Report() {
                   <Table
                     isLoading={isLoading}
                     columns={columns}
-                    data={currentCustomers}
+                    data={mainData}
                   ></Table>
                 </div>
               </FourGround>

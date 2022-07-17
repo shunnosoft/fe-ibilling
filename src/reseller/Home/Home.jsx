@@ -264,7 +264,7 @@ export default function Home() {
                   <h2>৳ {FormatNumber(totalCollection)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("today collection")} ৳ {FormatNumber(todayCollection)}
+                    {t("today collection")} {FormatNumber(todayCollection)}
                   </p>
                 </div>
               </div>
