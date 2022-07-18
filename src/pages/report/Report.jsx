@@ -23,8 +23,6 @@ export default function Report() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // const cus = useSelector(state => state.customer.customer);
-  // console.log(cus.length)
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
@@ -103,10 +101,6 @@ export default function Report() {
     setCollectorIds(collectorUserIdsArr);
   }, [allCollector, manager]);
 
-  // useEffect(() => {
-  //   getAllBills(dispatch, ispOwnerId);
-  // }, [ispOwnerId, dispatch]);
-
   useEffect(() => {
     var initialToday = new Date();
     var initialFirst = new Date(
@@ -124,15 +118,6 @@ export default function Report() {
           Date.parse(item.createdAt) <= Date.parse(initialToday)
       )
     );
-
-    // Temp varialbe for search
-    // setMainData2(
-    //   allBills.filter(
-    //     (item) =>
-    //       Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-    //       Date.parse(item.createdAt) <= Date.parse(initialToday)
-    //   )
-    // );
   }, [allBills]);
 
   const onChangeCollector = (userId) => {
@@ -452,19 +437,6 @@ export default function Report() {
                       </div>
                     </div>
                     <div className="submitdiv d-flex justify-content-end">
-                      {/* <ReactToPrint
-                        documentTitle="বিল রিপোর্ট"
-                        trigger={() => (
-                          <button
-                            className="btn fs-5 btn-primary"
-                            type="button"
-                            title="ডাউনলোড পিডিএফ"
-                          >
-                            <PrinterFill />
-                          </button>
-                        )}
-                        content={() => componentRef.current}
-                      /> */}
                       {/* print report */}
                       <div style={{ display: "none" }}>
                         <PrintReport

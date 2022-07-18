@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const paymentSlice = createSlice({
   name: "payment",
@@ -13,7 +13,10 @@ const paymentSlice = createSlice({
       state.balance = action.payload.balance;
     },
     getDepositSuccess: (state, action) => {
-      state.allDeposit = action.payload;
+      console.log(action.payload);
+
+      state.allDeposit = [...state.allDeposit, action.payload];
+      console.log(current(state.allDeposit));
     },
     updateDepositSuccess: (state, action) => {
       state.allDeposit[

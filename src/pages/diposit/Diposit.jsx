@@ -27,6 +27,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 
 export default function Diposit() {
   const { t } = useTranslation();
@@ -56,18 +57,29 @@ export default function Diposit() {
   const currentUser = useSelector(
     (state) => state.persistedReducer?.auth?.currentUser
   );
+
+  // get owner users
+  const ownerUsers = useSelector(
+    (state) => state?.persistedReducer?.ownerUsers?.ownerUser
+  );
+
+  console.log(ownerUsers);
+
   //To do after api impliment
   const ownDeposits = useSelector(
     (state) => state?.persistedReducer?.payment?.myDeposit
   );
 
-  console.log(ownDeposits);
-
-  const [collectorIds, setCollectorIds] = useState([]);
+  const [collectorIds, setCollectorIds] = useState("");
   const [mainData, setMainData] = useState(allDeposit);
   console.log(mainData);
 
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const getManager = useSelector(
+    (state) => state?.persistedReducer?.manager?.manager
+  );
+
+  console.log(getManager);
 
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
@@ -98,6 +110,8 @@ export default function Diposit() {
   const allCollector = useSelector(
     (state) => state?.persistedReducer?.collector?.collector
   );
+
+  console.log(allCollector);
 
   const getTotalDeposit = useCallback(() => {
     const initialValue = 0;
@@ -157,34 +171,38 @@ export default function Diposit() {
   }, [getNames]);
 
   useEffect(() => {
-    if (userRole !== "collector") {
+    if (userRole === "ispOwner") {
       getDeposit(dispatch, {
-        depositerRole:
-          userRole === "ispOwner"
-            ? "manager"
-            : userRole === "manager"
-            ? "collector"
-            : "",
+        depositerRole: "manager",
+        ispOwnerID: ispOwner,
+      });
+      getDeposit(dispatch, {
+        depositerRole: "collector",
         ispOwnerID: ispOwner,
       });
     }
-  }, [ispOwner, userRole, dispatch]);
+  }, [ispOwner, userRole]);
 
-  const onChangeCollector = (userId) => {
-    if (userId) {
-      setCollectorIds([userId]);
-    } else {
-      let collectorUserIdsArr = [];
-      collectors.map((original) => collectorUserIdsArr.push(original.user));
-      setCollectorIds(collectorUserIdsArr);
-    }
-  };
+  // useEffect(() => {
+  //   if (userRole !== "collector") {
+  //     getDeposit(dispatch, {
+  //       depositerRole:
+  //         userRole === "ispOwner"
+  //           ? "manager"
+  //           : userRole === "manager"
+  //           ? "collector"
+  //           : "",
+  //       ispOwnerID: ispOwner,
+  //     });
+  //   }
+  // }, [ispOwner, userRole, dispatch]);
 
   const onClickFilter = () => {
     let arr = getNames();
-
-    if (collectorIds.length) {
-      arr = arr.filter((bill) => collectorIds.includes(bill.user));
+    if (collectorIds !== "all") {
+      arr = arr.filter((bill) => bill.user === collectorIds);
+    } else {
+      arr = arr;
     }
 
     arr = arr.filter(
@@ -423,10 +441,10 @@ export default function Diposit() {
                               <select
                                 className="form-select"
                                 onChange={(e) =>
-                                  onChangeCollector(e.target.value)
+                                  setCollectorIds(e.target.value)
                                 }
                               >
-                                <option value="" defaultValue>
+                                <option value="all" defaultValue>
                                   {t("all collector")}
                                 </option>
                                 {collectors?.map((c, key) => (
@@ -434,6 +452,9 @@ export default function Diposit() {
                                     {c.name}
                                   </option>
                                 ))}
+                                <option value={getManager?.user} defaultValue>
+                                  {getManager?.name}
+                                </option>
                               </select>
                             )}
                             <div className="dateDiv  ">
@@ -446,9 +467,6 @@ export default function Diposit() {
                                 onChange={(e) => {
                                   setStartDate(e.target.value);
                                 }}
-                                // value="2018-07-22"
-                                // min="2018-01-01"
-                                // max="2018-12-31"
                               />
                             </div>
                             <div className="dateDiv">
@@ -461,9 +479,6 @@ export default function Diposit() {
                                 onChange={(e) => {
                                   setEndDate(e.target.value);
                                 }}
-                                // value="2018-07-22"
-                                // min="2018-01-01"
-                                // max="2018-12-31"
                               />
                             </div>
                             <div className="submitDiv">
