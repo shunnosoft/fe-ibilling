@@ -125,11 +125,11 @@ function App() {
       <GlobalStyles />
       <div className="App">
         {isModalShowing && <ReactModal></ReactModal>}
-        {pathName === "/login" || pathName === "/register" || user ? (
-          <Header theme={theme} setTheme={setTheme} />
-        ) : (
-          ""
-        )}
+        {pathName === "/login" || pathName === "/register" || user
+          ? userRole !== "customer" && (
+              <Header theme={theme} setTheme={setTheme} />
+            )
+          : ""}
 
         {/* only reseller route */}
         {userRole === "reseller" && (

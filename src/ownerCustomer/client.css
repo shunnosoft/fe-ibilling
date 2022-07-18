@@ -1,13 +1,14 @@
 .client_section {
     width: 100%;
-    height: 100vh;
     display: flex;
-    background-image: linear-gradient(to right,#142a48,#273a60);
-    color:#fff
+    background-image: linear-gradient(to right, #142a48, #273a60);
+    color: #fff
 }
+
 .client_wraper {
-    padding-top: 5rem;
+    /* padding-top: 5rem; */
 }
+
 .card-body.client_service_card {
     padding: 1.5rem;
     text-align: center;
@@ -31,10 +32,10 @@ ul.client_service_list {
     background: #1B2430;
     width: 6rem;
     margin-top: 5rem;
-    color:#fff;
+    color: #fff;
     font-weight: 700;
-    border-top-right-radius:10px ;
-    border-bottom-right-radius:10px ;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 
 }
 
@@ -53,46 +54,53 @@ ul.client_service_list li:hover {
 .settings_wraper {
     position: relative;
     transform: translate(-7rem);
-    width: 7rem ;
+    width: 7rem;
 }
 
-.show-menu{
+.show-menu {
     transform: translate(0rem);
-    transition:0.5s;
-}
-.hide-menu{
-    transform: translate(-7rem);
-    transition:0.5s ;
+    transition: 0.5s;
 }
 
-@-webkit-keyframes rotating /* Safari and Chrome */ {
+.hide-menu {
+    transform: translate(-7rem);
+    transition: 0.5s;
+}
+
+@-webkit-keyframes rotating
+
+/* Safari and Chrome */
+    {
     from {
-      -webkit-transform: rotate(0deg);
-      -o-transform: rotate(0deg);
-      transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     to {
-      -webkit-transform: rotate(360deg);
-      -o-transform: rotate(360deg);
-      transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-  @keyframes rotating {
+}
+
+@keyframes rotating {
     from {
-      -ms-transform: rotate(0deg);
-      -moz-transform: rotate(0deg);
-      -webkit-transform: rotate(0deg);
-      -o-transform: rotate(0deg);
-      transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     to {
-      -ms-transform: rotate(360deg);
-      -moz-transform: rotate(360deg);
-      -webkit-transform: rotate(360deg);
-      -o-transform: rotate(360deg);
-      transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
+}
 
 .client_setting_icon {
     position: absolute;
@@ -122,6 +130,7 @@ ul.client_service_list li:hover {
     border-top-right-radius: 9px;
     z-index: -100;
 }
+
 .menu_icon {
     font-size: 1.5rem;
     color: #3eff00;
@@ -129,8 +138,7 @@ ul.client_service_list li:hover {
 
 .client_profile {
     width: 80%;
-    margin: auto;
-    margin-top: 5rem;
+    margin: 0 auto;
 }
 
 table.client_info_table {
@@ -138,16 +146,17 @@ table.client_info_table {
     font-weight: 700;
 }
 
-table.client_info_table td{
+table.client_info_table td {
     padding: 0px 10px !important;
-    color:#fff !important;
+    color: #fff !important;
     font-size: 1.3rem !important;
 }
 
-.client_dashboard_section{
+.client_dashboard_section {
     margin-right: 3rem;
     padding: 2rem
 }
+
 .up_downLoad {
     display: flex;
     width: 100%;
@@ -160,21 +169,63 @@ table.client_info_table td{
     color: #3eff00;
     padding: 2rem;
     width: 19rem;
-    
+
 }
+
 /* reset password  */
 
-.password_reset_form{
-    color:#fff !important;
+.password_reset_form {
+    color: #fff !important;
     margin-top: 3rem;
 }
 
-.password_reset_form label{
-    color:#fff
+.password_reset_form label {
+    color: #fff
+}
+
+.packages_info_wraper {
+    width: fit-content;
+    padding: 10px;
+    background-color: #1B2430;
+    display: flex;
+}
+
+.packages_info_wraper p {
+    margin-right: 0.5rem;
+}
+
+.packages_info_wraper p {
+    font-weight: 600;
+}
+
+.package_table {
+    width: 60% !important;
+}
+
+
+.packageList ul li:hover {
+    padding: 0.6rem;
+    transform: scale(1.1);
+}
+
+.package_list_card {
+    transition: transform 0.4s;
+}
+
+.package_list_card:hover {
+    transform: scale(1.2);
+}
+
+.package_select_button {
+    cursor: pointer;
 }
 
 @media screen and (max-width: 580px) {
     .client_wraper {
-      position: fixed;
+        position: fixed;
     }
-  }
+
+    .up_downLoad {
+        flex-direction: column;
+    }
+}

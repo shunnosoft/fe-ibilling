@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import apiLink from "../api/apiLink";
-import { fetchpppoePackage } from "../features/apiCalls";
+import PaymentModal from "./paymentModal";
 
 export default function ClientProfile() {
   const userData = useSelector(
@@ -17,6 +17,7 @@ export default function ClientProfile() {
   return (
     <>
       <div className="client-info">
+        <PaymentModal />
         <div class="jumbotron">
           <h1 class="display-4">Customer Information</h1>
           <table className="client_info_table">
@@ -54,6 +55,14 @@ export default function ClientProfile() {
           <div className="up_down download">
             <p>Downlaod</p>
             <h3>18MBPS</h3>
+          </div>
+          <div
+            data-bs-toggle="modal"
+            data-bs-target="#billPaymentModal"
+            style={{ cursor: "pointer" }}
+            className="up_down download"
+          >
+            <h3>payBill</h3>
           </div>
         </div>
       </div>

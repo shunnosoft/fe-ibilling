@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { useRef } from "react";
 import {
   BarChart,
   CurrencyDollar,
@@ -9,14 +8,22 @@ import {
   GearFill,
   KeyFill,
 } from "react-bootstrap-icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import { userLogout } from "../features/actions/authAsyncAction";
 import "./client.css";
 import ClientProfile from "./ClientProfile";
+import Packages from "./packages";
 import PasswordReset from "./PasswordReset";
 
 const Client = () => {
-  const [renderText, setRenderText] = useState("");
+  const [renderText, setRenderText] = useState("profile");
+  const dispatch = useDispatch();
+
+  // logout
+  const handleLogOut = async () => {
+    userLogout(dispatch);
+  };
 
   const userData = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser.customer
@@ -78,6 +85,14 @@ const Client = () => {
               </div>
               <div className="menu_label">Reset Password</div>
             </li>
+            <hr className="mt-0 mb-0" />
+
+            <li onClick={handleLogOut}>
+              <div className="menu_icon">
+                <KeyFill />
+              </div>
+              <div className="menu_label">Logout</div>
+            </li>
           </ul>
           <div className="setting_icon_wraper">
             <div
@@ -98,7 +113,7 @@ const Client = () => {
 
           {renderText === "profile" && <ClientProfile />}
           {renderText === "resetPassword" && <PasswordReset />}
-          {/* {renderText === "profile" && <ClientProfile />} */}
+          {renderText === "packages" && <Packages />}
         </section>
       </div>
     </section>
