@@ -15,6 +15,7 @@ import "./client.css";
 import ClientProfile from "./ClientProfile";
 import Packages from "./packages";
 import PasswordReset from "./PasswordReset";
+import PaymentHistory from "./PaymentHistory";
 
 const Client = () => {
   const [renderText, setRenderText] = useState("profile");
@@ -114,6 +115,7 @@ const Client = () => {
           {renderText === "profile" && <ClientProfile />}
           {renderText === "resetPassword" && <PasswordReset />}
           {renderText === "packages" && <Packages />}
+          {renderText === "paymentHistory" && <PaymentHistory />}
         </section>
       </div>
     </section>

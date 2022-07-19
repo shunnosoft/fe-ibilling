@@ -1,12 +1,17 @@
 import React from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import apiLink from "../api/apiLink";
-import { getPackagesByIspOwer } from "../features/getIspOwnerUsersApi";
+import {
+  changePackageApi,
+  getPackagesByIspOwer,
+} from "../features/getIspOwnerUsersApi";
 
 //package change functional korte hobe
 export default function Packages() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const userData = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser.customer
   );
@@ -24,9 +29,7 @@ export default function Packages() {
         profile: selectedPackage.name,
       },
     };
-
-    const res = await apiLink.patch("/customer/package", sendingData);
-    console.log(res.data.data);
+    changePackageApi(sendingData, setLoading);
   };
 
   useEffect(() => {
@@ -54,10 +57,10 @@ export default function Packages() {
       <div className="packageList">
         <div className="row">
           {packages.map((item) => (
-            <div className="col-md-4 package_list_card">
+            <div key={item.id} className="col-md-4 package_list_card">
               <div
                 className="card text-white mb-3"
-                style={{ backgroundColor: "#1b2430" }}
+                style={{ backgroundColor: "#1b2430", position: "static" }}
               >
                 <div className="card-header">Package</div>
                 <div className="card-body " style={{ color: "#3eff00" }}>

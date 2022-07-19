@@ -62,7 +62,9 @@ export default function ClientProfile() {
             style={{ cursor: "pointer" }}
             className="up_down download"
           >
-            <h3>payBill</h3>
+            <p>Payment</p>
+
+            <h3>Bill Pay</h3>
           </div>
         </div>
       </div>

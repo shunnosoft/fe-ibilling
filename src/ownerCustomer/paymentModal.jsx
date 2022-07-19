@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import apiLink from "../api/apiLink";
 import Loader from "../components/common/Loader";
+import { billPayment } from "../features/getIspOwnerUsersApi";
 
 const PaymentModal = () => {
   const userData = useSelector(
@@ -11,6 +10,7 @@ const PaymentModal = () => {
   );
   const [paymentAmount, setPaymentAmount] = useState("");
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     setPaymentAmount(userData?.monthlyFee);
   }, [userData]);
@@ -28,16 +28,11 @@ const PaymentModal = () => {
       paymentStatus: "pending",
       package: userData.pppoe.profile,
     };
-    try {
-      if (paymentAmount < userData.monthlyFee) {
-        return alert("You can't pay less than your monthly fee");
-      }
-      setLoading(true);
-      const res = await apiLink.post("/customer/pg/monthlyBill", data);
-      window.location.href = res.data.data;
-    } catch (error) {
-      console.log(error);
+
+    if (paymentAmount < userData.monthlyFee) {
+      return alert("You can't pay less than your monthly fee");
     }
+    billPayment(data, setLoading);
   };
 
   return (
