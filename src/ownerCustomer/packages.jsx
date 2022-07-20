@@ -1,36 +1,18 @@
 import React from "react";
-import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import apiLink from "../api/apiLink";
-import {
-  changePackageApi,
-  getPackagesByIspOwer,
-} from "../features/getIspOwnerUsersApi";
+import { getPackagesByIspOwer } from "../features/getIspOwnerUsersApi";
+import PackageChangeModal from "./packageChangeModal";
 
 //package change functional korte hobe
 export default function Packages() {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+
   const userData = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser.customer
   );
 
   const packages = useSelector((state) => state.package.packages);
-
-  const changePackageController = async (selectedPackage) => {
-    const sendingData = {
-      mikrotikPackage: selectedPackage.id,
-      pppoe: {
-        service: "pppoe",
-        disabled: userData.pppoe.disabled,
-        name: userData.pppoe.name,
-        password: userData.pppoe.password,
-        profile: selectedPackage.name,
-      },
-    };
-    changePackageApi(sendingData, setLoading);
-  };
 
   useEffect(() => {
     getPackagesByIspOwer(dispatch);
@@ -50,6 +32,13 @@ export default function Packages() {
             {userData?.monthlyFee} TK
           </span>{" "}
         </p>
+        <button
+          data-bs-toggle="modal"
+          data-bs-target="#change_package_modal"
+          className="btn btn-sm btn-success ms-3"
+        >
+          Change package
+        </button>
       </div>
 
       <h3 className="text-uppercase mt-3">Our packages</h3>
@@ -65,19 +54,17 @@ export default function Packages() {
                 <div className="card-header">Package</div>
                 <div className="card-body " style={{ color: "#3eff00" }}>
                   <h5 className="card-title">{item.name}</h5>
-                  <p className="card-text">{item.rate}</p>
-                </div>
-                <div
-                  onClick={() => changePackageController(item)}
-                  className="card-footer bg-success package_select_button"
-                >
-                  Select package
+                  <p className="card-text">
+                    {item.rate} TK /{" "}
+                    <span className="badge bg-secondary">Month</span>
+                  </p>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+      <PackageChangeModal />
     </div>
   );
 }

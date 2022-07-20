@@ -22,17 +22,20 @@ export const getPackagesByIspOwer = async (dispatch) => {
   }
 };
 
-export const changePackageApi = async (data, loading) => {
+export const changePackageApi = async (data, setLoading) => {
   try {
     const confirm = window.confirm("Are you want to update your package");
     if (confirm) {
+      setLoading(true)
       await apiLink.patch("/customer/package", data);
       toast.success("Your package has updated");
+      document.getElementById("change_package_modal").click()
     }
   } catch (error) {
     console.log(error);
     toast.error(error?.response?.data?.message);
   }
+  setLoading(false)
 };
 
 export const billPayment = async (data, setLoading) => {

@@ -149,8 +149,7 @@ table.client_info_table td {
 }
 
 .client_dashboard_section {
-    margin-right: 3rem;
-    padding: 2rem
+    padding: 1rem
 }
 
 .up_downLoad {
@@ -184,6 +183,7 @@ table.client_info_table td {
     padding: 10px;
     background-color: #1B2430;
     display: flex;
+    align-items: center;
 }
 
 .packages_info_wraper p {
@@ -305,9 +305,10 @@ table.client_info_table td {
 }
 
 .forum-item {
+    background-color: #1b2430;
     margin: 10px 0;
     padding: 10px 0 20px;
-    border-bottom: 1px solid #f1f1f1;
+
 }
 
 .views-number {
@@ -316,18 +317,16 @@ table.client_info_table td {
     font-weight: 400;
 }
 
-.forum-container,
-.forum-post-container {
-    padding: 30px !important;
-}
 
 .forum-item small {
-    color: #999;
+    color: #3eff00;
 }
 
 .forum-item .forum-sub-title {
-    color: #999;
+    color: #fff;
     margin-left: 50px;
+    margin-top: 5px;
+        font-weight: 700;
 }
 
 .forum-title {
@@ -374,22 +373,6 @@ a.forum-item-title:hover {
     color: #1ab394;
 }
 
-@media (max-width: 992px) {
-    .forum-info {
-        margin: 15px 0 10px 0;
-        /* Comment this is you want to show forum info in small devices */
-        display: none;
-    }
-
-    .forum-desc {
-        float: none !important;
-    }
-}
-
-
-
-
-
 .ibox {
     clear: both;
     margin-bottom: 25px;
@@ -431,13 +414,9 @@ a.forum-item-title:hover {
 }
 
 .ibox-content {
-    background-color: #ffffff;
     color: inherit;
     padding: 15px 20px 20px 20px;
-    border-color: #e7eaec;
-    border-image: none;
-    border-style: solid solid none;
-    border-width: 1px 0;
+
 }
 
 .ibox-footer {

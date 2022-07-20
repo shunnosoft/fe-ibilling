@@ -57,7 +57,7 @@ const PaymentHistory = () => {
 
                           <div class="forum-sub-title">
                             You payment bill through
-                            <span className="badge bg-secondary ms-2">
+                            <span className="badge bg-info ms-2">
                               {item.medium}
                             </span>
                           </div>
@@ -73,6 +73,13 @@ const PaymentHistory = () => {
                           <div>
                             <span className="badge bg-secondary text-dark">
                               <small>{item.package}</small>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-md-1 forum-info">
+                          <div>
+                            <span className="badge bg-secondary text-dark">
+                              show Details
                             </span>
                           </div>
                         </div>
