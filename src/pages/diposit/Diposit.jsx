@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-// import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
@@ -17,6 +16,7 @@ import {
   addDeposit,
   depositAcceptReject,
   getDeposit,
+  getMyDeposit,
   // getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
@@ -31,31 +31,44 @@ import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 
 export default function Diposit() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get balance from redux
   const balancee = useSelector(
     (state) => state?.persistedReducer?.payment?.balance
   );
+
+  // get all deposit form redux
   const allDeposit = useSelector(
     (state) => state?.persistedReducer?.payment?.allDeposit
   );
 
-  var today = new Date();
-  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-
-  firstDay.setHours(0, 0, 0, 0);
-  today.setHours(23, 59, 59, 999);
-  const [dateStart, setStartDate] = useState(firstDay);
-  const [dateEnd, setEndDate] = useState(today);
+  // get manager from redux
   const manager = useSelector(
     (state) => state?.persistedReducer?.manager?.manager
   );
-  const collectors = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
+
+  // get isp owner id from redux
   const ispOwner = useSelector(
     (state) => state.persistedReducer?.auth?.ispOwnerId
   );
+
+  // get current user from redux
   const currentUser = useSelector(
     (state) => state.persistedReducer?.auth?.currentUser
+  );
+
+  // get user role form redux
+  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+
+  // get own deposit from redux
+  let ownDeposits = useSelector(
+    (state) => state?.persistedReducer?.payment?.myDeposit
+  );
+
+  // get all collector form redux
+  const allCollector = useSelector(
+    (state) => state?.persistedReducer?.collector?.collector
   );
 
   // get owner users
@@ -63,34 +76,33 @@ export default function Diposit() {
     (state) => state?.persistedReducer?.ownerUsers?.ownerUser
   );
 
-  console.log(ownerUsers);
+  // get current date
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  //To do after api impliment
-  const ownDeposits = useSelector(
-    (state) => state?.persistedReducer?.payment?.myDeposit
-  );
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
 
-  const [collectorIds, setCollectorIds] = useState("");
+  // all initial local state
+  const [dateStart, setStartDate] = useState(firstDay);
+
+  const [dateEnd, setEndDate] = useState(today);
+
+  const [collectorIds, setCollectorIds] = useState("all");
+
   const [mainData, setMainData] = useState(allDeposit);
   console.log(mainData);
 
-  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
-  const getManager = useSelector(
-    (state) => state?.persistedReducer?.manager?.manager
-  );
+  const [isLoading, setLoading] = useState(false);
 
-  console.log(getManager);
+  const [acceptLoading, setAccLoading] = useState(false);
 
+  // add deposit form validation
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
   });
-  const [isLoading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const balance = useSelector(
-    (state) => state.persistedReducer.payment.balance
-  );
 
-  // bill amount
+  // add bill deposit
   const billDipositHandler = (data) => {
     const sendingData = {
       depositBy: currentUser?.user.role,
@@ -100,37 +112,15 @@ export default function Diposit() {
       ispOwner: ispOwner,
     };
     addDeposit(dispatch, sendingData, setLoading);
+    data.amount = "";
   };
 
-  const [acceptLoading, setAccLoading] = useState(false);
-
+  // bill report accept & reject handler
   const depositAcceptRejectHandler = (status, id) => {
     depositAcceptReject(dispatch, status, id, setAccLoading);
   };
-  const allCollector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
 
-  console.log(allCollector);
-
-  const getTotalDeposit = useCallback(() => {
-    const initialValue = 0;
-    const sumWithInitial = mainData.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-    return sumWithInitial.toString();
-  }, [mainData]);
-
-  const getTotalOwnDeposit = useCallback(() => {
-    const initialValue = 0;
-    const sumWithInitial = ownDeposits.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-    return sumWithInitial.toString();
-  }, [ownDeposits]);
-
+  // get name
   const getNames = useCallback(() => {
     var arr = [];
     allDeposit.forEach((original) => {
@@ -147,57 +137,50 @@ export default function Diposit() {
     return arr;
   }, [allCollector, userRole, manager, allDeposit]);
 
+  // get own deposit, ownerUser & total balance api call
   useEffect(() => {
+    getMyDeposit(dispatch);
+    getOwnerUsers(dispatch, ispOwner);
     if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
-  }, [dispatch, userRole]);
+  }, [userRole]);
 
+  // get deposit report api call
   useEffect(() => {
-    var initialToday = new Date();
-    var initialFirst = new Date(
-      initialToday.getFullYear(),
-      initialToday.getMonth(),
-      1
-    );
-
-    initialFirst.setHours(0, 0, 0, 0);
-    initialToday.setHours(23, 59, 59, 999);
-    setMainData(
-      getNames().filter(
-        (original) =>
-          Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(original.createdAt) <= Date.parse(initialToday)
-      )
-    );
-  }, [getNames]);
-
-  useEffect(() => {
-    if (userRole === "ispOwner") {
+    if (userRole !== "collector") {
       getDeposit(dispatch, {
-        depositerRole: "manager",
-        ispOwnerID: ispOwner,
-      });
-      getDeposit(dispatch, {
-        depositerRole: "collector",
+        depositerRole:
+          userRole === "ispOwner"
+            ? "manager"
+            : userRole === "manager"
+            ? "collector"
+            : "",
         ispOwnerID: ispOwner,
       });
     }
-  }, [ispOwner, userRole]);
+  }, [ispOwner, userRole, dispatch]);
 
   // useEffect(() => {
-  //   if (userRole !== "collector") {
-  //     getDeposit(dispatch, {
-  //       depositerRole:
-  //         userRole === "ispOwner"
-  //           ? "manager"
-  //           : userRole === "manager"
-  //           ? "collector"
-  //           : "",
-  //       ispOwnerID: ispOwner,
-  //     });
-  //   }
-  // }, [ispOwner, userRole, dispatch]);
+  //   var initialToday = new Date();
+  //   var initialFirst = new Date(
+  //     initialToday.getFullYear(),
+  //     initialToday.getMonth(),
+  //     1
+  //   );
 
+  //   initialFirst.setHours(0, 0, 0, 0);
+  //   initialToday.setHours(23, 59, 59, 999);
+  //   setMainData(
+  //     getNames().filter(
+  //       (original) =>
+  //         Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
+  //         Date.parse(original.createdAt) <= Date.parse(initialToday)
+  //     )
+  //   );
+  // }, [getNames]);
+
+  // filter section
   const onClickFilter = () => {
+    // collector filter
     let arr = getNames();
     if (collectorIds !== "all") {
       arr = arr.filter((bill) => bill.user === collectorIds);
@@ -205,6 +188,7 @@ export default function Diposit() {
       arr = arr;
     }
 
+    // date filter
     arr = arr.filter(
       (original) =>
         Date.parse(original.createdAt) >= Date.parse(dateStart) &&
@@ -212,39 +196,42 @@ export default function Diposit() {
     );
 
     setMainData(arr);
-    // setMainData2(arr);
   };
+
+  // deposit report column
   const columns = React.useMemo(
     () => [
       {
-        width: "12%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "22%",
-        Header: t("name"),
-        accessor: "name",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original.name}{" "}
-            {userRole === "ispOwner"
-              ? `(${t("manager")})`
-              : `(${t("collector")})`}
-          </div>
-        ),
+        width: "31%",
+        Header: t("collector"),
+        accessor: "user",
+        Cell: ({ cell: { value } }) => {
+          const performer = ownerUsers.find((item) => item[value]);
+          console.log(performer);
+
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
+        },
       },
       {
-        width: "22%",
+        width: "15%",
         Header: t("total"),
         accessor: "amount",
         Cell: ({ row: { original } }) => (
           <div>৳ {FormatNumber(original.amount)}</div>
         ),
       },
-
       {
         width: "22%",
         Header: t("action"),
@@ -264,30 +251,34 @@ export default function Diposit() {
                     <Loader />
                   </div>
                 ) : (
-                  <div className="AcceptRejectBtn">
-                    <button
+                  <div className="">
+                    <span
+                      style={{ cursor: "pointer" }}
+                      class="badge bg-success shadow me-1"
                       onClick={() => {
                         depositAcceptRejectHandler("accepted", original.id);
                       }}
                     >
                       {t("accept")}
-                    </button>
-                    <button
+                    </span>
+                    <span
+                      style={{ cursor: "pointer" }}
+                      class="badge bg-danger shadow"
                       onClick={() => {
                         depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
                       {t("cancel")}
-                    </button>
+                    </span>
                   </div>
                 )
               ) : (
                 <>
                   {original.status === "accepted" && (
-                    <span className="statusClass">{t("accepted")}</span>
+                    <span className="badge bg-success">{t("accepted")}</span>
                   )}
                   {original.status === "rejected" && (
-                    <span className="rejectClass">{t("cancled")}</span>
+                    <span className="badge bg-danger">{t("cancled")}</span>
                   )}
                 </>
               )}
@@ -306,39 +297,43 @@ export default function Diposit() {
     ],
     [t]
   );
+
+  // own deposit column
   const columns2 = React.useMemo(
     () => [
       {
-        width: "25%",
+        width: "14%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "27%",
         Header: t("amount"),
         accessor: "amount",
-        Cell: ({ row: { original } }) => <div>৳ {FormatNumber(original)}</div>,
       },
       {
-        width: "25%",
+        width: "27%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ row: { original } }) => (
           <div>
             {original.status === "accepted" && (
-              <span className="statusClass">{t("accepted")}</span>
+              <span className="badge bg-success">{t("accepted")}</span>
             )}
             {original.status === "rejected" && (
-              <span className="rejectClass">{t("cancled")}</span>
+              <span className="badge bg-danger">{t("cancled")}</span>
+            )}
+            {original.status === "pending" && (
+              <span className="badge bg-warning">{t("pending")}</span>
             )}
           </div>
         ),
       },
 
       {
-        width: "25%",
+        width: "27%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -349,8 +344,35 @@ export default function Diposit() {
     [t]
   );
 
+  // total deposit calculation
+  let depositCalculation;
+  const getTotalDeposit = useCallback(() => {
+    depositCalculation = mainData.filter((item) => item.status === "accepted");
+    const initialValue = 0;
+    const sumWithInitial = depositCalculation.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+    return sumWithInitial.toString();
+  }, [depositCalculation]);
+
+  // own deposit column
+  let ownDepositCalculation;
+  const getTotalOwnDeposit = useCallback(() => {
+    ownDepositCalculation = ownDeposits.filter(
+      (item) => item.status === "accepted"
+    );
+    const initialValue = 0;
+    const sumWithInitial = ownDepositCalculation.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+    return sumWithInitial.toString();
+  }, [ownDepositCalculation]);
+
+  // send sum deposit of table header
   const customComponent = (
-    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
       {userRole === "ispOwner" || userRole === "manager" ? (
         <div style={{ marginRight: "10px" }}>
           {t("totalDiposit")} {getTotalDeposit()} {t("tk")}
@@ -367,6 +389,7 @@ export default function Diposit() {
       )}
     </div>
   );
+
   return (
     <>
       <Sidebar />
@@ -384,7 +407,9 @@ export default function Diposit() {
                 <div className="collectorWrapper">
                   <div className="addCollector">
                     <Tabs
-                      defaultActiveKey="profile"
+                      defaultActiveKey={
+                        userRole !== "collector" ? "profile" : "contact"
+                      }
                       id="uncontrolled-tab-example"
                       className="mb-3"
                     >
@@ -418,7 +443,7 @@ export default function Diposit() {
                                     />
                                     <button
                                       type="submit"
-                                      className="btn btn-success dipositSubmitBtn"
+                                      className="btn btn-outline-primary w-140 dipositSubmitBtn"
                                     >
                                       {isLoading ? (
                                         <Loader></Loader>
@@ -434,80 +459,84 @@ export default function Diposit() {
                         </Tab>
                       )}
 
-                      <Tab eventKey="profile" title={t("depositReport")}>
-                        <div>
-                          <div className="selectFilteringg">
-                            {userRole === "ispOwner" && (
-                              <select
-                                className="form-select"
-                                onChange={(e) =>
-                                  setCollectorIds(e.target.value)
-                                }
-                              >
-                                <option value="all" defaultValue>
-                                  {t("all collector")}
-                                </option>
-                                {collectors?.map((c, key) => (
-                                  <option key={key} value={c.user}>
-                                    {c.name}
+                      {userRole !== "collector" && (
+                        <Tab eventKey="profile" title={t("depositReport")}>
+                          <div>
+                            <div className="selectFilteringg">
+                              {userRole === "ispOwner" && (
+                                <select
+                                  className="form-select"
+                                  onChange={(e) =>
+                                    setCollectorIds(e.target.value)
+                                  }
+                                >
+                                  <option value="all" defaultValue>
+                                    {t("all collector")}
                                   </option>
-                                ))}
-                                <option value={getManager?.user} defaultValue>
-                                  {getManager?.name}
-                                </option>
-                              </select>
-                            )}
-                            <div className="dateDiv  ">
-                              <input
-                                className="form-select"
-                                type="date"
-                                id="start"
-                                name="trip-start"
-                                value={moment(dateStart).format("YYYY-MM-DD")}
-                                onChange={(e) => {
-                                  setStartDate(e.target.value);
-                                }}
-                              />
-                            </div>
-                            <div className="dateDiv">
-                              <input
-                                className="form-select"
-                                type="date"
-                                id="end"
-                                name="trip-start"
-                                value={moment(dateEnd).format("YYYY-MM-DD")}
-                                onChange={(e) => {
-                                  setEndDate(e.target.value);
-                                }}
-                              />
-                            </div>
-                            <div className="submitDiv">
-                              <button
-                                className="btn btn-outline-primary w-140 mt-2"
-                                type="button"
-                                onClick={onClickFilter}
-                              >
-                                {t("filter")}
-                              </button>
+                                  {allCollector?.map((c, key) => (
+                                    <option key={key} value={c.user}>
+                                      {c.name}
+                                    </option>
+                                  ))}
+                                  <option value={manager?.user}>
+                                    {manager?.name}
+                                  </option>
+                                </select>
+                              )}
+                              <div className="dateDiv  ">
+                                <input
+                                  className="form-select"
+                                  type="date"
+                                  id="start"
+                                  name="trip-start"
+                                  value={moment(dateStart).format("YYYY-MM-DD")}
+                                  onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                  }}
+                                />
+                              </div>
+                              <div className="dateDiv">
+                                <input
+                                  className="form-select"
+                                  type="date"
+                                  id="end"
+                                  name="trip-start"
+                                  value={moment(dateEnd).format("YYYY-MM-DD")}
+                                  onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                  }}
+                                />
+                              </div>
+                              <div className="submitDiv">
+                                <button
+                                  className="btn btn-outline-primary w-140 mt-2"
+                                  type="button"
+                                  onClick={onClickFilter}
+                                >
+                                  {t("filter")}
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="table-section">
-                          <Table
-                            customComponent={customComponent}
-                            columns={columns}
-                            data={mainData}
-                          ></Table>
-                        </div>
-                      </Tab>
+                          <div className="table-section">
+                            <Table
+                              customComponent={customComponent}
+                              columns={columns}
+                              data={mainData}
+                            ></Table>
+                          </div>
+                        </Tab>
+                      )}
 
                       {(userRole === "manager" || userRole === "collector") && (
                         <Tab eventKey="contact" title={t("ownDeposit")}>
-                          <Table
-                            customComponent={customComponent}
-                            data={ownDeposits}
-                            columns={columns2}
-                          ></Table>
+                          <div className="table-section">
+                            <Table
+                              customComponent={customComponent}
+                              data={ownDeposits}
+                              columns={columns2}
+                            ></Table>
+                          </div>
                         </Tab>
                       )}
                     </Tabs>

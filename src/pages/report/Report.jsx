@@ -290,7 +290,7 @@ export default function Report() {
   );
 
   const customComponent = (
-    <div style={{ fontSize: "20px" }}>
+    <div style={{ fontSize: "18px" }}>
       {t("totalBill")} {addAllBills()} {t("tk")}
     </div>
   );

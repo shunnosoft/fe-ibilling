@@ -263,7 +263,7 @@ export default function Expenditure() {
   };
 
   const customComponent = (
-    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
       {role === "ispOwner" ? (
         <div>
           {t("totalExpenditure")} {getTotalExpenditure()} {t("tk")}

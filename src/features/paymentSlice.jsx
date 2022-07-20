@@ -13,10 +13,7 @@ const paymentSlice = createSlice({
       state.balance = action.payload.balance;
     },
     getDepositSuccess: (state, action) => {
-      console.log(action.payload);
-
-      state.allDeposit = [...state.allDeposit, action.payload];
-      console.log(current(state.allDeposit));
+      state.allDeposit = action.payload;
     },
     updateDepositSuccess: (state, action) => {
       state.allDeposit[
