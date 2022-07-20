@@ -1120,18 +1120,13 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 
   try {
     await apiLink.post(`/deposit`, data);
+    // dispatch(addDepositSucces(res.data));
 
-    // dispatch(addDepositSuccess(res.data));
     setLoading(false);
-    toast.success("ডিপোজিট প্রদান সফল হয়েছে");
+    toast.success("এডমিন একসেপ্ট এর জন্য অপেক্ষা করেন");
   } catch (error) {
     setLoading(false);
     toast.error(error.response?.data.message);
-    // if (error.response.status === 400) {
-    //   toast.success("ডিপোজিট অলরেডি পেন্ডিং এ আছে");
-    // } else {
-
-    // }
   }
 };
 
@@ -1154,10 +1149,10 @@ export const getDeposit = async (dispatch, data) => {
     const res = await apiLink.get(
       `/deposit/${data.depositerRole}/${data.ispOwnerID}`
     );
-    console.log(res.data);
 
     dispatch(getDepositSuccess(res.data));
   } catch (error) {
+    console.log(error);
     console.log(error.response?.data.message);
   }
 };

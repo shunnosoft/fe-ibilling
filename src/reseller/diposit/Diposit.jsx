@@ -348,7 +348,7 @@ export default function Diposit() {
     [t]
   );
   const customComponent = (
-    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
       {userRole !== "reseller" ? (
         <div>
           {t("ownDeposit")} {getTotalOwnDeposit()} {t("tk")}

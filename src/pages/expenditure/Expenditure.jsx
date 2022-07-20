@@ -56,7 +56,9 @@ export default function Expenditure() {
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // pagination
-  const [allExpenditures, setAllExpenditure] = useState(expenditures);
+  let [allExpenditures, setAllExpenditure] = useState(expenditures);
+  const [filterName, setFilterName] = useState();
+
   const [singleExp, setSingleExp] = useState({});
   const [singlePurpose, setSinglePurpose] = useState({});
 
@@ -83,11 +85,6 @@ export default function Expenditure() {
     getAllExpenditure(dispatch, ispOwnerId, setIsloading);
     getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   }, [ispOwnerId, dispatch]);
-
-  const getTotalExpenditure = () => {
-    const total = allExpenditures.reduce((pre, curr) => pre + curr.amount, 0);
-    return total;
-  };
 
   const columns = React.useMemo(
     () => [
@@ -178,7 +175,7 @@ export default function Expenditure() {
         ),
       },
     ],
-    [t]
+    [ownerUsers, t]
   );
   const columns2 = React.useMemo(
     () => [
@@ -248,8 +245,25 @@ export default function Expenditure() {
     ],
     [t]
   );
+
+  const findName = (userId) => {
+    const findId = ownerUsers.find((item) => item[userId]);
+    return findId[userId].name;
+  };
+
+  if (filterName && filterName != "Select") {
+    allExpenditures = allExpenditures.filter(
+      (item) => item?.user === filterName
+    );
+  }
+
+  const getTotalExpenditure = () => {
+    const total = allExpenditures.reduce((pre, curr) => pre + curr.amount, 0);
+    return total;
+  };
+
   const customComponent = (
-    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
       {role === "ispOwner" ? (
         <div>
           {t("totalExpenditure")} {getTotalExpenditure()} {t("tk")}
@@ -261,7 +275,6 @@ export default function Expenditure() {
       )}
     </div>
   );
-
   return (
     <>
       <Sidebar />
@@ -334,6 +347,40 @@ export default function Expenditure() {
                       className=" mt-1"
                     >
                       <Tab eventKey="expenditure" title={t("expense")}>
+                        <div className="nameFilter">
+                          <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setFilterName(event.target.value)
+                            }
+                          >
+                            <option selected>Select</option>
+                            {
+                              ownerUsers.map((item) => {
+                                for (const key in item) {
+                                  return (
+                                    (item[key].role === "manager" ||
+                                      item[key].role === "ispOwner") && (
+                                      <option value={key}>
+                                        {item[key].name}
+                                      </option>
+                                    )
+                                  );
+                                }
+                              })
+
+                              // allExpenditures.map(
+                              //   (item) =>
+                              //     item.user && (
+                              // <option value={item?.user}>
+                              //   {findName(item?.user)}
+                              // </option>
+                              //     )
+                              // )
+                            }
+                          </select>
+                        </div>
                         <div className="table-section">
                           <Table
                             isLoading={isLoading}

@@ -9,7 +9,7 @@ const GlobalFilter = ({ filter, setFilter, data, customComponent }) => {
         style={{ display: "flex", alignItems: "center" }}
         className="col-sm-8"
       >
-        <h4 style={{ fontSize: "20px" }} className="allCollector">
+        <h4 style={{ fontSize: "18px" }} className="allCollector">
           {t("totalData")}: <span>{data ? data.length : "0"}</span>
         </h4>
         <div>{customComponent}</div>

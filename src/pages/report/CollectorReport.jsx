@@ -163,7 +163,7 @@ export default function CollectorReport() {
   }, [mainData]);
 
   const customComponent = (
-    <div style={{ fontSize: "20px", display: "flex", alignItems: "center" }}>
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
       <div>
         {t("collectorReportBill")} {addAllBills()} {t("tk")}
       </div>
