@@ -43,6 +43,9 @@ export default function Diposit() {
     (state) => state?.persistedReducer?.payment?.allDeposit
   );
 
+  const collectorDeposite = useSelector(
+    (state) => state?.persistedReducer?.payment?.collectorDeposite
+  );
   // get manager from redux
   const manager = useSelector(
     (state) => state?.persistedReducer?.manager?.manager
@@ -90,8 +93,7 @@ export default function Diposit() {
 
   const [collectorIds, setCollectorIds] = useState("all");
 
-  const [mainData, setMainData] = useState(allDeposit);
-  console.log(mainData);
+  const [mainData, setMainData] = useState([]);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -139,26 +141,69 @@ export default function Diposit() {
 
   // get own deposit, ownerUser & total balance api call
   useEffect(() => {
-    getMyDeposit(dispatch);
+    if (userRole != "ispOwner") {
+      getMyDeposit(dispatch);
+    }
+
     getOwnerUsers(dispatch, ispOwner);
     if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
   }, [userRole]);
 
-  // get deposit report api call
   useEffect(() => {
-    if (userRole !== "collector") {
-      getDeposit(dispatch, {
-        depositerRole:
-          userRole === "ispOwner"
-            ? "manager"
-            : userRole === "manager"
-            ? "collector"
-            : "",
-        ispOwnerID: ispOwner,
-      });
-    }
-  }, [ispOwner, userRole, dispatch]);
+    if (userRole === "ispOwner") {
+      getDeposit(
+        dispatch,
+        {
+          depositerRole: "manager",
+          ispOwnerID: ispOwner,
+        },
+        userRole
+      );
 
+      getDeposit(
+        dispatch,
+        {
+          depositerRole: "collector",
+          ispOwnerID: ispOwner,
+        },
+        userRole
+      );
+    }
+
+    if (userRole === "manager") {
+      getDeposit(
+        dispatch,
+        {
+          depositerRole: "collector",
+          ispOwnerID: ispOwner,
+        },
+        userRole
+      );
+    }
+  }, []);
+
+  // get deposit report api call
+  // useEffect(() => {
+  //   if (userRole !== "collector") {
+  //     getDeposit(dispatch, {
+  //       depositerRole:
+  //         userRole === "ispOwner"
+  //           ? "manager"
+  //           : userRole === "manager"
+  //           ? "collector"
+  //           : "",
+  //       ispOwnerID: ispOwner,
+  //     });
+  //   }
+  // }, [ispOwner, userRole, dispatch]);
+
+  useEffect(() => {
+    if (userRole === "ispOwner" && allDeposit && collectorDeposite) {
+      return setMainData([...allDeposit, ...collectorDeposite]);
+    } else {
+      setMainData(allDeposit);
+    }
+  }, [allDeposit, collectorDeposite]);
   // useEffect(() => {
   //   var initialToday = new Date();
   //   var initialFirst = new Date(
@@ -214,7 +259,6 @@ export default function Diposit() {
         accessor: "user",
         Cell: ({ cell: { value } }) => {
           const performer = ownerUsers.find((item) => item[value]);
-          console.log(performer);
 
           return (
             <div>
@@ -250,7 +294,7 @@ export default function Diposit() {
                   <div className="loaderDiv">
                     <Loader />
                   </div>
-                ) : (
+                ) : userRole != "ispOwner" && original.status === "pending" ? (
                   <div className="">
                     <span
                       style={{ cursor: "pointer" }}
@@ -271,6 +315,8 @@ export default function Diposit() {
                       {t("cancel")}
                     </span>
                   </div>
+                ) : (
+                  <span class="badge bg-info shadow">{t("manager")}</span>
                 )
               ) : (
                 <>
@@ -295,7 +341,7 @@ export default function Diposit() {
         },
       },
     ],
-    [t]
+    [t, ownerUsers]
   );
 
   // own deposit column
@@ -348,13 +394,13 @@ export default function Diposit() {
   let depositCalculation;
   const getTotalDeposit = useCallback(() => {
     depositCalculation = mainData.filter((item) => item.status === "accepted");
-    const initialValue = 0;
+
     const sumWithInitial = depositCalculation.reduce(
       (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
+      0
     );
     return sumWithInitial.toString();
-  }, [depositCalculation]);
+  }, [mainData]);
 
   // own deposit column
   let ownDepositCalculation;

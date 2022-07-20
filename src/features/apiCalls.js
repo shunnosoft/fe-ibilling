@@ -78,6 +78,8 @@ import {
   getmyDepositSucces,
   getTotalBalanceSuccess,
   updateDepositSuccess,
+  addDepositSucces,
+  getCollectorDeposite,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
@@ -1116,11 +1118,12 @@ export const billCollect = async (
 
 export const addDeposit = async (dispatch, data, setLoading) => {
   setLoading(true);
-  // console.log(data, "from api calls");
+  console.log(data);
 
   try {
-    await apiLink.post(`/deposit`, data);
-    // dispatch(addDepositSucces(res.data));
+    const res = await apiLink.post(`/deposit`, data);
+    console.log(res.data);
+    dispatch(addDepositSucces(res.data));
 
     setLoading(false);
     toast.success("এডমিন একসেপ্ট এর জন্য অপেক্ষা করেন");
@@ -1144,13 +1147,20 @@ export const getTotalbal = async (dispatch, setLoading) => {
   }
 };
 
-export const getDeposit = async (dispatch, data) => {
+export const getDeposit = async (dispatch, data, userRole = null) => {
   try {
     const res = await apiLink.get(
       `/deposit/${data.depositerRole}/${data.ispOwnerID}`
     );
-
-    dispatch(getDepositSuccess(res.data));
+    if (userRole === "ispOwner") {
+      if (data.depositerRole === "collector") {
+        dispatch(getCollectorDeposite(res.data));
+      } else {
+        dispatch(getDepositSuccess(res.data));
+      }
+    } else {
+      dispatch(getDepositSuccess(res.data));
+    }
   } catch (error) {
     console.log(error);
     console.log(error.response?.data.message);
@@ -1163,11 +1173,12 @@ export const depositAcceptReject = async (
   id,
   setAccLoading
 ) => {
-  // console.log(status, id);
+  console.log(status, id);
   setAccLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
     dispatch(updateDepositSuccess(res.data));
+    console.log(res.data);
     setAccLoading(false);
     if (res.data.status === "accepted") {
       toast.success("ডিপোজিট গ্রহণ সফল হয়েছে।");

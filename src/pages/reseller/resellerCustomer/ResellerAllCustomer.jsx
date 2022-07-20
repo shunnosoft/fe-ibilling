@@ -114,22 +114,17 @@ const AllResellerCustomer = () => {
       {
         Header: t("id"),
         accessor: "customerId",
-        width: "8%",
+        width: "9%",
       },
       {
-        Header: t("resellerName"),
+        Header: t("reseller"),
         accessor: "reseller.name",
-        width: "8%",
+        width: "12%",
       },
       {
         Header: t("name"),
         accessor: "name",
-        width: "10%",
-      },
-      {
-        Header: "PPPoE",
-        accessor: "pppoe.name",
-        width: "10%",
+        width: "12%",
       },
       {
         Header: t("mobile"),
@@ -137,7 +132,7 @@ const AllResellerCustomer = () => {
         width: "12%",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -153,25 +148,26 @@ const AllResellerCustomer = () => {
         },
       },
       {
+        width: "10%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
       {
-        width: "10%",
-        Header: t("monthFee"),
+        width: "8%",
+        Header: t("month"),
         accessor: "monthlyFee",
       },
       {
-        width: "9%",
+        width: "10%",
         Header: t("balance"),
         accessor: "balance",
       },
       {
-        width: "12%",
-        Header: t("billCycle"),
+        width: "14%",
+        Header: t("billingCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMMM DD YYYY hh:mm A");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
 

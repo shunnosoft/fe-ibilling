@@ -1069,18 +1069,6 @@ export default function Customer() {
                         {t("reset")}
                       </button>
                     </div>
-                    <div>
-                      <select
-                        onChange={(e) => handleFreeUser(e.target.value)}
-                        className="form-select"
-                      >
-                        <option value="allUser">{t("sokolCustomer")}</option>
-                        <option value="freeUser">{t("freeCustomer")}</option>
-                        <option value="nonFreeUser">
-                          {t("nonFreeCustomer")}
-                        </option>
-                      </select>
-                    </div>
                   </div>
                   <div className="table-section">
                     <Table
