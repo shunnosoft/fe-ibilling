@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
-import { getAllPaymentHistory } from "./finalClientSlice";
+import { createSupportTicket, getAllPaymentHistory, getAllSupportTicket } from "./finalClientSlice";
 import { getOwnerUserSuccess } from "./getIspOwnerUsersSlice";
 import { getpackageSuccess } from "./packageSlice";
 // get isp owner all user
@@ -51,9 +51,29 @@ export const billPayment = async (data, setLoading) => {
 export const billPaymentHistory = async (dispatch) => {
   try {
     const res = await apiLink("/customer/paymentHistory");
-    console.log(res);
     dispatch(getAllPaymentHistory(res.data.data));
   } catch (error) {
     console.log(error);
   }
 };
+
+export const getAllSupportTicketApi=async(dispatch)=>{
+  try {
+    const res = await apiLink.get("/customer/supportTicket");
+    dispatch(getAllSupportTicket(res.data.data));
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const createSupportTicketApi=async(data,dispatch,setLoading,setSupportMessage)=>{
+  setLoading(true)
+  try {
+    const res = await apiLink.post("/customer/supportTicket",data);
+    dispatch(createSupportTicket(res.data.data));
+    setSupportMessage("")
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
+    console.log(error)
+  }
+  setLoading(false)
+}
