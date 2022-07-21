@@ -1,19 +1,18 @@
 import moment from "moment";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { billPaymentHistory } from "../features/getIspOwnerUsersApi";
 import { CurrencyDollar } from "react-bootstrap-icons";
 
 const PaymentHistory = () => {
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const userData = useSelector(
     (state) => state?.persistedReducer?.auth?.currentUser.customer
   );
   const paymentHistory = useSelector((state) => state.client.paymentHistory);
 
   useEffect(() => {
-    billPaymentHistory(dispath);
+    billPaymentHistory(dispatch);
   }, []);
 
   return (
@@ -34,59 +33,55 @@ const PaymentHistory = () => {
         </p>
       </div>
       <div className="payment_history_table">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="wrapper wrapper-content animated fadeInRight">
-                <div class="ibox-content forum-container">
-                  <div class="forum-title">
-                    <div class="pull-right forum-desc">
-                      <samll>
-                        Total Payment History{" "}
-                        {paymentHistory.length > 0 ? paymentHistory.length : 0}
-                      </samll>
-                    </div>
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="wrapper wrapper-content animated fadeInRight">
+              <div className="ibox-content forum-container">
+                <div className="forum-title">
+                  <div className="pull-right forum-desc">
+                    <samll>
+                      Total Payment History{" "}
+                      {paymentHistory.length > 0 ? paymentHistory.length : 0}
+                    </samll>
                   </div>
-                  {paymentHistory.map((item) => (
-                    <div class="forum-item">
-                      <div class="row">
-                        <div class="col-md-9">
-                          <div class="forum-icon text-success">
-                            <CurrencyDollar />
-                          </div>
-
-                          <div class="forum-sub-title">
-                            You payment bill through
-                            <span className="badge bg-info ms-2">
-                              {item.medium}
-                            </span>
-                          </div>
+                </div>
+                {paymentHistory.map((item) => (
+                  <div className="forum-item">
+                    <div className="payment_history_list">
+                      <div>
+                        <div className="forum-icon text-success">
+                          <CurrencyDollar />
                         </div>
-                        <div class="col-md-1 forum-info">
+
+                        <div className="forum-sub-title">
+                          Date {moment(item.createdAt).format("MMM-DD-YYYY")}{" "}
+                        </div>
+                      </div>
+
+                      <div className="d-flex me-3 justify-content-evenly">
+                        <div className="forum-info">
                           <div>
-                            <span className="badge bg-secondary text-dark">
+                            <span className="badge bg-secondary">
                               <small>{item.amount}</small>
                             </span>
                           </div>
                         </div>
-                        <div class="col-md-1 forum-info">
+                        <div className="forum-info">
                           <div>
-                            <span className="badge bg-secondary text-dark">
+                            <span className="badge bg-secondary">
                               <small>{item.package}</small>
                             </span>
                           </div>
                         </div>
-                        <div class="col-md-1 forum-info">
-                          <div>
-                            <span className="badge bg-secondary text-dark">
-                              show Details
-                            </span>
+                        <div className="forum-info ">
+                          <div className="view-payment">
+                            <button>view</button>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

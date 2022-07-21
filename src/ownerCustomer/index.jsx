@@ -16,6 +16,7 @@ import ClientProfile from "./ClientProfile";
 import Packages from "./packages";
 import PasswordReset from "./PasswordReset";
 import PaymentHistory from "./PaymentHistory";
+import SupportTicket from "./SupportTicket";
 
 const Client = () => {
   const [renderText, setRenderText] = useState("profile");
@@ -56,7 +57,7 @@ const Client = () => {
               <div className="menu_label">Packages</div>
             </li>
             <hr className="mt-0 mb-0" />
-            <li onClick={() => setRenderText("support")}>
+            <li onClick={() => setRenderText("supportPage")}>
               <div className="menu_icon">
                 <Question />
               </div>
@@ -110,12 +111,13 @@ const Client = () => {
           <h1 className="text-center jumbotron">
             Welcome to {userData.ispOwner.company}
           </h1>
-          <hr class="my-4" />
+          <hr class="my-2" />
 
           {renderText === "profile" && <ClientProfile />}
           {renderText === "resetPassword" && <PasswordReset />}
           {renderText === "packages" && <Packages />}
           {renderText === "paymentHistory" && <PaymentHistory />}
+          {renderText === "supportPage" && <SupportTicket />}
         </section>
       </div>
     </section>
