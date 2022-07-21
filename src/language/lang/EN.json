@@ -423,5 +423,11 @@
   "updateStatusSubArea": "Customer Status ?",
   "updateStatus": "Update Status",
   "updateBillingCycle": "Update Billing Cycle",
-  "staticPackageSetting": "Static Package Setting"
+  "staticPackageSetting": "Static Package Setting",
+  "managerAccepted": "Accepted By Manager",
+  "adminAccepted": "Accepted By Admin",
+  "managerCanceled": "Canceled By Manager",
+  "adminCanceled": "Canceled By Admin",
+  "managerPending": "Pending to Manager",
+  "adminPending": "Pending to Admin"
 }

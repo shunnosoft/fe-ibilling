@@ -182,21 +182,6 @@ export default function Diposit() {
     }
   }, []);
 
-  // get deposit report api call
-  // useEffect(() => {
-  //   if (userRole !== "collector") {
-  //     getDeposit(dispatch, {
-  //       depositerRole:
-  //         userRole === "ispOwner"
-  //           ? "manager"
-  //           : userRole === "manager"
-  //           ? "collector"
-  //           : "",
-  //       ispOwnerID: ispOwner,
-  //     });
-  //   }
-  // }, [ispOwner, userRole, dispatch]);
-
   useEffect(() => {
     if (userRole === "ispOwner" && allDeposit && collectorDeposite) {
       return setMainData([...allDeposit, ...collectorDeposite]);
@@ -225,8 +210,7 @@ export default function Diposit() {
 
   // filter section
   const onClickFilter = () => {
-    // collector filter
-    let arr = getNames();
+    let arr = [...allDeposit, ...collectorDeposite];
     if (collectorIds !== "all") {
       arr = arr.filter((bill) => bill.user === collectorIds);
     } else {
@@ -294,7 +278,10 @@ export default function Diposit() {
                   <div className="loaderDiv">
                     <Loader />
                   </div>
-                ) : userRole != "ispOwner" && original.status === "pending" ? (
+                ) : (userRole === "ispOwner" &&
+                    original.depositBy === "manager") ||
+                  (userRole === "manager" &&
+                    original.depositBy === "collector") ? (
                   <div className="">
                     <span
                       style={{ cursor: "pointer" }}
@@ -316,15 +303,25 @@ export default function Diposit() {
                     </span>
                   </div>
                 ) : (
-                  <span class="badge bg-info shadow">{t("manager")}</span>
+                  <span class="badge bg-warning shadow">
+                    {t("managerPending")}
+                  </span>
                 )
               ) : (
                 <>
                   {original.status === "accepted" && (
-                    <span className="badge bg-success">{t("accepted")}</span>
+                    <span className="badge bg-success">
+                      {original.depositBy === "manager"
+                        ? t("adminAccepted")
+                        : t("managerAccepted")}
+                    </span>
                   )}
                   {original.status === "rejected" && (
-                    <span className="badge bg-danger">{t("cancled")}</span>
+                    <span className="badge bg-danger">
+                      {original.depositBy === "manager"
+                        ? t("adminCanceled")
+                        : t("managerCanceled")}
+                    </span>
                   )}
                 </>
               )}
@@ -366,13 +363,25 @@ export default function Diposit() {
         Cell: ({ row: { original } }) => (
           <div>
             {original.status === "accepted" && (
-              <span className="badge bg-success">{t("accepted")}</span>
+              <span className="badge bg-success">
+                {userRole === "manager"
+                  ? t("adminAccepted")
+                  : t("managerAccepted")}
+              </span>
             )}
             {original.status === "rejected" && (
-              <span className="badge bg-danger">{t("cancled")}</span>
+              <span className="badge bg-danger">
+                {userRole === "manager"
+                  ? t("adminCanceled")
+                  : t("managerCanceled")}
+              </span>
             )}
             {original.status === "pending" && (
-              <span className="badge bg-warning">{t("pending")}</span>
+              <span className="badge bg-warning">
+                {userRole === "manager"
+                  ? t("adminPending")
+                  : t("managerPending")}
+              </span>
             )}
           </div>
         ),
@@ -414,7 +423,7 @@ export default function Diposit() {
       initialValue
     );
     return sumWithInitial.toString();
-  }, [ownDepositCalculation]);
+  }, [ownDeposits]);
 
   // send sum deposit of table header
   const customComponent = (

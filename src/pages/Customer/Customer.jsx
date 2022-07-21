@@ -425,7 +425,7 @@ export default function Customer() {
             <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           </div>
         ),
-        width: "4%",
+        width: "2%",
       },
       {
         width: "8%",
@@ -433,12 +433,12 @@ export default function Customer() {
         accessor: "customerId",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("PPPoE"),
         accessor: "pppoe.name",
       },
@@ -449,7 +449,7 @@ export default function Customer() {
       },
 
       {
-        width: "9%",
+        width: "8%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -465,7 +465,12 @@ export default function Customer() {
         },
       },
       {
-        width: "10%",
+        width: "9%",
+        Header: t("package"),
+        accessor: "pppoe.profile",
+      },
+      {
+        width: "8%",
         Header: t("mountly"),
         accessor: "monthlyFee",
       },
@@ -475,7 +480,7 @@ export default function Customer() {
         accessor: "balance",
       },
       {
-        width: "12%",
+        width: "11%",
         Header: t("billingCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
@@ -484,7 +489,7 @@ export default function Customer() {
       },
 
       {
-        width: "7%",
+        width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 

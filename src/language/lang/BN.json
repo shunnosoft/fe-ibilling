@@ -323,7 +323,7 @@
   "mikrotikIP": "মাইক্রোটিক আইপি",
   "port": "পোর্ট",
   "customerId": " গ্রাহক আইডি:",
-  "balance": "ব্যাল্যান্স",
+  "balance": "ব্যালেন্স",
   "ip": "আই পি",
   "updateCustomer": "গ্রাহক আপডেট করুন",
   "er": "এর -",
@@ -428,5 +428,11 @@
   "offAutoDisable": "টি গ্রাহকের আটো ডিজেবল অফ করতে চান?",
   "updateStatus": "আপডেট স্টাটাস",
   "updateBillingCycle": "আপডেট বিলিং সাইকেল",
-  "staticPackageSetting": "স্ট্যাটিক প্যাকেজে সেটিং"
+  "staticPackageSetting": "স্ট্যাটিক প্যাকেজে সেটিং",
+  "managerAccepted": "ম্যানেজার গ্রহণ করেছে",
+  "adminAccepted": "এডমিন গ্রহণ করেছে",
+  "managerCanceled": "ম্যানেজার বাতিল করেছে",
+  "adminCanceled": "এডমিন বাতিল করেছে",
+  "managerPending": "ম্যানেজার পেন্ডিং",
+  "adminPending": "এডমিন পেন্ডিং"
 }
