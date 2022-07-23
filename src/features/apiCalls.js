@@ -985,6 +985,7 @@ export const postReseller = async (dispatch, data, setIsLoading, resetForm) => {
   })
     .then((res) => {
       dispatch(addResellerSuccess(res.data));
+      console.log(res.data);
       setIsLoading(false);
       document.querySelector("#resellerModal").click();
       resetForm();
@@ -1147,7 +1148,13 @@ export const getTotalbal = async (dispatch, setLoading) => {
   }
 };
 
-export const getDeposit = async (dispatch, data, userRole = null) => {
+export const getDeposit = async (
+  dispatch,
+  data,
+  userRole = null,
+  setLoading
+) => {
+  setLoading(true);
   try {
     const res = await apiLink.get(
       `/deposit/${data.depositerRole}/${data.ispOwnerID}`
@@ -1165,6 +1172,7 @@ export const getDeposit = async (dispatch, data, userRole = null) => {
     console.log(error);
     console.log(error.response?.data.message);
   }
+  setLoading(false);
 };
 
 export const depositAcceptReject = async (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import useDash from "../../assets/css/dash.module.css";
@@ -11,6 +11,7 @@ import {
   PenFill,
   PersonFill,
   CashStack,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -39,8 +40,11 @@ import CustomerBillCollect from "./staticCustomerCrud/CustomerBillCollect";
 import AddStaticCustomer from "./staticCustomerCrud/StaticCustomerPost";
 import CustomerDetails from "../../pages/staticCustomer/customerCRUD/CustomerDetails";
 import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import PrintCustomer from "./customerPDF";
 export default function RstaticCustomer() {
   const { t } = useTranslation();
+  const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.staticCustomer
   );
@@ -106,6 +110,16 @@ export default function RstaticCustomer() {
 
     setCustomers(tempCustomers);
   }, [cus, paymentStatus, status, subAreaId]);
+
+  // find area name
+  const areaName = subAreas.find((item) => item.id === subAreaId);
+
+  // send filter data to print
+  const filterData = {
+    area: areaName?.name ? areaName.name : t("allArea"),
+    status: status ? status : t("sokolCustomer"),
+    payment: paymentStatus ? paymentStatus : t("sokolCustomer"),
+  };
 
   //possible total monthly fee state
   const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
@@ -376,13 +390,19 @@ export default function RstaticCustomer() {
                       </>
                     )}
                   </div>
-                  {/* <div
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addStaticCustomerModal"
-                  >
-                    <PersonPlusFill />
-                  </div> */}
+
+                  <div className="addAndSettingIcon">
+                    <ReactToPrint
+                      documentTitle="গ্রাহক লিস্ট"
+                      trigger={() => (
+                        <PrinterFill
+                          title={t("print")}
+                          className="addcutmButton"
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
+                  </div>
                 </div>
               </FourGround>
 
@@ -437,6 +457,14 @@ export default function RstaticCustomer() {
                           <option value="paid"> {t("paid")} </option>
                           <option value="unpaid"> {t("unpaid")} </option>
                         </select>
+                      </div>
+
+                      <div style={{ display: "none" }}>
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={Customers}
+                          ref={componentRef}
+                        />
                       </div>
 
                       <div className="addNewCollector"></div>

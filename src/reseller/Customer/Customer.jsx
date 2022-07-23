@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 // import { Link } from "react-router-dom";
@@ -12,6 +12,7 @@ import {
   PenFill,
   PersonFill,
   CashStack,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -36,9 +37,12 @@ import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import PrintCustomer from "./customerPDF";
 
 export default function Customer() {
   const { t } = useTranslation();
+  const componentRef = useRef(); //reference of pdf export component
 
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
@@ -105,6 +109,16 @@ export default function Customer() {
 
     setCustomers(tempCustomers);
   }, [cus, paymentStatus, status, subAreaId]);
+
+  // find area name
+  const areaName = subAreas.find((item) => item.id === subAreaId);
+
+  // send filter data to print
+  const filterData = {
+    area: areaName?.name ? areaName.name : t("allArea"),
+    status: status ? status : t("sokolCustomer"),
+    payment: paymentStatus ? paymentStatus : t("sokolCustomer"),
+  };
 
   // get specific customer
   const getSpecificCustomer = (id) => {
@@ -371,12 +385,23 @@ export default function Customer() {
                       </>
                     )}
                   </div>
-                  <div
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerModal"
-                  >
-                    <PersonPlusFill />
+
+                  <div className="addAndSettingIcon">
+                    <PersonPlusFill
+                      className="addcutmButton"
+                      data-bs-toggle="modal"
+                      data-bs-target="#customerModal"
+                    />
+                    <ReactToPrint
+                      documentTitle="গ্রাহক লিস্ট"
+                      trigger={() => (
+                        <PrinterFill
+                          title={t("print")}
+                          className="addcutmButton"
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
                   </div>
                 </div>
               </FourGround>
@@ -431,6 +456,14 @@ export default function Customer() {
                           <option value="paid"> {t("paid")} </option>
                           <option value="unpaid"> {t("unpaid")} </option>
                         </select>
+                      </div>
+
+                      <div style={{ display: "none" }}>
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={Customers}
+                          ref={componentRef}
+                        />
                       </div>
 
                       <div className="addNewCollector"></div>

@@ -266,6 +266,7 @@ export default function ResellerPost() {
                               p.mikrotik === item.id && (
                                 <div key={p.id} className="displayFlex">
                                   <input
+                                    disabled={!mikrotikIds.includes(p.mikrotik)}
                                     type="checkbox"
                                     value={p.id}
                                     onChange={handelMikrotikPakages}

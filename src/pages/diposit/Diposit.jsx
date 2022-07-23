@@ -157,7 +157,8 @@ export default function Diposit() {
           depositerRole: "manager",
           ispOwnerID: ispOwner,
         },
-        userRole
+        userRole,
+        setLoading
       );
 
       getDeposit(
@@ -166,7 +167,8 @@ export default function Diposit() {
           depositerRole: "collector",
           ispOwnerID: ispOwner,
         },
-        userRole
+        userRole,
+        setLoading
       );
     }
 
@@ -177,7 +179,8 @@ export default function Diposit() {
           depositerRole: "collector",
           ispOwnerID: ispOwner,
         },
-        userRole
+        userRole,
+        setLoading
       );
     }
   }, []);
@@ -578,6 +581,7 @@ export default function Diposit() {
                               customComponent={customComponent}
                               columns={columns}
                               data={mainData}
+                              isLoading={isLoading}
                             ></Table>
                           </div>
                         </Tab>
@@ -590,6 +594,7 @@ export default function Diposit() {
                               customComponent={customComponent}
                               data={ownDeposits}
                               columns={columns2}
+                              isLoading={isLoading}
                             ></Table>
                           </div>
                         </Tab>

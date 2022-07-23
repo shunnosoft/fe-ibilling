@@ -308,15 +308,21 @@ export default function ResellerEdit({ reseller }) {
                         <div key={item.id}>
                           <h6 className="areaParent ">
                             <input
+                              checked={
+                                allowedMikrotik?.includes(item.id)
+                                  ? true
+                                  : false
+                              }
+                              disabled={reseller?.mikrotiks?.includes(item?.id)}
                               type="checkbox"
-                              className="getValueUsingClasses"
+                              className="getValueUsingClassesforMikrotik"
                               value={item.id}
+                              id={item.id}
                               onChange={(e) =>
                                 setMikrotikHandler(e.target.value)
                               }
-                              disabled
                             />{" "}
-                            <label>
+                            <label htmlFor={item.id}>
                               <b className="h5">{item.name}</b>
                             </label>
                           </h6>
@@ -327,22 +333,29 @@ export default function ResellerEdit({ reseller }) {
                                   {reseller.mikrotikPackages?.includes(p.id) ? (
                                     <>
                                       <input
+                                        id={p.id}
                                         type="checkbox"
                                         value={p.id}
                                         onChange={handelMikrotikPakages}
                                         checked={true}
                                         disabled={true}
                                       />
-                                      <label>{p.name}</label>
+                                      <label htmlFor={p.id}>{p.name}</label>
                                     </>
                                   ) : (
                                     <>
                                       <input
+                                        id={p.id}
                                         type="checkbox"
+                                        disabled={
+                                          !mikrotikIds_Edit?.includes(
+                                            p.mikrotik
+                                          )
+                                        }
                                         value={p.id}
                                         onChange={handelMikrotikPakages}
                                       />
-                                      <label>{p.name}</label>
+                                      <label htmlFor={p.id}>{p.name}</label>
                                     </>
                                   )}
                                 </div>
