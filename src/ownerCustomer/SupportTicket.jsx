@@ -43,7 +43,7 @@ const SupportTicket = () => {
   };
 
   useEffect(() => {
-    getAllSupportTicketApi(dispatch);
+    getAllSupportTicketApi(dispatch, setLoading);
   }, []);
 
   return (
@@ -86,34 +86,40 @@ const SupportTicket = () => {
           <div className="support-apply-date">Support Applied</div>
           <div className="support-receive-date">Support Receive</div>
         </div>
-        {paymentHistory.map((item, index) => (
-          <div className="support-table-data mt-2">
-            <div className="support-count">{index + 1}. </div>
-
-            <div className="support-message"> {item.message}</div>
-            <div className="support-status">
-              <span
-                className={`badge bg-${
-                  (item.status === "pending" && "danger") ||
-                  (item.status === "processed" && "secondary") ||
-                  (item.status === "complete" && "success")
-                }`}
-              >
-                {item.status}
-              </span>
-            </div>
-            <div className="support-apply-date">
-              {" "}
-              <span className="badge bg-secondary">
-                {moment(item.createdAt).format("MMM-DD-YYYY")}
-              </span>
-            </div>
-            <div className="support-receive-date">
-              {" "}
-              <span className="badge bg-success">20/10/3000</span>
-            </div>
+        {loading ? (
+          <div className="text-center mt-5">
+            <Loader />
           </div>
-        ))}
+        ) : (
+          paymentHistory.map((item, index) => (
+            <div className="support-table-data mt-2">
+              <div className="support-count">{index + 1}. </div>
+
+              <div className="support-message"> {item.message}</div>
+              <div className="support-status">
+                <span
+                  className={`badge bg-${
+                    (item.status === "pending" && "danger") ||
+                    (item.status === "processed" && "secondary") ||
+                    (item.status === "complete" && "success")
+                  }`}
+                >
+                  {item.status}
+                </span>
+              </div>
+              <div className="support-apply-date">
+                {" "}
+                <span className="badge bg-secondary">
+                  {moment(item.createdAt).format("MMM-DD-YYYY")}
+                </span>
+              </div>
+              <div className="support-receive-date">
+                {" "}
+                <span className="badge bg-success">20/10/3000</span>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

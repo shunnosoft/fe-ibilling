@@ -51,12 +51,12 @@ ul.client_service_list li:hover {
 
 .show-menu {
   transform: translate(0rem);
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .hide-menu {
   transform: translate(-7rem);
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 @-webkit-keyframes rotating
@@ -127,7 +127,7 @@ ul.client_service_list li:hover {
 }
 
 .client_profile {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -200,9 +200,14 @@ table.client_info_table td {
   transition: transform 0.4s;
 }
 
-.package_list_card:hover {
-  transform: scale(1.2);
+.restForm-wraper{
+  width: 80%;
+  margin: 0 auto;
+
 }
+/* .package_list_card:hover {
+  transform: scale(1.2);
+} */
 
 .package_select_button {
   cursor: pointer;
@@ -351,6 +356,14 @@ table.client_info_table td {
   width: 13%;
 }
 
+.payment_history-table tr td{
+padding: 5px !important;
+}
+
+.pageActive{
+  background-color: #000;
+}
+
 @media screen and (max-width: 580px) {
   .client_wraper {
     position: fixed;
@@ -359,7 +372,10 @@ table.client_info_table td {
   .client_profile {
     width: 100%;
   }
-
+  .restForm-wraper{
+    width: 95%;
+    margin: 0 auto;
+  }
   .up_downLoad {
     flex-direction: column;
   }
@@ -373,15 +389,18 @@ table.client_info_table td {
   }
   .support-ticket-table {
     margin: auto;
+    width: 100%;
   }
   .support-message-form {
     margin: auto;
+    width: 100%;
+    margin-bottom: 1rem;
   }
   .support-table-data {
     padding: 0.5rem 0.5rem;
   }
   .support-table-data {
-    font-size: 13px;
+    font-size: 16px;
   }
   .support-count {
     width: 4%;

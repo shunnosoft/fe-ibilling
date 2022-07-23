@@ -54,7 +54,7 @@ export default function RstaticCustomer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const permission = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.permission
+    (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
   const [Customers, setCustomers] = useState(cus);
   // get specific customer

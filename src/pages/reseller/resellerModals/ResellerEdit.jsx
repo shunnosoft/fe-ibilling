@@ -160,14 +160,14 @@ export default function ResellerEdit({ reseller }) {
               <Formik
                 initialValues={{
                   // ispOwner:
-                  name: reseller.name || "", //*
-                  mobile: reseller.mobile || "", //*
-                  email: reseller.email || "", //*
-                  nid: reseller.nid || "", //*
-                  website: reseller.website || "",
-                  address: reseller.address || "",
+                  name: reseller?.name || "", //*
+                  mobile: reseller?.mobile || "", //*
+                  email: reseller?.email || "", //*
+                  nid: reseller?.nid || "", //*
+                  website: reseller?.website || "",
+                  address: reseller?.address || "",
                   commissionRate: reseller?.commissionRate?.reseller || 1, //number
-                  status: reseller.status || "", //['new', 'active', 'inactive', 'banned', 'deleted'],
+                  status: reseller?.status || "", //['new', 'active', 'inactive', 'banned', 'deleted'],
                   // ['prepaid', 'postpaid', 'both'], /*
                   // rechargeBalance: "", //number
                   // smsRate: "", //number

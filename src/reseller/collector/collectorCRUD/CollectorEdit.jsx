@@ -66,29 +66,28 @@ export default function CollectorEdit({ single }) {
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;
     });
-    const newP = {
+    const newPermission = {
       ...single.permissions,
       ...temp,
     };
     const sendingData = {
       ...data,
       areas: areaIds_Edit,
-
       collectorId: single.id,
       resellerId: resellerId,
-      permissions: newP,
+      permissions: newPermission,
     };
     editCollector(dispatch, sendingData, setIsLoading);
   };
 
-  // const handleChange = (e) => {
-  //   const { name, checked } = e.target;
-  //   let temp = permissions.map((val) =>
-  //     val.value === name ? { ...val, isChecked: checked } : val
-  //   );
+  const handleChange = (e) => {
+    const { name, checked } = e.target;
+    let temp = permissions.map((val) =>
+      val.value === name ? { ...val, isChecked: checked } : val
+    );
+    setPermissions(temp);
+  };
 
-  //   setPermissions(temp);
-  // };
   return (
     <div>
       {/* Model start */}
@@ -136,7 +135,7 @@ export default function CollectorEdit({ single }) {
                     <div className="collectorInputs">
                       {collectorData.map((val, key) => (
                         <FtextField
-                          disabled={val.name === "mobile"}
+                          // disabled={val.name === "mobile"}
                           key={key}
                           type={val.type}
                           label={val.label}
@@ -191,7 +190,7 @@ export default function CollectorEdit({ single }) {
                       ))}
                     </div>
 
-                    {/* <b className="mt-2">পারমিশান পরিবর্তন করুন</b>
+                    <b className="mt-2">পারমিশান পরিবর্তন করুন</b>
                     <div className="AllAreaClass">
                       {permissions.map((val, key) => (
                         <div className="CheckboxContainer" key={key}>
@@ -205,7 +204,7 @@ export default function CollectorEdit({ single }) {
                           <label className="checkboxLabel">{val.label}</label>
                         </div>
                       ))}
-                    </div> */}
+                    </div>
                     {/* area */}
 
                     <div className="modal-footer">

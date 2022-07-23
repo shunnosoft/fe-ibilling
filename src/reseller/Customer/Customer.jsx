@@ -53,7 +53,7 @@ export default function Customer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const permission = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.permission
+    (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
   const [Customers, setCustomers] = useState(cus);
   // get specific customer
@@ -344,6 +344,7 @@ export default function Customer() {
     ],
     [t]
   );
+
   return (
     <>
       <Sidebar />
@@ -371,13 +372,15 @@ export default function Customer() {
                       </>
                     )}
                   </div>
-                  <div
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerModal"
-                  >
-                    <PersonPlusFill />
-                  </div>
+                  {(permission?.customerAdd || role === "reseller") && (
+                    <div
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#customerModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  )}
                 </div>
               </FourGround>
 

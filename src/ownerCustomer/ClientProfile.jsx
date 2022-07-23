@@ -8,11 +8,13 @@ export default function ClientProfile() {
     (state) => state?.persistedReducer?.auth?.currentUser.customer
   );
 
-  useEffect(() => {
-    apiLink(`customer/mikrotik/routerConnectivity/`).then((data) =>
-      console.log(data.data)
-    );
-  });
+  // useEffect(() => {
+  //   apiLink(`customer/mikrotik/currentSession `)
+  //     .then((data) => console.log(data.data))
+  //     .catch((e) => {
+  //       console.log(e.response?.data?.message);
+  //     });
+  // }, []);
 
   return (
     <>
@@ -31,7 +33,16 @@ export default function ClientProfile() {
             </tr>
             <tr>
               <td>Package</td>
-              <td>{userData?.pppoe.profile}</td>
+              {userData.userType === "pppoe" && (
+                <td>{userData?.pppoe.profile}</td>
+              )}
+              {userData.userType === "simple-queue" && (
+                <td>
+                  {" "}
+                  {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}
+                  MBps
+                </td>
+              )}
             </tr>
             <tr>
               <td>Balance</td>
@@ -50,11 +61,21 @@ export default function ClientProfile() {
         <div className="up_downLoad">
           <div className="up_down upload">
             <p>Upload</p>
-            <h3>18MBPS</h3>
+            {userData.userType === "simple-queue" && (
+              <h3>
+                {parseInt(userData.queue.maxLimit.split("/")[0] / 1000000)}MBps
+              </h3>
+            )}
+            {userData.userType === "pppoe" && <h3>{userData.pppoe.profile}</h3>}
           </div>
           <div className="up_down download">
             <p>Downlaod</p>
-            <h3>18MBPS</h3>
+            {userData.userType === "pppoe" && <h3>{userData.pppoe.profile}</h3>}
+            {userData.userType === "simple-queue" && (
+              <h3>
+                {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}MBps
+              </h3>
+            )}
           </div>
           <div
             data-bs-toggle="modal"
