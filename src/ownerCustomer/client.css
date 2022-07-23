@@ -1,458 +1,406 @@
 .client_section {
-    width: 100%;
-    display: flex;
-    background-image: linear-gradient(to right, #142a48, #273a60);
-    color: #fff
+  width: 100%;
+  display: flex;
+  background-image: linear-gradient(to right, #142a48, #273a60);
+  color: #fff;
+  min-height: 100vh;
 }
 
 .card-body.client_service_card {
-    padding: 1.5rem;
-    text-align: center;
-    background-image: linear-gradient(to right, #00c6ff, #0072ff);
+  padding: 1.5rem;
+  text-align: center;
+  background-image: linear-gradient(to right, #00c6ff, #0072ff);
 }
 
 .card-body.client_service_card {
-    color: #fff
+  color: #fff;
 }
 
 .card_wraper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
 ul.client_service_list {
-    list-style: none;
-    background: #1B2430;
-    width: 6rem;
-    margin-top: 5rem;
-    color: #fff;
-    font-weight: 700;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-
+  list-style: none;
+  background: #1b2430;
+  width: 6rem;
+  margin-top: 5rem;
+  color: #fff;
+  font-weight: 700;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 ul.client_service_list li {
-    padding: 0.5rem;
-    text-align: center;
-    cursor: pointer;
-
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
 }
 
 ul.client_service_list li:hover {
-    background-color: #000;
+  background-color: #000;
 }
 
-
 .settings_wraper {
-    position: relative;
-    transform: translate(-7rem);
-    width: 7rem;
+  position: relative;
+  transform: translate(-7rem);
+  width: 7rem;
 }
 
 .show-menu {
-    transform: translate(0rem);
-    transition: 0.5s;
+  transform: translate(0rem);
+  transition: 0.5s;
 }
 
 .hide-menu {
-    transform: translate(-7rem);
-    transition: 0.5s;
+  transform: translate(-7rem);
+  transition: 0.5s;
 }
 
 @-webkit-keyframes rotating
 
-/* Safari and Chrome */
-    {
-    from {
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
+/* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
 
-    to {
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes rotating {
-    from {
-        -ms-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
 
-    to {
-        -ms-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 
 .client_setting_icon {
-    position: absolute;
-    font-size: 2rem;
-    color: #3eff00;
-    top: -5%;
-    left: 33px;
-    cursor: pointer;
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-    animation: rotating 6s linear infinite;
-    -webkit-animation: rotating 6s linear infinite;
-    -moz-animation: rotating 6s linear infinite;
-    -ms-animation: rotating 6s linear infinite;
-    -o-animation: rotating 6s linear infinite;
-
+  position: absolute;
+  font-size: 2rem;
+  color: #3eff00;
+  top: -5%;
+  left: 33px;
+  cursor: pointer;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  animation: rotating 6s linear infinite;
+  -webkit-animation: rotating 6s linear infinite;
+  -moz-animation: rotating 6s linear infinite;
+  -ms-animation: rotating 6s linear infinite;
+  -o-animation: rotating 6s linear infinite;
 }
 
 .setting_icon_wraper {
-    width: 70px;
-    height: 70px;
-    background-color: #1B2430;
-    position: absolute;
-    top: 42%;
-    left: 60px;
-    transform: rotate(44deg);
-    border-top-right-radius: 9px;
-    z-index: -100;
+  width: 70px;
+  height: 70px;
+  background-color: #1b2430;
+  position: absolute;
+  top: 42%;
+  left: 60px;
+  transform: rotate(44deg);
+  border-top-right-radius: 9px;
+  z-index: -100;
 }
 
 .menu_icon {
-    font-size: 1.5rem;
-    color: #3eff00;
+  font-size: 1.5rem;
+  color: #3eff00;
 }
 
 .client_profile {
-    width: 80%;
-    margin: 0 auto;
+  width: 80%;
+  margin: 0 auto;
 }
 
 table.client_info_table {
-    color: #000;
-    font-weight: 700;
+  color: #000;
+  font-weight: 700;
 }
 
 table.client_info_table td {
-    padding: 0px 10px !important;
-    color: #fff !important;
-    font-size: 1.3rem !important;
+  padding: 0px 10px !important;
+  color: #fff !important;
+  font-size: 1.3rem !important;
 }
 
 .client_dashboard_section {
-    padding: 1rem
+  padding: 1rem;
 }
 
 .up_downLoad {
-    display: flex;
-    width: 100%;
-    margin-top: 2rem;
+  display: flex;
+  width: 100%;
+  margin-top: 2rem;
 }
 
 .up_down {
-    margin-right: 20px;
-    background-color: #1B2430;
-    color: #3eff00;
-    padding: 2rem;
-    width: 19rem;
-
+  margin-right: 20px;
+  background-color: #1b2430;
+  color: #3eff00;
+  padding: 2rem;
+  width: 19rem;
 }
 
 /* reset password  */
 
 .password_reset_form {
-    color: #fff !important;
-    margin-top: 3rem;
+  color: #fff !important;
+  margin-top: 3rem;
 }
 
 .password_reset_form label {
-    color: #fff
+  color: #fff;
 }
 
 .packages_info_wraper {
-    width: fit-content;
-    padding: 10px;
-    background-color: #1B2430;
-    display: flex;
-    align-items: center;
+  width: fit-content;
+  padding: 10px;
+  background-color: #1b2430;
+  display: flex;
+  align-items: center;
 }
 
 .packages_info_wraper p {
-    margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .packages_info_wraper p {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .package_table {
-    width: 60% !important;
+  width: 60% !important;
 }
 
-
 .packageList ul li:hover {
-    padding: 0.6rem;
-    transform: scale(1.1);
+  padding: 0.6rem;
+  transform: scale(1.1);
 }
 
 .package_list_card {
-    transition: transform 0.4s;
+  transition: transform 0.4s;
 }
 
 .package_list_card:hover {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 
 .package_select_button {
-    cursor: pointer;
+  cursor: pointer;
 }
-
-@media screen and (max-width: 580px) {
-    .client_wraper {
-        position: fixed;
-    }
-
-    .client_profile {
-        width: 100%;
-    }
-
-    .up_downLoad {
-        flex-direction: column;
-    }
-
-    .up_down {
-        margin-bottom: 1rem;
-    }
-}
-
 
 .white-bg {
-    background-color: #ffffff;
+  background-color: #ffffff;
 }
 
 .page-heading {
-    border-top: 0;
-    padding: 0 10px 20px 10px;
+  border-top: 0;
+  padding: 0 10px 20px 10px;
 }
 
 .forum-post-container .media {
-    margin: 10px 10px 10px 10px;
-    padding: 20px 10px 20px 10px;
-    border-bottom: 1px solid #f1f1f1;
+  margin: 10px 10px 10px 10px;
+  padding: 20px 10px 20px 10px;
+  border-bottom: 1px solid #f1f1f1;
 }
 
 .forum-avatar {
-    float: left;
-    margin-right: 20px;
-    text-align: center;
-    width: 110px;
-}
-
-.forum-avatar .img-circle {
-    height: 48px;
-    width: 48px;
-}
-
-.author-info {
-    color: #676a6c;
-    font-size: 11px;
-    margin-top: 5px;
-    text-align: center;
-}
-
-.forum-post-info {
-    padding: 9px 12px 6px 12px;
-    background: #f9f9f9;
-    border: 1px solid #f1f1f1;
-}
-
-.media-body>.media {
-    background: #f9f9f9;
-    border-radius: 3px;
-    border: 1px solid #f1f1f1;
-}
-
-.forum-post-container .media-body .photos {
-    margin: 10px 0;
-}
-
-.forum-photo {
-    max-width: 140px;
-    border-radius: 3px;
-}
-
-.media-body>.media .forum-avatar {
-    width: 70px;
-    margin-right: 10px;
-}
-
-.media-body>.media .forum-avatar .img-circle {
-    height: 38px;
-    width: 38px;
+  float: left;
+  margin-right: 20px;
+  text-align: center;
+  width: 110px;
 }
 
 .mid-icon {
-    font-size: 66px;
+  font-size: 66px;
 }
 
 .forum-item {
-    background-color: #1b2430;
-    margin: 10px 0;
-    padding: 10px 0 20px;
-
+  background-color: #1b2430;
+  margin: 10px 0;
+  padding: 10px 0 20px;
 }
-
-.views-number {
-    font-size: 24px;
-    line-height: 18px;
-    font-weight: 400;
-}
-
 
 .forum-item small {
-    color: #3eff00;
+  color: #3eff00;
 }
 
 .forum-item .forum-sub-title {
-    color: #fff;
-    margin-left: 50px;
-    margin-top: 5px;
-        font-weight: 700;
+  color: #fff;
+  margin-left: 50px;
+  margin-top: 5px;
+  font-weight: 700;
 }
 
 .forum-title {
-    margin: 15px 0 15px 0;
+  margin: 15px 0 15px 0;
 }
 
 .forum-info {
-    text-align: center;
-}
-
-.forum-desc {
-    color: #999;
+  text-align: center;
+  margin: 0px 5px;
 }
 
 .forum-icon {
-    float: left;
-    width: 30px;
-    margin-right: 20px;
-    text-align: center;
+  float: left;
+  width: 30px;
+  margin-right: 20px;
+  text-align: center;
 }
 
-a.forum-item-title {
-    color: inherit;
-    display: block;
-    font-size: 18px;
-    font-weight: 600;
+.forum-item-title {
+  color: inherit;
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
 }
 
-a.forum-item-title:hover {
-    color: inherit;
+.forum-item-title:hover {
+  color: inherit;
 }
 
-.forum-icon .fa {
-    font-size: 30px;
-    margin-top: 8px;
-    color: #9b9b9b;
-}
-
-.forum-item.active .fa {
-    color: #1ab394;
-}
-
-.forum-item.active a.forum-item-title {
-    color: #1ab394;
-}
-
-.ibox {
-    clear: both;
-    margin-bottom: 25px;
-    margin-top: 0;
-    padding: 0;
-}
-
-.ibox.collapsed .ibox-content {
-    display: none;
-}
-
-.ibox.collapsed .fa.fa-chevron-up:before {
-    content: "\f078";
-}
-
-.ibox.collapsed .fa.fa-chevron-down:before {
-    content: "\f077";
-}
-
-.ibox:after,
-.ibox:before {
-    display: table;
-}
-
-.ibox-title {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background-color: #ffffff;
-    border-color: #e7eaec;
-    border-image: none;
-    border-style: solid solid none;
-    border-width: 3px 0 0;
-    color: inherit;
-    margin-bottom: 0;
-    padding: 14px 15px 7px;
-    min-height: 48px;
+.forum-item-title {
+  color: #1ab394;
 }
 
 .ibox-content {
-    color: inherit;
-    padding: 15px 20px 20px 20px;
-
-}
-
-.ibox-footer {
-    color: inherit;
-    border-top: 1px solid #e7eaec;
-    font-size: 90%;
-    background: #ffffff;
-    padding: 10px 15px;
-}
-
-.message-input {
-    height: 90px !important;
-}
-
-.form-control,
-.single-line {
-    background-color: #FFFFFF;
-    background-image: none;
-    border: 1px solid #e5e6e7;
-    border-radius: 1px;
-    color: inherit;
-    display: block;
-    padding: 6px 12px;
-    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
-    width: 100%;
-    font-size: 14px;
-}
-
-.text-navy {
-    color: #1ab394;
+  color: inherit;
 }
 
 .mid-icon {
-    font-size: 66px !important;
+  font-size: 66px !important;
 }
 
-.m-b-sm {
-    margin-bottom: 10px;
+.payment_history_list {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 1rem;
+}
+
+.view-payment {
+  cursor: pointer;
+}
+
+.view-payment button {
+  width: 80px;
+  border-radius: 10px;
+  background-color: #73a3ce;
+  border: none;
+  color: #fff;
+}
+
+.view-payment button:hover {
+  color: #000;
+  background-color: #ddd;
+}
+
+.support-message-form {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+.support-message-form input.form-control {
+  color: #fff !important;
+}
+
+.support-ticket-table {
+  width: 90%;
+  margin-top: 1rem;
+  border-radius: 5px;
+}
+
+.support-table-data {
+  display: flex;
+  justify-content: space-between;
+  background-color: #1b2430;
+  padding: 1rem 1rem;
+}
+.support-count {
+  width: 4%;
+}
+.support-message {
+  width: 60%;
+}
+
+.support-status {
+  width: 10%;
+}
+.support-apply-date {
+  width: 13%;
+}
+.support-receive-date {
+  width: 13%;
+}
+
+@media screen and (max-width: 580px) {
+  .client_wraper {
+    position: fixed;
+  }
+
+  .client_profile {
+    width: 100%;
+  }
+
+  .up_downLoad {
+    flex-direction: column;
+  }
+
+  .up_down {
+    margin-bottom: 1rem;
+  }
+
+  .payment_history_list {
+    flex-direction: column;
+  }
+  .support-ticket-table {
+    margin: auto;
+  }
+  .support-message-form {
+    margin: auto;
+  }
+  .support-table-data {
+    padding: 0.5rem 0.5rem;
+  }
+  .support-table-data {
+    font-size: 13px;
+  }
+  .support-count {
+    width: 4%;
+  }
+  .support-message {
+    width: 37%;
+  }
+
+  .support-status {
+    width: 18%;
+    margin-right: 0px;
+  }
+  .support-apply-date {
+    width: 22%;
+  }
+  .support-receive-date {
+    width: 20%;
+  }
+  .support-table-data {
+    justify-content: space-evenly;
+  }
 }
