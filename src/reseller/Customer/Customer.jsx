@@ -57,7 +57,7 @@ export default function Customer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const permission = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.permission
+    (state) => state?.persistedReducer?.auth?.userData?.permissions
   );
   const [Customers, setCustomers] = useState(cus);
   // get specific customer
@@ -358,6 +358,7 @@ export default function Customer() {
     ],
     [t]
   );
+
   return (
     <>
       <Sidebar />
@@ -387,11 +388,13 @@ export default function Customer() {
                   </div>
 
                   <div className="addAndSettingIcon">
-                    <PersonPlusFill
-                      className="addcutmButton"
-                      data-bs-toggle="modal"
-                      data-bs-target="#customerModal"
-                    />
+                    {(permission?.customerAdd || role === "reseller") && (
+                      <PersonPlusFill
+                        className="addcutmButton"
+                        data-bs-toggle="modal"
+                        data-bs-target="#customerModal"
+                      />
+                    )}
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
                       trigger={() => (

@@ -89,6 +89,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 export const userLogout = async () => {
   localStorage.removeItem("persist:root");
   localStorage.removeItem("netFeeToken");
+  localStorage.removeItem("nf:textR")
   // localStorage.clear();
   window.location.reload();
 };

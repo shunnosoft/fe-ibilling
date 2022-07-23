@@ -32,7 +32,7 @@ function PasswordReset() {
 
   return (
     <div className="password_reset_form">
-      <main className="form-signin">
+      <main className="restForm-wraper">
         <form onSubmit={submitForm} className="text-white">
           <h1 className="h3 mb-3 fw-normal">Reset Your Password</h1>
 

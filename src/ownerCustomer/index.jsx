@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import {
   BarChart,
@@ -31,6 +32,16 @@ const Client = () => {
     (state) => state?.persistedReducer?.auth?.currentUser.customer
   );
 
+  useEffect(() => {
+    const rText = localStorage.getItem("nf:textR"); //render page from local storage
+    if (rText) setRenderText(rText);
+  }, []);
+
+  const renderPageController = (text) => {
+    localStorage.setItem("nf:textR", text); //set page in local storage
+    setRenderText(text);
+  };
+
   const [isMenuOpen, setMenuOpen] = useState(false);
   return (
     <section className="client_section">
@@ -42,7 +53,10 @@ const Client = () => {
           }`}
         >
           <ul className="client_service_list ps-0">
-            <li onClick={() => setRenderText("profile")}>
+            <li
+              className={renderText === "profile" && "pageActive"}
+              onClick={() => renderPageController("profile")}
+            >
               <div className="menu_icon">
                 <PersonFill />
               </div>
@@ -50,14 +64,20 @@ const Client = () => {
             </li>
             <hr className="mt-0 mb-0" />
 
-            <li onClick={() => setRenderText("packages")}>
+            <li
+              className={renderText === "packages" && "pageActive"}
+              onClick={() => renderPageController("packages")}
+            >
               <div className="menu_icon">
                 <BarChart />
               </div>
               <div className="menu_label">Packages</div>
             </li>
             <hr className="mt-0 mb-0" />
-            <li onClick={() => setRenderText("supportPage")}>
+            <li
+              className={renderText === "supportPage" && "pageActive"}
+              onClick={() => renderPageController("supportPage")}
+            >
               <div className="menu_icon">
                 <Question />
               </div>
@@ -65,15 +85,18 @@ const Client = () => {
             </li>
             <hr className="mt-0 mb-0" />
 
-            <li onClick={() => setRenderText("billpay")}>
+            {/* <li onClick={() => renderPageController("billpay")}>
               <div className="menu_icon">
                 <CurrencyDollar />
               </div>
               <div className="menu_label">Pay bill</div>
             </li>
-            <hr className="mt-0 mb-0" />
+            <hr className="mt-0 mb-0" /> */}
 
-            <li onClick={() => setRenderText("paymentHistory")}>
+            <li
+              className={renderText === "paymentHistory" && "pageActive"}
+              onClick={() => renderPageController("paymentHistory")}
+            >
               <div className="menu_icon">
                 <CurrencyDollar />
               </div>
@@ -81,7 +104,10 @@ const Client = () => {
             </li>
             <hr className="mt-0 mb-0" />
 
-            <li onClick={() => setRenderText("resetPassword")}>
+            <li
+              className={renderText === "resetPassword" && "pageActive"}
+              onClick={() => renderPageController("resetPassword")}
+            >
               <div className="menu_icon">
                 <KeyFill />
               </div>

@@ -33,7 +33,7 @@ export default function Collector() {
     (state) => state.persistedReducer.collector.collector
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  let serial = 0;
+  
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [collectorPerPage, setCollectorPerPage] = useState(5);

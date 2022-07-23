@@ -31,7 +31,6 @@ const PackageChangeModal = () => {
         profile: selectedPackage.name,
       },
     };
-    console.log(sendingData);
     changePackageApi(sendingData, setLoading);
   };
 

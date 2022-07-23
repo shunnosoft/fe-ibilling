@@ -48,22 +48,26 @@ export const billPayment = async (data, setLoading) => {
   }
 };
 
-export const billPaymentHistory = async (dispatch) => {
+export const billPaymentHistory = async (dispatch,setLoading) => {
+  setLoading(true)
   try {
     const res = await apiLink("/customer/paymentHistory");
     dispatch(getAllPaymentHistory(res.data.data));
   } catch (error) {
     console.log(error);
   }
+  setLoading(false)
 };
 
-export const getAllSupportTicketApi=async(dispatch)=>{
+export const getAllSupportTicketApi=async(dispatch,setLoading)=>{
+  setLoading(true)
   try {
     const res = await apiLink.get("/customer/supportTicket");
     dispatch(getAllSupportTicket(res.data.data));
   } catch (error) {
     console.log(error)
   }
+  setLoading(false)
 }
 export const createSupportTicketApi=async(data,dispatch,setLoading,setSupportMessage)=>{
   setLoading(true)
