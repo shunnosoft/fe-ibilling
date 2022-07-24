@@ -18,8 +18,10 @@ import Loader from "../../common/Loader";
 import { getResellerBalance, getTotalbal } from "../../../features/apiCalls";
 import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
+import { useTranslation } from "react-i18next";
 
 export default function Header(props) {
+  const { t } = useTranslation();
   // const userRole = useSelector(state => state.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -113,20 +115,20 @@ export default function Header(props) {
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    এসএমএসঃ
+                    {t("SMS")}
                     <strong className="mainsmsbalance">{smsBalance}</strong>
                   </div>
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    ব্যালান্সঃ
+                    {t("balance")}
                     <strong className="mainsmsbalance">
                       {rechargeBalnace.toFixed()}
                     </strong>
                   </div>
                   <div
-                    title="রিফ্রেশ করুন"
+                    title={t("refresh")}
                     style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
                     className="refreshIcon"
                   >
@@ -156,13 +158,13 @@ export default function Header(props) {
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    ব্যালান্সঃ
+                    {t("balance")}
                     <strong className="mainsmsbalance">
                       {FormatNumber(balancee)}
                     </strong>
                   </div>
                   <div
-                    title="রিফ্রেশ করুন"
+                    title={t("refresh")}
                     style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
                     className="refreshIcon"
                   >
@@ -186,7 +188,7 @@ export default function Header(props) {
               {currentUser ? (
                 <>
                   {/* change language select box */}
-                  {/* <select
+                  <select
                     onChange={selectLanguage}
                     className="me-2"
                     style={{
@@ -201,7 +203,7 @@ export default function Header(props) {
                     <option value="en" selected={getLang === "en"}>
                       EN
                     </option>
-                  </select> */}
+                  </select>
                   {/* end change language select box */}
 
                   <div className="dropdown">
@@ -264,7 +266,7 @@ export default function Header(props) {
                           <span className="dropdownIcon">
                             <BoxArrowLeft />
                           </span>
-                          লগআউট
+                          {t("logout")}
                         </div>
                       </li>
                     </ul>

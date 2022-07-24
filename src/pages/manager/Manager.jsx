@@ -200,7 +200,7 @@ export default function Manager() {
                             />
                             <FtextField
                               type="text"
-                              label={t("managerMobile")}
+                              label={t("managerAddress")}
                               name="address"
                             />
                             <FtextField

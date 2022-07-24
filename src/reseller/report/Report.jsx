@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -13,14 +13,17 @@ import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
-import { ArrowDownUp } from "react-bootstrap-icons";
+import { ArrowDownUp, PrinterFill } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCallReseller";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import PrintReport from "./ReportPDF";
 
 export default function Report() {
   const { t } = useTranslation();
+  const componentRef = useRef();
 
   const subAreas = useSelector((state) => state.persistedReducer.area.area);
   const allCollector = useSelector(
@@ -162,6 +165,18 @@ export default function Report() {
   }, [mainData]);
   // console.log(addAllBills())
 
+  const areaName = subAreas.find((item) => item.id === subAreaIds);
+
+  // send filter data to print
+  const collector = collectors.find((item) => item.user === collectorIds);
+
+  const filterData = {
+    area: areaName?.name ? areaName.name : t("all"),
+    collector: collector?.name ? collector.name : t("all"),
+    startDate: moment(dateStart).format("YYYY-MM-DD"),
+    endDate: moment(dateEnd).format("YYYY-MM-DD"),
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -208,9 +223,22 @@ export default function Report() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <FourGround>
-                <div className="collectorTitle">{t("billReport")} </div>
-              </FourGround>
+              <div className="collectorTitle d-flex justify-content-between px-5">
+                <div> {t("billReport")} </div>
+                <ReactToPrint
+                  documentTitle={t("billReport")}
+                  trigger={() => (
+                    <button
+                      className="header_icon border-0"
+                      type="button"
+                      title={t("downloadPdf")}
+                    >
+                      <PrinterFill />
+                    </button>
+                  )}
+                  content={() => componentRef.current}
+                />
+              </div>
 
               {/* Model start */}
 
@@ -283,6 +311,15 @@ export default function Report() {
                       >
                         {t("filter")}
                       </button>
+                      {/* print report */}
+                      <div style={{ display: "none" }}>
+                        <PrintReport
+                          filterData={filterData}
+                          currentCustomers={mainData}
+                          ref={componentRef}
+                        />
+                      </div>
+                      {/* print report end*/}
                     </div>
                   </div>
                   {/* table */}

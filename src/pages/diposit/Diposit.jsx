@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import { Form, Formik } from "formik";
@@ -28,10 +28,14 @@ import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import { PrinterFill } from "react-bootstrap-icons";
+import ReactToPrint from "react-to-print";
+import PrintCustomer from "./customerPDF";
 
 export default function Diposit() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const componentRef = useRef(); //reference of pdf export component
 
   // get balance from redux
   const balancee = useSelector(
@@ -122,23 +126,6 @@ export default function Diposit() {
     depositAcceptReject(dispatch, status, id, setAccLoading);
   };
 
-  // get name
-  const getNames = useCallback(() => {
-    var arr = [];
-    allDeposit.forEach((original) => {
-      var match =
-        userRole === "ispOwner"
-          ? manager
-          : allCollector.find((c) => c.user === original.user);
-
-      if (match) {
-        arr.push({ ...original, name: match.name });
-      }
-    });
-
-    return arr;
-  }, [allCollector, userRole, manager, allDeposit]);
-
   // get own deposit, ownerUser & total balance api call
   useEffect(() => {
     if (userRole != "ispOwner") {
@@ -192,24 +179,6 @@ export default function Diposit() {
       setMainData(allDeposit);
     }
   }, [allDeposit, collectorDeposite]);
-  // useEffect(() => {
-  //   var initialToday = new Date();
-  //   var initialFirst = new Date(
-  //     initialToday.getFullYear(),
-  //     initialToday.getMonth(),
-  //     1
-  //   );
-
-  //   initialFirst.setHours(0, 0, 0, 0);
-  //   initialToday.setHours(23, 59, 59, 999);
-  //   setMainData(
-  //     getNames().filter(
-  //       (original) =>
-  //         Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
-  //         Date.parse(original.createdAt) <= Date.parse(initialToday)
-  //     )
-  //   );
-  // }, [getNames]);
 
   // filter section
   const onClickFilter = () => {
@@ -228,6 +197,15 @@ export default function Diposit() {
     );
 
     setMainData(arr);
+  };
+
+  // send filter data to print
+  const collector = allCollector.find((item) => item.user === collectorIds);
+
+  const filterData = {
+    collector: collector?.name ? collector.name : t("all collector"),
+    startDate: moment(dateStart).format("YYYY-MM-DD"),
+    endDate: moment(dateEnd).format("YYYY-MM-DD"),
   };
 
   // deposit report column
@@ -429,21 +407,22 @@ export default function Diposit() {
   }, [ownDeposits]);
 
   // send sum deposit of table header
-  const customComponent = (
+  const depositReportSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {userRole === "ispOwner" || userRole === "manager" ? (
+      {(userRole === "ispOwner" || userRole === "manager") && (
         <div style={{ marginRight: "10px" }}>
           {t("totalDiposit")} {getTotalDeposit()} {t("tk")}
         </div>
-      ) : (
-        ""
       )}
-      {userRole !== "ispOwner" ? (
+    </div>
+  );
+
+  const ownDepositSum = (
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
+      {userRole !== "ispOwner" && (
         <div>
           {t("newDiposit")} {getTotalOwnDeposit()} {t("tk")}
         </div>
-      ) : (
-        ""
       )}
     </div>
   );
@@ -458,7 +437,22 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("diposit")} </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <h2>{t("diposit")}</h2>
+
+                  <div className="addAndSettingIcon">
+                    <ReactToPrint
+                      documentTitle="গ্রাহক লিস্ট"
+                      trigger={() => (
+                        <PrinterFill
+                          title={t("print")}
+                          className="addcutmButton"
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
@@ -574,11 +568,18 @@ export default function Diposit() {
                                   {t("filter")}
                                 </button>
                               </div>
+                              <div style={{ display: "none" }}>
+                                <PrintCustomer
+                                  filterData={filterData}
+                                  currentCustomers={mainData}
+                                  ref={componentRef}
+                                />
+                              </div>
                             </div>
                           </div>
                           <div className="table-section">
                             <Table
-                              customComponent={customComponent}
+                              customComponent={depositReportSum}
                               columns={columns}
                               data={mainData}
                               isLoading={isLoading}
@@ -591,7 +592,7 @@ export default function Diposit() {
                         <Tab eventKey="contact" title={t("ownDeposit")}>
                           <div className="table-section">
                             <Table
-                              customComponent={customComponent}
+                              customComponent={ownDepositSum}
                               data={ownDeposits}
                               columns={columns2}
                               isLoading={isLoading}

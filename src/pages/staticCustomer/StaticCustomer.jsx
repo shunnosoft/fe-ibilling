@@ -491,7 +491,7 @@ export default function Customer() {
       },
       {
         width: "12%",
-        Header: t("billingCycle"),
+        Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");

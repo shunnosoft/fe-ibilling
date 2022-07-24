@@ -10,6 +10,7 @@
   "packageRate": "Package Rate",
   "addNewPackage": "Add New Package",
   "date": "Date",
+  "createdAt": "Created at",
   "mikrotik": "Mikrotik",
   "addMikrotik": "Add Mikrotik",
   "customer": "Customers",
@@ -429,5 +430,6 @@
   "managerCanceled": "Canceled By Manager",
   "adminCanceled": "Canceled By Admin",
   "managerPending": "Pending to Manager",
-  "adminPending": "Pending to Admin"
+  "adminPending": "Pending to Admin",
+  "balance": "Balance"
 }

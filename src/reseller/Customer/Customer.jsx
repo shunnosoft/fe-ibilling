@@ -111,6 +111,7 @@ export default function Customer() {
   }, [cus, paymentStatus, status, subAreaId]);
 
   // find area name
+  console.log(subAreas);
   const areaName = subAreas.find((item) => item.id === subAreaId);
 
   // send filter data to print

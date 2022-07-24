@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 // import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -27,9 +27,13 @@ import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import { PrinterFill } from "react-bootstrap-icons";
+import PrintCustomer from "./customerPDF";
 
 export default function Diposit() {
   const { t } = useTranslation();
+  const componentRef = useRef(); //reference of pdf export component
   const balancee = useSelector(
     (state) => state.persistedReducer.payment.balance
   );
@@ -49,9 +53,9 @@ export default function Diposit() {
     (state) => state.persistedReducer.manager.manager
   );
   const collectors = useSelector(
-    (state) => state.persistedReducer.collector.collector
+    (state) => state.persistedReducer.collector?.collector
   );
-  // console.log(collectors);
+
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -65,7 +69,7 @@ export default function Diposit() {
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
-  const [collectorIds, setCollectorIds] = useState([]);
+  const [collectorIds, setCollectorIds] = useState("all");
   const [mainData, setMainData] = useState(allDeposit);
   const [mainData2, setMainData2] = useState(allDeposit);
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
@@ -120,11 +124,6 @@ export default function Diposit() {
     );
     return sumWithInitial.toString();
   }, [mainData]);
-  // console.log(mainData);
-  // console.log(ownDeposits);
-  // useEffect(() => {
-  //   getMyDeposit(dispatch);
-  // }, [dispatch]);
 
   const getTotalOwnDeposit = useCallback(() => {
     const initialValue = 0;
@@ -172,15 +171,6 @@ export default function Diposit() {
           Date.parse(original.createdAt) <= Date.parse(initialToday)
       )
     );
-
-    // Temp varialbe for search
-    // setMainData2(
-    //   getNames().filter(
-    //     (original) =>
-    //       Date.parse(original.createdAt) >= Date.parse(initialFirst) &&
-    //       Date.parse(original.createdAt) <= Date.parse(initialToday)
-    //   )
-    // );
   }, [getNames]);
 
   useEffect(() => {
@@ -189,22 +179,27 @@ export default function Diposit() {
       getDepositforReseller(dispatch, userData.reseller.id);
   }, [dispatch, userData]);
 
-  const onChangeCollector = (userId) => {
-    if (userId) {
-      setCollectorIds([userId]);
-    } else {
-      let collectorUserIdsArr = [];
-      collectors.map((original) => collectorUserIdsArr.push(original.user));
-      setCollectorIds(collectorUserIdsArr);
-    }
-  };
+  // const onChangeCollector = (userId) => {
+  //   if (userId) {
+  //     setCollectorIds([userId]);
+  //   } else {
+  //     let collectorUserIdsArr = [];
+  //     collectors.map((original) => collectorUserIdsArr.push(original.user));
+  //     setCollectorIds(collectorUserIdsArr);
+  //   }
+  // };
 
   const onClickFilter = () => {
     let arr = getNames();
-
-    if (collectorIds.length) {
-      arr = arr.filter((bill) => collectorIds.includes(bill.user));
+    if (collectorIds !== "all") {
+      arr = arr.filter((bill) => bill.user === collectorIds);
+    } else {
+      arr = arr;
     }
+
+    // if (collectorIds.length) {
+    //   arr = arr.filter((bill) => collectorIds.includes(bill.user));
+    // }
 
     arr = arr.filter(
       (original) =>
@@ -215,6 +210,16 @@ export default function Diposit() {
     setMainData(arr);
     // setMainData2(arr);
   };
+
+  // send filter data to print
+  const collector = collectors.find((item) => item.user === collectorIds);
+
+  const filterData = {
+    collector: collector?.name ? collector.name : t("all collector"),
+    startDate: moment(dateStart).format("YYYY-MM-DD"),
+    endDate: moment(dateEnd).format("YYYY-MM-DD"),
+  };
+
   const columns2 = React.useMemo(
     () => [
       {
@@ -369,10 +374,25 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">{t("diposit")}</h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <h2>{t("diposit")}</h2>
+
+                  <div className="addAndSettingIcon">
+                    <ReactToPrint
+                      documentTitle="গ্রাহক লিস্ট"
+                      trigger={() => (
+                        <PrinterFill
+                          title={t("print")}
+                          className="addcutmButton"
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
+                  </div>
+                </div>
               </FourGround>
 
-              {userRole !== "reseller" ? (
+              {userRole !== "reseller" && (
                 <FourGround>
                   <div className="managerDipositToIsp">
                     <Formik
@@ -412,12 +432,10 @@ export default function Diposit() {
                     </Formik>
                   </div>
                 </FourGround>
-              ) : (
-                ""
               )}
 
               {/* table */}
-              {userRole === "collector" ? (
+              {userRole === "collector" && (
                 <FourGround>
                   <Table
                     customComponent={customComponent}
@@ -425,19 +443,18 @@ export default function Diposit() {
                     columns={columns2}
                   ></Table>
                 </FourGround>
-              ) : (
-                ""
               )}
-              {userRole !== "collector" ? (
+
+              {userRole !== "collector" && (
                 <FourGround>
                   <div className="collectorWrapper">
                     <div className="selectFilteringg">
                       {userRole === "reseller" && (
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeCollector(e.target.value)}
+                          onChange={(e) => setCollectorIds(e.target.value)}
                         >
-                          <option value="" defaultValue>
+                          <option value="all" defaultValue>
                             {t("all collector")}{" "}
                           </option>
                           {collectors?.map((c, key) => (
@@ -475,6 +492,13 @@ export default function Diposit() {
                       >
                         {t("filter")}
                       </button>
+                      <div style={{ display: "none" }}>
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={mainData}
+                          ref={componentRef}
+                        />
+                      </div>
                     </div>
 
                     <div className="submitdiv d-grid gap-2"></div>
@@ -489,59 +513,7 @@ export default function Diposit() {
                     </div>
                   </div>
                 </FourGround>
-              ) : (
-                ""
               )}
-
-              {/* Diposit status */}
-              {/* <FourGround>
-                <div className="DipositStatusSection">
-                  <h6 className="dipositStatusCheck">ডিপোজিট স্ট্যাটাস</h6>
-                  <div className="dipositStatus">
-                    <div className="table-responsive-lg">
-                      <table className="table table-striped ">
-                        <thead>
-                          <tr>
-                            <td>
-                              নাম {userRole === "manager" ? "(ম্যানেজার)" : ""}
-                              {userRole === "collector" ? "(কালেক্টর)" : ""}
-                            </td>
-                            <td>জমা</td>
-                            <td className="textAlignCenter">স্ট্যাটাস</td>
-                            <td>তারিখ</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Md. Rakib Hasan</td>
-                            <td>৳ {500}</td>
-                            <td>
-                              <h5 className="ACPbtn acceptBtn">Accepted</h5>
-                            </td>
-                            <td>31/01/2022 07:25 PM</td>
-                          </tr>
-                          <tr>
-                            <td>Md. Rakib Hasan</td>
-                            <td>৳ {500}</td>
-                            <td>
-                              <h5 className="ACPbtn rejectBtn">Rejected</h5>
-                            </td>
-                            <td>31/01/2022 07:25 PM</td>
-                          </tr>
-                          <tr>
-                            <td>Md. Rakib Hasan</td>
-                            <td>৳ {500}</td>
-                            <td>
-                              <h5 className="ACPbtn pendingBtn">Pending</h5>
-                            </td>
-                            <td>31/01/2022 07:25 PM</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </FourGround> */}
 
               <Footer />
             </FontColor>
