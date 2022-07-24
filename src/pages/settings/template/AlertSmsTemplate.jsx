@@ -96,7 +96,9 @@ function AlertSmsTemplate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const temp = upperText.split("\n");
+    temp.length = smsTemplet.length + 1;
+    const newUpperText = temp.join("\n");
     let data = {
       ...settings?.sms,
       alert:
@@ -108,8 +110,8 @@ function AlertSmsTemplate() {
       alertDays: days,
       template: {
         ...settings?.sms?.template,
-        alert: upperText + "\n" + bottomText,
-        [alertNum]: upperText + "\n" + bottomText,
+        alert: newUpperText + "\n" + bottomText,
+        [alertNum]: newUpperText + "\n" + bottomText,
       },
     };
     // if (!alertNum) {

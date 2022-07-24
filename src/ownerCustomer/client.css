@@ -139,13 +139,19 @@ table.client_info_table {
 table.client_info_table td {
   padding: 0px 10px !important;
   color: #fff !important;
-  font-size: 1.3rem !important;
+  font-size: 1.1rem !important;
 }
 
 .client_dashboard_section {
   padding: 1rem;
+  margin: auto;
 }
-
+span.navHeaderCompany {
+  color: #fff;
+  font-weight: 700;
+  font-family: cursive;
+  font-size: 1.5rem;
+}
 .up_downLoad {
   display: flex;
   width: 100%;
@@ -157,7 +163,7 @@ table.client_info_table td {
   background-color: #1b2430;
   color: #3eff00;
   padding: 2rem;
-  width: 19rem;
+  width: 24rem;
 }
 
 /* reset password  */
@@ -200,10 +206,9 @@ table.client_info_table td {
   transition: transform 0.4s;
 }
 
-.restForm-wraper{
+.restForm-wraper {
   width: 80%;
   margin: 0 auto;
-
 }
 /* .package_list_card:hover {
   transform: scale(1.2);
@@ -356,12 +361,23 @@ table.client_info_table td {
   width: 13%;
 }
 
-.payment_history-table tr td{
-padding: 5px !important;
+.payment_history-table tr td {
+  padding: 5px !important;
 }
 
-.pageActive{
+.pageActive {
   background-color: #000;
+}
+.client_navbar {
+  position: absolute !important;
+  top: 0;
+  width: 100%;
+  right: 0rem;
+  background-color: #1b2430 !important;
+}
+
+.client_profile .navbar-nav .nav-link {
+  color: #3eff00 !important;
 }
 
 @media screen and (max-width: 580px) {
@@ -372,7 +388,7 @@ padding: 5px !important;
   .client_profile {
     width: 100%;
   }
-  .restForm-wraper{
+  .restForm-wraper {
     width: 95%;
     margin: 0 auto;
   }

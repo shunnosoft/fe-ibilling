@@ -21,7 +21,7 @@ export default function ClientProfile() {
       <div className="client-info">
         <PaymentModal />
         <div class="jumbotron">
-          <h1 class="display-4">Customer Information</h1>
+          <h1 class="display-5">Customer Information</h1>
           <table className="client_info_table">
             <tr>
               <td>Name</td>
@@ -60,7 +60,7 @@ export default function ClientProfile() {
         </div>
         <div className="up_downLoad">
           <div className="up_down upload">
-            <p>Upload</p>
+            <p className="text-white">Upload</p>
             {userData.userType === "simple-queue" && (
               <h3>
                 {parseInt(userData.queue.maxLimit.split("/")[0] / 1000000)}MBps
@@ -69,7 +69,7 @@ export default function ClientProfile() {
             {userData.userType === "pppoe" && <h3>{userData.pppoe.profile}</h3>}
           </div>
           <div className="up_down download">
-            <p>Downlaod</p>
+            <p className="text-white">Downlaod</p>
             {userData.userType === "pppoe" && <h3>{userData.pppoe.profile}</h3>}
             {userData.userType === "simple-queue" && (
               <h3>
@@ -83,9 +83,9 @@ export default function ClientProfile() {
             style={{ cursor: "pointer" }}
             className="up_down download"
           >
-            <p>Payment</p>
+            <p className="text-white">Payment</p>
 
-            <h3>Bill Pay</h3>
+            <h3>Bill Payment</h3>
           </div>
         </div>
       </div>
