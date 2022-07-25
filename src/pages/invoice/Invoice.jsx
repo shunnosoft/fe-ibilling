@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../Customer/customer.css";
 import "./invoice.css";
 import moment from "moment";
@@ -18,9 +18,13 @@ import { showModal } from "../../features/uiSlice";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import { PrinterFill } from "react-bootstrap-icons";
+import PrintInvoice from "./invoicePDF";
 
 function Invoice() {
   const { t } = useTranslation();
+  const componentRef = useRef(); //reference of pdf export component
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
@@ -30,6 +34,8 @@ function Invoice() {
   const invoices = useSelector(
     (state) => state?.persistedReducer?.invoice?.invoices
   );
+
+  console.log(invoices);
 
   useEffect(() => {
     getInvoices(dispatch, ispOwnerId, setIsloading);
@@ -80,7 +86,7 @@ function Invoice() {
         Header: t("invoiceDate"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD-MM-YYYY hh:mm:ss A");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
       {
@@ -126,10 +132,30 @@ function Invoice() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("invoice")} </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <h2> {t("invoice")} </h2>
+                  <div className="addAndSettingIcon">
+                    <ReactToPrint
+                      documentTitle="গ্রাহক লিস্ট"
+                      trigger={() => (
+                        <PrinterFill
+                          title={t("print")}
+                          className="addcutmButton"
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
+                <div style={{ display: "none" }}>
+                  <PrintInvoice
+                    currentCustomers={invoices}
+                    ref={componentRef}
+                  />
+                </div>
                 <div className="collectorWrapper">
                   {/* table */}
                   <div className="table-section">

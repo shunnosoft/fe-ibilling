@@ -107,7 +107,9 @@ export default function Header(props) {
               ""
             )}
 
-            <div className="logoSide"></div>
+            <div className="logo_section company_logo">
+              <img src="./assets/img/logo.png" alt="" />
+            </div>
             <div className="headerLinks">
               {currentUser && userRole === "reseller" ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">

@@ -59,6 +59,8 @@ export default function Report() {
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
 
+  console.log(mainData);
+
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId, setIsLoading);
     let collectors = [];
@@ -79,6 +81,8 @@ export default function Report() {
           name: currentUser.ispOwner.name + " (এডমিন)",
           id: currentUser.ispOwner.id,
         };
+
+        console.log(isp);
 
         collectors.unshift(manager1);
         collectors.unshift(isp);

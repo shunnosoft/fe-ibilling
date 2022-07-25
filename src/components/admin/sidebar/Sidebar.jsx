@@ -105,16 +105,21 @@ export default function Sidebar() {
         </div>
         <div className="sidebar">
           <FourGround>
-            <div className="name companyDiv">
+            <div className="name companyDiv text-center">
+              {/* <div className="company_logo">
+                <img src="./assets/img/logo.png" alt="" />
+              </div> */}
               <NavLink to="/" className="adminDashboardTitle">
-                <ArrowLeft className="GotoHomeFromDashboard" />
-                নেট ফি {userRole === "manager" ? " (ম্যানেজার)" : ""}
-                {userRole === "collector" ? " (কালেক্টর)" : ""}
-                {userRole === "ispOwner" ? " (এডমিন)" : ""}
-                {userRole === "reseller" ? " (রিসেলার)" : ""}
+                {/* <ArrowLeft className="GotoHomeFromDashboard" /> */}
+                <span className="companyName">{getIspOwnerData?.company}</span>
               </NavLink>
               <br />
-              <div className="companyName">{getIspOwnerData?.company}</div>
+              <span className="role-section">
+                {userRole === "manager" && t("roleManager")}
+                {userRole === "collector" && t("roleCollector")}
+                {userRole === "ispOwner" && t("roleAdmin")}
+                {userRole === "reseller" && t("roleReseller")}
+              </span>
               <span className="HideSidebar" onClick={removeSidebar}></span>
             </div>
 

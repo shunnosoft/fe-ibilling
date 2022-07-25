@@ -424,7 +424,7 @@ export default function Customer() {
   const columns = React.useMemo(
     () => [
       {
-        width: "4%",
+        width: "2%",
         id: "selection",
         Header: ({ getToggleAllPageRowsSelectedProps }) => (
           <IndeterminateCheckbox
@@ -458,13 +458,13 @@ export default function Customer() {
       },
 
       {
-        width: "13%",
+        width: "12%",
         Header: t("mobile"),
         accessor: "mobile",
       },
 
       {
-        width: "8%",
+        width: "9%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -480,12 +480,12 @@ export default function Customer() {
         },
       },
       {
-        width: "8%",
+        width: "9%",
         Header: t("mountly"),
         accessor: "monthlyFee",
       },
       {
-        width: "9%",
+        width: "10%",
         Header: t("balance"),
         accessor: "balance",
       },
