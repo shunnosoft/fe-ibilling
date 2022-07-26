@@ -59,8 +59,6 @@ export default function Report() {
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
 
-  console.log(mainData);
-
   useEffect(() => {
     getAllBills(dispatch, ispOwnerId, setIsLoading);
     let collectors = [];
@@ -81,8 +79,6 @@ export default function Report() {
           name: currentUser.ispOwner.name + " (এডমিন)",
           id: currentUser.ispOwner.id,
         };
-
-        console.log(isp);
 
         collectors.unshift(manager1);
         collectors.unshift(isp);
@@ -125,8 +121,6 @@ export default function Report() {
   }, [allBills]);
 
   const onChangeCollector = (userId) => {
-    // console.log("collector id", collectorId);
-
     if (userId) {
       setCollectorIds([userId]);
     } else {
@@ -167,8 +161,6 @@ export default function Report() {
   };
 
   const onClickFilter = () => {
-    // console.log("filter data");
-
     let arr = [...allBills];
 
     if (subAreaIds.length) {
@@ -199,12 +191,7 @@ export default function Report() {
       count = count + item.amount;
     });
     return count.toString();
-    // mainData.reudce((preval,nextval)=>{
-    //  const res = preval+nextval.amount ;
-    //  return res.toString()
-    // },0)
   }, [mainData]);
-  // console.log(addAllBills())
 
   let subArea, collector;
   if (singleArea && subAreaIds.length === 1) {

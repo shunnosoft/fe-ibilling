@@ -5,6 +5,7 @@
   "roleManage": "ম্যানেজার",
   "roleCollector": "কালেক্টর",
   "roleReseller": "রিসেলার",
+  "showPassword": "পাসওয়ার্ড দেখুন",
   "dashboard": "ড্যাশবোর্ড",
   "area": "এরিয়া",
   "addArea": "এরিয়া এড করুন",
@@ -31,6 +32,7 @@
   "SMS": "এসএমএস",
   "logOut": "লগআউট",
   "logIn": "লগইন",
+  "signUp": "সাইন আপ",
   "register": "রেজিস্টার",
   "newCustomer": "নতুন গ্রাহক",
   "companyName": "কোম্পানির নামঃ",
@@ -441,5 +443,7 @@
   "managerCanceled": "ম্যানেজার বাতিল করেছে",
   "adminCanceled": "এডমিন বাতিল করেছে",
   "managerPending": "ম্যানেজার পেন্ডিং",
-  "adminPending": "এডমিন পেন্ডিং"
+  "adminPending": "এডমিন পেন্ডিং",
+  "fee": "ফি",
+  "expiredFee": "Tk পরিশোধের শেষ সময়"
 }

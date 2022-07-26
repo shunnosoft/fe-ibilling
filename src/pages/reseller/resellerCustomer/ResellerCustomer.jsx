@@ -108,7 +108,7 @@ const ResellerCustomer = () => {
       {
         Header: t("id"),
         accessor: "customerId",
-        width: "8%",
+        width: "9%",
       },
       {
         Header: t("name"),
@@ -128,7 +128,6 @@ const ResellerCustomer = () => {
 
       {
         width: "9%",
-
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -136,7 +135,7 @@ const ResellerCustomer = () => {
         },
       },
       {
-        width: "9%",
+        width: "11%",
         Header: t("payment"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -144,34 +143,27 @@ const ResellerCustomer = () => {
         },
       },
       {
+        width: "11%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
       {
         width: "10%",
-
-        Header: t("monthFee"),
+        Header: t("month"),
         accessor: "monthlyFee",
       },
       {
-        width: "9%",
+        width: "11%",
 
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
-        width: "12%",
-
-        Header: t("billCycle"),
+        Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMMM DD YYYY hh:mm A");
+          return moment(value).format("MM DD YYYY hh:mm a");
         },
       },
 
       {
         width: "7%",
-
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
@@ -311,11 +303,13 @@ const ResellerCustomer = () => {
                     ""
                   )}
                   {/* call table component */}
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={resellerCustomer}
-                  />
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={resellerCustomer}
+                    />
+                  </div>
                 </div>
               </div>
             </FontColor>

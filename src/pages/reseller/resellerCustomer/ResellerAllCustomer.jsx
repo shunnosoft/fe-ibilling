@@ -119,12 +119,12 @@ const AllResellerCustomer = () => {
       {
         Header: t("reseller"),
         accessor: "reseller.name",
-        width: "12%",
+        width: "11%",
       },
       {
         Header: t("name"),
         accessor: "name",
-        width: "12%",
+        width: "11%",
       },
       {
         Header: t("mobile"),
@@ -132,7 +132,7 @@ const AllResellerCustomer = () => {
         width: "12%",
       },
       {
-        width: "8%",
+        width: "9%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -140,7 +140,7 @@ const AllResellerCustomer = () => {
         },
       },
       {
-        width: "9%",
+        width: "11%",
         Header: t("payment"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -153,18 +153,13 @@ const AllResellerCustomer = () => {
         accessor: "pppoe.profile",
       },
       {
-        width: "8%",
+        width: "9%",
         Header: t("month"),
         accessor: "monthlyFee",
       },
       {
-        width: "10%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
-        width: "14%",
-        Header: t("billingCycle"),
+        width: "11%",
+        Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
@@ -327,11 +322,13 @@ const AllResellerCustomer = () => {
                     ""
                   )}
                   {/* call table component */}
-                  <Table
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={resellerCustomer}
-                  />
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={resellerCustomer}
+                    />
+                  </div>
                 </div>
               </div>
             </FontColor>

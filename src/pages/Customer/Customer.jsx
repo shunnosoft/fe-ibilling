@@ -115,7 +115,9 @@ export default function Customer() {
     package: "",
     mikrotik: "",
     freeUser: "",
+    filterDate: null,
   });
+
   const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
   const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
   const [totalDue, setTotalDue] = useState(0);
@@ -257,6 +259,19 @@ export default function Customer() {
       );
     }
 
+    if (filterOptions.filterDate) {
+      const convertStingToDate = moment(filterOptions.filterDate).format(
+        "YYYY-MM-DD"
+      );
+
+      tempCustomers = tempCustomers.filter(
+        (customer) =>
+          new Date(
+            moment(customer.billingCycle).format("YYYY-MM-DD")
+          ).getTime() === new Date(convertStingToDate).getTime()
+      );
+    }
+
     setCustomers1(tempCustomers);
     setCustomers(tempCustomers);
   };
@@ -269,6 +284,7 @@ export default function Customer() {
       subArea: "",
       package: "",
       isFree: "",
+      filterDate: null,
     });
     setCustomers1(Customers2);
   };
@@ -638,20 +654,6 @@ export default function Customer() {
         console.log(error);
       }
     }
-  };
-
-  //free users filter
-
-  const handleFreeUser = (value) => {
-    let getFreeUser;
-    if (value === "freeUser") {
-      getFreeUser = cus.filter((item) => item.monthlyFee === parseInt("0"));
-    } else if (value === "nonFreeUser") {
-      getFreeUser = cus.filter((item) => item.monthlyFee !== parseInt("0"));
-    } else {
-      return setCustomers1(cus);
-    }
-    setCustomers1(getFreeUser);
   };
 
   return (
@@ -1040,6 +1042,18 @@ export default function Customer() {
                             {t("nonFreeCustomer")}
                           </option>
                         </select>
+                        {/* <div className="dateDiv  "> */}
+                        <input
+                          className="form-select"
+                          type="date"
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              filterDate: e.target.value,
+                            })
+                          }
+                        />
+                        {/* </div> */}
                       </div>
                     </div>
                   </div>
