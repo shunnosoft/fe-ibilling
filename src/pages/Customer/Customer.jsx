@@ -777,7 +777,7 @@ export default function Customer() {
                   <div className="addCollector">
                     <div className="displexFlexSys">
                       {/* filter selector */}
-                      <div className="selectFiltering allFilter">
+                      <div className=" d-flex flex-wrap">
                         <select
                           className="form-select"
                           onChange={(e) => {
@@ -828,7 +828,7 @@ export default function Customer() {
 
                         {/* //Todo */}
                         <select
-                          className="form-select"
+                          className="form-select ms-2"
                           onChange={(e) => {
                             onChangeSubArea(e.target.value);
                             setFilterOption({
@@ -855,7 +855,7 @@ export default function Customer() {
                           ))}
                         </select>
                         <select
-                          className="form-select"
+                          className="form-select ms-2"
                           onChange={(e) => {
                             setFilterOption({
                               ...filterOptions,
@@ -891,7 +891,7 @@ export default function Customer() {
                         </select>
 
                         <select
-                          className="form-select"
+                          className="form-select ms-2"
                           onChange={(e) => {
                             setFilterOption({
                               ...filterOptions,
@@ -921,7 +921,7 @@ export default function Customer() {
                         </select>
                         {bpSettings?.hasMikrotik && (
                           <select
-                            className="form-select"
+                            className="form-select ms-2"
                             onChange={(e) => {
                               mikrotikHandler(e.target.value);
                             }}
@@ -983,7 +983,7 @@ export default function Customer() {
                           </select>
                         ) : (
                           <select
-                            className="form-select"
+                            className="form-select ms-2"
                             onChange={(e) => {
                               setFilterOption({
                                 ...filterOptions,
@@ -1021,7 +1021,7 @@ export default function Customer() {
                               freeUser: e.target.value,
                             })
                           }
-                          className="form-select"
+                          className="form-select ms-2"
                         >
                           <option
                             selected={filterOptions.freeUser === "allUser"}
@@ -1042,9 +1042,8 @@ export default function Customer() {
                             {t("nonFreeCustomer")}
                           </option>
                         </select>
-                        {/* <div className="dateDiv  "> */}
                         <input
-                          className="form-select"
+                          className="form-select ms-2"
                           type="date"
                           onChange={(e) =>
                             setFilterOption({
@@ -1053,7 +1052,24 @@ export default function Customer() {
                             })
                           }
                         />
-                        {/* </div> */}
+                        <button
+                          className="btn btn-outline-primary mt-2 w-140 ms-2"
+                          type="button"
+                          onClick={handleActiveFilter}
+                        >
+                          {t("filter")}
+                        </button>
+                        <button
+                          style={{
+                            marginLeft: "7px",
+                            width: "150px",
+                          }}
+                          className="btn btn-outline-secondary w-140 mt-2"
+                          type="button"
+                          onClick={handleFilterReset}
+                        >
+                          {t("reset")}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1066,29 +1082,7 @@ export default function Customer() {
                       ref={componentRef}
                     />
                   </div>
-                  <div className="filterresetbtn d-flex justify-content-between">
-                    {/* <button onClick={handleActiveFilter}>filter</button> */}
-                    <div>
-                      <button
-                        className="btn btn-success mt-2"
-                        type="button"
-                        onClick={handleActiveFilter}
-                      >
-                        {t("filter")}
-                      </button>
-                      <button
-                        style={{
-                          marginLeft: "7px",
-                          width: "150px",
-                        }}
-                        className="btn btn-secondary mt-2"
-                        type="button"
-                        onClick={handleFilterReset}
-                      >
-                        {t("reset")}
-                      </button>
-                    </div>
-                  </div>
+                  <div className="filterresetbtn d-flex justify-content-between"></div>
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
