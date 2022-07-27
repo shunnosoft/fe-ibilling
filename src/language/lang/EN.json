@@ -442,5 +442,16 @@
   "balance": "Balance",
   "fee": "Fee",
   "expiredFee": "Tk Expired Date",
-  "payment": "Payment"
+  "payment": "Payment",
+  "totalCollectionByCollector": "Total collection by collector",
+  "todayTotalCollectionByCollector": "Todays Total collection",
+  "todayTotalExpenditure": "Todays Expenditure",
+  "totalManagerCollection": "Total Managers Collection",
+  "todayTotalCollectionByManager": "Todays Managers Collection",
+  "totalMonthlyCollection": "Total Monthly Collection",
+  "totalManagerDeposite": "Total Managers Diposit",
+  "todayTotalManagerDeposite": "Todays Managers Diposite",
+  "totalCollectorDeposite": "Total Collectors Diposit",
+  "todayTotalCollectorDeposite": "Todays Collectors Diposit",
+  "totalDue":"Total Due"
 }
