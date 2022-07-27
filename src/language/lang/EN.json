@@ -442,7 +442,6 @@
   "fee": "Fee",
   "expiredFee": "Tk Expired Date",
   "payment": "Payment",
-<<<<<<< HEAD
   "january": "January",
   "february": "February",
   "march": "March",
@@ -462,9 +461,7 @@
   "billPosting": "Bill Posting",
   "collectorAdd": "Collector Add",
   "collectorUpdate": "Update Collector",
-  "viewCollectorReport": "View Collector Report"
-}
-=======
+  "viewCollectorReport": "View Collector Report",
   "totalCollectionByCollector": "Total collection by collector",
   "todayTotalCollectionByCollector": "Todays Total collection",
   "todayTotalExpenditure": "Todays Expenditure",
@@ -475,6 +472,5 @@
   "todayTotalManagerDeposite": "Todays Managers Diposite",
   "totalCollectorDeposite": "Total Collectors Diposit",
   "todayTotalCollectorDeposite": "Todays Collectors Diposit",
-  "totalDue":"Total Due"
+  "totalDue": "Total Due"
 }
->>>>>>> nahid

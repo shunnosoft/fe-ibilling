@@ -445,7 +445,6 @@
   "adminPending": "এডমিন পেন্ডিং",
   "fee": "ফি",
   "expiredFee": "Tk পরিশোধের শেষ সময়",
-<<<<<<< HEAD
   "january": "জানুয়ারী",
   "february": "ফেব্রুয়ারী",
   "march": "মার্চ",
@@ -465,9 +464,7 @@
   "billPosting": "বিল পোস্টিং",
   "collectorAdd": "কালেক্টর অ্যাড",
   "collectorUpdate": "কালেক্টর আপডেট",
-  "viewCollectorReport": "কালেক্টর রিপোর্ট দেখবে"
-}
-=======
+  "viewCollectorReport": "কালেক্টর রিপোর্ট দেখবে",
   "totalCollectionByCollector": "কালেক্টরের মোট আদায়",
   "todayTotalCollectionByCollector": "আজকে কালেক্টরের মোট আদায়",
   "todayTotalExpenditure": "আজকের খরচ",
@@ -480,4 +477,3 @@
   "todayTotalCollectorDeposite": "আজকে কালেক্টরের ডিপোজিট",
   "totalDue": "মোট বকেয়া"
 }
->>>>>>> nahid
