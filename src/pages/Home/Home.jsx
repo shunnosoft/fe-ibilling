@@ -10,6 +10,7 @@ import {
   BarChartFill,
   PersonCheckFill,
   Coin,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
@@ -24,11 +25,7 @@ import {
   getIspOwnerData,
   getManger,
 } from "../../features/apiCalls";
-import {
-  getCharts,
-  initiatePayment,
-  getDashboardCardData,
-} from "../../features/apiCalls";
+import { getCharts, getDashboardCardData } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import { showModal } from "../../features/uiSlice";
@@ -36,11 +33,11 @@ import { FetchAreaSuccess } from "../../features/areaSlice";
 import FormatNumber from "../../components/common/NumberFormat";
 // the hook
 import { useTranslation } from "react-i18next";
+import GaugeChart from "react-gauge-chart";
 
 export default function Home() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const [isLoading, setIsloading] = useState(false);
   const role = useSelector((state) => state.persistedReducer.auth.role);
   // console.log(role)
   const ispOwnerId = useSelector(
@@ -60,7 +57,7 @@ export default function Home() {
   const customerStat = useSelector(
     (state) => state.persistedReducer.chart.customerStat
   );
-
+  console.log({ customerStat });
   const invoice = useSelector(
     (state) => state.persistedReducer.invoice.invoice
   );
@@ -217,14 +214,10 @@ export default function Home() {
   }
 
   let totalCollection = 0,
-    totalCount = 0,
-    todayCollection = 0;
+    totalCount = 0;
   ChartsData.map((item) => {
     totalCollection += item.total;
     totalCount += item.count;
-    if (item.id === new Date().getDate()) {
-      todayCollection = item.total;
-    }
   });
 
   // const payNowHandler = (invoice) => {
@@ -234,6 +227,26 @@ export default function Home() {
   const invoiceType = {
     monthlyServiceCharge: t("month"),
     registration: t("register"),
+  };
+
+  const calculationOfBillStat = () => {
+    if (customerStat.collectorStat) {
+      const totalBillCollectionToday = customerStat.collectorStat.reduce(
+        (prev, curr) => prev + curr.todayBillCollection,
+        0
+      );
+      return totalBillCollectionToday;
+    }
+  };
+
+  const totalCollectorDeposite = () => {
+    if (customerStat.collectorStat) {
+      const totalCollectorDeposite = customerStat.collectorStat.reduce(
+        (prev, curr) => prev + curr.totalDeposit,
+        0
+      );
+      return totalCollectorDeposite;
+    }
   };
 
   return (
@@ -280,7 +293,7 @@ export default function Home() {
               );
             })} */}
 
-            <div className="col-md-3" key={1}>
+            <div className="col-md-3">
               <div id="card1" className="dataCard">
                 <ThreeDotsVertical className="ThreeDots" />
                 <div className="cardIcon">
@@ -342,13 +355,162 @@ export default function Home() {
                   <h2>৳ {FormatNumber(totalCollection)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("today collection")} {FormatNumber(todayCollection)}
+                    {t("today collection")}{" "}
+                    {FormatNumber(
+                      calculationOfBillStat() +
+                        customerStat.totalManagerCollectionToday
+                    )}
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
+          <div className="row">
+            <div className="col-md-3" key={4}>
+              <div id="card4" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <Coin />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>
+                    {t("totalManagerCollection")}
+                  </p>
+                  <h2>৳ {FormatNumber(customerStat.totalManagerCollection)}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    {t("todayTotalCollectionByManager")}{" "}
+                    {FormatNumber(customerStat.totalManagerCollectionToday)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3" key={3}>
+              <div id="card3" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <BarChartFill />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>
+                    {t("totalManagerDeposite")}
+                  </p>
+                  <h2>{FormatNumber(customerStat.totalManagerDeposit)}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    {t("todayTotalManagerDeposite")}{" "}
+                    {FormatNumber(customerStat.totalManagerDepositToday)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-3">
+              <div id="card2" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <CurrencyDollar />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>
+                    {t("totalCollectionByCollector")}
+                  </p>
+                  <h2>
+                    {FormatNumber(customerStat.totalBillCollectionByCollector)}
+                  </h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    {t("todayTotalCollectionByCollector")}{" "}
+                    {FormatNumber(calculationOfBillStat())}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3" key={2}>
+              <div id="card1" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <PersonCheckFill />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>
+                    {t("totalCollectorDeposite")}
+                  </p>
+                  <h2>{FormatNumber(totalCollectorDeposite())}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    {t("todayTotalCollectorDeposite")}{" "}
+                    {FormatNumber(customerStat.inactive)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row ">
+            <div className="col-md-3">
+              <div id="card4" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <Coin />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>{t("totalExpenditure")}</p>
+                  <h2>{FormatNumber(customerStat.totalExpenditure)}</h2>
+
+                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    {t("todayTotalExpenditure")}{" "}
+                    {FormatNumber(customerStat.totalExpenditureToday)}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <GaugeChart
+                id="gauge-chart3"
+                nrOfLevels={20}
+                arcWidth={0.3}
+                percent={
+                  customerStat
+                    ? ((customerStat.totalMonthlyCollection /
+                        customerStat.totalProbableAmount) *
+                        100) /
+                      100
+                    : 0.0
+                }
+                animDelay={1000}
+                textColor="red"
+                style={{ width: "60%", margin: "0 auto" }}
+              />
+              <div className="speed_meter_text d-flex justify-content-around">
+                <p>
+                  {t("totalPossibilityBill")}:{customerStat.totalProbableAmount}
+                </p>
+                <p>
+                  {t("totalMonthlyCollection")}:
+                  {customerStat.totalMonthlyCollection}
+                </p>
+              </div>
+            </div>
+
+            <div className="col-md-3">
+              <div id="card1" className="dataCard">
+                <ThreeDotsVertical className="ThreeDots" />
+                <div className="cardIcon">
+                  <CurrencyDollar />
+                </div>
+                <div className="chartSection">
+                  <p style={{ fontSize: "18px" }}>{t("totalDue")}</p>
+                  <h2>{FormatNumber(customerStat.dueAmount)}</h2>
+
+                  {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    {t("new customer")} {FormatNumber(customerStat.dueAmount)}
+                  </p> */}
+                </div>
+              </div>
+            </div>
+          </div>
           {/* chart section */}
           {/* <h2 className="dashboardTitle mt-2">কালেকশন</h2> */}
           <br />

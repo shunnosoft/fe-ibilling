@@ -445,6 +445,7 @@
   "adminPending": "এডমিন পেন্ডিং",
   "fee": "ফি",
   "expiredFee": "Tk পরিশোধের শেষ সময়",
+<<<<<<< HEAD
   "january": "জানুয়ারী",
   "february": "ফেব্রুয়ারী",
   "march": "মার্চ",
@@ -466,3 +467,17 @@
   "collectorUpdate": "কালেক্টর আপডেট",
   "viewCollectorReport": "কালেক্টর রিপোর্ট দেখবে"
 }
+=======
+  "totalCollectionByCollector": "কালেক্টরের মোট আদায়",
+  "todayTotalCollectionByCollector": "আজকে কালেক্টরের মোট আদায়",
+  "todayTotalExpenditure": "আজকের খরচ",
+  "totalManagerCollection": "ম্যানেজারের মোট কালেকশন",
+  "todayTotalCollectionByManager": "আজকে ম্যানেজারের মোট আদায়",
+  "totalMonthlyCollection": "বর্তমান মাসের কালেকশন",
+  "totalManagerDeposite": "মোট ম্যানেজারের ডিপোজিট",
+  "todayTotalManagerDeposite": "আজকে ম্যানেজারের ডিপোজিট",
+  "totalCollectorDeposite": "মোট কালেক্টরের ডিপোজিট",
+  "todayTotalCollectorDeposite": "আজকে কালেক্টরের ডিপোজিট",
+  "totalDue": "মোট বকেয়া"
+}
+>>>>>>> nahid
