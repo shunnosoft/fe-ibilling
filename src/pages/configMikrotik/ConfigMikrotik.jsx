@@ -495,10 +495,10 @@ export default function ConfigMikrotik() {
                                 setInActiveCustomer(false);
                                 setCustomerType("PPPoE");
                               }}
-                              title={t("PPPoEPackageSync")}
+                              title={t("PPPoECustomerSync")}
                               className="btn btn-outline-primary me-2 "
                             >
-                              {t("PPPoEPackageSync")} <PersonCheckFill />
+                              {t("PPPoECustomerSync")} <PersonCheckFill />
                             </button>
                           )}
 

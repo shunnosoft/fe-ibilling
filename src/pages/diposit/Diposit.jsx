@@ -92,6 +92,7 @@ export default function Diposit() {
 
   // all initial local state
   const [dateStart, setStartDate] = useState(firstDay);
+  console.log(dateStart);
 
   const [dateEnd, setEndDate] = useState(today);
 

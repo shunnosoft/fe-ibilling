@@ -1,9 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import FooterLink from "./FooterLink";
+import { useTranslation } from "react-i18next";
 import "./netfee.css";
 
 export default function Landing() {
+  const { t } = useTranslation();
   return (
     <div className="mainlanding">
       <div className="landingWrapper">
@@ -21,10 +23,10 @@ export default function Landing() {
 
               <div className="buttons">
                 <NavLink to="/login">
-                  <p className="goToLoginPage custom-btn">লগইন</p>
+                  <p className="goToLoginPage custom-btn">{t("logIn")}</p>
                 </NavLink>
                 <NavLink to="/register">
-                  <p className="goToLoginPage custom-btn"> সাইন আপ</p>
+                  <p className="goToLoginPage custom-btn">{t("signUp")}</p>
                 </NavLink>
               </div>
               {/* <h2 className="LandingTitle">নেটফি</h2> */}

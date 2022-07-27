@@ -121,8 +121,6 @@ export default function Report() {
   }, [allBills]);
 
   const onChangeCollector = (userId) => {
-    // console.log("collector id", collectorId);
-
     if (userId) {
       setCollectorIds([userId]);
     } else {
@@ -163,8 +161,6 @@ export default function Report() {
   };
 
   const onClickFilter = () => {
-    // console.log("filter data");
-
     let arr = [...allBills];
 
     if (subAreaIds.length) {
@@ -195,12 +191,7 @@ export default function Report() {
       count = count + item.amount;
     });
     return count.toString();
-    // mainData.reudce((preval,nextval)=>{
-    //  const res = preval+nextval.amount ;
-    //  return res.toString()
-    // },0)
   }, [mainData]);
-  // console.log(addAllBills())
 
   let subArea, collector;
   if (singleArea && subAreaIds.length === 1) {

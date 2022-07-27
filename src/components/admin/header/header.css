@@ -29,11 +29,25 @@
 }
 
 .logoSide {
-  flex: 6;
+  flex: 2 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
+
+.logo_section {
+  position: absolute;
+  left: 270px;
+}
+
+@media screen and (max-width: 1024px) {
+  .logo_section {
+    position: absolute;
+    left: 67px;
+    top: 15px;
+  }
+}
+
 .logoSide > h2 {
   color: var(--primaryColor) !important;
 }

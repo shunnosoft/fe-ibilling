@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FourGround } from "../../../assets/js/theme";
-import { HeaderData } from "./HeaderData";
 import { useSelector } from "react-redux";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ArrowClockwise,
   BoxArrowLeft,
-  PersonBoundingBox,
+  PersonFill,
 } from "react-bootstrap-icons";
 
 // internal imports
@@ -107,7 +106,9 @@ export default function Header(props) {
               ""
             )}
 
-            <div className="logoSide"></div>
+            <div className="logo_section company_logo">
+              {/* <img src="./assets/img/logo.png" alt="" /> */}
+            </div>
             <div className="headerLinks">
               {currentUser && userRole === "reseller" ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">
@@ -185,27 +186,27 @@ export default function Header(props) {
                 {icon}
               </div>
 
+              {/* change language select box */}
+              <select
+                onChange={selectLanguage}
+                className="me-2"
+                style={{
+                  border: "none",
+                  fontSize: "15px",
+                  backgroundColor: "transparent",
+                }}
+              >
+                <option value="bn" selected={getLang === "bn"}>
+                  বাং
+                </option>
+                <option value="en" selected={getLang === "en"}>
+                  EN
+                </option>
+              </select>
+              {/* end change language select box */}
+
               {currentUser ? (
                 <>
-                  {/* change language select box */}
-                  <select
-                    onChange={selectLanguage}
-                    className="me-2"
-                    style={{
-                      border: "none",
-                      fontSize: "15px",
-                      backgroundColor: "transparent",
-                    }}
-                  >
-                    <option value="bn" selected={getLang === "bn"}>
-                      বাং
-                    </option>
-                    <option value="en" selected={getLang === "en"}>
-                      EN
-                    </option>
-                  </select>
-                  {/* end change language select box */}
-
                   <div className="dropdown">
                     <button
                       type="button"
@@ -225,23 +226,21 @@ export default function Header(props) {
                     </button>
 
                     <ul className="dropdown-menu">
-                      {HeaderData.map((val, key) => {
-                        return (
-                          <li key={key} className="profileList">
-                            <NavLink
-                              to={
-                                userRole === "reseller"
-                                  ? val.resellerLink
-                                  : val.link
-                              }
-                              className="dropdown-item"
-                            >
-                              <span className="dropdownIcon">{val.icon}</span>
-                              {val.name}
-                            </NavLink>
-                          </li>
-                        );
-                      })}
+                      <li className="profileList">
+                        <NavLink
+                          to={
+                            userRole === "reseller"
+                              ? "/reseller/profile"
+                              : "/profile"
+                          }
+                          className="dropdown-item"
+                        >
+                          <span className="dropdownIcon">
+                            <PersonFill />
+                          </span>
+                          {t("profile")}
+                        </NavLink>
+                      </li>
 
                       {/* {userRole === "ispOwner" || userRole === "manager" ? (
                         <Link to="/activity">
@@ -257,7 +256,6 @@ export default function Header(props) {
                       ) : (
                         ""
                       )} */}
-
                       <li
                         className="profileList logOutLi"
                         onClick={handleLogOut}
@@ -266,7 +264,7 @@ export default function Header(props) {
                           <span className="dropdownIcon">
                             <BoxArrowLeft />
                           </span>
-                          {t("logout")}
+                          {t("logOut")}
                         </div>
                       </li>
                     </ul>
@@ -279,11 +277,11 @@ export default function Header(props) {
                 pathName === "/about" ||
                 pathName === "/return-and-refund-policy" ? (
                 <NavLink to="/login">
-                  <p className="goToLoginPage">লগইন</p>
+                  <p className="goToLoginPage">{t("logIn")}</p>
                 </NavLink>
               ) : (
                 <NavLink to="/register">
-                  <p className="goToLoginPage">রেজিস্টার</p>
+                  <p className="goToLoginPage">{t("register")}</p>
                 </NavLink>
               )}
             </div>

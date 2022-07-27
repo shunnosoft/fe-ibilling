@@ -61,6 +61,7 @@ export default function Expenditure() {
 
   const [singleExp, setSingleExp] = useState({});
   const [singlePurpose, setSinglePurpose] = useState({});
+  const [expenditureTypeFilter, setExpenditureTtypeFilter] = useState();
 
   //set the expenditurePurpose name to expenditure
   useLayoutEffect(() => {
@@ -246,17 +247,37 @@ export default function Expenditure() {
     [t]
   );
 
-  const findName = (userId) => {
-    const findId = ownerUsers.find((item) => item[userId]);
-    return findId[userId].name;
-  };
-
   if (filterName && filterName != "Select") {
     allExpenditures = allExpenditures.filter(
       (item) => item?.user === filterName
     );
   }
 
+  if (expenditureTypeFilter && expenditureTypeFilter != "Select") {
+    allExpenditures = allExpenditures.filter(
+      (item) => item?.expenditureName === expenditureTypeFilter
+    );
+  }
+
+  // find user name
+  const getFilterId = ownerUsers.find((item) => item[filterName]);
+
+  let getFilterName;
+  if (getFilterId) {
+    getFilterName = getFilterId[filterName];
+  }
+
+  // filter data
+  const filterData = {
+    name: getFilterName ? getFilterName?.name : t("all"),
+    expenditureType: expenditureTypeFilter ? expenditureTypeFilter : t("all"),
+    totalAmount: allExpenditures.reduce(
+      (prev, current) => prev + current.amount,
+      0
+    ),
+  };
+
+  // sum of toata expenditure
   const getTotalExpenditure = () => {
     const total = allExpenditures.reduce((pre, curr) => pre + curr.amount, 0);
     return total;
@@ -333,6 +354,7 @@ export default function Expenditure() {
                 {/* print report */}
                 <div style={{ display: "none" }}>
                   <PrintExpenditure
+                    filterData={filterData}
                     ref={componentRef}
                     allExpenditures={allExpenditures}
                   />
@@ -347,7 +369,7 @@ export default function Expenditure() {
                       className=" mt-1"
                     >
                       <Tab eventKey="expenditure" title={t("expense")}>
-                        <div className="nameFilter">
+                        <div className="nameFilter d-flex">
                           <select
                             class="form-select"
                             aria-label="Default select example"
@@ -356,29 +378,31 @@ export default function Expenditure() {
                             }
                           >
                             <option selected>Select</option>
-                            {
-                              ownerUsers.map((item) => {
-                                for (const key in item) {
-                                  return (
-                                    (item[key].role === "manager" ||
-                                      item[key].role === "ispOwner") && (
-                                      <option value={key}>
-                                        {item[key].name}
-                                      </option>
-                                    )
-                                  );
-                                }
-                              })
+                            {ownerUsers.map((item) => {
+                              for (const key in item) {
+                                return (
+                                  (item[key].role === "manager" ||
+                                    item[key].role === "ispOwner") && (
+                                    <option value={key}>
+                                      {item[key].name}
+                                    </option>
+                                  )
+                                );
+                              }
+                            })}
+                          </select>
 
-                              // allExpenditures.map(
-                              //   (item) =>
-                              //     item.user && (
-                              // <option value={item?.user}>
-                              //   {findName(item?.user)}
-                              // </option>
-                              //     )
-                              // )
+                          <select
+                            className="form-select ms-2"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setExpenditureTtypeFilter(event.target.value)
                             }
+                          >
+                            <option selected>Select</option>
+                            {expenditurePurpose.map((item, key) => (
+                              <option value={item?.name}>{item?.name}</option>
+                            ))}
                           </select>
                         </div>
                         <div className="table-section">

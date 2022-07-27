@@ -14,23 +14,24 @@ import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 const animatedComponents = makeAnimated();
 
-const options = [
-  { value: "January", label: "জানুয়ারী" },
-  { value: "February", label: "ফেব্রুয়ারী" },
-  { value: "March", label: "মার্চ" },
-  { value: "April", label: "এপ্রিল" },
-  { value: "May", label: "মে" },
-  { value: "June", label: "জুন" },
-  { value: "July", label: "জুলাই" },
-  { value: "August", label: "আগস্ট" },
-  { value: "September", label: "সেপ্টেম্বর" },
-  { value: "October", label: "অক্টোবর" },
-  { value: "November", label: "নভেম্বর" },
-  { value: "December", label: "ডিসেম্বর" },
-];
-
 export default function CustomerBillCollect({ single }) {
   const { t } = useTranslation();
+
+  const options = [
+    { value: "January", label: t("january") },
+    { value: "February", label: t("february") },
+    { value: "March", label: t("march") },
+    { value: "April", label: t("april") },
+    { value: "May", label: t("may") },
+    { value: "June", label: t("june") },
+    { value: "July", label: t("july") },
+    { value: "August", label: t("august") },
+    { value: "September", label: t("september") },
+    { value: "October", label: t("october") },
+    { value: "November", label: t("november") },
+    { value: "December", label: t("december") },
+  ];
+
   // get all customer
   const customer = useSelector(
     (state) => state?.persistedReducer?.customer?.customer

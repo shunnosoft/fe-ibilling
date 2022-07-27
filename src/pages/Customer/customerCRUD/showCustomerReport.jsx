@@ -59,7 +59,7 @@ export default function CustomerReport(props) {
       }
     }
   };
-  console.log(props?.hideReportDelete);
+
   return (
     <div>
       <div

@@ -92,7 +92,7 @@ export default function Login() {
                         className="form-check-label text-mute"
                         htmlFor="showPass"
                       >
-                        &nbsp; Show password
+                        &nbsp; {t("showPassword")}
                       </label>
                     </div>
                     <button

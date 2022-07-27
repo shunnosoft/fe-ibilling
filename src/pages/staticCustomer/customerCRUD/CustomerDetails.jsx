@@ -52,45 +52,47 @@ export default function CustomerDetails({ single }) {
                   <h5> {t("customer")} </h5>
                   <hr />
                   <h6>
-                    {t("customerId")} <b>{data?.customerId}</b>
+                    {t("customerId")} {data?.customerId}
                   </h6>
                   <h6>
-                    {t("name")}: <b>{data?.name}</b>
+                    {t("name")}: {data?.name}
                   </h6>
                   <h6>
-                    {t("mobile")}: <b>{data?.mobile}</b>
+                    {t("mobile")}: {data?.mobile}
                   </h6>
                   <h6>
-                    {t("address")}: <b>{data?.address}</b>
+                    {t("address")}: {data?.address}
                   </h6>
                   <h6>
-                    {t("email")}: <b> {data?.email}</b>
+                    {t("email")}: {data?.email}
                   </h6>
                   <h6>
-                    {t("NIDno")}: <b>{data?.nid}</b>
+                    {t("createdAt")} :{" "}
+                    {moment(data?.createdAt).format("DD-MM-YYYY hh:mm A")}
                   </h6>
                   <h6>
-                    {t("status")}: <b>{badge(data?.status)}</b>
+                    {t("NIDno")}: {data?.nid}
                   </h6>
                   <h6>
-                    {t("payment")}: <b>{badge(data?.paymentStatus)}</b>
+                    {t("status")}: {badge(data?.status)}
                   </h6>
                   <h6>
-                    {t("monthFee")}:<b> {FormatNumber(data?.monthlyFee)}</b>
+                    {t("payment")}: {badge(data?.paymentStatus)}
                   </h6>
                   <h6>
-                    {t("balance")}:<b> {FormatNumber(data?.balance)}</b>
+                    {t("monthFee")}: {FormatNumber(data?.monthlyFee)}
+                  </h6>
+                  <h6>
+                    {t("balance")}: {FormatNumber(data?.balance)}
                   </h6>
                   <h6>
                     {t("billingCycle")}:{" "}
-                    <b>
-                      {moment(data?.billingCycle).format("DD-MM-YYYY hh:mm A")}
-                    </b>
+                    {moment(data?.billingCycle).format("DD-MM-YYYY hh:mm A")}
                   </h6>
                   {bpSettings?.hasMikrotik && (
                     <h6>
                       {t("automaticConnectionOff")}:{" "}
-                      <b>{data?.autoDisable ? "YES" : "NO"}</b>
+                      {data?.autoDisable ? "YES" : "NO"}
                     </h6>
                   )}
                 </div>
@@ -98,13 +100,13 @@ export default function CustomerDetails({ single }) {
                   <h5> {t("staticCustomer")} </h5>
                   <hr />
                   <h6>
-                    {t("userName")}: <b>{data?.queue?.name}</b>
+                    {t("userName")}: {data?.queue?.name}
                   </h6>
                   <h6>
-                    {t("ip")}: <b>{data?.queue?.target}</b>
+                    {t("ip")}: {data?.queue?.target}
                   </h6>
                   <h6>
-                    {t("comment")}: <b>{data?.queue?.comment}</b>
+                    {t("comment")}: {data?.queue?.comment}
                   </h6>
                 </div>
               </div>

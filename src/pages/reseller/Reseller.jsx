@@ -93,7 +93,7 @@ export default function Reseller() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "13%",
+        width: "12%",
         Header: t("name"),
         accessor: "name",
       },
@@ -109,22 +109,22 @@ export default function Reseller() {
       },
 
       {
-        width: "19%",
+        width: "16%",
         Header: t("email"),
         accessor: "email",
       },
       {
-        width: "8%",
+        width: "12%",
         Header: t("customer"),
         accessor: "customerCount",
       },
       {
-        width: "13%",
+        width: "14%",
         Header: t("rechargeBalance"),
         accessor: "rechargeBalance",
       },
       {
-        width: "8%",
+        width: "7%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 

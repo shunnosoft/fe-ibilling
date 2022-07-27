@@ -48,7 +48,12 @@ const PrintReport = React.forwardRef((props, ref) => {
           <li>
             {t("date")} : {startDate} - {endDate}
           </li>
+        </ul>
+        <ul className="d-flex justify-content-center filter_list">
           <li>
+            {t("totalData")} {currentCustomers.length}
+          </li>
+          <li className="ms-4">
             {t("totalBill")}
             {filterData.totalBill}
           </li>
@@ -88,14 +93,14 @@ const PrintReport = React.forwardRef((props, ref) => {
             ))}
           </tbody>
         </table>
-        <div className="page-footer">
+        {/* <div className="page-footer">
           <div className="signature_container">
             <div className="p-3 signature_wraper">
               <div className="signamture_field">{t("manager")}</div>
               <div className="signamture_field">{t("admin")}</div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

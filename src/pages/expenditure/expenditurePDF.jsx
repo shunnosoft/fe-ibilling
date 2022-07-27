@@ -9,7 +9,7 @@ let serial = 0;
 
 const PrintExpenditure = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  const { allExpenditures } = props;
+  const { allExpenditures, filterData } = props;
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -34,6 +34,25 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
             )}
           </div>
         </div>
+
+        <ul className="d-flex justify-content-around filter_list">
+          <li>
+            {t("name")} : {filterData?.name}
+          </li>
+          <li>
+            {t("type")} : {filterData?.expenditureType}
+          </li>
+        </ul>
+        <ul className="d-flex justify-content-center filter_list">
+          <li>
+            {t("totalData")} {allExpenditures.length}
+          </li>
+          <li className="ms-4">
+            {t("amount")}
+            {filterData?.totalAmount}
+          </li>
+        </ul>
+
         <table className="table table-striped ">
           <thead>
             <tr>

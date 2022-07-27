@@ -87,7 +87,7 @@ export default function Home() {
     datasets: [
       showGraphData === "amount"
         ? {
-            label: "এমাউন্ট",
+            label: t("এমাউন্ট"),
             data: label,
             backgroundColor: "rgb(110 110 110 / 24%)",
             borderJoinStyle: "round",
@@ -97,7 +97,7 @@ export default function Home() {
             borderWidth: 2,
           }
         : {
-            label: "বিল",
+            label: t("বিল"),
             data: count,
             borderColor: "#0cc30c",
             borderWidth: 2,
@@ -232,8 +232,8 @@ export default function Home() {
   // };
 
   const invoiceType = {
-    monthlyServiceCharge: "মাসিক",
-    registration: "রেজিস্ট্রেশন",
+    monthlyServiceCharge: t("month"),
+    registration: t("register"),
   };
 
   return (
@@ -249,7 +249,7 @@ export default function Home() {
               <div className="col-md-12 mb-3 pt-3 pb-3 badge bg-primary text-wrap fs-5 text">
                 <div className="mb-1 pt-1 pb-1">{`নেটফি ${
                   invoiceType[invoice.type]
-                } ফি ${invoice.amount} Tk পরিশোধের শেষ সময় ${moment(
+                } ${t("fee")} ${invoice.amount} ${t("expiredFee")} ${moment(
                   invoice.dueDate
                 ).format("DD-MM-YYYY hh:mm:ss A")}`}</div>
 
@@ -260,7 +260,7 @@ export default function Home() {
                     dispatch(showModal(invoice));
                   }}
                 >
-                  পেমেন্ট
+                  {t("payment")}
                 </button>
               </div>
             )}
