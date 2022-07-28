@@ -88,10 +88,32 @@
 }
 
 #card4 {
-  background: linear-gradient(17deg, #314592, #34ccd1);
+  background: linear-gradient(17deg, #314592, #606c38);
 }
 
 #card5 {
+  background: linear-gradient(17deg, #454545, #588157);
+}
+
+#card6 {
+  background: linear-gradient(17deg, #2285bb, #003049);
+}
+#card7 {
+  background: linear-gradient(17deg, #454545, #84a59d);
+}
+#card8 {
+  background: linear-gradient(17deg, #454545, #a98467);
+}
+#card9 {
+  background: linear-gradient(17deg, #454545, #34ccd1);
+}
+#card10 {
+  background: linear-gradient(17deg, #454545, #4a4e69);
+}
+#card11 {
+  background: linear-gradient(17deg, #454545, #669bbc);
+}
+#card12 {
   background: linear-gradient(17deg, #454545, #34ccd1);
 }
 

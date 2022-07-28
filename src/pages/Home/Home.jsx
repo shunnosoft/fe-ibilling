@@ -262,7 +262,7 @@ export default function Home() {
 
   console.log(collectionPersentage);
 
-  // console.log({ customerStat });
+  console.log({ customerStat });
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
@@ -308,11 +308,13 @@ export default function Home() {
                       easingFunction={easeQuadIn}
                     >
                       {(value) => {
-                        if (!value) value = Math.round(collectionPersentage);
+                        const roundedValue = isNaN(value)
+                          ? collectionPersentage
+                          : Math.round(value);
                         return (
                           <CircularProgressbar
-                            value={value}
-                            text={`${value}%`}
+                            value={roundedValue}
+                            text={`${roundedValue}%`}
                             styles={buildStyles({ pathTransition: "none" })}
                           />
                         );
@@ -383,7 +385,8 @@ export default function Home() {
                   <h2>{FormatNumber(customerStat.total)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("new customer")} {FormatNumber(customerStat.newCustomer)}
+                    {t("new customer")}:{" "}
+                    {FormatNumber(customerStat.newCustomer)}
                   </p>
                 </div>
               </div>
@@ -400,7 +403,7 @@ export default function Home() {
                   <h2>{FormatNumber(customerStat.active)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("in active")} {FormatNumber(customerStat.inactive)}
+                    {t("in active")}: {FormatNumber(customerStat.inactive)}
                   </p>
                 </div>
               </div>
@@ -417,7 +420,7 @@ export default function Home() {
                   <h2>{FormatNumber(customerStat.paid)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("due")} {FormatNumber(customerStat.unpaid)}
+                    {t("due")}: {FormatNumber(customerStat.unpaid)}
                   </p>
                 </div>
               </div>
@@ -450,7 +453,7 @@ export default function Home() {
             <>
               <div className="row">
                 <div className="col-md-3">
-                  <div id="card4" className="dataCard">
+                  <div id="card5" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
                       <Coin />
@@ -472,7 +475,7 @@ export default function Home() {
                 </div>
 
                 <div className="col-md-3" key={3}>
-                  <div id="card3" className="dataCard">
+                  <div id="card6" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
                       <BarChartFill />
@@ -481,7 +484,9 @@ export default function Home() {
                       <p style={{ fontSize: "16px" }}>
                         {t("totalManagerDeposite")}
                       </p>
-                      <h2>{FormatNumber(customerStat.totalManagerDeposit)}</h2>
+                      <h2>
+                        ৳ {FormatNumber(customerStat.totalManagerDeposit)}
+                      </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalManagerDeposite")}:{" "}
@@ -492,7 +497,41 @@ export default function Home() {
                 </div>
 
                 <div className="col-md-3">
-                  <div id="card2" className="dataCard">
+                  <div id="card7" className="dataCard">
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <CurrencyDollar />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
+                      <h2>৳ {FormatNumber(customerStat.managerBalance)}</h2>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-3">
+                  <div id="card8" className="dataCard">
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <Coin />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>
+                        {t("totalExpenditure")}
+                      </p>
+                      <h2>৳ {FormatNumber(customerStat.totalExpenditure)}</h2>
+
+                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                        {t("todayTotalExpenditure")}:{" "}
+                        {FormatNumber(customerStat.totalExpenditureToday)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row ">
+                <div className="col-md-3">
+                  <div id="card9" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
                       <CurrencyDollar />
@@ -502,6 +541,7 @@ export default function Home() {
                         {t("totalCollectionByCollector")}
                       </p>
                       <h2>
+                        ৳{" "}
                         {FormatNumber(
                           customerStat.totalBillCollectionByCollector
                         )}
@@ -515,7 +555,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="col-md-3" key={2}>
-                  <div id="card1" className="dataCard">
+                  <div id="card10" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
                       <PersonCheckFill />
@@ -524,7 +564,7 @@ export default function Home() {
                       <p style={{ fontSize: "16px" }}>
                         {t("totalCollectorDeposite")}
                       </p>
-                      <h2>{FormatNumber(totalCollectorDeposite())}</h2>
+                      <h2>৳ {FormatNumber(totalCollectorDeposite())}</h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalCollectorDeposite")}:{" "}
@@ -533,30 +573,27 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="row ">
+
                 <div className="col-md-3">
-                  <div id="card1" className="dataCard">
+                  <div id="card11" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
-                      <Coin />
+                      <CurrencyDollar />
                     </div>
                     <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalExpenditure")}
-                      </p>
-                      <h2>{FormatNumber(customerStat.totalExpenditure)}</h2>
+                      <p style={{ fontSize: "16px" }}>{t("salary")}</p>
+                      <h2>৳ {FormatNumber(customerStat.totalSalary)}</h2>
 
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalExpenditure")}:{" "}
-                        {FormatNumber(customerStat.totalExpenditureToday)}
-                      </p>
+                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                        {t("new customer")}:{" "}
+                        {FormatNumber(customerStat.dueAmount)}
+                      </p> */}
                     </div>
                   </div>
                 </div>
 
-                <div className="col-md-3">
-                  <div id="card4" className="dataCard">
+                {/* <div className="col-md-3">
+                  <div id="card12" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
                       <CurrencyDollar />
@@ -571,36 +608,7 @@ export default function Home() {
                       </p>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card4" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>{FormatNumber(customerStat.managerBalance)}</h2>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card5" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("salary")}</p>
-                      <h2>{FormatNumber(customerStat.totalSalary)}</h2>
-
-                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("new customer")}:{" "}
-                        {FormatNumber(customerStat.dueAmount)}
-                      </p> */}
-                    </div>
-                  </div>
-                </div>
+                </div> */}
               </div>
             </>
           )}
