@@ -42,9 +42,6 @@ export default function RActiveCustomer() {
   const [singleMik, setSingleMik] = useState({});
 
   console.log(singleMik);
-  const [search, setSearch] = useState("");
-  const [search2, setSearch2] = useState("");
-  const [search3, setSearch3] = useState("");
   const allMikrotikUsers = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
@@ -52,6 +49,8 @@ export default function RActiveCustomer() {
   const activeUser = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
+
+  console.log(activeUser);
 
   const pppoePackage = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoePackage
@@ -312,18 +311,6 @@ export default function RActiveCustomer() {
     setAllUsers(allMikrotikUsers);
   }, [allMikrotikUsers]);
 
-  const filterIt = (e) => {
-    let temp;
-    if (e.target.value === "") {
-      setAllUsers(allMikrotikUsers);
-    } else if (e.target.value === "true") {
-      temp = allMikrotikUsers.filter((item) => item.running == true);
-      setAllUsers(temp);
-    } else if (e.target.value === "false") {
-      temp = allMikrotikUsers.filter((item) => item.running != true);
-      setAllUsers(temp);
-    }
-  };
   return (
     <>
       <Sidebar />

@@ -92,13 +92,18 @@ export default function Diposit() {
 
   // all initial local state
   const [dateStart, setStartDate] = useState(firstDay);
-  console.log(dateStart);
+
+  const [ownDepositStart, setOwnDepositStart] = useState(firstDay);
+
+  const [ownDepositEnd, setOwnDepositEnd] = useState(today);
 
   const [dateEnd, setEndDate] = useState(today);
 
   const [collectorIds, setCollectorIds] = useState("all");
 
   const [mainData, setMainData] = useState([]);
+
+  const [ownDepositData, setOwnDepositData] = useState([]);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -174,6 +179,7 @@ export default function Diposit() {
   }, []);
 
   useEffect(() => {
+    setOwnDepositData(ownDeposits);
     if (userRole === "ispOwner" && allDeposit && collectorDeposite) {
       return setMainData([...allDeposit, ...collectorDeposite]);
     } else {
@@ -193,11 +199,28 @@ export default function Diposit() {
     // date filter
     arr = arr.filter(
       (original) =>
-        Date.parse(original.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(original.createdAt) <= Date.parse(dateEnd)
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
     );
 
     setMainData(arr);
+  };
+
+  const ownDepositDateFilter = () => {
+    let ownDepositFilter = ownDepositData;
+    // date filter
+
+    ownDepositFilter = ownDepositFilter.filter(
+      (original) =>
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
+    );
+
+    setOwnDepositData(ownDepositFilter);
   };
 
   // send filter data to print
@@ -396,7 +419,7 @@ export default function Diposit() {
   // own deposit column
   let ownDepositCalculation;
   const getTotalOwnDeposit = useCallback(() => {
-    ownDepositCalculation = ownDeposits.filter(
+    ownDepositCalculation = ownDepositData.filter(
       (item) => item.status === "accepted"
     );
     const initialValue = 0;
@@ -405,7 +428,7 @@ export default function Diposit() {
       initialValue
     );
     return sumWithInitial.toString();
-  }, [ownDeposits]);
+  }, [ownDepositData]);
 
   // send sum deposit of table header
   const depositReportSum = (
@@ -591,10 +614,49 @@ export default function Diposit() {
 
                       {(userRole === "manager" || userRole === "collector") && (
                         <Tab eventKey="contact" title={t("ownDeposit")}>
+                          <div className="selectFilteringg">
+                            <div className="dateDiv  ">
+                              <input
+                                className="form-select"
+                                type="date"
+                                id="start"
+                                name="trip-start"
+                                value={moment(ownDepositStart).format(
+                                  "YYYY-MM-DD"
+                                )}
+                                onChange={(e) => {
+                                  setOwnDepositStart(e.target.value);
+                                }}
+                              />
+                            </div>
+                            <div className="dateDiv">
+                              <input
+                                className="form-select"
+                                type="date"
+                                id="end"
+                                name="trip-start"
+                                value={moment(ownDepositEnd).format(
+                                  "YYYY-MM-DD"
+                                )}
+                                onChange={(e) => {
+                                  setOwnDepositEnd(e.target.value);
+                                }}
+                              />
+                            </div>
+                            <div className="submitDiv">
+                              <button
+                                className="btn btn-outline-primary w-140 mt-2"
+                                type="button"
+                                onClick={ownDepositDateFilter}
+                              >
+                                {t("filter")}
+                              </button>
+                            </div>
+                          </div>
                           <div className="table-section">
                             <Table
                               customComponent={ownDepositSum}
-                              data={ownDeposits}
+                              data={ownDepositData}
                               columns={columns2}
                               isLoading={isLoading}
                             ></Table>

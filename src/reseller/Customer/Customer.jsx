@@ -302,7 +302,7 @@ export default function Customer() {
                 </li>
               )}
 
-              {(permission?.customerEdit || role === "ispOwner") && (
+              {(permission?.customerEdit || role === "reseller") && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerEditModal"
