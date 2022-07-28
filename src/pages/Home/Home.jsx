@@ -36,7 +36,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import GaugeChart from "react-gauge-chart";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
-import { easeQuadIn } from "d3-ease";
+import { easeQuadIn, easeQuadInOut } from "d3-ease";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -228,7 +228,7 @@ export default function Home() {
   // };
 
   const invoiceType = {
-    monthlyServiceCharge: t("month"),
+    monthlyServiceCharge: t("monthly"),
     registration: t("register"),
   };
 
@@ -253,11 +253,14 @@ export default function Home() {
   };
 
   const collectionPersentage = customerStat
-    ? (customerStat.totalMonthlyCollection / customerStat.totalProbableAmount) *
-      100
-    : 0.0;
+    ? Math.round(
+        (customerStat.totalMonthlyCollection /
+          customerStat.totalProbableAmount) *
+          100
+      )
+    : 0;
 
-  console.log({ customerStat });
+  // console.log({ customerStat });
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
@@ -266,9 +269,9 @@ export default function Home() {
           {/* card section */}
 
           <div className="row">
-            {invoiceFlag === "gUNPAID" && (
+            {invoiceFlag === "UNPAID" && (
               <div className="col-md-12 mb-3 pt-3 pb-3 badge bg-primary text-wrap fs-5 text">
-                <div className="mb-1 pt-1 pb-1">{`নেটফি ${
+                <div className="mb-1 pt-1 pb-1">{`${t("netFee")} ${
                   invoiceType[invoice.type]
                 } ${t("fee")} ${invoice.amount} ${t("expiredFee")} ${moment(
                   invoice.dueDate
@@ -291,7 +294,7 @@ export default function Home() {
                 <div className="col-md-3 d-flex justify-content-end align-items-center">
                   <h2>
                     {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
-                    {FormatNumber(customerStat.totalProbableAmount)}
+                    {FormatNumber(customerStat.totalProbableAmount)}{" "}
                   </h2>
                 </div>
                 <div className="col-md-6">
@@ -299,15 +302,14 @@ export default function Home() {
                     <AnimatedProgressProvider
                       valueStart={0}
                       valueEnd={collectionPersentage}
-                      duration={1}
-                      easingFunction={easeQuadIn}
+                      duration={1.4}
+                      easingFunction={easeQuadInOut}
                     >
                       {(value) => {
-                        const roundedValue = Math.round(value);
                         return (
                           <CircularProgressbar
-                            value={value}
-                            text={`${roundedValue}%`}
+                            value={collectionPersentage}
+                            text={`${collectionPersentage}%`}
                             styles={buildStyles({ pathTransition: "none" })}
                           />
                         );
