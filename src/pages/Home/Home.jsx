@@ -260,6 +260,8 @@ export default function Home() {
       )
     : 0;
 
+  console.log(collectionPersentage);
+
   // console.log({ customerStat });
   return (
     <div className="container homeWrapper">
@@ -301,15 +303,16 @@ export default function Home() {
                   <div style={{ width: 200, height: 200, margin: "0 auto" }}>
                     <AnimatedProgressProvider
                       valueStart={0}
-                      valueEnd={collectionPersentage}
-                      duration={1.4}
-                      easingFunction={easeQuadInOut}
+                      valueEnd={Math.round(collectionPersentage)}
+                      duration={1}
+                      easingFunction={easeQuadIn}
                     >
                       {(value) => {
+                        if (!value) value = Math.round(collectionPersentage);
                         return (
                           <CircularProgressbar
-                            value={collectionPersentage}
-                            text={`${collectionPersentage}%`}
+                            value={value}
+                            text={`${value}%`}
                             styles={buildStyles({ pathTransition: "none" })}
                           />
                         );
