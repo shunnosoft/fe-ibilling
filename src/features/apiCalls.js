@@ -101,6 +101,27 @@ import {
 } from "./expenditureSlice";
 import { deleteReCustomer } from "./resellerCustomerAdminSlice";
 
+const netFeeLang = localStorage.getItem("netFee:lang");
+const langMessage = (color, bangla, english) => {
+  // Notification for english language
+  if (netFeeLang === "bn") {
+    if (color === "success") {
+      return toast.success(bangla);
+    } else {
+      return toast.error(bangla);
+    }
+  }
+
+  // Notification for Bangla language
+  if (netFeeLang === "en") {
+    if (color === "success") {
+      return toast.success(english);
+    } else {
+      return toast.error(english);
+    }
+  }
+};
+
 //manager
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
@@ -177,13 +198,23 @@ export const addManager = async (dispatch, managerData) => {
     .then((res) => {
       dispatch(managerAddSuccess(res.data));
       button.style.display = "initial";
-      toast.success("ম্যানেজার সংযুক্ত সফল হয়েছে");
+
+      langMessage(
+        "success",
+        "ম্যানেজার সংযুক্ত সফল হয়েছে",
+        "Manager Create Successfully"
+      );
+
       document.querySelector("#writeModal").click();
     })
     .catch((err) => {
       if (err.response) {
         button.style.display = "initial";
-        toast.error("ম্যানেজার সংযুক্ত সফল হয়নি");
+        langMessage(
+          "error",
+          "ম্যানেজার সংযুক্ত সফল হয়নি",
+          "Manager Create Faild"
+        );
       }
     });
 };
@@ -218,12 +249,16 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
     setIsLoading(false);
     button.style.display = "initial";
     hideModal();
-    toast.success("ম্যানেজার আপডেট সফল হয়েছে");
+    langMessage(
+      "success",
+      "ম্যানেজার আপডেট সফল হয়েছে",
+      "Manager Updated Successfully"
+    );
   } catch (error) {
     setIsLoading(false);
 
     button.style.display = "initial";
-    toast.error("ম্যানেজার আপডেট সফল হয়নি");
+    langMessage("error", "ম্যানেজার আপডেট সফল হয়নি", "Manager Update Failed");
   }
 };
 
@@ -246,7 +281,7 @@ export const addArea = async (dispatch, data, setIsLoading) => {
     dispatch(AddAreaSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#areaModal").click();
-    toast.success("এরিয়া সংযুক্ত সফল হয়েছে ");
+    langMessage("success", "এরিয়া সংযুক্ত সফল হয়েছে", "Area Add Successfully");
   } catch (error) {
     setIsLoading(false);
     toast.error(error.response?.data.message);
@@ -261,10 +296,10 @@ export const editArea = async (dispatch, data, setIsLoading) => {
     dispatch(EditAreaSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#areaEditModal").click();
-    toast.success("এরিয়া এডিট সফল হয়েছে");
+    langMessage("success", "এরিয়া এডিট সফল হয়েছে", "Area Updated Successfully");
   } catch (error) {
     setIsLoading(false);
-    toast.error("এরিয়া এডিট সফল হয়নি");
+    langMessage("error", "এরিয়া এডিট সফল হয়নি", "Area Update Failed");
   }
 };
 
@@ -273,10 +308,14 @@ export const deleteArea = async (dispatch, data, setIsLoading) => {
     await apiLink.delete(`/ispOwner/area/${data.ispOwner}/${data.id}`);
     dispatch(DeleteAreaSuccess(data.id));
     setIsLoading(false);
-    toast.success("এরিয়া ডিলিট সফল হয়েছে");
+    langMessage(
+      "success",
+      "এরিয়া ডিলিট সফল হয়েছে",
+      "Area Deleted Successfully"
+    );
   } catch (error) {
     setIsLoading(false);
-    toast.error("এরিয়া ডিলিট সফল হয়নি");
+    langMessage("error", "এরিয়া ডিলিট সফল হয়নি", "Area Delete Failed");
   }
 };
 
@@ -289,7 +328,11 @@ export const addSubArea = async (dispatch, data, setIsLoading) => {
     dispatch(AddSubAreaSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#subAreaModal").click();
-    toast.success("সাব-এরিয়া সংযুক্ত সফল হয়েছে");
+    langMessage(
+      "success",
+      "সাব-এরিয়া সংযুক্ত সফল হয়েছে",
+      "Sub-Area Add Successfully"
+    );
 
     // hideModal();
   } catch (error) {
@@ -314,7 +357,11 @@ export const editSubArea = async (dispatch, data, setIsLoading) => {
       dispatch(EditSubAreaSuccess(res.data));
       setIsLoading(false);
       document.querySelector("#subAreaEditModal").click();
-      toast.success("সাব-এরিয়া আপডেট সফল হয়েছে");
+      langMessage(
+        "success",
+        "সাব-এরিয়া আপডেট সফল হয়েছে",
+        "Sub-Area Updated Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -337,7 +384,11 @@ export const deleteSubArea = async (dispatch, data, setIsLoading) => {
         dispatch(DeleteSubAreaSuccess({ areaId, subAreaId }));
         setIsLoading(false);
         document.querySelector("#subAreaModal").click();
-        toast.success("সাব-এরিয়া ডিলিট সফল হয়েছে");
+        langMessage(
+          "success",
+          "সাব-এরিয়া ডিলিট সফল হয়েছে",
+          "Sub-Area Deleted Successfully"
+        );
         // getArea(dispatch, ispOwnerId);
       }
     })
@@ -365,7 +416,11 @@ export const addCollector = async (dispatch, data, setIsLoading) => {
     const res = await apiLink.post("ispOwner/collector", data);
     dispatch(addCollectorSuccess(res.data));
     setIsLoading(false);
-    toast.success("কালেক্টর সংযুক্ত সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কালেক্টর সংযুক্ত সফল হয়েছে",
+      "Collector Added Successfully"
+    );
     document.querySelector("#collectorModal").click();
   } catch (err) {
     if (err.response) {
@@ -1513,14 +1568,16 @@ export const addExpenditure = async (dispatch, data, setLoading, resetForm) => {
   try {
     const res = await apiLink.post(`/staff/expenditure`, data);
     dispatch(addExpenditureSuccess(res.data));
-    toast.success("সফল হয়েছে");
+
+    langMessage("success", "সফল হয়েছে", "Expenditure Add Success");
+
     resetForm();
     setLoading(false);
 
     document.querySelector("#createExpenditure").click();
   } catch (error) {
     console.log(error.response?.data?.message);
-    toast.error("ব্যার্থ হয়েছে");
+    langMessage("error", "ব্যার্থ হয়েছে", "Faild");
     document.querySelector("#createExpenditure").click();
     resetForm();
     setLoading(false);

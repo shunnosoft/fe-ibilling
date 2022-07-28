@@ -48,7 +48,7 @@ export default function CreateExpenditure() {
         ? (data.reseller = userData.id)
         : (data.staff = userData.id);
 
-      await addExpenditure(dispatch, data, setIsLoading, resetForm);
+      addExpenditure(dispatch, data, setIsLoading, resetForm);
       setPourpose("");
       desRef.current.value = "";
     }
