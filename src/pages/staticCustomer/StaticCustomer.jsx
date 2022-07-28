@@ -674,7 +674,7 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="me-3"> {t("staticCustomer")} </div>
-                  <div className="h6 d-flex justify-content-center align-items-start flex-column">
+                  {/* <div className="h6 d-flex justify-content-center align-items-start flex-column">
                     <p>
                       {t("totalPossibilityBill")}: {totalMonthlyFee}
                     </p>
@@ -690,7 +690,7 @@ export default function Customer() {
                         </p>
                       </>
                     )}
-                  </div>
+                  </div> */}
                   <div
                     className="d-flex"
                     style={{
