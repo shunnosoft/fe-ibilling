@@ -668,7 +668,7 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>{t("customer")}</div>
-                  <div className="h6 d-flex justify-content-center align-items-start">
+                  {/* <div className="h6 d-flex justify-content-center align-items-start">
                     <p>
                       {t("totalPossibilityBill")}: {totalMonthlyFee}
                     </p>
@@ -682,7 +682,7 @@ export default function Customer() {
                         </p>
                       </>
                     )}
-                  </div>
+                  </div> */}
 
                   {permission?.customerAdd || role === "ispOwner" ? (
                     <div
