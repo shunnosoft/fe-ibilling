@@ -34,9 +34,7 @@ export default function ConfigMikrotik() {
     ? mikrotik.find((item) => item.id === selectedMikrotikId)
     : {};
 
-  const [search, setSearch] = useState("");
-  const [search2, setSearch2] = useState("");
-  const [search3, setSearch3] = useState("");
+
   const allMikrotikUsers = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
@@ -44,10 +42,7 @@ export default function ConfigMikrotik() {
   const activeUser = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
-  console.log(activeUser);
-  const pppoePackage = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
-  );
+
 
   const [loading, setLoading] = useState(false);
   // const [isDeleting, setIsDeleting] = useState(false);

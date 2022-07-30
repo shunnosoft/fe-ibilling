@@ -409,7 +409,6 @@ export const getMyDeposit = async (dispatch) => {
 export const getCollectorBill = async (dispatch) => {
   try {
     const res = await apiLink.get("/bill/monthlyBill");
-
     dispatch(getCollectorBills(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
@@ -432,7 +431,7 @@ export const getSubAreas = async (dispatch, resellerId) => {
 export const getMikrotik = async (dispatch, resellerId) => {
   try {
     const res = await apiLink.get(`/reseller/mikrotik/${resellerId}`);
-    console.log(res.data);
+
     dispatch(getMikrotikSuccess(res.data));
   } catch (error) {
     console.log(error);
@@ -440,13 +439,11 @@ export const getMikrotik = async (dispatch, resellerId) => {
 };
 
 export const fetchpppoePackage = async (dispatch, IDs) => {
-  console.log(IDs.mikrotikId);
   try {
     const res = await apiLink({
       method: "GET",
       url: `/mikrotik/ppp/package/${IDs.mikrotikId}`,
     });
-    console.log(res.data);
     dispatch(getpppoePackageSuccess(res.data));
   } catch (error) {
     console.log(error.response);
