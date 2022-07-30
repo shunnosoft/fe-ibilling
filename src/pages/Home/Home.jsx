@@ -34,9 +34,8 @@ import { FetchAreaSuccess } from "../../features/areaSlice";
 import FormatNumber from "../../components/common/NumberFormat";
 // the hook
 import { useTranslation } from "react-i18next";
-import GaugeChart from "react-gauge-chart";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
-import { easeQuadIn, easeQuadInOut } from "d3-ease";
+import { easeQuadIn } from "d3-ease";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -260,9 +259,6 @@ export default function Home() {
       )
     : 0;
 
-  console.log(collectionPersentage);
-
-  console.log({ customerStat });
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
@@ -291,7 +287,7 @@ export default function Home() {
               </div>
             )}
             {/* <h2 className="dashboardTitle">{t("dashboard")}</h2> */}
-            <div className="col-md-12">
+            <div className="col-md-12 mb-3">
               <div className="row">
                 <div className="col-md-3 d-flex justify-content-end align-items-center">
                   <h2>
@@ -321,33 +317,6 @@ export default function Home() {
                       }}
                     </AnimatedProgressProvider>
                   </div>
-                  ;
-                  {/* <GaugeChart
-                    id="gauge-chart3"
-                    // nrOfLevels={20}
-                    arcWidth={0.3}
-                    colors={["rgb(255, 27, 0)", "rgb(0, 255, 0)"]}
-                    percent={
-                      customerStat
-                        ? ((customerStat.totalMonthlyCollection /
-                            customerStat.totalProbableAmount) *
-                            100) /
-                          100
-                        : 0.0
-                    }
-                    animDelay={1000}
-                    textColor="red"
-                    style={{ width: "60%", margin: "0 auto" }}
-                  /> */}
-                  {/* <div className="speed_meter_text d-flex justify-content-around">
-                <p>
-                  {t("totalPossibilityBill")}:{customerStat.totalProbableAmount}
-                </p>
-                <p>
-                  {t("totalMonthlyCollection")}:
-                  {customerStat.totalMonthlyCollection}
-                </p>
-              </div> */}
                 </div>
                 <div className="col-md-3 d-flex justify-content-start align-items-center">
                   <h2>

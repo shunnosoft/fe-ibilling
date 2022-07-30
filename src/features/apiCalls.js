@@ -181,9 +181,6 @@ export const getDashboardCardData = async (
   } catch (err) {
     console.log("Card data error: ", err);
     toast.error(err.response?.data?.message);
-    if (err.response?.data?.message == "Add manager to view dashboard!") {
-      window.location.replace("/manager");
-    }
   }
 };
 
@@ -216,7 +213,7 @@ export const addManager = async (dispatch, managerData) => {
         button.style.display = "initial";
         langMessage(
           "error",
-          "ম্যানেজার সংযুক্ত সফল হয়নি",
+          err.response?.data?.message,
           "Manager Create Faild"
         );
       }
@@ -475,6 +472,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
+    console.log(res);
     dispatch(getCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
@@ -887,35 +885,17 @@ export const fetchActivepppoeUser = async (
 };
 export const fetchActivepppoeUserForReseller = async (
   dispatch,
-  IDs,
-  mtkName,
+  resellerId,
+  mikrotikId,
   setIsLoading
 ) => {
   dispatch(resetpppoeActiveUser());
   dispatch(mtkIsLoading(true));
-
   try {
     setIsLoading(true);
     const res = await apiLink.get(
-      `/reseller/PPPactiveCustomer/${IDs.resellerId}/${IDs.mikrotikId}`
+      `/reseller/PPPactiveCustomer/${resellerId}/${mikrotikId}`
     );
-
-    // const activeUsers = res.data?.activeUsers;
-    // const interfaaceList = res.data?.interfaceList;
-    // const temp = [];
-
-    // interfaaceList.forEach((i) => {
-    //   activeUsers.forEach((j) => {
-    //     if (i.name === "<pppoe-" + j.name + ">") {
-    //       temp.push({
-    //         ...i,
-    //         ...j,
-    //       });
-    //     }
-    //   });
-    // });
-
-    // console.log(temp);
     dispatch(getpppoeActiveUserSuccess(res.data?.activePPPcustomers));
     dispatch(mtkIsLoading(false));
     setIsLoading(false);
@@ -923,7 +903,7 @@ export const fetchActivepppoeUserForReseller = async (
     setIsLoading(false);
     console.log(error);
     dispatch(mtkIsLoading(false));
-    toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
+    // toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
   }
 };
 

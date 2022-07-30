@@ -48,11 +48,10 @@ export const bulkStatusEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.patch("/customer/bulk-status", data);
-    console.log(res);
-    dispatch(bulkUpdate(res.data.data));
     document.querySelector("#bulkStatusEdit").click();
-    setIsLoading(false);
+    dispatch(bulkUpdate(res.data.data));
     toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
+    setIsLoading(false);
   } catch (err) {
     if (err.response) {
       setIsLoading(false);

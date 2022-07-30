@@ -1,165 +1,61 @@
 import React, { useEffect, useState } from "react";
-
-import "../collector/collector.css";
-// import "../configMikrotik/configmikrotik.css";
-import "../../pages/configMikrotik/configmikrotik.css";
-import { ArrowClockwise, WifiOff, Wifi } from "react-bootstrap-icons";
-import { useDispatch, useSelector } from "react-redux";
-
-// internal imports
-import { toast, ToastContainer } from "react-toastify";
-import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
+import useDash from "../../assets/css/dash.module.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
-
-import Loader from "../../components/common/Loader";
-import {
-  fetchActivepppoeUser,
-  fetchActivepppoeUserForReseller,
-  fetchpppoeUser,
-  fetchpppoeUserForReseller,
-} from "../../features/apiCalls";
-
-import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
-
+import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchActivepppoeUserForReseller } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
-import { getMikrotik } from "../../features/apiCallReseller";
-// import TdLoader from "../../components/common/TdLoader";
 import { useTranslation } from "react-i18next";
+// get specific customer
 
-export default function RActiveCustomer() {
+import { Wifi } from "react-bootstrap-icons";
+
+const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const dispatch = useDispatch();
+  const [isLoading, setIsloading] = useState(false);
+  const [filterStatus, setFilterStatus] = useState();
+
+  // get all mikrotik from redux
   const mikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
+    (state) => state.persistedReducer?.mikrotik?.mikrotik
   );
 
-  const mtkIsLoading = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.isLoading
-  );
-  const [selectedMikrotikId, setMikrotikId] = useState();
-  const [singleMik, setSingleMik] = useState({});
+  // set initialy mikrotik id
+  const [mikrotikId, setMikrotikId] = useState(mikrotik[0].id);
 
-  console.log(singleMik);
-  const allMikrotikUsers = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoeUser
-  );
-
+  //get reseller active customer
   const activeUser = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
 
-  console.log(activeUser);
+  // get reseller id
+  let userData = useSelector((state) => state.persistedReducer.auth.userData);
 
-  const pppoePackage = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
-  );
+  // select mikrotik handler
+  const mikrotiSelectionHandler = (event) => {
+    setMikrotikId(event.target.value);
+  };
 
-  const [loading, setLoading] = useState(false);
-  // const [isDeleting, setIsDeleting] = useState(false);
+  // filter
+  if (filterStatus && filterStatus !== t("sokolCustomer")) {
+    activeUser = activeUser.filter(
+      (value) => value.complete === JSON.parse(filterStatus)
+    );
+  }
 
-  const [whatYouWantToShow, setWhatYouWantToShow] = useState("customerSelect");
-
-  const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
-  );
-  const dispatch = useDispatch();
+  //fetch reseller active customer
   useEffect(() => {
-    getMikrotik(dispatch, userData?.id);
-  }, [dispatch, userData?.id]);
-  // useEffect(() => {
-  //   const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
-  //   console.log(mtkId);
-  //   const name = mtkId ? singleMik?.name : "";
-  //   setMikrotikId(mtkId);
-  //   const IDs = {
-  //     resellerId: userData?.id,
-  //     mikrotikId: selectedMikrotikId,
-  //   };
+    fetchActivepppoeUserForReseller(
+      dispatch,
+      userData.id,
+      mikrotikId,
+      setIsloading
+    );
+  }, [mikrotikId]);
 
-  //   if (mtkId) {
-  //     dispatch(resetMikrotikUserAndPackage());
-  //     // fetchActivepppoeUser();
-  //     fetchActivepppoeUserForReseller(
-  //       dispatch,
-  //       IDs,
-  //       singleMik?.name,
-  //       setLoading
-  //     );
-  //   }
-  // }, []);
-
-  const selectMikrotikOptionsHandler = (e) => {
-    const original = e.target.value;
-    if (!selectedMikrotikId) {
-      return 0;
-    }
-    const IDs = {
-      resellerId: userData.id,
-      mikrotikId: selectedMikrotikId,
-    };
-
-    dispatch(resetMikrotikUserAndPackage());
-
-    if (original === "showActiveMikrotikUser") {
-      // fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchActivepppoeUserForReseller(
-        dispatch,
-        IDs,
-        singleMik?.name,
-        setLoading
-      );
-      setWhatYouWantToShow("showActiveMikrotikUser");
-    } else if (original === "showAllMikrotikUser") {
-      // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchpppoeUserForReseller(dispatch, IDs, singleMik?.name, setLoading);
-      setWhatYouWantToShow("showAllMikrotikUser");
-    }
-
-    setWhatYouWantToShow(original);
-  };
-  const mikrotiSelectionHandler = (e) => {
-    const original = e.target.value;
-    setMikrotikId(original);
-    if (e) {
-      const singleMikTemp = mikrotik.find((item) => item.id === original)
-        ? mikrotik.find((item) => item.id === original)
-        : {};
-      setSingleMik(singleMikTemp);
-    } else {
-      setSingleMik({});
-    }
-  };
-  const [isRefrsh, setIsRefrsh] = useState(false);
-  const refreshHandler = () => {
-    if (!selectedMikrotikId) {
-      toast.warn(t("selectMikrotik"));
-      return 0;
-    } else if (whatYouWantToShow === "customerSelect") {
-      toast.warn(t("selectCustomer"));
-      return 0;
-    }
-    const IDs = {
-      resellerId: userData.id,
-      mikrotikId: singleMik?.id,
-    };
-
-    dispatch(resetMikrotikUserAndPackage());
-    if (whatYouWantToShow === "showActiveMikrotikUser") {
-      // fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchActivepppoeUserForReseller(
-        dispatch,
-        IDs,
-        singleMik?.name,
-        setLoading
-      );
-    } else if (whatYouWantToShow === "showAllMikrotikUser") {
-      // fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      fetchpppoeUserForReseller(dispatch, IDs, singleMik?.name, setLoading);
-    }
-  };
-  const columns2 = React.useMemo(
+  const columns = React.useMemo(
     () => [
       {
         Header: t("serial"),
@@ -171,22 +67,7 @@ export default function RActiveCustomer() {
         Header: t("status"),
         Cell: <Wifi color="green" />,
       },
-      {
-        Header: t("name"),
-        accessor: "name",
-        // Cell: ({ row: { original } }) => (
-        //   <div
-        //     style={{
-        //       display: "flex",
-        //     }}
-        //   >
-        //     <div style={{ marginRight: "5px" }}>
-        //       <Wifi />
-        //     </div>
-        //     {original?.name}
-        //   </div>
-        // ),
-      },
+
       {
         Header: t("address"),
         accessor: "address",
@@ -240,76 +121,6 @@ export default function RActiveCustomer() {
     ],
     [t]
   );
-  const columns3 = React.useMemo(
-    () => [
-      {
-        Header: t("serial"),
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        Header: t("status"),
-        accessor: "running",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original?.running ? (
-              <Wifi color="green" />
-            ) : (
-              <WifiOff color="red" />
-            )}
-          </div>
-        ),
-      },
-      {
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        Header: t("package"),
-        accessor: "profile",
-      },
-      // {
-      //   Header: "RX",
-      //   accessor: "rxByte",
-      //   Cell: ({ row: { original } }) => (
-      //     <div
-      //       style={{
-      //         padding: "15px 15px 15px 0 !important",
-      //       }}
-      //     >
-      //       {original?.rxByte
-      //         ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
-      //         : ""}
-      //     </div>
-      //   ),
-      // },
-      // {
-      //   Header: "TX",
-      //   accessor: "txByte",
-      //   Cell: ({ row: { original } }) => (
-      //     <div
-      //       style={{
-      //         padding: "15px 15px 15px 0 !important",
-      //       }}
-      //     >
-      //       {original?.txByte
-      //         ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
-      //         : ""}
-      //     </div>
-      //   ),
-      // },
-      // {
-      //   Header: "Last Link Up Time",
-      //   accessor: "lastLinkUpTime",
-      // },
-    ],
-    [t]
-  );
-  const [allUsers, setAllUsers] = useState(allMikrotikUsers);
-  useEffect(() => {
-    setAllUsers(allMikrotikUsers);
-  }, [allMikrotikUsers]);
 
   return (
     <>
@@ -321,93 +132,51 @@ export default function RActiveCustomer() {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">{t("activeCustomer")}</h2>
-              </FourGround>
-
-              <FourGround>
+                <h2 className="collectorTitle">{t("activeStaticCustomer")}</h2>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
-                    <div className="activeuserselection">
-                      <div className="LeftSideMikrotik">
-                        {/* <h6>মাইক্রোটিক সিলেক্ট করুন</h6> */}
-                        <select
-                          id="selectMikrotikOption"
-                          onChange={mikrotiSelectionHandler}
-                          className="form-select"
-                          style={{ marginBottom: "-10px" }}
-                        >
-                          <option value={""}>{t("selectMikrotik")}</option>
-                          {mikrotik.map((m) => {
-                            return (
-                              <option
-                                selected={singleMik?.id === m.id}
-                                value={m.id}
-                              >
-                                {m.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-                      <div className="rightSideMikrotik">
-                        {/* <h6>গ্রাহক সিলেক্ট করুন</h6> */}
-                        <select
-                          id="selectMikrotikOption"
-                          onChange={selectMikrotikOptionsHandler}
-                          className="form-select"
-                        >
-                          <option value="customerSelect">
-                            {t("selectCustomer")}
-                          </option>
-                          <option value="showActiveMikrotikUser">
-                            {t("activeCustomer")}
-                          </option>
-                          <option value="showAllMikrotikUser">
-                            {t("sokolCustomer")}
-                          </option>
-                        </select>
-                      </div>
-                      <div className="rightSideMikrotik">
-                        {/* <h5>রিফ্রেশ করুন</h5> */}
-
-                        <div className="refreshIcon">
-                          {isRefrsh ? (
-                            <Loader></Loader>
-                          ) : (
-                            <ArrowClockwise
-                              onClick={() => refreshHandler()}
-                            ></ArrowClockwise>
-                          )}
-                        </div>
-                      </div>
+                  <div className="d-flex justify-content-center">
+                    <div className="mikrotik-filter">
+                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
+                      <select
+                        id="selectMikrotikOption"
+                        onChange={mikrotiSelectionHandler}
+                        className="form-select mt-0"
+                      >
+                        {mikrotik.map((item) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
                     </div>
-
-                    {/* PPPoE users */}
-                    {(whatYouWantToShow === "showActiveMikrotikUser" ||
-                      whatYouWantToShow === "customerSelect") && (
-                      <Table
-                        isLoading={loading}
-                        columns={columns2}
-                        data={activeUser}
-                      ></Table>
-                    )}
-
-                    {/* Active PPPoE users */}
-                    {whatYouWantToShow === "showAllMikrotikUser" && (
-                      <Table
-                        isLoading={loading}
-                        columns={columns3}
-                        data={allUsers}
-                      ></Table>
-                    )}
+                    <div className="customer-filter ms-4">
+                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
+                      <select
+                        className="form-select mt-0"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterStatus(event.target.value)
+                        }
+                      >
+                        <option selected> {t("sokolCustomer")} </option>
+                        <option value={true}> {t("active")} </option>
+                        <option value={false}> {t("in active")} </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={activeUser}
+                    />
                   </div>
                 </div>
               </FourGround>
-              <Footer />
             </FontColor>
           </div>
         </div>
       </div>
     </>
   );
-}
+};
+
+export default ResellserActiveCustomer;
