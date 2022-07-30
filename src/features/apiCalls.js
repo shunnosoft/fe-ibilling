@@ -331,7 +331,7 @@ export const addSubArea = async (dispatch, data, setIsLoading) => {
     langMessage(
       "success",
       "সাব-এরিয়া সংযুক্ত সফল হয়েছে",
-      "Sub-Area Add Successfully"
+      "Sub-Area Added Successfully"
     );
 
     // hideModal();
@@ -439,7 +439,11 @@ export const editCollector = async (dispatch, data, setIsLoading) => {
     );
     dispatch(editCollectorSuccess(res.data));
     setIsLoading(false);
-    toast.success("কালেক্টর এডিট সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কালেক্টর এডিট সফল হয়েছে",
+      "Collector Updated Successfully"
+    );
     document.querySelector("#collectorEditModal").click();
   } catch (err) {
     if (err.response) {
@@ -457,7 +461,11 @@ export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
     );
     dispatch(deleteCollectorSuccess(ids.collectorId));
     setIsDeleting(false);
-    toast.success("কালেক্টর ডিলিট সফল হয়েছে");
+    langMessage(
+      "success",
+      "কালেক্টর ডিলিট সফল হয়েছে",
+      "Collector Deleted Successfully"
+    );
   } catch (err) {
     if (err.response) {
       setIsDeleting(false);
@@ -519,7 +527,11 @@ export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
     const res = await apiLink.post("/ispOwner/customer", data);
     dispatch(addCustomerSuccess(res.data));
     setIsloading(false);
-    toast.success("কাস্টমার সংযুক্ত সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কাস্টমার সংযুক্ত সফল হয়েছে",
+      "Customer Added Successfully"
+    );
     document.querySelector("#customerModal").click();
     resetForm();
   } catch (err) {
@@ -546,7 +558,11 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
     }
 
     setIsloading(false);
-    toast.success("কাস্টমার এডিট সফল হয়েছে!");
+    langMessage(
+      "success",
+      "কাস্টমার এডিট সফল হয়েছে",
+      "Customer Updated Successfully"
+    );
     document.querySelector("#customerEditModal").click();
   } catch (err) {
     if (err.response) {
@@ -571,7 +587,11 @@ export const deleteACustomer = async (
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
     document.querySelector("#customerDelete").click();
     setIsLoading(false);
-    toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
+    langMessage(
+      "success",
+      "কাস্টমার ডিলিট সফল হয়েছে",
+      "Customer Deleted Successfully"
+    );
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
@@ -596,7 +616,11 @@ export const deleteStaticCustomerApi = async (
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
     document.querySelector("#staticCustomerDelete").click();
     setIsLoading(false);
-    toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কাস্টমার ডিলিট সফল হয়েছে",
+      "Customer Deleted Successfully"
+    );
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);
