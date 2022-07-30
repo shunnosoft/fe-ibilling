@@ -180,6 +180,10 @@ export const getDashboardCardData = async (
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {
     console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+    if (err.response?.data?.message == "Add manager to view dashboard!") {
+      window.location.replace("/manager");
+    }
   }
 };
 

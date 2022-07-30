@@ -19,6 +19,7 @@
   color: rgb(228, 228, 228);
   margin-bottom: 10px;
   position: relative;
+  height: 10rem;
 }
 .ThreeDots {
   position: absolute;
@@ -39,7 +40,6 @@
   margin-right: 10px;
 }
 .chartSection {
-  line-height: 0px;
   padding-top: 20px;
   padding-left: 2px;
 }
@@ -80,7 +80,7 @@
   background: linear-gradient(17deg, #364f6b, #5083bd);
 }
 #card2 {
-  background: linear-gradient(17deg, #9d5c0d, #d4892d);
+  background: linear-gradient(17deg, #8551a4, #2dd4a7);
 }
 
 #card3 {
@@ -88,7 +88,33 @@
 }
 
 #card4 {
-  background: linear-gradient(17deg, #11999e, #34ccd1);
+  background: linear-gradient(17deg, #314592, #606c38);
+}
+
+#card5 {
+  background: linear-gradient(17deg, #454545, #588157);
+}
+
+#card6 {
+  background: linear-gradient(17deg, #2285bb, #003049);
+}
+#card7 {
+  background: linear-gradient(17deg, #454545, #84a59d);
+}
+#card8 {
+  background: linear-gradient(17deg, #454545, #a98467);
+}
+#card9 {
+  background: linear-gradient(17deg, #454545, #34ccd1);
+}
+#card10 {
+  background: linear-gradient(17deg, #454545, #4a4e69);
+}
+#card11 {
+  background: linear-gradient(17deg, #454545, #669bbc);
+}
+#card12 {
+  background: linear-gradient(17deg, #454545, #34ccd1);
 }
 
 .chartTitle {
