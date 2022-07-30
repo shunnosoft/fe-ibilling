@@ -645,7 +645,11 @@ export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
       setIsLoading(false);
       document.querySelector("#SyncCustomer").click();
-      toast.success("মাইক্রোটিক থেকে PPPoE গ্রাহক সিঙ্ক সফল হয়েছে");
+      langMessage(
+        "success",
+        "মাইক্রোটিক থেকে PPPoE গ্রাহক সিঙ্ক সফল হয়েছে",
+        "PPPoE Customer sync from Mikrotik is successful"
+      );
     })
     .catch((error) => {
       setIsLoading(false);
@@ -663,7 +667,11 @@ export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
     .then((res) => {
       dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
       setIsLoading(false);
-      toast.success("মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে");
+      langMessage(
+        "success",
+        "মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে",
+        "Static Customer Sync form Mikrotik is Successful"
+      );
     })
     .catch((error) => {
       setIsLoading(false);
@@ -699,7 +707,11 @@ export const postMikrotik = async (dispatch, data, setIsLoading) => {
       dispatch(addMikrotikSuccess(res.data));
       setIsLoading(false);
       document.querySelector("#MikrotikModal").click();
-      toast.success("মাইক্রোটিক সংযুক্ত সফল হয়েছে ");
+      langMessage(
+        "success",
+        "মাইক্রোটিক সংযুক্ত সফল হয়েছে",
+        "Mikrotik Connected Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -724,7 +736,11 @@ export const editSingleMikrotik = async (dispatch, data) => {
     .then((res) => {
       dispatch(editMikrotikSuccess(res.data));
       document.querySelector("#configMikrotikModal").click();
-      toast.success("মাইক্রোটিক এডিট সফল হয়েছে ");
+      langMessage(
+        "success",
+        "মাইক্রোটিক এডিট সফল হয়েছে",
+        "Mikrotik Edited Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -739,7 +755,11 @@ export const fetchSingleMikrotik = async (mikrotik, id) => {
   if (data) {
     return data;
   } else {
-    toast.error("Single mikrotik not found!");
+    langMessage(
+      "error",
+      "মাইক্রোটিক পাওয়া যায় নি",
+      "Single mikrotik not found!"
+    );
   }
 };
 
@@ -758,7 +778,11 @@ export const deleteSingleMikrotik = async (
     .then((res) => {
       dispatch(deleteMikrotikSuccess(IDs.id));
       setIsloading(false);
-      toast.success("মাইক্রোটিক ডিলিট সফল হয়েছে");
+      langMessage(
+        "success",
+        "মাইক্রোটিক ডিলিট সফল হয়েছে",
+        "Mikorik Deleted Successfully"
+      );
       navigate("/mikrotik");
     })
     .catch((error) => {
@@ -774,10 +798,18 @@ export const mikrotikTesting = async (IDs) => {
     url: `/mikrotik/testConnection/${IDs.ispOwner}/${IDs.id}`,
   })
     .then(() => {
-      toast.success("মাইক্রোটিক কানেকশন ঠিক আছে");
+      langMessage(
+        "success",
+        "মাইক্রোটিক কানেকশন ঠিক আছে",
+        "Mikrotik Connection is Fine"
+      );
     })
     .catch((err) => {
-      toast.error("দুঃখিত, মাইক্রোটিক কানেকশন নাই!");
+      langMessage(
+        "error",
+        "দুঃখিত, মাইক্রোটিক কানেকশন নাই!",
+        "Sorry, No mikrotik Connection!"
+      );
     });
 };
 
@@ -818,7 +850,11 @@ export const fetchpppoeUser = async (dispatch, IDs, mtkName, setIsLoading) => {
     setIsLoading(false);
 
     dispatch(mtkIsLoading(false));
-    toast.error(`${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`);
+    langMessage(
+      "error",
+      `${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`,
+      `${mtkName} Mikrotik's PPPoE Customer not found!`
+    );
   }
 };
 // get PPPoE user
@@ -864,7 +900,11 @@ export const fetchpppoeUserForReseller = async (
     setIsLoading(false);
 
     dispatch(mtkIsLoading(false));
-    toast.error(`${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`);
+    langMessage(
+      "error",
+      `${mtkName} মাইক্রোটিকের PPPoE গ্রাহক পাওয়া যায়নি!`,
+      `${mtkName} Mikrotik's PPPoE Customer not found!!`
+    );
   }
 };
 
@@ -906,7 +946,11 @@ export const fetchActivepppoeUser = async (
     setIsLoading(false);
 
     dispatch(mtkIsLoading(false));
-    toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
+    langMessage(
+      "error",
+      `${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`,
+      `${mtkName} Mikrotik's Active Customer not Found!`
+    );
   }
 };
 export const fetchActivepppoeUserForReseller = async (
@@ -947,7 +991,11 @@ export const fetchActivepppoeUserForReseller = async (
     setIsLoading(false);
     console.log(error);
     dispatch(mtkIsLoading(false));
-    toast.error(`${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`);
+    langMessage(
+      "error",
+      `${mtkName} মাইক্রোটিকের এক্টিভ গ্রাহক পাওয়া যায়নি!`,
+      `${mtkName} Mikrotik's Active Customer not Found`
+    );
   }
 };
 
@@ -966,7 +1014,11 @@ export const fetchpppoePackage = async (dispatch, IDs, mtkName) => {
     // toast.success("PPPoE প্যাকেজ fetch success");
   } catch (error) {
     dispatch(mtkIsLoading(false));
-    toast.error(`${mtkName} মাইক্রোটিকের PPPoE প্যাকেজ পাওয়া যায়নি!`);
+    langMessage(
+      "error",
+      `${mtkName} মাইক্রোটিকের PPPoE প্যাকেজ পাওয়া যায়নি!`,
+      `${mtkName} Mikrotik PPPoE Package not found!`
+    );
   }
 };
 
@@ -1011,7 +1063,11 @@ export const editPPPoEpackageRate = async (
     .then((res) => {
       dispatch(editpppoePackageSuccess(res.data));
       document.querySelector("#pppoePackageEditModal").click();
-      toast.success("PPPoE প্যাকেজ রেট এডিট সফল হয়েছে!");
+      langMessage(
+        "success",
+        "PPPoE প্যাকেজ রেট এডিট সফল হয়েছে!",
+        "PPPoE Package Rate Edited Successfully"
+      );
       resetForm();
       setLoading(false);
     })
@@ -1034,7 +1090,11 @@ export const deletePPPoEpackage = async (dispatch, IDs) => {
     .then((res) => {
       dispatch(deletepppoePackageSuccess(pppPackageId));
       document.querySelector("#pppoePackageEditModal").click();
-      toast.success("PPPoE প্যাকেজ ডিলিট সফল হয়েছে!");
+      langMessage(
+        "success",
+        "PPPoE প্যাকেজ ডিলিট সফল হয়েছে!",
+        "Customer Deleted Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -1072,7 +1132,11 @@ export const postReseller = async (dispatch, data, setIsLoading, resetForm) => {
       setIsLoading(false);
       document.querySelector("#resellerModal").click();
       resetForm();
-      toast.success("রিসেলার এড সফল হয়েছে !");
+      langMessage(
+        "success",
+        "রিসেলার এড সফল হয়েছে !",
+        "Reseller Added Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -1098,7 +1162,11 @@ export const editReseller = async (dispatch, data, setIsLoading) => {
       dispatch(editResellerSuccess(res.data));
       setIsLoading(false);
       document.querySelector("#resellerModalEdit").click();
-      toast.success("রিসেলার আপডেট সফল হয়েছে !");
+      langMessage(
+        "success",
+        "রিসেলার আপডেট সফল হয়েছে ",
+        "Reseller Updated Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -1120,7 +1188,11 @@ export const deleteReseller = async (dispatch, IDs, setIsLoading) => {
       dispatch(deleteResellerSuccess(resellerId));
       setIsLoading(false);
       document.querySelector("#resellerModal").click();
-      toast.success("রিসেলার ডিলিট সফল হয়েছে");
+      langMessage(
+        "success",
+        "রিসেলার ডিলিট সফল হয়েছে",
+        "Reseller Deleted Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -1150,7 +1222,11 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
   try {
     await apiLink.post(`/auth/update-password`, data);
     setIsLoadingpass(false);
-    toast.success("পাসওয়ার্ড আপডেট সফল হয়েছে");
+    langMessage(
+      "success",
+      "পাসওয়ার্ড আপডেট সফল হয়েছে",
+      "Password Updated Successfully"
+    );
   } catch (error) {
     console.log(error.message);
     setIsLoadingpass(false);
@@ -1166,7 +1242,11 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
     // console.log(res.data);
     dispatch(updateProfile(res.data));
     setIsLoading(false);
-    toast.success("প্রোফাইল আপডেট সফল হয়েছে");
+    langMessage(
+      "success",
+      "প্রোফাইল আপডেট সফল হয়েছে",
+      "Profile Updated Successfully"
+    );
   } catch (error) {
     setIsLoading(false);
     toast.error(error.response?.data.message);
@@ -1191,7 +1271,11 @@ export const billCollect = async (
     }
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
-    toast.success("বিল গ্রহণ সফল হয়েছে।");
+    langMessage(
+      "success",
+      "বিল গ্রহণ সফল হয়েছে।",
+      "Bill Acceptance is Successful."
+    );
     resetForm();
   } catch (error) {
     setLoading(false);
@@ -1210,7 +1294,11 @@ export const addDeposit = async (dispatch, data, setLoading) => {
     dispatch(addDepositSucces(res.data));
 
     setLoading(false);
-    toast.success("এডমিন একসেপ্ট এর জন্য অপেক্ষা করেন");
+    langMessage(
+      "success",
+      "এডমিন একসেপ্ট এর জন্য অপেক্ষা করেন",
+      "Wait for Admin Accept"
+    );
   } catch (error) {
     setLoading(false);
     toast.error(error.response?.data.message);
@@ -1272,9 +1360,17 @@ export const depositAcceptReject = async (
     console.log(res.data);
     setAccLoading(false);
     if (res.data.status === "accepted") {
-      toast.success("ডিপোজিট গ্রহণ সফল হয়েছে।");
+      langMessage(
+        "success",
+        "ডিপোজিট গ্রহণ সফল হয়েছে।",
+        "Deposite Accepted Successfully"
+      );
     } else if (res.data.status === "rejected") {
-      toast.success("ডিপোজিট বাতিল সফল হয়েছে।");
+      langMessage(
+        "success",
+        "ডিপোজিট বাতিল সফল হয়েছে।",
+        "Deposit Cancellation Successfully"
+      );
     }
   } catch (error) {
     setAccLoading(false);
@@ -1328,7 +1424,7 @@ export const recharge = async (data, setIsLoading, dispatch) => {
 
     dispatch(editResellerforRecharge(res.data));
     setIsLoading(false);
-    toast.success("রিচার্জ সফল হয়েছে");
+    langMessage("success", "রিচার্জ সফল হয়েছে", "Recharge is Successful");
   } catch (error) {
     setIsLoading(false);
     toast.error(error.response?.data.message);
@@ -1375,8 +1471,10 @@ export const purchaseSms = async (data, setIsloading) => {
     const res = await apiLink.post(`/sms`, data);
 
     setIsloading(false);
-    toast.success(
-      "এসএমএস ইনভয়েস তৈরি সফল হয়েছে। কনফার্ম করতে হলে পেমেন্ট করুন।"
+    langMessage(
+      "success",
+      "এসএমএস ইনভয়েস তৈরি সফল হয়েছে। কনফার্ম করতে হলে পেমেন্ট করুন।",
+      "SMS Invoice Generation is Successful. Make Payment to Confirm"
     );
     setTimeout(() => {
       window.location.href = "/invoice";
@@ -1477,11 +1575,15 @@ export const addPackagewithoutmikrotik = async (
     dispatch(addPackageSuccess(res.data.newPackage));
     setIsLoading(false);
     document.querySelector("#createPackage").click();
-    toast.success("প্যাকেজ সফলভাবে যুক্ত হয়েছে!");
+    langMessage(
+      "success",
+      "প্যাকেজ সফলভাবে যুক্ত হয়েছে",
+      "Package Added Successfully"
+    );
   } catch (error) {
     console.log(error.response?.data.message);
     setIsLoading(false);
-    toast.error("প্যাকেজ অ্যাড ব্যর্থ হয়েছে!");
+    langMessage("error", "প্যাকেজ অ্যাড ব্যর্থ হয়েছে", "Package Add Failed");
   }
 };
 
@@ -1493,11 +1595,15 @@ export const addQueuePackage = async (data, dispatch, setIsLoading) => {
     dispatch(addPackageSuccess(res.data.newPackage));
     setIsLoading(false);
     document.querySelector("#createPackage").click();
-    toast.success("প্যাকেজ সফলভাবে যুক্ত হয়েছে!");
+    langMessage(
+      "success",
+      "প্যাকেজ সফলভাবে যুক্ত হয়েছে",
+      "Package Added Successfully"
+    );
   } catch (error) {
     console.log(error.response?.data.message);
     setIsLoading(false);
-    toast.error("প্যাকেজ অ্যাড ব্যর্থ হয়েছে!");
+    langMessage("error", "প্যাকেজ অ্যাড ব্যর্থ হয়েছে", "Package Add Failed");
   }
 };
 
@@ -1514,11 +1620,15 @@ export const editPackagewithoutmikrotik = async (
     dispatch(editPackageSuccess(res.data.updatedPackage));
     setIsLoading(false);
     document.querySelector("#editPackage").click();
-    toast.success("প্যাকেজ এডিট সফল  হয়েছে");
+    langMessage(
+      "success",
+      "প্যাকেজ এডিট সফল হয়েছে",
+      "Package Updated Successfully"
+    );
   } catch (error) {
     console.log(error.response?.data.message);
     setIsLoading(false);
-    toast.success("প্যাকেজ এডিট ব্যার্থ হয়েছে");
+    langMessage("success", "প্যাকেজ এডিট ব্যার্থ হয়েছে", "Package Add Failed");
   }
 };
 
@@ -1530,7 +1640,11 @@ export const deleteStaticPackage = async (dispatch, packageId) => {
   })
     .then((res) => {
       dispatch(deletePackageSuccess(packageId));
-      toast.success("স্ট্যাটিক প্যাকেজ ডিলিট সফল হয়েছে!");
+      langMessage(
+        "success",
+        "স্ট্যাটিক প্যাকেজ ডিলিট সফল হয়েছে",
+        "Static Package Deleted Successfully"
+      );
     })
     .catch((err) => {
       if (err.response) {
@@ -1617,10 +1731,14 @@ export const editExpenditure = async (dispatch, data, setLoading) => {
   try {
     const res = await apiLink.patch(`/staff/expenditure`, data);
     dispatch(editExpenditureSuccess(res.data));
-    toast.success();
+    langMessage(
+      "success",
+      "খরচ আপডেট সফল হয়েছে",
+      "Expenditure Updated Successfully"
+    );
     setLoading(false);
   } catch (error) {
-    toast.error();
+    langMessage("error", "খরচ আপডেট ব্যর্থ হয়েছে", "Expenditure Update Failed");
     setLoading(false);
   }
 };
@@ -1654,12 +1772,15 @@ export const addExpenditurePourpose = async (
     // console.log(res.data);
     setIsloading(false);
     document.querySelector("#createPourpose").click();
-
-    toast.success("সফল হয়েছে");
+    langMessage(
+      "success",
+      "খরচ যুক্ত সফল হয়েছে",
+      "Expenditure Added Successfully"
+    );
     resetForm();
   } catch (error) {
     setIsloading(false);
-    toast.error("ব্যার্থ হয়েছে");
+    langMessage("error", "খরচ যুক্ত ব্যার্থ হয়েছে", "Expenditure Add Failed");
     resetForm();
   }
 };
@@ -1673,10 +1794,17 @@ export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
     dispatch(editExpenditureSectorsSuccess(res.data));
     setIsloading(false);
     document.querySelector("#editPurpose").click();
-
-    toast.success("সফল হয়েছে");
+    langMessage(
+      "success",
+      "খরচ খাত সফলভাবে যুক্ত হয়েছে",
+      "Expenditure Type Added Successfully"
+    );
   } catch (error) {
     setIsloading(false);
-    toast.error("ব্যার্থ হয়েছে");
+    langMessage(
+      "error",
+      "খরচ খাত যুক্ত ব্যার্থ হয়েছে",
+      "Expenditure Type Added Failed"
+    );
   }
 };

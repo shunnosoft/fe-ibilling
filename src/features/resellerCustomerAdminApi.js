@@ -7,6 +7,27 @@ import {
   getResellerCustomerSuccess,
 } from "./resellerCustomerAdminSlice";
 
+const netFeeLang = localStorage.getItem("netFee:lang");
+const langMessage = (color, bangla, english) => {
+  // Notification for english language
+  if (netFeeLang === "bn") {
+    if (color === "success") {
+      return toast.success(bangla);
+    } else {
+      return toast.error(bangla);
+    }
+  }
+
+  // Notification for Bangla language
+  if (netFeeLang === "en") {
+    if (color === "success") {
+      return toast.success(english);
+    } else {
+      return toast.error(english);
+    }
+  }
+};
+
 //get all reseller customers
 export const getAllResellerCustomer = async (
   dispatch,
@@ -74,7 +95,11 @@ export const editResellerCustomer = async (
       dispatch(editResellerCustomerSuccess(res.data));
     }
     setIsLoading(false);
-    toast.success("কাস্টমার এডিট সফল হয়েছে!");
+    langMessage(
+      "success",
+      "কাস্টমার এডিট সফল হয়েছে",
+      "Customer Updated Successfully"
+    );
     document.querySelector("#CustomerEditModal").click();
   } catch (err) {
     if (err.response) {

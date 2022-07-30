@@ -330,7 +330,9 @@ export default function ResellerEdit({ reseller }) {
                             (p) =>
                               p.mikrotik === item.id && (
                                 <div key={p.id} className="displayFlex">
-                                  {reseller.mikrotikPackages?.includes(p.id) ? (
+                                  {reseller?.mikrotikPackages?.includes(
+                                    p.id
+                                  ) ? (
                                     <>
                                       <input
                                         id={p.id}

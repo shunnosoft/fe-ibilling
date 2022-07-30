@@ -1,6 +1,10 @@
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
-import { createSupportTicket, getAllPaymentHistory, getAllSupportTicket } from "./finalClientSlice";
+import {
+  createSupportTicket,
+  getAllPaymentHistory,
+  getAllSupportTicket,
+} from "./finalClientSlice";
 import { getOwnerUserSuccess } from "./getIspOwnerUsersSlice";
 import { getpackageSuccess } from "./packageSlice";
 // get isp owner all user
@@ -26,16 +30,16 @@ export const changePackageApi = async (data, setLoading) => {
   try {
     const confirm = window.confirm("Are you want to update your package");
     if (confirm) {
-      setLoading(true)
+      setLoading(true);
       await apiLink.patch("/customer/package", data);
       toast.success("Your package has updated");
-      document.getElementById("change_package_modal").click()
+      document.getElementById("change_package_modal").click();
     }
   } catch (error) {
     console.log(error);
     toast.error(error?.response?.data?.message);
   }
-  setLoading(false)
+  setLoading(false);
 };
 
 export const billPayment = async (data, setLoading) => {
@@ -48,36 +52,41 @@ export const billPayment = async (data, setLoading) => {
   }
 };
 
-export const billPaymentHistory = async (dispatch,setLoading) => {
-  setLoading(true)
+export const billPaymentHistory = async (dispatch, setLoading) => {
+  setLoading(true);
   try {
     const res = await apiLink("/customer/paymentHistory");
     dispatch(getAllPaymentHistory(res.data.data));
   } catch (error) {
     console.log(error);
   }
-  setLoading(false)
+  setLoading(false);
 };
 
-export const getAllSupportTicketApi=async(dispatch,setLoading)=>{
-  setLoading(true)
+export const getAllSupportTicketApi = async (dispatch, setLoading) => {
+  setLoading(true);
   try {
     const res = await apiLink.get("/customer/supportTicket");
     dispatch(getAllSupportTicket(res.data.data));
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-  setLoading(false)
-}
-export const createSupportTicketApi=async(data,dispatch,setLoading,setSupportMessage)=>{
-  setLoading(true)
+  setLoading(false);
+};
+export const createSupportTicketApi = async (
+  data,
+  dispatch,
+  setLoading,
+  setSupportMessage
+) => {
+  setLoading(true);
   try {
-    const res = await apiLink.post("/customer/supportTicket",data);
+    const res = await apiLink.post("/customer/supportTicket", data);
     dispatch(createSupportTicket(res.data.data));
-    setSupportMessage("")
+    setSupportMessage("");
   } catch (error) {
     toast.error(error?.response?.data?.message);
-    console.log(error)
+    console.log(error);
   }
-  setLoading(false)
-}
+  setLoading(false);
+};

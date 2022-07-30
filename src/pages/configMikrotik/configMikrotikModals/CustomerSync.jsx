@@ -55,7 +55,7 @@ const CustomerSync = ({
               id="customerModalDetails"
             >
               {customerType === "PPPoE"
-                ? t("PPPoEPackageSync")
+                ? t("PPPoECustomerSync")
                 : t("staticCustomerSync")}
             </h5>
             <button

@@ -10,6 +10,27 @@ import {
   updateSalarySuccess,
 } from "./staffSlice";
 
+const netFeeLang = localStorage.getItem("netFee:lang");
+const langMessage = (color, bangla, english) => {
+  // Notification for english language
+  if (netFeeLang === "bn") {
+    if (color === "success") {
+      return toast.success(bangla);
+    } else {
+      return toast.error(bangla);
+    }
+  }
+
+  // Notification for Bangla language
+  if (netFeeLang === "en") {
+    if (color === "success") {
+      return toast.success(english);
+    } else {
+      return toast.error(english);
+    }
+  }
+};
+
 // get all staff
 export const getStaffs = async (dispatch, ownerId, setTableLoading) => {
   setTableLoading(true);
@@ -33,7 +54,7 @@ export const addStaff = async (dispatch, data, setIsLoading) => {
     dispatch(addStaffSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#staffModal").click();
-    toast.success("কর্মচারী আড সফল হয়েছে");
+    langMessage("success", "কর্মচারী আড সফল হয়েছে!", "Staf Added Successfully");
   } catch (err) {
     console.log(err);
     if (err.response) {
@@ -50,7 +71,11 @@ export const updateStaffApi = async (dispatch, staffId, data, setIsLoading) => {
     dispatch(editStaff(res.data));
     setIsLoading(false);
     document.querySelector("#staffEditModal").click();
-    toast.success("কর্মচারী আপডেট সফল হয়েছে");
+    langMessage(
+      "success",
+      "কর্মচারী আপডেট সফল হয়েছে",
+      "Staff Updated Successfully"
+    );
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
@@ -63,7 +88,11 @@ export const deleteStaffApi = async (dispatch, staffId, setIsLoading) => {
   try {
     const res = await apiLink.delete("/staff/" + staffId);
     setIsLoading(false);
-    toast.success("কর্মচারী ডিলিট সফল হয়েছে");
+    langMessage(
+      "success",
+      "কর্মচারী ডিলিট সফল হয়েছে",
+      "Staff Deleted Successfully"
+    );
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
@@ -79,7 +108,11 @@ export const addSalaryApi = async (dispatch, data, resetForm, setIsLoading) => {
     dispatch(addSalarySuccess(res.data));
     setIsLoading(false);
     document.querySelector("#addSalaryPostModal").click();
-    toast.success("স্যালারি অ্যাড সফল হয়েছে");
+    langMessage(
+      "success",
+      "স্যালারি অ্যাড সফল হয়েছে",
+      "Salary Added Successfully"
+    );
     resetForm();
   } catch (err) {
     if (err.response) {

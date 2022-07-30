@@ -141,7 +141,7 @@ const AllResellerCustomer = () => {
       },
       {
         width: "11%",
-        Header: t("payment"),
+        Header: t("paymentFilter"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -307,7 +307,7 @@ const AllResellerCustomer = () => {
                     >
                       <option selected value="all">
                         {" "}
-                        {t("payment")}{" "}
+                        {t("paymentFilter")}{" "}
                       </option>
                       <option value="paid"> {t("paid")} </option>
                       <option value="unpaid"> {t("unpaid")} </option>

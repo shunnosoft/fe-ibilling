@@ -366,15 +366,13 @@ export default function CustomerModal() {
                           />
                         </div>
                       </div>
-                      <div className="displayGrid3">
-                        <div className="autoDisable">
-                          <label> {t("automaticConnectionOff")} </label>
-                          <input
-                            type="checkBox"
-                            checked={autoDisable}
-                            onChange={(e) => setAutoDisable(e.target.checked)}
-                          />
-                        </div>
+                      <div className="autoDisable">
+                        <label> {t("automaticConnectionOff")} </label>
+                        <input
+                          type="checkBox"
+                          checked={autoDisable}
+                          onChange={(e) => setAutoDisable(e.target.checked)}
+                        />
                       </div>
                     </div>
 

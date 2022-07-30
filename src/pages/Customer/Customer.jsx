@@ -474,7 +474,7 @@ export default function Customer() {
       },
       {
         width: "9%",
-        Header: t("payment"),
+        Header: t("paymentFilter"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -904,7 +904,7 @@ export default function Customer() {
                             value=""
                             defaultValue
                           >
-                            {t("payment")}
+                            {t("paymentFilter")}
                           </option>
                           <option
                             selected={filterOptions.paymentStatus === "paid"}
@@ -1052,24 +1052,26 @@ export default function Customer() {
                             })
                           }
                         />
-                        <button
-                          className="btn btn-outline-primary mt-2 w-140 ms-2"
-                          type="button"
-                          onClick={handleActiveFilter}
-                        >
-                          {t("filter")}
-                        </button>
-                        <button
-                          style={{
-                            marginLeft: "7px",
-                            width: "150px",
-                          }}
-                          className="btn btn-outline-secondary w-140 mt-2"
-                          type="button"
-                          onClick={handleFilterReset}
-                        >
-                          {t("reset")}
-                        </button>
+                        <div>
+                          <button
+                            className="btn btn-outline-primary mt-2 w-140 ms-2"
+                            type="button"
+                            onClick={handleActiveFilter}
+                          >
+                            {t("filter")}
+                          </button>
+                          <button
+                            style={{
+                              marginLeft: "7px",
+                              width: "150px",
+                            }}
+                            className="btn btn-outline-secondary w-140 mt-2"
+                            type="button"
+                            onClick={handleFilterReset}
+                          >
+                            {t("reset")}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

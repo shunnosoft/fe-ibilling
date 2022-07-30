@@ -5,6 +5,27 @@ import {
   getParchaseHistorySuccess,
 } from "./resellerParchaseSmsSlice";
 
+const netFeeLang = localStorage.getItem("netFee:lang");
+const langMessage = (color, bangla, english) => {
+  // Notification for english language
+  if (netFeeLang === "bn") {
+    if (color === "success") {
+      return toast.success(bangla);
+    } else {
+      return toast.error(bangla);
+    }
+  }
+
+  // Notification for Bangla language
+  if (netFeeLang === "en") {
+    if (color === "success") {
+      return toast.success(english);
+    } else {
+      return toast.error(english);
+    }
+  }
+};
+
 // get sms
 export const getParchaseHistory = async (resellerId, dispatch) => {
   try {
@@ -25,7 +46,11 @@ export const parchaseSms = async (data, setIsLoading, dispatch) => {
     // console.log(res.data.resellerSmsPurchase);
     dispatch(parchaseSmsSuccess(res.data.resellerSmsPurchase));
     setIsLoading(false);
-    toast.success("সাবমিট সফল হয়েছে");
+    langMessage(
+      "success",
+      "সাবমিট সফল হয়েছে",
+      "Expenditure Type Added Successfully"
+    );
     document.querySelector("#smsRechargeModal").click();
   } catch (err) {
     console.log(err);

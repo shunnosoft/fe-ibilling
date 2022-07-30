@@ -136,7 +136,7 @@ const ResellerCustomer = () => {
       },
       {
         width: "11%",
-        Header: t("payment"),
+        Header: t("paymentFilter"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -289,7 +289,7 @@ const ResellerCustomer = () => {
                       aria-label="Default select example"
                       onChange={(event) => setFilterPayment(event.target.value)}
                     >
-                      <option selected> {t("payment")} </option>
+                      <option selected> {t("paymentFilter")} </option>
                       <option value="paid"> {t("paid")} </option>
                       <option value="unpaid"> {t("unpaid")} </option>
                     </select>

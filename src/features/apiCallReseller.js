@@ -32,6 +32,28 @@ import { getChartSuccess } from "./chartsSlice";
 import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
 import { getAllMikrotikPakages } from "./resellerSlice";
+
+const netFeeLang = localStorage.getItem("netFee:lang");
+const langMessage = (color, bangla, english) => {
+  // Notification for english language
+  if (netFeeLang === "bn") {
+    if (color === "success") {
+      return toast.success(bangla);
+    } else {
+      return toast.error(bangla);
+    }
+  }
+
+  // Notification for Bangla language
+  if (netFeeLang === "en") {
+    if (color === "success") {
+      return toast.success(english);
+    } else {
+      return toast.error(english);
+    }
+  }
+};
+
 export const getCharts = async (dispatch, resellerId, Year, Month, User) => {
   try {
     let link = `/dashboard/${resellerId}?year=${Year}&month=${Month}`;
@@ -71,7 +93,11 @@ export const addCollector = async (dispatch, data, setIsLoading) => {
     const res = await apiLink.post(`reseller/collector/${data.reseller}`, data);
     dispatch(addCollectorSuccess(res.data));
     setIsLoading(false);
-    toast.success("কালেক্টর সংযুক্ত সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কালেক্টর সংযুক্ত সফল হয়েছে!",
+      "Collector Added Successfully"
+    );
     document.querySelector("#collectorModal").click();
   } catch (err) {
     if (err.response) {
@@ -90,7 +116,11 @@ export const editCollector = async (dispatch, data, setIsLoading) => {
     );
     dispatch(editCollectorSuccess(res.data));
     setIsLoading(false);
-    toast.success("কালেক্টর এডিট সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কালেক্টর এডিট সফল হয়েছে!",
+      "Collector Updated Successfully!"
+    );
     document.querySelector("#collectorEditModal").click();
   } catch (err) {
     if (err.response) {
@@ -108,7 +138,11 @@ export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
     );
     dispatch(deleteCollectorSuccess(ids.collectorId));
     setIsDeleting(false);
-    toast.success("কালেক্টর ডিলিট সফল হয়েছে");
+    langMessage(
+      "success",
+      "কালেক্টর ডিলিট সফল হয়েছে!",
+      "Collector Deleted Successfully!"
+    );
   } catch (err) {
     if (err.response) {
       setIsDeleting(false);
@@ -136,7 +170,11 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
     const res = await apiLink.post("/reseller/customer", data);
     dispatch(addCustomerSuccess(res.data));
     setIsloading(false);
-    toast.success("কাস্টমার সংযুক্ত সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কাস্টমার সংযুক্ত সফল হয়েছে!",
+      "Customer Added Successfully"
+    );
     document.querySelector("#customerModal").click();
   } catch (err) {
     if (err.response) {
@@ -157,7 +195,11 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
     console.log(res.data);
     dispatch(editCustomerSuccess(res.data));
     setIsloading(false);
-    toast.success("কাস্টমার এডিট সফল হয়েছে!");
+    langMessage(
+      "success",
+      "কাস্টমার এডিট সফল হয়েছে!",
+      "Customer Updated Successfully"
+    );
     document.querySelector("#customerEditModal").click();
   } catch (err) {
     if (err.response) {
@@ -171,8 +213,11 @@ export const deleteACustomer = async (dispatch, IDs) => {
   try {
     await apiLink.delete(`/reseller/customer/${IDs.ispID}/${IDs.customerID}`);
     dispatch(deleteCustomerSuccess(IDs.customerID));
-
-    toast.success("কাস্টমার ডিলিট সফল হয়েছে! ");
+    langMessage(
+      "success",
+      "কাস্টমার ডিলিট সফল হয়েছে!",
+      "Customer Deleted Successfully"
+    );
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);
@@ -187,7 +232,11 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
   try {
     await apiLink.post(`/auth/update-password`, data);
     setIsLoadingpass(false);
-    toast.success("পাসওয়ার্ড আপডেট সফল হয়েছে");
+    langMessage(
+      "success",
+      "পাসওয়ার্ড আপডেট সফল হয়েছে!",
+      "Password Updated Successfully"
+    );
   } catch (error) {
     console.log(error.message);
     setIsLoadingpass(false);
@@ -203,7 +252,11 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
     // console.log(res.data);
     dispatch(updateProfile(res.data));
     setIsLoading(false);
-    toast.success("প্রোফাইল আপডেট সফল হয়েছে");
+    langMessage(
+      "success",
+      "প্রোফাইল আপডেট সফল হয়েছে!",
+      "Profile Updated Successfully"
+    );
   } catch (error) {
     setIsLoading(false);
     toast.error(error.response?.data.message);
@@ -224,7 +277,11 @@ export const billCollect = async (
     dispatch(updateBalance(res.data));
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
-    toast.success("বিল গ্রহণ সফল হয়েছে।");
+    langMessage(
+      "success",
+      "কালেক্টর সংযুক্ত সফল হয়েছে!",
+      "Bill Acceptance is Successful."
+    );
     resetForm();
   } catch (error) {
     setLoading(false);
@@ -242,7 +299,11 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 
     // dispatch(addDepositSuccess(res.data));
     setLoading(false);
-    toast.success("ডিপোজিট প্রদান সফল হয়েছে");
+    langMessage(
+      "success",
+      "ডিপোজিট প্রদান সফল হয়েছে!",
+      "Deposit Payment Successfully"
+    );
   } catch (error) {
     setLoading(false);
     toast.error(error.response?.data.message);
@@ -302,9 +363,17 @@ export const depositAcceptReject = async (
     dispatch(updateDepositSuccess(res.data));
     setAccLoading(false);
     if (res.data.status === "accepted") {
-      toast.success("ডিপোজিট গ্রহণ সফল হয়েছে।");
+      langMessage(
+        "success",
+        "ডিপোজিট গ্রহণ সফল হয়েছে",
+        "Deposti Received Successfully"
+      );
     } else if (res.data.status === "rejected") {
-      toast.success("ডিপোজিট বাতিল সফল হয়েছে।");
+      langMessage(
+        "success",
+        "ডিপোজিট বাতিল সফল হয়েছে",
+        "Deposit Cancellation Successfully"
+      );
     }
   } catch (error) {
     setAccLoading(false);

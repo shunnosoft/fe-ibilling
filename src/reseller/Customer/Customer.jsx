@@ -225,7 +225,7 @@ export default function Customer() {
       },
       {
         width: "9%",
-        Header: t("payment"),
+        Header: t("paymentFilter"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -233,7 +233,7 @@ export default function Customer() {
       },
       {
         width: "10%",
-        Header: t("monthFee"),
+        Header: t("month"),
         accessor: "monthlyFee",
       },
       {
@@ -243,7 +243,7 @@ export default function Customer() {
       },
       {
         width: "12%",
-        Header: t("billingCycle"),
+        Header: t("billCycle"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMMM DD YYYY hh:mm A");
@@ -455,7 +455,7 @@ export default function Customer() {
                           onChange={handlePaymentChange}
                         >
                           <option value="" defaultValue>
-                            {t("payment")}
+                            {t("paymentFilter")}
                           </option>
                           <option value="paid"> {t("paid")} </option>
                           <option value="unpaid"> {t("unpaid")} </option>
