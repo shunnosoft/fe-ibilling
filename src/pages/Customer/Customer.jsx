@@ -1054,18 +1054,14 @@ export default function Customer() {
                         />
                         <div>
                           <button
-                            className="btn btn-outline-primary mt-2 w-140 ms-2"
+                            className="btn btn-outline-primary mt-2 w-6rem ms-2"
                             type="button"
                             onClick={handleActiveFilter}
                           >
                             {t("filter")}
                           </button>
                           <button
-                            style={{
-                              marginLeft: "7px",
-                              width: "150px",
-                            }}
-                            className="btn btn-outline-secondary w-140 mt-2"
+                            className="btn btn-outline-secondary ms-2 w-6rem mt-2"
                             type="button"
                             onClick={handleFilterReset}
                           >

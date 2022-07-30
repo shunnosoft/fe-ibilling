@@ -89,3 +89,7 @@ p {
 .w-140 {
   width: 140px !important;
 }
+
+.w-6rem {
+  width: 6rem;
+}
