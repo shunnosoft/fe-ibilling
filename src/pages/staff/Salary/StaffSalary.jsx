@@ -3,7 +3,6 @@ import {
   ThreeDots,
   PenFill,
   ArchiveFill,
-  CurrencyDollar,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,10 +26,6 @@ export default function StaffSalary() {
   const dispatch = useDispatch();
   const { staffId } = useParams();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
-  );
   const staff = useSelector((state) =>
     state.persistedReducer.staff.staff.find((item) => item.id == staffId)
   );
@@ -133,16 +128,24 @@ export default function StaffSalary() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">
-                  ({staff?.name}) {t("staffProfile")}
-                </h2>
+                <div className="collectorTitle d-flex justify-content-between align-item-center px-2 mb-2">
+                  <span>{t("staffProfile")}</span>
+                  <Button
+                    data-bs-toggle="modal"
+                    data-bs-target="#addSalaryPostModal"
+                    variant="success"
+                    size="sm"
+                  >
+                    {t("paySalary")}
+                  </Button>
+                </div>
               </FourGround>
               {/* edit manager */}
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector d-flex justify-content-between">
                     {staff && (
-                      <div className="ManagerData">
+                      <div className="ManagerData p-3">
                         <p>
                           <b>{staff.name} </b>, <b> {"address"}</b>
                         </p>
@@ -151,17 +154,6 @@ export default function StaffSalary() {
                         </p>
                         <p>{staff.email}</p>
                       </div>
-                    )}
-
-                    {staff && (
-                      <Button
-                        data-bs-toggle="modal"
-                        data-bs-target="#addSalaryPostModal"
-                        style={{ height: "50px" }}
-                        variant="primary"
-                      >
-                        {t("paySalary")}
-                      </Button>
                     )}
                   </div>
                   {getSalaries.length > 0 ? (

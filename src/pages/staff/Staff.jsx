@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { PersonPlusFill } from "react-bootstrap-icons";
@@ -117,76 +117,48 @@ const Staff = () => {
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
-          <div className="container">
-            <FontColor>
-              <StaffPost />
-              <SingleMessage single={staffSmsId} sendCustomer="staff" />
-              <StaffEdit staffId={staffId} />
-              <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div> {t("staff")} </div>
-                  {(role === "ispOwner" || role === "reseller") && (
-                    <div
-                      title={t("addStaff")}
-                      className="header_icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staffModal"
-                    >
-                      <PersonPlusFill />
+        <div className="container">
+          <FontColor>
+            <StaffPost />
+            <SingleMessage single={staffSmsId} sendCustomer="staff" />
+            <StaffEdit staffId={staffId} />
+            <FourGround>
+              <div className="collectorTitle d-flex justify-content-between px-5">
+                <div> {t("staff")} </div>
+                {(role === "ispOwner" || role === "reseller") && (
+                  <div
+                    title={t("addStaff")}
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staffModal"
+                  >
+                    <PersonPlusFill />
+                  </div>
+                )}
+              </div>
+            </FourGround>
+            <FourGround>
+              <div className="collectorWrapper py-3">
+                <div className="addCollector">
+                  {isLoading && (
+                    <div className="deleteReseller">
+                      <h6>
+                        <Loader /> Deleting...
+                      </h6>
                     </div>
                   )}
                 </div>
-              </FourGround>
-              <FourGround>
-                <div className="collectorWrapper">
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                    className="addCollector"
-                  >
-                    {/* <div className="addNewCollector text-end">
-                      <p>অ্যাড কর্মচারী</p>
-                      <div className="addAndSettingIcon">
-                        <PersonPlusFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#staffModal"
-                        />
-                      </div>
-                    </div> */}
-                    {/* <div className="addAndSettingIcon col-sm-6 text-end">
-                      <PersonPlusFill
-                        style={{ background: "#328eea", color: "#fff" }}
-                        className="addcutmButton"
-                        data-bs-toggle="modal"
-                        data-bs-target="#staffModal"
-                      />
-                    </div> */}
-
-                    {isLoading && (
-                      <div className="deleteReseller">
-                        <h6>
-                          <Loader /> Deleting...
-                        </h6>
-                      </div>
-                    )}
-                  </div>
-                  <div className="table-section">
-                    <Table
-                      isLoading={tableLoading}
-                      columns={columns}
-                      data={getAllStaffs}
-                    />
-                  </div>
+                <div className="table-section">
+                  <Table
+                    isLoading={tableLoading}
+                    columns={columns}
+                    data={getAllStaffs}
+                  />
                 </div>
-              </FourGround>
-            </FontColor>
-            <Footer />
-          </div>
+              </div>
+            </FourGround>
+          </FontColor>
+          <Footer />
         </div>
       </div>
     </>

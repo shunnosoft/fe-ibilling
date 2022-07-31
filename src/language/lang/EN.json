@@ -470,12 +470,17 @@
   "totalManagerCollection": "Manager Collection",
   "todayTotalCollectionByManager": "Today",
   "totalMonthlyCollection": "Total Collection",
-  "totalManagerDeposite": "Manager Diposit",
+  "totalManagerDeposite": "Diposit",
   "todayTotalManagerDeposite": "Today",
   "totalCollectorDeposite": "Collector Diposit",
   "todayTotalCollectorDeposite": "Today",
   "totalDue": "Total Due",
   "possibleCollection": "Expected",
   "totalCollection": "Collected",
-  "managersBalance": "Manager Balance"
+  "managersBalance": "Balance",
+  "totalProfit": "Total Profit",
+  "customerCollection": "Customer Collection",
+  "other": "Others",
+  "today": "Today",
+  "collections":"Collection"
 }

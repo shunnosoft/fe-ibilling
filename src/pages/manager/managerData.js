@@ -18,7 +18,82 @@ export const managerPermission = (permission) => {
   // viewCustomerList: true
   // viewTotalReport: true
   // webLogin: true
-  const per = [
+  const permissionEng = [
+    {
+      id: 1,
+      value: "customerAdd",
+      label: "Customer Add",
+      isChecked: permission?.customerAdd,
+    },
+    {
+      id: 2,
+      value: "customerEdit",
+      label: "Customer Edit",
+      isChecked: permission?.customerEdit,
+    },
+    {
+      id: 3,
+      value: "customerActivate",
+      label: "Customer Activate",
+      isChecked: permission?.customerActivate,
+    },
+    {
+      id: 4,
+      value: "customerDeactivate",
+      label: "Customer Deactivate",
+      isChecked: permission?.customerDeactivate,
+    },
+    {
+      id: 5,
+      value: "customerDelete",
+      label: "Customer Delete",
+      isChecked: permission?.customerDelete,
+    },
+    {
+      id: 6,
+      value: "billEdit",
+      label: "Update Bill",
+      isChecked: permission?.billEdit,
+    },
+    {
+      id: 7,
+      value: "monthlyFeeEdit",
+      label: "Update Monthly Fee",
+      isChecked: permission?.monthlyFeeEdit,
+    },
+    {
+      id: 8,
+      value: "sendSMS",
+      label: "SMS Board",
+      isChecked: permission?.sendSMS,
+    },
+    {
+      id: 10,
+      value: "billPosting",
+      label: "Bill Posting",
+      isChecked: permission?.billPosting,
+    },
+    {
+      id: 11,
+      value: "collectorAdd",
+      label: "Collector Add",
+      isChecked: permission?.collectorAdd,
+    },
+    {
+      id: 12,
+      value: "collectorEdit",
+      label: "Collector Update",
+      isChecked: permission?.collectorEdit,
+    },
+    {
+      id: 13,
+      value: "viewCollectorReport",
+      label: "View Collector Report",
+      isChecked: permission?.viewCollectorReport,
+    },
+  ];
+
+  const permissionBangla = [
     {
       id: 1,
       value: "customerAdd",
@@ -92,6 +167,6 @@ export const managerPermission = (permission) => {
       isChecked: permission?.viewCollectorReport,
     },
   ];
-
-  return per;
+  if (localStorage.getItem("netFee:lang") === "bn") return permissionBangla;
+  return permissionEng;
 };

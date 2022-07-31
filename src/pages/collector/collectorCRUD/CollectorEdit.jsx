@@ -203,8 +203,14 @@ export default function CollectorEdit({ single }) {
                             name={val.value}
                             checked={val.isChecked}
                             onChange={handleChange}
+                            id={val.value + key}
                           />
-                          <label className="checkboxLabel">{val.label}</label>
+                          <label
+                            htmlFor={val.value + key}
+                            className="checkboxLabel"
+                          >
+                            {val.label}
+                          </label>
                         </div>
                       ))}
                     </div>

@@ -2,7 +2,7 @@
   "shunnoIT": "শূন্য আইটি",
   "netFee": "নেটফি",
   "roleAdmin": "এডমিন",
-  "roleManage": "ম্যানেজার",
+  "roleManager": "ম্যানেজার",
   "roleCollector": "কালেক্টর",
   "roleReseller": "রিসেলার",
   "showPassword": "পাসওয়ার্ড দেখুন",
@@ -472,13 +472,18 @@
   "todayTotalExpenditure": "আজ",
   "totalManagerCollection": "ম্যানেজার কালেকশন",
   "todayTotalCollectionByManager": "আজ",
-  "totalMonthlyCollection": "বর্তমান মাসের কালেকশন",
-  "totalManagerDeposite": "ম্যানেজার ডিপোজিট",
+  "totalMonthlyCollection": "মোট কালেকশন",
+  "totalManagerDeposite": "ডিপোজিট",
   "todayTotalManagerDeposite": "আজ",
   "totalCollectorDeposite": "কালেক্টরের ডিপোজিট",
   "todayTotalCollectorDeposite": "আজ",
   "totalDue": "মোট বকেয়া",
   "possibleCollection": "সম্ভাব্য",
   "totalCollection": "কালেকশন",
-  "managersBalance": "ম্যানেজার ব্যালান্স"
+  "managersBalance": "ব্যালান্স",
+  "totalProfit": "মোট লাভ",
+  "customerCollection": "গ্রাহক কালেকশন",
+  "other": "অন্যান্য",
+  "today":"আজ"
+
 }
