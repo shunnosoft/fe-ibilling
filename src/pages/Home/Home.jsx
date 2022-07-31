@@ -108,7 +108,7 @@ export default function Home() {
 
   useEffect(() => {
     setCollectorData(customerStat?.collectorStat);
-  }, []);
+  }, [customerStat]);
 
   // select colloectors
   useEffect(() => {
@@ -853,11 +853,13 @@ export default function Home() {
           <FourGround>
             <div className="collectorWrapper pt-1">
               <div className="table-section">
-                <Table
-                  isLoading={isLoading}
-                  columns={columns}
-                  data={collectorData}
-                ></Table>
+                {collectorData && collectorData.length && (
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={collectorData}
+                  ></Table>
+                )}
               </div>
             </div>
           </FourGround>
