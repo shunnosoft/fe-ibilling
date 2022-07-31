@@ -326,8 +326,12 @@ export default function Manager() {
                                 name={val.value}
                                 checked={val.isChecked}
                                 onChange={handleChange}
+                                id={val.value + key}
                               />
-                              <label className="checkboxLabel">
+                              <label
+                                htmlFor={val.value + key}
+                                className="checkboxLabel"
+                              >
                                 {val.label}
                               </label>
                             </div>

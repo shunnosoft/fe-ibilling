@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
@@ -13,7 +13,10 @@ import { useTranslation } from "react-i18next";
 export default function StaffSalaryPostModal({ staffId }) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
+
   const dispatch = useDispatch();
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -38,6 +41,7 @@ export default function StaffSalaryPostModal({ staffId }) {
       month,
       ispOwner,
       staff: staffId,
+      user: currentUser.user.id,
     };
     // console.log(sendingData);
     addSalaryApi(dispatch, sendingData, resetForm, setIsLoading);
@@ -52,7 +56,7 @@ export default function StaffSalaryPostModal({ staffId }) {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-xl">
+        <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
@@ -81,10 +85,8 @@ export default function StaffSalaryPostModal({ staffId }) {
                 enableReinitialize
               >
                 {(formik) => (
-                  <Form className="p-5">
-                    {/* first part */}
-
-                    <div className="displayGrid3">
+                  <Form>
+                    <div className="px-3">
                       <FtextField
                         type="text"
                         label={t("amount")}
@@ -96,22 +98,14 @@ export default function StaffSalaryPostModal({ staffId }) {
                         label={t("selectMonthAndYear")}
                         name="date"
                       />
+                      <FtextField
+                        type="text"
+                        label={t("comment")}
+                        name="remarks"
+                      />
                     </div>
 
-                    <FtextField
-                      type="text"
-                      label={t("comment")}
-                      name="remarks"
-                    />
-
-                    <div className="modal-footer modalFooterEdit">
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
+                    <div className="modal-footer border-none">
                       <button
                         type="button"
                         className="btn btn-secondary"
@@ -119,6 +113,13 @@ export default function StaffSalaryPostModal({ staffId }) {
                         disabled={isLoading}
                       >
                         {t("cancel")}
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? <Loader /> : t("save")}
                       </button>
                     </div>
                   </Form>

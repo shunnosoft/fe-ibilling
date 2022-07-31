@@ -116,6 +116,12 @@
 #card12 {
   background: linear-gradient(17deg, #454545, #34ccd1);
 }
+#card13 {
+  background: linear-gradient(17deg, #9f2362, #0e4c72);
+}
+#card14 {
+  background: linear-gradient(17deg, #784860, #3988b8);
+}
 
 .chartTitle {
   padding: 15px;

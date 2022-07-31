@@ -17,7 +17,7 @@ export const collectorPermission = (permission) => {
   // customerMobileEdit(pin):true //
   // billPrint(pin):true //
 
-  const per = [
+  const permissionBn = [
     {
       id: 1,
       value: "customerAdd",
@@ -80,5 +80,69 @@ export const collectorPermission = (permission) => {
     },
   ];
 
-  return per;
+  const permissionEn = [
+    {
+      id: 1,
+      value: "customerAdd",
+      label: "Customer Add",
+      isChecked: permission?.customerAdd,
+    },
+    {
+      id: 2,
+      value: "customerEdit",
+      label: "Customer Update",
+      isChecked: permission?.customerEdit,
+    },
+    {
+      id: 3,
+      value: "customerActivate",
+      label: "Customer Activate",
+      isChecked: permission?.customerActivate,
+    },
+    {
+      id: 4,
+      value: "customerDeactivate",
+      label: "Customer Deactivate",
+      isChecked: permission?.customerDeactivate,
+    },
+    {
+      id: 5,
+      value: "viewCustomer",
+      label: "View Customer",
+      isChecked: permission?.viewCustomerList,
+    },
+    {
+      id: 6,
+      value: "connectionFee",
+      label: "Connection Fee",
+      isChecked: permission?.connectionFee, //ToDo
+    },
+    {
+      id: 7,
+      value: "CustomerMobileEdit",
+      label: "Change Mobile Number",
+      isChecked: permission?.customerMobileEdit, //ToDo
+    },
+    {
+      id: 8,
+      value: "sendSMS",
+      label: "Message Board",
+      isChecked: permission?.sendSMS,
+    },
+    {
+      id: 10,
+      value: "billPosting",
+      label: "Bill Posting",
+      isChecked: permission?.billPosting,
+    },
+    {
+      id: 11,
+      value: "billPosting",
+      label: "Print Bill",
+      isChecked: permission?.billPrint,
+    },
+  ];
+
+  if (localStorage.getItem("netFee:lang") === "bn") return permissionBn;
+  return permissionEn;
 };
