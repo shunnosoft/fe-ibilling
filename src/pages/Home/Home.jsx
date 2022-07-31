@@ -622,7 +622,18 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
+                <div className="col-md-3">
+                  <div id="card13" className="dataCard">
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <CurrencyDollar />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
+                      <h2>৳ {customerStat.totalBalanceByCollectors}</h2>
+                    </div>
+                  </div>
+                </div>
                 {/* <div className="col-md-3">
                   <div id="card13" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
