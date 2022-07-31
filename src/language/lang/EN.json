@@ -477,5 +477,8 @@
   "totalDue": "Total Due",
   "possibleCollection": "Expected",
   "totalCollection": "Collected",
-  "managersBalance": "Manager Balance"
+  "managersBalance": "Manager Balance",
+  "todayBillCollection": "Today Bill Collection",
+  "totalBillCollected": "Total Bill Collected",
+  "totalDepositCollector": "Total Deposit"
 }

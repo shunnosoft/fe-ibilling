@@ -1635,14 +1635,16 @@ export const deleteStaticPackage = async (dispatch, packageId) => {
 
 // get ispOwner
 
-export const getIspOwnerData = async (dispatch, ispOwnerId) => {
+export const getIspOwnerData = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
     dispatch(setBpsetting(res.data.bpSettings));
     dispatch(setIspOwnerData(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 //updated Users

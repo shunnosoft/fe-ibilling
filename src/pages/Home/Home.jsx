@@ -1,5 +1,5 @@
 // external imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -36,12 +36,12 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import { easeQuadIn } from "d3-ease";
+import Table from "../../components/table/Table";
 
 export default function Home() {
   const { t } = useTranslation();
 
   const role = useSelector((state) => state.persistedReducer.auth.role);
-  // console.log(role)
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -63,6 +63,7 @@ export default function Home() {
   const invoice = useSelector(
     (state) => state.persistedReducer.invoice.invoice
   );
+  const [isLoading, setIsloading] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
@@ -73,6 +74,7 @@ export default function Home() {
   const date = new Date();
 
   const [currentCollector, setCurrentCollector] = useState("");
+  const [collectorData, setCollectorData] = useState([]);
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const collectorArea = useSelector((state) =>
@@ -106,6 +108,10 @@ export default function Home() {
     ],
   };
 
+  useEffect(() => {
+    setCollectorData(customerStat?.collectorStat);
+  }, []);
+
   // select colloectors
   useEffect(() => {
     let collectors = [];
@@ -123,7 +129,7 @@ export default function Home() {
   }, [allCollector, manager]);
 
   useEffect(() => {
-    getIspOwnerData(dispatch, ispOwnerId);
+    getIspOwnerData(dispatch, ispOwnerId, setIsloading);
 
     if (role === "ispOwner") {
       getManger(dispatch, ispOwnerId);
@@ -258,6 +264,37 @@ export default function Home() {
           100
       )
     : 0;
+
+  const columns = React.useMemo(
+    () => [
+      {
+        width: "15%",
+        Header: t("name"),
+        accessor: "name",
+      },
+      {
+        width: "21%",
+        Header: t("todayBillCollection"),
+        accessor: "todayBillCollection",
+      },
+      {
+        width: "21%",
+        Header: t("totalBillCollected"),
+        accessor: "totalBillCollected",
+      },
+      {
+        width: "21%",
+        Header: t("totalDepositCollector"),
+        accessor: "totalDeposit",
+      },
+      {
+        width: "21%",
+        Header: t("balance"),
+        accessor: "balance",
+      },
+    ],
+    [t]
+  );
 
   return (
     <div className="container homeWrapper">
@@ -668,6 +705,17 @@ export default function Home() {
                   maintainAspectRatio: false,
                 }}
               />
+            </div>
+          </FourGround>
+          <FourGround>
+            <div className="collectorWrapper pt-1">
+              <div className="table-section">
+                <Table
+                  isLoading={isLoading}
+                  columns={columns}
+                  data={collectorData}
+                ></Table>
+              </div>
             </div>
           </FourGround>
         </div>

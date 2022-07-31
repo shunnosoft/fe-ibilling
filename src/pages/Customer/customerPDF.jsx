@@ -52,11 +52,12 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           <tr className="spetialSortingRow">
             <th scope="col">{t("id")}</th>
             <th scope="col">{t("name")}</th>
+            <th scope="col">{t("address")}</th>
             <th scope="col">{t("mobile")}</th>
             <th scope="col">{t("status")}</th>
-            <th scope="col">{t("payment")}</th>
+            <th scope="col">{t("paymentFilter")}</th>
             <th scope="col">{t("package")}</th>
-            <th scope="col">{t("monthFee")}</th>
+            <th scope="col">{t("month")}</th>
             <th scope="col">{t("balance")}</th>
             <th scope="col">{t("billingCycle")}</th>
           </tr>
@@ -66,6 +67,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
             <tr key={key} id={val.id}>
               <td className="prin_td">{val.customerId}</td>
               <td className="prin_td">{val.name}</td>
+              <td className="prin_td">{val.address}</td>
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
@@ -81,14 +83,6 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           ))}
         </tbody>
       </table>
-      {/* <div className="pdf_footer_line"></div>
-      <div className="signature_text text-mute">সাক্ষর এবং তারিখ</div>
-      <div className="signature_container">
-        <div className="p-3 signature_wraper">
-          <div className="signamture_field">ম্যানেজার</div>
-          <div className="signamture_field">এডমিন</div>
-        </div>
-      </div> */}
     </div>
   );
 });

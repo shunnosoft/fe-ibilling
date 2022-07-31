@@ -55,14 +55,15 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           <tr className="spetialSortingRow">
             <th scope="col">{t("id")}</th>
             <th scope="col">{t("name")}</th>
+            <th scope="col">{t("address")}</th>
             <th scope="col">{t("ip")}</th>
             <th scope="col">{t("mobile")}</th>
             <th scope="col">{t("status")}</th>
             <th scope="col">{t("amount")}</th>
             <th scope="col">{t("package")}</th>
-            <th scope="col">{t("monthFee")}</th>
+            <th scope="col">{t("month")}</th>
             <th scope="col">{t("balance")}</th>
-            <th scope="col">{t("billlingCycle")}</th>
+            <th scope="col">{t("bill")}</th>
           </tr>
         </thead>
         <tbody>
@@ -70,6 +71,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
             <tr key={key} id={val.id}>
               <td className="prin_td">{val.customerId}</td>
               <td className="prin_td">{val.name}</td>
+              <td className="prin_td">{val.address}</td>
               <td className="prin_td">
                 {userType === "firewall-queue"
                   ? val.queue.address

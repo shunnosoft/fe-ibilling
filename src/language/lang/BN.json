@@ -480,5 +480,8 @@
   "totalDue": "মোট বকেয়া",
   "possibleCollection": "সম্ভাব্য",
   "totalCollection": "কালেকশন",
-  "managersBalance": "ম্যানেজার ব্যালান্স"
+  "managersBalance": "ম্যানেজার ব্যালান্স",
+  "todayBillCollection": "আজকের বিল কালেকশন",
+  "totalBillCollected": "মোট বিল কালেকশন",
+  "totalDepositCollector": "মোট ডিপোজিট"
 }
