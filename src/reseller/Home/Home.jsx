@@ -94,11 +94,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-<<<<<<< HEAD
     getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
-=======
-    getIspOwnerData(dispatch, ispOwnerId, setLoading);
->>>>>>> nahid
 
     if (role === "collector") {
       const areas = [];
