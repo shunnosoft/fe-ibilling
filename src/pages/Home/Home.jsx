@@ -135,14 +135,14 @@ export default function Home() {
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
-      getIspOwnerData(dispatch, ispOwnerId);
+      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
     }
 
     if (role === "ispOwner" || role === "manager" || role === "reseller") {
       getCollector(dispatch, ispOwnerId);
 
       fetchMikrotik(dispatch, ispOwnerId);
-      getArea(dispatch, ispOwnerId);
+      getArea(dispatch, ispOwnerId, setIsloading);
     }
 
     //for all roles

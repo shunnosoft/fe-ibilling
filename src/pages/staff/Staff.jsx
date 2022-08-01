@@ -48,7 +48,8 @@ const Staff = () => {
   };
 
   useEffect(() => {
-    getStaffs(dispatch, ispOwner, setTableLoading);
+    if (getAllStaffs.length === 0)
+      getStaffs(dispatch, ispOwner, setTableLoading);
   }, [dispatch]);
 
   //create column of table

@@ -770,10 +770,6 @@ export default function Customer() {
                 modalId="autoDisableEditModal"
               />
 
-              {/* bulk Modal end */}
-
-              {/* Model finish */}
-
               <FourGround>
                 <div className="collectorWrapper">
                   <div className="addCollector">

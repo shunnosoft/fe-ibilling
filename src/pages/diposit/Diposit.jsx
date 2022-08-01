@@ -135,7 +135,7 @@ export default function Diposit() {
   // get own deposit, ownerUser & total balance api call
   useEffect(() => {
     if (userRole != "ispOwner") {
-      getMyDeposit(dispatch);
+      if (allDeposit.length === 0) getMyDeposit(dispatch);
     }
 
     getOwnerUsers(dispatch, ispOwner);
@@ -144,37 +144,40 @@ export default function Diposit() {
 
   useEffect(() => {
     if (userRole === "ispOwner") {
-      getDeposit(
-        dispatch,
-        {
-          depositerRole: "manager",
-          ispOwnerID: ispOwner,
-        },
-        userRole,
-        setLoading
-      );
+      if (allDeposit.length === 0)
+        getDeposit(
+          dispatch,
+          {
+            depositerRole: "manager",
+            ispOwnerID: ispOwner,
+          },
+          userRole,
+          setLoading
+        );
 
-      getDeposit(
-        dispatch,
-        {
-          depositerRole: "collector",
-          ispOwnerID: ispOwner,
-        },
-        userRole,
-        setLoading
-      );
+      if (allDeposit.length === 0)
+        getDeposit(
+          dispatch,
+          {
+            depositerRole: "collector",
+            ispOwnerID: ispOwner,
+          },
+          userRole,
+          setLoading
+        );
     }
 
     if (userRole === "manager") {
-      getDeposit(
-        dispatch,
-        {
-          depositerRole: "collector",
-          ispOwnerID: ispOwner,
-        },
-        userRole,
-        setLoading
-      );
+      if (allDeposit.length === 0)
+        getDeposit(
+          dispatch,
+          {
+            depositerRole: "collector",
+            ispOwnerID: ispOwner,
+          },
+          userRole,
+          setLoading
+        );
     }
   }, []);
 

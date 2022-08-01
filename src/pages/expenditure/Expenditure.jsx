@@ -58,10 +58,24 @@ export default function Expenditure() {
   // pagination
   let [allExpenditures, setAllExpenditure] = useState(expenditures);
   const [filterName, setFilterName] = useState();
+  const [filterState, setFilterState] = useState(allExpenditures);
 
   const [singleExp, setSingleExp] = useState({});
   const [singlePurpose, setSinglePurpose] = useState({});
   const [expenditureTypeFilter, setExpenditureTtypeFilter] = useState();
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
+  const [dateStart, setStartDate] = useState(firstDay);
+  const [dateEnd, setEndDate] = useState(today);
+  const [filterOptions, setFilterOption] = useState({
+    name: "",
+    expenditurePurpose: "",
+  });
+
+  console.log(filterOptions);
 
   //set the expenditurePurpose name to expenditure
   useLayoutEffect(() => {
@@ -79,12 +93,15 @@ export default function Expenditure() {
       return temp;
     });
     setAllExpenditure(temp);
+    setFilterState(temp);
   }, [expenditures, expenditurePurpose]);
 
   useEffect(() => {
     getOwnerUsers(dispatch, ispOwnerId);
-    getAllExpenditure(dispatch, ispOwnerId, setIsloading);
-    getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
+    if (expenditures.length === 0)
+      getAllExpenditure(dispatch, ispOwnerId, setIsloading);
+    if (expenditurePurpose.length === 0)
+      getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   }, [ispOwnerId, dispatch]);
 
   const columns = React.useMemo(
@@ -247,17 +264,45 @@ export default function Expenditure() {
     [t]
   );
 
-  if (filterName && filterName != "Select") {
-    allExpenditures = allExpenditures.filter(
-      (item) => item?.user === filterName
-    );
-  }
+  // if (filterName && filterName != "Select") {
+  //   allExpenditures = allExpenditures.filter(
+  //     (item) => item?.user === filterName
+  //   );
+  // }
 
-  if (expenditureTypeFilter && expenditureTypeFilter != "Select") {
-    allExpenditures = allExpenditures.filter(
-      (item) => item?.expenditureName === expenditureTypeFilter
+  // if (expenditureTypeFilter && expenditureTypeFilter != "Select") {
+  //   allExpenditures = allExpenditures.filter(
+  //     (item) => item?.expenditureName === expenditureTypeFilter
+  //   );
+  // }
+
+  const onClickFilter = () => {
+    let expenditureValue = [...filterState];
+
+    if (filterOptions.name && filterOptions.name !== "Select") {
+      expenditureValue = expenditureValue.filter(
+        (item) => item?.user === filterOptions.name
+      );
+    }
+
+    if (
+      filterOptions.expenditurePurpose &&
+      filterOptions.expenditurePurpose != "Select"
+    ) {
+      expenditureValue = expenditureValue.filter(
+        (item) => item?.expenditureName === filterOptions.expenditurePurpose
+      );
+    }
+
+    expenditureValue = expenditureValue.filter(
+      (original) =>
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
     );
-  }
+    setAllExpenditure(expenditureValue);
+  };
 
   // find user name
   const getFilterId = ownerUsers.find((item) => item[filterName]);
@@ -374,10 +419,15 @@ export default function Expenditure() {
                             class="form-select"
                             aria-label="Default select example"
                             onChange={(event) =>
-                              setFilterName(event.target.value)
+                              setFilterOption({
+                                ...filterOptions,
+                                name: event.target.value,
+                              })
                             }
                           >
-                            <option selected>Select</option>
+                            <option value="Select" selected>
+                              Select
+                            </option>
                             {ownerUsers.map((item) => {
                               for (const key in item) {
                                 return (
@@ -396,14 +446,52 @@ export default function Expenditure() {
                             className="form-select ms-2"
                             aria-label="Default select example"
                             onChange={(event) =>
-                              setExpenditureTtypeFilter(event.target.value)
+                              setFilterOption({
+                                ...filterOptions,
+                                expenditurePurpose: event.target.value,
+                              })
                             }
                           >
-                            <option selected>Select</option>
+                            <option value="Select" selected>
+                              Select
+                            </option>
                             {expenditurePurpose.map((item, key) => (
                               <option value={item?.name}>{item?.name}</option>
                             ))}
                           </select>
+                          <div style={{ margin: "0 5px" }} className="dateDiv">
+                            <input
+                              className="form-select"
+                              type="date"
+                              id="start"
+                              name="trip-start"
+                              value={moment(dateStart).format("YYYY-MM-DD")}
+                              onChange={(e) => {
+                                setStartDate(e.target.value);
+                              }}
+                            />
+                          </div>
+                          <div style={{ margin: "0 5px" }} className="dateDiv">
+                            <input
+                              className="form-select"
+                              type="date"
+                              id="end"
+                              name="trip-start"
+                              value={moment(dateEnd).format("YYYY-MM-DD")}
+                              onChange={(e) => {
+                                setEndDate(e.target.value);
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <button
+                              className="btn btn-outline-primary w-140 mt-2"
+                              type="button"
+                              onClick={onClickFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
                         </div>
                         <div className="table-section">
                           <Table

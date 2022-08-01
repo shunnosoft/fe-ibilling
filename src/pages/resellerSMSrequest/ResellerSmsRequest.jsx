@@ -2,14 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
-import {
-  ThreeDots,
-  ArrowRightCircle,
-  Eraser,
-  Check,
-  XCircle,
-  CheckCircle,
-} from "react-bootstrap-icons";
+import { XCircle, CheckCircle } from "react-bootstrap-icons";
 
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -39,7 +32,7 @@ const ResellerSmsRequest = () => {
 
   // api call
   useEffect(() => {
-    getSmsRequestHistory(ispOwnerId, dispatch);
+    if (data.length === 0) getSmsRequestHistory(ispOwnerId, dispatch);
   }, []);
 
   // handle submit

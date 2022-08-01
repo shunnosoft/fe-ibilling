@@ -28,7 +28,7 @@ export default function Mikrotik() {
 
   useEffect(() => {
     const { ispOwner } = auth;
-    fetchMikrotik(dispatch, ispOwner.id);
+    if (allmikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner.id);
   }, [auth, dispatch]);
 
   const columns = React.useMemo(

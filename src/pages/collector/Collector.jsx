@@ -54,7 +54,7 @@ export default function Collector() {
   };
 
   useEffect(() => {
-    getCollector(dispatch, ispOwnerId);
+    if (collector.length === 0) getCollector(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch]);
 
   const [singleCollector, setSingleCollector] = useState("");

@@ -265,13 +265,15 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
 
 //Areas
 
-export const getArea = async (dispatch, ispOwnerId) => {
+export const getArea = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/area/${ispOwnerId}`);
     dispatch(FetchAreaSuccess(res.data));
   } catch (error) {
     console.log(error.message);
   }
+  setIsLoading(false);
 };
 
 export const addArea = async (dispatch, data, setIsLoading) => {
@@ -1635,7 +1637,11 @@ export const deleteStaticPackage = async (dispatch, packageId) => {
 
 // get ispOwner
 
-export const getIspOwnerData = async (dispatch, ispOwnerId, setIsLoading) => {
+export const getIspOwnerData = async (
+  dispatch,
+  ispOwnerId,
+  setIsLoading = null
+) => {
   try {
     setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);

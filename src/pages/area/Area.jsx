@@ -30,23 +30,16 @@ export default function Area() {
   const cus = useSelector(
     (state) => state?.persistedReducer?.customer?.customer
   );
-  // const [search, setSearch] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const [EditAarea, setEditAarea] = useState("");
-  // let serial = 0;
-  // const dispatchArea = () => {
-  //   if (user.ispOwner) {
-  //     dispatch(FetchAreaSuccess(user.ispOwner.id));
-  //   }
-  // };
 
-  // const user = useSelector(state => state.auth.currentUser);
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
   useEffect(() => {
-    getArea(dispatch, ispOwnerId);
-    getCustomer(dispatch, ispOwnerId, setIsloading);
+    if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
+    if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
 
   const deleteSingleArea = async (id, ispOwner) => {

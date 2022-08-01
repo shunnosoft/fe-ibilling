@@ -54,7 +54,7 @@ export default function SubArea() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
   useEffect(() => {
-    getArea(dispatch, ispOwnerId);
+    getArea(dispatch, ispOwnerId, setIsLoading);
   }, [dispatch, ispOwnerId]);
 
   // go back to area

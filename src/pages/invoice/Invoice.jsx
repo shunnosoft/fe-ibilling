@@ -38,7 +38,7 @@ function Invoice() {
   console.log(invoices);
 
   useEffect(() => {
-    getInvoices(dispatch, ispOwnerId, setIsloading);
+    if (invoices.length === 0) getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
 
   const columns2 = React.useMemo(
@@ -159,7 +159,11 @@ function Invoice() {
                 <div className="collectorWrapper">
                   {/* table */}
                   <div className="table-section">
-                    <Table data={invoices} columns={columns2}></Table>
+                    <Table
+                      isLoading={isLoading}
+                      data={invoices}
+                      columns={columns2}
+                    ></Table>
                   </div>
                 </div>
               </FourGround>

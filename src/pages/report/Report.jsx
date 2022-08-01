@@ -54,13 +54,13 @@ export default function Report() {
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
   const [mainData, setMainData] = useState(allBills);
-  // const [mainData2, setMainData2] = useState(allBills);
+
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
 
   useEffect(() => {
-    getAllBills(dispatch, ispOwnerId, setIsLoading);
+    if (allBills.length === 0) getAllBills(dispatch, ispOwnerId, setIsLoading);
     let collectors = [];
 
     allCollector.map((item) =>

@@ -26,8 +26,6 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 
 export default function RechargeHistoryofReseller() {
-  // const balancee = useSelector(state => state.payment.balance);
-  // const allDeposit = useSelector(state => state.payment.allDeposit);
   const { t } = useTranslation();
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -39,7 +37,7 @@ export default function RechargeHistoryofReseller() {
   today.setHours(23, 59, 59, 999);
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
-  // const manager = useSelector(state => state.manager.manager);
+
   const collectors = useSelector(
     (state) => state.persistedReducer.reseller.reseller
   );
@@ -47,9 +45,9 @@ export default function RechargeHistoryofReseller() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const [cusSearch, setCusSearch] = useState("");
+
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  // const currentUser = useSelector(state => state.auth?.currentUser);
-  //To do after api impliment
+
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(rechargeHistory);
   const [mainData2, setMainData2] = useState(rechargeHistory);
@@ -58,25 +56,6 @@ export default function RechargeHistoryofReseller() {
 
   // const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  // const balance = useSelector(state=>state.persistedReducer.payment.balance)
-
-  // bill amount
-  // const allCollector = useSelector(state => state.reseller.reseller);
-
-  // useEffect(()=>{
-
-  //   var arr = []
-  //   allDeposit.forEach((item)=>{
-  //     var match = userRole==="ispOwner"? manager :( allCollector.find((c) => c.user === item.user))
-
-  //     if(match) {
-  //       arr.push({...item,name:match.name})
-  //     }
-
-  //   })
-  //   setMainData(arr)
-  //   setMainData2(arr)
-  // },[allCollector,allDeposit,userRole,manager])
 
   //todo
   const getTotalRecharge = useCallback(() => {
@@ -140,20 +119,6 @@ export default function RechargeHistoryofReseller() {
       )
     );
   }, [rechargeHistory]);
-
-  // useEffect(() => {
-  //   if (userRole !== "collector") {
-  //     getDeposit(dispatch, {
-  //       depositerRole:
-  //         userRole === "ispOwner"
-  //           ? "manager"
-  //           : userRole === "manager"
-  //           ? "collector"
-  //           : "",
-  //       ispOwnerID: ispOwner,
-  //     });
-  //   }
-  // }, [ispOwner, userRole, dispatch]);
 
   const onChangeReseller = (userId) => {
     if (userId) {
