@@ -486,5 +486,6 @@
   "other": "Others",
   "today": "Today",
   "collections": "Collection",
-  "depositCollection": "Deposit Collection"
+  "depositCollection": "Deposit Collection",
+  "filterDashboard":"Filter Dashboard"
 }

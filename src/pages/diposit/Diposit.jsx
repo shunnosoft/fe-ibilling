@@ -108,7 +108,7 @@ export default function Diposit() {
   const [isLoading, setLoading] = useState(false);
 
   const [acceptLoading, setAccLoading] = useState(false);
-
+  const [selectedCollector, setSelectedCustomer] = useState("");
   // add deposit form validation
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
@@ -188,8 +188,7 @@ export default function Diposit() {
     } else {
       setMainData(allDeposit);
     }
-  }, [allDeposit, collectorDeposite]);
-
+  }, [allDeposit, collectorDeposite, ownDeposits]);
   // filter section
   const onClickFilter = () => {
     let arr = [...allDeposit, ...collectorDeposite];
@@ -198,6 +197,9 @@ export default function Diposit() {
     } else {
       arr = arr;
     }
+    //collector Filter
+    if (selectedCollector)
+      arr = arr.filter((item) => item.user === selectedCollector);
 
     // date filter
     arr = arr.filter(
@@ -207,14 +209,12 @@ export default function Diposit() {
         new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
           new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
     );
-
     setMainData(arr);
   };
 
   const ownDepositDateFilter = () => {
-    let ownDepositFilter = ownDepositData;
+    let ownDepositFilter = [...ownDepositData];
     // date filter
-
     ownDepositFilter = ownDepositFilter.filter(
       (original) =>
         new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
@@ -562,6 +562,22 @@ export default function Diposit() {
                                   </option>
                                 </select>
                               )}
+                              <div className="dateDiv">
+                                <select
+                                  className="form-select"
+                                  aria-label="Default select example"
+                                  onChange={(e) =>
+                                    setSelectedCustomer(e.target.value)
+                                  }
+                                >
+                                  <option value="">Select Collector</option>
+                                  {allCollector.map((item) => (
+                                    <option value={item.user}>
+                                      {item.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
                               <div className="dateDiv  ">
                                 <input
                                   className="form-select"

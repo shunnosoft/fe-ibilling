@@ -165,16 +165,21 @@ export const getChartsReseller = async (
 
 export const getDashboardCardData = async (
   dispatch,
+  setIsloading,
   ispOwnerId,
   resellerId,
-  collector
+  collector,
+  filterData = {}
 ) => {
   if (!collector) collector = "";
+  let year = filterData.year || "",
+    month = filterData.month || "";
   let link = resellerId
-    ? `/dashboard/reseller/card/${resellerId}?collector=${collector}`
-    : `/dashboard/card/${ispOwnerId}?collector=${collector}`;
+    ? `/dashboard/reseller/card/${resellerId}?collector=${collector}&year=${year}&month=${month}`
+    : `/dashboard/card/${ispOwnerId}?collector=${collector}&year=${year}&month=${month}`;
 
   try {
+    setIsloading(true);
     const res = await apiLink(link);
 
     dispatch(getCardDataSuccess(res.data));
@@ -182,6 +187,7 @@ export const getDashboardCardData = async (
     console.log("Card data error: ", err);
     toast.error(err.response?.data?.message);
   }
+  setIsloading(false);
 };
 
 export const addManager = async (dispatch, managerData) => {
@@ -482,7 +488,6 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
-    console.log(res);
     dispatch(getCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {

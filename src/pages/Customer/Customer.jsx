@@ -133,7 +133,7 @@ export default function Customer() {
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch);
     }
-    getCustomer(dispatch, ispOwner, setIsloading);
+    if (cus.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
 
   //get possible total monthly fee
