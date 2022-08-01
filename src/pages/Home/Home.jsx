@@ -37,6 +37,8 @@ import { useTranslation } from "react-i18next";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import { easeQuadIn } from "d3-ease";
 import Table from "../../components/table/Table";
+import ReactDatePicker from "react-datepicker";
+import Loader from "../../components/common/Loader";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -77,6 +79,8 @@ export default function Home() {
   const [collectorData, setCollectorData] = useState([]);
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
+  const [filterDate, setFilterDate] = useState(null);
+
   const collectorArea = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth.currentUser?.collector.areas
@@ -135,7 +139,7 @@ export default function Home() {
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
-      getIspOwnerData(dispatch, ispOwnerId);
+      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
     }
 
     if (role === "ispOwner" || role === "manager" || role === "reseller") {
@@ -176,10 +180,16 @@ export default function Home() {
         }
       });
       dispatch(FetchAreaSuccess(areas));
-      getDashboardCardData(dispatch, ispOwnerId, null, userData?.id);
+      getDashboardCardData(
+        dispatch,
+        setIsloading,
+        ispOwnerId,
+        null,
+        userData?.id
+      );
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
-      getDashboardCardData(dispatch, ispOwnerId);
+      getDashboardCardData(dispatch, setIsloading, ispOwnerId);
     }
 
     // if (!invoice) getUnpaidInvoice(dispatch, ispOwnerId, setIsloading);
@@ -262,34 +272,7 @@ export default function Home() {
           100
       )
     : 0;
-  // active: 33
-  // collectorStat: (4) [{…}, {…}, {…}, {…}]
-  // dueAmount: 9980
-  // expired: 0
-  // freeCustomer: 7
-  // inactive: 4
-  // ispOwnerBillCollectionToday: 0
-  // ispOwnerExpenditure: 24960
-  // managerBalance: 2632
-  // managerExpenditure: 0
-  // newCustomer: 25
-  // paid: 26
-  // total: 53
-  // totalBalanceByCollectors: 16638
-  // totalBillCollectionByCollector: 17660
-  // totalDepositByCollectors: 1022
-  // totalExpenditure: 24960
-  // totalExpenditureToday: 0
-  // totalManagerCollection: 1620
-  // totalManagerCollectionToday: 0
-  // totalManagerDeposit: 10
-  // totalManagerDepositToday: 0
-  // totalMonthlyBillCollection: 40380
-  // totalMonthlyCollection: 40380
-  // totalMonthlyConnectionFee: 0
-  // totalProbableAmount: 30940
-  // totalSalary: 110000
-  // unpaid: 27
+
   const managerBalanceCalculation = () => {
     const totalCollection =
       customerStat.totalManagerCollection +
@@ -298,6 +281,33 @@ export default function Home() {
       customerStat.managerExpenditure + customerStat.totalManagerDeposit;
 
     return FormatNumber(totalCollection - totalCost);
+  };
+
+  const dashboardFilterController = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth(),
+    };
+
+    if (role === "collector") {
+      getDashboardCardData(
+        dispatch,
+        setIsloading,
+        ispOwnerId,
+        null,
+        userData?.id,
+        filterData
+      );
+    } else {
+      getDashboardCardData(
+        dispatch,
+        setIsloading,
+        ispOwnerId,
+        null,
+        null,
+        filterData
+      );
+    }
   };
 
   const columns = React.useMemo(
@@ -397,6 +407,27 @@ export default function Home() {
                     {FormatNumber(customerStat.totalMonthlyCollection)}
                   </h2>
                 </div>
+                {/* <div className="d-flex justify-content-end">
+                  <div>
+                    <ReactDatePicker
+                      selected={filterDate}
+                      className="form-control shadow-none"
+                      onChange={(date) => setFilterDate(date)}
+                      dateFormat="MM/yyyy"
+                      showMonthYearPicker
+                      showFullMonthYearPicker
+                      endDate={"2014/04/08"}
+                      placeholderText={t("filterDashboard")}
+                      maxDate={new Date()}
+                    />
+                  </div>
+                  <button
+                    className="btn btn-sm btn-success ms-1 shadow-none"
+                    onClick={dashboardFilterController}
+                  >
+                    {isLoading ? <Loader /> : t("filter")}
+                  </button>
+                </div> */}
               </div>
             </div>
 

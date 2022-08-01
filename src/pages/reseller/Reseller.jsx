@@ -54,7 +54,7 @@ export default function Reseller() {
   );
   useEffect(() => {
     if (auth.ispOwner) {
-      fetchReseller(dispatch, auth.ispOwner.id);
+      if (reseller.length === 0) fetchReseller(dispatch, auth.ispOwner.id);
     }
   }, [dispatch, auth.ispOwner]);
 

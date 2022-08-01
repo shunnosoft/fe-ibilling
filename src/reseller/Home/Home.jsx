@@ -57,6 +57,7 @@ export default function Home() {
   const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const date = new Date();
@@ -92,7 +93,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getIspOwnerData(dispatch, ispOwnerId);
+    getIspOwnerData(dispatch, ispOwnerId, setLoading);
 
     if (role === "collector") {
       const areas = [];

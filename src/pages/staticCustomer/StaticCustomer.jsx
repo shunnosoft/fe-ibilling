@@ -240,7 +240,8 @@ export default function Customer() {
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch);
     }
-    getStaticCustomer(dispatch, ispOwner, setIsloading);
+    
+    if (cus.length === 0) getStaticCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
 
   const [subAreaIds, setSubArea] = useState([]);
@@ -430,7 +431,6 @@ export default function Customer() {
     if (id) {
       try {
         const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
-
         setMikrotikPac(res.data);
       } catch (error) {
         console.log(error);
