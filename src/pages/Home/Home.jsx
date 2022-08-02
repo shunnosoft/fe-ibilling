@@ -139,7 +139,7 @@ export default function Home() {
 
     if (role === "ispOwner") {
       getManger(dispatch, ispOwnerId);
-      fetchReseller(dispatch, ispOwnerId);
+      fetchReseller(dispatch, ispOwnerId, setIsloading);
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
@@ -147,9 +147,9 @@ export default function Home() {
     }
 
     if (role === "ispOwner" || role === "manager" || role === "reseller") {
-      getCollector(dispatch, ispOwnerId);
+      getCollector(dispatch, ispOwnerId, setIsloading);
 
-      fetchMikrotik(dispatch, ispOwnerId);
+      fetchMikrotik(dispatch, ispOwnerId, setIsloading);
       getArea(dispatch, ispOwnerId, setIsloading);
     }
 
@@ -157,7 +157,7 @@ export default function Home() {
     // getArea(dispatch, IDBOpenDBRequest)
     if (role === "collector") {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
-      fetchMikrotik(dispatch, ispOwnerId);
+      fetchMikrotik(dispatch, ispOwnerId, setIsloading);
 
       let areas = [];
 

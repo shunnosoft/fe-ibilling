@@ -9,7 +9,8 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 // get specific customer
 
-import { Wifi, WifiOff } from "react-bootstrap-icons";
+import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
+import Loader from "../../components/common/Loader";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
@@ -46,6 +47,11 @@ const StaticActiveCustomer = () => {
       (value) => value.complete === JSON.parse(filterStatus)
     );
   }
+
+  // reload handler
+  const reloadHandler = () => {
+    getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
+  };
 
   // api call for get update static customer
   useEffect(() => {
@@ -104,8 +110,25 @@ const StaticActiveCustomer = () => {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle">{t("activeStaticCustomer")}</h2>
-                <div className="collectorWrapper">
+                {/* <h2 className="collectorTitle">{t("activeStaticCustomer")}</h2> */}
+
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <div>{t("activeStaticCustomer")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </FourGround>
+              <FourGround>
+                <div className="collectorWrapper mt-2 pt-4">
                   <div className="d-flex justify-content-center">
                     <div className="mikrotik-filter">
                       <h6 className="mb-0"> {t("selectMikrotik")} </h6>

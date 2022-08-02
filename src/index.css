@@ -93,3 +93,14 @@ p {
 .w-6rem {
   width: 6rem;
 }
+
+/* Reload Button */
+.reloadBtn {
+  background-color: #fcf2f2;
+  padding: 0px 10px 0px;
+  border-radius: 9px;
+  font-size: 22px;
+  color: green;
+  margin: 2px 10px 10px;
+  cursor: pointer;
+}

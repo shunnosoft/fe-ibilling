@@ -3,7 +3,12 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { GeoAlt, ArrowRightShort, PlusLg } from "react-bootstrap-icons";
+import {
+  GeoAlt,
+  ArrowRightShort,
+  PlusLg,
+  ArrowClockwise,
+} from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
 // internal imports
@@ -13,13 +18,11 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./areaModals/AreaPost";
-// import { fetchArea } from "../../features/areaSlice";
 import AreaEdit from "./areaModals/AreaEdit";
-// import TdLoader from "../../components/common/TdLoader";
 import { deleteArea, getArea, getCustomer } from "../../features/apiCalls";
 import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
-import i18next from "i18next";
+
 import { useTranslation } from "react-i18next";
 
 export default function Area() {
@@ -37,6 +40,10 @@ export default function Area() {
   const ispOwnerId = useSelector(
     (state) => state?.persistedReducer?.auth?.ispOwnerId
   );
+
+  const reloadHandler = () => {
+    getArea(dispatch, ispOwnerId, setIsLoading);
+  };
   useEffect(() => {
     if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setIsloading);
@@ -153,7 +160,18 @@ export default function Area() {
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div> {t("area")} </div>
+                  <div className="d-flex">
+                    <h2>{t("area")} </h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
                   <div
                     title={t("addArea")}
                     className="header_icon"
@@ -167,20 +185,6 @@ export default function Area() {
 
               <FourGround>
                 <div className="collectorWrapper">
-                  <div className="addCollector">
-                    <div>
-                      {isLoading ? (
-                        <div className="deletingAction">
-                          <Loader /> <b>Deleting...</b>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* table */}
-
                   <Table
                     isLoading={isLoading}
                     columns={columns}

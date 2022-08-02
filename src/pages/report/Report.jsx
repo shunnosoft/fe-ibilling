@@ -13,10 +13,11 @@ import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 
-import { PrinterFill } from "react-bootstrap-icons";
+import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -58,6 +59,11 @@ export default function Report() {
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
+
+  // reload handler
+  const reloadHandler = () => {
+    getAllBills(dispatch, ispOwnerId, setIsLoading);
+  };
 
   useEffect(() => {
     if (allBills.length === 0) getAllBills(dispatch, ispOwnerId, setIsLoading);
@@ -297,7 +303,19 @@ export default function Report() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div> {t("billReport")} </div>
+                  <div className="d-flex">
+                    <div>{t("billReport")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+                  {/* <div> {t("billReport")} </div> */}
                   <ReactToPrint
                     documentTitle={t("billReport")}
                     trigger={() => (
@@ -315,7 +333,7 @@ export default function Report() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 pt-2">
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">
@@ -379,10 +397,6 @@ export default function Report() {
                           onChange={(e) => {
                             setStartDate(e.target.value);
                           }}
-                          // value="2018-07-22"
-
-                          // min="2018-01-01"
-                          // max="2018-12-31"
                         />
                       </div>
                       <div style={{ margin: "0 5px" }} className="dateDiv">
@@ -427,17 +441,15 @@ export default function Report() {
                         </button>
                       </div>
                     </div>
-                    <div className="submitdiv d-flex justify-content-end">
-                      {/* print report */}
-                      <div style={{ display: "none" }}>
-                        <PrintReport
-                          filterData={filterData}
-                          currentCustomers={mainData}
-                          ref={componentRef}
-                        />
-                      </div>
-                      {/* print report end*/}
+                    {/* print report */}
+                    <div style={{ display: "none" }}>
+                      <PrintReport
+                        filterData={filterData}
+                        currentCustomers={mainData}
+                        ref={componentRef}
+                      />
                     </div>
+                    {/* print report end*/}
                   </div>
                   {/* table */}
                   <div className="table-section">

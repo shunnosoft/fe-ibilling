@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
-import { XCircle, CheckCircle } from "react-bootstrap-icons";
+import { XCircle, CheckCircle, ArrowClockwise } from "react-bootstrap-icons";
 
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -13,6 +13,7 @@ import {
 } from "../../features/resellerSmsRequestApi";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 
 const ResellerSmsRequest = () => {
   const { t } = useTranslation();
@@ -28,11 +29,19 @@ const ResellerSmsRequest = () => {
   const data = useSelector(
     (state) => state?.persistedReducer?.resellerSmsRequest?.requestSmsHistory
   );
-  // console.log(data);
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // reload handler
+  const reloadHandler = () => {
+    getSmsRequestHistory(ispOwnerId, dispatch, setIsLoading);
+  };
 
   // api call
   useEffect(() => {
-    if (data.length === 0) getSmsRequestHistory(ispOwnerId, dispatch);
+    if (data.length === 0)
+      getSmsRequestHistory(ispOwnerId, dispatch, setIsLoading);
   }, []);
 
   // handle submit
@@ -154,17 +163,34 @@ const ResellerSmsRequest = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("resellerSmsRequest")} </h2>
-              </FourGround>
-              <div class="card">
-                <div class="card-body">
-                  <div className="recdharge_sms">
-                    <div className="table-section">
-                      <Table data={data} columns={columns} />
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <div>{t("resellerSmsRequest")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
+              </FourGround>
+              <FourGround>
+                <div className="collectorWrapper mt-2 py-2">
+                  <div className="addCollector">
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        data={data}
+                        columns={columns}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </FourGround>
             </FontColor>
           </div>
         </div>

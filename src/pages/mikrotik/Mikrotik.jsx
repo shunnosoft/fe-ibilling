@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "./mikrotik.css";
-import { Plus, ArrowRightShort, PlusCircle } from "react-bootstrap-icons";
+import { Plus, ArrowRightShort, ArrowClockwise } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -15,20 +15,30 @@ import MikrotikPost from "./mikrotikModals/MikrotikPost";
 import { fetchMikrotik } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 
 export default function Mikrotik() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
 
-  const dispatch = useDispatch();
   let allmikrotiks = [];
   allmikrotiks = useSelector(
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  // reload handler
+  const reloadHandler = () => {
+    const { ispOwner } = auth;
+    fetchMikrotik(dispatch, ispOwner.id, setIsLoading);
+  };
+
   useEffect(() => {
     const { ispOwner } = auth;
-    if (allmikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner.id);
+    if (allmikrotiks.length === 0)
+      fetchMikrotik(dispatch, ispOwner.id, setIsLoading);
   }, [auth, dispatch]);
 
   const columns = React.useMemo(
@@ -93,7 +103,18 @@ export default function Mikrotik() {
               {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div> {t("mikrotik")} </div>
+                  <div className="d-flex">
+                    <div> {t("mikrotik")} </div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
                   <div
                     title={t("addMikrotik")}
                     className="header_icon"
@@ -108,7 +129,11 @@ export default function Mikrotik() {
               <FourGround>
                 <div className="collectorWrapper">
                   {/* table */}
-                  <Table columns={columns} data={allmikrotiks}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns}
+                    data={allmikrotiks}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

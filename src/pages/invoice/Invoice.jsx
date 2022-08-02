@@ -19,8 +19,9 @@ import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
-import { PrinterFill } from "react-bootstrap-icons";
+import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
 import PrintInvoice from "./invoicePDF";
+import Loader from "../../components/common/Loader";
 
 function Invoice() {
   const { t } = useTranslation();
@@ -35,7 +36,10 @@ function Invoice() {
     (state) => state?.persistedReducer?.invoice?.invoices
   );
 
-  console.log(invoices);
+  // reload handler
+  const reloadHandler = () => {
+    getInvoices(dispatch, ispOwnerId, setIsloading);
+  };
 
   useEffect(() => {
     if (invoices.length === 0) getInvoices(dispatch, ispOwnerId, setIsloading);
@@ -133,7 +137,19 @@ function Invoice() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <h2> {t("invoice")} </h2>
+                  <div className="d-flex">
+                    <div>{t("invoice")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="addAndSettingIcon">
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
@@ -156,7 +172,7 @@ function Invoice() {
                     ref={componentRef}
                   />
                 </div>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   {/* table */}
                   <div className="table-section">
                     <Table

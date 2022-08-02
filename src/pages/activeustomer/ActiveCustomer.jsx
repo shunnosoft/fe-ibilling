@@ -34,7 +34,6 @@ export default function ConfigMikrotik() {
     ? mikrotik.find((item) => item.id === selectedMikrotikId)
     : {};
 
-
   const allMikrotikUsers = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeUser
   );
@@ -42,7 +41,6 @@ export default function ConfigMikrotik() {
   const activeUser = useSelector(
     (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
   );
-
 
   const [loading, setLoading] = useState(false);
   // const [isDeleting, setIsDeleting] = useState(false);
@@ -273,108 +271,105 @@ export default function ConfigMikrotik() {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <h2 className="collectorTitle"> {t("activeCustomer")} </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <div>{t("activeCustomer")}</div>
+                    <div className="reloadBtn">
+                      {loading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => refreshHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
-                  <div className="addCollector">
-                    <div className="activeuserselection">
-                      <div className="LeftSideMikrotik">
-                        <h6> {t("selectMikrotik")} </h6>
-                        <select
-                          id="selectMikrotikOption"
-                          onChange={mikrotiSelectionHandler}
-                          className="form-select"
-                          style={{ marginBottom: "-10px" }}
-                        >
-                          {mikrotik.map((m) => {
-                            return <option value={m.id}>{m.name}</option>;
-                          })}
-                        </select>
-                      </div>
-                      <div className="rightSideMikrotik">
-                        <h6> {t("selectCustomer")} </h6>
-                        <select
-                          id="selectMikrotikOption"
-                          onChange={selectMikrotikOptionsHandler}
-                          className="form-select"
-                        >
-                          <option value="showActiveMikrotikUser">
-                            {t("activeCustomer")}
-                          </option>
-                          <option value="showAllMikrotikUser">
-                            {t("sokolCustomer")}
-                          </option>
-                        </select>
-                      </div>
-                      <div className="rightSideMikrotik">
-                        <h5> {t("refresh")} </h5>
-
-                        <div className="refreshIcon">
-                          {isRefrsh ? (
-                            <Loader></Loader>
-                          ) : (
-                            <ArrowClockwise
-                              onClick={() => refreshHandler()}
-                            ></ArrowClockwise>
-                          )}
-                        </div>
-                      </div>
+                <div className="collectorWrapper mt-2 pt-4">
+                  <div className="d-flex justify-content-center">
+                    <div className="mikrotik-filter">
+                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
+                      <select
+                        id="selectMikrotikOption"
+                        onChange={mikrotiSelectionHandler}
+                        className="form-select mt-0"
+                      >
+                        {mikrotik.map((m) => {
+                          return <option value={m.id}>{m.name}</option>;
+                        })}
+                      </select>
                     </div>
-
-                    {/* PPPoE users */}
-                    <div className="table-section">
-                      {whatYouWantToShow === "showActiveMikrotikUser" && (
-                        <Table
-                          isLoading={loading}
-                          columns={columns2}
-                          data={activeUser}
-                        ></Table>
-                      )}
+                    <div className="mikrotik-filter ms-4">
+                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
+                      <select
+                        id="selectMikrotikOption"
+                        onChange={selectMikrotikOptionsHandler}
+                        className="form-select mt-0"
+                      >
+                        <option value="showActiveMikrotikUser">
+                          {t("activeCustomer")}
+                        </option>
+                        <option value="showAllMikrotikUser">
+                          {t("sokolCustomer")}
+                        </option>
+                      </select>
                     </div>
+                  </div>
 
-                    {/* Active PPPoE users */}
-                    <div className="table-section">
-                      {whatYouWantToShow === "showAllMikrotikUser" && (
-                        // <>
-                        //   <h2
-                        //     style={{
-                        //       width: "100%",
-                        //       textAlign: "center",
-                        //       marginTop: "50px",
-                        //     }}
-                        //   >
-                        //     সকল গ্রাহক
-                        //   </h2>
-                        //   <div
-                        //     className="LeftSideMikrotik"
-                        //     style={{
-                        //       widhth: "100%",
-                        //       display: "flex",
-                        //       alignItems: "center",
-                        //       justifyContent: "flex-end",
-                        //     }}
-                        //   >
-                        //     <select
-                        //       id="selectMikrotikOption"
-                        //       onChange={filterIt}
-                        //       className="form-select"
-                        //       style={{ marginBottom: "-10px" }}
-                        //     >
-                        //       <option value={""}>সকল গ্রাহক</option>;
-                        //       <option value={"true"}>অনলাইন</option>;
-                        //       <option value={"false"}>অফলাইন</option>;
-                        //     </select>
-                        //   </div>
+                  {/* PPPoE users */}
+                  <div className="table-section">
+                    {whatYouWantToShow === "showActiveMikrotikUser" && (
+                      <Table
+                        isLoading={loading}
+                        columns={columns2}
+                        data={activeUser}
+                      ></Table>
+                    )}
+                  </div>
 
-                        <Table
-                          isLoading={loading}
-                          columns={columns3}
-                          data={allUsers}
-                        ></Table>
-                      )}
-                    </div>
+                  {/* Active PPPoE users */}
+                  <div className="table-section">
+                    {whatYouWantToShow === "showAllMikrotikUser" && (
+                      // <>
+                      //   <h2
+                      //     style={{
+                      //       width: "100%",
+                      //       textAlign: "center",
+                      //       marginTop: "50px",
+                      //     }}
+                      //   >
+                      //     সকল গ্রাহক
+                      //   </h2>
+                      //   <div
+                      //     className="LeftSideMikrotik"
+                      //     style={{
+                      //       widhth: "100%",
+                      //       display: "flex",
+                      //       alignItems: "center",
+                      //       justifyContent: "flex-end",
+                      //     }}
+                      //   >
+                      //     <select
+                      //       id="selectMikrotikOption"
+                      //       onChange={filterIt}
+                      //       className="form-select"
+                      //       style={{ marginBottom: "-10px" }}
+                      //     >
+                      //       <option value={""}>সকল গ্রাহক</option>;
+                      //       <option value={"true"}>অনলাইন</option>;
+                      //       <option value={"false"}>অফলাইন</option>;
+                      //     </select>
+                      //   </div>
+
+                      <Table
+                        isLoading={loading}
+                        columns={columns3}
+                        data={allUsers}
+                      ></Table>
+                    )}
                   </div>
                 </div>
               </FourGround>

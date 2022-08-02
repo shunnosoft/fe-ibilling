@@ -5,6 +5,7 @@ import {
   PlusCircleFill,
   Tools,
   PrinterFill,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +33,7 @@ import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import Loader from "../../components/common/Loader";
 
 export default function Expenditure() {
   const { t } = useTranslation();
@@ -95,6 +97,12 @@ export default function Expenditure() {
     setAllExpenditure(temp);
     setFilterState(temp);
   }, [expenditures, expenditurePurpose]);
+
+  // reload handler
+  const reloadHandler = () => {
+    getAllExpenditure(dispatch, ispOwnerId, setIsloading);
+    getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
+  };
 
   useEffect(() => {
     getOwnerUsers(dispatch, ispOwnerId);
@@ -264,18 +272,6 @@ export default function Expenditure() {
     [t]
   );
 
-  // if (filterName && filterName != "Select") {
-  //   allExpenditures = allExpenditures.filter(
-  //     (item) => item?.user === filterName
-  //   );
-  // }
-
-  // if (expenditureTypeFilter && expenditureTypeFilter != "Select") {
-  //   allExpenditures = allExpenditures.filter(
-  //     (item) => item?.expenditureName === expenditureTypeFilter
-  //   );
-  // }
-
   const onClickFilter = () => {
     let expenditureValue = [...filterState];
 
@@ -356,7 +352,18 @@ export default function Expenditure() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div className="me-3"> {t("expense")} </div>
+                <div className="d-flex">
+                  <div>{t("expense")}</div>
+                  <div className="reloadBtn">
+                    {isLoading ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
+                    )}
+                  </div>
+                </div>
                 <div
                   className="d-flex"
                   style={{
@@ -406,7 +413,7 @@ export default function Expenditure() {
                 </div>
                 {/* </div> */}
 
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <Tabs
                       defaultActiveKey="expenditure"

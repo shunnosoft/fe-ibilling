@@ -6,6 +6,7 @@ import {
   PenFill,
   ChatText,
   Plus,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,7 @@ import { getCollector } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -44,6 +46,7 @@ export default function Collector() {
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
   const [allCollector, setCollector] = useState(currentCollector);
+  const [isLoading, setIsLoading] = useState(false);
   const permission = useSelector(
     (state) => state.persistedReducer?.auth?.userData?.permissions
   );
@@ -53,8 +56,14 @@ export default function Collector() {
     setCurrentPage(pageNumber);
   };
 
+  // reload handler
+  const reloadHandler = () => {
+    getCollector(dispatch, ispOwnerId, setIsLoading);
+  };
+
   useEffect(() => {
-    if (collector.length === 0) getCollector(dispatch, ispOwnerId);
+    if (collector.length === 0)
+      getCollector(dispatch, ispOwnerId, setIsLoading);
   }, [ispOwnerId, dispatch]);
 
   const [singleCollector, setSingleCollector] = useState("");
@@ -71,13 +80,6 @@ export default function Collector() {
   const handleSingleMessage = (collectorID) => {
     setCollectorId(collectorID);
   };
-
-  // DELETE collector
-  // const deleteCollectorHandler = async (ID) => {
-  //   const IDs = { ispOwnerId, collectorId: ID };
-  //   deleteCollector(dispatch, IDs, setIsDeleting);
-  // };
-  // console.log(allCollector)
 
   useEffect(() => {
     const keys = ["name", "mobile", "email"];
@@ -217,7 +219,21 @@ export default function Collector() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>{t("collector")}</div>
+                  {/* <div>{t("collector")}</div> */}
+
+                  <div className="d-flex">
+                    <div>{t("collector")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+
                   {permission?.collectorAdd ||
                     (role === "ispOwner" && (
                       <div
@@ -233,22 +249,15 @@ export default function Collector() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
-                  {/* <div className="addCollector">
-                    <div className="addNewCollector">
-                      <div className="displexFlexSys">
-                        <div className="addAndSettingIcon"> */}
-                  {/* <GearFill
-                            className="addcutmButton"
-                            // data-bs-toggle="modal"
-                            // data-bs-target="#exampleModal"
-                          /> */}
-                  {/* </div>
-                      </div>
+                <div className="collectorWrapper mt-2 pt-2">
+                  <div className="addCollector">
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={collector}
+                      ></Table>
                     </div>
-                  </div> */}
-                  <div className="table-section">
-                    <Table columns={columns} data={collector}></Table>
                   </div>
                 </div>
               </FourGround>

@@ -17,7 +17,6 @@ import {
   depositAcceptReject,
   getDeposit,
   getMyDeposit,
-  // getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
@@ -28,7 +27,7 @@ import Table from "../../components/table/Table";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
-import { PrinterFill } from "react-bootstrap-icons";
+import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 
@@ -132,10 +131,50 @@ export default function Diposit() {
     depositAcceptReject(dispatch, status, id, setAccLoading);
   };
 
+  // reload handler
+  const reloadHandler = () => {
+    if (userRole != "ispOwner") {
+      getMyDeposit(dispatch, setLoading);
+    }
+    if (userRole === "ispOwner") {
+      getDeposit(
+        dispatch,
+        {
+          depositerRole: "manager",
+          ispOwnerID: ispOwner,
+        },
+        userRole,
+        setLoading
+      );
+
+      getDeposit(
+        dispatch,
+        {
+          depositerRole: "collector",
+          ispOwnerID: ispOwner,
+        },
+        userRole,
+        setLoading
+      );
+    }
+
+    if (userRole === "manager") {
+      getDeposit(
+        dispatch,
+        {
+          depositerRole: "collector",
+          ispOwnerID: ispOwner,
+        },
+        userRole,
+        setLoading
+      );
+    }
+  };
+
   // get own deposit, ownerUser & total balance api call
   useEffect(() => {
     if (userRole != "ispOwner") {
-      if (allDeposit.length === 0) getMyDeposit(dispatch);
+      if (allDeposit.length === 0) getMyDeposit(dispatch, setLoading);
     }
 
     getOwnerUsers(dispatch, ispOwner);
@@ -465,7 +504,18 @@ export default function Diposit() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <h2>{t("diposit")}</h2>
+                  <div className="d-flex">
+                    <div>{t("diposit")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
 
                   <div className="addAndSettingIcon">
                     <ReactToPrint
@@ -483,7 +533,7 @@ export default function Diposit() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 pt-2">
                   <div className="addCollector">
                     <Tabs
                       defaultActiveKey={
@@ -562,7 +612,7 @@ export default function Diposit() {
                                   </option>
                                 </select>
                               )}
-                              <div className="dateDiv">
+                              <div className="mx-2">
                                 <select
                                   className="form-select"
                                   aria-label="Default select example"
@@ -578,7 +628,7 @@ export default function Diposit() {
                                   ))}
                                 </select>
                               </div>
-                              <div className="dateDiv  ">
+                              <div className="">
                                 <input
                                   className="form-select"
                                   type="date"
@@ -590,7 +640,7 @@ export default function Diposit() {
                                   }}
                                 />
                               </div>
-                              <div className="dateDiv">
+                              <div className="mx-2">
                                 <input
                                   className="form-select"
                                   type="date"
@@ -602,7 +652,7 @@ export default function Diposit() {
                                   }}
                                 />
                               </div>
-                              <div className="submitDiv">
+                              <div className="">
                                 <button
                                   className="btn btn-outline-primary w-140 mt-2"
                                   type="button"

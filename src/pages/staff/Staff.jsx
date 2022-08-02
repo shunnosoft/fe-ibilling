@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { PersonPlusFill } from "react-bootstrap-icons";
+import { ArrowClockwise, PersonPlusFill } from "react-bootstrap-icons";
 //internal import
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Footer from "../../components/admin/footer/Footer";
@@ -45,6 +45,11 @@ const Staff = () => {
 
   const handleSingleMessage = (staffId) => {
     setStafSmsId(staffId);
+  };
+
+  // reload handler
+  const reloadHandler = () => {
+    getStaffs(dispatch, ispOwner, setTableLoading);
   };
 
   useEffect(() => {
@@ -125,7 +130,19 @@ const Staff = () => {
             <StaffEdit staffId={staffId} />
             <FourGround>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div> {t("staff")} </div>
+                {/* <div> {t("staff")} </div> */}
+                <div className="d-flex">
+                  <div>{t("staff")}</div>
+                  <div className="reloadBtn">
+                    {tableLoading ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
+                    )}
+                  </div>
+                </div>
                 {(role === "ispOwner" || role === "reseller") && (
                   <div
                     title={t("addStaff")}
@@ -139,22 +156,15 @@ const Staff = () => {
               </div>
             </FourGround>
             <FourGround>
-              <div className="collectorWrapper py-3">
+              <div className="collectorWrapper mt-2 py-2">
                 <div className="addCollector">
-                  {isLoading && (
-                    <div className="deleteReseller">
-                      <h6>
-                        <Loader /> Deleting...
-                      </h6>
-                    </div>
-                  )}
-                </div>
-                <div className="table-section">
-                  <Table
-                    isLoading={tableLoading}
-                    columns={columns}
-                    data={getAllStaffs}
-                  />
+                  <div className="table-section">
+                    <Table
+                      isLoading={tableLoading}
+                      columns={columns}
+                      data={getAllStaffs}
+                    />
+                  </div>
                 </div>
               </div>
             </FourGround>
