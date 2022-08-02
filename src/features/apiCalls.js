@@ -172,8 +172,8 @@ export const getDashboardCardData = async (
   filterData = {}
 ) => {
   if (!collector) collector = "";
-  let year = filterData.year || "",
-    month = filterData.month || "";
+  let year = filterData.year || new Date().getFullYear(),
+    month = filterData.month || new Date().getMonth() + 1;
   let link = resellerId
     ? `/dashboard/reseller/card/${resellerId}?collector=${collector}&year=${year}&month=${month}`
     : `/dashboard/card/${ispOwnerId}?collector=${collector}&year=${year}&month=${month}`;

@@ -4,6 +4,7 @@ const paymentSlice = createSlice({
   name: "payment",
   initialState: {
     balance: "",
+    previousBalance: "",
     allDeposit: [],
     collectorDeposite: [],
     allBills: [],
@@ -12,6 +13,7 @@ const paymentSlice = createSlice({
   reducers: {
     getTotalBalanceSuccess: (state, action) => {
       state.balance = action.payload.balance;
+      state.previousBalance = action.payload.previousMonthBalance;
     },
 
     getDepositSuccess: (state, action) => {

@@ -487,5 +487,7 @@
   "today": "Today",
   "collections": "Collection",
   "depositCollection": "Deposit Collection",
-  "filterDashboard":"Filter Dashboard"
+  "filterDashboard":"Filter Dashboard",
+  "previousBalance":"Previous Balance"
+
 }

@@ -423,7 +423,7 @@ export default function Home() {
                       endDate={"2014/04/08"}
                       placeholderText={t("filterDashboard")}
                       maxDate={new Date()}
-                      minDate={ispOwnerData.createdAt}
+                      minDate={ispOwnerData?.createdAt}
                     />
                   </div>
                   <button
@@ -464,8 +464,17 @@ export default function Home() {
                   <p style={{ fontSize: "16px" }}>{t("active")}</p>
                   <h2>{FormatNumber(customerStat.active)}</h2>
 
-                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                  <p
+                    style={{
+                      fontSize: "15px",
+                      paddingTop: "10px",
+                      marginBottom: "0px",
+                    }}
+                  >
                     {t("in active")}: {FormatNumber(customerStat.inactive)}
+                  </p>
+                  <p style={{ fontSize: "12px", paddingTop: "0px" }}>
+                    {t("expired")}: {FormatNumber(customerStat.expired)}
                   </p>
                 </div>
               </div>

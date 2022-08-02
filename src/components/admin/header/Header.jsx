@@ -34,6 +34,9 @@ export default function Header(props) {
   const balancee = useSelector(
     (state) => state?.persistedReducer?.payment?.balance
   );
+  const previousBalancee = useSelector(
+    (state) => state?.persistedReducer?.payment?.previousBalance
+  );
   const dispatch = useDispatch();
   // const navigate = useNavigate();
   const pathName = useLocation().pathname;
@@ -164,6 +167,15 @@ export default function Header(props) {
                       {FormatNumber(balancee)}
                     </strong>
                   </div>
+                  {/* <div
+                    style={{ backgroundColor: "inherit" }}
+                    className="balancetext"
+                  >
+                    {t("previousBalance")}
+                    <strong className="mainsmsbalance">
+                      {FormatNumber(previousBalancee)}
+                    </strong>
+                  </div> */}
                   <div
                     title={t("refresh")}
                     style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
