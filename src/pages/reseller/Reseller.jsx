@@ -9,6 +9,7 @@ import {
   PeopleFill,
   ChatText,
   ArrowRightShort,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -52,9 +53,16 @@ export default function Reseller() {
   const reseller = useSelector(
     (state) => state.persistedReducer?.reseller?.reseller
   );
+
+  // reload handler
+  const reloadHandler = () => {
+    fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
+  };
+
   useEffect(() => {
     if (auth.ispOwner) {
-      if (reseller.length === 0) fetchReseller(dispatch, auth.ispOwner.id);
+      if (reseller.length === 0)
+        fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
     }
   }, [dispatch, auth.ispOwner]);
 
@@ -257,7 +265,18 @@ export default function Reseller() {
               {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div> {t("reseller")} </div>
+                  <div className="d-flex">
+                    <div>{t("reseller")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
                   {role === "ispOwner" && (
                     <div className="d-flex">
                       <div className="settingbtn me-2">
@@ -290,22 +309,15 @@ export default function Reseller() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    {isLoading && (
-                      <div className="deleteReseller">
-                        <h6>
-                          <Loader /> Deleting...
-                        </h6>
-                      </div>
-                    )}
-                  </div>
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={reseller}
-                    ></Table>
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={reseller}
+                      ></Table>
+                    </div>
                   </div>
                 </div>
               </FourGround>

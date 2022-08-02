@@ -5,8 +5,13 @@ import {
   acceptedStatusSuccess,
 } from "./resellerSmsRequestSlice";
 
-export const getSmsRequestHistory = async (ispOwnerId, dispatch) => {
+export const getSmsRequestHistory = async (
+  ispOwnerId,
+  dispatch,
+  setIsLoading
+) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(
       "/ispOwner/smsPurchaseHistory/reseller/" + ispOwnerId
     );
@@ -15,6 +20,7 @@ export const getSmsRequestHistory = async (ispOwnerId, dispatch) => {
   } catch (error) {
     console.log(error.response);
   }
+  setIsLoading(false);
 };
 
 export const acceptedStatus = async (resellerId, dataId, data, dispatch) => {

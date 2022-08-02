@@ -411,13 +411,15 @@ export const deleteSubArea = async (dispatch, data, setIsLoading) => {
 
 // Collector
 
-export const getCollector = async (dispatch, ispOwnerId) => {
+export const getCollector = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 export const addCollector = async (dispatch, data, setIsLoading) => {
@@ -1095,13 +1097,15 @@ export const deletePPPoEpackage = async (dispatch, IDs) => {
 // Reseller
 
 // GET reseller
-export const fetchReseller = async (dispatch, ispOwner) => {
+export const fetchReseller = async (dispatch, ispOwner, setIsLoading) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/reseller/${ispOwner}`);
     dispatch(getResellerrSuccess(res.data));
   } catch (error) {
     console.log(error.message);
   }
+  setIsLoading(false);
 };
 
 // add reseller
@@ -1381,13 +1385,15 @@ export const getAllBills = async (dispatch, ispOwnerId, setIsLoading) => {
 
 //my deposit
 
-export const getMyDeposit = async (dispatch) => {
+export const getMyDeposit = async (dispatch, setIsLoading) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get("/deposit");
     dispatch(getmyDepositSucces(res.data));
   } catch (error) {
     console.log(error?.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 //Collector Bills
