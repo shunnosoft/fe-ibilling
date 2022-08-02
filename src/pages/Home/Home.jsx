@@ -47,6 +47,11 @@ export default function Home() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.ispOwner
+  );
+
   const allCollector = useSelector(
     (state) => state.persistedReducer.collector.collector
   );
@@ -61,7 +66,6 @@ export default function Home() {
   const customerStat = useSelector(
     (state) => state.persistedReducer.chart.customerStat
   );
-  console.log({ customerStat });
   const invoice = useSelector(
     (state) => state.persistedReducer.invoice.invoice
   );
@@ -286,7 +290,7 @@ export default function Home() {
   const dashboardFilterController = () => {
     const filterData = {
       year: filterDate.getFullYear(),
-      month: filterDate.getMonth(),
+      month: filterDate.getMonth() + 1,
     };
 
     if (role === "collector") {
@@ -407,7 +411,7 @@ export default function Home() {
                     {FormatNumber(customerStat.totalMonthlyCollection)}
                   </h2>
                 </div>
-                {/* <div className="d-flex justify-content-end">
+                <div className="d-flex justify-content-end">
                   <div>
                     <ReactDatePicker
                       selected={filterDate}
@@ -419,6 +423,7 @@ export default function Home() {
                       endDate={"2014/04/08"}
                       placeholderText={t("filterDashboard")}
                       maxDate={new Date()}
+                      minDate={ispOwnerData.createdAt}
                     />
                   </div>
                   <button
@@ -427,7 +432,7 @@ export default function Home() {
                   >
                     {isLoading ? <Loader /> : t("filter")}
                   </button>
-                </div> */}
+                </div>
               </div>
             </div>
 
