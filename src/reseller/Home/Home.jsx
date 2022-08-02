@@ -94,7 +94,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getIspOwnerData(dispatch, ispOwnerId, setLoading);
+    getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
 
     if (role === "collector") {
       const areas = [];
