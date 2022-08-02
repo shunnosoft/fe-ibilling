@@ -58,6 +58,7 @@ const customerSliec = createSlice({
       if (customer.balance >= customer.monthlyFee) {
         customer.paymentStatus = "paid";
         customer.status = "active";
+        customer.billingCycle = action.payload.billingCycle;
       }
 
       state.staticCustomer[

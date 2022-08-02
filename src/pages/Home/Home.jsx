@@ -51,6 +51,7 @@ export default function Home() {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
+  console.log({ ispOwnerData });
 
   const allCollector = useSelector(
     (state) => state.persistedReducer.collector.collector
@@ -347,6 +348,7 @@ export default function Home() {
 
   return (
     <div className="container homeWrapper">
+      <div className={`Loader ${isLoading && "d-block"}`}></div>
       <ToastContainer position="top-right" theme="colored" />
       <FontColor>
         <div className="home">
@@ -396,7 +398,7 @@ export default function Home() {
                         return (
                           <CircularProgressbar
                             value={roundedValue}
-                            text={`${roundedValue}%`}
+                            text={`${isNaN(roundedValue) ? 0 : roundedValue}%`}
                             styles={buildStyles({ pathTransition: "none" })}
                           />
                         );
@@ -417,13 +419,13 @@ export default function Home() {
                       selected={filterDate}
                       className="form-control shadow-none"
                       onChange={(date) => setFilterDate(date)}
-                      dateFormat="MM/yyyy"
+                      dateFormat="MMM/yyyy"
                       showMonthYearPicker
                       showFullMonthYearPicker
                       endDate={"2014/04/08"}
                       placeholderText={t("filterDashboard")}
                       maxDate={new Date()}
-                      minDate={ispOwnerData?.createdAt}
+                      minDate={new Date(ispOwnerData?.createdAt)}
                     />
                   </div>
                   <button
@@ -464,16 +466,10 @@ export default function Home() {
                   <p style={{ fontSize: "16px" }}>{t("active")}</p>
                   <h2>{FormatNumber(customerStat.active)}</h2>
 
-                  <p
-                    style={{
-                      fontSize: "15px",
-                      paddingTop: "10px",
-                      marginBottom: "0px",
-                    }}
-                  >
+                  <p style={{ fontSize: "15px", marginBottom: "0px" }}>
                     {t("in active")}: {FormatNumber(customerStat.inactive)}
                   </p>
-                  <p style={{ fontSize: "12px", paddingTop: "0px" }}>
+                  <p style={{ fontSize: "13px", paddingTop: "0px" }}>
                     {t("expired")}: {FormatNumber(customerStat.expired)}
                   </p>
                 </div>
