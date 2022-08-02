@@ -16,6 +16,7 @@ import {
   FileExcelFill,
   PrinterFill,
   ChatText,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -47,6 +48,7 @@ import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
+import Loader from "../../components/common/Loader";
 
 // import apiLink from ""
 export default function Customer() {
@@ -124,6 +126,17 @@ export default function Customer() {
   const [hasDue, setDue] = useState(false);
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
+  // reload handler
+  const reloadHandler = () => {
+    if (
+      !bpSettings?.hasMikrotik &&
+      (role === "manager" || role === "ispOwner")
+    ) {
+      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
+    }
+    getCustomer(dispatch, ispOwner, setIsloading);
+  };
 
   // get customer api call
   useEffect(() => {
@@ -669,22 +682,18 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>{t("customer")}</div>
-                  {/* <div className="h6 d-flex justify-content-center align-items-start">
-                    <p>
-                      {t("totalPossibilityBill")}: {totalMonthlyFee}
-                    </p>
-                    {hasDue && (
-                      <>
-                        <p>
-                          {t("totalPrevDue")} : {totalDue}
-                        </p>
-                        <p>
-                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
-                        </p>
-                      </>
-                    )}
-                  </div> */}
+                  <div className="d-flex">
+                    <h2>{t("customer")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
 
                   {permission?.customerAdd || role === "ispOwner" ? (
                     <div

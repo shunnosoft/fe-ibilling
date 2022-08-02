@@ -94,11 +94,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-<<<<<<< HEAD
-    getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
-=======
     getIspOwnerData(dispatch, ispOwnerId, setLoading);
->>>>>>> nahid
 
     if (role === "collector") {
       const areas = [];
@@ -147,7 +143,7 @@ export default function Home() {
       );
     } else {
       getChartsReseller(dispatch, resellerId, Year, Month);
-      getDashboardCardData(dispatch, ispOwnerId, resellerId);
+      getDashboardCardData(dispatch, setIsLoading, ispOwnerId, resellerId);
     }
   }, [dispatch, resellerId, role, userData, Month, Year]);
 

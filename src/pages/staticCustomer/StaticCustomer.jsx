@@ -18,6 +18,7 @@ import {
   PersonPlusFill,
   FileExcelFill,
   PrinterFill,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -49,6 +50,7 @@ import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/Bulkdelete
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
+import Loader from "../../components/common/Loader";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -233,14 +235,26 @@ export default function Customer() {
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
 
+  // reload Handler
+  const reloadHandler = () => {
+    if (
+      !bpSettings?.hasMikrotik &&
+      (role === "manager" || role === "ispOwner")
+    ) {
+      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
+    }
+
+    getStaticCustomer(dispatch, ispOwner, setIsloading);
+  };
+
   useEffect(() => {
     if (
       !bpSettings?.hasMikrotik &&
       (role === "manager" || role === "ispOwner")
     ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch);
+      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     }
-    
+
     if (cus.length === 0) getStaticCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
 
@@ -675,24 +689,18 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div className="me-3"> {t("staticCustomer")} </div>
-                  {/* <div className="h6 d-flex justify-content-center align-items-start flex-column">
-                    <p>
-                      {t("totalPossibilityBill")}: {totalMonthlyFee}
-                    </p>
-                    {hasDue && (
-                      <>
-                        <p>
-                          {" "}
-                          {t("totalPrevDue")} : {totalDue}
-                        </p>
-
-                        <p>
-                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
-                        </p>
-                      </>
-                    )}
-                  </div> */}
+                  <div className="d-flex">
+                    <h2> {t("staticCustomer")} </h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
                   <div
                     className="d-flex"
                     style={{

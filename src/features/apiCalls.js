@@ -685,8 +685,9 @@ export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
 };
 
 // GET mikrotik
-export const fetchMikrotik = async (dispatch, ispOwnerId) => {
+export const fetchMikrotik = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
+    setIsLoading(true);
     const response = await apiLink({
       method: "GET",
       url: `/mikrotik/${ispOwnerId}`,
@@ -695,6 +696,7 @@ export const fetchMikrotik = async (dispatch, ispOwnerId) => {
   } catch (error) {
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 // POST mikrotik
@@ -1523,8 +1525,13 @@ export const getIspownerwitSMS = async (ispOwnerId) => {
 
 //mikrotik packages without mikrotik access
 
-export const getPackagewithoutmikrotik = async (ispOwnerId, dispatch) => {
+export const getPackagewithoutmikrotik = async (
+  ispOwnerId,
+  dispatch,
+  setIsLoading
+) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(`/mikrotik/package/${ispOwnerId}`);
     // console.log(res.data.packages);
     dispatch(getpackageSuccess(res.data.packages));
@@ -1532,6 +1539,7 @@ export const getPackagewithoutmikrotik = async (ispOwnerId, dispatch) => {
   } catch (error) {
     console.log(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 export const getQueuePackageByIspOwnerId = async (
