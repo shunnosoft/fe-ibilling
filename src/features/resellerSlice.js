@@ -14,9 +14,8 @@ export const resellerSlice = createSlice({
       state.reseller.push(action.payload);
     },
     editResellerSuccess: (state, action) => {
-      console.log(action.payload);
       state.reseller[
-        state.reseller.findIndex((item) => item.id === action.payload.id)
+        state.reseller.findIndex((item) => item.id === action.payload._id)
       ] = action.payload;
     },
     editResellerforRecharge: (state, action) => {

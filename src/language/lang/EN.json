@@ -488,6 +488,7 @@
   "collections": "Collection",
   "depositCollection": "Deposit Collection",
   "filterDashboard":"Filter Dashboard",
+  "editBalance":"Edit Balance",
   "previousBalance":"Previous Balance"
 
 }
