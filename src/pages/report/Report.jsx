@@ -333,7 +333,7 @@ export default function Report() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 pt-2">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">

@@ -257,7 +257,7 @@ export default function Bill() {
                                     <div className="dropdown-item">
                                       <div className="customerAction">
                                         <PenFill />
-                                        <p className="actionP">{T("edit")}</p>
+                                        <p className="actionP">{t("edit")}</p>
                                       </div>
                                     </div>
                                   </li>

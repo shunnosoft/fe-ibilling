@@ -137,6 +137,7 @@ export default function Home() {
       );
       getDashboardCardData(
         dispatch,
+        setIsLoading,
         ispOwnerId,
         userData.collector.reseller,
         userData.collector.id

@@ -28,7 +28,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
-import { PrinterFill } from "react-bootstrap-icons";
+import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
 import PrintCustomer from "./customerPDF";
 
 export default function Diposit() {
@@ -173,10 +173,17 @@ export default function Diposit() {
     );
   }, [getNames]);
 
+  // reload handler
+  const reloadHandler = () => {
+    getDepositforReseller(dispatch, userData?.reseller?.id, setLoading);
+  };
+
   useEffect(() => {
-    if (userData.user.role === "collector") getDeposit(dispatch);
-    else if (userData.user.role === "reseller")
-      getDepositforReseller(dispatch, userData.reseller.id);
+    if (userData.user.role === "collector")
+      if (ownDeposits.length === 0) getDeposit(dispatch);
+      else if (userData.user.role === "reseller")
+        if (allDeposit.length === 0)
+          getDepositforReseller(dispatch, userData.reseller.id, setLoading);
   }, [dispatch, userData]);
 
   // const onChangeCollector = (userId) => {
@@ -375,7 +382,18 @@ export default function Diposit() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <h2>{t("diposit")}</h2>
+                  <div className="d-flex">
+                    <div>{t("diposit")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
 
                   <div className="addAndSettingIcon">
                     <ReactToPrint
@@ -439,6 +457,7 @@ export default function Diposit() {
                 <FourGround>
                   <Table
                     customComponent={customComponent}
+                    isLoading={isLoading}
                     data={mainData}
                     columns={columns2}
                   ></Table>
@@ -447,7 +466,7 @@ export default function Diposit() {
 
               {userRole !== "collector" && (
                 <FourGround>
-                  <div className="collectorWrapper">
+                  <div className="collectorWrapper mt-2 py-2">
                     <div className="selectFilteringg">
                       {userRole === "reseller" && (
                         <select
@@ -507,6 +526,7 @@ export default function Diposit() {
                     <div className="tableSection">
                       <Table
                         customComponent={customComponent}
+                        isLoading={isLoading}
                         data={ownDeposits}
                         columns={columns}
                       ></Table>

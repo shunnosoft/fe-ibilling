@@ -12,6 +12,7 @@ import {
   PersonFill,
   CashStack,
   PrinterFill,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -170,16 +171,28 @@ export default function RstaticCustomer() {
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
+
+  // reload handler
+  const reloadHandler = () => {
+    if (role === "reseller") {
+      getStaticCustomerApi(dispatch, userData?.reseller.id, setIsloading);
+    } else if (role === "collector") {
+      getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
+    }
+  };
+
   useEffect(() => {
     if (role === "collector") {
       getMikrotik(dispatch, userData.collector.reseller);
     }
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);
-      getStaticCustomerApi(dispatch, userData?.reseller.id, setIsloading);
+      if (cus.length === 0)
+        getStaticCustomerApi(dispatch, userData?.reseller.id, setIsloading);
       getSubAreas(dispatch, resellerId);
     } else if (role === "collector") {
-      getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
+      if (cus.length === 0)
+        getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
     }
   }, [dispatch, resellerId, userData, role]);
 
@@ -229,7 +242,7 @@ export default function RstaticCustomer() {
       },
       {
         width: "9%",
-        Header: t("payment"),
+        Header: t("paymentFilter"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -237,7 +250,7 @@ export default function RstaticCustomer() {
       },
       {
         width: "10%",
-        Header: t("monthFee"),
+        Header: t("month"),
         accessor: "monthlyFee",
       },
       {
@@ -247,7 +260,7 @@ export default function RstaticCustomer() {
       },
       {
         width: "12%",
-        Header: t("billingCycle"),
+        Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMMM DD YYYY hh:mm A");
@@ -374,7 +387,19 @@ export default function RstaticCustomer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <h2> {t("customer")} </h2>
+                  <div className="d-flex">
+                    <h2>{t("staticCustomer")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="h6 d-flex justify-content-center align-items-start">
                     <p>
                       {t("totalPossibilityBill")} : {totalMonthlyFee}

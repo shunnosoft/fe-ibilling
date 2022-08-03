@@ -78,13 +78,15 @@ export const getCharts = async (dispatch, resellerId, Year, Month, User) => {
 // };
 
 // Collector
-export const getCollector = async (dispatch, resellerId) => {
+export const getCollector = async (dispatch, resellerId, setIsLoading) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(`/reseller/collector/${resellerId}`);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 export const addCollector = async (dispatch, data, setIsLoading) => {
@@ -298,7 +300,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
     await apiLink.post(`/deposit`, data);
 
     // dispatch(addDepositSuccess(res.data));
-    setLoading(false);
+
     langMessage(
       "success",
       "ডিপোজিট প্রদান সফল হয়েছে!",
@@ -341,13 +343,19 @@ export const getDeposit = async (dispatch) => {
   }
 };
 
-export const getDepositforReseller = async (dispatch, resellerId) => {
+export const getDepositforReseller = async (
+  dispatch,
+  resellerId,
+  setIsLoading
+) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get(`/deposit/reseller/collector/${resellerId}`);
     dispatch(getDepositSuccess(res.data));
   } catch (error) {
     console.log(error);
   }
+  setIsLoading(false);
 };
 
 export const depositAcceptReject = async (

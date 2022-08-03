@@ -13,6 +13,7 @@ import {
   PersonFill,
   CashStack,
   PrinterFill,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -142,16 +143,28 @@ export default function Customer() {
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
   };
+
+  // reload handler
+  const reloadHandler = () => {
+    if (role === "reseller") {
+      getCustomer(dispatch, userData?.reseller.id, setIsloading);
+    } else if (role === "collector") {
+      getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
+    }
+  };
+
   useEffect(() => {
     if (role === "collector") {
       getMikrotik(dispatch, userData.collector.reseller);
     }
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);
-      getCustomer(dispatch, userData?.reseller.id, setIsloading);
+      if (cus.length === 0)
+        getCustomer(dispatch, userData?.reseller.id, setIsloading);
       getSubAreas(dispatch, resellerId);
     } else if (role === "collector") {
-      getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
+      if (cus.length === 0)
+        getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
     }
   }, [dispatch, resellerId, userData, role]);
 
@@ -371,7 +384,21 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <h2> {t("customer")} </h2>
+                  {/* <h2> {t("customer")} </h2> */}
+
+                  <div className="d-flex">
+                    <h2>{t("customer")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="h6 d-flex justify-content-center align-items-start">
                     <p>
                       {t("totalPossibilityBill")} : {totalMonthlyFee}
@@ -420,7 +447,7 @@ export default function Customer() {
               {/* Model finish */}
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-e py-2">
                   <div className="addCollector">
                     <div className="displexFlexSys">
                       {/* filter selector */}

@@ -10,6 +10,9 @@ import { getParchaseHistory } from "../../../features/resellerParchaseSmsApi";
 import moment from "moment";
 import Table from "../../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import Loader from "../../../components/common/Loader";
+import { ArrowClockwise } from "react-bootstrap-icons";
 const RecehargeSMS = () => {
   const { t } = useTranslation();
   // import dispatch
@@ -25,12 +28,21 @@ const RecehargeSMS = () => {
     (state) => state?.persistedReducer?.smsHistory?.smsParchase
   );
 
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+
   // get accept status
   const acceptStatus = data.filter((item) => item.status === "pending");
 
+  // reload handler
+  const reloadHandler = () => {
+    if (data.length === 0)
+      getParchaseHistory(resellerId, dispatch, setIsLoading);
+  };
+
   // api call
   useEffect(() => {
-    getParchaseHistory(resellerId, dispatch);
+    getParchaseHistory(resellerId, dispatch, setIsLoading);
   }, []);
 
   // table columns
@@ -85,7 +97,18 @@ const RecehargeSMS = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div>{t("smsHistory")}</div>
+                  <div className="d-flex">
+                    <div>{t("smsHistory")}</div>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
                   <div
                     className="header_icon"
                     data-bs-toggle="modal"
@@ -108,7 +131,11 @@ const RecehargeSMS = () => {
               <div class="card">
                 <div class="card-body">
                   <div className="recdharge_sms">
-                    <Table data={data} columns={columns} />
+                    <Table
+                      isLoading={isLoading}
+                      data={data}
+                      columns={columns}
+                    />
                   </div>
                 </div>
               </div>

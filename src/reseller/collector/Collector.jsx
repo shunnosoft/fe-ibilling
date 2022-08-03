@@ -4,6 +4,7 @@ import {
   ThreeDots,
   PersonFill,
   PenFill,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,7 @@ import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -33,7 +35,7 @@ export default function Collector() {
     (state) => state.persistedReducer.collector.collector
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  
+
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [collectorPerPage, setCollectorPerPage] = useState(5);
@@ -46,12 +48,15 @@ export default function Collector() {
     (state) => state.persistedReducer.auth?.userData?.permission
   );
   const role = useSelector((state) => state.persistedReducer.auth.role);
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
+
+  // reload handler
+  const reloadHandler = () => {
+    getCollector(dispatch, userData.id, setIsloading);
   };
 
   useEffect(() => {
-    getCollector(dispatch, userData.id);
+    if (collector.length === 0)
+      getCollector(dispatch, userData.id, setIsloading);
     getSubAreas(dispatch, userData.id);
   }, [userData, dispatch]);
 
@@ -64,13 +69,6 @@ export default function Collector() {
       setSingleCollector(temp);
     }
   };
-
-  // DELETE collector
-  // const deleteCollectorHandler = async (ID) => {
-  //   const IDs = { ispOwnerId, collectorId: ID };
-  //   deleteCollector(dispatch, IDs, setIsDeleting);
-  // };
-  // console.log(allCollector)
 
   useEffect(() => {
     const keys = ["name", "mobile", "email"];
@@ -191,7 +189,18 @@ export default function Collector() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div>{t("collector")}</div>
+                <div className="d-flex">
+                  <div>{t("collector")}</div>
+                  <div className="reloadBtn">
+                    {isLoading ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
+                    )}
+                  </div>
+                </div>
 
                 {userData.permission?.customerAdd || role === "ispOwner" ? (
                   <div
@@ -212,7 +221,7 @@ export default function Collector() {
               <CollectorEdit single={singleCollector} />
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   {/* table */}
                   <div className="table-section">
                     <Table

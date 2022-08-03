@@ -6,6 +6,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
 import {
   ArchiveFill,
+  ArrowClockwise,
   ArrowDownUp,
   PenFill,
   PersonFill,
@@ -24,6 +25,7 @@ import { getCollectorBill } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
@@ -54,8 +56,13 @@ export default function CollectorReport() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  // reload handler
+  const reloadHandler = () => {
     getCollectorBill(dispatch, setIsLoading);
+  };
+
+  useEffect(() => {
+    if (allBills.length === 0) getCollectorBill(dispatch, setIsLoading);
   }, [dispatch]);
 
   useEffect(() => {
@@ -228,7 +235,20 @@ export default function CollectorReport() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("billReport")} </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <h2>{t("billReport")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </FourGround>
 
               {/* Model start */}

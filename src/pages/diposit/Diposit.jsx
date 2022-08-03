@@ -533,7 +533,7 @@ export default function Diposit() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 pt-2">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <Tabs
                       defaultActiveKey={

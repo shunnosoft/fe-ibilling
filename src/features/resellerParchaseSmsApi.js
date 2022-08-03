@@ -27,8 +27,13 @@ const langMessage = (color, bangla, english) => {
 };
 
 // get sms
-export const getParchaseHistory = async (resellerId, dispatch) => {
+export const getParchaseHistory = async (
+  resellerId,
+  dispatch,
+  setIsLoading
+) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get("/reseller/smsPurchase/" + resellerId);
     // console.log(res.data.smsPurchaseHistory);
     dispatch(getParchaseHistorySuccess(res.data.smsPurchaseHistory));
@@ -36,6 +41,7 @@ export const getParchaseHistory = async (resellerId, dispatch) => {
     console.log(error?.response?.data?.message);
     toast.error(error?.response?.data?.message);
   }
+  setIsLoading(false);
 };
 
 // parchase SMS

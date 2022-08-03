@@ -13,13 +13,18 @@ import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 import arraySort from "array-sort";
-import { ArrowDownUp, PrinterFill } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  ArrowDownUp,
+  PrinterFill,
+} from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCallReseller";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./ReportPDF";
+import Loader from "../../components/common/Loader";
 
 export default function Report() {
   const { t } = useTranslation();
@@ -62,8 +67,14 @@ export default function Report() {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  useEffect(() => {
+
+  // reload handler
+  const reloadHandler = () => {
     getAllBills(dispatch, userData.id, setisLoading);
+  };
+
+  useEffect(() => {
+    if (allBills.length === 0) getAllBills(dispatch, userData.id, setisLoading);
     setSubArea(subAreas.map((i) => i.id));
 
     if (collectors.length === allCollector.length) {
@@ -224,7 +235,19 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div> {t("billReport")} </div>
+                <div className="d-flex">
+                  <div>{t("billReport")}</div>
+                  <div className="reloadBtn">
+                    {isLoading ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
+                    )}
+                  </div>
+                </div>
+
                 <ReactToPrint
                   documentTitle={t("billReport")}
                   trigger={() => (
@@ -245,7 +268,7 @@ export default function Report() {
               {/* Model finish */}
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">

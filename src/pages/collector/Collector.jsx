@@ -219,8 +219,6 @@ export default function Collector() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
-                  {/* <div>{t("collector")}</div> */}
-
                   <div className="d-flex">
                     <div>{t("collector")}</div>
                     <div className="reloadBtn">
@@ -249,7 +247,7 @@ export default function Collector() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 pt-2">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="table-section">
                       <Table

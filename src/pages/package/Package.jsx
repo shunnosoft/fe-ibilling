@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ThreeDots, PenFill, ArchiveFill, Plus } from "react-bootstrap-icons";
+import {
+  ThreeDots,
+  PenFill,
+  ArchiveFill,
+  Plus,
+  ArrowClockwise,
+} from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,6 +20,7 @@ import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 
 // import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 
@@ -34,8 +41,16 @@ export default function Package() {
 
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  // reload handler
+  const reloadHandler = () => {
+    getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+  };
+
   useEffect(() => {
-    getPackagewithoutmikrotik(ispOwnerId, dispatch);
+    if (packages.length === 0)
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
   }, [ispOwnerId, dispatch]);
 
   const [singlePackage, setSinglePackage] = useState("");
@@ -134,7 +149,19 @@ export default function Package() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
-                <div>{t("package")}</div>
+                <div className="d-flex">
+                  <div>{t("package")}</div>
+                  <div className="reloadBtn">
+                    {isLoading ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
+                    )}
+                  </div>
+                </div>
+
                 {role === "ispOwner" && (
                   <div
                     title={t("addPackage")}
@@ -148,7 +175,7 @@ export default function Package() {
               </div>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   {/* <div className="addCollector">
                     {role === "ispOwner" && (
                       <div className="addNewCollector">
@@ -167,7 +194,11 @@ export default function Package() {
                     )}
                   </div> */}
                   {/* table */}
-                  <Table columns={columns1} data={packages}></Table>
+                  <Table
+                    isLoading={isLoading}
+                    columns={columns1}
+                    data={packages}
+                  ></Table>
                 </div>
               </FourGround>
               <Footer />

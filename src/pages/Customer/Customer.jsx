@@ -141,10 +141,10 @@ export default function Customer() {
   // get customer api call
   useEffect(() => {
     if (
-      !bpSettings?.hasMikrotik &&
-      (role === "manager" || role === "ispOwner")
+      !bpSettings?.hasMikrotik
+      // && (role === "manager" || role === "ispOwner")
     ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch);
+      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     }
     if (cus.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
   }, [dispatch, ispOwner, role, bpSettings]);
@@ -780,7 +780,7 @@ export default function Customer() {
               />
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="displexFlexSys">
                       {/* filter selector */}

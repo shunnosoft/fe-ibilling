@@ -9,7 +9,8 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 // get specific customer
 
-import { Wifi } from "react-bootstrap-icons";
+import { ArrowClockwise, Wifi } from "react-bootstrap-icons";
+import Loader from "../../components/common/Loader";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
@@ -44,6 +45,16 @@ const ResellserActiveCustomer = () => {
       (value) => value.complete === JSON.parse(filterStatus)
     );
   }
+
+  // reload handler
+  const reloadHandler = () => {
+    fetchActivepppoeUserForReseller(
+      dispatch,
+      userData.id,
+      mikrotikId,
+      setIsloading
+    );
+  };
 
   //fetch reseller active customer
   useEffect(() => {
@@ -131,9 +142,26 @@ const ResellserActiveCustomer = () => {
           <div className="container">
             <FontColor>
               {/* modals */}
+
               <FourGround>
-                <h2 className="collectorTitle">{t("activeStaticCustomer")}</h2>
-                <div className="collectorWrapper">
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <h2>{t("active PPPoE")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </FourGround>
+
+              <FourGround>
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="d-flex justify-content-center">
                     <div className="mikrotik-filter">
                       <h6 className="mb-0"> {t("selectMikrotik")} </h6>
