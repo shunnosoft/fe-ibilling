@@ -51,7 +51,6 @@ export default function Home() {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
-  console.log({ ispOwnerData });
 
   const allCollector = useSelector(
     (state) => state.persistedReducer.collector.collector
@@ -374,67 +373,71 @@ export default function Home() {
                 </button>
               </div>
             )}
-            {/* <h2 className="dashboardTitle">{t("dashboard")}</h2> */}
             <div className="col-md-12 mb-3">
-              <div className="row">
-                <div className="col-md-3 d-flex justify-content-end align-items-center">
-                  <h2>
-                    {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
-                    {FormatNumber(customerStat.totalProbableAmount)}{" "}
-                  </h2>
-                </div>
-                <div className="col-md-6">
-                  <div style={{ width: 200, height: 200, margin: "0 auto" }}>
-                    <AnimatedProgressProvider
-                      valueStart={0}
-                      valueEnd={Math.round(collectionPersentage)}
-                      duration={1}
-                      easingFunction={easeQuadIn}
-                    >
-                      {(value) => {
-                        const roundedValue = isNaN(value)
-                          ? collectionPersentage
-                          : Math.round(value);
-                        return (
-                          <CircularProgressbar
-                            value={roundedValue}
-                            text={`${isNaN(roundedValue) ? 0 : roundedValue}%`}
-                            styles={buildStyles({ pathTransition: "none" })}
-                          />
-                        );
-                      }}
-                    </AnimatedProgressProvider>
+              {role !== "collector" && (
+                <div className="row">
+                  <div className="col-md-3 d-flex justify-content-end align-items-center">
+                    <h2>
+                      {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
+                      {FormatNumber(customerStat.totalProbableAmount)}{" "}
+                    </h2>
+                  </div>
+                  <div className="col-md-6">
+                    <div style={{ width: 200, height: 200, margin: "0 auto" }}>
+                      <AnimatedProgressProvider
+                        valueStart={0}
+                        valueEnd={Math.round(collectionPersentage)}
+                        duration={1}
+                        easingFunction={easeQuadIn}
+                      >
+                        {(value) => {
+                          const roundedValue = isNaN(value)
+                            ? collectionPersentage
+                            : Math.round(value);
+                          return (
+                            <CircularProgressbar
+                              value={roundedValue}
+                              text={`${
+                                isNaN(roundedValue) ? 0 : roundedValue
+                              }%`}
+                              styles={buildStyles({ pathTransition: "none" })}
+                            />
+                          );
+                        }}
+                      </AnimatedProgressProvider>
+                    </div>
+                  </div>
+                  <div className="col-md-3 d-flex justify-content-start align-items-center">
+                    <h2>
+                      {t("totalCollection")} <br />
+                      <CurrencyDollar />{" "}
+                      {FormatNumber(customerStat.totalMonthlyCollection)}
+                    </h2>
                   </div>
                 </div>
-                <div className="col-md-3 d-flex justify-content-start align-items-center">
-                  <h2>
-                    {t("totalCollection")} <br />
-                    <CurrencyDollar />{" "}
-                    {FormatNumber(customerStat.totalMonthlyCollection)}
-                  </h2>
+              )}
+
+              <div className="d-flex justify-content-end">
+                <div>
+                  <ReactDatePicker
+                    selected={filterDate}
+                    className="form-control shadow-none"
+                    onChange={(date) => setFilterDate(date)}
+                    dateFormat="MMM/yyyy"
+                    showMonthYearPicker
+                    showFullMonthYearPicker
+                    endDate={"2014/04/08"}
+                    placeholderText={t("filterDashboard")}
+                    maxDate={new Date()}
+                    minDate={new Date(ispOwnerData?.createdAt)}
+                  />
                 </div>
-                <div className="d-flex justify-content-end">
-                  <div>
-                    <ReactDatePicker
-                      selected={filterDate}
-                      className="form-control shadow-none"
-                      onChange={(date) => setFilterDate(date)}
-                      dateFormat="MMM/yyyy"
-                      showMonthYearPicker
-                      showFullMonthYearPicker
-                      endDate={"2014/04/08"}
-                      placeholderText={t("filterDashboard")}
-                      maxDate={new Date()}
-                      minDate={new Date(ispOwnerData?.createdAt)}
-                    />
-                  </div>
-                  <button
-                    className="btn btn-sm btn-success ms-1 shadow-none"
-                    onClick={dashboardFilterController}
-                  >
-                    {isLoading ? <Loader /> : t("filter")}
-                  </button>
-                </div>
+                <button
+                  className="btn btn-sm btn-success ms-1 shadow-none"
+                  onClick={dashboardFilterController}
+                >
+                  {isLoading ? <Loader /> : t("filter")}
+                </button>
               </div>
             </div>
 
