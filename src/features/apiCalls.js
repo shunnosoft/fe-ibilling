@@ -1169,6 +1169,33 @@ export const editReseller = async (dispatch, data, setIsLoading) => {
     });
 };
 
+//update reseller balance
+
+export const updateResellerBalance = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
+  const { ispId, resellerId, ...rest } = data;
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch(
+      `/ispOwner/reseller/${ispId}/${resellerId}`,
+      rest
+    );
+    dispatch(editResellerSuccess(res.data));
+    setIsLoading(false);
+    document.querySelector("#resellerBalanceEditModal").click();
+    langMessage(
+      "success",
+      "রিসেলার ব্যালেন্স আপডেট সফল হয়েছে ",
+      "Reseller Balance Updated Successfully"
+    );
+  } catch (error) {
+    if (error.response) {
+      toast.error(error.response.data.message);
+    }
+  }
+  setIsLoading(false);
+};
+
 // Delete reseller
 export const deleteReseller = async (dispatch, IDs, setIsLoading) => {
   setIsLoading(true);

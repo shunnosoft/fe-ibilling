@@ -38,6 +38,7 @@ import { Link } from "react-router-dom";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 // import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
 import { useTranslation } from "react-i18next";
+import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 
 export default function Reseller() {
   const { t } = useTranslation();
@@ -208,6 +209,22 @@ export default function Reseller() {
                     </div>
                   </div>
                 </li>
+                {role === "ispOwner" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resellerBalanceEditModal"
+                    onClick={() => {
+                      getSpecificReseller(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">{t("editBalance")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
 
                 <li
                   onClick={() => {
@@ -262,6 +279,7 @@ export default function Reseller() {
               <ResellerDetails reseller={singleUser} />
               <Recharge reseller={singleUser}></Recharge>
               <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
+              <EditResellerBalance reseller={singleUser} />
               {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
