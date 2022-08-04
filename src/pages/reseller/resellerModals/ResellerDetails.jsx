@@ -1,9 +1,19 @@
 import React from "react";
 import "../reseller.css";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
-export default function ResellerDetails({ reseller }) {
+export default function ResellerDetails({ resellerId }) {
   const { t } = useTranslation();
+
+  const allReseller = useSelector(
+    (state) => state.persistedReducer?.reseller?.reseller
+  );
+
+  const reseller = allReseller.find((val) => {
+    return val.id === resellerId;
+  });
+
   return (
     <div>
       <div>

@@ -490,107 +490,109 @@ export default function Sidebar() {
                     </Accordion.Body>
                   </Accordion.Item>
                   {/* স্টাফ */}
-                  <Accordion.Item eventKey="2">
-                    <Accordion.Header
-                      onClick={() => handleActiveAccordian("2")}
-                    >
-                      <div className="sidebarIcon">{<PersonLinesFill />}</div>
-                      <span className="sidebarLinksName">{t("staff")}</span>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      {userRole === "ispOwner" ? (
-                        <NavLink
-                          key={3}
-                          to={"/manager"}
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname === "/manager"
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">{<Person />}</div>
-                              <span className="sidebarLinksName">
-                                {t("manager")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
-                      ) : (
-                        ""
-                      )}
-                      {userRole === "manager" ||
-                      userRole === "ispOwner" ||
-                      userRole === "reseller" ? (
-                        <NavLink
-                          key={4}
-                          to={
-                            userRole === "reseller"
-                              ? "/reseller/collector"
-                              : "/collector"
-                          }
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname ===
-                                (userRole === "reseller"
-                                  ? "/reseller/collector"
-                                  : "/collector")
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">{<People />}</div>
-                              <span className="sidebarLinksName">
-                                {t("collector")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
-                      ) : (
-                        ""
-                      )}
+                  {userRole !== "collector" && (
+                    <Accordion.Item eventKey="2">
+                      <Accordion.Header
+                        onClick={() => handleActiveAccordian("2")}
+                      >
+                        <div className="sidebarIcon">{<PersonLinesFill />}</div>
+                        <span className="sidebarLinksName">{t("staff")}</span>
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        {userRole === "ispOwner" ? (
+                          <NavLink
+                            key={3}
+                            to={"/manager"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/manager"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<Person />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("manager")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        ) : (
+                          ""
+                        )}
+                        {userRole === "manager" ||
+                        userRole === "ispOwner" ||
+                        userRole === "reseller" ? (
+                          <NavLink
+                            key={4}
+                            to={
+                              userRole === "reseller"
+                                ? "/reseller/collector"
+                                : "/collector"
+                            }
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  (userRole === "reseller"
+                                    ? "/reseller/collector"
+                                    : "/collector")
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("collector")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        ) : (
+                          ""
+                        )}
 
-                      {userRole === "ispOwner" && (
-                        <NavLink
-                          key={330}
-                          to={"/staff"}
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname === "/staff"
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">
-                                {<PersonBadgeFill />}
-                              </div>
-                              <span className="sidebarLinksName">
-                                {t("labors")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
-                      )}
-                    </Accordion.Body>
-                  </Accordion.Item>
+                        {userRole === "ispOwner" && (
+                          <NavLink
+                            key={330}
+                            to={"/staff"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/staff"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<PersonBadgeFill />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("labors")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  )}
 
                   {/* রিসেলার */}
                   {userRole === "ispOwner" && (
