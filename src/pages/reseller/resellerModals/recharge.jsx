@@ -7,77 +7,77 @@ import { recharge } from "../../../features/apiCalls";
 import "../../message/message.css";
 import { useTranslation } from "react-i18next";
 
-function Recharge({ reseller }) {
+function Recharge({ resellerId }) {
   const { t } = useTranslation();
-  // console.log(reseller);
   const rechargeRef = useRef(Number);
   const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.userData.id
   );
+
+  const allReseller = useSelector(
+    (state) => state.persistedReducer?.reseller?.reseller
+  );
+  const reseller = allReseller.find((val) => {
+    return val.id === resellerId;
+  });
+
   const rechargeHandler = () => {
-    // window.alert("are you sure?")
-    // console.log(rechargeRef.current.value)
     const data = {
       amount: parseInt(rechargeRef.current.value),
       ispOwner: ispOwnerId,
       reseller: reseller.id,
     };
-    recharge(data, setIsloading, dispatch);
+    recharge(data, setIsloading, dispatch,rechargeRef);
   };
   return (
     <>
-      <div>
-        <div
-          className="modal fade modal-dialog-scrollable "
-          id="resellerRechargeModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  {t("messageBoard")}
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="smsPerchase">
-                  <div className="smsbuy">
-                    <div className="numsms">
-                      <span className="smsspan"> {t("rechargeAmount")} </span>
-                      <input
-                        ref={rechargeRef}
-                        className="smsinput"
-                        type="number"
-                        min={0}
-                      />
-                    </div>
-                  </div>
-                  <div className="smsbutton">
-                    <button
-                      data-bs-dismiss="modal"
-                      className="smsparchasebtn button2"
-                    >
-                      {t("cancel")}
-                    </button>
-                    <button
-                      className="smsparchasebtn button1"
-                      onClick={rechargeHandler}
-                    >
-                      {isLoading ? <Loader></Loader> : t("recharge")}
-                    </button>
-                  </div>
-                </div>
-              </div>
+      <div
+        className="modal fade"
+        id="resellerRechargeModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                {t("rechargeAmount")}
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <input
+                ref={rechargeRef}
+                className="form-control"
+                type="number"
+                min={0}
+                placeholder={t("enterAmount")}
+              />
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                {t("cancel")}
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={rechargeHandler}
+              >
+                {isLoading ? <Loader></Loader> : t("recharge")}
+              </button>
             </div>
           </div>
         </div>

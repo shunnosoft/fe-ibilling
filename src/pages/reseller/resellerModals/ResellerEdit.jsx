@@ -13,15 +13,23 @@ import { editReseller } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 // import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
-export default function ResellerEdit({ reseller }) {
+export default function ResellerEdit({ resellerId }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const area = useSelector((state) => state.persistedReducer.area.area);
   const mikrotik = useSelector(
     (state) => state.persistedReducer.mikrotik.mikrotik
   );
-  const dispatch = useDispatch();
+  const allReseller = useSelector(
+    (state) => state.persistedReducer?.reseller?.reseller
+  );
+  const reseller = allReseller.find((val) => {
+    return val.id === resellerId;
+  });
+  console.log({ resellerId, reseller });
+
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
 
@@ -30,15 +38,15 @@ export default function ResellerEdit({ reseller }) {
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
   // const [permissions, setPermissions] = useState([]);
   useEffect(() => {
-    setMikrotikIds_Edit(reseller.mikrotiks);
+    setMikrotikIds_Edit(reseller?.mikrotiks);
 
-    setAreaIds_Edit(reseller.subAreas);
+    setAreaIds_Edit(reseller?.subAreas);
 
     setAllowedAreas(reseller?.subAreas);
 
     setAllowedMikrotik(reseller?.mikrotiks);
-    setmikroTikPackagesId(reseller.mikrotikPackages);
-  }, [reseller, dispatch]);
+    setmikroTikPackagesId(reseller?.mikrotikPackages);
+  }, [resellerId, dispatch]);
 
   //validator
   const resellerValidator = Yup.object({
@@ -72,7 +80,7 @@ export default function ResellerEdit({ reseller }) {
   //     setCheck(temp);
   //   }
   // };
-
+  console.log({ reseller });
   // edit Reseller
   const resellerHandler = (data) => {
     let commision = data.commissionRate;

@@ -1,9 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import {
-  ThreeDots,
-  PenFill,
-  ArchiveFill,
-} from "react-bootstrap-icons";
+import { ThreeDots, PenFill, ArchiveFill } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -35,6 +31,7 @@ export default function StaffSalary() {
   );
 
   const [salaryId, setSalaryId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   //editHandler
   const editHandler = (id) => {
     // console.log(id);
@@ -42,35 +39,41 @@ export default function StaffSalary() {
   };
 
   useEffect(() => {
-    getSalaryApi(dispatch, staffId);
+    getSalaryApi(dispatch, staffId, setIsLoading);
   }, [staffId]);
 
   const columns = useMemo(
     () => [
       {
-        Header: t("serial"),
+        width: "10%",
+        Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "18%",
         Header: t("year"),
         accessor: "year",
       },
       {
+        width: "18%",
         Header: t("month"),
         accessor: "month",
       },
       {
+        width: "18%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
+        width: "18%",
         Header: t("due"),
         accessor: "due",
       },
 
       {
+        width: "18%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -128,7 +131,7 @@ export default function StaffSalary() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between align-item-center px-2 mb-2">
+                <div className="collectorTitle d-flex justify-content-between align-item-center px-5 mb-2">
                   <span>{t("staffProfile")}</span>
                   <Button
                     data-bs-toggle="modal"
@@ -142,7 +145,7 @@ export default function StaffSalary() {
               </FourGround>
               {/* edit manager */}
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper pb-2">
                   <div className="addCollector d-flex justify-content-between">
                     {staff && (
                       <div className="ManagerData p-3">
@@ -156,11 +159,14 @@ export default function StaffSalary() {
                       </div>
                     )}
                   </div>
-                  {getSalaries.length > 0 ? (
-                    <Table columns={columns} data={getSalaries} />
-                  ) : (
-                    "No Record to show"
-                  )}
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={getSalaries}
+                    />
+                  </div>
+
                   <StaffSalaryPostModal staffId={staffId} />
                   <StaffSalaryEditModal salaryId={salaryId} />
                 </div>

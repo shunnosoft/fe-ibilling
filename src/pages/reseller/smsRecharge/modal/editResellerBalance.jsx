@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
 import { updateResellerBalance } from "../../../../features/apiCalls";
 
-const EditResellerBalance = ({ reseller }) => {
+const EditResellerBalance = ({ resellerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const allReseller = useSelector(
+    (state) => state.persistedReducer?.reseller?.reseller
+  );
+
+  const reseller = allReseller.find((val) => {
+    return val.id === resellerId;
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [resellerBalanceState, setResellerBalance] = useState(0);
 
   useEffect(() => {
     setResellerBalance(reseller?.rechargeBalance);
-  }, [reseller]);
+  }, [resellerId]);
 
   const updateBalanceController = () => {
     const { rechargeBalance, ...resellerData } = reseller;
@@ -54,8 +63,8 @@ const EditResellerBalance = ({ reseller }) => {
                 type="number"
                 value={resellerBalanceState}
                 onChange={(e) => setResellerBalance(e.target.value)}
-                // min={0}
-                placeholder="Enter balance"
+                min={0}
+                placeholder={t("enterAmount")}
               />
             </div>
             <div className="modal-footer">

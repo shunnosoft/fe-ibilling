@@ -19,7 +19,7 @@ import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
 
 const Staff = () => {
-  const { t } = useTranslation();
+const { t } = useTranslation();
   const dispatch = useDispatch();
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId

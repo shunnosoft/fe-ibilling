@@ -29,7 +29,7 @@ import { getMikrotikPackages } from "../../features/apiCallReseller";
 //   getReseller,
 //   deleteReseller,
 // } from "../../features/resellerSlice";
-import TdLoader from "../../components/common/TdLoader";
+
 import ResellerDetails from "./resellerModals/ResellerDetails";
 import { deleteReseller, fetchReseller } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
@@ -49,7 +49,7 @@ export default function Reseller() {
   );
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
 
-  const [singleUser, setSingleUser] = useState({});
+  const [resellerId, setResellerId] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const reseller = useSelector(
     (state) => state.persistedReducer?.reseller?.reseller
@@ -62,17 +62,13 @@ export default function Reseller() {
 
   useEffect(() => {
     if (auth.ispOwner) {
-      if (reseller.length === 0)
-        fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
+      fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
     }
   }, [dispatch, auth.ispOwner]);
 
   // get Single reseller
-  const getSpecificReseller = (rid) => {
-    const singleReseller = reseller.find((val) => {
-      return val.id === rid;
-    });
-    setSingleUser(singleReseller);
+  const getSpecificReseller = (id) => {
+    setResellerId(id);
   };
 
   const [resellerSmsId, setResellerSmsId] = useState();
@@ -274,12 +270,12 @@ export default function Reseller() {
             <FontColor>
               {/* modals */}
               <ResellerPost />
-              {/* <ResellerRecharge reseller={singleUser}></ResellerRecharge> */}
-              <ResellerEdit reseller={singleUser} />
-              <ResellerDetails reseller={singleUser} />
-              <Recharge reseller={singleUser}></Recharge>
+              {/* <ResellerRecharge reseller={resellerId}></ResellerRecharge> */}
+              <ResellerEdit resellerId={resellerId} />
+              <ResellerDetails resellerId={resellerId} />
+              <Recharge resellerId={resellerId}></Recharge>
               <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
-              <EditResellerBalance reseller={singleUser} />
+              <EditResellerBalance resellerId={resellerId} />
               {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">

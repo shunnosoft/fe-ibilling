@@ -50,11 +50,14 @@ export const addStaff = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff", data);
-    // console.log("Clicked");
     dispatch(addStaffSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#staffModal").click();
-    langMessage("success", "কর্মচারী আড সফল হয়েছে!", "Staf Added Successfully");
+    langMessage(
+      "success",
+      "কর্মচারী এড সফল হয়েছে!",
+      "Staff Added Successfully"
+    );
   } catch (err) {
     console.log(err);
     if (err.response) {
@@ -122,8 +125,9 @@ export const addSalaryApi = async (dispatch, data, resetForm, setIsLoading) => {
   }
 };
 
-export const getSalaryApi = async (dispatch, staffId) => {
+export const getSalaryApi = async (dispatch, staffId, setIsLoading) => {
   try {
+    setIsLoading(true);
     const res = await apiLink.get("/staff/staffs/salary/" + staffId);
     dispatch(getSalarySuccess(res.data));
   } catch (err) {
@@ -132,6 +136,7 @@ export const getSalaryApi = async (dispatch, staffId) => {
       console.log(err.response);
     }
   }
+  setIsLoading(false);
 };
 
 export const updateSalary = async (dispatch, salaryId, data, setIsLoading) => {
