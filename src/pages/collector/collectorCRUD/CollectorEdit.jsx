@@ -17,9 +17,14 @@ import { useTranslation } from "react-i18next";
 //   fetchCollector,
 // } from "../../../features/collectorSlice";
 
-export default function CollectorEdit({ single }) {
+export default function CollectorEdit({ collectorId }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const collector = useSelector(
+    (state) => state?.persistedReducer?.collector?.collector
+  );
+
+  const single = collector.find((val) => val.id === collectorId);
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
@@ -115,12 +120,12 @@ export default function CollectorEdit({ single }) {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: single.name || "",
-                  mobile: single.mobile || "",
-                  address: single.address || "",
-                  email: single.email || "",
-                  nid: single.nid || "",
-                  status: single.status || "",
+                  name: single?.name || "",
+                  mobile: single?.mobile || "",
+                  address: single?.address || "",
+                  email: single?.email || "",
+                  nid: single?.nid || "",
+                  status: single?.status || "",
                   //   refName: "N/A" || "",
                   //   refMobile: "N/A" || "",
                   // areas: single?.areas || [],

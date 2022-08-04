@@ -7,6 +7,8 @@ import {
   ChatText,
   Plus,
   ArrowClockwise,
+  Key,
+  KeyFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +28,7 @@ import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -66,14 +69,9 @@ export default function Collector() {
       getCollector(dispatch, ispOwnerId, setIsLoading);
   }, [ispOwnerId, dispatch]);
 
-  const [singleCollector, setSingleCollector] = useState("");
-  const getSpecificCollector = (id) => {
-    if (collector.length !== undefined) {
-      const temp = collector.find((val) => {
-        return val.id === id;
-      });
-      setSingleCollector(temp);
-    }
+  const [singleCollector, setSingleCollector] = useState();
+  const getSpecificCollector = (collectorId) => {
+    setSingleCollector(collectorId);
   };
 
   const [collectorId, setCollectorId] = useState();
@@ -201,6 +199,23 @@ export default function Collector() {
                     </div>
                   </li>
                 )}
+
+                {role === "ispOwner" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPassword"
+                    onClick={() => {
+                      getSpecificCollector(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <KeyFill />
+                        <p className="actionP">{t("passwordReset")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -265,9 +280,10 @@ export default function Collector() {
         </div>
         {/* modals */}
         <CollectorPost />
-        <CollectorDetails single={singleCollector} />
-        <CollectorEdit single={singleCollector} />
+        <CollectorDetails collectorId={singleCollector} />
+        <CollectorEdit collectorId={singleCollector} />
         <SingleMessage single={collectorId} sendCustomer="collector" />
+        <PasswordReset resetCustomerId={singleCollector} />
       </div>
     </>
   );

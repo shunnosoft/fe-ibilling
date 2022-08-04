@@ -491,5 +491,7 @@
   "depositCollection": "ডিপোজিট কালেকশন",
   "filterDashboard": "ফিল্টার ড্যাশবোর্ড",
   "editBalance": "এডিট ব্যালেন্স",
-  "previousBalance": "পূর্বের ব্যালেন্স"
+  "previousBalance": "পূর্বের ব্যালেন্স",
+  "passwordReset": "পাসওয়ার্ড রিসেট",
+  "resetPasswordConfirmation": "আপনি কি পাসওয়ার্ড রিসেট করতে চান ?"
 }

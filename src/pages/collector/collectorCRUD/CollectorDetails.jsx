@@ -2,8 +2,15 @@ import React from "react";
 import "../../Customer/customer.css";
 import "../collector.css";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
-export default function CollectorDetails({ single }) {
+export default function CollectorDetails({ collectorId }) {
+  const collector = useSelector(
+    (state) => state?.persistedReducer?.collector?.collector
+  );
+
+  const single = collector.find((val) => val.id === collectorId);
+
   const { t } = useTranslation();
   return (
     <div>
@@ -22,7 +29,7 @@ export default function CollectorDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {single.name} {t("erProfile")}
+                {single?.name} {t("erProfile")}
               </h5>
               <button
                 type="button"
@@ -38,38 +45,38 @@ export default function CollectorDetails({ single }) {
                   alt=""
                 />
               </div>
-              <h2 className="ProfileName">{single.name}</h2>
+              <h2 className="ProfileName">{single?.name}</h2>
               <table className="table">
                 <thead>
                   <tr>
                     <th scope="col" className="thSt">
                       {t("mobile")} :
                     </th>
-                    <th scope="col">{single.mobile}</th>
+                    <th scope="col">{single?.mobile}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       {t("address")} :
                     </th>
-                    <th scope="col">{single.address}</th>
+                    <th scope="col">{single?.address}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       {t("email")} :
                     </th>
-                    <th scope="col">{single.email}</th>
+                    <th scope="col">{single?.email}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       {t("NIDno")} :
                     </th>
-                    <th scope="col">{single.nid}</th>
+                    <th scope="col">{single?.nid}</th>
                   </tr>
                   <tr>
                     <th scope="col" className="thSt">
                       {t("status")} :
                     </th>
-                    <th scope="col">{single.status}</th>
+                    <th scope="col">{single?.status}</th>
                   </tr>
                 </thead>
               </table>

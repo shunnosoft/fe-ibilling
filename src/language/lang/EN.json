@@ -487,8 +487,9 @@
   "today": "Today",
   "collections": "Collection",
   "depositCollection": "Deposit Collection",
-  "filterDashboard":"Filter Dashboard",
-  "editBalance":"Edit Balance",
-  "previousBalance":"Previous Balance"
-
+  "filterDashboard": "Filter Dashboard",
+  "editBalance": "Edit Balance",
+  "previousBalance": "Previous Balance",
+  "passwordReset": "Reset Password",
+  "resetPasswordConfirmation": "Do you want to Reset Password ?"
 }

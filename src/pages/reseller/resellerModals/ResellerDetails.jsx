@@ -33,26 +33,26 @@ export default function ResellerDetails({ reseller }) {
                     src="https://www.kindpng.com/picc/m/207-2074624_white-gray-circle-avatar-png-transparent-png.png"
                     alt=""
                   />
-                  <h5>{reseller.name || "N/A"}</h5>
+                  <h5>{reseller?.name || "N/A"}</h5>
                   <p>
-                    {t("website")} {reseller.website || "N/A"}
+                    {t("website")} {reseller?.website || "N/A"}
                   </p>
                 </div>
                 <div className="ResellerDetails">
                   <h4>
-                    {t("status")} : <b> {reseller.status || "N/A"} </b>
+                    {t("status")} : <b> {reseller?.status || "N/A"} </b>
                   </h4>
                   <h4>
-                    {t("email")} : <b> {reseller.email || "N/A"} </b>
+                    {t("email")} : <b> {reseller?.email || "N/A"} </b>
                   </h4>
                   <h4>
-                    {t("mobile")} : <b> {reseller.mobile || "N/A"}</b>
+                    {t("mobile")} : <b> {reseller?.mobile || "N/A"}</b>
                   </h4>
                   <h4>
-                    {t("address")} : <b>{reseller.address || "N/A"}</b>
+                    {t("address")} : <b>{reseller?.address || "N/A"}</b>
                   </h4>
                   <h4>
-                    NID: <b>{reseller.nid || "N/A"}</b>
+                    NID: <b>{reseller?.nid || "N/A"}</b>
                   </h4>
                 </div>
               </div>
