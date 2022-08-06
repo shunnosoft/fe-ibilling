@@ -51,6 +51,7 @@ import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
 import TransferToReseller from "./customerCRUD/TransferToReseller";
+import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
 
 // import apiLink from ""
 export default function Customer() {
@@ -653,7 +654,7 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
-                {role === "ispOwner" && (
+                {/* {role === "ispOwner" && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#transferToReseller"
@@ -668,7 +669,7 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
-                )}
+                )} */}
               </ul>
             </div>
           </div>
@@ -782,7 +783,7 @@ export default function Customer() {
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
               {/* transferReseller modal */}
-              <TransferToReseller customerId={singleCustomer} />
+              {/* <TransferToReseller customerId={singleCustomer} /> */}
               {/* bulk Modal */}
 
               <BulkSubAreaEdit
@@ -806,6 +807,10 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="autoDisableEditModal"
               />
+              {/* <BulkCustomerTransfer
+                bulkCustomer={bulkCustomer}
+                modalId="transferToReseller"
+              /> */}
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
@@ -1179,6 +1184,17 @@ export default function Customer() {
             <i class="fas fa-edit"></i>
             <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
+          {/* <button
+            className="bulk_action_button"
+            title={t("transferReseller")}
+            data-bs-toggle="modal"
+            data-bs-target="#transferToReseller"
+            type="button"
+            class="btn btn-info btn-floating btn-sm"
+          >
+            <i class="fa-solid fa-right-left"></i>
+            <span className="button_title"> {t("transferReseller")} </span>
+          </button> */}
           <button
             className="bulk_action_button"
             title={t("customerDelete")}

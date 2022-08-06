@@ -9,7 +9,6 @@ export const bulkDeleteCustomer = async (
   setIsLoading
 ) => {
   try {
-    console.log(data);
     setIsLoading(true);
     const res = await apiLink.delete(`/customer/bulk/?mikrotik=${mikrotik}`, {
       data,
@@ -89,6 +88,22 @@ export const bulkAutoConnectionEdit = async (dispatch, data, setIsLoading) => {
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
+      toast.error(err.response.data.message);
+    }
+  }
+};
+
+export const bulkCustomerTransfer = (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    // const res = await apiLink.patch(`/customer/bulk/?mikrotik=${mikrotik}`,data);
+    document.querySelector("#transferToReseller").click();
+    setIsLoading(false);
+    toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#transferToReseller").click();
       toast.error(err.response.data.message);
     }
   }

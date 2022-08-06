@@ -63,6 +63,7 @@ const TransferToReseller = ({ customerId }) => {
               onClick={transferToReseller}
               type="button"
               className="btn btn-success"
+              disabled={isLoading}
             >
               {isLoading ? <Loader /> : t("submit")}
             </button>
