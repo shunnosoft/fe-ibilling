@@ -8,20 +8,12 @@ import { PasswordResetApi } from "../../../features/resetPasswordApi";
 const PasswordReset = ({ resetCustomerId }) => {
   const { t } = useTranslation();
 
-  // get all collector from redux
-  const collector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
-
-  // find reset password customer
-  const data = collector.find((val) => val.id === resetCustomerId);
-
   // loading state
   const [isLoading, setIsloading] = useState(false);
 
   // reset password method
   const resetPassword = () => {
-    PasswordResetApi(data.user, setIsloading);
+    PasswordResetApi(resetCustomerId, setIsloading);
   };
 
   return (
@@ -36,7 +28,7 @@ const PasswordReset = ({ resetCustomerId }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} {t("passwordReset")}
+              {t("passwordReset")}
             </h5>
             <button
               type="button"

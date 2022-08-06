@@ -466,7 +466,16 @@ export default function Customer() {
       {
         width: "9%",
         Header: t("name"),
-        accessor: "name",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{ cursor: "move" }}
+            data-toggle="tooltip"
+            data-placement="top"
+            title={original.address}
+          >
+            {original.name}
+          </div>
+        ),
       },
       {
         width: "9%",
@@ -608,7 +617,7 @@ export default function Customer() {
                   </div>
                 </li>
 
-                {permission?.customerDelete || role === "ispOwner" ? (
+                {(permission?.customerDelete || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerDelete"
@@ -623,8 +632,6 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
 
                 {original.mobile && (

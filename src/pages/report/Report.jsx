@@ -59,6 +59,7 @@ export default function Report() {
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
+  const [medium, setMedium] = useState("");
 
   // reload handler
   const reloadHandler = () => {
@@ -180,6 +181,9 @@ export default function Report() {
     if (billType) {
       arr = arr.filter((bill) => bill.billType === billType);
     }
+    if (medium) {
+      arr = arr.filter((item) => item.medium === medium);
+    }
 
     arr = arr.filter(
       (item) =>
@@ -235,12 +239,17 @@ export default function Report() {
         accessor: "customer.mikrotikPackage.name",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("bill"),
         accessor: "amount",
       },
       {
-        width: "10%",
+        width: "8%",
+        Header: t("due"),
+        accessor: "due",
+      },
+      {
+        width: "9%",
         Header: t("agent"),
         accessor: "medium",
       },
@@ -250,7 +259,7 @@ export default function Report() {
         accessor: "name",
       },
       {
-        width: "27%",
+        width: "22%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -337,103 +346,101 @@ export default function Report() {
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">
-                      <div style={{ margin: "0 5px" }} className="dateDiv">
-                        <select
-                          className="form-select"
-                          onChange={(e) => onChangeArea(e.target.value)}
-                        >
-                          <option value={JSON.stringify({})} defaultValue>
-                            {t("allArea")}
+                      <select
+                        className="form-select"
+                        onChange={(e) => onChangeArea(e.target.value)}
+                      >
+                        <option value={JSON.stringify({})} defaultValue>
+                          {t("allArea")}
+                        </option>
+                        {allArea.map((area, key) => (
+                          <option key={key} value={JSON.stringify(area)}>
+                            {area.name}
                           </option>
-                          {allArea.map((area, key) => (
-                            <option key={key} value={JSON.stringify(area)}>
-                              {area.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div style={{ margin: "0 5px" }} className="dateDiv">
-                        <select
-                          className="form-select"
-                          onChange={(e) => onChangeSubArea(e.target.value)}
-                        >
-                          <option value="" defaultValue>
-                            {t("subArea")}
+                        ))}
+                      </select>
+                      <select
+                        className="form-select mx-2"
+                        onChange={(e) => onChangeSubArea(e.target.value)}
+                      >
+                        <option value="" defaultValue>
+                          {t("subArea")}
+                        </option>
+                        {singleArea?.subAreas?.map((sub, key) => (
+                          <option key={key} value={sub.id}>
+                            {sub.name}
                           </option>
-                          {singleArea?.subAreas?.map((sub, key) => (
-                            <option key={key} value={sub.id}>
-                              {sub.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                        ))}
+                      </select>
 
                       {userRole !== "collector" && (
-                        <div style={{ margin: "0 5px" }} className="dateDiv  ">
-                          <select
-                            className="form-select"
-                            onChange={(e) => onChangeCollector(e.target.value)}
-                          >
-                            <option value="" defaultValue>
-                              {t("all collector")}
-                            </option>
-                            {collectors?.map((c, key) => (
-                              <option key={key} value={c.user}>
-                                {c.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
-
-                      <div style={{ margin: "0 5px" }} className="dateDiv">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="start"
-                          name="trip-start"
-                          value={moment(dateStart).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setStartDate(e.target.value);
-                          }}
-                        />
-                      </div>
-                      <div style={{ margin: "0 5px" }} className="dateDiv">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="end"
-                          name="trip-start"
-                          value={moment(dateEnd).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setEndDate(e.target.value);
-                          }}
-
-                          // value="2018-07-22"
-
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                      <div style={{ margin: "0 5px" }} className="dateDiv  ">
                         <select
-                          className="form-select mw-100"
-                          onChange={(e) => setBillType(e.target.value)}
+                          className="form-select"
+                          onChange={(e) => onChangeCollector(e.target.value)}
                         >
                           <option value="" defaultValue>
-                            {t("billType")}
+                            {t("all collector")}
                           </option>
-
-                          <option value="connectionFee">
-                            {t("connectionFee")}
-                          </option>
-                          <option value="bill"> {t("monthBill")} </option>
+                          {collectors?.map((c, key) => (
+                            <option key={key} value={c.user}>
+                              {c.name}
+                            </option>
+                          ))}
                         </select>
-                      </div>
+                      )}
+
+                      <select
+                        className="form-select mx-2"
+                        onChange={(e) => setBillType(e.target.value)}
+                      >
+                        <option value="" defaultValue>
+                          {t("billType")}
+                        </option>
+
+                        <option value="connectionFee">
+                          {t("connectionFee")}
+                        </option>
+                        <option value="bill"> {t("monthBill")} </option>
+                      </select>
+                      <select
+                        className="form-select"
+                        onChange={(e) => setMedium(e.target.value)}
+                      >
+                        <option value="" selected>
+                          {t("medium")}
+                        </option>
+
+                        <option value="cash">{t("handCash")}</option>
+                        <option value="bKash"> {t("bKash")} </option>
+                        <option value="rocket"> {t("rocket")} </option>
+                        <option value="nagod"> {t("nagad")} </option>
+                        <option value="others"> {t("others")} </option>
+                      </select>
+
+                      <input
+                        className="form-select mx-2"
+                        type="date"
+                        id="start"
+                        name="trip-start"
+                        value={moment(dateStart).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                        }}
+                      />
+                      <input
+                        className="form-select me-2"
+                        type="date"
+                        id="end"
+                        name="trip-start"
+                        value={moment(dateEnd).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                        }}
+                      />
+
                       <div>
                         <button
-                          className="btn btn-outline-primary w-140 mt-2"
+                          className="btn btn-outline-primary w-110 mt-2"
                           type="button"
                           onClick={onClickFilter}
                         >
