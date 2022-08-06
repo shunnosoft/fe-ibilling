@@ -49,6 +49,7 @@ export default function Collector() {
   const firstIndex = lastIndex - collectorPerPage;
   const currentCollector = collector.slice(firstIndex, lastIndex);
   const [allCollector, setCollector] = useState(currentCollector);
+  const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const permission = useSelector(
     (state) => state.persistedReducer?.auth?.userData?.permissions
@@ -205,7 +206,7 @@ export default function Collector() {
                     data-bs-toggle="modal"
                     data-bs-target="#resetPassword"
                     onClick={() => {
-                      getSpecificCollector(original.id);
+                      setUserId(original.user);
                     }}
                   >
                     <div className="dropdown-item">
@@ -283,7 +284,7 @@ export default function Collector() {
         <CollectorDetails collectorId={singleCollector} />
         <CollectorEdit collectorId={singleCollector} />
         <SingleMessage single={collectorId} sendCustomer="collector" />
-        <PasswordReset resetCustomerId={singleCollector} />
+        <PasswordReset resetCustomerId={userId} />
       </div>
     </>
   );

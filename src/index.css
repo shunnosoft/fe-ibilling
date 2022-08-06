@@ -90,6 +90,10 @@ p {
   width: 140px !important;
 }
 
+.w-110 {
+  width: 100px !important;
+}
+
 .w-6rem {
   width: 6rem;
 }

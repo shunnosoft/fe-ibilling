@@ -23,6 +23,7 @@ import { deleteACustomer } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
 import { useTranslation } from "react-i18next";
+import CustomerDelete from "../resellerModals/CustomerDelete";
 
 // get specific customer
 
@@ -46,6 +47,11 @@ const ResellerCustomer = () => {
   // import dispatch
   const dispatch = useDispatch();
 
+  // get all data from redux state
+  let resellerCustomer = useSelector(
+    (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
+  );
+
   // loading local state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,15 +61,22 @@ const ResellerCustomer = () => {
   // payment status state
   const [filterPayment, setFilterPayment] = useState(null);
 
-  // get all data from redux state
-  let resellerCustomer = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
-  );
+  const [customerId, setCustomerId] = useState();
+
+  // check mikrotik checkbox
+  const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
   // get all reseller customer api call
   useEffect(() => {
     getResellerCustomer(dispatch, resellerId, setIsLoading);
   }, []);
+
+  // cutomer delete
+  const customerDelete = (customerId) => {
+    setMikrotikCheck(false);
+
+    setCustomerId(customerId);
+  };
 
   // status filter
   if (filterStatus && filterStatus !== t("status")) {
@@ -89,17 +102,6 @@ const ResellerCustomer = () => {
   // get specific customer Report
   const getSpecificCustomerReport = (reportData) => {
     setcustomerReportId(reportData);
-  };
-
-  // DELETE handler
-  const deleteCustomer = async (ID) => {
-    setIsDeleting(true);
-    const IDs = {
-      ispID: ispOwner,
-      customerID: ID,
-    };
-    deleteACustomer(dispatch, IDs, true);
-    setIsDeleting(false);
   };
 
   // table column
@@ -229,14 +231,13 @@ const ResellerCustomer = () => {
                 </li>
 
                 <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerDelete"
                   onClick={() => {
-                    let con = window.confirm(
-                      `${original.name} ${t("wantToDeleteCustomer")}`
-                    );
-                    con && deleteCustomer(original.id);
+                    customerDelete(original.id);
                   }}
                 >
-                  <div className="dropdown-item actionManager">
+                  <div className="dropdown-item">
                     <div className="customerAction">
                       <ArchiveFill />
                       <p className="actionP">{t("delete")}</p>
@@ -319,6 +320,11 @@ const ResellerCustomer = () => {
       <ResellerCustomerDetails single={singleCustomer} />
       <CustomerReport hideReportDelete={true} single={customerReportId} />
       <ResellerCustomerEdit allCustomer={false} customerId={singleCustomer} />
+      <CustomerDelete
+        customerId={customerId}
+        mikrotikCheck={mikrotikCheck}
+        setMikrotikCheck={setMikrotikCheck}
+      />
     </>
   );
 };

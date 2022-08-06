@@ -10,6 +10,9 @@ import {
   ChatText,
   ArrowRightShort,
   ArrowClockwise,
+  CurrencyDollar,
+  PencilSquare,
+  KeyFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -39,6 +42,7 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 // import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
 import { useTranslation } from "react-i18next";
 import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 export default function Reseller() {
   const { t } = useTranslation();
@@ -50,7 +54,12 @@ export default function Reseller() {
   const role = useSelector((state) => state?.persistedReducer?.auth?.role);
 
   const [resellerId, setResellerId] = useState({});
+  console.log(resellerId);
+  const [userId, setUserId] = useState();
+  console.log(userId);
+
   const [isLoading, setIsLoading] = useState(false);
+
   const reseller = useSelector(
     (state) => state.persistedReducer?.reseller?.reseller
   );
@@ -77,7 +86,7 @@ export default function Reseller() {
   };
 
   // delete reseller
-  const deleteSingleReseller = async (ispId, resellerId) => {
+  const deleteSingleReseller = (ispId, resellerId) => {
     const IDs = { ispId: ispId, resellerId: resellerId };
     deleteReseller(dispatch, IDs, setIsLoading);
   };
@@ -206,20 +215,38 @@ export default function Reseller() {
                   </div>
                 </li>
                 {role === "ispOwner" && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#resellerBalanceEditModal"
-                    onClick={() => {
-                      getSpecificReseller(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <PenFill />
-                        <p className="actionP">{t("editBalance")}</p>
+                  <>
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#resellerBalanceEditModal"
+                      onClick={() => {
+                        getSpecificReseller(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <PencilSquare />
+                          <p className="actionP">{t("editBalance")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
+                    </li>
+
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#resetPassword"
+                      onClick={() => {
+                        getSpecificReseller(original.id);
+                        setUserId(original.user);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <KeyFill />
+                          <p className="actionP">{t("passwordReset")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  </>
                 )}
 
                 <li
@@ -276,6 +303,7 @@ export default function Reseller() {
               <Recharge resellerId={resellerId}></Recharge>
               <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
               <EditResellerBalance resellerId={resellerId} />
+              <PasswordReset resetCustomerId={userId} />
               {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
