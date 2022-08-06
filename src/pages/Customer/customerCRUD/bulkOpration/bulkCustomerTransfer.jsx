@@ -17,10 +17,17 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
     (state) => state.persistedReducer?.reseller?.reseller
   );
 
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [resellerId, setResellerId] = useState();
 
   const bulkCustomerTransferController = () => {
     const enBn = localStorage.getItem("netFee:lang");
+
+    const data = {
+      customerIds: bulkCustomer.map((item) => {
+        return item.original.id;
+      }),
+    };
 
     let confirm;
     if (enBn === "bn") {
@@ -42,7 +49,11 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   return (
     <RootBulkModal modalId={modalId} header={t("updateBillingCycle")}>
       <label htmlFor="selectReseller">{t("selectReseller")}</label>
-      <select id="selectReseller" className="form-select mw-100">
+      <select
+        onChange={(e) => setResellerId(e.target.value)}
+        id="selectReseller"
+        className="form-select mw-100"
+      >
         <option selected>{t("selectReseller")}</option>
         {reseller.map((item) => (
           <option value={item.id}>{item.name}</option>

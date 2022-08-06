@@ -9,12 +9,10 @@ const TransferToReseller = ({ customerId }) => {
   const dispatch = useDispatch();
 
   //en bn hook call
-
   const { t } = useTranslation();
 
-  //get current user
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth.currentUser
+  const allSubArea = useSelector(
+    (state) => state?.persistedReducer?.area?.subArea
   );
 
   //get all reseller
@@ -22,11 +20,35 @@ const TransferToReseller = ({ customerId }) => {
     (state) => state.persistedReducer?.reseller?.reseller
   );
 
+  const customer = useSelector(
+    (state) => state?.persistedReducer?.customer?.customer
+  );
+
   //state
   const [isLoading, setIsLoading] = useState(false);
+  const [resellerId, setResellerId] = useState("");
+  const [subAreaId, setSubAreaId] = useState("");
+  const selectedReseller = reseller.find((item) => item.id === resellerId);
+
+  let subAreas = [];
+  if (selectedReseller) {
+    subAreas = allSubArea?.filter((item) =>
+      selectedReseller.subAreas.includes(item.id)
+    );
+  }
 
   const transferToReseller = () => {
-    // transferToResellerApi();
+    if (!resellerId || !subAreaId) {
+      return alert("Please select a reseller and sub area");
+    }
+    const selectedCustomer = customer.find((item) => item.id === customerId);
+    const data = {
+      ...selectedCustomer,
+      reseller: selectedReseller.id,
+      subArea: subAreaId,
+    };
+
+    transferToResellerApi(dispatch, data, setIsLoading);
   };
 
   return (
@@ -43,13 +65,36 @@ const TransferToReseller = ({ customerId }) => {
             ></button>
           </div>
           <div className="modal-body">
-            <label htmlFor="selectReseller">{t("selectReseller")}</label>
-            <select id="selectReseller" className="form-select mw-100">
-              <option selected>{t("selectReseller")}</option>
-              {reseller.map((item) => (
-                <option value={item.id}>{item.name}</option>
-              ))}
-            </select>
+            <div className="mb-2">
+              <label htmlFor="selectReseller">{t("selectReseller")}</label>
+              <select
+                onClick={(e) => setResellerId(e.target.value)}
+                id="selectReseller"
+                className="form-select mw-100"
+              >
+                <option selected value="">
+                  {t("selectReseller")}
+                </option>
+                {reseller.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-2">
+              <label htmlFor="selectReseller">{t("selectSubArea")}</label>
+              <select
+                onClick={(e) => setSubAreaId(e.target.value)}
+                id="selectReseller"
+                className="form-select mw-100"
+              >
+                <option selected value="">
+                  {t("subArea")}
+                </option>
+                {subAreas.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="modal-footer">
             <button

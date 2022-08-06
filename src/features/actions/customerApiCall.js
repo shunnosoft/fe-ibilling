@@ -1,20 +1,33 @@
 import { toast } from "react-toastify";
 import apiLink from "../../api/apiLink";
-import { deleteCustomerSuccess } from "../customerSlice";
+import { getSubareas } from "../areaSlice";
+import { customerTransfer, deleteCustomerSuccess } from "../customerSlice";
 
-export const transferToResellerApi = (
+export const getSubAreasApi = async (dispatch, ispOwnerId) => {
+  try {
+    const res = await apiLink.get("ispOwner/subArea/" + ispOwnerId);
+    dispatch(getSubareas(res.data.subAreas));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const transferToResellerApi = async (
   dispatch,
-  resellerId,
-  customerId,
+  customer,
   setIsLoading
 ) => {
   setIsLoading(true);
   try {
-    const res = apiLink("");
-    dispatch(deleteCustomerSuccess(res.data));
+    const res = await apiLink.patch(
+      `/ispOwner/customer/${customer.ispOwner}/${customer.id}`,
+      customer
+    );
+    dispatch(deleteCustomerSuccess(res.data.id));
     document.getElementById("transferToReseller").click();
+    toast.success("Customer Transfered to reseller");
   } catch (error) {
-    toast.error(error.respose?.data?.message);
+    toast.error("Failed to transfer");
     console.log(error);
   }
 };

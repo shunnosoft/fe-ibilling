@@ -17,6 +17,7 @@ import {
   PrinterFill,
   ChatText,
   ArrowClockwise,
+  ArrowRightSquareFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -52,6 +53,7 @@ import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnecti
 import Loader from "../../components/common/Loader";
 import TransferToReseller from "./customerCRUD/TransferToReseller";
 import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 // import apiLink from ""
 export default function Customer() {
@@ -75,7 +77,6 @@ export default function Customer() {
   const ispOwnerData = useSelector(
     (state) => state?.persistedReducer?.auth?.userData
   );
-
   // get user permission
   const permission = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.permissions
@@ -150,6 +151,7 @@ export default function Customer() {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     }
     if (cus.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
+    getSubAreasApi(dispatch, ispOwner);
   }, [dispatch, ispOwner, role, bpSettings]);
 
   //get possible total monthly fee
@@ -654,7 +656,7 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
-                {/* {role === "ispOwner" && (
+                {role === "ispOwner" && ispOwnerData.bpSettings.hasReseller && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#transferToReseller"
@@ -664,12 +666,12 @@ export default function Customer() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <ChatText />
+                        <ArrowRightSquareFill />
                         <p className="actionP">{t("transferReseller")}</p>
                       </div>
                     </div>
                   </li>
-                )} */}
+                )}
               </ul>
             </div>
           </div>
@@ -783,9 +785,9 @@ export default function Customer() {
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
               {/* transferReseller modal */}
-              {/* <TransferToReseller customerId={singleCustomer} /> */}
-              {/* bulk Modal */}
+              <TransferToReseller customerId={singleCustomer} />
 
+              {/* bulk Modal */}
               <BulkSubAreaEdit
                 bulkCustomer={bulkCustomer}
                 modalId="customerBulkEdit"
