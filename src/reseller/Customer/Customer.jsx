@@ -276,96 +276,98 @@ export default function Customer() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul className="dropdown-menu" aria-labelledby="customerDrop">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#showCustomerDetails"
-                onClick={() => {
-                  getSpecificCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PersonFill />
-                    <p className="actionP"> {t("profile")}</p>
-                  </div>
-                </div>
-              </li>
-              {(role === "reseller" || role === "collector") && (
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#collectCustomerBillModal"
+                  data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
                   }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <Wallet />
-                      <p className="actionP">{t("useMemoRecharge")}</p>
+                      <PersonFill />
+                      <p className="actionP"> {t("profile")}</p>
                     </div>
                   </div>
                 </li>
-              )}
+                {(role === "reseller" || role === "collector") && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectCustomerBillModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <Wallet />
+                        <p className="actionP">{t("useMemoRecharge")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
 
-              {(permission?.customerEdit || role === "reseller") && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerEditModal"
-                  onClick={() => {
-                    getSpecificCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
+                {(permission?.customerEdit || role === "reseller") && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerEditModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">{t("edit")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )}
-              {role !== "collector" && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerReport"
-                  onClick={() => {
-                    getSpecificCustomerReport(original);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CashStack />
-                      <p className="actionP">{t("report")}</p>
+                  </li>
+                )}
+                {role !== "collector" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#showCustomerReport"
+                    onClick={() => {
+                      getSpecificCustomerReport(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CashStack />
+                        <p className="actionP">{t("report")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )}
+                  </li>
+                )}
 
-              {permission?.customerDelete && role === "ispOwner" && (
-                <li
-                  onClick={() => {
-                    let con = window.confirm(
-                      `${original.name}  ${t("wantToDeleteCustomer")}`
-                    );
-                    con && deleteCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item actionManager">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP"> {t("delete")} </p>
+                {permission?.customerDelete && role === "ispOwner" && (
+                  <li
+                    onClick={() => {
+                      let con = window.confirm(
+                        `${original.name}  ${t("wantToDeleteCustomer")}`
+                      );
+                      con && deleteCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item actionManager">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP"> {t("delete")} </p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )}
-            </ul>
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
         ),
       },

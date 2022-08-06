@@ -31,6 +31,7 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import {
+  fetchReseller,
   getCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
@@ -49,6 +50,7 @@ import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
+import TransferToReseller from "./customerCRUD/TransferToReseller";
 
 // import apiLink from ""
 export default function Customer() {
@@ -334,6 +336,7 @@ export default function Customer() {
     setCustomers1(temp);
     setCustomers2(temp);
   }, [allareas, cus]);
+
   useEffect(() => {
     if (subAreaIds.length) {
       setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
@@ -341,6 +344,13 @@ export default function Customer() {
       setCustomers(cus);
     }
   }, [cus, subAreaIds]);
+
+  //call all reseller for transfer customer to reseller
+  useEffect(() => {
+    if (ispOwnerData) {
+      fetchReseller(dispatch, ispOwnerData.id, setIsloading);
+    }
+  }, [ispOwnerData]);
 
   const onChangeSubArea = (id) => {
     setCusSearch(id);
@@ -643,6 +653,22 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
+                {role === "ispOwner" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#transferToReseller"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("transferReseller")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -755,6 +781,8 @@ export default function Customer() {
               />
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
+              {/* transferReseller modal */}
+              <TransferToReseller customerId={singleCustomer} />
               {/* bulk Modal */}
 
               <BulkSubAreaEdit

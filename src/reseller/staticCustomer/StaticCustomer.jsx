@@ -280,46 +280,47 @@ export default function RstaticCustomer() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul className="dropdown-menu" aria-labelledby="customerDrop">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#showCustomerDetails"
-                onClick={() => {
-                  getSpecificCustomer(original.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PersonFill />
-                    <p className="actionP"> {t("profile")} </p>
-                  </div>
-                </div>
-              </li>
-              {(role === "reseller" || role === "collector") && (
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#collectCustomerBillModal"
+                  data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
                   }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <Wallet />
-                      <p className="actionP"> {t("useMemoRecharge")} </p>
+                      <PersonFill />
+                      <p className="actionP"> {t("profile")} </p>
                     </div>
                   </div>
                 </li>
-              )}
+                {(role === "reseller" || role === "collector") && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectCustomerBillModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <Wallet />
+                        <p className="actionP"> {t("useMemoRecharge")} </p>
+                      </div>
+                    </div>
+                  </li>
+                )}
 
-              {/* {(permission?.customerEdit || role === "ispOwner") && (
+                {/* {(permission?.customerEdit || role === "ispOwner") && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#customerEditModal"
@@ -335,7 +336,7 @@ export default function RstaticCustomer() {
                   </div>
                 </li>
               )} */}
-              {/* {role !== "collector" && (
+                {/* {role !== "collector" && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#showCustomerReport"
@@ -352,7 +353,7 @@ export default function RstaticCustomer() {
                 </li>
               )} */}
 
-              {/* {permission?.customerDelete && role === "ispOwner" && (
+                {/* {permission?.customerDelete && role === "ispOwner" && (
                 <li
                   onClick={() => {
                     let con = window.confirm(
@@ -369,7 +370,8 @@ export default function RstaticCustomer() {
                   </div>
                 </li>
               )} */}
-            </ul>
+              </ul>
+            </div>
           </div>
         ),
       },

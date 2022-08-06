@@ -491,5 +491,7 @@
   "editBalance": "Edit Balance",
   "previousBalance": "Previous Balance",
   "passwordReset": "Reset Password",
-  "resetPasswordConfirmation": "Do you want to Reset Password ?"
+  "resetPasswordConfirmation": "Do you want to Reset Password ?",
+  "transferReseller": "Transfer to Reseller",
+  "selectReseller":"Select Reseller"
 }
