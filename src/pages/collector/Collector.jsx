@@ -66,8 +66,7 @@ export default function Collector() {
   };
 
   useEffect(() => {
-    if (collector.length === 0)
-      getCollector(dispatch, ispOwnerId, setIsLoading);
+    getCollector(dispatch, ispOwnerId, setIsLoading);
   }, [ispOwnerId, dispatch]);
 
   const [singleCollector, setSingleCollector] = useState();
