@@ -9,7 +9,6 @@ export const bulkDeleteCustomer = async (
   setIsLoading
 ) => {
   try {
-    console.log(data);
     setIsLoading(true);
     const res = await apiLink.delete(`/customer/bulk/?mikrotik=${mikrotik}`, {
       data,
@@ -91,5 +90,23 @@ export const bulkAutoConnectionEdit = async (dispatch, data, setIsLoading) => {
       setIsLoading(false);
       toast.error(err.response.data.message);
     }
+  }
+};
+
+export const bulkCustomerTransfer = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch(
+      `/customer/bulk-customer-transfer-to-reseller`,
+      data
+    );
+    document.querySelector("#bulkTransferToReseller").click();
+    dispatch(bulkDelete(res.data.data));
+    setIsLoading(false);
+    toast.success("Customer transfered successfully to reseller");
+  } catch (err) {
+    console.log(err);
+    setIsLoading(false);
+    toast.error("Failed to transfer");
   }
 };

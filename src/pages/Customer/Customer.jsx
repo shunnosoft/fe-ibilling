@@ -17,6 +17,7 @@ import {
   PrinterFill,
   ChatText,
   ArrowClockwise,
+  ArrowRightSquareFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,6 +32,7 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import {
+  fetchReseller,
   getCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
@@ -49,6 +51,9 @@ import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
+import TransferToReseller from "./customerCRUD/TransferToReseller";
+import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 // import apiLink from ""
 export default function Customer() {
@@ -72,7 +77,6 @@ export default function Customer() {
   const ispOwnerData = useSelector(
     (state) => state?.persistedReducer?.auth?.userData
   );
-
   // get user permission
   const permission = useSelector(
     (state) => state?.persistedReducer?.auth?.userData?.permissions
@@ -118,6 +122,7 @@ export default function Customer() {
     mikrotik: "",
     freeUser: "",
     filterDate: null,
+    dayFilter: "",
   });
 
   const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
@@ -147,6 +152,7 @@ export default function Customer() {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     }
     if (cus.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
+    getSubAreasApi(dispatch, ispOwner);
   }, [dispatch, ispOwner, role, bpSettings]);
 
   //get possible total monthly fee
@@ -284,6 +290,13 @@ export default function Customer() {
           ).getTime() === new Date(convertStingToDate).getTime()
       );
     }
+    if (filterOptions.dayFilter) {
+      tempCustomers = tempCustomers.filter(
+        (item) =>
+          moment(item.billingCycle).diff(moment(), "days") ===
+          Number(filterOptions.dayFilter)
+      );
+    }
 
     setCustomers1(tempCustomers);
     setCustomers(tempCustomers);
@@ -334,6 +347,7 @@ export default function Customer() {
     setCustomers1(temp);
     setCustomers2(temp);
   }, [allareas, cus]);
+
   useEffect(() => {
     if (subAreaIds.length) {
       setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
@@ -341,6 +355,13 @@ export default function Customer() {
       setCustomers(cus);
     }
   }, [cus, subAreaIds]);
+
+  //call all reseller for transfer customer to reseller
+  useEffect(() => {
+    if (ispOwnerData) {
+      fetchReseller(dispatch, ispOwnerData.id, setIsloading);
+    }
+  }, [ispOwnerData]);
 
   const onChangeSubArea = (id) => {
     setCusSearch(id);
@@ -466,7 +487,16 @@ export default function Customer() {
       {
         width: "9%",
         Header: t("name"),
-        accessor: "name",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{ cursor: "move" }}
+            data-toggle="tooltip"
+            data-placement="top"
+            title={original.address}
+          >
+            {original.name}
+          </div>
+        ),
       },
       {
         width: "9%",
@@ -608,7 +638,7 @@ export default function Customer() {
                   </div>
                 </li>
 
-                {permission?.customerDelete || role === "ispOwner" ? (
+                {(permission?.customerDelete || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerDelete"
@@ -623,8 +653,6 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
 
                 {original.mobile && (
@@ -639,6 +667,22 @@ export default function Customer() {
                       <div className="customerAction">
                         <ChatText />
                         <p className="actionP">{t("message")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+                {role === "ispOwner" && ispOwnerData.bpSettings.hasReseller && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#transferToReseller"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ArrowRightSquareFill />
+                        <p className="actionP">{t("transferReseller")}</p>
                       </div>
                     </div>
                   </li>
@@ -755,8 +799,10 @@ export default function Customer() {
               />
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
-              {/* bulk Modal */}
+              {/* transferReseller modal */}
+              <TransferToReseller customerId={singleCustomer} />
 
+              {/* bulk Modal */}
               <BulkSubAreaEdit
                 bulkCustomer={bulkCustomer}
                 modalId="customerBulkEdit"
@@ -777,6 +823,10 @@ export default function Customer() {
               <BulkAutoConnectionEdit
                 bulkCustomer={bulkCustomer}
                 modalId="autoDisableEditModal"
+              />
+              <BulkCustomerTransfer
+                bulkCustomer={bulkCustomer}
+                modalId="bulkTransferToReseller"
               />
 
               <FourGround>
@@ -1059,6 +1109,21 @@ export default function Customer() {
                             })
                           }
                         />
+                        <select
+                          className="form-select ms-2"
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              dayFilter: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">{t("filterBillDate")}</option>
+                          <option value="1">{t("oneDayLeft")}</option>
+                          <option value="2">{t("twoDayLeft")}</option>
+                          <option value="3">{t("threeDayLeft")}</option>
+                          <option value="4">{t("fourDayLeft")}</option>
+                        </select>
                         <div>
                           <button
                             className="btn btn-outline-primary mt-2 w-6rem ms-2"
@@ -1150,6 +1215,17 @@ export default function Customer() {
           >
             <i class="fas fa-edit"></i>
             <span className="button_title">{t("automaticConnectionOff")}</span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title={t("transferReseller")}
+            data-bs-toggle="modal"
+            data-bs-target="#bulkTransferToReseller"
+            type="button"
+            class="btn btn-info btn-floating btn-sm"
+          >
+            <i class="fa-solid fa-right-left"></i>
+            <span className="button_title"> {t("transferReseller")} </span>
           </button>
           <button
             className="bulk_action_button"

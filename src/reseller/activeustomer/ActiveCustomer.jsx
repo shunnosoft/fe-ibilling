@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 
 import { ArrowClockwise, Wifi } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
+import { getMikrotik } from "../../features/apiCallReseller";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ const ResellserActiveCustomer = () => {
   );
 
   // set initialy mikrotik id
-  const [mikrotikId, setMikrotikId] = useState(mikrotik[0].id);
+  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
 
   //get reseller active customer
   const activeUser = useSelector(
@@ -33,6 +34,14 @@ const ResellserActiveCustomer = () => {
 
   // get reseller id
   let userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  //get collector
+  const currentUser = useSelector(
+    (state) => state?.persistedReducer?.auth?.currentUser
+  );
+
+  //get role
+  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
@@ -56,14 +65,29 @@ const ResellserActiveCustomer = () => {
     );
   };
 
+  useEffect(() => {
+    setMikrotikId(mikrotik[0]?.id);
+  }, [mikrotik]);
+
+  useEffect(() => {
+    if (role === "collector") {
+      getMikrotik(dispatch, currentUser?.collector.reseller);
+    }
+    if (role === "reseller") {
+      getMikrotik(dispatch, currentUser?.reseller.id);
+    }
+  }, [currentUser, userData]);
+
   //fetch reseller active customer
   useEffect(() => {
-    fetchActivepppoeUserForReseller(
-      dispatch,
-      userData.id,
-      mikrotikId,
-      setIsloading
-    );
+    if (mikrotikId) {
+      fetchActivepppoeUserForReseller(
+        dispatch,
+        userData.id,
+        mikrotikId,
+        setIsloading
+      );
+    }
   }, [mikrotikId]);
 
   const columns = React.useMemo(
@@ -73,6 +97,10 @@ const ResellserActiveCustomer = () => {
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: t("name"),
+        accessor: "name",
       },
       {
         Header: t("status"),

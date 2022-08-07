@@ -4,6 +4,7 @@ export const areaSlice = createSlice({
   name: "area",
   initialState: {
     area: [],
+    subArea: [],
   },
   reducers: {
     FetchAreaSuccess: (state, action) => {
@@ -49,6 +50,9 @@ export const areaSlice = createSlice({
           1
         );
     },
+    getSubareas: (state, action) => {
+      state.subArea = action.payload;
+    },
   },
 });
 
@@ -61,5 +65,6 @@ export const {
   DeleteSubAreaSuccess,
   clearArea,
   AddSubAreaSuccess,
+  getSubareas,
 } = areaSlice.actions;
 export default areaSlice.reducer;

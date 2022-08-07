@@ -287,6 +287,16 @@ export default function Home() {
     return FormatNumber(totalCollection - totalCost);
   };
 
+  // const todayCollectorDepositeCalculation = () => {
+  //   if (customerStat.collectorStat) {
+  //     const todayTotalCollectorDeposite = customerStat.collectorStat.reduce(
+  //       (prev, curr) => prev + curr.totalDeposit,
+  //       0
+  //     );
+  //     return FormatNumber(todayTotalCollectorDeposite);
+  //   }
+  //   return 0;
+  // };
   const dashboardFilterController = () => {
     const filterData = {
       year: filterDate.getFullYear(),
@@ -743,10 +753,10 @@ export default function Home() {
                       </p>
                       <h2>৳ {FormatNumber(totalCollectorDeposite())}</h2>
 
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalCollectorDeposite")}:{" "}
                         {FormatNumber(customerStat.inactive)}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 </div>

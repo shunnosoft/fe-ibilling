@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
 import {
+  deleteReCustomer,
   editAllResellerCustomerSuccess,
   editResellerCustomerSuccess,
   getAllResellerCustomerSuccess,
@@ -104,6 +105,29 @@ export const editResellerCustomer = async (
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
+      toast.error(err.response.data.message);
+    }
+  }
+};
+
+export const deleteACustomer = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    await apiLink.delete(
+      `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
+    );
+    dispatch(deleteReCustomer(data.customerID));
+    document.querySelector("#customerDelete").click();
+    setIsLoading(false);
+    langMessage(
+      "success",
+      "কাস্টমার ডিলিট সফল হয়েছে",
+      "Customer Deleted Successfully"
+    );
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#customerDelete").click();
       toast.error(err.response.data.message);
     }
   }

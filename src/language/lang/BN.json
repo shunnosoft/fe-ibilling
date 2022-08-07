@@ -83,7 +83,7 @@
   "in active": "ইন-এক্টিভ",
   "paid": "পরিশোধ",
   "paidDate": "পরিশোধের তারিখ",
-  "due": "বকেয়াঃ",
+  "due": "বকেয়া",
   "total collection": "মোট আদায়",
   "totalData": "মোট ডাটাঃ",
   "today collection": "আজঃ ৳",
@@ -493,5 +493,14 @@
   "editBalance": "এডিট ব্যালেন্স",
   "previousBalance": "পূর্বের ব্যালেন্স",
   "passwordReset": "পাসওয়ার্ড রিসেট",
-  "resetPasswordConfirmation": "আপনি কি পাসওয়ার্ড রিসেট করতে চান ?"
+  "resetPasswordConfirmation": "আপনি কি পাসওয়ার্ড রিসেট করতে চান ?",
+  "transferReseller": "রিসেলারকে দিন",
+  "selectReseller": "রিসেলার সিলেক্ট করুন",
+  "connectionDate": "কানেকশন ডেট",
+  "editReport": "রিপোর্ট এডিট",
+  "filterBillDate": "বিলের দিন ফিল্টার",
+  "oneDayLeft": "এক দিন বাকি",
+  "twoDayLeft": "দুই দিন বাকি",
+  "threeDayLeft": "তিন দিন বাকি",
+  "fourDayLeft": "চার দিন বাকি"
 }

@@ -36,6 +36,11 @@ const paymentSlice = createSlice({
     getAllBillsSuccess: (state, action) => {
       state.allBills = action.payload;
     },
+    editBillReportSuccess: (state, action) => {
+      state.allBills[
+        state.allBills.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
+    },
 
     getmyDepositSucces: (state, action) => {
       state.myDeposit = action.payload;
@@ -53,6 +58,7 @@ export const {
   clearBills,
   getmyDepositSucces,
   getAllBillsSuccess,
+  editBillReportSuccess,
   getTotalBalanceSuccess,
   getDepositSuccess,
   updateDepositSuccess,

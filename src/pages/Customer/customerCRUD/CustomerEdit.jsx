@@ -13,6 +13,7 @@ import {
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
+import DatePicker from "react-datepicker";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 
@@ -66,12 +67,12 @@ export default function CustomerEdit(props) {
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
+  const [connectionDate, setConnectionDate] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
   const [status, setStatus] = useState("");
 
   const [packageId, setPackageId] = useState("");
-  // console.log(moment("2022-06-08"));
   useEffect(() => {
     setPackageId(data?.mikrotikPackage);
     setUser(data);
@@ -88,6 +89,9 @@ export default function CustomerEdit(props) {
 
   useEffect(() => {
     setAutoDisable(data?.autoDisable);
+    setConnectionDate(
+      data?.connectionDate ? new Date(data?.connectionDate) : null
+    );
     setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
     setBilltime(moment(data?.billingCycle).format("HH:mm"));
     const temp = Getmikrotik.find((val) => val.id === data?.mikrotik);
@@ -174,6 +178,7 @@ export default function CustomerEdit(props) {
       mikrotik: formValue?.mikrotik,
       mikrotikPackage: packageId,
       autoDisable: autoDisable,
+      connectionDate,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
@@ -211,18 +216,6 @@ export default function CustomerEdit(props) {
       return a;
     });
   };
-
-  // const billTimeCon = (e) => {
-  //   const getTime = moment(data.billingCycle).get("millisecond");
-  //   const value = moment(e.target.value);
-  //   console.log(moment(value).milliseconds());
-  //   // console.log({ getTime, value });
-  //   // const compareTime = moment(getTime).isBefore(moment(e.target.value)._i);
-  //   // if (getTime.isAfter(value)) {
-  //   //   alert("Invalid Date");
-  //   // }
-  //   // console.log(getTime);
-  // };
 
   return (
     <div>
@@ -438,6 +431,73 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
+
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("connectionDate")}
+                        </label>
+                        <DatePicker
+                          className="form-control mw-100"
+                          selected={connectionDate}
+                          onChange={(date) => setConnectionDate(date)}
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText={t("selectDate")}
+                        />
+                      </div>
+                    </div>
+                    <div className="newDisplay">
+                      <div className="pppoeStatus">
+                        <p>{t("status")}</p>
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="staus"
+                            value={"active"}
+                            onChange={(e) => setStatus(e.target.value)}
+                            checked={status === "active"}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio1"
+                          >
+                            {t("active")}
+                          </label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            id="inlineRadio2"
+                            value={"inactive"}
+                            onChange={(e) => setStatus(e.target.value)}
+                            checked={status === "inactive"}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio2"
+                          >
+                            {t("in active")}
+                          </label>
+                        </div>
+                        {data?.status === "expired" && (
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              id="inlineRadio2"
+                              disabled
+                              checked={status === "expired"}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="inlineRadio2"
+                            >
+                              {t("expired")}
+                            </label>
+                          </div>
+                        )}
+                      </div>
                       {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>
@@ -446,59 +506,6 @@ export default function CustomerEdit(props) {
                             checked={autoDisable}
                             onChange={(e) => setAutoDisable(e.target.checked)}
                           />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="pppoeStatus">
-                      <p>{t("status")}</p>
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="staus"
-                          value={"active"}
-                          onChange={(e) => setStatus(e.target.value)}
-                          checked={status === "active"}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="inlineRadio1"
-                        >
-                          {t("active")}
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          id="inlineRadio2"
-                          value={"inactive"}
-                          onChange={(e) => setStatus(e.target.value)}
-                          checked={status === "inactive"}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="inlineRadio2"
-                        >
-                          {t("in active")}
-                        </label>
-                      </div>
-                      {data?.status === "expired" && (
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            id="inlineRadio2"
-                            disabled
-                            checked={status === "expired"}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            {t("expired")}
-                          </label>
                         </div>
                       )}
                     </div>

@@ -21,6 +21,7 @@ import moment from "moment";
 import { getAllResellerCustomer } from "../../../features/resellerCustomerAdminApi";
 import Table from "../../../components/table/Table";
 import { ToastContainer } from "react-toastify";
+import CustomerDelete from "../resellerModals/CustomerDelete";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -49,6 +50,10 @@ const AllResellerCustomer = () => {
   // status local state
   const [filterStatus, setFilterStatus] = useState(null);
 
+  const [customerId, setCustomerId] = useState();
+
+  const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
   // payment status state
   const [filterPayment, setFilterPayment] = useState(null);
   const [resellerId, setResellerId] = useState("");
@@ -60,6 +65,13 @@ const AllResellerCustomer = () => {
   useEffect(() => {
     getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
   }, []);
+
+  // cutomer delete
+  const customerDelete = (customerId) => {
+    setMikrotikCheck(false);
+
+    setCustomerId(customerId);
+  };
 
   if (resellerId) {
     if (resellerId !== "all") {
@@ -233,14 +245,13 @@ const AllResellerCustomer = () => {
                 </li>
 
                 <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerDelete"
                   onClick={() => {
-                    let con = window.confirm(
-                      `${original.name} ${t("wantToDeleteCustomer")}`
-                    );
-                    con && deleteCustomer(original.id);
+                    customerDelete(original.id);
                   }}
                 >
-                  <div className="dropdown-item actionManager">
+                  <div className="dropdown-item">
                     <div className="customerAction">
                       <ArchiveFill />
                       <p className="actionP">{t("delete")}</p>
@@ -314,13 +325,6 @@ const AllResellerCustomer = () => {
                     </select>
                     {/* end payment status filter */}
                   </div>
-                  {isDelete ? (
-                    <div className="deletingAction">
-                      <Loader /> <b>Deleting...</b>
-                    </div>
-                  ) : (
-                    ""
-                  )}
                   {/* call table component */}
                   <div className="table-section">
                     <Table
@@ -338,6 +342,11 @@ const AllResellerCustomer = () => {
       <ResellerCustomerDetails single={singleCustomer} />
       <CustomerReport hideReportDelete={true} single={customerReportId} />
       <ResellerCustomerEdit allCustomer={true} customerId={singleCustomer} />
+      <CustomerDelete
+        customerId={customerId}
+        mikrotikCheck={mikrotikCheck}
+        setMikrotikCheck={setMikrotikCheck}
+      />
     </>
   );
 };

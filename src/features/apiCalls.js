@@ -80,6 +80,7 @@ import {
   updateDepositSuccess,
   addDepositSucces,
   getCollectorDeposite,
+  editBillReportSuccess,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
@@ -1404,6 +1405,26 @@ export const getAllBills = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     const res = await apiLink.get(`/bill/${ispOwnerId}`);
     dispatch(getAllBillsSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+export const editBillReport = async (
+  dispatch,
+  setIsLoading,
+  reportId,
+  data
+) => {
+  console.log({ reportId }, { data });
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/bill/${reportId}`, data);
+    dispatch(editBillReportSuccess(res.data));
+    console.log(res.data);
+    document.getElementById("reportEditModal").click();
+    langMessage("success", "নোট এডিট সফল হয়েছে", "Note Edited Successfully");
   } catch (error) {
     toast.error(error.response?.data.message);
   }

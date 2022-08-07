@@ -31,6 +31,9 @@ const resellerCustomerSlice = createSlice({
       state.resellerCustomer = state.resellerCustomer.filter(
         (item) => item.id !== actions.payload
       );
+      state.allResellerCustomer = state.allResellerCustomer.filter(
+        (item) => item.id !== actions.payload
+      );
     },
   },
 });

@@ -5,6 +5,7 @@ import {
   PersonFill,
   PenFill,
   ArrowClockwise,
+  KeyFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +27,7 @@ import { getCollector, getSubAreas } from "../../features/apiCallReseller";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -34,11 +36,13 @@ export default function Collector() {
   const collector = useSelector(
     (state) => state.persistedReducer.collector.collector
   );
+
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [collectorPerPage, setCollectorPerPage] = useState(5);
+  const [userId, setUserId] = useState();
   const [isLoading, setIsloading] = useState(false);
   const lastIndex = currentPage * collectorPerPage;
   const firstIndex = lastIndex - collectorPerPage;
@@ -155,7 +159,7 @@ export default function Collector() {
                   </div>
                 </div>
               </li>
-              {permission?.collectorEdit || role === "ispOwner" ? (
+              {(permission?.collectorEdit || role === "reseller") && (
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#collectorEditModal"
@@ -170,8 +174,23 @@ export default function Collector() {
                     </div>
                   </div>
                 </li>
-              ) : (
-                ""
+              )}
+
+              {role === "reseller" && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resetPassword"
+                  onClick={() => {
+                    setUserId(original.user);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <KeyFill />
+                      <p className="actionP">{t("passwordReset")}</p>
+                    </div>
+                  </div>
+                </li>
               )}
             </ul>
           </div>
@@ -219,6 +238,7 @@ export default function Collector() {
               <CollectorPost />
               <CollectorDetails single={singleCollector} />
               <CollectorEdit single={singleCollector} />
+              <PasswordReset resetCustomerId={userId} />
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
