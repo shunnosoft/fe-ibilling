@@ -13,11 +13,18 @@ import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  PenFill,
+  PersonFill,
+  PrinterFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import { getAllBills } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
+import EditReport from "./modal/EditReport";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -167,6 +174,18 @@ export default function Report() {
     }
   };
 
+  // set Report id
+  const [reportId, setReportId] = useState();
+
+  // note state
+  const [note, setNote] = useState();
+
+  // set Report function
+  const getReportId = (reportID) => {
+    setReportId(reportID);
+    setNote("");
+  };
+
   const onClickFilter = () => {
     let arr = [...allBills];
 
@@ -229,8 +248,8 @@ export default function Report() {
         accessor: "customer.customerId",
       },
       {
-        width: "12%",
-        Header: t("customer"),
+        width: "10%",
+        Header: t("name"),
         accessor: "customer.name",
       },
       {
@@ -239,7 +258,7 @@ export default function Report() {
         accessor: "customer.mikrotikPackage.name",
       },
       {
-        width: "8%",
+        width: "7%",
         Header: t("bill"),
         accessor: "amount",
       },
@@ -259,7 +278,7 @@ export default function Report() {
         accessor: "name",
       },
       {
-        width: "22%",
+        width: "19%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -291,6 +310,61 @@ export default function Report() {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
+      // {
+      //   width: "6%",
+      //   Header: () => <div className="text-center">{t("action")}</div>,
+      //   id: "option",
+
+      //   Cell: ({ row: { original } }) => (
+      //     <div
+      //       style={{
+      //         display: "flex",
+      //         alignItems: "center",
+      //         justifyContent: "center",
+      //       }}
+      //     >
+      //       <div className="dropdown">
+      //         <ThreeDots
+      //           className="dropdown-toggle ActionDots"
+      //           id="areaDropdown"
+      //           type="button"
+      //           data-bs-toggle="dropdown"
+      //           aria-expanded="false"
+      //         />
+      //         <ul className="dropdown-menu" aria-labelledby="customerDrop">
+      //           {/* <li
+      //             data-bs-toggle="modal"
+      //             data-bs-target="#showCustomerDetails"
+      //             onClick={() => {
+      //               // getSpecificCustomer(original.id);
+      //             }}
+      //           >
+      //             <div className="dropdown-item">
+      //               <div className="customerAction">
+      //                 <PersonFill />
+      //                 <p className="actionP">{t("profile")}</p>
+      //               </div>
+      //             </div>
+      //           </li> */}
+      //           <li
+      //             data-bs-toggle="modal"
+      //             data-bs-target="#reportEditModal"
+      //             onClick={() => {
+      //               getReportId(original?.id);
+      //             }}
+      //           >
+      //             <div className="dropdown-item">
+      //               <div className="customerAction">
+      //                 <PenFill />
+      //                 <p className="actionP">{t("edit")}</p>
+      //               </div>
+      //             </div>
+      //           </li>
+      //         </ul>
+      //       </div>
+      //     </div>
+      //   ),
+      // },
     ],
     [t]
   );
@@ -474,6 +548,7 @@ export default function Report() {
           </div>
         </div>
       </div>
+      <EditReport reportId={reportId} note={note} setNote={setNote} />
     </>
   );
 }

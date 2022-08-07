@@ -14,6 +14,7 @@ import {
 } from "../../../features/apiCalls";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import ReactDatePicker from "react-datepicker";
 export default function CustomerModal() {
   const { t } = useTranslation();
   const bpSettings = useSelector(
@@ -44,6 +45,7 @@ export default function CustomerModal() {
   const dispatch = useDispatch();
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
+  const [connectionDate, setConnectionDate] = useState();
 
   // customer validator
   const customerValidator = Yup.object({
@@ -138,6 +140,7 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
+      connectionDate,
       billingCycle: moment(billDate + " " + billTime)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
@@ -373,6 +376,20 @@ export default function CustomerModal() {
                             value={billTime}
                             onChange={(e) => setBilltime(e.target.value)}
                             type="time"
+                          />
+                        </div>
+                      </div>
+                      <div className="billCycle">
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("connectionDate")}
+                          </label>
+                          <ReactDatePicker
+                            className="form-control mw-100"
+                            selected={connectionDate}
+                            onChange={(date) => setConnectionDate(date)}
+                            dateFormat="MM/dd/yyyy"
+                            placeholderText={t("selectDate")}
                           />
                         </div>
                       </div>

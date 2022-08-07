@@ -495,6 +495,7 @@
   "passwordReset": "পাসওয়ার্ড রিসেট",
   "resetPasswordConfirmation": "আপনি কি পাসওয়ার্ড রিসেট করতে চান ?",
   "transferReseller": "রিসেলারকে দিন",
-  "selectReseller":"রিসেলার সিলেক্ট করুন"
-
+  "selectReseller": "রিসেলার সিলেক্ট করুন",
+  "connectionDate": "কানেকশন ডেট",
+  "editReport": "রিপোর্ট এডিট"
 }
