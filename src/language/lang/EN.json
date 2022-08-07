@@ -493,5 +493,10 @@
   "passwordReset": "Reset Password",
   "resetPasswordConfirmation": "Do you want to Reset Password ?",
   "transferReseller": "Transfer to Reseller",
-  "selectReseller":"Select Reseller"
+  "selectReseller": "Select Reseller",
+  "filterBillDate": "Bill date left",
+  "oneDayLeft": "One Day Left",
+  "twoDayLeft": "Two Day Left",
+  "threeDayLeft": "Three Day Left",
+  "fourDayLeft": "Four Day Left"
 }
