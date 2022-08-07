@@ -27,16 +27,16 @@ export default function CollectorEdit({ collectorId }) {
   const single = collector.find((val) => val.id === collectorId);
   const area = useSelector((state) => state?.persistedReducer?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
-  const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
+    console.log({ single });
     if (single) {
       setAllowedAreas(single?.areas);
       setPermissions(collectorPermission(single.permissions));
     }
-  }, [single]);
+  }, [single, collector]);
 
   //validator
   const collectorValidator = Yup.object({
@@ -60,7 +60,6 @@ export default function CollectorEdit({ collectorId }) {
       }
     }
     setAllowedAreas(IDS_temp);
-    setAreaIds_Edit(IDS_temp);
   };
 
   const collectorEditHandler = async (data) => {
@@ -76,7 +75,7 @@ export default function CollectorEdit({ collectorId }) {
     if (single.ispOwner) {
       const sendingData = {
         ...data,
-        areas: areaIds_Edit,
+        areas: allowedAreas,
         ispOwner: single.ispOwner,
         ispOwnerId: single.ispOwner,
         collectorId: single.id,
