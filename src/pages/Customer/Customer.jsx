@@ -824,10 +824,10 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="autoDisableEditModal"
               />
-              {/* <BulkCustomerTransfer
+              <BulkCustomerTransfer
                 bulkCustomer={bulkCustomer}
-                modalId="transferToReseller"
-              /> */}
+                modalId="bulkTransferToReseller"
+              />
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
@@ -1216,17 +1216,17 @@ export default function Customer() {
             <i class="fas fa-edit"></i>
             <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
-          {/* <button
+          <button
             className="bulk_action_button"
             title={t("transferReseller")}
             data-bs-toggle="modal"
-            data-bs-target="#transferToReseller"
+            data-bs-target="#bulkTransferToReseller"
             type="button"
             class="btn btn-info btn-floating btn-sm"
           >
             <i class="fa-solid fa-right-left"></i>
             <span className="button_title"> {t("transferReseller")} </span>
-          </button> */}
+          </button>
           <button
             className="bulk_action_button"
             title={t("customerDelete")}
