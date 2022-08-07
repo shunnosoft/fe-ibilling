@@ -22,28 +22,28 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
 
   const bulkCustomerTransferController = () => {
     const enBn = localStorage.getItem("netFee:lang");
-
+    if (!resellerId) return alert("Please select a reseler");
     const data = {
       customerIds: bulkCustomer.map((item) => {
         return item.original.id;
       }),
+      resellerId: resellerId,
     };
 
     let confirm;
     if (enBn === "bn") {
       confirm = window.confirm(
-        "Are you sure transfer" +
+        "Are you sure transfer " +
           data.customerIds.length +
-          "customer to reseller"
+          " customer to reseller"
       );
     } else {
       confirm = window.confirm(
-        data.customerIds.length + "টি গ্রাহক রিসেলার কে দিতে চান?"
+        data.customerIds.length + " টি গ্রাহক রিসেলার কে দিতে চান?"
       );
     }
 
-    // if (confirm)
-    // bulkCustomerTransfer(dispatch, data,);
+    if (confirm) bulkCustomerTransfer(dispatch, data, setIsLoading);
   };
 
   return (
@@ -69,7 +69,12 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
         >
           {t("cancle")}
         </button>
-        <button type="submit" className="btn btn-success" disabled={isLoading}>
+        <button
+          onClick={bulkCustomerTransferController}
+          type="submit"
+          className="btn btn-success"
+          disabled={isLoading}
+        >
           {isLoading ? <Loader /> : t("save")}
         </button>
       </div>

@@ -93,18 +93,20 @@ export const bulkAutoConnectionEdit = async (dispatch, data, setIsLoading) => {
   }
 };
 
-export const bulkCustomerTransfer = (dispatch, data, setIsLoading) => {
+export const bulkCustomerTransfer = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);
-    // const res = await apiLink.patch(`/customer/bulk/?mikrotik=${mikrotik}`,data);
-    document.querySelector("#transferToReseller").click();
+    const res = await apiLink.patch(
+      `/customer/bulk-customer-transfer-to-reseller`,
+      data
+    );
+    document.querySelector("#bulkTransferToReseller").click();
+    dispatch(bulkDelete(res.data.data));
     setIsLoading(false);
-    toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
+    toast.success("Customer transfered successfully to reseller");
   } catch (err) {
-    if (err.response) {
-      setIsLoading(false);
-      document.querySelector("#transferToReseller").click();
-      toast.error(err.response.data.message);
-    }
+    console.log(err);
+    setIsLoading(false);
+    toast.error("Failed to transfer");
   }
 };

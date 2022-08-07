@@ -86,6 +86,7 @@ export default function Customer() {
     mikrotik: "",
     freeUser: "",
     filterDate: null,
+    dayFilter: "",
   });
   const [Customers, setCustomers] = useState(cus);
 
@@ -381,7 +382,13 @@ export default function Customer() {
           ).getTime() === new Date(convertStingToDate).getTime()
       );
     }
-
+    if (filterOptions.dayFilter) {
+      tempCustomers = tempCustomers.filter(
+        (item) =>
+          moment(item.billingCycle).diff(moment(), "days") ===
+          Number(filterOptions.dayFilter)
+      );
+    }
     setCustomers1(tempCustomers);
     setCustomers(tempCustomers);
   };
@@ -1059,6 +1066,21 @@ export default function Customer() {
                             })
                           }
                         />
+                        <select
+                          className="form-select ms-2"
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              dayFilter: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">{t("filterBillDate")}</option>
+                          <option value="1">{t("oneDayLeft")}</option>
+                          <option value="2">{t("twoDayLeft")}</option>
+                          <option value="3">{t("threeDayLeft")}</option>
+                          <option value="4">{t("fourDayLeft")}</option>
+                        </select>
                         <div>
                           <button
                             className="btn btn-outline-primary w-6rem mt-2 ms-2"

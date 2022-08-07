@@ -495,5 +495,10 @@
   "transferReseller": "Transfer to Reseller",
   "selectReseller": "Select Reseller",
   "connectionDate": "Connection Date",
-  "editReport": "Report Edit"
+  "editReport": "Report Edit",
+  "filterBillDate": "Bill date left",
+  "oneDayLeft": "One Day Left",
+  "twoDayLeft": "Two Day Left",
+  "threeDayLeft": "Three Day Left",
+  "fourDayLeft": "Four Day Left"
 }

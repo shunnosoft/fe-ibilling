@@ -497,5 +497,10 @@
   "transferReseller": "রিসেলারকে দিন",
   "selectReseller": "রিসেলার সিলেক্ট করুন",
   "connectionDate": "কানেকশন ডেট",
-  "editReport": "রিপোর্ট এডিট"
+  "editReport": "রিপোর্ট এডিট",
+  "filterBillDate": "বিলের দিন ফিল্টার",
+  "oneDayLeft": "এক দিন বাকি",
+  "twoDayLeft": "দুই দিন বাকি",
+  "threeDayLeft": "তিন দিন বাকি",
+  "fourDayLeft": "চার দিন বাকি"
 }
