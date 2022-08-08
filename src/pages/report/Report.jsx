@@ -177,6 +177,7 @@ export default function Report() {
 
   // set Report id
   const [reportId, setReportId] = useState();
+  const [viewId, setViewId] = useState();
 
   // note state
   const [note, setNote] = useState();
@@ -299,7 +300,7 @@ export default function Report() {
                   data-bs-toggle="modal"
                   data-bs-target="#reportView"
                   onClick={() => {
-                    setReportId(value?.id);
+                    setViewId(value?.id);
                   }}
                 >
                   {value.note && "...See More"}
@@ -563,7 +564,7 @@ export default function Report() {
         </div>
       </div>
       <EditReport reportId={reportId} note={note} setNote={setNote} />
-      <ReportView reportId={reportId} />
+      <ReportView reportId={viewId} />
     </>
   );
 }
