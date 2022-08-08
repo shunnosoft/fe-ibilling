@@ -25,6 +25,7 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import EditReport from "./modal/EditReport";
+import ReportView from "./modal/ReportView";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -176,6 +177,7 @@ export default function Report() {
 
   // set Report id
   const [reportId, setReportId] = useState();
+  const [viewId, setViewId] = useState();
 
   // note state
   const [note, setNote] = useState();
@@ -282,6 +284,7 @@ export default function Report() {
         Header: t("note"),
         accessor: (data) => {
           return {
+            id: data.id,
             note: data.note,
             start: data.start,
             end: data.end,
@@ -290,7 +293,19 @@ export default function Report() {
         Cell: ({ cell: { value } }) => {
           return (
             <>
-              <p>{value.note && value.note}</p>
+              <p>
+                {value.note && value.note.slice(0, 20)}
+                <span
+                  className="see_more"
+                  data-bs-toggle="modal"
+                  data-bs-target="#reportView"
+                  onClick={() => {
+                    setViewId(value?.id);
+                  }}
+                >
+                  {value.note && "...See More"}
+                </span>
+              </p>
               {value?.start && value?.end && (
                 <span className="badge bg-secondary">
                   {moment(value.start).format("DD/MM/YY")}--
@@ -310,61 +325,61 @@ export default function Report() {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
-      // {
-      //   width: "6%",
-      //   Header: () => <div className="text-center">{t("action")}</div>,
-      //   id: "option",
+      {
+        width: "6%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
 
-      //   Cell: ({ row: { original } }) => (
-      //     <div
-      //       style={{
-      //         display: "flex",
-      //         alignItems: "center",
-      //         justifyContent: "center",
-      //       }}
-      //     >
-      //       <div className="dropdown">
-      //         <ThreeDots
-      //           className="dropdown-toggle ActionDots"
-      //           id="areaDropdown"
-      //           type="button"
-      //           data-bs-toggle="dropdown"
-      //           aria-expanded="false"
-      //         />
-      //         <ul className="dropdown-menu" aria-labelledby="customerDrop">
-      //           {/* <li
-      //             data-bs-toggle="modal"
-      //             data-bs-target="#showCustomerDetails"
-      //             onClick={() => {
-      //               // getSpecificCustomer(original.id);
-      //             }}
-      //           >
-      //             <div className="dropdown-item">
-      //               <div className="customerAction">
-      //                 <PersonFill />
-      //                 <p className="actionP">{t("profile")}</p>
-      //               </div>
-      //             </div>
-      //           </li> */}
-      //           <li
-      //             data-bs-toggle="modal"
-      //             data-bs-target="#reportEditModal"
-      //             onClick={() => {
-      //               getReportId(original?.id);
-      //             }}
-      //           >
-      //             <div className="dropdown-item">
-      //               <div className="customerAction">
-      //                 <PenFill />
-      //                 <p className="actionP">{t("edit")}</p>
-      //               </div>
-      //             </div>
-      //           </li>
-      //         </ul>
-      //       </div>
-      //     </div>
-      //   ),
-      // },
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                {/* <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#showCustomerDetails"
+                  onClick={() => {
+                    // getSpecificCustomer(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">{t("profile")}</p>
+                    </div>
+                  </div>
+                </li> */}
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#reportEditModal"
+                  onClick={() => {
+                    getReportId(original?.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
     ],
     [t]
   );
@@ -549,6 +564,7 @@ export default function Report() {
         </div>
       </div>
       <EditReport reportId={reportId} note={note} setNote={setNote} />
+      <ReportView reportId={viewId} />
     </>
   );
 }

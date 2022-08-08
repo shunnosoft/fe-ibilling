@@ -35,6 +35,27 @@ const resellerCustomerSlice = createSlice({
         (item) => item.id !== actions.payload
       );
     },
+    bulkCustomerReturn: (state, { payload }) => {
+      console.log({ payload });
+      let customers = [];
+      if (payload.isAllCustomer) {
+        customers = [...state.allResellerCustomer];
+      } else {
+        customers = [...state.resellerCustomer];
+      }
+      const updatedCustomer = [];
+      //loop through existing customer
+      for (let i = 0; i < customers.length; i++) {
+        const element = customers[i];
+        const found = payload.data.find((item) => item.id === element.id);
+        if (!found) updatedCustomer.push(element);
+      }
+      if (payload.isAllCustomer) {
+        state.allResellerCustomer = updatedCustomer;
+      } else {
+        state.resellerCustomer = updatedCustomer;
+      }
+    },
   },
 });
 
@@ -44,5 +65,6 @@ export const {
   deleteReCustomer,
   getAllResellerCustomerSuccess,
   editAllResellerCustomerSuccess,
+  bulkCustomerReturn,
 } = resellerCustomerSlice.actions;
 export default resellerCustomerSlice.reducer;

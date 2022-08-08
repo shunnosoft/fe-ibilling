@@ -61,7 +61,7 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
           data-bs-dismiss="modal"
           disabled={isLoading}
         >
-          {t("cancle")}
+          {t("cancel")}
         </button>
         <button
           onClick={bulkDeleteHandler}

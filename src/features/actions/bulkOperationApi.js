@@ -1,6 +1,7 @@
 import apiLink from "../../api/apiLink";
 import { bulkDelete, bulkUpdate } from "../customerSlice";
 import { toast } from "react-toastify";
+import { bulkCustomerReturn } from "../resellerCustomerAdminSlice";
 
 export const bulkDeleteCustomer = async (
   dispatch,
@@ -108,5 +109,32 @@ export const bulkCustomerTransfer = async (dispatch, data, setIsLoading) => {
     console.log(err);
     setIsLoading(false);
     toast.error("Failed to transfer");
+  }
+};
+
+export const bulkCustomerReturnApi = async (
+  dispatch,
+  data,
+  isAllCustomer,
+  setIsLoading
+) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch(
+      `customer/bulk-customer-return-to-ispOwner`,
+      data
+    );
+    document.querySelector("#returnCustomer").click();
+    const responseData = {
+      data: res.data.data,
+      isAllCustomer,
+    };
+    dispatch(bulkCustomerReturn(responseData));
+    setIsLoading(false);
+    toast.success("Customer Return successfull");
+  } catch (err) {
+    console.log(err);
+    setIsLoading(false);
+    toast.error("Failed to return customer");
   }
 };

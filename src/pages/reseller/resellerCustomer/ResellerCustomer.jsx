@@ -24,6 +24,8 @@ import Loader from "../../../components/common/Loader";
 import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
 import { useTranslation } from "react-i18next";
 import CustomerDelete from "../resellerModals/CustomerDelete";
+import IndeterminateCheckbox from "../../../components/table/bulkCheckbox";
+import BulkCustomerReturn from "../resellerModals/BulkCustomerReturn";
 
 // get specific customer
 
@@ -104,9 +106,27 @@ const ResellerCustomer = () => {
     setcustomerReportId(reportData);
   };
 
+  //bulk-operations
+  const [bulkCustomer, setBulkCustomer] = useState([]);
+
   // table column
   const columns = React.useMemo(
     () => [
+      {
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: "2%",
+      },
       {
         Header: t("id"),
         accessor: "customerId",
@@ -309,6 +329,9 @@ const ResellerCustomer = () => {
                       isLoading={isLoading}
                       columns={columns}
                       data={resellerCustomer}
+                      bulkState={{
+                        setBulkCustomer,
+                      }}
                     />
                   </div>
                 </div>
@@ -325,6 +348,26 @@ const ResellerCustomer = () => {
         mikrotikCheck={mikrotikCheck}
         setMikrotikCheck={setMikrotikCheck}
       />
+      <BulkCustomerReturn
+        modalId="returnCustomer"
+        bulkCustomer={bulkCustomer}
+        isAllCustomer={false}
+      />
+      {bulkCustomer.length > 0 && (
+        <div className="bulkActionButton">
+          <button
+            className="bulk_action_button"
+            title={t("returnCustomer")}
+            data-bs-toggle="modal"
+            data-bs-target="#returnCustomer"
+            type="button"
+            class="btn btn-dark btn-floating btn-sm"
+          >
+            <i class="fa-solid fa-right-left"></i>
+            <span className="button_title"> {t("returnCustomer")} </span>
+          </button>
+        </div>
+      )}
     </>
   );
 };

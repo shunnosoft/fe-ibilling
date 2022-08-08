@@ -259,7 +259,7 @@
   "on": "On",
   "off": "Off",
   "save": "Save",
-  "cancle": "Cancle",
+  "cancel": "cancel",
   "alertSMStemplateSaveAlert": "Alert SMS Template Save succeess!",
   "alertSMStemplate": "Alert SMS Template",
   "selectTemplate": "Select Template",
@@ -397,7 +397,6 @@
   "PPPoEPackage": "PPPoE Package",
   "mountly": "Mountly",
   "subAreaName": "Sub Area Name",
-  "cancel": "Cancel",
   "ofSubArea": "Sub Areas",
   "doYouWantDeleteSubArea": "Do you want to delete your Sub Area ?",
   "haveSubAreasCustomers": "You can't delete Sub Area cause contain customers",
@@ -416,7 +415,7 @@
   "totalBill": "Total Bill: ",
   "nam": "Name",
   "accepted": "Accepted",
-  "cancled": "Cancled",
+  "canceld": "canceld",
   "pending": "Pending",
   "totalDiposit": "Total Diposits",
   "totalBalance": "Total Balance",
@@ -500,5 +499,9 @@
   "oneDayLeft": "One Day Left",
   "twoDayLeft": "Two Day Left",
   "threeDayLeft": "Three Day Left",
-  "fourDayLeft": "Four Day Left"
+  "fourDayLeft": "Four Day Left",
+  "returnCustomer": "Return Customer",
+  "returnCustomerConfirmation": "Are You sure to return customer from your reseller?",
+  "confirm": "Confirm",
+  "viewReport": "Report View"
 }

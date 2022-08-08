@@ -330,7 +330,7 @@ export default function Diposit() {
                         depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
-                      {t("cancle")}
+                      {t("cancel")}
                     </button>
                   </div>
                 )

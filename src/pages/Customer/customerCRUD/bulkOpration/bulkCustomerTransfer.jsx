@@ -47,7 +47,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateBillingCycle")}>
+    <RootBulkModal modalId={modalId} header={t("transferReseller")}>
       <label htmlFor="selectReseller">{t("selectReseller")}</label>
       <select
         onChange={(e) => setResellerId(e.target.value)}
@@ -67,7 +67,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
           data-bs-dismiss="modal"
           disabled={isLoading}
         >
-          {t("cancle")}
+          {t("cancel")}
         </button>
         <button
           onClick={bulkCustomerTransferController}
