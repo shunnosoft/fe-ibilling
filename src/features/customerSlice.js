@@ -39,7 +39,10 @@ const customerSliec = createSlice({
       );
 
       customer.balance += action.payload.amount;
-      if (customer.balance >= customer.monthlyFee) {
+      if (
+        customer.balance >= customer.monthlyFee &&
+        billType !== "connectionFee"
+      ) {
         customer.paymentStatus = "paid";
         customer.status = "active";
         customer.billingCycle = action.payload.billingCycle;
