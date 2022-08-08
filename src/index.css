@@ -108,3 +108,12 @@ p {
   margin: 2px 10px 10px;
   cursor: pointer;
 }
+
+.see_more {
+  color: rgb(158, 33, 33);
+  cursor: pointer;
+}
+
+.see_more:hover {
+  color: #328eea;
+}

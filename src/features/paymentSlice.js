@@ -36,6 +36,7 @@ const paymentSlice = createSlice({
     getAllBillsSuccess: (state, action) => {
       state.allBills = action.payload;
     },
+
     editBillReportSuccess: (state, action) => {
       state.allBills[
         state.allBills.findIndex((item) => item.id === action.payload.id)
