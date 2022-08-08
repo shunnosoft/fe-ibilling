@@ -107,7 +107,7 @@ export default function EditPackage(props) {
                         data-bs-dismiss="modal"
                         disabled={isLoading}
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                       <button
                         type="submit"

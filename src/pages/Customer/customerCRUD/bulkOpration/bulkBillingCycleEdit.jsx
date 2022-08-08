@@ -47,7 +47,7 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
             data-bs-dismiss="modal"
             disabled={isLoading}
           >
-            {t("cancle")}
+            {t("cancel")}
           </button>
           <button
             type="submit"

@@ -22,6 +22,8 @@ import { getAllResellerCustomer } from "../../../features/resellerCustomerAdminA
 import Table from "../../../components/table/Table";
 import { ToastContainer } from "react-toastify";
 import CustomerDelete from "../resellerModals/CustomerDelete";
+import BulkCustomerReturn from "../resellerModals/BulkCustomerReturn";
+import IndeterminateCheckbox from "../../../components/table/bulkCheckbox";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -119,10 +121,27 @@ const AllResellerCustomer = () => {
     deleteACustomer(dispatch, IDs, true);
     setIsDeleting(false);
   };
+  //bulk-operations state
+  const [bulkCustomer, setBulkCustomer] = useState([]);
 
   // table column
   const columns = useMemo(
     () => [
+      {
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: "2%",
+      },
       {
         Header: t("id"),
         accessor: "customerId",
@@ -331,6 +350,9 @@ const AllResellerCustomer = () => {
                       isLoading={isLoading}
                       columns={columns}
                       data={resellerCustomer}
+                      bulkState={{
+                        setBulkCustomer,
+                      }}
                     />
                   </div>
                 </div>
@@ -347,6 +369,26 @@ const AllResellerCustomer = () => {
         mikrotikCheck={mikrotikCheck}
         setMikrotikCheck={setMikrotikCheck}
       />
+      <BulkCustomerReturn
+        modalId="returnCustomer"
+        bulkCustomer={bulkCustomer}
+        isAllCustomer={true}
+      />
+      {bulkCustomer.length > 0 && (
+        <div className="bulkActionButton">
+          <button
+            className="bulk_action_button"
+            title={t("returnCustomer")}
+            data-bs-toggle="modal"
+            data-bs-target="#returnCustomer"
+            type="button"
+            class="btn btn-dark btn-floating btn-sm"
+          >
+            <i class="fa-solid fa-right-left"></i>
+            <span className="button_title"> {t("returnCustomer")} </span>
+          </button>
+        </div>
+      )}
     </>
   );
 };

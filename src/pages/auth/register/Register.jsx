@@ -263,7 +263,7 @@ export default function Register() {
                         className="w-45 btn  btn-secondary registerCacleBtn"
                         type="button"
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                     </NavLink>
                   </Form>

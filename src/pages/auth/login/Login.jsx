@@ -106,7 +106,7 @@ export default function Login() {
                         className="w-45 btn  btn-secondary mt-4 cstm-login-cancel"
                         type="button"
                       >
-                        {t("cancle")}
+                        {t("cancel")}
                       </button>
                     </NavLink>
                     <br />

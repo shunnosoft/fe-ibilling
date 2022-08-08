@@ -122,7 +122,7 @@ const RechargeModal = ({ status }) => {
                   data-bs-dismiss="modal"
                   disabled={isLoading}
                 >
-                  {t("cancle")}
+                  {t("cancel")}
                 </button>
               </div>
             </form>

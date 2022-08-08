@@ -95,12 +95,8 @@ const customerSliec = createSlice({
       //loop through existing customer
       for (let i = 0; i < customers.length; i++) {
         const element = customers[i];
-        console.log({ element, payload });
-        for (let j = 0; j < payload.length; j++) {
-          if (element.id !== payload[j].id) {
-            updatedCustomer.push(element);
-          }
-        }
+        const found = payload.find((item) => item.id === element.id);
+        if (!found) updatedCustomer.push(element);
       }
       //update the state based on userType with modified state
       if (userType === "pppoe") {

@@ -212,7 +212,7 @@
   "on": "অন",
   "off": "অফ",
   "save": "সেভ করুন",
-  "cancle": "বাতিল",
+  "cancel": "বাতিল",
   "alertSMStemplateSaveAlert": "এলার্ট SMS টেমপ্লেট সেভ সফল হয়েছে",
   "alertSMStemplate": "এলার্ট SMS টেমপ্লেট ",
   "selectTemplate": "টেমপ্লেট সিলেক্ট",
@@ -403,7 +403,6 @@
   "billCycle": "বিল সাইকেল",
   "editSubArea": "সাব-এরিয়া এডিট করুন",
   "subAreaName": "সাব-এরিয়া নাম",
-  "cancel": "বাতিল",
   "ofSubArea": "এর সাব-এরিয়া",
   "doYouWantDeleteSubArea": "আপনি কি সাব-এরিয়া ডিলিট করতে চান?",
   "haveSubAreasCustomers": "এই সাব-এরিয়া তে গ্রাহক থাকায় ডিলিট করা যাবে না",
@@ -423,7 +422,7 @@
   "totalExpenditure": "মোট খরচ",
   "nam": "নাম",
   "accepted": "গ্রহণ করা হয়েছে",
-  "cancled": "বাতিল হয়েছে",
+  "canceld": "বাতিল হয়েছে",
   "pending": "অপেক্ষা করুন",
   "totalDiposit": "মোট ডিপোজিটঃ",
   "totalBalance": "মোট ব্যালান্স",
@@ -502,5 +501,8 @@
   "oneDayLeft": "এক দিন বাকি",
   "twoDayLeft": "দুই দিন বাকি",
   "threeDayLeft": "তিন দিন বাকি",
-  "fourDayLeft": "চার দিন বাকি"
+  "fourDayLeft": "চার দিন বাকি",
+  "returnCustomer": "কাস্টমার রিটার্ন",
+  "returnCustomerConfirmation": "আপনি কি রিসেলারের কাস্টমার ফেরত নিতে চান?",
+  "confirm": "কনফার্ম"
 }
