@@ -675,6 +675,7 @@ export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
     .then((res) => {
       dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
       setIsLoading(false);
+      document.querySelector("#SyncCustomer").click();
       langMessage(
         "success",
         "মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে",
