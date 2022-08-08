@@ -1420,7 +1420,7 @@ export const editBillReport = async (
   console.log({ reportId }, { data });
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`/bill/${reportId}`, data);
+    const res = await apiLink.patch(`/bill/monthlyBill/${reportId}`, data);
     dispatch(editBillReportSuccess(res.data));
     console.log(res.data);
     document.getElementById("reportEditModal").click();
