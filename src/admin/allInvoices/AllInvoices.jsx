@@ -39,10 +39,16 @@ const AllInvoices = () => {
 
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
+  const [typeFilterStatus, setTypeFilterStatus] = useState(null);
 
   // payment filter
   if (filterStatus && filterStatus !== "All") {
     invoices = invoices.filter((value) => value.status === filterStatus);
+  }
+
+  // type filter
+  if (typeFilterStatus && typeFilterStatus !== "All") {
+    invoices = invoices.filter((value) => value.type === typeFilterStatus);
   }
 
   // get note api call
@@ -230,9 +236,28 @@ const AllInvoices = () => {
                     aria-label="Default select example"
                     onChange={(event) => setFilterStatus(event.target.value)}
                   >
-                    <option selected>All</option>
+                    <option value="All" selected>
+                      All
+                    </option>
                     <option value="paid">Paid</option>
                     <option value="unpaid">Unpaid</option>
+                  </select>
+                  <select
+                    className="form-select mt-0 me-3"
+                    aria-label="Default select example"
+                    onChange={(event) =>
+                      setTypeFilterStatus(event.target.value)
+                    }
+                  >
+                    <option value="All" selected>
+                      All
+                    </option>
+                    <option value="monthlyServiceCharge">
+                      Monthly Service Charge
+                    </option>
+                    <option value="registration">Registration</option>
+                    <option value="smsPurchase">SMS</option>
+                    <option value="migration">Migration</option>
                   </select>
                 </div>
                 <div className="table-section-th">
