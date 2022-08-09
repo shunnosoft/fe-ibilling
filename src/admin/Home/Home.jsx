@@ -52,7 +52,7 @@ export default function Home() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
   // payment filter
-  if (filterStatus && filterStatus !== "Select") {
+  if (filterStatus && filterStatus !== "All") {
     ispOwners = ispOwners.filter(
       (value) => value.bpSettings.paymentStatus === filterStatus
     );
@@ -60,7 +60,7 @@ export default function Home() {
 
   // api call
   useEffect(() => {
-    getIspOwners(dispatch, setIsLoading);
+    if (!ispOwners.length) getIspOwners(dispatch, setIsLoading);
   }, []);
 
   // edit modal method
@@ -308,7 +308,9 @@ export default function Home() {
                 aria-label="Default select example"
                 onChange={(event) => setFilterStatus(event.target.value)}
               >
-                <option selected>Select</option>
+                <option value="All" selected>
+                  All
+                </option>
                 <option value="paid">Paid</option>
                 <option value="unpaid">Unpaid</option>
               </select>

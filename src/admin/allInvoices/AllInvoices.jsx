@@ -32,6 +32,11 @@ const AllInvoices = () => {
 
   let invoices = useSelector((state) => state.admin?.invoices);
 
+  // get note api call
+  useEffect(() => {
+    if (!invoices.length) getInvoices(dispatch, setIsLoading);
+  }, []);
+
   // get all company name from redux
   const company = useSelector(
     (state) => state.persistedReducer?.companyName?.ispOwnerIds
@@ -50,11 +55,6 @@ const AllInvoices = () => {
   if (typeFilterStatus && typeFilterStatus !== "All") {
     invoices = invoices.filter((value) => value.type === typeFilterStatus);
   }
-
-  // get note api call
-  useEffect(() => {
-    getInvoices(dispatch, setIsLoading);
-  }, []);
 
   // handle delete
   const detailsModal = (invoiceId) => {

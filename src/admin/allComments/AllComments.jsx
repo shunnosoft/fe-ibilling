@@ -29,13 +29,13 @@ const AllComments = () => {
   // import dispatch
   const dispatch = useDispatch();
 
-  // get note api call
-  useEffect(() => {
-    getComments(dispatch, setIsLoading);
-  }, []);
-
   // get all note in redux
   const comments = useSelector((state) => state.admin?.comments);
+
+  // get note api call
+  useEffect(() => {
+    if (!comments.length) getComments(dispatch, setIsLoading);
+  }, []);
 
   // get all company name from redux
   const company = useSelector(
