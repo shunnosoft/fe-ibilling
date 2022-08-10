@@ -30,10 +30,8 @@ export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
 
-  const subAreas = useSelector((state) => state.persistedReducer.area.area);
-  const allCollector = useSelector(
-    (state) => state.persistedReducer.collector.collector
-  );
+  const subAreas = useSelector((state) => state.area.area);
+  const allCollector = useSelector((state) => state.collector.collector);
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -43,9 +41,7 @@ export default function Report() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const allBills = useSelector(
-    (state) => state.persistedReducer.payment.allBills
-  );
+  const allBills = useSelector((state) => state.payment.allBills);
 
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setisLoading] = useState(false);
@@ -186,6 +182,7 @@ export default function Report() {
     collector: collector?.name ? collector.name : t("all"),
     startDate: moment(dateStart).format("YYYY-MM-DD"),
     endDate: moment(dateEnd).format("YYYY-MM-DD"),
+    totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
   const columns = useMemo(

@@ -16,9 +16,7 @@ import { useTranslation } from "react-i18next";
 
 export default function PPPoEpackageEditModal({ singlePackage }) {
   const { t } = useTranslation();
-  const pppoePackage = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
-  );
+  const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
   const data = pppoePackage.find((item) => item.id === singlePackage);
 

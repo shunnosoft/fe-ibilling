@@ -8,9 +8,7 @@ const EditResellerBalance = ({ resellerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const allReseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const allReseller = useSelector((state) => state?.reseller?.reseller);
 
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;

@@ -46,29 +46,27 @@ import PrintCustomer from "./customerPDF";
 export default function RstaticCustomer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
-  const cus = useSelector(
-    (state) => state?.persistedReducer?.customer?.staticCustomer
-  );
+  const cus = useSelector((state) => state?.customer?.staticCustomer);
 
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
   const resellerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.id
+    (state) => state.persistedReducer.auth?.userData?.id
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const permission = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.permissions
+    (state) => state.persistedReducer.auth?.userData?.permissions
   );
   const [Customers, setCustomers] = useState(cus);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 
   // const currentCustomers = Customers
-  const subAreas = useSelector((state) => state?.persistedReducer?.area?.area);
+  const subAreas = useSelector((state) => state?.area?.area);
   const userData = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   const [paymentStatus, setPaymentStatus] = useState("");

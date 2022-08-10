@@ -23,12 +23,10 @@ export default function StaffSalary() {
   const { staffId } = useParams();
 
   const staff = useSelector((state) =>
-    state.persistedReducer.staff.staff.find((item) => item.id == staffId)
+    state.staff.staff.find((item) => item.id == staffId)
   );
 
-  const getSalaries = useSelector(
-    (state) => state.persistedReducer.staff?.salary
-  );
+  const getSalaries = useSelector((state) => state.staff?.salary);
 
   const [salaryId, setSalaryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

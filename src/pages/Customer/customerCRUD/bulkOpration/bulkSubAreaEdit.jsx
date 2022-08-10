@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   const { t } = useTranslation();
-  const areas = useSelector((state) => state?.persistedReducer?.area?.area);
+  const areas = useSelector((state) => state?.area?.area);
   const [isLoading, setIsLoading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();

@@ -43,9 +43,7 @@ export default function EditPackage(props) {
   });
 
   // get mikrotik
-  const mikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // handle edit function
   const packageEditHandler = (data) => {

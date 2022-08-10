@@ -51,9 +51,7 @@ export default function Expenditure() {
   );
 
   // get owner users
-  const ownerUsers = useSelector(
-    (state) => state?.persistedReducer?.ownerUsers?.ownerUser
-  );
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   const role = useSelector((state) => state.persistedReducer.auth.role);
 

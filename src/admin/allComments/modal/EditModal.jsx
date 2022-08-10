@@ -16,9 +16,7 @@ const EditModal = ({ id }) => {
   const [status, setStatus] = useState();
 
   // get all company name from redux
-  const company = useSelector(
-    (state) => state.persistedReducer?.companyName?.ispOwnerIds
-  );
+  const company = useSelector((state) => state?.companyName?.ispOwnerIds);
 
   // get all note in redux
   const comments = useSelector((state) => state.admin?.comments);

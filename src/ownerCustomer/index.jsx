@@ -35,7 +35,7 @@ const Client = () => {
   };
 
   const userData = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser.customer
+    (state) => state.persistedReducer.auth?.currentUser.customer
   );
   console.log(userData);
   useEffect(() => {

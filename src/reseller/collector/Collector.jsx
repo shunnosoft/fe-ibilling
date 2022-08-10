@@ -33,9 +33,7 @@ export default function Collector() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector(
-    (state) => state.persistedReducer.collector.collector
-  );
+  const collector = useSelector((state) => state.collector.collector);
 
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 

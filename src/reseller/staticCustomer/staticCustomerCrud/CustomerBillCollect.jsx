@@ -31,24 +31,22 @@ const options = [
 
 export default function CustomerBillCollect({ single }) {
   const { t } = useTranslation();
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.staticCustomer
-  );
+  const customer = useSelector((state) => state?.customer?.staticCustomer);
 
   const data = customer.find((item) => item.id === single);
 
   const [billType, setBillType] = useState("bill");
 
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const currentUser = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   const currentUserId = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.id
+    (state) => state.persistedReducer.auth?.userData?.id
   );
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);

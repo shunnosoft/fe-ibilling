@@ -10,7 +10,7 @@ const animatedComponents = makeAnimated();
 const PackageChangeModal = () => {
   const packages = useSelector((state) => state.package.packages);
   const userData = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser.customer
+    (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
   const options = packages.map((item) => {

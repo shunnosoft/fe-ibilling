@@ -23,9 +23,7 @@ export default function Mikrotik() {
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
 
   let allmikrotiks = [];
-  allmikrotiks = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
-  );
+  allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
   const [isLoading, setIsLoading] = useState(false);
 

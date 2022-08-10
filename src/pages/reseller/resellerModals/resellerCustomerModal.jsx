@@ -9,9 +9,7 @@ export default function ResellerCustomerDetails({ single }) {
   const { t } = useTranslation();
   // get all data from redux state
   let data = useSelector((state) =>
-    state?.persistedReducer?.resellerCustomer?.resellerCustomer.find(
-      (item) => item.id === single
-    )
+    state?.resellerCustomer?.resellerCustomer.find((item) => item.id === single)
   );
 
   return (

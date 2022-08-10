@@ -52,23 +52,13 @@ export default function Home() {
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
 
-  const allCollector = useSelector(
-    (state) => state.persistedReducer.collector.collector
-  );
-  const manager = useSelector(
-    (state) => state.persistedReducer.manager.manager
-  );
+  const allCollector = useSelector((state) => state.collector.collector);
+  const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const ChartsData = useSelector(
-    (state) => state.persistedReducer.chart.charts
-  );
+  const ChartsData = useSelector((state) => state.chart.charts);
 
-  const customerStat = useSelector(
-    (state) => state.persistedReducer.chart.customerStat
-  );
-  const invoice = useSelector(
-    (state) => state.persistedReducer.invoice.invoice
-  );
+  const customerStat = useSelector((state) => state.chart.customerStat);
+  const invoice = useSelector((state) => state.invoice.invoice);
   const [isLoading, setIsloading] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);

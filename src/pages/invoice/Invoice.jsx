@@ -29,12 +29,10 @@ function Invoice() {
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  const invoices = useSelector(
-    (state) => state?.persistedReducer?.invoice?.invoices
-  );
+  const invoices = useSelector((state) => state?.invoice?.invoices);
 
   // reload handler
   const reloadHandler = () => {

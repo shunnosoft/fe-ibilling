@@ -31,9 +31,7 @@ const EditReport = ({ reportId, note, setNote }) => {
   ];
 
   // get all report from redux
-  const report = useSelector(
-    (state) => state?.persistedReducer?.payment?.allBills
-  );
+  const report = useSelector((state) => state?.payment?.allBills);
 
   const data = report.find((item) => item.id === reportId);
 

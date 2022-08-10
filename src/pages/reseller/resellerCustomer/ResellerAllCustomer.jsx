@@ -36,12 +36,10 @@ const AllResellerCustomer = () => {
 
   // get isp owner id
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   // get reseller
-  const resellers = useSelector(
-    (state) => state?.persistedReducer?.reseller.reseller
-  );
+  const resellers = useSelector((state) => state?.reseller.reseller);
 
   // import dispatch
   const dispatch = useDispatch();
@@ -61,7 +59,7 @@ const AllResellerCustomer = () => {
   const [resellerId, setResellerId] = useState("");
   // get all data from redux state
   let resellerCustomer = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.allResellerCustomer
+    (state) => state?.resellerCustomer?.allResellerCustomer
   );
   // get all reseller customer api call
   useEffect(() => {

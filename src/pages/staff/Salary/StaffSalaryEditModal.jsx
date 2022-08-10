@@ -18,7 +18,7 @@ export default function StaffSalaryEditModal({ salaryId }) {
 
   const dispatch = useDispatch();
   const salaryInfo = useSelector((state) =>
-    state.persistedReducer.staff.salary.find((item) => item.id === salaryId)
+    state.staff.salary.find((item) => item.id === salaryId)
   );
 
   console.log(salaryInfo);

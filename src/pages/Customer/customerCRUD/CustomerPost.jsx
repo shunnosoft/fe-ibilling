@@ -18,21 +18,19 @@ import ReactDatePicker from "react-datepicker";
 export default function CustomerModal() {
   const { t } = useTranslation();
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
   // const packages= useSelector(state=>state.package.packages)
   // console.log( packages)
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
-  const Getmikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const area = useSelector((state) => state?.area?.area);
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
-      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
 

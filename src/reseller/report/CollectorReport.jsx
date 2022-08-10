@@ -43,9 +43,7 @@ export default function CollectorReport() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const allBills = useSelector(
-    (state) => state.persistedReducer.collector.collectorBill
-  );
+  const allBills = useSelector((state) => state.collector.collectorBill);
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);

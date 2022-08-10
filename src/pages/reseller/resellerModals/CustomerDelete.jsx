@@ -9,7 +9,7 @@ const CustomerDelete = ({ customerId, mikrotikCheck, setMikrotikCheck }) => {
 
   // get all data from redux state
   let resellerCustomer = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
+    (state) => state?.resellerCustomer?.resellerCustomer
   );
   // find deletable customer
   const singleData = resellerCustomer.find((item) => item.id === customerId);
@@ -22,7 +22,7 @@ const CustomerDelete = ({ customerId, mikrotikCheck, setMikrotikCheck }) => {
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // DELETE handler

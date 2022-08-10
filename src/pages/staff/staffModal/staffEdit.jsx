@@ -21,7 +21,7 @@ export default function StaffEdit({ staffId }) {
   );
 
   const staffData = useSelector((state) =>
-    state.persistedReducer.staff.staff.find((item) => item.id === staffId)
+    state.staff.staff.find((item) => item.id === staffId)
   );
 
   //validator

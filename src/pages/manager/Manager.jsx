@@ -39,9 +39,7 @@ import { useTranslation } from "react-i18next";
 export default function Manager() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const manager = useSelector(
-    (state) => state.persistedReducer.manager?.manager
-  );
+  const manager = useSelector((state) => state.manager?.manager);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
   );

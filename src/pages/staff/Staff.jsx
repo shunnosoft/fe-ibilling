@@ -25,10 +25,8 @@ const Staff = () => {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
-  const getAllStaffs = useSelector(
-    (state) => state.persistedReducer?.staff?.staff
-  );
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const getAllStaffs = useSelector((state) => state?.staff?.staff);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const [isLoading, setIsLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);

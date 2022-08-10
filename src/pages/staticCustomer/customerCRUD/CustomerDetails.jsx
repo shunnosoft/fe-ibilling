@@ -9,15 +9,13 @@ import { useTranslation } from "react-i18next";
 export default function CustomerDetails({ single }) {
   const { t } = useTranslation();
   // get all customer
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.staticCustomer
-  );
+  const customer = useSelector((state) => state?.customer?.staticCustomer);
 
   // find editable data
   const data = customer.find((item) => item.id === single);
 
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
   return (
     <div>

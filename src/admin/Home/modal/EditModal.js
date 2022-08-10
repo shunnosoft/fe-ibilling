@@ -22,7 +22,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
 
   const [billDate, setBillDate] = useState();
 
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   useEffect(() => {
     setBillDate(

@@ -38,19 +38,15 @@ import { useTranslation } from "react-i18next";
 export default function Bill() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const auth = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
-  );
+  const auth = useSelector((state) => state.persistedReducer.auth?.currentUser);
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
 
-  const Customers = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const Customers = useSelector((state) => state?.customer?.customer);
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");

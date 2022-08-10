@@ -25,7 +25,7 @@ const InvoiceEditModalSuper = ({ invoiceId }) => {
   // get editable invoice
   const ispOwnerInvoice = invoiceList.find((item) => item.id === invoiceId);
 
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // handle submit
   const handleSubmit = (values) => {

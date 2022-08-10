@@ -18,13 +18,9 @@ export default function ResellerEdit({ resellerId }) {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
-  const area = useSelector((state) => state.persistedReducer.area.area);
-  const mikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
-  );
-  const allReseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const area = useSelector((state) => state.area.area);
+  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
+  const allReseller = useSelector((state) => state?.reseller?.reseller);
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
@@ -129,7 +125,7 @@ export default function ResellerEdit({ resellerId }) {
   //get mikrotik packages
 
   const mikrotikpakages = useSelector(
-    (state) => state.persistedReducer.reseller.allMikrotikPakages
+    (state) => state.reseller.allMikrotikPakages
   );
 
   //handle mikrotik packages

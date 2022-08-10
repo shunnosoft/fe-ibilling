@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 export default function CreatePackage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);

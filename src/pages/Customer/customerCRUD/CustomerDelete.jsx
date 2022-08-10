@@ -7,9 +7,7 @@ import { useTranslation } from "react-i18next";
 const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   const { t } = useTranslation();
   // get all customer
-  const customers = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const customers = useSelector((state) => state?.customer?.customer);
 
   // find deletable customer
   const singleData = customers.find((item) => item.id === single);
@@ -22,7 +20,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // DELETE handler

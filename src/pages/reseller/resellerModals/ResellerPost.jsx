@@ -19,12 +19,10 @@ export default function ResellerPost() {
   const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.persistedReducer.area.area);
-  const mikrotik = useSelector(
-    (state) => state.persistedReducer.mikrotik.mikrotik
-  );
+  const area = useSelector((state) => state.area.area);
+  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
   const mikrotikpakages = useSelector(
-    (state) => state.persistedReducer.reseller.allMikrotikPakages
+    (state) => state.reseller.allMikrotikPakages
   );
   const [areaIds, setAreaIds] = useState([]);
   const [mikrotikIds, setMikrotikIds] = useState([]);

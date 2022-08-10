@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 
 export default function ConfigMikrotikModal(props) {
   const { t } = useTranslation();
-  // const auth = useSelector(state => state.auth.currentUser);
+  // const auth = useSelector(state => state.persistedReducer.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { mik } = props;

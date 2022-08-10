@@ -34,12 +34,10 @@ export default function Collector() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
+  const collector = useSelector((state) => state?.collector?.collector);
 
   let serial = 0;
   // pagination
@@ -52,9 +50,9 @@ export default function Collector() {
   const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const permission = useSelector(
-    (state) => state.persistedReducer?.auth?.userData?.permissions
+    (state) => state.persistedReducer.auth?.userData?.permissions
   );
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);

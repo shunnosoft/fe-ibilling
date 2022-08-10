@@ -22,12 +22,12 @@ const ResellerSmsRequest = () => {
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state.persistedReducer?.auth?.currentUser?.ispOwner?.id
+    (state) => state.persistedReducer.auth?.currentUser?.ispOwner?.id
   );
 
   // get reseller sms all data
   const data = useSelector(
-    (state) => state?.persistedReducer?.resellerSmsRequest?.requestSmsHistory
+    (state) => state?.resellerSmsRequest?.requestSmsHistory
   );
 
   // loading state

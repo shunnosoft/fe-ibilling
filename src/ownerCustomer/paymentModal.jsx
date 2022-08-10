@@ -6,7 +6,7 @@ import { billPayment } from "../features/getIspOwnerUsersApi";
 
 const PaymentModal = () => {
   const userData = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser.customer
+    (state) => state.persistedReducer.auth?.currentUser.customer
   );
   const [paymentAmount, setPaymentAmount] = useState("");
   const [loading, setLoading] = useState(false);

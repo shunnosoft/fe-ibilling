@@ -40,7 +40,7 @@ const ResellerCustomer = () => {
 
   // get isp owner id
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get id from route
@@ -51,7 +51,7 @@ const ResellerCustomer = () => {
 
   // get all data from redux state
   let resellerCustomer = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
+    (state) => state?.resellerCustomer?.resellerCustomer
   );
 
   // loading local state
@@ -68,10 +68,15 @@ const ResellerCustomer = () => {
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
+  const [customer, setCustomer] = useState([]);
+
   // get all reseller customer api call
   useEffect(() => {
     getResellerCustomer(dispatch, resellerId, setIsLoading);
   }, []);
+  useEffect(() => {
+    if (resellerCustomer.length > 0) setCustomer(resellerCustomer);
+  }, [resellerCustomer]);
 
   // cutomer delete
   const customerDelete = (customerId) => {
@@ -80,21 +85,28 @@ const ResellerCustomer = () => {
     setCustomerId(customerId);
   };
 
-  // status filter
-  if (filterStatus && filterStatus !== t("status")) {
-    if (filterStatus !== "all") {
-      resellerCustomer = resellerCustomer.filter(
-        (value) => value.status === filterStatus
-      );
-    }
-  }
+  let tempCustomer = [...resellerCustomer];
 
-  // payment status filter
-  if (filterPayment && filterPayment !== t("payment")) {
-    resellerCustomer = resellerCustomer.filter(
-      (value) => value.paymentStatus === filterPayment
-    );
-  }
+  const filterClick = () => {
+    // status filter
+    if (filterStatus) {
+      if (filterStatus !== "all") {
+        tempCustomer = tempCustomer.filter(
+          (value) => value.status === filterStatus
+        );
+      }
+    }
+
+    // payment status filter
+    if (filterPayment) {
+      if (filterPayment !== "all") {
+        tempCustomer = tempCustomer.filter(
+          (value) => value.paymentStatus === filterPayment
+        );
+      }
+    }
+    setCustomer(tempCustomer);
+  };
 
   // get specific customer
   const getSpecificCustomer = (id) => {
@@ -290,7 +302,7 @@ const ResellerCustomer = () => {
                   <div className="d-flex flex-row justify-content-center">
                     {/* status filter */}
                     <select
-                      className="form-select"
+                      className="form-select mt-3"
                       aria-label="Default select example"
                       onChange={(event) => setFilterStatus(event.target.value)}
                     >
@@ -306,15 +318,24 @@ const ResellerCustomer = () => {
 
                     {/* payment status filter */}
                     <select
-                      className="form-select ms-4"
+                      className="form-select ms-4 mt-3"
                       aria-label="Default select example"
                       onChange={(event) => setFilterPayment(event.target.value)}
                     >
-                      <option selected> {t("paymentFilter")} </option>
+                      <option selected value="all">
+                        {" "}
+                        {t("paymentFilter")}{" "}
+                      </option>
                       <option value="paid"> {t("paid")} </option>
                       <option value="unpaid"> {t("unpaid")} </option>
                     </select>
                     {/* end payment status filter */}
+                    <button
+                      className="btn btn-outline-primary w-140 mt-3 chartFilteritem ms-2"
+                      onClick={filterClick}
+                    >
+                      {t("filter")}
+                    </button>
                   </div>
                   {isDelete ? (
                     <div className="deletingAction">
@@ -328,7 +349,7 @@ const ResellerCustomer = () => {
                     <Table
                       isLoading={isLoading}
                       columns={columns}
-                      data={resellerCustomer}
+                      data={customer}
                       bulkState={{
                         setBulkCustomer,
                       }}

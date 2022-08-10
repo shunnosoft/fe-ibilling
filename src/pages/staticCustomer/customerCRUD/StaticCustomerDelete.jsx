@@ -14,7 +14,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // DELETE handler

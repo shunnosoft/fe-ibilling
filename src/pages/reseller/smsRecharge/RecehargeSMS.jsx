@@ -20,13 +20,11 @@ const RecehargeSMS = () => {
 
   // ger resller id
   const resellerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser?.reseller?.id
+    (state) => state.persistedReducer.auth?.currentUser?.reseller?.id
   );
 
   // get data
-  const data = useSelector(
-    (state) => state?.persistedReducer?.smsHistory?.smsParchase
-  );
+  const data = useSelector((state) => state?.smsHistory?.smsParchase);
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);

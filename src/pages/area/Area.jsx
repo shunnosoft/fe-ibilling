@@ -27,18 +27,16 @@ import { useTranslation } from "react-i18next";
 
 export default function Area() {
   const { t } = useTranslation();
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
+  const area = useSelector((state) => state?.area?.area);
   const [loading, setIsloading] = useState(false);
   const dispatch = useDispatch();
-  const cus = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const cus = useSelector((state) => state?.customer?.customer);
 
   const [isLoading, setIsLoading] = useState(false);
   const [EditAarea, setEditAarea] = useState("");
 
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   const reloadHandler = () => {

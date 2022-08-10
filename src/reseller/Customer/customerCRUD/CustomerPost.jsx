@@ -18,16 +18,12 @@ export default function CustomerModal() {
   const { t } = useTranslation();
 
   const userData = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData
+    (state) => state.persistedReducer.auth?.userData
   );
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
+  const area = useSelector((state) => state?.area?.area);
 
-  const Getmikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
-  const ppPackage = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
-  );
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -136,10 +132,10 @@ export default function CustomerModal() {
   };
 
   const reseller = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData
+    (state) => state.persistedReducer.auth?.userData
   );
 
-  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
 
   return (
     <div>

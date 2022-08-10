@@ -20,28 +20,24 @@ const ResellserActiveCustomer = () => {
   const [filterStatus, setFilterStatus] = useState();
 
   // get all mikrotik from redux
-  const mikrotik = useSelector(
-    (state) => state.persistedReducer?.mikrotik?.mikrotik
-  );
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // set initialy mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
 
   //get reseller active customer
-  const activeUser = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
-  );
+  const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
 
   // get reseller id
   let userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   //get collector
   const currentUser = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   //get role
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {

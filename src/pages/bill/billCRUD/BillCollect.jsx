@@ -10,10 +10,10 @@ export default function CustomerBillCollect({ singleCustomer }) {
   const { t } = useTranslation();
   const [billType, setBillType] = useState("bill");
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const currentUser = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   const BillValidatoin = Yup.object({

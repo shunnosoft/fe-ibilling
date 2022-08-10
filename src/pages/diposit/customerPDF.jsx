@@ -9,13 +9,11 @@ const PrintCustomer = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { currentCustomers, filterData } = props;
   const ispOwnerData = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData
+    (state) => state.persistedReducer.auth?.userData
   );
 
   // get owner users
-  const ownerUsers = useSelector(
-    (state) => state?.persistedReducer?.ownerUsers?.ownerUser
-  );
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   const getName = (userId) => {
     const performer = ownerUsers.find((item) => item[userId]);

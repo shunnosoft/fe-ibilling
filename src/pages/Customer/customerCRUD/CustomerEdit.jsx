@@ -20,9 +20,7 @@ import { useTranslation } from "react-i18next";
 export default function CustomerEdit(props) {
   const { t } = useTranslation();
   // get all customer
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const customer = useSelector((state) => state?.customer?.customer);
 
   // find editable data
   const data = customer.find((item) => item.id === props.single);
@@ -31,26 +29,24 @@ export default function CustomerEdit(props) {
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get all area
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
+  const area = useSelector((state) => state?.area?.area);
 
   // get mikrotik
-  const Getmikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get bp setting
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
 
   // get ppoe package
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
-      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
 
@@ -271,7 +267,7 @@ export default function CustomerEdit(props) {
                             {t("selectMikrotik")}
                           </p>
                           <select
-                            className="form-select"
+                            className="form-select mw-100"
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
                             disabled
@@ -292,7 +288,7 @@ export default function CustomerEdit(props) {
                           {t("selectPackage")}
                         </p>
                         <select
-                          className="form-select mb-3"
+                          className="form-select mb-3 mw-100"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
@@ -348,7 +344,7 @@ export default function CustomerEdit(props) {
                       <div>
                         <p> {t("selectArea")} </p>
                         <select
-                          className="form-select"
+                          className="form-select mw-100"
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
@@ -369,7 +365,7 @@ export default function CustomerEdit(props) {
                       <div>
                         <p> {t("selectSubArea")} </p>
                         <select
-                          className="form-select"
+                          className="form-select mw-100"
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaIdFromEdit"

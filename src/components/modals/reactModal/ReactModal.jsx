@@ -10,9 +10,7 @@ import { NavLink } from "react-router-dom";
 import moment from "moment";
 function ReactModal() {
   const [isLoading, setIsloading] = useState(false);
-  const invoice = useSelector(
-    (state) => state.persistedReducer?.invoice?.invoice
-  );
+  const invoice = useSelector((state) => state?.invoice?.invoice);
   const dispatch = useDispatch();
   const [isAgreed, setAgreed] = useState(false);
   // console.log(isAgreed);
