@@ -85,7 +85,7 @@ export default function SubArea() {
         setSubAreas(oneArea.subAreas);
       }
     }
-  }, [area, areaId, navigate]);
+  }, [area, areaId]);
 
   // delete sub area
   const deleteSingleSubAarea = (id, ispOwner) => {

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
 import { FontColor } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import Table from "../../components/table/Table";
-import { PenFill, ThreeDots } from "react-bootstrap-icons";
+import { ArrowLeftShort, PenFill, ThreeDots } from "react-bootstrap-icons";
 import { getIspOwnerInvoice } from "../../features/apiCallAdmin";
 import InvoiceEditModal from "./modal/InvoiceEditModal";
 
@@ -15,6 +15,7 @@ const InvoiceList = () => {
   const [isLoading, setIsLoading] = useState(false);
   // import dispatch
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get owner id in params
   const { ispOwnerId } = useParams();
@@ -22,11 +23,9 @@ const InvoiceList = () => {
   console.log(ispOwnerId);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams.get("company"));
 
   // set invoice id
   const [invoiceId, setInvoiceId] = useState("");
-  const [ispOwner, setIspOwner] = useState({});
 
   // get invoice list
   const invoiceList = useSelector((state) => state.ownerInvoice?.ownerInvoice);
@@ -152,10 +151,18 @@ const InvoiceList = () => {
           <ToastContainer position="top-right" theme="colored" />
           <div className={useDash.dashboardWrapper}>
             <div className="card">
-              <div className="card-header">
-                <h2 className="dashboardTitle text-center">
+              <div className="card-header d-flex justify-content-between">
+                <div
+                  className="allSubArea mt-2"
+                  onClick={() => navigate("/admin/home")}
+                >
+                  <ArrowLeftShort className="arrowLeftSize" />
+                  <span style={{ marginLeft: "3px" }}>Dashboard</span>
+                </div>
+                <h2 className="dashboardTitle">
                   Invoices of {searchParams.get("company")}
                 </h2>
+                <div></div>
               </div>
               <div className="card-body">
                 <div className="dashboardField">
