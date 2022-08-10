@@ -19,7 +19,7 @@ import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
 
 const Staff = () => {
-const { t } = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -88,6 +88,11 @@ const { t } = useTranslation();
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
+      },
+      {
+        width: "20%",
+        Header: t("salaryType"),
+        accessor: "salaryType",
       },
       {
         width: "20%",

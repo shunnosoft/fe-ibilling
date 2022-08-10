@@ -50,6 +50,7 @@ export const addStaff = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff", data);
+    console.log(res.data);
     dispatch(addStaffSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#staffModal").click();
@@ -143,7 +144,7 @@ export const updateSalary = async (dispatch, salaryId, data, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch("/staff/salary/" + salaryId, data);
-    // console.log(res.data);
+    console.log(res.data);
     dispatch(updateSalarySuccess(res.data));
     document.querySelector("#editSalaryPostModal").click();
     setIsLoading(false);

@@ -21,6 +21,9 @@ export default function StaffPost() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // salary type state
+  const [salaryType, setSalaryType] = useState("Montly");
+  console.log(salaryType);
   //validator
   const resellerValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
@@ -29,6 +32,7 @@ export default function StaffPost() {
       .max(11, t("over11DigitMobileNumber"))
       .required(t("writeMobileNumber")),
     email: Yup.string().email(t("incorrectEmail")),
+    salary: Yup.number().required(t("incorrectSalary")),
     nid: Yup.string(),
     website: Yup.string(),
     address: Yup.string(),
@@ -41,6 +45,8 @@ export default function StaffPost() {
       email: data.email,
       fatherName: data.fatherName,
       address: data.address,
+      salary: data.salary,
+      salaryType,
       nid: data.nid,
       reference: {
         name: data.refName,
@@ -86,6 +92,7 @@ export default function StaffPost() {
                   mobile: "",
                   email: "",
                   fatherName: "",
+                  salary: "",
                   nid: "",
                   address: "",
                   refName: "",
@@ -127,6 +134,28 @@ export default function StaffPost() {
                         label={t("address")}
                         name="address"
                       />
+                    </div>
+                    <div className="displayGrid3">
+                      <FtextField
+                        type="number"
+                        label={t("salary")}
+                        name="salary"
+                      />
+                      <div>
+                        <h6 style={{ marginBottom: "-5px" }}>Salary Type</h6>
+
+                        <select
+                          class="form-select mw-100"
+                          onChange={(event) =>
+                            setSalaryType(event.target.value)
+                          }
+                        >
+                          <option value="monthly" selected>
+                            Monthly
+                          </option>
+                          <option value="daily">Daily</option>
+                        </select>
+                      </div>
                     </div>
 
                     <Card>

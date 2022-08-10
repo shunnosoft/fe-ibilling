@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
@@ -9,33 +9,44 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { updateSalary } from "../../../features/apiCallStaff";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 export default function StaffSalaryEditModal({ salaryId }) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
+  const [amount, setAmount] = useState(0);
+
   const dispatch = useDispatch();
   const salaryInfo = useSelector((state) =>
     state.persistedReducer.staff.salary.find((item) => item.id === salaryId)
   );
 
+  console.log(salaryInfo);
+
+  let restSalary = Number(salaryInfo?.due) - amount;
+  console.log(restSalary);
+
   //validator
-  const salaryValidaiton = Yup.object({
-    amount: Yup.string().required(t("enterAmount")),
-  });
+  // const salaryValidaiton = Yup.object({
+  //   amount: Yup.string().required(t("enterAmount")),
+  // });
 
   const staffSalaryEditHandler = (data, resetForm) => {
-    const { amount, due, remarks } = data;
+    if (!amount) {
+      toast.warning("Salary Field is required");
+    }
+    const { remarks } = data;
     const date = data.date.split("-");
     const year = date[0];
     const month = date[1];
     const sendingData = {
       amount,
-      due,
+      due: restSalary,
       remarks,
       year,
       month,
     };
-    // console.log(sendingData);
+    console.log(sendingData);
     updateSalary(dispatch, salaryId, sendingData, setIsLoading);
   };
 
@@ -48,7 +59,7 @@ export default function StaffSalaryEditModal({ salaryId }) {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-xl">
+        <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
@@ -65,12 +76,10 @@ export default function StaffSalaryEditModal({ salaryId }) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  amount: salaryInfo?.amount || "",
-                  due: salaryInfo?.due || "",
                   date: salaryInfo?.year + "-0" + salaryInfo?.month || "",
                   remarks: salaryInfo?.remarks || "",
                 }}
-                validationSchema={salaryValidaiton}
+                // validationSchema={salaryValidaiton}
                 onSubmit={(values, { resetForm }) => {
                   staffSalaryEditHandler(values, resetForm);
                 }}
@@ -80,19 +89,29 @@ export default function StaffSalaryEditModal({ salaryId }) {
                   <Form className="p-5">
                     {/* first part */}
 
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label={t("amount")}
-                        name="amount"
-                      />
-                      <FtextField type="text" label={t("due")} name="due" />
-                      <FtextField
-                        type="month"
-                        label={t("selectMonthAndYear")}
-                        name="date"
+                    <div>
+                      <h6 class="form-label">{t("amount")}</h6>
+                      <input
+                        className="form-control mb-3"
+                        type="number"
+                        onChange={(event) => setAmount(event.target.value)}
                       />
                     </div>
+                    <div>
+                      <h6 class="form-label">{t("due")}</h6>
+                      <input
+                        className="form-control mb-3"
+                        type="number"
+                        disabled
+                        value={restSalary}
+                      />
+                    </div>
+
+                    <FtextField
+                      type="date"
+                      label={t("selectMonthAndYear")}
+                      name="date"
+                    />
 
                     <FtextField
                       type="text"

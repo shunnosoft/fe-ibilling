@@ -134,6 +134,7 @@ export default function StaffSalary() {
                 <div className="collectorTitle d-flex justify-content-between align-item-center px-5 mb-2">
                   <span>{t("staffProfile")}</span>
                   <Button
+                    onClick={() => setSalaryId(staff.id)}
                     data-bs-toggle="modal"
                     data-bs-target="#addSalaryPostModal"
                     variant="success"

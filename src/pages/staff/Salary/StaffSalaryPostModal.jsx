@@ -9,10 +9,21 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { addSalaryApi } from "../../../features/apiCallStaff";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 export default function StaffSalaryPostModal({ staffId }) {
   const { t } = useTranslation();
+
+  const staff = useSelector((state) =>
+    state.persistedReducer.staff.staff.find((item) => item.id == staffId)
+  );
+
   const [isLoading, setIsLoading] = useState(false);
+  const [amount, setAmount] = useState();
+  console.log(amount);
+
+  const restSalary = staff.salary - amount;
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
@@ -23,19 +34,22 @@ export default function StaffSalaryPostModal({ staffId }) {
   );
 
   //validator
-  const salaryValidaiton = Yup.object({
-    amount: Yup.string().required(t("enterAmount")),
-    due: Yup.string().required(t("mentionDue")),
-  });
+  // const salaryValidaiton = Yup.object({
+  //   amount: Yup.string().required(t("enterAmount")),
+  //   due: Yup.string().required(t("mentionDue")),
+  // });
 
   const staffSalaryHandler = (data, resetForm) => {
-    const { amount, due, remarks } = data;
+    if (!amount) {
+      toast.warning("Salary Field is required");
+    }
+    const { remarks } = data;
     const date = data.date.split("-");
     const year = date[0];
     const month = date[1];
     const sendingData = {
       amount,
-      due,
+      due: restSalary,
       remarks,
       year,
       month,
@@ -73,12 +87,10 @@ export default function StaffSalaryPostModal({ staffId }) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  amount: "",
-                  due: "",
                   date: "",
                   remarks: "",
                 }}
-                validationSchema={salaryValidaiton}
+                // validationSchema={salaryValidaiton}
                 onSubmit={(values, { resetForm }) => {
                   staffSalaryHandler(values, resetForm);
                 }}
@@ -87,12 +99,29 @@ export default function StaffSalaryPostModal({ staffId }) {
                 {(formik) => (
                   <Form>
                     <div className="px-3">
-                      <FtextField
-                        type="text"
-                        label={t("amount")}
-                        name="amount"
+                      <h6 class="form-label">{t("salary")}</h6>
+                      <input
+                        className="form-control mb-3"
+                        disabled
+                        type="number"
+                        value={staff.salary}
                       />
-                      <FtextField type="text" label={t("due")} name="due" />
+
+                      <h6 class="form-label">{t("amount")}</h6>
+                      <input
+                        className="form-control mb-3"
+                        type="number"
+                        onChange={(event) => setAmount(event.target.value)}
+                      />
+
+                      <h6 class="form-label">{t("due")}</h6>
+                      <input
+                        className="form-control mb-3"
+                        type="number"
+                        value={restSalary}
+                        disabled
+                      />
+
                       <FtextField
                         type="date"
                         label={t("selectMonthAndYear")}

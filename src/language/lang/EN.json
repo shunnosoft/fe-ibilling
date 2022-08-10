@@ -140,6 +140,7 @@
   "writeMobileNumber": "Write Mobile Number",
   "incorrectMobile": "Incorrect Mobile Number",
   "incorrectEmail": "Incorrect Email",
+  "incorrectSalary": "Salary Field is Required",
   "enterYourEmail": "Enter Your Email",
   "minimumPackageRate": "Minimum Package Rate 0",
   "enterPackageRate": "Enter Package Rate",
@@ -503,5 +504,6 @@
   "returnCustomer": "Return Customer",
   "returnCustomerConfirmation": "Are You sure to return customer from your reseller?",
   "confirm": "Confirm",
-  "viewReport": "Report View"
+  "viewReport": "Report View",
+  "salaryType": "Salary Type"
 }
