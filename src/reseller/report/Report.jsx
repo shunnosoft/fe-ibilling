@@ -186,6 +186,7 @@ export default function Report() {
     collector: collector?.name ? collector.name : t("all"),
     startDate: moment(dateStart).format("YYYY-MM-DD"),
     endDate: moment(dateEnd).format("YYYY-MM-DD"),
+    totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
   const columns = useMemo(

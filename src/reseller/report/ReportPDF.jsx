@@ -46,6 +46,15 @@ const PrintReport = React.forwardRef((props, ref) => {
             {t("date")} : {startDate} - {endDate}
           </li>
         </ul>
+        <ul className="d-flex justify-content-center filter_list">
+          <li>
+            {t("totalData")} {currentCustomers.length}
+          </li>
+          <li className="ms-4">
+            {t("totalBill")}
+            {filterData.totalBill}
+          </li>
+        </ul>
         <table className="table table-striped">
           <thead>
             <tr className="spetialSortingRow">
