@@ -9,7 +9,7 @@ import ViewPaymentHistoryModal from "./viewPaymentHistory";
 const PaymentHistory = () => {
   const dispatch = useDispatch();
   const userData = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser.customer
+    (state) => state.persistedReducer.auth?.currentUser.customer
   );
   const paymentHistories = useSelector((state) => state.client.paymentHistory);
 

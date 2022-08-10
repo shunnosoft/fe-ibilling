@@ -41,25 +41,23 @@ export default function PackageSetting() {
   // const [collSearch, setCollSearch] = useState("");
 
   // const collector = useSelector(
-  //   (state) => state.persistedReducer.collector.collector
+  //   (state) => state.collector.collector
   // );
 
   // const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // let serial = 0;
 
   // get login user role
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get mikrotik from state
-  const mikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
@@ -279,16 +277,16 @@ export default function PackageSetting() {
 //   const { ispOwner, mikrotikId } = useParams();
 
 //   const allMikrotikUsers = useSelector(
-//     (state) => state.persistedReducer.mikrotik.pppoeUser
+//     (state) => state.mikrotik.pppoeUser
 //   );
 //   const activeUser = useSelector(
-//     (state) => state.persistedReducer.mikrotik.pppoeActiveUser
+//     (state) => state.mikrotik.pppoeActiveUser
 //   );
 //   const pppoePackage = useSelector(
-//     (state) => state.persistedReducer.mikrotik.pppoePackage
+//     (state) => state.mikrotik.pppoePackage
 //   );
 //   const mtkIsLoading = useSelector(
-//     (state) => state.persistedReducer.mikrotik.isLoading
+//     (state) => state.mikrotik.isLoading
 //   );
 //   // const mikrotikSyncUser = useSelector(
 //   //   state => state.mikrotik.mikrotikSyncUser

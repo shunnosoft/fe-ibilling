@@ -6,9 +6,7 @@ import { useSelector } from "react-redux";
 export default function ResellerDetails({ resellerId }) {
   const { t } = useTranslation();
 
-  const allReseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const allReseller = useSelector((state) => state?.reseller?.reseller);
 
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;

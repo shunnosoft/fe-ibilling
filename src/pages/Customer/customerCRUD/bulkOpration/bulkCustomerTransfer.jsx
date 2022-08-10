@@ -13,9 +13,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   const { t } = useTranslation();
 
   //get all reseller
-  const reseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const reseller = useSelector((state) => state?.reseller?.reseller);
 
   const [isLoading, setIsLoading] = useState(false);
   const [resellerId, setResellerId] = useState();

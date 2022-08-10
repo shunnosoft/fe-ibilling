@@ -8,9 +8,7 @@ import { useTranslation } from "react-i18next";
 
 export default function CustomerDetails({ single }) {
   const { t } = useTranslation();
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const customer = useSelector((state) => state?.customer?.customer);
 
   const data = customer.find((item) => item.id === single);
 

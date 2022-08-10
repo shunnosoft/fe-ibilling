@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
@@ -15,7 +15,7 @@ export default function StaffSalaryEditModal({ salaryId }) {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const salaryInfo = useSelector((state) =>
-    state.persistedReducer.staff.salary.find((item) => item.id === salaryId)
+    state.staff.salary.find((item) => item.id === salaryId)
   );
 
   //validator

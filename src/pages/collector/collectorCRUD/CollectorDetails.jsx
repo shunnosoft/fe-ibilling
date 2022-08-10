@@ -5,9 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 export default function CollectorDetails({ collectorId }) {
-  const collector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
+  const collector = useSelector((state) => state?.collector?.collector);
 
   const single = collector.find((val) => val.id === collectorId);
 

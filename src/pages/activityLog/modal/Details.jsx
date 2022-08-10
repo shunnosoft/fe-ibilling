@@ -8,9 +8,7 @@ import { useTranslation } from "react-i18next";
 
 export default function Details({ activityId }) {
   const { t } = useTranslation();
-  const activityLogData = useSelector(
-    (state) => state.persistedReducer.activityLog.activityLog
-  );
+  const activityLogData = useSelector((state) => state.activityLog.activityLog);
 
   const singleData = activityLogData.find((item) => item.id === activityId);
 

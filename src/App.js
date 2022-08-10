@@ -85,15 +85,13 @@ import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCu
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
   const [theme, setTheme] = useState("light");
-  const user = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
-  );
-  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
   // const hasReseller= true
   const isModalShowing = useSelector((state) => state.ui?.alertModalShow);

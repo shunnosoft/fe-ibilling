@@ -19,21 +19,19 @@ const StaticActiveCustomer = () => {
   const [filterStatus, setFilterStatus] = useState();
 
   // get all mikrotik from redux
-  const mikrotik = useSelector(
-    (state) => state.persistedReducer?.mikrotik?.mikrotik
-  );
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // set initialy mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0].id);
 
   // get all static customer
   let staticActiveCustomer = useSelector(
-    (state) => state?.persistedReducer?.customer?.staticActiveCustomer
+    (state) => state?.customer?.staticActiveCustomer
   );
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // select mikrotik handler

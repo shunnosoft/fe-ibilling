@@ -30,7 +30,7 @@ export default function RechargeHistoryofReseller() {
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   const rechargeHistory = useSelector(
-    (state) => state.persistedReducer.recharge.rechargeHistory
+    (state) => state.recharge.rechargeHistory
   );
 
   firstDay.setHours(0, 0, 0, 0);
@@ -38,9 +38,7 @@ export default function RechargeHistoryofReseller() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const collectors = useSelector(
-    (state) => state.persistedReducer.reseller.reseller
-  );
+  const collectors = useSelector((state) => state.reseller.reseller);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );

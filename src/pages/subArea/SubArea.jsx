@@ -31,7 +31,7 @@ export default function SubArea() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { areaId } = useParams();
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state.area.area);
   const [subAreas, setSubAreas] = useState([]);
   const [subAreaName, setSubAreaName] = useState("");
   const [ispId, setIspId] = useState("");
@@ -39,9 +39,7 @@ export default function SubArea() {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const cus = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const cus = useSelector((state) => state?.customer?.customer);
 
   const linemanValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
@@ -49,7 +47,7 @@ export default function SubArea() {
 
   const dispatch = useDispatch();
 
-  // const user = useSelector(state => state.auth.currentUser);
+  // const user = useSelector(state => state.persistedReducer.auth.currentUser);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );

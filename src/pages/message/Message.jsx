@@ -77,7 +77,7 @@ export default function Message() {
   // console.log(upperText + "\n" + bottomText);
 
   const [isRefrsh, setIsrefresh] = useState(false);
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
 
@@ -136,7 +136,7 @@ export default function Message() {
   };
 
   // const customers = useSelector(
-  //   (state) => state.persistedReducer.customer.customer
+  //   (state) => state.customer.customer
   // );
 
   // const [loading, setIsLoading] = useState(false);

@@ -16,9 +16,7 @@ function Recharge({ resellerId }) {
     (state) => state.persistedReducer.auth.userData.id
   );
 
-  const allReseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const allReseller = useSelector((state) => state?.reseller?.reseller);
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
@@ -29,7 +27,7 @@ function Recharge({ resellerId }) {
       ispOwner: ispOwnerId,
       reseller: reseller.id,
     };
-    recharge(data, setIsloading, dispatch,rechargeRef);
+    recharge(data, setIsloading, dispatch, rechargeRef);
   };
   return (
     <>

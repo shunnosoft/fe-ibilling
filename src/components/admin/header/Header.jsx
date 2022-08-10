@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 
 export default function Header(props) {
   const { t } = useTranslation();
-  // const userRole = useSelector(state => state.auth.role);
+  // const userRole = useSelector(state => state.persistedReducer.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [rechargeBalnace, setRechargeBalance] = useState(0);
@@ -31,11 +31,9 @@ export default function Header(props) {
   );
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const balancee = useSelector(
-    (state) => state?.persistedReducer?.payment?.balance
-  );
+  const balancee = useSelector((state) => state?.payment?.balance);
   const previousBalancee = useSelector(
-    (state) => state?.persistedReducer?.payment?.previousBalance
+    (state) => state?.payment?.previousBalance
   );
   const dispatch = useDispatch();
   // const navigate = useNavigate();

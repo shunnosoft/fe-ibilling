@@ -38,9 +38,7 @@ const AllComments = () => {
   }, []);
 
   // get all company name from redux
-  const company = useSelector(
-    (state) => state.persistedReducer?.companyName?.ispOwnerIds
-  );
+  const company = useSelector((state) => state?.companyName?.ispOwnerIds);
 
   // handle delete
   const detailsModal = (commentId) => {

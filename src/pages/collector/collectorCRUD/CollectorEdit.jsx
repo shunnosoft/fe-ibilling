@@ -20,12 +20,10 @@ import { useTranslation } from "react-i18next";
 export default function CollectorEdit({ collectorId }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const collector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
+  const collector = useSelector((state) => state?.collector?.collector);
 
   const single = collector.find((val) => val.id === collectorId);
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
+  const area = useSelector((state) => state?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);

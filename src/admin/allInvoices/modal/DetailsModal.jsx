@@ -4,9 +4,7 @@ import { useSelector } from "react-redux";
 
 const DetailsModal = ({ id }) => {
   // get all company name from redux
-  const company = useSelector(
-    (state) => state.persistedReducer?.companyName?.ispOwnerIds
-  );
+  const company = useSelector((state) => state?.companyName?.ispOwnerIds);
 
   // get all note in redux
   const invoices = useSelector((state) => state.admin?.invoices);

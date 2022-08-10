@@ -15,7 +15,7 @@ export default function CreatePackage() {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
-  // const area = useSelector((state) => state.persistedReducer.area.area);
+  // const area = useSelector((state) => state.area.area);
 
   // const [areaIds, setAreaIds] = useState([]);
 
@@ -26,13 +26,11 @@ export default function CreatePackage() {
 
   // get isp owner id in state
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get mikrotik
-  const mikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // form validator
   const collectorValidator = Yup.object({

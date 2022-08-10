@@ -40,7 +40,7 @@ const ResellerCustomer = () => {
 
   // get isp owner id
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get id from route
@@ -51,7 +51,7 @@ const ResellerCustomer = () => {
 
   // get all data from redux state
   let resellerCustomer = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.resellerCustomer
+    (state) => state?.resellerCustomer?.resellerCustomer
   );
 
   // loading local state

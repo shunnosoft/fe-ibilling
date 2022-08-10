@@ -34,27 +34,19 @@ import PrintCustomer from "./customerPDF";
 export default function Diposit() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
-  const balancee = useSelector(
-    (state) => state.persistedReducer.payment.balance
-  );
-  const allDeposit = useSelector(
-    (state) => state.persistedReducer.payment.allDeposit
-  );
+  const balancee = useSelector((state) => state.payment.balance);
+  const allDeposit = useSelector((state) => state.payment.allDeposit);
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  // const userData = useSelector(state=>state.auth.userData)
+  // const userData = useSelector(state=>state.persistedReducer.auth.userData)
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
-  const manager = useSelector(
-    (state) => state.persistedReducer.manager.manager
-  );
-  const collectors = useSelector(
-    (state) => state.persistedReducer.collector?.collector
-  );
+  const manager = useSelector((state) => state.manager.manager);
+  const collectors = useSelector((state) => state.collector?.collector);
 
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -63,9 +55,7 @@ export default function Diposit() {
     (state) => state.persistedReducer.auth?.currentUser
   );
   //To do after api impliment
-  const ownDeposits = useSelector(
-    (state) => state.persistedReducer.payment.myDeposit
-  );
+  const ownDeposits = useSelector((state) => state.payment.myDeposit);
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
@@ -79,7 +69,7 @@ export default function Diposit() {
   });
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  // const balance = useSelector(state=>state.persistedReducer.payment.balance)
+  // const balance = useSelector(state=>state.payment.balance)
 
   // bill amount
   const billDipositHandler = (data) => {
@@ -99,9 +89,7 @@ export default function Diposit() {
   const depositAcceptRejectHandler = (status, id) => {
     depositAcceptReject(dispatch, status, id, setAccLoading);
   };
-  const allCollector = useSelector(
-    (state) => state.persistedReducer.collector.collector
-  );
+  const allCollector = useSelector((state) => state.collector.collector);
 
   useEffect(() => {
     var arr = [];

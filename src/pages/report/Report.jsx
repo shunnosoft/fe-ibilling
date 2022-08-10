@@ -33,19 +33,15 @@ export default function Report() {
   const [isLoading, setIsLoading] = useState(false);
 
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const dispatch = useDispatch();
-  const allArea = useSelector((state) => state?.persistedReducer?.area?.area);
+  const allArea = useSelector((state) => state?.area?.area);
 
-  const allCollector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
-  const manager = useSelector(
-    (state) => state?.persistedReducer?.manager?.manager
-  );
+  const allCollector = useSelector((state) => state?.collector?.collector);
+  const manager = useSelector((state) => state?.manager?.manager);
   const currentUser = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
+    (state) => state.persistedReducer.auth?.currentUser
   );
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -55,13 +51,11 @@ export default function Report() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const allBills = useSelector(
-    (state) => state?.persistedReducer?.payment?.allBills
-  );
+  const allBills = useSelector((state) => state?.payment?.allBills);
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
-  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const [mainData, setMainData] = useState(allBills);
 
   const [collectors, setCollectors] = useState([]);

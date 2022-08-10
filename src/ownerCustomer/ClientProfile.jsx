@@ -5,7 +5,7 @@ import PaymentModal from "./paymentModal";
 
 export default function ClientProfile() {
   const userData = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser.customer
+    (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
   // useEffect(() => {

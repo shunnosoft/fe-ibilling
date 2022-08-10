@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 export default function AreaPost() {
   const { t } = useTranslation();
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();

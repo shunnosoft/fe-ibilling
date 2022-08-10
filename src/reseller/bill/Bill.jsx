@@ -46,9 +46,7 @@ export default function Bill() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
 
-  const Customers = useSelector(
-    (state) => state.persistedReducer.customer.customer
-  );
+  const Customers = useSelector((state) => state.customer.customer);
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");

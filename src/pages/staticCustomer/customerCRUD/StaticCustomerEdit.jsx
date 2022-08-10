@@ -16,20 +16,18 @@ import { useTranslation } from "react-i18next";
 export default function StaticCustomerEdit({ single }) {
   const { t } = useTranslation();
   const customer = useSelector((state) =>
-    state?.persistedReducer?.customer?.staticCustomer.find(
-      (item) => item.id === single
-    )
+    state?.customer?.staticCustomer.find((item) => item.id === single)
   );
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
 
   // get role from redux
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get Isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   const userType = useSelector(
@@ -37,16 +35,14 @@ export default function StaticCustomerEdit({ single }) {
   );
 
   // get all area
-  const areas = useSelector((state) => state?.persistedReducer?.area?.area);
+  const areas = useSelector((state) => state?.area?.area);
 
   // get all mikrotik
-  const Getmikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
-      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
 

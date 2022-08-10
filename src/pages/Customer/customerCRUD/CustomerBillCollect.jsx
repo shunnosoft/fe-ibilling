@@ -33,9 +33,7 @@ export default function CustomerBillCollect({ single }) {
   ];
 
   // get all customer
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const customer = useSelector((state) => state?.customer?.customer);
 
   // find editable data
   const data = customer.find((item) => item.id === single);
@@ -45,17 +43,17 @@ export default function CustomerBillCollect({ single }) {
   // const [defaultAmount, setDefault] = useState(single.monthlyFee);
 
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   const currentUser = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   const currentUserId = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.id
+    (state) => state.persistedReducer.auth?.userData?.id
   );
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);

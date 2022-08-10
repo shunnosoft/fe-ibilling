@@ -17,15 +17,15 @@ export default function AddStaticCustomer() {
   const { t } = useTranslation();
   // get user bp setting
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
 
   // get role from redux
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get Isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   const userType = useSelector(
@@ -33,16 +33,14 @@ export default function AddStaticCustomer() {
   );
 
   // get all area
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
+  const area = useSelector((state) => state?.area?.area);
 
   // get all mikrotik
-  const Getmikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
-      ? state?.persistedReducer?.mikrotik?.packagefromDatabase
+      ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
   const dispatch = useDispatch();

@@ -10,33 +10,25 @@ const SingleMessage = ({ single, sendCustomer }) => {
   const { t } = useTranslation();
   // get current user from redux
   const cureentAuth = useSelector(
-    (state) => state?.persistedReducer?.auth?.currentUser?.ispOwner
+    (state) => state.persistedReducer.auth?.currentUser?.ispOwner
   );
 
   // get all customer from redux
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const customer = useSelector((state) => state?.customer?.customer);
 
   // get all satic customer from redux
   const staticCustomer = useSelector(
-    (state) => state?.persistedReducer?.customer?.staticCustomer
+    (state) => state?.customer?.staticCustomer
   );
 
   // get all collector from redux
-  const collector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
+  const collector = useSelector((state) => state?.collector?.collector);
 
   // get all reseller from redux
-  const allReseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const allReseller = useSelector((state) => state?.reseller?.reseller);
 
   // get all staff from redux
-  const getAllStaffs = useSelector(
-    (state) => state.persistedReducer?.staff?.staff
-  );
+  const getAllStaffs = useSelector((state) => state?.staff?.staff);
 
   //initial data variable
   let data;

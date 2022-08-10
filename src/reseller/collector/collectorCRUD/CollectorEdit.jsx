@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 export default function CollectorEdit({ single }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.persistedReducer.area.area);
+  const area = useSelector((state) => state.area.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

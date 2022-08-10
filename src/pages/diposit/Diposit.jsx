@@ -37,50 +37,38 @@ export default function Diposit() {
   const componentRef = useRef(); //reference of pdf export component
 
   // get balance from redux
-  const balancee = useSelector(
-    (state) => state?.persistedReducer?.payment?.balance
-  );
+  const balancee = useSelector((state) => state?.payment?.balance);
 
   // get all deposit form redux
-  const allDeposit = useSelector(
-    (state) => state?.persistedReducer?.payment?.allDeposit
-  );
+  const allDeposit = useSelector((state) => state?.payment?.allDeposit);
 
   const collectorDeposite = useSelector(
-    (state) => state?.persistedReducer?.payment?.collectorDeposite
+    (state) => state?.payment?.collectorDeposite
   );
   // get manager from redux
-  const manager = useSelector(
-    (state) => state?.persistedReducer?.manager?.manager
-  );
+  const manager = useSelector((state) => state?.manager?.manager);
 
   // get isp owner id from redux
   const ispOwner = useSelector(
-    (state) => state.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get current user from redux
   const currentUser = useSelector(
-    (state) => state.persistedReducer?.auth?.currentUser
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   // get user role form redux
-  const userRole = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get own deposit from redux
-  let ownDeposits = useSelector(
-    (state) => state?.persistedReducer?.payment?.myDeposit
-  );
+  let ownDeposits = useSelector((state) => state?.payment?.myDeposit);
 
   // get all collector form redux
-  const allCollector = useSelector(
-    (state) => state?.persistedReducer?.collector?.collector
-  );
+  const allCollector = useSelector((state) => state?.collector?.collector);
 
   // get owner users
-  const ownerUsers = useSelector(
-    (state) => state?.persistedReducer?.ownerUsers?.ownerUser
-  );
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   // get current date
   var today = new Date();

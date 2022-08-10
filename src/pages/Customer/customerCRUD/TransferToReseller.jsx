@@ -11,18 +11,12 @@ const TransferToReseller = ({ customerId }) => {
   //en bn hook call
   const { t } = useTranslation();
 
-  const allSubArea = useSelector(
-    (state) => state?.persistedReducer?.area?.subArea
-  );
+  const allSubArea = useSelector((state) => state?.area?.subArea);
 
   //get all reseller
-  const reseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const reseller = useSelector((state) => state?.reseller?.reseller);
 
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const customer = useSelector((state) => state?.customer?.customer);
 
   //state
   const [isLoading, setIsLoading] = useState(false);

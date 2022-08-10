@@ -36,21 +36,13 @@ export default function Home() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  const allCollector = useSelector(
-    (state) => state.persistedReducer.collector.collector
-  );
-  const manager = useSelector(
-    (state) => state.persistedReducer.manager.manager
-  );
+  const allCollector = useSelector((state) => state.collector.collector);
+  const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
-  const ChartsData = useSelector(
-    (state) => state.persistedReducer.chart.charts
-  );
-  const customerStat = useSelector(
-    (state) => state.persistedReducer.chart.customerStat
-  );
+  const ChartsData = useSelector((state) => state.chart.charts);
+  const customerStat = useSelector((state) => state.chart.customerStat);
 
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);

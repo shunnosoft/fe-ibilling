@@ -26,18 +26,14 @@ const ActivityLog = () => {
 
   // get isp owner id
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get all data from redux
-  const data = useSelector(
-    (state) => state?.persistedReducer?.activityLog?.activityLog
-  );
+  const data = useSelector((state) => state?.activityLog?.activityLog);
 
   // get owner users
-  const ownerUsers = useSelector(
-    (state) => state?.persistedReducer?.ownerUsers?.ownerUser
-  );
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   // api call
   useEffect(() => {

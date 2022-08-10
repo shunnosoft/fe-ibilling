@@ -57,21 +57,17 @@ export default function Customer() {
   const [mikrotikPac, setMikrotikPac] = useState([]);
   const [Customers1, setCustomers1] = useState([]);
   const [Customers2, setCustomers2] = useState([]);
-  const mikrotiks = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
   const componentRef = useRef(); //reference of pdf export component
-  const cus = useSelector(
-    (state) => state?.persistedReducer?.customer?.staticCustomer
-  );
+  const cus = useSelector((state) => state?.customer?.staticCustomer);
 
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const ispOwnerData = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData
+    (state) => state.persistedReducer.auth?.userData
   );
 
   const [isLoading, setIsloading] = useState(false);
@@ -95,19 +91,19 @@ export default function Customer() {
   const [singleData, setSingleData] = useState();
 
   // const currentCustomers = Customers;
-  const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
+  const allareas = useSelector((state) => state?.area?.area);
   const collectorArea = useSelector((state) =>
     role === "collector"
-      ? state.persistedReducer?.auth?.currentUser?.collector?.areas
+      ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
   );
   const [allArea, setAreas] = useState([]);
 
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
   const permission = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData.permissions
+    (state) => state.persistedReducer.auth?.userData.permissions
   );
 
   useEffect(() => {

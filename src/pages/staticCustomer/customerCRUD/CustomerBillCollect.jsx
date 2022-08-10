@@ -31,9 +31,7 @@ const options = [
 export default function CustomerBillCollect({ single }) {
   const { t } = useTranslation();
   // get all customer
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.staticCustomer
-  );
+  const customer = useSelector((state) => state?.customer?.staticCustomer);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   // find editable data
   const data = customer.find((item) => item.id === single);

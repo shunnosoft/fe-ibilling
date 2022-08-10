@@ -62,41 +62,37 @@ export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
 
   // get all customer
-  const cus = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const cus = useSelector((state) => state?.customer?.customer);
 
   // get all role
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get isp owner id
   const ispOwner = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   // get isp owner data
   const ispOwnerData = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData
+    (state) => state.persistedReducer.auth?.userData
   );
   // get user permission
   const permission = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.permissions
+    (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
   // get all area
-  const allareas = useSelector((state) => state?.persistedReducer?.area?.area);
-  const mikrotiks = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const allareas = useSelector((state) => state?.area?.area);
+  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
   // get collector area
   const collectorArea = useSelector((state) =>
     role === "collector"
-      ? state?.persistedReducer?.auth?.currentUser?.collector?.areas
+      ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
   );
 
   // get bp setting permisson
   const bpSettings = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
 
   const nonMikrotikPackages = useSelector((state) => state.package.packages);
@@ -154,7 +150,7 @@ export default function Customer() {
     if (cus.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
     getSubAreasApi(dispatch, ispOwner);
   }, [dispatch, ispOwner, role, bpSettings]);
-
+  console.log(cus);
   //get possible total monthly fee
   useEffect(() => {
     if (cus) {

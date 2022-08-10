@@ -17,22 +17,18 @@ import { useTranslation } from "react-i18next";
 export default function CustomerEdit({ single }) {
   const { t } = useTranslation();
 
-  const customer = useSelector(
-    (state) => state?.persistedReducer?.customer?.customer
-  );
+  const customer = useSelector((state) => state?.customer?.customer);
 
   const data = customer.find((item) => item.id === single);
 
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.ispOwner
+    (state) => state.persistedReducer.auth?.userData?.ispOwner
   );
   const resellerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.userData?.id
+    (state) => state.persistedReducer.auth?.userData?.id
   );
-  const area = useSelector((state) => state?.persistedReducer?.area?.area);
-  const Getmikrotik = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.mikrotik
-  );
+  const area = useSelector((state) => state?.area?.area);
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   const [ppPackage, setppPackage] = useState([]);
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);

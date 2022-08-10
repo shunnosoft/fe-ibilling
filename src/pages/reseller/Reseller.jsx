@@ -51,7 +51,7 @@ export default function Reseller() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  const role = useSelector((state) => state?.persistedReducer?.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const [resellerId, setResellerId] = useState({});
   console.log(resellerId);
@@ -60,9 +60,7 @@ export default function Reseller() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const reseller = useSelector(
-    (state) => state.persistedReducer?.reseller?.reseller
-  );
+  const reseller = useSelector((state) => state?.reseller?.reseller);
 
   // reload handler
   const reloadHandler = () => {

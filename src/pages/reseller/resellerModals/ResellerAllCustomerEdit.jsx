@@ -30,13 +30,11 @@ const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
   const [fixPackageRate, setFixPackageRate] = useState();
 
   const resellerCustomer = useSelector(
-    (state) => state?.persistedReducer?.resellerCustomer?.allResellerCustomer
+    (state) => state?.resellerCustomer?.allResellerCustomer
   );
 
   // get PPPoE package from state
-  const ppPackage = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoePackage
-  );
+  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
   // find single package
   const packages = ppPackage.find((item) => item.id === packageId);
@@ -64,9 +62,7 @@ const ResellerAllCustomerEdit = ({ customerId, allCustomer }) => {
   }, [data]);
 
   // get mikrotik
-  const getMikrotik = useSelector(
-    (state) => state.persistedReducer?.mikrotik?.mikrotik
-  );
+  const getMikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   // get single mikrotik
   const singleMikrotik = getMikrotik.find((item) => item.id === data?.mikrotik);
 

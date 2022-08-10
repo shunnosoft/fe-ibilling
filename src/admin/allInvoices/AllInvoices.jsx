@@ -38,9 +38,7 @@ const AllInvoices = () => {
   }, []);
 
   // get all company name from redux
-  const company = useSelector(
-    (state) => state.persistedReducer?.companyName?.ispOwnerIds
-  );
+  const company = useSelector((state) => state?.companyName?.ispOwnerIds);
 
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);

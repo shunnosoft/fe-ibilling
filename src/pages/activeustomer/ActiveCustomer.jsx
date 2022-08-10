@@ -23,24 +23,16 @@ import { useTranslation } from "react-i18next";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
-  const mikrotik = useSelector(
-    (state) => state.persistedReducer?.mikrotik?.mikrotik
-  );
-  const mtkIsLoading = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.isLoading
-  );
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  const mtkIsLoading = useSelector((state) => state?.mikrotik?.isLoading);
   const [selectedMikrotikId, setMikrotikId] = useState();
   const singleMik = mikrotik.find((item) => item.id === selectedMikrotikId)
     ? mikrotik.find((item) => item.id === selectedMikrotikId)
     : {};
 
-  const allMikrotikUsers = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoeUser
-  );
+  const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
 
-  const activeUser = useSelector(
-    (state) => state?.persistedReducer?.mikrotik?.pppoeActiveUser
-  );
+  const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
 
   const [loading, setLoading] = useState(false);
   // const [isDeleting, setIsDeleting] = useState(false);
@@ -50,7 +42,7 @@ export default function ConfigMikrotik() {
   );
 
   const ispOwnerId = useSelector(
-    (state) => state?.persistedReducer?.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const dispatch = useDispatch();
 
