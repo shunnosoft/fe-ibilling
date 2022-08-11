@@ -126,7 +126,7 @@ export default function Header(props) {
                   >
                     {t("balance")}
                     <strong className="mainsmsbalance">
-                      {rechargeBalnace.toFixed()}
+                      {rechargeBalnace?.toFixed()}
                     </strong>
                   </div>
                   <div
