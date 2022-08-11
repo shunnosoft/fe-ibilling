@@ -150,7 +150,7 @@ export default function Manager() {
               {/* Model */}
               <div
                 className="modal fade modal-dialog-scrollable "
-                id="exampleModal"
+                id="managerAddModal"
                 tabIndex="-1"
                 aria-labelledby="exampleModalLabel"
                 aria-hidden="true"

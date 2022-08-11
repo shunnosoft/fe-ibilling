@@ -505,5 +505,6 @@
   "returnCustomerConfirmation": "Are You sure to return customer from your reseller?",
   "confirm": "Confirm",
   "viewReport": "Report View",
-  "salaryType": "Salary Type"
+  "salaryType": "Salary Type",
+  "persentage": "Persentage"
 }

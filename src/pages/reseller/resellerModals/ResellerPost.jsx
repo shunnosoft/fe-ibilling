@@ -27,6 +27,8 @@ export default function ResellerPost() {
   const [areaIds, setAreaIds] = useState([]);
   const [mikrotikIds, setMikrotikIds] = useState([]);
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
+  const [commissionType, setCommissionType] = useState("");
+  const [packageRateType, setPackageRateType] = useState("");
 
   //validator
   const resellerValidator = Yup.object({
@@ -61,15 +63,19 @@ export default function ResellerPost() {
         mikrotikPackages: mikroTikPackagesId,
       };
 
-      sendingData.commissionRate = {
-        reseller: commision,
-        isp: 100 - commision,
-      };
-
+      if (commissionType === "global") {
+        sendingData.commissionRate = {
+          reseller: commision,
+          isp: 100 - commision,
+        };
+      }
+      if (commissionType === "packageBased") {
+        sendingData.commissionStyle = packageRateType;
+      }
       postReseller(dispatch, sendingData, setIsLoading, resetForm);
     }
   };
-
+  console.log(area);
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
     let IDS_temp = [];
@@ -187,47 +193,88 @@ export default function ResellerPost() {
                         {/* বিল গ্রহণের ধরণ */}
 
                         {/* commistion type */}
-                        {/* <div className="form-check ">
-                          <p className="radioTitle">কমিশন এর ধরণ</p>
-
-                          <div className="form-check">
-                            <FtextField
-                              label="Global"
-                              className="form-check-input"
-                              type="radio"
-                              name="commissionType"
-                              value="global"
-                            />
-                          </div>
-                          <div className="form-check">
-                            <FtextField
-                              label="Individual"
-                              className="form-check-input"
-                              type="radio"
-                              name="commissionType"
-                              value="individual"
-                            />
-                          </div>
-                        </div> 
 
                         <hr />
-                        */}
 
                         {/* Status */}
                         <div className="form-check ">
                           <p className="radioTitle">{t("status")}</p>
-                          {RADIO.map((val, key) => (
-                            <div key={key} className="form-check">
+                          <div className="d-flex">
+                            {RADIO.map((val, key) => (
+                              <div key={key} className="form-check">
+                                <FtextField
+                                  label={val.label}
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="status"
+                                  value={val.value}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        {/* <div className="form-check ">
+                          <p className="radioTitle">কমিশন এর ধরণ</p>
+                          <div className="d-flex">
+                            <div className="form-check">
                               <FtextField
-                                label={val.label}
+                                label="Global Commission"
                                 className="form-check-input"
                                 type="radio"
-                                name="status"
-                                value={val.value}
+                                name="commissionType"
+                                value="global"
+                                checked={commissionType === "global"}
+                                onChange={(e) =>
+                                  setCommissionType(e.target.value)
+                                }
                               />
                             </div>
-                          ))}
-                        </div>
+                            <div className="form-check">
+                              <FtextField
+                                label="Package Based"
+                                className="form-check-input"
+                                type="radio"
+                                name="commissionType"
+                                value="packageBased"
+                                checked={commissionType === "packageBased"}
+                                onChange={(e) =>
+                                  setCommissionType(e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div> */}
+                        {/* {commissionType === "global" && (
+                          <div className="form-check ">
+                            <p className="radioTitle"> {t("share")} </p>
+
+                            <FtextField
+                              key="commissionRate"
+                              type="number"
+                              label={t("reseller")}
+                              name="commissionRate"
+                              min={0}
+                            />
+                          </div>
+                        )}
+                        {commissionType === "packageBased" && (
+                          <div className="form-check">
+                            <p className="radioTitle"> {t("share")} </p>
+
+                            <select
+                              type="number"
+                              className="form-select mw-100"
+                              onChange={(e) =>
+                                setPackageRateType(e.target.value)
+                              }
+                            >
+                              <option value="">Package Rate Type</option>
+
+                              <option value="persentage">Persentage</option>
+                              <option value="fixedRate">Fixed Rate</option>
+                            </select>
+                          </div>
+                        )} */}
                         <div className="form-check ">
                           <p className="radioTitle"> {t("share")} </p>
 
@@ -259,20 +306,27 @@ export default function ResellerPost() {
                               <b className="h5">{item.name}</b>
                             </label>
                           </h6>
-                          {mikrotikpakages.packages.map(
-                            (p) =>
-                              p.mikrotik === item.id && (
-                                <div key={p.id} className="displayFlex">
-                                  <input
-                                    disabled={!mikrotikIds.includes(p.mikrotik)}
-                                    type="checkbox"
-                                    value={p.id}
-                                    onChange={handelMikrotikPakages}
-                                  />
-                                  <label>{p.name}</label>
-                                </div>
-                              )
-                          )}
+                          <div className="d-flex flex-wrap">
+                            {mikrotikpakages.packages.map(
+                              (p) =>
+                                p.mikrotik === item.id && (
+                                  <div key={p.id} className="w-50 my-1">
+                                    <input
+                                      className="form-check-input me-2"
+                                      disabled={
+                                        !mikrotikIds.includes(p.mikrotik)
+                                      }
+                                      type="checkbox"
+                                      value={p.id}
+                                      onChange={handelMikrotikPakages}
+                                    />
+                                    <label className="form-check-label">
+                                      {p.name}
+                                    </label>
+                                  </div>
+                                )
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>

@@ -213,7 +213,7 @@ export const addManager = async (dispatch, managerData) => {
         "Manager Create Successfully"
       );
 
-      document.querySelector("#writeModal").click();
+      document.querySelector("#managerAddModal").click();
     })
     .catch((err) => {
       if (err.response) {

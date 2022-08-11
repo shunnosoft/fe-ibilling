@@ -34,7 +34,11 @@ import { getMikrotikPackages } from "../../features/apiCallReseller";
 // } from "../../features/resellerSlice";
 
 import ResellerDetails from "./resellerModals/ResellerDetails";
-import { deleteReseller, fetchReseller } from "../../features/apiCalls";
+import {
+  deleteReseller,
+  fetchReseller,
+  getArea,
+} from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
 import { Link } from "react-router-dom";
@@ -54,9 +58,8 @@ export default function Reseller() {
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const [resellerId, setResellerId] = useState({});
-  console.log(resellerId);
+
   const [userId, setUserId] = useState();
-  console.log(userId);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -70,6 +73,7 @@ export default function Reseller() {
   useEffect(() => {
     if (auth.ispOwner) {
       fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
+      getArea(dispatch, auth.ispOwner.id, setIsLoading);
     }
   }, [dispatch, auth.ispOwner]);
 

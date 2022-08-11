@@ -32,6 +32,7 @@ import {
   fetchpppoeUser,
   fetchPackagefromDatabase,
   deletePPPoEpackage,
+  fetchReseller,
 } from "../../features/apiCalls";
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 import apiLink from "../../api/apiLink";
@@ -50,7 +51,7 @@ export default function ConfigMikrotik() {
   const singleMik = mikrotik.find((item) => item.id === mikrotikId)
     ? mikrotik.find((item) => item.id === mikrotikId)
     : {};
-
+  console.log(ispOwner);
   const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
   const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
   const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
@@ -71,6 +72,11 @@ export default function ConfigMikrotik() {
   const [inActiveCustomer, setInActiveCustomer] = useState(false);
   // const [syncUserRefresh, setSyncUserRefresh] = useState(0);
   const dispatch = useDispatch();
+
+  //get Reseller
+  useEffect(() => {
+    fetchReseller(dispatch, ispOwner, setIsloading);
+  }, []);
 
   // fetch single mikrotik
 
