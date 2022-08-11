@@ -232,6 +232,42 @@ export default function Customer() {
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
 
+  //export customer data
+  let customerForCsVTableInfo = Customers.map((customer) => {
+    return {
+      name: customer.name,
+      ip:
+        customer.userType === "firewall-queue"
+          ? customer.queue.address
+          : customer.queue.target,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "customer_ip", key: "ip" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+
   // reload Handler
   const reloadHandler = () => {
     if (
@@ -733,6 +769,16 @@ export default function Customer() {
                       )}
                       {(role === "ispOwner" || permission.customerAdd) && (
                         <>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={customerForCsVTableInfo}
+                              filename={ispOwnerData.company}
+                              headers={customerForCsVTableInfoHeader}
+                              title="Customer Report"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
                           <div className="addAndSettingIcon">
                             <CSVLink
                               data={customerForCsV}
