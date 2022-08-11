@@ -195,6 +195,11 @@ const ResellserActiveCustomer = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
+        width: "20%",
+        Header: t("name"),
+        accessor: "name",
+      },
+      {
         width: "11%",
         Header: t("status"),
         accessor: "running",
@@ -208,11 +213,7 @@ const ResellserActiveCustomer = () => {
           </div>
         ),
       },
-      {
-        width: "20%",
-        Header: t("name"),
-        accessor: "name",
-      },
+
       {
         width: "12%",
         Header: t("package"),

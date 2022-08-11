@@ -904,7 +904,6 @@ export const fetchpppoeUserForReseller = async (
       if (!match) temp.push(i);
     });
     dispatch(getpppoeUserSuccess(temp));
-    // dispatch(temp);
     dispatch(mtkIsLoading(false));
     setIsLoading(false);
   } catch (error) {
@@ -950,7 +949,6 @@ export const fetchActivepppoeUser = async (
       });
     });
 
-    // console.log(temp);
     dispatch(getpppoeActiveUserSuccess(temp));
     dispatch(mtkIsLoading(false));
     setIsLoading(false);
