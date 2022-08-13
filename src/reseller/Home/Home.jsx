@@ -135,7 +135,7 @@ export default function Home() {
         userData.collector.id
       );
     } else {
-      getChartsReseller(dispatch, setIsLoading, resellerId, Year, Month);
+      getChartsReseller(dispatch, resellerId, Year, Month);
       getDashboardCardData(dispatch, setIsLoading, ispOwnerId, resellerId);
     }
   }, [dispatch, resellerId, role, userData, Month, Year]);

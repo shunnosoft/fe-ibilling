@@ -45,9 +45,9 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
         mikrotikId: data?.mikrotik,
         pppPackageId: data?.id,
       };
-      if (formValue.percentage) {
-        sendingData.percentage.ispOwner = formValue.percentage;
-      }
+      // if (formValue.percentage) {
+      //   sendingData.percentage.ispOwner = formValue.percentage;
+      // }
       editPPPoEpackageRate(dispatch, sendingData, setIsLoading, resetForm);
     }
   };

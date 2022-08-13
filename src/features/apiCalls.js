@@ -217,11 +217,7 @@ export const addManager = async (dispatch, managerData) => {
     .catch((err) => {
       if (err.response) {
         button.style.display = "initial";
-        langMessage(
-          "error",
-          err.response?.data?.message,
-          "Manager Create Faild"
-        );
+        langMessage("error", err.response?.data?.message);
       }
     });
 };

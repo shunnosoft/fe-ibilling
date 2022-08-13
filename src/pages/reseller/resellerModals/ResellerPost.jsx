@@ -69,9 +69,9 @@ export default function ResellerPost() {
           isp: 100 - commision,
         };
       }
-      if (commissionType === "packageBased") {
-        sendingData.commissionStyle = packageRateType;
-      }
+      // if (commissionType === "packageBased") {
+      //   sendingData.commissionStyle = packageRateType;
+      // }
       postReseller(dispatch, sendingData, setIsLoading, resetForm);
     }
   };
@@ -212,7 +212,7 @@ export default function ResellerPost() {
                             ))}
                           </div>
                         </div>
-                        <div className="form-check ">
+                        {/* <div className="form-check ">
                           <p className="radioTitle">কমিশন এর ধরণ</p>
                           <div className="d-flex">
                             <div className="form-check">
@@ -242,8 +242,8 @@ export default function ResellerPost() {
                               />
                             </div>
                           </div>
-                        </div>
-                        {commissionType === "global" && (
+                        </div> */}
+                        {/* {commissionType === "global" && (
                           <div className="form-check ">
                             <p className="radioTitle"> {t("share")} </p>
 
@@ -273,8 +273,8 @@ export default function ResellerPost() {
                               <option value="fixedRate">Fixed Rate</option>
                             </select>
                           </div>
-                        )}
-                        {/* <div className="form-check ">
+                        )} */}
+                        <div className="form-check ">
                           <p className="radioTitle"> {t("share")} </p>
 
                           <FtextField
@@ -284,7 +284,7 @@ export default function ResellerPost() {
                             name="commissionRate"
                             min={0}
                           />
-                        </div> */}
+                        </div>
                       </div>
                     </div>
 

@@ -14,6 +14,8 @@ import {
 } from "../../../features/apiCallReseller";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
+
 export default function CustomerModal() {
   const { t } = useTranslation();
 
@@ -29,10 +31,8 @@ export default function CustomerModal() {
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(true);
-  // const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
-  const [billDate, setBillDate] = useState();
-  const [billTime, setBilltime] = useState();
+  const [billDate, setBillDate] = useState(null);
   // customer validator
   const customerValidator = Yup.object({
     name: Yup.string().required(t("writeCustomerName")),
@@ -107,9 +107,7 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime).format(
-        "YYYY-MM-DDTHH:mm:ss.ms[Z]"
-      ),
+      billingCycle: billDate.toISOString(),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -119,14 +117,9 @@ export default function CustomerModal() {
       },
       ...rest,
     };
-    // console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
-  useEffect(() => {
-    setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
-    setBilltime(moment().endOf("day").format("HH:mm"));
-  }, []);
   const selectArea = (e) => {
     setsubAreaId(e);
   };
@@ -134,7 +127,6 @@ export default function CustomerModal() {
   const reseller = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
-
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
 
   return (
@@ -192,7 +184,7 @@ export default function CustomerModal() {
                             {t("selectMikrotik")}
                           </p>
                           <select
-                            className="form-select"
+                            className="form-select mw-100"
                             aria-label="Default select example"
                             onChange={selectMikrotik}
                           >
@@ -233,7 +225,7 @@ export default function CustomerModal() {
                               {t("selectMikrotik")}
                             </p>
                             <select
-                              className="form-select"
+                              className="form-select mw-100"
                               aria-label="Default select example"
                               onChange={selectMikrotik}
                             >
@@ -257,7 +249,7 @@ export default function CustomerModal() {
                               {t("selectPPPoEPackage")}
                             </p>
                             <select
-                              className="form-select mb-3"
+                              className="form-select mb-3 mw-100"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -308,7 +300,7 @@ export default function CustomerModal() {
                       <div>
                         <p> {t("selectArea")} </p>
                         <select
-                          className="form-select"
+                          className="form-select mw-100"
                           aria-label="Default select example"
                           onChange={(e) => selectArea(e.target.value)}
                         >
@@ -342,12 +334,11 @@ export default function CustomerModal() {
                     <div className="newDisplay">
                       <FtextField type="text" label={t("email")} name="email" />
 
-                      <div className="billCycle">
-                        <p className="customerFieldsTitle">
+                      {/* <p className="customerFieldsTitle">
                           {t("billingCycle")}
-                        </p>
+                        </p> */}
 
-                        <div className="timeDate">
+                      {/* <div className="timeDate">
                           <input
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
@@ -360,7 +351,20 @@ export default function CustomerModal() {
                             onChange={(e) => setBilltime(e.target.value)}
                             type="time"
                           />
-                        </div>
+                        </div> */}
+                      <div className="billCycle">
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("billingCycle")}{" "}
+                        </label>
+
+                        <DatePicker
+                          className="form-control mw-100"
+                          selected={billDate}
+                          onChange={(date) => setBillDate(date)}
+                          dateFormat="dd/MM/yyyy:hh:mm"
+                          showTimeSelect
+                          placeholderText={t("selectBillDate")}
+                        />
                       </div>
                       <div className="autoDisable">
                         <label> {t("automaticConnectionOff")} </label>

@@ -38,12 +38,12 @@ import { useTranslation } from "react-i18next";
 
 export default function Manager() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const manager = useSelector((state) => state.manager?.manager);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
   );
-  const dispatch = useDispatch();
 
   useEffect(() => {
     getManger(dispatch, ispOwnerId);
@@ -52,6 +52,10 @@ export default function Manager() {
   const [permissions, setPermissions] = useState(
     managerPermission(manager?.permissions)
   );
+
+  useEffect(() => {
+    if (manager) setPermissions(managerPermission(manager.permissions));
+  }, [manager]);
 
   const managerValidate = Yup.object({
     name: Yup.string()
@@ -138,7 +142,7 @@ export default function Manager() {
                       title={t("addNewManager")}
                       className="header_icon"
                       data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
+                      data-bs-target="#managerAddModal"
                     >
                       <PersonPlusFill />
                     </div>
@@ -238,7 +242,7 @@ export default function Manager() {
               {/* Model */}
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper py-2 pb-5 mt-2">
                   <div className="addCollector">
                     {manager?.name && (
                       <div className="managerDetails">
@@ -335,7 +339,7 @@ export default function Manager() {
                             </div>
                           ))}
                           <button
-                            className="managerUpdateBtn"
+                            className="btn btn-outline-primary w-140"
                             onClick={updatePermissionsHandler}
                             disabled={isLoading}
                           >
