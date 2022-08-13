@@ -74,6 +74,7 @@ const ResellerCustomer = () => {
   useEffect(() => {
     getResellerCustomer(dispatch, resellerId, setIsLoading);
   }, []);
+
   useEffect(() => {
     if (resellerCustomer.length > 0) setCustomer(resellerCustomer);
   }, [resellerCustomer]);

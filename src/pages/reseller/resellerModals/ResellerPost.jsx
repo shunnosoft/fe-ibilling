@@ -9,7 +9,10 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
-import { postReseller } from "../../../features/apiCalls";
+import {
+  getPackagewithoutmikrotik,
+  postReseller,
+} from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 // import { postReseller, fetchReseller } from "../../../features/resellerSlice";
 
@@ -29,6 +32,16 @@ export default function ResellerPost() {
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
   const [commissionType, setCommissionType] = useState("");
   const [packageRateType, setPackageRateType] = useState("");
+
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
+
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
+  const packages = useSelector((state) => state.package.packages);
 
   //validator
   const resellerValidator = Yup.object({
@@ -50,6 +63,12 @@ export default function ResellerPost() {
       .required(t("enterResellerShare")),
   });
 
+  useEffect(() => {
+    if (!bpSettings.hasMikrotik) {
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+    }
+  }, []);
+
   const resellerHandler = async (data, resetForm) => {
     let commision = data.commissionRate;
     if (auth.ispOwner) {
@@ -58,10 +77,13 @@ export default function ResellerPost() {
         ispOwner: auth.ispOwner.id,
         subAreas: areaIds,
         //todo backend
-        mikrotiks: mikrotikIds,
         billCollectionType: "prepaid",
         mikrotikPackages: mikroTikPackagesId,
       };
+
+      if (bpSettings.hasMikrotik) {
+        sendingData.mikrotiks = mikrotikIds;
+      }
 
       if (commissionType === "global") {
         sendingData.commissionRate = {
@@ -289,47 +311,74 @@ export default function ResellerPost() {
                       </div>
                     </div>
 
-                    <b className="mt-2"> {t("selectMikrotik")} </b>
-                    <div className="AllAreaClass">
-                      {mikrotikpakages?.mikrotiks?.map((item) => (
-                        <div key={item.id}>
-                          <h6 className="areaParent ">
-                            <input
-                              type="checkbox"
-                              className="getValueUsingClasses"
-                              value={item.id}
-                              onChange={(e) =>
-                                setMikrotikHandler(e.target.value)
-                              }
-                            />{" "}
-                            <label>
-                              <b className="h5">{item.name}</b>
-                            </label>
-                          </h6>
+                    {bpSettings.hasMikrotik ? (
+                      <>
+                        <b className="mt-2"> {t("selectMikrotik")} </b>
+                        <div className="AllAreaClass">
+                          {mikrotikpakages?.mikrotiks?.map((item) => (
+                            <div key={item.id}>
+                              <h6 className="areaParent ">
+                                <input
+                                  type="checkbox"
+                                  className="getValueUsingClasses"
+                                  value={item.id}
+                                  onChange={(e) =>
+                                    setMikrotikHandler(e.target.value)
+                                  }
+                                />{" "}
+                                <label>
+                                  <b className="h5">{item.name}</b>
+                                </label>
+                              </h6>
+                              <div className="d-flex flex-wrap">
+                                {mikrotikpakages.packages.map(
+                                  (p) =>
+                                    p.mikrotik === item.id && (
+                                      <div key={p.id} className="w-50 my-1">
+                                        <input
+                                          className="form-check-input me-2"
+                                          disabled={
+                                            !mikrotikIds.includes(p.mikrotik)
+                                          }
+                                          type="checkbox"
+                                          value={p.id}
+                                          onChange={handelMikrotikPakages}
+                                        />
+                                        <label className="form-check-label">
+                                          {p.name}
+                                        </label>
+                                      </div>
+                                    )
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <b className="mt-2"> {t("package")} </b>
+                        <div className="AllAreaClass">
                           <div className="d-flex flex-wrap">
-                            {mikrotikpakages.packages.map(
-                              (p) =>
-                                p.mikrotik === item.id && (
-                                  <div key={p.id} className="w-50 my-1">
-                                    <input
-                                      className="form-check-input me-2"
-                                      disabled={
-                                        !mikrotikIds.includes(p.mikrotik)
-                                      }
-                                      type="checkbox"
-                                      value={p.id}
-                                      onChange={handelMikrotikPakages}
-                                    />
-                                    <label className="form-check-label">
-                                      {p.name}
-                                    </label>
-                                  </div>
-                                )
-                            )}
+                            {packages.map((p) => (
+                              <div key={p.id} className="w-50 my-1">
+                                <input
+                                  className="form-check-input me-2"
+                                  // disabled={!mikrotikIds.includes(p.mikrotik)}
+                                  type="checkbox"
+                                  value={p.id}
+                                  onChange={handelMikrotikPakages}
+                                />
+                                <label className="form-check-label">
+                                  {p.name}
+                                </label>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </>
+                    )}
+
                     <b className="mt-2"> {t("selectArea")} </b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (

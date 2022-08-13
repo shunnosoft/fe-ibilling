@@ -627,7 +627,6 @@ export default function Sidebar() {
                         </Accordion.Header>
                         <Accordion.Body>
                           {bpSettings?.hasReseller &&
-                          bpSettings?.hasMikrotik &&
                           userRole === "ispOwner" ? (
                             <NavLink
                               key={33}

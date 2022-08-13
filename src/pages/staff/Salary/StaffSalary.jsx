@@ -13,7 +13,7 @@ import { FourGround, FontColor } from "../../../assets/js/theme";
 import Footer from "../../../components/admin/footer/Footer";
 import StaffSalaryPostModal from "./StaffSalaryPostModal";
 import StaffSalaryEditModal from "./StaffSalaryEditModal";
-import { getSalaryApi } from "../../../features/apiCallStaff";
+import { getSalaryApi, getStaffs } from "../../../features/apiCallStaff";
 import Table from "../../../components/table/Table";
 import { useTranslation } from "react-i18next";
 
@@ -21,6 +21,10 @@ export default function StaffSalary() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { staffId } = useParams();
+
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
 
   const staff = useSelector((state) =>
     state.staff.staff.find((item) => item.id == staffId)
@@ -38,6 +42,7 @@ export default function StaffSalary() {
 
   useEffect(() => {
     getSalaryApi(dispatch, staffId, setIsLoading);
+    getStaffs(dispatch, ispOwner, setIsLoading);
   }, [staffId]);
 
   const columns = useMemo(
