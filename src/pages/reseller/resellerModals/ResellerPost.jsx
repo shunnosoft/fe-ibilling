@@ -20,7 +20,7 @@ export default function ResellerPost() {
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
   const area = useSelector((state) => state.area.area);
-  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
+  // const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
   const mikrotikpakages = useSelector(
     (state) => state.reseller.allMikrotikPakages
   );
@@ -75,7 +75,6 @@ export default function ResellerPost() {
       postReseller(dispatch, sendingData, setIsLoading, resetForm);
     }
   };
-  console.log(area);
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
     let IDS_temp = [];
@@ -213,7 +212,7 @@ export default function ResellerPost() {
                             ))}
                           </div>
                         </div>
-                        {/* <div className="form-check ">
+                        <div className="form-check ">
                           <p className="radioTitle">কমিশন এর ধরণ</p>
                           <div className="d-flex">
                             <div className="form-check">
@@ -243,8 +242,8 @@ export default function ResellerPost() {
                               />
                             </div>
                           </div>
-                        </div> */}
-                        {/* {commissionType === "global" && (
+                        </div>
+                        {commissionType === "global" && (
                           <div className="form-check ">
                             <p className="radioTitle"> {t("share")} </p>
 
@@ -270,12 +269,12 @@ export default function ResellerPost() {
                             >
                               <option value="">Package Rate Type</option>
 
-                              <option value="persentage">Persentage</option>
+                              <option value="percentage">Percentage</option>
                               <option value="fixedRate">Fixed Rate</option>
                             </select>
                           </div>
-                        )} */}
-                        <div className="form-check ">
+                        )}
+                        {/* <div className="form-check ">
                           <p className="radioTitle"> {t("share")} </p>
 
                           <FtextField
@@ -285,7 +284,7 @@ export default function ResellerPost() {
                             name="commissionRate"
                             min={0}
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 

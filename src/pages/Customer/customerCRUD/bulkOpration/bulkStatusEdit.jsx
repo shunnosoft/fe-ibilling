@@ -43,7 +43,7 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
             id="activeCustomer"
           />
           <label className="form-check-label" htmlFor="activeCustomer">
-            {t("acitve")}
+            {t("active")}
           </label>
         </div>
         <div className="form-check form-check-inline">

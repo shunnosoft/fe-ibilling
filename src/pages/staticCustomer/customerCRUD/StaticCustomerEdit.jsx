@@ -9,9 +9,9 @@ import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
-import moment from "moment";
 import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
 
 export default function StaticCustomerEdit({ single }) {
   const { t } = useTranslation();
@@ -54,13 +54,13 @@ export default function StaticCustomerEdit({ single }) {
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState();
   const [area, setArea] = useState("");
-  const [billDate, setBillDate] = useState();
-  const [billTime, setBilltime] = useState();
+  const [billDate, setBillDate] = useState(null);
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState();
   const [qDisable, setQdisable] = useState();
   const [status, setStatus] = useState("");
+  const [promiseDate, setPromiseDate] = useState(null);
 
   // customer validator
   useEffect(() => {
@@ -98,10 +98,10 @@ export default function StaticCustomerEdit({ single }) {
   }, [customer?.mikrotik]);
 
   useEffect(() => {
-    setBillDate(
-      moment(customer?.billingCycle).endOf("day").format("YYYY-MM-DD")
-    );
-    setBilltime(moment(customer?.billingCycle).endOf("day").format("HH:mm"));
+    if (customer) {
+      setBillDate(new Date(customer?.billingCycle));
+      setPromiseDate(new Date(customer.promiseDate));
+    }
   }, [customer]);
 
   const customerValidator = Yup.object({
@@ -196,9 +196,8 @@ export default function StaticCustomerEdit({ single }) {
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime)
-        .subtract({ hours: 6 })
-        .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
+      billingCycle: billDate.toISOString(),
+      promiseDate: promiseDate.toISOString(),
       ...rest,
       monthlyFee: monthlyFee,
     };
@@ -239,7 +238,7 @@ export default function StaticCustomerEdit({ single }) {
     } else if (status === "inactive") {
       sendingData.status = status;
     }
-
+    // console.log(sendingData);
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
   return (
@@ -461,7 +460,9 @@ export default function StaticCustomerEdit({ single }) {
 
                       {userType === "simple-queue" && (
                         <div className="static_edit_item">
-                          <p> {t("downloadPackge")} </p>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("downloadPackge")}
+                          </label>
                           <select
                             name="downPackage"
                             className="form-select mw-100 mt-0 mb-3"
@@ -532,11 +533,36 @@ export default function StaticCustomerEdit({ single }) {
                         />
                       </div>
                       <div className="static_edit_item">
-                        <p className="customerFieldsTitle">
+                        <label className="form-control-label changeLabelFontColor">
                           {t("billingCycle")}{" "}
-                        </p>
+                        </label>
 
-                        <div className="timeDate">
+                        <DatePicker
+                          className="form-control mw-100"
+                          selected={billDate}
+                          onChange={(date) => setBillDate(date)}
+                          dateFormat="dd/MM/yyyy:hh:mm"
+                          showTimeSelect
+                        />
+                      </div>
+                      {(role === "manager" || role === "ispOwner") && (
+                        <div className="static_edit_item">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("promiseDate")}
+                          </label>
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={promiseDate}
+                            onChange={(date) => setPromiseDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
+                            minDate={new Date(customer?.billingCycle)}
+                          />
+                        </div>
+                      )}
+
+                      <div className="static_edit_item">
+                        {/* <div className="timeDate">
                           <input
                             value={billDate}
                             onChange={(e) => setBillDate(e.target.value)}
@@ -548,7 +574,7 @@ export default function StaticCustomerEdit({ single }) {
                             onChange={(e) => setBilltime(e.target.value)}
                             type="time"
                           />
-                        </div>
+                        </div> */}
                       </div>
                       <div className="static_edit_item">
                         {bpSettings?.hasMikrotik && (

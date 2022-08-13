@@ -68,7 +68,8 @@ export default function Header(props) {
   const [getLang, setGetLang] = useState("bn");
 
   useEffect(() => {
-    setGetLang(localStorage.getItem("netFee:lang"));
+    const lang = localStorage.getItem("netFee:lang");
+    setGetLang(lang ? lang : localStorage.setItem("netFee:lang", "bn"));
     i18n.changeLanguage(localStorage.getItem("netFee:lang"));
   }, [getLang]);
 

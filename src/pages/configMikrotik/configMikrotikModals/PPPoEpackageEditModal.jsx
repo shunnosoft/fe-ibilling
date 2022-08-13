@@ -28,9 +28,9 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
   //validator
   const pppoeValidator = Yup.object({
     rate: Yup.number(),
-    // persentage: Yup.number("Input must be a number").max(
+    // percentage: Yup.number("Input must be a number").max(
     //   100,
-    //   "Persentage must be 0-100"
+    //   "percentage must be 0-100"
     // ),
   });
 
@@ -45,8 +45,8 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
         mikrotikId: data?.mikrotik,
         pppPackageId: data?.id,
       };
-      if (formValue.persentage) {
-        sendingData.persentage.ispOwner = formValue.persentage;
+      if (formValue.percentage) {
+        sendingData.percentage.ispOwner = formValue.percentage;
       }
       editPPPoEpackageRate(dispatch, sendingData, setIsLoading, resetForm);
     }
@@ -78,7 +78,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
               <Formik
                 initialValues={{
                   rate: data?.rate || "",
-                  // persentage: data?.persentage || 0,
+                  // percentage: data?.percentage || 0,
                 }}
                 validationSchema={pppoeValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -132,8 +132,8 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
                         <FtextField
                           min={0}
                           type="number"
-                          label={t("persentage")}
-                          name="persentage"
+                          label={t("percentage")}
+                          name="percentage"
                         /> 
                       </>
                     )}*/}

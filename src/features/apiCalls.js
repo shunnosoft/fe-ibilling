@@ -104,7 +104,7 @@ import { deleteReCustomer } from "./resellerCustomerAdminSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
-  // Notification for english language
+  // Notification for english language for
   if (netFeeLang === "bn") {
     if (color === "success") {
       return toast.success(bangla);
@@ -112,7 +112,6 @@ const langMessage = (color, bangla, english) => {
       return toast.error(bangla);
     }
   }
-
   // Notification for Bangla language
   if (netFeeLang === "en") {
     if (color === "success") {
@@ -568,7 +567,6 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
     } else {
       dispatch(editCustomerSuccess(res.data));
     }
-
     setIsloading(false);
     langMessage(
       "success",
@@ -1122,15 +1120,14 @@ export const postReseller = async (dispatch, data, setIsLoading, resetForm) => {
   })
     .then((res) => {
       dispatch(addResellerSuccess(res.data));
-      console.log(res.data);
       setIsLoading(false);
       document.querySelector("#resellerModal").click();
-      resetForm();
       langMessage(
         "success",
         "রিসেলার এড সফল হয়েছে !",
         "Reseller Added Successfully"
       );
+      resetForm();
     })
     .catch((err) => {
       if (err.response) {

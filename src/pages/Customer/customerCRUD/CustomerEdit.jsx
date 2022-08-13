@@ -14,7 +14,6 @@ import {
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
 import DatePicker from "react-datepicker";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
 
 export default function CustomerEdit(props) {
@@ -24,8 +23,6 @@ export default function CustomerEdit(props) {
 
   // find editable data
   const data = customer.find((item) => item.id === props.single);
-
-  const [user, setUser] = useState(data);
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -42,6 +39,9 @@ export default function CustomerEdit(props) {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
+
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get ppoe package
   const ppPackage = useSelector((state) =>
@@ -64,14 +64,13 @@ export default function CustomerEdit(props) {
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
   const [connectionDate, setConnectionDate] = useState("");
-  const [billDate, setBillDate] = useState();
-  const [billTime, setBilltime] = useState();
+  const [billDate, setBillDate] = useState(null);
   const [status, setStatus] = useState("");
+  const [promiseDate, setPromiseDate] = useState(null);
 
   const [packageId, setPackageId] = useState("");
   useEffect(() => {
     setPackageId(data?.mikrotikPackage);
-    setUser(data);
     setStatus(data?.status);
     const IDs = {
       ispOwner: ispOwnerId,
@@ -88,11 +87,10 @@ export default function CustomerEdit(props) {
     setConnectionDate(
       data?.connectionDate ? new Date(data?.connectionDate) : null
     );
-    setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(data?.billingCycle).format("HH:mm"));
     const temp = Getmikrotik.find((val) => val.id === data?.mikrotik);
     setmikrotikName(temp);
-
+    if (data) setBillDate(new Date(data?.billingCycle));
+    if (data) setPromiseDate(new Date(data.promiseDate));
     // findout area id by sub area id
   }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
 
@@ -171,13 +169,11 @@ export default function CustomerEdit(props) {
       singleCustomerID: data?.id,
       subArea: subArea2,
       ispOwner: ispOwnerId,
-      mikrotik: formValue?.mikrotik,
       mikrotikPackage: packageId,
       autoDisable: autoDisable,
       connectionDate,
-      billingCycle: moment(billDate + " " + billTime)
-        .subtract({ hours: 6 })
-        .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
+      billingCycle: billDate.toISOString(),
+      promiseDate: promiseDate.toISOString(),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -409,27 +405,34 @@ export default function CustomerEdit(props) {
                         </p>
 
                         <div className="timeDate">
-                          <input
-                            value={billDate}
-                            onChange={(e) => setBillDate(e.target.value)}
-                            type="date"
-                            min={
-                              status !== "expired"
-                                ? moment().format("YYYY-MM-DD")
-                                : ""
-                            }
-                          />
-                          <input
-                            className="billTime"
-                            value={billTime}
-                            onChange={(e) => setBilltime(e.target.value)}
-                            type="time"
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={billDate}
+                            onChange={(date) => setBillDate(date)}
+                            dateFormat="dd/MM/yyyy:hh:mm"
+                            showTimeSelect
                           />
                         </div>
                       </div>
-
+                      {(role === "manager" || role === "ispOwner") && (
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("promiseDate")}
+                          </label>
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={promiseDate}
+                            onChange={(date) => setPromiseDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
+                            minDate={new Date(data?.billingCycle)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="newDisplay">
                       <div>
-                        <label className="form-control-label changeLabelFontColor">
+                        <label className="form-control-label changeLabelFontColor mt-0">
                           {t("connectionDate")}
                         </label>
                         <DatePicker
@@ -440,11 +443,9 @@ export default function CustomerEdit(props) {
                           placeholderText={t("selectDate")}
                         />
                       </div>
-                    </div>
-                    <div className="newDisplay">
                       <div className="pppoeStatus">
-                        <p>{t("status")}</p>
-                        <div className="form-check form-check-inline">
+                        <p className="p-0 mt-2">{t("status")}</p>
+                        <div className="form-check form-check-inline mt-0">
                           <input
                             className="form-check-input"
                             type="radio"

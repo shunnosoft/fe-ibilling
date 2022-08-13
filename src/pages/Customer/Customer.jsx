@@ -32,7 +32,9 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
 import CustomerEdit from "./customerCRUD/CustomerEdit";
 import {
+  fetchMikrotik,
   fetchReseller,
+  getArea,
   getCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
@@ -121,10 +123,6 @@ export default function Customer() {
     dayFilter: "",
   });
 
-  const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
-  const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
-  const [totalDue, setTotalDue] = useState(0);
-  const [hasDue, setDue] = useState(false);
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
@@ -137,7 +135,7 @@ export default function Customer() {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     }
     getCustomer(dispatch, ispOwner, setIsloading);
-  };
+}
 
   // get customer api call
   useEffect(() => {
@@ -150,28 +148,6 @@ export default function Customer() {
     if (cus.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
     getSubAreasApi(dispatch, ispOwner);
   }, [dispatch, ispOwner, role, bpSettings]);
-
-  //get possible total monthly fee
-  useEffect(() => {
-    if (cus) {
-      let totalMonthlyFee = 0;
-      let totalDue = 0;
-      let advanceFee = 0;
-      for (let i = 0; i < cus.length; i++) {
-        totalMonthlyFee += cus[i].monthlyFee;
-        if (cus[i].balance < 0) {
-          totalDue += Math.abs(cus[i].balance);
-        }
-        if (cus[i].balance > 0) {
-          advanceFee += cus[i].balance;
-        }
-      }
-      if (totalDue > 0) setDue(true);
-      setTotalMonthlyFee(totalMonthlyFee - advanceFee);
-      setTotalDue(totalDue);
-      setTotalFeeWithDue(totalMonthlyFee + totalDue - advanceFee);
-    }
-  }, [cus]);
 
   // collector filter
   useEffect(() => {
@@ -207,7 +183,6 @@ export default function Customer() {
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
-
     setArea(area);
     if (
       area &&
@@ -217,9 +192,7 @@ export default function Customer() {
       setSubArea([]);
     } else {
       let subAreaIds = [];
-
       area?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
       setSubArea(subAreaIds);
     }
   };
@@ -310,6 +283,11 @@ export default function Customer() {
     });
     setCustomers1(Customers2);
   };
+
+  useEffect(() => {
+    if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setIsloading);
+    if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
+  }, []);
 
   useEffect(() => {
     const temp = [];
@@ -481,7 +459,6 @@ export default function Customer() {
   // cutomer delete
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
-
     setSingleData(customerId);
   };
 

@@ -506,5 +506,6 @@
   "confirm": "Confirm",
   "viewReport": "Report View",
   "salaryType": "Salary Type",
-  "persentage": "Persentage"
+  "percentage": "percentage",
+  "promiseDate": "Promise Date"
 }

@@ -34,6 +34,8 @@ import StaticCustomerEdit from "./customerCRUD/StaticCustomerEdit";
 import {
   getStaticCustomer,
   getPackagewithoutmikrotik,
+  fetchMikrotik,
+  getArea,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -135,37 +137,6 @@ export default function Customer() {
       setAreas(areas);
     }
   }, [collectorArea, role]);
-
-  //get possible total monthly fee
-  const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
-  const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
-  const [totalDue, setTotalDue] = useState(0);
-
-  const [hasDue, setDue] = useState(false);
-  useEffect(() => {
-    if (cus) {
-      let totalMonthlyFee = 0;
-      let totalDue = 0;
-      let advanceFee = 0;
-      for (let i = 0; i < cus.length; i++) {
-        totalMonthlyFee += cus[i].monthlyFee;
-        if (cus[i].balance < 0) {
-          totalDue += Math.abs(cus[i].balance);
-        }
-        if (cus[i].balance > 0) {
-          advanceFee += cus[i].balance;
-        }
-      }
-      if (totalDue > 0) setDue(true);
-      setTotalMonthlyFee(totalMonthlyFee - advanceFee);
-      setTotalDue(totalDue);
-      setTotalFeeWithDue(totalMonthlyFee + totalDue - advanceFee);
-    }
-  }, [cus]);
-
-  const [paymentStatus, setPaymentStatus] = useState("");
-  const [status, setStatus] = useState("");
-  //   filter
 
   // get specific customer
   const getSpecificCustomer = (id) => {
@@ -345,6 +316,7 @@ export default function Customer() {
     setCustomers1(temp);
     setCustomers2(temp);
   }, [allareas, cus]);
+
   useEffect(() => {
     if (subAreaIds.length) {
       setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
@@ -352,6 +324,11 @@ export default function Customer() {
       setCustomers(cus);
     }
   }, [cus, subAreaIds]);
+
+  useEffect(() => {
+    if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setIsloading);
+    if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
+  }, []);
 
   const handleActiveFilter = () => {
     let tempCustomers = Customers2;
@@ -438,10 +415,6 @@ export default function Customer() {
   };
   const onChangeSubArea = (id) => {
     setCusSearch(id);
-  };
-
-  const handleChangeStatus = (e) => {
-    setStatus(e.target.value);
   };
 
   let subArea, customerStatus, customerPaymentStatus;
@@ -946,7 +919,6 @@ export default function Customer() {
                         <select
                           className="form-select ms-2"
                           onChange={(e) => {
-                            handleChangeStatus(e);
                             setFilterOption({
                               ...filterOptions,
                               status: e.target.value,

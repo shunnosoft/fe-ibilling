@@ -259,7 +259,7 @@ export default function Home() {
     }
   };
 
-  const collectionPersentage = customerStat
+  const collectionPercentage = customerStat
     ? Math.round(
         (customerStat.totalMonthlyCollection /
           customerStat.totalProbableAmount) *
@@ -386,13 +386,13 @@ export default function Home() {
                     <div style={{ width: 200, height: 200, margin: "0 auto" }}>
                       <AnimatedProgressProvider
                         valueStart={0}
-                        valueEnd={Math.round(collectionPersentage)}
+                        valueEnd={Math.round(collectionPercentage)}
                         duration={1}
                         easingFunction={easeQuadIn}
                       >
                         {(value) => {
                           const roundedValue = isNaN(value)
-                            ? collectionPersentage
+                            ? collectionPercentage
                             : Math.round(value);
                           return (
                             <CircularProgressbar
