@@ -359,6 +359,7 @@
   "startDate": "Start Date",
   "endDate": "End Date",
   "selectDate": "Select Date",
+  "selectBillDate": "Select Bill Date",
   "selectMonth": "Select Month",
   "writeNote": "Write Note",
   "submit": "Submit",

@@ -14,7 +14,7 @@ import {
 } from "../../../features/apiCalls";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
-import ReactDatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";
 export default function CustomerModal() {
   const { t } = useTranslation();
   const bpSettings = useSelector(
@@ -41,8 +41,7 @@ export default function CustomerModal() {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
-  const [billDate, setBillDate] = useState();
-  const [billTime, setBilltime] = useState();
+  const [billDate, setBillDate] = useState(null);
   const [connectionDate, setConnectionDate] = useState();
 
   // customer validator
@@ -138,10 +137,8 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      connectionDate,
-      billingCycle: moment(billDate + " " + billTime)
-        .subtract({ hours: 6 })
-        .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
+      connectionDate: connectionDate.toISOString(),
+      billingCycle: billDate.toISOString(),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -155,15 +152,9 @@ export default function CustomerModal() {
     if (!bpSettings?.hasMikrotik) {
       delete mainData.mikrotik;
     }
-    // console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
-    // console.log(data);
   };
 
-  useEffect(() => {
-    setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
-    setBilltime(moment().endOf("day").format("HH:mm"));
-  }, [bpSettings, role]);
   return (
     <div>
       <div
@@ -186,7 +177,7 @@ export default function CustomerModal() {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">
+            <div className="modal-body p-3">
               {/* model body here */}
               <Formik
                 initialValues={{
@@ -213,11 +204,11 @@ export default function CustomerModal() {
                     <div className="mikrotikSection">
                       {bpSettings?.hasMikrotik ? (
                         <div>
-                          <p className="comstomerFieldsTitle">
+                          <label className="form-control-label changeLabelFontColor">
                             {t("selectMikrotik")}
-                          </p>
+                          </label>
                           <select
-                            className="form-select"
+                            className="form-select mw-100"
                             aria-label="Default select example"
                             onChange={selectMikrotik}
                           >
@@ -237,11 +228,11 @@ export default function CustomerModal() {
 
                       {/* pppoe package */}
                       <div>
-                        <p className="comstomerFieldsTitle">
+                        <label className="form-control-label changeLabelFontColor">
                           {t("selectPackage")}
-                        </p>
+                        </label>
                         <select
-                          className="form-select mb-3"
+                          className="form-select mb-3 mw-100"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                         >
@@ -299,9 +290,11 @@ export default function CustomerModal() {
 
                     <div className="displayGrid3">
                       <div>
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}
+                        </label>
                         <select
-                          className="form-select"
+                          className="form-select mw-100"
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
@@ -317,12 +310,12 @@ export default function CustomerModal() {
                       </div>
 
                       <div>
-                        <p>
+                        <label className="form-control-label changeLabelFontColor">
                           {subArea ? subArea.name + " এর - " : ""}{" "}
                           {t("selectSubArea")}
-                        </p>
+                        </label>
                         <select
-                          className="form-select"
+                          className="form-select mw-100"
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaId"
@@ -358,31 +351,25 @@ export default function CustomerModal() {
                       <FtextField type="text" label={t("email")} name="email" />
 
                       <div className="billCycle">
-                        <p className="customerFieldsTitle">
-                          {t("billingCycle")}
-                        </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("billingCycle")}{" "}
+                        </label>
 
-                        <div className="timeDate">
-                          <input
-                            value={billDate}
-                            onChange={(e) => setBillDate(e.target.value)}
-                            type="date"
-                            min={moment().format("YYYY-MM-DD")}
-                          />
-                          <input
-                            className="billTime"
-                            value={billTime}
-                            onChange={(e) => setBilltime(e.target.value)}
-                            type="time"
-                          />
-                        </div>
+                        <DatePicker
+                          className="form-control mw-100"
+                          selected={billDate}
+                          onChange={(date) => setBillDate(date)}
+                          dateFormat="dd/MM/yyyy:hh:mm"
+                          showTimeSelect
+                          placeholderText={t("selectBillDate")}
+                        />
                       </div>
                       <div className="billCycle">
                         <div>
                           <label className="form-control-label changeLabelFontColor">
                             {t("connectionDate")}
                           </label>
-                          <ReactDatePicker
+                          <DatePicker
                             className="form-control mw-100"
                             selected={connectionDate}
                             onChange={(date) => setConnectionDate(date)}

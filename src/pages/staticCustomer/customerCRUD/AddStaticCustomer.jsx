@@ -12,6 +12,7 @@ import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
 import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
 
 export default function AddStaticCustomer() {
   const { t } = useTranslation();
@@ -52,7 +53,6 @@ export default function AddStaticCustomer() {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const [billDate, setBillDate] = useState();
-  const [billTime, setBilltime] = useState();
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
@@ -159,9 +159,7 @@ export default function AddStaticCustomer() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime)
-        .subtract({ hours: 6 })
-        .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
+      billingCycle: billDate.toISOString(),
       balance: -balance,
       ...rest,
       monthlyFee,
@@ -187,16 +185,9 @@ export default function AddStaticCustomer() {
         maxLimit: `${maxUpLimit}/${maxDownLimit}`,
       };
     }
-
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
   };
 
-  useEffect(() => {
-    setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
-    setBilltime(moment().endOf("day").format("HH:mm"));
-  }, [bpSettings, role]);
-
-  //traget ad ip queue-{name ,target-ip,max-limit,}
   return (
     <div>
       <div
@@ -363,7 +354,7 @@ export default function AddStaticCustomer() {
                             </p>
                             <select
                               name="upPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-100"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -381,12 +372,12 @@ export default function AddStaticCustomer() {
                           </>
                         )}
                       </div>
-                      <div className="row mt-3">
+                      <div className="row">
                         {userType === "simple-queue" && (
                           <div className="col-lg-4 col-md-4 col-xs-6">
-                            <p className="comstomerFieldsTitle">
+                            <label className="form-control-label changeLabelFontColor">
                               {t("downloadPackge")}
-                            </p>
+                            </label>
                             <select
                               name="downPackage"
                               className="form-select mw-100 mb-3"
@@ -433,7 +424,7 @@ export default function AddStaticCustomer() {
                           />
                         </div>
                       </div>
-                      <div className="row mt-3">
+                      <div className="row">
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
@@ -463,7 +454,7 @@ export default function AddStaticCustomer() {
                           />
                         </div>
                         <div className="col-lg-4 col-md-4 col-xs-6">
-                          <p className="customerFieldsTitle">
+                          {/* <p className="customerFieldsTitle">
                             {t("billingCycle")}
                           </p>
 
@@ -478,6 +469,20 @@ export default function AddStaticCustomer() {
                               value={billTime}
                               onChange={(e) => setBilltime(e.target.value)}
                               type="time"
+                            />
+                          </div> */}
+                          <div className="billCycle">
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("billingCycle")}{" "}
+                            </label>
+
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={billDate}
+                              onChange={(date) => setBillDate(date)}
+                              dateFormat="dd/MM/yyyy:hh:mm"
+                              showTimeSelect
+                              placeholderText={t("selectBillDate")}
                             />
                           </div>
                         </div>
