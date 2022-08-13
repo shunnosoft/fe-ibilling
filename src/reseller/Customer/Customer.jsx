@@ -110,7 +110,6 @@ export default function Customer() {
   }, [cus, paymentStatus, status, subAreaId]);
 
   // find area name
-  console.log(subAreas);
   const areaName = subAreas.find((item) => item.id === subAreaId);
 
   // send filter data to print
@@ -399,7 +398,7 @@ export default function Customer() {
                     </div>
                   </div>
 
-                  <div className="h6 d-flex justify-content-center align-items-start">
+                  {/* <div className="h6 d-flex justify-content-center align-items-start">
                     <p>
                       {t("totalPossibilityBill")} : {totalMonthlyFee}
                     </p>
@@ -413,7 +412,7 @@ export default function Customer() {
                         </p>
                       </>
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="addAndSettingIcon">
                     {(permission?.customerAdd || role === "reseller") && (

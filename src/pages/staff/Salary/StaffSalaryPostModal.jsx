@@ -7,22 +7,25 @@ import * as Yup from "yup";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { addSalaryApi } from "../../../features/apiCallStaff";
+import { addSalaryApi, getStaffs } from "../../../features/apiCallStaff";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 export default function StaffSalaryPostModal({ staffId }) {
   const { t } = useTranslation();
 
   const staff = useSelector((state) =>
-    state.persistedReducer.staff.staff.find((item) => item.id == staffId)
+    state.staff.staff.find((item) => item.id == staffId)
   );
+
+  console.log(staff);
 
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState();
   console.log(amount);
 
-  const restSalary = staff.salary - amount;
+  const restSalary = staff?.salary - amount;
 
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.currentUser
@@ -32,6 +35,10 @@ export default function StaffSalaryPostModal({ staffId }) {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  useEffect(() => {
+    getStaffs(dispatch, ispOwner, setIsLoading);
+  }, []);
 
   //validator
   // const salaryValidaiton = Yup.object({
@@ -104,7 +111,7 @@ export default function StaffSalaryPostModal({ staffId }) {
                         className="form-control mb-3"
                         disabled
                         type="number"
-                        value={staff.salary}
+                        value={staff?.salary}
                       />
 
                       <h6 class="form-label">{t("amount")}</h6>

@@ -427,9 +427,7 @@ function App() {
               <Route
                 path="reseller"
                 element={
-                  bpSettings?.hasReseller &&
-                  bpSettings?.hasMikrotik &&
-                  userRole === "ispOwner" ? (
+                  bpSettings?.hasReseller && userRole === "ispOwner" ? (
                     <Reseller />
                   ) : (
                     <Navigate to={"/home"}></Navigate>

@@ -9,7 +9,10 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
-import { editReseller } from "../../../features/apiCalls";
+import {
+  editReseller,
+  getPackagewithoutmikrotik,
+} from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 // import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
@@ -32,6 +35,17 @@ export default function ResellerEdit({ resellerId }) {
   const [allowedMikrotik, setAllowedMikrotik] = useState([]);
   const [mikrotikIds_Edit, setMikrotikIds_Edit] = useState([]);
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
+
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
+
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
+  const packages = useSelector((state) => state.package.packages);
+
   // const [permissions, setPermissions] = useState([]);
   useEffect(() => {
     setMikrotikIds_Edit(reseller?.mikrotiks);
@@ -42,7 +56,13 @@ export default function ResellerEdit({ resellerId }) {
 
     setAllowedMikrotik(reseller?.mikrotiks);
     setmikroTikPackagesId(reseller?.mikrotikPackages);
-  }, [resellerId, dispatch]);
+  }, [resellerId]);
+
+  useEffect(() => {
+    if (!bpSettings.hasMikrotik) {
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+    }
+  }, []);
 
   //validator
   const resellerValidator = Yup.object({
@@ -88,8 +108,11 @@ export default function ResellerEdit({ resellerId }) {
         resellerId: reseller.id,
         subAreas: areaIds_Edit,
         mikrotikPackages: mikroTikPackagesId,
-        mikrotiks: mikrotikIds_Edit,
       };
+
+      if (bpSettings.hasMikrotik) {
+        sendingData.mikrotiks = mikrotikIds_Edit;
+      }
 
       sendingData.commissionRate = {
         reseller: commision,
@@ -306,70 +329,111 @@ export default function ResellerEdit({ resellerId }) {
                       </div>
                     </div>
 
-                    <b className="mt-2"> {t("selectMikrotik")} </b>
-                    <div className="AllAreaClass">
-                      {mikrotikpakages?.mikrotiks?.map((item) => (
-                        <div key={item.id}>
-                          <h6 className="areaParent ">
-                            <input
-                              checked={
-                                allowedMikrotik?.includes(item.id)
-                                  ? true
-                                  : false
-                              }
-                              disabled={reseller?.mikrotiks?.includes(item?.id)}
-                              type="checkbox"
-                              className="getValueUsingClassesforMikrotik"
-                              value={item.id}
-                              id={item.id}
-                              onChange={(e) =>
-                                setMikrotikHandler(e.target.value)
-                              }
-                            />{" "}
-                            <label htmlFor={item.id}>
-                              <b className="h5">{item.name}</b>
-                            </label>
-                          </h6>
-                          {mikrotikpakages.packages.map(
-                            (p) =>
-                              p.mikrotik === item.id && (
-                                <div key={p.id} className="displayFlex">
-                                  {reseller?.mikrotikPackages?.includes(
-                                    p.id
-                                  ) ? (
-                                    <>
-                                      <input
-                                        id={p.id}
-                                        type="checkbox"
-                                        value={p.id}
-                                        onChange={handelMikrotikPakages}
-                                        checked={true}
-                                        disabled={true}
-                                      />
-                                      <label htmlFor={p.id}>{p.name}</label>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <input
-                                        id={p.id}
-                                        type="checkbox"
-                                        disabled={
-                                          !mikrotikIds_Edit?.includes(
-                                            p.mikrotik
-                                          )
-                                        }
-                                        value={p.id}
-                                        onChange={handelMikrotikPakages}
-                                      />
-                                      <label htmlFor={p.id}>{p.name}</label>
-                                    </>
+                    {bpSettings.hasMikrotik ? (
+                      <>
+                        <b className="mt-2"> {t("selectMikrotik")} </b>
+                        <div className="AllAreaClass">
+                          {mikrotikpakages?.mikrotiks?.map((item) => (
+                            <div key={item.id}>
+                              <h6 className="areaParent ">
+                                <input
+                                  checked={
+                                    allowedMikrotik?.includes(item.id)
+                                      ? true
+                                      : false
+                                  }
+                                  disabled={reseller?.mikrotiks?.includes(
+                                    item?.id
                                   )}
-                                </div>
-                              )
-                          )}
+                                  type="checkbox"
+                                  className="getValueUsingClassesforMikrotik"
+                                  value={item.id}
+                                  id={item.id}
+                                  onChange={(e) =>
+                                    setMikrotikHandler(e.target.value)
+                                  }
+                                />{" "}
+                                <label htmlFor={item.id}>
+                                  <b className="h5">{item.name}</b>
+                                </label>
+                              </h6>
+                              {mikrotikpakages.packages.map(
+                                (p) =>
+                                  p.mikrotik === item.id && (
+                                    <div key={p.id} className="displayFlex">
+                                      {reseller?.mikrotikPackages?.includes(
+                                        p.id
+                                      ) ? (
+                                        <>
+                                          <input
+                                            id={p.id}
+                                            type="checkbox"
+                                            value={p.id}
+                                            onChange={handelMikrotikPakages}
+                                            checked={true}
+                                            disabled={true}
+                                          />
+                                          <label htmlFor={p.id}>{p.name}</label>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <input
+                                            id={p.id}
+                                            type="checkbox"
+                                            disabled={
+                                              !mikrotikIds_Edit?.includes(
+                                                p.mikrotik
+                                              )
+                                            }
+                                            value={p.id}
+                                            onChange={handelMikrotikPakages}
+                                          />
+                                          <label htmlFor={p.id}>{p.name}</label>
+                                        </>
+                                      )}
+                                    </div>
+                                  )
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </>
+                    ) : (
+                      <>
+                        <b className="mt-2"> {t("package")} </b>
+                        <div className="AllAreaClass">
+                          <div className="d-flex flex-wrap">
+                            {packages.map((p) => (
+                              <div key={p.id} className="displayFlex">
+                                {reseller?.mikrotikPackages?.includes(p.id) ? (
+                                  <>
+                                    <input
+                                      id={p.id}
+                                      type="checkbox"
+                                      value={p.id}
+                                      onChange={handelMikrotikPakages}
+                                      checked={true}
+                                      disabled={true}
+                                    />
+                                    <label htmlFor={p.id}>{p.name}</label>
+                                  </>
+                                ) : (
+                                  <>
+                                    <input
+                                      id={p.id}
+                                      type="checkbox"
+                                      value={p.id}
+                                      onChange={handelMikrotikPakages}
+                                    />
+                                    <label htmlFor={p.id}>{p.name}</label>
+                                  </>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     {/* area */}
                     <b className="mt-2"> {t("selectArea")} </b>

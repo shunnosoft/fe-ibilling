@@ -117,36 +117,6 @@ export default function CustomerEdit({ single }) {
     // setAreaID(single?.subArea);
   };
 
-  // // reseller upper package select function
-  // const getPackageByte = (value) => {
-  //   let currentPackage = data.pppoe.profile.toLowerCase();
-
-  //   const getLetter = value.toLowerCase();
-
-  //   if (currentPackage.indexOf("m") !== -1) {
-  //     currentPackage = currentPackage.slice(0, currentPackage.indexOf("m") + 1);
-  //     if (getLetter.indexOf("k") !== -1) {
-  //       return false;
-  //     } else {
-  //       return (
-  //         parseInt(getLetter.replace("m", "000000")) >=
-  //         parseInt(currentPackage.replace("m", "000000"))
-  //       );
-  //     }
-  //   }
-
-  //   if (currentPackage.indexOf("k") !== -1) {
-  //     if (getLetter.indexOf("k") !== -1) {
-  //       return (
-  //         parseInt(getLetter.replace("k", "000")) >=
-  //         parseInt(currentPackage.replace("k", "000"))
-  //       );
-  //     } else {
-  //       return true;
-  //     }
-  //   }
-  // };
-
   // find profile package
   const findPackage = ppPackage.find((item) => item.id === dataPackageRate);
 
