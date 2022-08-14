@@ -27,9 +27,16 @@ export default function CustomerEdit({ single }) {
   const resellerId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
+
+  // get mikrotik package from redux
+  const withOutMtkPackage = useSelector(
+    (state) => state?.mikrotik?.pppoePackage
+  );
+
   const area = useSelector((state) => state?.area?.area);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   const [ppPackage, setppPackage] = useState([]);
+
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [mikrotikPackage, setMikrotikPackage] = useState(data?.mikrotikPackage);
@@ -59,6 +66,7 @@ export default function CustomerEdit({ single }) {
     setBilltime(moment(data?.billingCycle).format("HH:mm"));
     const temp = Getmikrotik?.find((val) => val.id === data?.mikrotik);
     setmikrotikName(temp);
+    setppPackage(withOutMtkPackage);
   }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
 
   useEffect(() => {
@@ -139,7 +147,7 @@ export default function CustomerEdit({ single }) {
       mikrotik: data?.mikrotik,
       mikrotikPackage: packageRate?.id,
       // billPayType: "prepaid",
-      autoDisable: autoDisable,
+
       reseller: resellerId,
       billingCycle: moment(billDate + " " + billTime).format(
         "YYYY-MM-DDTHH:mm:ss.ms[Z]"
@@ -156,6 +164,11 @@ export default function CustomerEdit({ single }) {
 
       status,
     };
+
+    if (Getmikrotik.length > 0) {
+      mainData.mikrotik = data?.mikrotik;
+      mainData.autoDisable = autoDisable;
+    }
     editCustomer(dispatch, mainData, setIsloading);
   };
 
@@ -205,23 +218,24 @@ export default function CustomerEdit({ single }) {
                 {() => (
                   <Form>
                     <div className="mikrotikSection">
-                      <div>
-                        <p className="comstomerFieldsTitle">
-                          {t("selectMikrotik")}
-                        </p>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          // onChange={selectMikrotik}
-                          disabled
-                          value={data?.mikrotik || ""}
-                        >
-                          <option value={mikrotikName?.id || ""}>
-                            {mikrotikName?.name || ""}
-                          </option>
-                        </select>
-                      </div>
-
+                      {Getmikrotik.length > 0 && (
+                        <div>
+                          <p className="comstomerFieldsTitle">
+                            {t("selectMikrotik")}
+                          </p>
+                          <select
+                            className="form-select"
+                            aria-label="Default select example"
+                            // onChange={selectMikrotik}
+                            disabled
+                            value={data?.mikrotik || ""}
+                          >
+                            <option value={mikrotikName?.id || ""}>
+                              {mikrotikName?.name || ""}
+                            </option>
+                          </select>
+                        </div>
+                      )}
                       {/* pppoe package */}
                       <div>
                         <p className="comstomerFieldsTitle">
@@ -338,15 +352,17 @@ export default function CustomerEdit({ single }) {
                           />
                         </div>
                       </div>
-                      <div className="autoDisable">
-                        <label> {t("automaticConnectionOff")} </label>
-                        <input
-                          type="checkBox"
-                          checked={autoDisable}
-                          onChange={(e) => setAutoDisable(e.target.checked)}
-                          disabled
-                        />
-                      </div>
+                      {Getmikrotik.length > 0 && (
+                        <div className="autoDisable">
+                          <label> {t("automaticConnectionOff")} </label>
+                          <input
+                            type="checkBox"
+                            checked={autoDisable}
+                            onChange={(e) => setAutoDisable(e.target.checked)}
+                            disabled
+                          />
+                        </div>
+                      )}
                     </div>
 
                     <div className="pppoeStatus">

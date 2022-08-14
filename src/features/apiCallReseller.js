@@ -458,6 +458,18 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
   }
 };
 
+export const withMtkPackage = async (dispatch, resellerId) => {
+  try {
+    const res = await apiLink({
+      method: "GET",
+      url: `/reseller/package/${resellerId}`,
+    });
+    dispatch(getpppoePackageSuccess(res.data.packages));
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
 export const rechargeHistoryfuncR = async (dispatch, resellerId) => {
   try {
     const res = await apiLink.get(`/reseller/recharge/${resellerId}`);

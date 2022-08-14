@@ -19,21 +19,55 @@ import DatePicker from "react-datepicker";
 export default function CustomerModal() {
   const { t } = useTranslation();
 
+  // import dispatch
+  const dispatch = useDispatch();
+
+  // get user data from redux
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
+
+  // get are from redux
   const area = useSelector((state) => state?.area?.area);
 
+  // get reseller from redux
+  const reseller = useSelector(
+    (state) => state.persistedReducer.auth?.userData
+  );
+
+  // get user role from redux
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+
+  //sub area id state
+  const [subAreaId, setsubAreaId] = useState("");
+
+  // get mikrotik from redux
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+
+  // get mikrotik package from redux
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+
+  // const packages = useSelector((state) => state.package.packages);
+
+  // package rate sate
   const [packageRate, setPackageRate] = useState("");
+
+  // loading state
   const [isLoading, setIsloading] = useState(false);
+
+  // set mikrotik id state
   const [singleMikrotik, setSingleMikrotik] = useState("");
+
+  // set package state
   const [mikrotikPackage, setMikrotikPackage] = useState("");
+
+  // auto disable state
   const [autoDisable, setAutoDisable] = useState(true);
-  const dispatch = useDispatch();
+
+  // set bill date state
   const [billDate, setBillDate] = useState(null);
-  // customer validator
+
+  // form validation validator
   const customerValidator = Yup.object({
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
@@ -50,18 +84,6 @@ export default function CustomerModal() {
     Pcomment: Yup.string(),
   });
 
-  // select subArea
-  // const selectSubArea = (data) => {
-  //   const areaId = data.target.value;
-  //   if (area) {
-  //     const temp = area.find((val) => {
-  //       return val.id === areaId;
-  //     });
-  //     setSubArea(temp);
-  //   }
-  // };
-
-  // const [loadingPac, setLoadingPac] = useState(false);
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -75,17 +97,6 @@ export default function CustomerModal() {
     setSingleMikrotik(id);
   };
 
-  // select subArea
-  // const selectSubArea = (data) => {
-  //   const areaId = data.target.value;
-  //   if (area) {
-  //     const temp = area.find((val) => {
-  //       return val.id === areaId;
-  //     });
-  //     setSubArea(temp);
-  //   }
-  // };
-
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
@@ -93,7 +104,7 @@ export default function CustomerModal() {
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
-  const [subAreaId, setsubAreaId] = useState("");
+
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
@@ -103,10 +114,10 @@ export default function CustomerModal() {
       ispOwner: userData.ispOwner,
       subArea: subAreaId,
       reseller: userData.id,
-      mikrotik: singleMikrotik,
+
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
-      autoDisable: autoDisable,
+
       billingCycle: billDate.toISOString(),
       pppoe: {
         name: Pname,
@@ -117,17 +128,17 @@ export default function CustomerModal() {
       },
       ...rest,
     };
+
+    if (Getmikrotik.length > 0) {
+      mainData.mikrotik = singleMikrotik;
+      mainData.autoDisable = autoDisable;
+    }
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
   const selectArea = (e) => {
     setsubAreaId(e);
   };
-
-  const reseller = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
 
   return (
     <div>
@@ -218,7 +229,7 @@ export default function CustomerModal() {
                         </>
                       )}
 
-                      {userRole === "reseller" && (
+                      {userRole === "reseller" && Getmikrotik.length > 0 && (
                         <>
                           <div>
                             <p className="comstomerFieldsTitle">
@@ -244,6 +255,35 @@ export default function CustomerModal() {
                                   )}
                             </select>
                           </div>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              {t("selectPPPoEPackage")}
+                            </p>
+                            <select
+                              className="form-select mb-3 mw-100"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="">...</option>
+                              {ppPackage.length === undefined
+                                ? ""
+                                : ppPackage?.map((val, key) =>
+                                    reseller.mikrotikPackages.map(
+                                      (p) =>
+                                        p === val.id && (
+                                          <option key={key} value={val.id}>
+                                            {val.name}
+                                          </option>
+                                        )
+                                    )
+                                  )}
+                            </select>
+                          </div>
+                        </>
+                      )}
+
+                      {userRole === "reseller" && Getmikrotik.length == 0 && (
+                        <>
                           <div>
                             <p className="comstomerFieldsTitle">
                               {t("selectPPPoEPackage")}
@@ -366,14 +406,16 @@ export default function CustomerModal() {
                           placeholderText={t("selectBillDate")}
                         />
                       </div>
-                      <div className="autoDisable">
-                        <label> {t("automaticConnectionOff")} </label>
-                        <input
-                          type="checkBox"
-                          checked={autoDisable}
-                          onChange={(e) => setAutoDisable(e.target.checked)}
-                        />
-                      </div>
+                      {Getmikrotik.length > 0 && (
+                        <div className="autoDisable">
+                          <label> {t("automaticConnectionOff")} </label>
+                          <input
+                            type="checkBox"
+                            checked={autoDisable}
+                            onChange={(e) => setAutoDisable(e.target.checked)}
+                          />
+                        </div>
+                      )}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

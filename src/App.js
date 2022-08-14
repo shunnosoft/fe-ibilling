@@ -416,7 +416,7 @@ function App() {
               <Route
                 path="recharge"
                 element={
-                  bpSettings?.hasReseller && bpSettings?.hasMikrotik ? (
+                  bpSettings?.hasReseller ? (
                     <RechargeHistoryofReseller />
                   ) : (
                     <Navigate to={"/"}></Navigate>

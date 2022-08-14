@@ -33,6 +33,7 @@ import {
   getCustomer,
   getMikrotik,
   getSubAreas,
+  withMtkPackage,
 } from "../../features/apiCallReseller";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -58,6 +59,7 @@ export default function Customer() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
+
   const [Customers, setCustomers] = useState(cus);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -151,6 +153,8 @@ export default function Customer() {
   };
 
   useEffect(() => {
+    withMtkPackage(dispatch, resellerId);
+
     if (role === "collector") {
       getMikrotik(dispatch, userData.collector.reseller);
     }
