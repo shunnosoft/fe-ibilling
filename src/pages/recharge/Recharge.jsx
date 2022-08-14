@@ -206,7 +206,7 @@ export default function RechargeHistoryofReseller() {
 
               {userRole !== "collector" ? (
                 <FourGround>
-                  <div className="collectorWrapper">
+                  <div className="collectorWrapper py-2">
                     <div className="selectFilteringg">
                       {userRole === "ispOwner" && (
                         <select
@@ -224,42 +224,38 @@ export default function RechargeHistoryofReseller() {
                         </select>
                       )}
 
-                      <div className="dateDiv  ">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="start"
-                          name="trip-start"
-                          value={moment(dateStart).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setStartDate(e.target.value);
-                          }}
-                          // value="2018-07-22"
+                      <input
+                        className="form-select mx-2"
+                        type="date"
+                        id="start"
+                        name="trip-start"
+                        value={moment(dateStart).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                        }}
+                        // value="2018-07-22"
 
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
-                      <div className="dateDiv">
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="end"
-                          name="trip-start"
-                          value={moment(dateEnd).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setEndDate(e.target.value);
-                          }}
+                        // min="2018-01-01"
+                        // max="2018-12-31"
+                      />
+                      <input
+                        className="form-select"
+                        type="date"
+                        id="end"
+                        name="trip-start"
+                        value={moment(dateEnd).format("YYYY-MM-DD")}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                        }}
 
-                          // value="2018-07-22"
+                        // value="2018-07-22"
 
-                          // min="2018-01-01"
-                          // max="2018-12-31"
-                        />
-                      </div>
+                        // min="2018-01-01"
+                        // max="2018-12-31"
+                      />
                       {/* <div className="submitdiv d-grid gap-2"> */}
                       <button
-                        className="btn btn-outline-primary w-140 mt-2 "
+                        className="btn btn-outline-primary w-140 mt-2 ms-2"
                         type="button"
                         onClick={onClickFilter}
                       >
