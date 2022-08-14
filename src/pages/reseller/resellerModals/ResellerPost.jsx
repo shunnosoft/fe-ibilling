@@ -7,7 +7,12 @@ import * as Yup from "yup";
 import "../reseller.css";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { RADIO, RPD } from "../resellerData";
+import {
+  RADIO,
+  resellerPermissionBan,
+  resellerPermissionEng,
+  RPD,
+} from "../resellerData";
 import Loader from "../../../components/common/Loader";
 import {
   getPackagewithoutmikrotik,
@@ -32,6 +37,7 @@ export default function ResellerPost() {
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
   const [commissionType, setCommissionType] = useState("");
   const [packageRateType, setPackageRateType] = useState("");
+  const [permissions, setPermissions] = useState([]);
 
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
@@ -67,10 +73,34 @@ export default function ResellerPost() {
     if (!bpSettings.hasMikrotik) {
       getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
     }
+    if (localStorage.getItem("netFee:lang") === "en") {
+      setPermissions(resellerPermissionEng);
+    } else {
+      setPermissions(resellerPermissionBan);
+    }
   }, []);
+
+  const permissionHandler = (e) => {
+    const { name, checked } = e.target;
+    if (name === "allChecked") {
+      let temp = permissions.map((event) => ({ ...event, isChecked: checked }));
+      setPermissions(temp);
+    } else {
+      let temp = permissions.map((event) =>
+        event.value === name ? { ...event, isChecked: checked } : event
+      );
+      setPermissions(temp);
+    }
+  };
 
   const resellerHandler = async (data, resetForm) => {
     let commision = data.commissionRate;
+
+    const permissionData = {};
+    permissions.forEach((item) => {
+      permissionData[item.value] = item.isChecked;
+    });
+
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
@@ -79,6 +109,7 @@ export default function ResellerPost() {
         //todo backend
         billCollectionType: "prepaid",
         mikrotikPackages: mikroTikPackagesId,
+        permission: permissionData,
       };
 
       if (bpSettings.hasMikrotik) {
@@ -186,28 +217,28 @@ export default function ResellerPost() {
                       </div>
 
                       {/* second part */}
-                      {/* <div className="secondSection">
+                      <div className="secondSection">
                         <p className="radioTitle">
                           পারমিশন দিন
                           <input
                             id="souceCheck"
                             type="checkbox"
-                            onChange={handleChange}
+                            onChange={permissionHandler}
                             name="allChecked"
                           />
                         </p>
-                        {RBD.map((val, key) => (
+                        {permissions.map((val, key) => (
                           <FtextField
                             key={key}
                             type="checkbox"
                             className="checkInput"
                             checked={val.isChecked}
-                            onChange={handleChange}
+                            onChange={permissionHandler}
                             label={val.label}
                             name={val.value}
                           />
                         ))}
-                      </div> */}
+                      </div>
 
                       {/* start radion button */}
                       <div className="thirdSection">

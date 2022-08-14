@@ -46,8 +46,9 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
     <RootBulkModal modalId={modalId} header={t("updateStatus")}>
       <form onSubmit={changeStatus}>
         <div className="autoDisable">
-          <label>{t("automaticConnectionOff")}</label>
+          <label htmlFor="autoDisable">{t("automaticConnectionOff")}</label>
           <input
+            id="autoDisable"
             type="checkBox"
             checked={autoDisable}
             onChange={(e) => setAutoDisable(e.target.checked)}

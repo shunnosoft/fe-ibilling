@@ -122,6 +122,7 @@ export default function Manager() {
     );
   };
 
+
   return (
     <>
       <Sidebar />

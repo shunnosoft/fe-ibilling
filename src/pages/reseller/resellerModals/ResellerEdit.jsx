@@ -7,7 +7,12 @@ import * as Yup from "yup";
 import "../reseller.css";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { RADIO, RPD } from "../resellerData";
+import {
+  RADIO,
+  resellerPermissionBan,
+  resellerPermissionEng,
+  RPD,
+} from "../resellerData";
 import Loader from "../../../components/common/Loader";
 import {
   editReseller,
@@ -27,8 +32,6 @@ export default function ResellerEdit({ resellerId }) {
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
-  console.log({ resellerId, reseller });
-
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
 
@@ -46,7 +49,8 @@ export default function ResellerEdit({ resellerId }) {
 
   const packages = useSelector((state) => state.package.packages);
 
-  // const [permissions, setPermissions] = useState([]);
+  const [permissions, setPermissions] = useState([]);
+
   useEffect(() => {
     setMikrotikIds_Edit(reseller?.mikrotiks);
 
@@ -56,6 +60,21 @@ export default function ResellerEdit({ resellerId }) {
 
     setAllowedMikrotik(reseller?.mikrotiks);
     setmikroTikPackagesId(reseller?.mikrotikPackages);
+
+    let resellerPermissionLang = [];
+
+    if (localStorage.getItem("netFee:lang") === "en") {
+      resellerPermissionLang = resellerPermissionEng;
+    } else {
+      resellerPermissionLang = resellerPermissionBan;
+    }
+
+    if (reseller) {
+      const temp = resellerPermissionLang.map((item) => {
+        return { ...item, isChecked: reseller.permission[item.value] };
+      });
+      setPermissions(temp);
+    }
   }, [resellerId]);
 
   useEffect(() => {
@@ -83,24 +102,35 @@ export default function ResellerEdit({ resellerId }) {
       .required(t("enterResellerShare")),
   });
 
+  const handleChange = (e) => {
+    const { name, checked } = e.target;
+    if (name === "allChecked") {
+      let temp = permissions.map((event) => ({ ...event, isChecked: checked }));
+      setPermissions(temp);
+    } else {
+      let temp = permissions.map((event) =>
+        event.value === name ? { ...event, isChecked: checked } : event
+      );
+      setPermissions(temp);
+    }
+  };
+
   // const handleChange = (e) => {
   //   const { name, checked } = e.target;
-  //   if (name === "allChecked") {
-  //     let temp = Check.map((event) => ({ ...event, isChecked: checked }));
-  //     setCheck(temp);
-  //   } else {
-  //     let temp = Check.map((event) =>
-  //       event.value === name ? { ...event, isChecked: checked } : event
-  //     );
-  //     console.log(temp);
-  //     setCheck(temp);
-  //   }
+  //   let temp = permissions.map((val) =>
+  //     val.value === name ? { ...val, isChecked: checked } : val
+  //   );
+
+  //   setPermissions(temp);
   // };
-  console.log({ reseller });
   // edit Reseller
   const resellerHandler = (data) => {
     let commision = data.commissionRate;
     if (auth.ispOwner) {
+      const permissionData = {};
+      permissions.forEach((item) => {
+        permissionData[item.value] = item.isChecked;
+      });
       const sendingData = {
         ...data,
         ispOwner: reseller.ispOwner,
@@ -108,6 +138,7 @@ export default function ResellerEdit({ resellerId }) {
         resellerId: reseller.id,
         subAreas: areaIds_Edit,
         mikrotikPackages: mikroTikPackagesId,
+        permission: permissionData,
       };
 
       if (bpSettings.hasMikrotik) {
@@ -203,8 +234,13 @@ export default function ResellerEdit({ resellerId }) {
                   // refMobile: "",
                   // customerAdd: "",
                   // customerEdit: "",
-                  // customerDelete: "",
+                  // customerMikrotikPackageEdit: "",
+                  // customerStatusEdit: "",
+                  // customerAutoDisableEdit: "",
+                  // areaDelete: "",
+                  // areaAdd: "",
                   // monthlyFeeEdit: "",
+                  // customerDelete: "",
                   // billEdit: "",
                   // billPosting: "",
                   // accounts: "",
@@ -244,7 +280,7 @@ export default function ResellerEdit({ resellerId }) {
                       </div>
 
                       {/* second part */}
-                      {/* <div className="secondSection">
+                      <div className="secondSection">
                         <p className="radioTitle">
                           পারমিশন দিন
                           <input
@@ -252,20 +288,25 @@ export default function ResellerEdit({ resellerId }) {
                             type="checkbox"
                             onChange={handleChange}
                             name="allChecked"
+                            checked={permissions.every(
+                              (item) => item.isChecked
+                            )}
                           />
                         </p>
-                        {RBD.map((val, key) => (
-                          <FtextField
-                            key={key}
-                            type="checkbox"
-                            className="checkInput"
-                            checked={val.isChecked}
-                            onChange={handleChange}
-                            label={val.label}
-                            name={val.value}
-                          />
-                        ))}
-                      </div> */}
+                        {permissions.map((val, key) => {
+                          return (
+                            <FtextField
+                              key={key}
+                              type="checkbox"
+                              className="checkInput"
+                              checked={val.isChecked}
+                              onChange={handleChange}
+                              label={val.label}
+                              name={val.value}
+                            />
+                          );
+                        })}
+                      </div>
 
                       {/* start radion button */}
                       <div className="thirdSection">

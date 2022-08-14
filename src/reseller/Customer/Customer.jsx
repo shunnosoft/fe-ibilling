@@ -57,8 +57,9 @@ export default function Customer() {
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
+    (state) => state.persistedReducer.auth?.userData?.permission
   );
   const [Customers, setCustomers] = useState(cus);
   // get specific customer
@@ -315,7 +316,7 @@ export default function Customer() {
                   </li>
                 )}
 
-                {(permission?.customerEdit || role === "reseller") && (
+                {permission?.customerEdit && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerEditModal"
@@ -405,6 +406,8 @@ export default function Customer() {
     { label: "billing_cycle", key: "billingCycle" },
   ];
 
+  console.log(permission);
+
   return (
     <>
       <Sidebar />
@@ -467,7 +470,7 @@ export default function Customer() {
                       )}
                       content={() => componentRef.current}
                     />
-                    {(permission?.customerAdd || role === "reseller") && (
+                    {permission?.customerAdd && (
                       <PersonPlusFill
                         className="addcutmButton"
                         data-bs-toggle="modal"

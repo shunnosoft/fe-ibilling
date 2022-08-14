@@ -27,6 +27,10 @@ export default function CustomerEdit({ single }) {
   const resellerId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
+
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
   const area = useSelector((state) => state?.area?.area);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   const [ppPackage, setppPackage] = useState([]);
@@ -159,6 +163,7 @@ export default function CustomerEdit({ single }) {
     editCustomer(dispatch, mainData, setIsloading);
   };
 
+  console.log(permission);
   return (
     <div>
       <div
@@ -232,6 +237,7 @@ export default function CustomerEdit({ single }) {
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
+                          disabled={!permission.customerMikrotikPackageEdit}
                         >
                           {ppPackage &&
                             ppPackage?.map(
@@ -250,11 +256,13 @@ export default function CustomerEdit({ single }) {
                             )}
                         </select>
                       </div>
+
                       <FtextField
                         type="text"
                         label={t("monthFee")}
                         name="monthlyFee"
                         min={packageRate?.rate || data?.monthlyFee}
+                        disabled={!permission.monthlyFeeEdit}
                       />
                     </div>
 
@@ -339,12 +347,16 @@ export default function CustomerEdit({ single }) {
                         </div>
                       </div>
                       <div className="autoDisable">
-                        <label> {t("automaticConnectionOff")} </label>
+                        <label htmlFor="autoDisable">
+                          {t("automaticConnectionOff")}
+                        </label>
                         <input
                           type="checkBox"
+                          id="autoDisable"
+                          className="form-check-input"
                           checked={autoDisable}
                           onChange={(e) => setAutoDisable(e.target.checked)}
-                          disabled
+                          disabled={!permission.customerAutoDisableEdit}
                         />
                       </div>
                     </div>
@@ -357,13 +369,14 @@ export default function CustomerEdit({ single }) {
                           type="radio"
                           name="staus"
                           value={"active"}
+                          id="changeToActive"
                           onChange={(e) => setStatus(e.target.value)}
                           checked={status === "active"}
-                          disabled
+                          disabled={!permission.customerStatusEdit}
                         />
                         <label
                           className="form-check-label"
-                          htmlFor="inlineRadio1"
+                          htmlFor="changeToActive"
                         >
                           {t("active")}
                         </label>
@@ -376,6 +389,7 @@ export default function CustomerEdit({ single }) {
                           value={"inactive"}
                           onChange={(e) => setStatus(e.target.value)}
                           checked={status === "inactive"}
+                          disabled={!permission.customerStatusEdit}
                         />
                         <label
                           className="form-check-label"
