@@ -14,6 +14,7 @@ import {
   CashStack,
   PrinterFill,
   ArrowClockwise,
+  FileExcelFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -40,6 +41,7 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
+import { CSVLink } from "react-csv";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -372,6 +374,37 @@ export default function Customer() {
     [t]
   );
 
+  //export customer data
+  let customerForCsVTableInfo = Customers.map((customer) => {
+    return {
+      name: customer.name,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+
   return (
     <>
       <Sidebar />
@@ -415,13 +448,15 @@ export default function Customer() {
                   </div> */}
 
                   <div className="addAndSettingIcon">
-                    {(permission?.customerAdd || role === "reseller") && (
-                      <PersonPlusFill
-                        className="addcutmButton"
-                        data-bs-toggle="modal"
-                        data-bs-target="#customerModal"
-                      />
-                    )}
+                    <CSVLink
+                      data={customerForCsVTableInfo}
+                      filename={"ispOwnerData.company"}
+                      headers={customerForCsVTableInfoHeader}
+                      title="Customer Report"
+                    >
+                      <FileExcelFill className="addcutmButton" />
+                    </CSVLink>
+
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
                       trigger={() => (
@@ -432,6 +467,13 @@ export default function Customer() {
                       )}
                       content={() => componentRef.current}
                     />
+                    {(permission?.customerAdd || role === "reseller") && (
+                      <PersonPlusFill
+                        className="addcutmButton"
+                        data-bs-toggle="modal"
+                        data-bs-target="#customerModal"
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>
