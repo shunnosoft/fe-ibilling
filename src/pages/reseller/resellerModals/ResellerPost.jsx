@@ -217,7 +217,7 @@ export default function ResellerPost() {
                       </div>
 
                       {/* second part */}
-                      <div className="secondSection">
+                      <div className="secondSection text-start">
                         <p className="radioTitle">
                           পারমিশন দিন
                           <input
@@ -227,16 +227,19 @@ export default function ResellerPost() {
                             name="allChecked"
                           />
                         </p>
-                        {permissions.map((val, key) => (
-                          <FtextField
-                            key={key}
-                            type="checkbox"
-                            className="checkInput"
-                            checked={val.isChecked}
-                            onChange={permissionHandler}
-                            label={val.label}
-                            name={val.value}
-                          />
+
+                        {permissions.map((item, i) => (
+                          <div key={i} className="displayFlex">
+                            <input
+                              key={i}
+                              type="checkbox"
+                              className="form-check-input"
+                              checked={item.isChecked}
+                              onChange={permissionHandler}
+                              name={item.value}
+                            />
+                            <label>{item.label}</label>
+                          </div>
                         ))}
                       </div>
 

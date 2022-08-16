@@ -554,9 +554,10 @@ export default function StaticCustomerEdit({ single }) {
                             className="form-control mw-100"
                             selected={promiseDate}
                             onChange={(date) => setPromiseDate(date)}
-                            dateFormat="dd/MM/yyyy"
+                            dateFormat="dd/MM/yyyy:hh:mm"
                             placeholderText={t("selectDate")}
                             minDate={new Date(customer?.billingCycle)}
+                            showTimeSelect
                           />
                         </div>
                       )}
