@@ -64,8 +64,8 @@ export default function Register() {
       pack: singlePakage[0].subPackageName,
       packType: pakage.packageName,
       reference: {
-        name: refName || "আব্দুর রাজ্জাক",
-        mobile: refMobile || "01321141790",
+        name: refName || "তৌকির হোসেন",
+        mobile: refMobile || "01321141785",
       },
     };
 
