@@ -28,10 +28,6 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
   //validator
   const pppoeValidator = Yup.object({
     rate: Yup.number(),
-    // percentage: Yup.number("Input must be a number").max(
-    //   100,
-    //   "percentage must be 0-100"
-    // ),
   });
 
   const pppoeEditHandler = async (formValue, resetForm) => {
@@ -44,10 +40,8 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
         rate: formValue.rate.toString(),
         mikrotikId: data?.mikrotik,
         pppPackageId: data?.id,
+        aliasName: formValue.aliasName,
       };
-      // if (formValue.percentage) {
-      //   sendingData.percentage.ispOwner = formValue.percentage;
-      // }
       editPPPoEpackageRate(dispatch, sendingData, setIsLoading, resetForm);
     }
   };
@@ -78,6 +72,7 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
               <Formik
                 initialValues={{
                   rate: data?.rate || "",
+                  aliasName: data?.aliasName || "",
                   // percentage: data?.percentage || 0,
                 }}
                 validationSchema={pppoeValidator}
@@ -94,56 +89,12 @@ export default function PPPoEpackageEditModal({ singlePackage }) {
                       label={t("packageRate")}
                       name="rate"
                     />
-
-                    {/* <div className="form-check mb-3">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="flexRadioDefault2"
-                        value={radioChecked}
-                        onChange={(e) => setRadioChecked(e.target.checked)}
-                      />
-                      <label
-                        className="form-check-label changeLabelFontColor"
-                        htmlFor="flexRadioDefault2"
-                      >
-                        Divide Package for Reseller commision
-                      </label>
-                    </div>
-
-                    {radioChecked && (
-                      <>
-                        <label
-                          htmlFor="selectReseller"
-                          className="form-input-label changeLabelFontColor"
-                        >
-                          {t("selectReseller")}
-                        </label>
-                        <select
-                          id="selectReseller"
-                          className="form-select mw-100 mb-2"
-                        >
-                          {reseller.map((item) => (
-                            <option key={reseller.id} value={reseller.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                        <FtextField
-                          min={0}
-                          type="number"
-                          label={t("percentage")}
-                          name="percentage"
-                        /> 
-                      </>
-                    )}*/}
-
-                    {/* <FtextField
+                    <FtextField
                       min={0}
-                      type="number"
-                      label={t("editRate")}
-                      name="rate"
-                    /> */}
+                      type="text"
+                      label={t("packageAliasName")}
+                      name="aliasName"
+                    />
 
                     <div className="modal-footer">
                       <button

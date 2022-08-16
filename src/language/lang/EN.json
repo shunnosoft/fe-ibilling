@@ -508,5 +508,6 @@
   "viewReport": "Report View",
   "salaryType": "Salary Type",
   "percentage": "percentage",
-  "promiseDate": "Promise Date"
+  "promiseDate": "Promise Date",
+  "packageAliasName":"Alias Name"
 }

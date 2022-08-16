@@ -14,7 +14,6 @@ import {
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
-// import { Link } from "react-router-dom";
 
 // internal imports
 import { toast, ToastContainer } from "react-toastify";
@@ -39,7 +38,6 @@ import apiLink from "../../api/apiLink";
 import { useLayoutEffect } from "react";
 import Table from "../../components/table/Table";
 import CustomerSync from "./configMikrotikModals/CustomerSync";
-// import TdLoader from "../../components/common/TdLoader";
 import { useTranslation } from "react-i18next";
 
 export default function ConfigMikrotik() {
@@ -223,25 +221,30 @@ export default function ConfigMikrotik() {
   const columns1 = React.useMemo(
     () => [
       {
-        width: "20%",
+        width: "15%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "30%",
+        width: "25%",
         Header: t("package"),
         accessor: "name",
       },
       {
-        width: "25%",
+        width: "20%",
         Header: t("rate"),
         accessor: "rate",
       },
+      {
+        width: "20%",
+        Header: t("packageAliasName"),
+        accessor: "aliasName",
+      },
 
       {
-        width: "25%",
+        width: "20%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 

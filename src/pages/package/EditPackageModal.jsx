@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 // import { collectorData } from "../CollectorInputs";
 import "../Customer/customer.css";
-// import { FtextField } from "../../../components/common/FtextField";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
 import { editPackagewithoutmikrotik } from "../../features/apiCalls";

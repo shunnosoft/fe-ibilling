@@ -510,5 +510,7 @@
   "viewReport": "রিপোর্ট ভিউ",
   "salaryType": "স্যালারি টাইপ",
   "percentage": "পার্সেন্টেজ",
-  "promiseDate": "প্রমিজ ডেট"
+  "promiseDate": "প্রমিজ ডেট",
+  "packageAliasName":"এলিয়াস নাম"
+
 }
