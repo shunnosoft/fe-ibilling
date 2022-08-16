@@ -13,6 +13,7 @@ import {
   CashStack,
   PrinterFill,
   ArrowClockwise,
+  ChatText,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -43,6 +44,7 @@ import CustomerDetails from "../../pages/staticCustomer/customerCRUD/CustomerDet
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 export default function RstaticCustomer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
@@ -318,56 +320,22 @@ export default function RstaticCustomer() {
                   </li>
                 )}
 
-                {/* {(permission?.customerEdit || role === "ispOwner") && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerEditModal"
-                  onClick={() => {
-                    getSpecificCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">এডিট</p>
+                {original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("message")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )} */}
-                {/* {role !== "collector" && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerReport"
-                  onClick={() => {
-                    getSpecificCustomerReport(original);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CashStack />
-                      <p className="actionP">রিপোর্ট</p>
-                    </div>
-                  </div>
-                </li>
-              )} */}
-
-                {/* {permission?.customerDelete && role === "ispOwner" && (
-                <li
-                  onClick={() => {
-                    let con = window.confirm(
-                      `${original.name} গ্রাহক ডিলিট করতে চান?`
-                    );
-                    con && deleteCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item actionManager">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">ডিলিট</p>
-                    </div>
-                  </div>
-                </li>
-              )} */}
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -435,9 +403,10 @@ export default function RstaticCustomer() {
               <CustomerBillCollect single={singleCustomer} />
               <AddStaticCustomer />
               <CustomerDetails single={singleCustomer} />
-              {/* <CustomerPost />
-              <CustomerEdit single={singleCustomer} />
-              <CustomerReport single={customerReportData} /> */}
+              <SingleMessage
+                single={singleCustomer}
+                sendCustomer="staticCustomer"
+              />
 
               {/* Model finish */}
 

@@ -16,9 +16,13 @@ import { useTranslation } from "react-i18next";
 //   fetchCollector,
 // } from "../../../features/collectorSlice";
 
-export default function CollectorEdit({ single }) {
+export default function CollectorEdit({ collectorId }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  // get all collector from redux
+  const collector = useSelector((state) => state?.collector?.collector);
+  const single = collector.find((item) => item.id === collectorId);
+
   const area = useSelector((state) => state.area.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
