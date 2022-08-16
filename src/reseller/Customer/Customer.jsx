@@ -15,6 +15,7 @@ import {
   PrinterFill,
   ArrowClockwise,
   FileExcelFill,
+  ChatText,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -43,6 +44,7 @@ import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import { CSVLink } from "react-csv";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -370,6 +372,23 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
+
+                {original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("message")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -491,6 +510,7 @@ export default function Customer() {
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
+              <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
               {/* Model finish */}
 

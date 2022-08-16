@@ -6,6 +6,7 @@ import {
   PenFill,
   ArrowClockwise,
   KeyFill,
+  ChatText,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +29,7 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -64,12 +66,7 @@ export default function Collector() {
 
   const [singleCollector, setSingleCollector] = useState("");
   const getSpecificCollector = (id) => {
-    if (collector.length !== undefined) {
-      const temp = collector.find((val) => {
-        return val.id === id;
-      });
-      setSingleCollector(temp);
-    }
+    setSingleCollector(id);
   };
 
   useEffect(() => {
@@ -190,6 +187,23 @@ export default function Collector() {
                   </div>
                 </li>
               )}
+
+              {original.mobile && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerMessageModal"
+                  onClick={() => {
+                    getSpecificCollector(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ChatText />
+                      <p className="actionP">{t("message")}</p>
+                    </div>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
         ),
@@ -235,8 +249,12 @@ export default function Collector() {
               {/* modals */}
               <CollectorPost />
               <CollectorDetails single={singleCollector} />
-              <CollectorEdit single={singleCollector} />
+              <CollectorEdit collectorId={singleCollector} />
               <PasswordReset resetCustomerId={userId} />
+              <SingleMessage
+                single={singleCollector}
+                sendCustomer="collector"
+              />
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
