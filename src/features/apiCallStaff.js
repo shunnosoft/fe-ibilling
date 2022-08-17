@@ -110,6 +110,7 @@ export const addSalaryApi = async (dispatch, data, resetForm, setIsLoading) => {
   try {
     const res = await apiLink.post("/staff/salary", data);
     dispatch(addSalarySuccess(res.data));
+    console.log(res.data);
     setIsLoading(false);
     document.querySelector("#addSalaryPostModal").click();
     langMessage(
@@ -156,3 +157,20 @@ export const updateSalary = async (dispatch, salaryId, data, setIsLoading) => {
     setIsLoading(false);
   }
 };
+
+// export const deleteSalary = async (dispatch, salaryId, setIsLoading) => {
+//   setIsLoading(true);
+//   try {
+//     const res = await apiLink.patch("/staff/salary/" + salaryId);
+//     console.log(res.data);
+//     dispatch(updateSalarySuccess(res.data));
+//     document.querySelector("#editSalaryPostModal").click();
+//     setIsLoading(false);
+//   } catch (err) {
+//     if (err.response) {
+//       toast.error(err.response.data.message);
+//       console.log(err.response);
+//     }
+//     setIsLoading(false);
+//   }
+// };

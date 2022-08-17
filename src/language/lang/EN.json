@@ -509,5 +509,7 @@
   "salaryType": "Salary Type",
   "percentage": "percentage",
   "promiseDate": "Promise Date",
-  "packageAliasName":"Alias Name"
+  "packageAliasName": "Alias Name",
+  "online": "Online",
+  "ofline": "Offline"
 }

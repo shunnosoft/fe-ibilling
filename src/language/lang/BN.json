@@ -511,6 +511,7 @@
   "salaryType": "স্যালারি টাইপ",
   "percentage": "পার্সেন্টেজ",
   "promiseDate": "প্রমিজ ডেট",
-  "packageAliasName":"এলিয়াস নাম"
-
+  "packageAliasName": "এলিয়াস নাম",
+  "online": "অনলাইন",
+  "ofline": "অফলাইন"
 }

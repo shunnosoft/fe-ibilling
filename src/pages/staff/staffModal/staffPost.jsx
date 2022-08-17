@@ -22,8 +22,8 @@ export default function StaffPost() {
   );
 
   // salary type state
-  const [salaryType, setSalaryType] = useState("Montly");
-  console.log(salaryType);
+  // const [salaryType, setSalaryType] = useState("Montly");
+
   //validator
   const resellerValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
@@ -46,7 +46,6 @@ export default function StaffPost() {
       fatherName: data.fatherName,
       address: data.address,
       salary: data.salary,
-      salaryType,
       nid: data.nid,
       reference: {
         name: data.refName,
@@ -141,7 +140,7 @@ export default function StaffPost() {
                         label={t("salary")}
                         name="salary"
                       />
-                      <div>
+                      {/* <div>
                         <h6 style={{ marginBottom: "-5px" }}>Salary Type</h6>
 
                         <select
@@ -155,7 +154,7 @@ export default function StaffPost() {
                           </option>
                           <option value="daily">Daily</option>
                         </select>
-                      </div>
+                      </div> */}
                     </div>
 
                     <Card>

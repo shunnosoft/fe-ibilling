@@ -24,5 +24,5 @@ const addClass = {
 };
 
 export const badge = (item) => {
-  return <span className={`badge   bg-${addClass[item]}`}>{item}</span>;
+  return <span className={`badge bg-${addClass[item]}`}>{item}</span>;
 };

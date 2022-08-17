@@ -26,6 +26,7 @@ const Staff = () => {
   );
 
   const getAllStaffs = useSelector((state) => state?.staff?.staff);
+
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -87,15 +88,20 @@ const Staff = () => {
           return badge(value);
         },
       },
-      {
-        width: "20%",
-        Header: t("salaryType"),
-        accessor: "salaryType",
-      },
+      // {
+      //   width: "20%",
+      //   Header: t("salaryType"),
+      //   accessor: "salaryType",
+      // },
       {
         width: "20%",
         Header: t("salary"),
         accessor: "salary",
+      },
+      {
+        width: "20%",
+        Header: t("due"),
+        accessor: "due",
       },
       {
         width: "12%",

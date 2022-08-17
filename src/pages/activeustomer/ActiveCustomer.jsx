@@ -24,22 +24,18 @@ import { useTranslation } from "react-i18next";
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  const mtkIsLoading = useSelector((state) => state?.mikrotik?.isLoading);
+
   const [selectedMikrotikId, setMikrotikId] = useState();
+
   const singleMik = mikrotik.find((item) => item.id === selectedMikrotikId)
     ? mikrotik.find((item) => item.id === selectedMikrotikId)
     : {};
 
-  const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+  let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
 
-  const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
+  // const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
 
   const [loading, setLoading] = useState(false);
-  // const [isDeleting, setIsDeleting] = useState(false);
-
-  const [whatYouWantToShow, setWhatYouWantToShow] = useState(
-    "showActiveMikrotikUser"
-  );
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -57,35 +53,28 @@ export default function ConfigMikrotik() {
 
     if (mtkId) {
       dispatch(resetMikrotikUserAndPackage());
-      fetchActivepppoeUser(dispatch, IDs, name, setLoading);
+      fetchpppoeUser(dispatch, IDs, name, setLoading);
     }
   }, [ispOwnerId, selectedMikrotikId, dispatch, mikrotik]);
 
-  const selectMikrotikOptionsHandler = (e) => {
-    const original = e.target.value;
-
-    const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: selectedMikrotikId,
-    };
-
-    dispatch(resetMikrotikUserAndPackage());
-
-    if (original === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      setWhatYouWantToShow("showActiveMikrotikUser");
-    } else if (original === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-      setWhatYouWantToShow("showAllMikrotikUser");
+  const filterIt = (e) => {
+    let temp;
+    if (e.target.value === "allCustomer") {
+      setAllUsers(allMikrotikUsers);
+    } else if (e.target.value === "true") {
+      temp = allMikrotikUsers.filter((item) => item.running == true);
+      setAllUsers(temp);
+    } else if (e.target.value === "false") {
+      temp = allMikrotikUsers.filter((item) => item.running != true);
+      setAllUsers(temp);
     }
-
-    // setWhatYouWantToShow(original);
   };
+
   const mikrotiSelectionHandler = (e) => {
     const original = e.target.value;
     setMikrotikId(original);
   };
-  const [isRefrsh, setIsRefrsh] = useState(false);
+
   const refreshHandler = () => {
     const IDs = {
       ispOwner: ispOwnerId,
@@ -93,89 +82,12 @@ export default function ConfigMikrotik() {
     };
 
     dispatch(resetMikrotikUserAndPackage());
-    if (whatYouWantToShow === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
-    } else if (whatYouWantToShow === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
-    }
+    // fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
+
+    fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
   };
-  const columns2 = React.useMemo(
-    () => [
-      {
-        width: "8%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        width: "10%",
-        Header: t("status"),
-        Cell: <Wifi color="green" />,
-      },
-      {
-        width: "16%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "15%",
-        Header: t("address"),
-        accessor: "address",
-      },
-      {
-        width: "17%",
-        Header: "RX",
-        accessor: "rxByte",
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {(original?.rxByte / 1024 / 1024).toFixed(2) + " MB"}
-          </div>
-        ),
-      },
-      {
-        width: "17%",
-        Header: "TX",
-        accessor: "txByte",
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {(original?.txByte / 1024 / 1024).toFixed(2) + " MB"}
-          </div>
-        ),
-      },
 
-      {
-        width: "17%",
-        Header: t("upTime"),
-        accessor: "uptime",
-
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {original?.uptime
-              .replace("w", "w ")
-              .replace("d", "d ")
-              .replace("h", "h ")
-              .replace("m", "m ")
-              .replace("s", "s")}
-          </div>
-        ),
-      },
-    ],
-    [t]
-  );
-  const columns3 = React.useMemo(
+  const columns = React.useMemo(
     () => [
       {
         width: "8%",
@@ -248,7 +160,7 @@ export default function ConfigMikrotik() {
     ],
     [t]
   );
-  const [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  let [allUsers, setAllUsers] = useState(allMikrotikUsers);
   useEffect(() => {
     setAllUsers(allMikrotikUsers);
   }, [allMikrotikUsers]);
@@ -294,74 +206,34 @@ export default function ConfigMikrotik() {
                         })}
                       </select>
                     </div>
+
                     <div className="mikrotik-filter ms-4">
                       <h6 className="mb-0"> {t("selectCustomer")} </h6>
                       <select
                         id="selectMikrotikOption"
-                        onChange={selectMikrotikOptionsHandler}
+                        onChange={filterIt}
                         className="form-select mt-0"
                       >
-                        <option value="showActiveMikrotikUser">
-                          {t("activeCustomer")}
-                        </option>
-                        <option value="showAllMikrotikUser">
+                        <option
+                          selected={loading === true}
+                          value={"allCustomer"}
+                        >
                           {t("sokolCustomer")}
                         </option>
+                        <option value={"true"}>{t("online")}</option>
+                        <option value={"false"}>{t("ofline")}</option>
                       </select>
                     </div>
-                  </div>
-
-                  {/* PPPoE users */}
-                  <div className="table-section">
-                    {whatYouWantToShow === "showActiveMikrotikUser" && (
-                      <Table
-                        isLoading={loading}
-                        columns={columns2}
-                        data={activeUser}
-                      ></Table>
-                    )}
+                    {/* )} */}
                   </div>
 
                   {/* Active PPPoE users */}
                   <div className="table-section">
-                    {whatYouWantToShow === "showAllMikrotikUser" && (
-                      // <>
-                      //   <h2
-                      //     style={{
-                      //       width: "100%",
-                      //       textAlign: "center",
-                      //       marginTop: "50px",
-                      //     }}
-                      //   >
-                      //     সকল গ্রাহক
-                      //   </h2>
-                      //   <div
-                      //     className="LeftSideMikrotik"
-                      //     style={{
-                      //       widhth: "100%",
-                      //       display: "flex",
-                      //       alignItems: "center",
-                      //       justifyContent: "flex-end",
-                      //     }}
-                      //   >
-                      //     <select
-                      //       id="selectMikrotikOption"
-                      //       onChange={filterIt}
-                      //       className="form-select"
-                      //       style={{ marginBottom: "-10px" }}
-                      //     >
-                      //       <option value={""}>সকল গ্রাহক</option>;
-                      //       <option value={"true"}>অনলাইন</option>;
-                      //       <option value={"false"}>অফলাইন</option>;
-                      //     </select>
-                      //   </div>
-
-                      <Table
-                        isLoading={loading}
-                        columns={columns3}
-                        data={allUsers}
-                      ></Table>
-                    )}
+                    <Table
+                      isLoading={loading}
+                      columns={columns}
+                      data={allUsers}
+                    ></Table>
                   </div>
                 </div>
               </FourGround>

@@ -21,10 +21,7 @@ export default function StaffSalaryEditModal({ salaryId }) {
     state.staff.salary.find((item) => item.id === salaryId)
   );
 
-  console.log(salaryInfo);
-
   let restSalary = Number(salaryInfo?.due) - amount;
-  console.log(restSalary);
 
   //validator
   // const salaryValidaiton = Yup.object({
@@ -46,7 +43,6 @@ export default function StaffSalaryEditModal({ salaryId }) {
       year,
       month,
     };
-    console.log(sendingData);
     updateSalary(dispatch, salaryId, sendingData, setIsLoading);
   };
 

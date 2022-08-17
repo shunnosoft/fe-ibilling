@@ -16,6 +16,8 @@ import StaffSalaryEditModal from "./StaffSalaryEditModal";
 import { getSalaryApi, getStaffs } from "../../../features/apiCallStaff";
 import Table from "../../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
+import { month } from "../../../components/common/getMonth";
 
 export default function StaffSalary() {
   const { t } = useTranslation();
@@ -63,6 +65,9 @@ export default function StaffSalary() {
         width: "18%",
         Header: t("month"),
         accessor: "month",
+        Cell: ({ cell: { value } }) => {
+          return month(value);
+        },
       },
       {
         width: "18%",
@@ -71,8 +76,11 @@ export default function StaffSalary() {
       },
       {
         width: "18%",
-        Header: t("due"),
-        accessor: "due",
+        Header: t("createdAt"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm A");
+        },
       },
 
       {
@@ -98,18 +106,14 @@ export default function StaffSalary() {
                   editHandler(original.id);
                 }}
               >
-                <div className="dropdown-item">
+                {/* <div className="dropdown-item">
                   <div className="customerAction">
                     <PenFill />
                     <p className="actionP">{t("edit")}</p>
                   </div>
-                </div>
+                </div> */}
               </li>
-              <li
-              // onClick={() => {
-              //   deleteStaff(data.id);
-              // }}
-              >
+              <li>
                 <div className="dropdown-item actionManager">
                   <div className="customerAction">
                     <ArchiveFill />
@@ -172,7 +176,7 @@ export default function StaffSalary() {
                   </div>
 
                   <StaffSalaryPostModal staffId={staffId} />
-                  <StaffSalaryEditModal salaryId={salaryId} />
+                  {/* <StaffSalaryEditModal salaryId={salaryId} /> */}
                 </div>
               </FourGround>
               <Footer />
