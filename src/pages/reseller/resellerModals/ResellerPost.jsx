@@ -347,7 +347,9 @@ export default function ResellerPost() {
                             className="form-select mw-100 mt-0"
                             onChange={(e) => setPackageRateType(e.target.value)}
                           >
-                            <option value="">Package Rate Type</option>
+                            <option defaultValue="" disabled>
+                              Select
+                            </option>
 
                             <option value="percentage">Percentage</option>
                             <option value="fixedRate">Fixed Rate</option>
