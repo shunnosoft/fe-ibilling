@@ -31,6 +31,8 @@ export default function StaffEdit({ staffId }) {
       .min(11, t("write11DigitMobileNumber"))
       .max(11, t("over11DigitMobileNumber"))
       .required(t("writeMobileNumber")),
+    salary: Yup.number().required(t("salary")),
+    due: Yup.number().required(t("due")),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     website: Yup.string(),
@@ -41,6 +43,8 @@ export default function StaffEdit({ staffId }) {
     const sendingData = {
       name: data.name,
       mobile: data.mobile,
+      salary: data.salary,
+      due: data.due,
       email: data.email,
       fatherName: data.fatherName,
       address: data.address,
@@ -87,6 +91,8 @@ export default function StaffEdit({ staffId }) {
                 initialValues={{
                   name: staffData?.name || "",
                   mobile: staffData?.mobile || "",
+                  salary: staffData?.salary || 0,
+                  due: staffData?.due || 0,
                   email: staffData?.email || "",
                   fatherName: staffData?.name || "",
                   nid: staffData?.nid || "",
@@ -116,15 +122,23 @@ export default function StaffEdit({ staffId }) {
                         label={t("mobile")}
                         name="mobile"
                       />
-                      <FtextField type="text" label={t("email")} name="email" />
+                      <FtextField
+                        type="number"
+                        label={t("salary")}
+                        name="salary"
+                      />
                     </div>
 
                     <div className="displayGrid3">
+                      <FtextField type="number" label={t("due")} name="due" />
+                      <FtextField type="text" label={t("email")} name="email" />
                       <FtextField
                         type="text"
                         label={t("parentName")}
                         name="fatherName"
                       />
+                    </div>
+                    <div className="displayGrid3">
                       <FtextField type="text" label={t("NIDno")} name="nid" />
                       <FtextField
                         type="text"
