@@ -39,6 +39,7 @@ import { easeQuadIn } from "d3-ease";
 import Table from "../../components/table/Table";
 import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
+import { Accordion } from "react-bootstrap";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -519,250 +520,296 @@ export default function Home() {
             </div>
           </div>
           <hr />
-          {role === "ispOwner" && (
-            <>
-              <div className="row">
-                <h3>{t("roleAdmin")}</h3>
-                <div className="col-md-3">
-                  <div id="card12" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("totalCollection")}</p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat.ispOwnerBillCollection)}
-                      </h2>
 
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("today")}:{" "}
-                        {FormatNumber(customerStat.ispOwnerBillCollectionToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card8" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("cost")}</p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat.ispOwnerExpenditure)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card7" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalExpenditure")}
-                      </p>
-                      <h2>৳ {FormatNumber(customerStat.totalExpenditure)}</h2>
+          <Accordion alwaysOpen>
+            {role === "ispOwner" && (
+              <>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>
+                    <h3 className="mb-0">{t("roleAdmin")}</h3>
+                  </Accordion.Header>
 
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalExpenditure")}:{" "}
-                        {FormatNumber(customerStat.totalExpenditureToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card11" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("salary")}</p>
-                      <h2>৳ {FormatNumber(customerStat.totalSalary)}</h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div className="row">
-                <h3 className="mt-4">{t("roleManager")}</h3>
-                <div className="col-md-3">
-                  <div id="card12" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("customerCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat.totalManagerCollection)}
-                      </h2>
+                  <Accordion.Body>
+                    <div className="row">
+                      <div className="col-md-3">
+                        <div id="card12" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("totalCollection")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.ispOwnerBillCollection
+                              )}
+                            </h2>
 
-                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                            <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                              {t("today")}:{" "}
+                              {FormatNumber(
+                                customerStat.ispOwnerBillCollectionToday
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card8" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>{t("cost")}</p>
+                            <h2>
+                              ৳ {FormatNumber(customerStat.ispOwnerExpenditure)}
+                            </h2>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card7" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("totalExpenditure")}
+                            </p>
+                            <h2>
+                              ৳ {FormatNumber(customerStat.totalExpenditure)}
+                            </h2>
+
+                            <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                              {t("todayTotalExpenditure")}:{" "}
+                              {FormatNumber(customerStat.totalExpenditureToday)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card11" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <CurrencyDollar />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>{t("salary")}</p>
+                            <h2>৳ {FormatNumber(customerStat.totalSalary)}</h2>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header>
+                    <h3 className="mb-0">{t("roleManager")}</h3>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <div className="row">
+                      <div className="col-md-3">
+                        <div id="card12" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("customerCollection")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.totalManagerCollection
+                              )}
+                            </h2>
+
+                            {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("totalCollectorDeposite")}:{" "}
                         {FormatNumber(customerStat.totalDepositByCollectors)}
                       </p> */}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card14" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("depositCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat.totalDepositByCollectors)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card5" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalMonthlyCollection")}
-                      </p>
-                      <h2>
-                        ৳{" "}
-                        {FormatNumber(
-                          customerStat.totalManagerCollection +
-                            customerStat.totalDepositByCollectors
-                        )}
-                      </h2>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card14" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("depositCollection")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.totalDepositByCollectors
+                              )}
+                            </h2>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card5" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("totalMonthlyCollection")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.totalManagerCollection +
+                                  customerStat.totalDepositByCollectors
+                              )}
+                            </h2>
 
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:{" "}
-                        {FormatNumber(customerStat.totalManagerCollectionToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                            <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                              {t("todayTotalCollectionByManager")}:{" "}
+                              {FormatNumber(
+                                customerStat.totalManagerCollectionToday
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                <div className="col-md-3" key={3}>
-                  <div id="card6" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <BarChartFill />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalManagerDeposite")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat.totalManagerDeposit)}
-                      </h2>
+                      <div className="col-md-3" key={3}>
+                        <div id="card6" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <BarChartFill />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("totalManagerDeposite")}
+                            </p>
+                            <h2>
+                              ৳ {FormatNumber(customerStat.totalManagerDeposit)}
+                            </h2>
 
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalManagerDeposite")}:{" "}
-                        {FormatNumber(customerStat.totalManagerDepositToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                            <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                              {t("todayTotalManagerDeposite")}:{" "}
+                              {FormatNumber(
+                                customerStat.totalManagerDepositToday
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                <div className="col-md-3">
-                  <div id="card8" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("cost")}</p>
-                      <h2>৳ {FormatNumber(customerStat.managerExpenditure)}</h2>
+                      <div className="col-md-3">
+                        <div id="card8" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>{t("cost")}</p>
+                            <h2>
+                              ৳ {FormatNumber(customerStat.managerExpenditure)}
+                            </h2>
 
-                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                            {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalExpenditure")}:{" "}
                         {FormatNumber(customerStat.totalExpenditureToday)}
                       </p> */}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card7" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <CurrencyDollar />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("managersBalance")}
+                            </p>
+                            <h2>৳ {managerBalanceCalculation()}</h2>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card7" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>৳ {managerBalanceCalculation()}</h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div className="row ">
-                <h3 className="mt-4">{t("roleCollector")}</h3>
-                <div className="col-md-3">
-                  <div id="card9" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("totalCollection")}</p>
-                      <h2>
-                        ৳{" "}
-                        {FormatNumber(
-                          customerStat.totalBillCollectionByCollector
-                        )}
-                      </h2>
+                  </Accordion.Body>
+                </Accordion.Item>
 
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByCollector")}:{" "}
-                        {FormatNumber(calculationOfBillStat())}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3" key={2}>
-                  <div id="card10" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <PersonCheckFill />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalManagerDeposite")}
-                      </p>
-                      <h2>৳ {FormatNumber(totalCollectorDeposite())}</h2>
+                <Accordion.Item eventKey="2">
+                  <Accordion.Header className="shadow-none">
+                    <h3 className="mb-0">{t("roleCollector")}</h3>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <div className="row ">
+                      <div className="col-md-3">
+                        <div id="card9" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <CurrencyDollar />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("totalCollection")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.totalBillCollectionByCollector
+                              )}
+                            </h2>
 
-                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                            <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                              {t("todayTotalCollectionByCollector")}:{" "}
+                              {FormatNumber(calculationOfBillStat())}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3" key={2}>
+                        <div id="card10" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <PersonCheckFill />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("totalManagerDeposite")}
+                            </p>
+                            <h2>৳ {FormatNumber(totalCollectorDeposite())}</h2>
+
+                            {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalCollectorDeposite")}:{" "}
                         {FormatNumber(customerStat.inactive)}
                       </p> */}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card13" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>৳ {customerStat.totalBalanceByCollectors}</h2>
-                    </div>
-                  </div>
-                </div>
-                {/* <div className="col-md-3">
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card13" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <CurrencyDollar />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("managersBalance")}
+                            </p>
+                            <h2>৳ {customerStat.totalBalanceByCollectors}</h2>
+                          </div>
+                        </div>
+                      </div>
+                      {/* <div className="col-md-3">
                   <div id="card13" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
@@ -780,7 +827,7 @@ export default function Home() {
                   </div>
                 </div> */}
 
-                {/* <div className="col-md-3">
+                      {/* <div className="col-md-3">
                   <div id="card12" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
@@ -797,14 +844,17 @@ export default function Home() {
                     </div>
                   </div>
                 </div> */}
-              </div>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
 
-              {/* <div className="row">
+                {/* <div className="row">
                 <h3>{t("other")}</h3>
              
               </div> */}
-            </>
-          )}
+              </>
+            )}
+          </Accordion>
           {/* chart section */}
           {/* <h2 className="dashboardTitle mt-2">কালেকশন</h2> */}
           <br />
