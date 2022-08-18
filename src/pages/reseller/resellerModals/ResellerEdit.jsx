@@ -34,10 +34,12 @@ export default function ResellerEdit({ resellerId }) {
   });
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
-
   const [allowedMikrotik, setAllowedMikrotik] = useState([]);
   const [mikrotikIds_Edit, setMikrotikIds_Edit] = useState([]);
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
+  const [commissionType, setCommissionType] = useState("");
+  const [packageRateType, setPackageRateType] = useState("");
+  const [packageCommisson, setPackageCommission] = useState([]);
 
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
@@ -52,15 +54,6 @@ export default function ResellerEdit({ resellerId }) {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
-    setMikrotikIds_Edit(reseller?.mikrotiks);
-
-    setAreaIds_Edit(reseller?.subAreas);
-
-    setAllowedAreas(reseller?.subAreas);
-
-    setAllowedMikrotik(reseller?.mikrotiks);
-    setmikroTikPackagesId(reseller?.mikrotikPackages);
-
     let resellerPermissionLang = [];
 
     if (localStorage.getItem("netFee:lang") === "en") {
@@ -70,6 +63,14 @@ export default function ResellerEdit({ resellerId }) {
     }
 
     if (reseller) {
+      setMikrotikIds_Edit(reseller.mikrotiks);
+      setAreaIds_Edit(reseller.subAreas);
+      setAllowedAreas(reseller.subAreas);
+      setAllowedMikrotik(reseller.mikrotiks);
+      setmikroTikPackagesId(reseller.mikrotikPackages);
+      setCommissionType(reseller.commissionType);
+      setPackageRateType(reseller.commissionStyle);
+      setPackageCommission(reseller.resellerPackageRates);
       const temp = resellerPermissionLang.map((item) => {
         return { ...item, isChecked: reseller.permission[item.value] };
       });
@@ -115,15 +116,6 @@ export default function ResellerEdit({ resellerId }) {
     }
   };
 
-  // const handleChange = (e) => {
-  //   const { name, checked } = e.target;
-  //   let temp = permissions.map((val) =>
-  //     val.value === name ? { ...val, isChecked: checked } : val
-  //   );
-
-  //   setPermissions(temp);
-  // };
-  // edit Reseller
   const resellerHandler = (data) => {
     let commision = data.commissionRate;
     if (auth.ispOwner) {
@@ -139,6 +131,7 @@ export default function ResellerEdit({ resellerId }) {
         subAreas: areaIds_Edit,
         mikrotikPackages: mikroTikPackagesId,
         permission: permissionData,
+        commissionType,
       };
 
       if (bpSettings.hasMikrotik) {
@@ -149,6 +142,13 @@ export default function ResellerEdit({ resellerId }) {
         reseller: commision,
         isp: 100 - commision,
       };
+
+      if (commissionType === "packageBased") {
+        const commision = packageCommisson.filter((item) => item.ispOwnerRate);
+        sendingData.commissionStyle = packageRateType;
+        sendingData.resellerPackageRates = commision;
+      }
+
       editReseller(dispatch, sendingData, setIsLoading);
     }
   };
@@ -191,6 +191,32 @@ export default function ResellerEdit({ resellerId }) {
     setmikroTikPackagesId(newArray);
   };
 
+  const handlePackageDividerInput = ({ target }) => {
+    const packageCommissionState = [...packageCommisson];
+
+    const existingRate = packageCommissionState.find(
+      (item) => item.mikrotikPackage === target.name
+    );
+    const temp = { ...existingRate };
+    if (existingRate) {
+      temp.ispOwnerRate = target.value;
+      packageCommissionState[
+        packageCommissionState.findIndex(
+          (item) => item.mikrotikPackage === target.name
+        )
+      ] = temp;
+    } else {
+      const data = {
+        ispOwner: ispOwnerId,
+        ispOwnerRate: target.value,
+        mikrotikPackage: target.name,
+      };
+      packageCommissionState.push(data);
+    }
+
+    setPackageCommission(packageCommissionState);
+  };
+
   return (
     <div>
       <div
@@ -218,44 +244,14 @@ export default function ResellerEdit({ resellerId }) {
               <Formik
                 initialValues={{
                   // ispOwner:
-                  name: reseller?.name || "", //*
-                  mobile: reseller?.mobile || "", //*
-                  email: reseller?.email || "", //*
-                  nid: reseller?.nid || "", //*
+                  name: reseller?.name || "",
+                  mobile: reseller?.mobile || "",
+                  email: reseller?.email || "",
+                  nid: reseller?.nid || "",
                   website: reseller?.website || "",
                   address: reseller?.address || "",
-                  commissionRate: reseller?.commissionRate?.reseller || 1, //number
-                  status: reseller?.status || "", //['new', 'active', 'inactive', 'banned', 'deleted'],
-                  // ['prepaid', 'postpaid', 'both'], /*
-                  // rechargeBalance: "", //number
-                  // smsRate: "", //number
-                  // commissionType: "", //['global', 'individual'],
-                  // refName: "",
-                  // refMobile: "",
-                  // customerAdd: "",
-                  // customerEdit: "",
-                  // customerMikrotikPackageEdit: "",
-                  // customerStatusEdit: "",
-                  // customerAutoDisableEdit: "",
-                  // areaDelete: "",
-                  // areaAdd: "",
-                  // monthlyFeeEdit: "",
-                  // customerDelete: "",
-                  // billEdit: "",
-                  // billPosting: "",
-                  // accounts: "",
-                  // inventory: "",
-                  // webLogin: "",
-                  // viewCustomerList: "",
-                  // sendSMS: "",
-                  // customerActivate: "",
-                  // customerDeactivate: "",
-                  // print: "",
-                  // collectorAdd: "",
-                  // collectorEdit: "",
-                  // viewTotalReport: "",
-                  // viewCollectorReport: "",
-                  // fileExport: "",
+                  commissionRate: reseller?.commissionRate?.reseller || 1,
+                  status: reseller?.status || "",
                 }}
                 validationSchema={resellerValidator}
                 onSubmit={(values) => {
@@ -280,7 +276,7 @@ export default function ResellerEdit({ resellerId }) {
                       </div>
 
                       {/* second part */}
-                      <div className="secondSection">
+                      <div className="secondSection text-start">
                         <p className="radioTitle">
                           পারমিশন দিন
                           <input
@@ -295,53 +291,29 @@ export default function ResellerEdit({ resellerId }) {
                         </p>
                         {permissions.map((val, key) => {
                           return (
-                            <FtextField
-                              key={key}
-                              type="checkbox"
-                              className="checkInput"
-                              checked={val.isChecked}
-                              onChange={handleChange}
-                              label={val.label}
-                              name={val.value}
-                            />
+                            <div key={val + "" + key} className="displayFlex">
+                              <input
+                                id={key + "" + val}
+                                key={val + "" + key}
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={val.isChecked}
+                                onChange={handleChange}
+                                name={val.value}
+                              />
+                              <label htmlFor={key + "" + val}>
+                                {val.label}
+                              </label>
+                            </div>
                           );
                         })}
                       </div>
-
-                      {/* start radion button */}
-                      <div className="thirdSection">
-                        {/* বিল গ্রহণের ধরণ */}
-
-                        {/* commistion type */}
-                        {/* <div className="form-check ">
-                          <p className="radioTitle">কমিশন এর ধরণ</p>
-
-                          <div className="form-check">
-                            <FtextField
-                              label="Global"
-                              className="form-check-input"
-                              type="radio"
-                              name="commissionType"
-                              value="global"
-                            />
-                          </div>
-                          <div className="form-check">
-                            <FtextField
-                              label="Individual"
-                              className="form-check-input"
-                              type="radio"
-                              name="commissionType"
-                              value="individual"
-                            />
-                          </div>
-                        </div> 
-
-                        <hr />
-                        */}
-
-                        {/* Status */}
-                        <div className="form-check ">
-                          <p className="radioTitle"> {t("status")} </p>
+                    </div>
+                    {/* Status */}
+                    <div className="d-flex mt-5 justify-content-evenly">
+                      <div className="form-check ">
+                        <p className="radioTitle">{t("status")}</p>
+                        <div className="d-flex">
                           {RADIO.map((val, key) => (
                             <div key={key} className="form-check">
                               <FtextField
@@ -354,20 +326,69 @@ export default function ResellerEdit({ resellerId }) {
                             </div>
                           ))}
                         </div>
+                      </div>
+                      <div className="form-check ">
+                        <p className="radioTitle">কমিশন এর ধরণ</p>
+                        <div className="d-flex">
+                          <div className="form-check">
+                            <FtextField
+                              label="Global Commission"
+                              className="form-check-input"
+                              type="radio"
+                              name="commissionType"
+                              value="global"
+                              checked={commissionType === "global"}
+                              onChange={(e) =>
+                                setCommissionType(e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="form-check">
+                            <FtextField
+                              label="Package Based"
+                              className="form-check-input"
+                              type="radio"
+                              name="commissionType"
+                              value="packageBased"
+                              checked={commissionType === "packageBased"}
+                              onChange={(e) =>
+                                setCommissionType(e.target.value)
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
+                    <div className="w-50 mb-4 mx-auto">
+                      {commissionType === "global" && (
                         <div className="form-check ">
-                          <p className="radioTitle"> {t("share")}</p>
+                          <p className="radioTitle"> {t("share")} </p>
 
                           <FtextField
-                            key={"reseller"}
+                            key="commissionRate"
                             type="number"
-                            label={t("reseller")}
                             name="commissionRate"
-                            // value={reseller.commissionRate}
                             min={0}
                           />
                         </div>
-                      </div>
+                      )}
+                      {commissionType === "packageBased" && (
+                        <div className="form-check">
+                          <p className="radioTitle"> {t("share")} </p>
+
+                          <select
+                            type="number"
+                            className="form-select mw-100 mt-0"
+                            onChange={(e) => setPackageRateType(e.target.value)}
+                          >
+                            <option value="">Select</option>
+
+                            <option value="percentage">Percentage</option>
+                            <option value="fixedRate">Fixed Rate</option>
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     {bpSettings.hasMikrotik ? (
@@ -398,27 +419,92 @@ export default function ResellerEdit({ resellerId }) {
                                   <b className="h5">{item.name}</b>
                                 </label>
                               </h6>
-                              {mikrotikpakages.packages.map(
-                                (p) =>
+                              {mikrotikpakages.packages.map((p, index) => {
+                                return (
                                   p.mikrotik === item.id && (
-                                    <div key={p.id} className="displayFlex">
+                                    <div key={p.id} className="">
                                       {reseller?.mikrotikPackages?.includes(
                                         p.id
                                       ) ? (
-                                        <>
-                                          <input
-                                            id={p.id}
-                                            type="checkbox"
-                                            value={p.id}
-                                            onChange={handelMikrotikPakages}
-                                            checked={true}
-                                            disabled={true}
-                                          />
-                                          <label htmlFor={p.id}>{p.name}</label>
-                                        </>
+                                        packageCommisson.map(
+                                          (item) =>
+                                            item.mikrotikPackage === p.id && (
+                                              <>
+                                                {/* <input
+                                                  className="form-check-input"
+                                                  id={p.id}
+                                                  type="checkbox"
+                                                  value={p.id}
+                                                  onChange={
+                                                    handelMikrotikPakages
+                                                  }
+                                                  checked={true}
+                                                  disabled={true}
+                                                />
+                                                <label htmlFor={p.id}>
+                                                  {p.name}
+                                                </label> */}
+
+                                                <div className="form-check">
+                                                  <input
+                                                    id={p.id}
+                                                    type="checkbox"
+                                                    value={p.id}
+                                                    onChange={
+                                                      handelMikrotikPakages
+                                                    }
+                                                    checked={true}
+                                                    disabled={true}
+                                                    className="form-check-input"
+                                                  />
+                                                  <label
+                                                    className="form-check-label"
+                                                    htmlFor={p.id}
+                                                  >
+                                                    {p.name}
+                                                  </label>
+                                                </div>
+
+                                                {commissionType ===
+                                                  "packageBased" && (
+                                                  <div
+                                                    className={`d-flex align-items-center ${
+                                                      mikroTikPackagesId.includes(
+                                                        p.id
+                                                      )
+                                                        ? "d-block"
+                                                        : "d-none"
+                                                    }`}
+                                                  >
+                                                    <input
+                                                      className="form-control w-50 shadow-none m-1"
+                                                      type="number"
+                                                      id={p.id}
+                                                      name={p.id}
+                                                      onChange={
+                                                        handlePackageDividerInput
+                                                      }
+                                                      value={item.ispOwnerRate}
+                                                      min={0}
+                                                      max={100}
+                                                      placeholder="Package Rate"
+                                                    />
+                                                    {packageRateType ===
+                                                    "percentage" ? (
+                                                      <p className="mx-1">%</p>
+                                                    ) : (
+                                                      <p className="mx-1">
+                                                        &#2547;
+                                                      </p>
+                                                    )}
+                                                  </div>
+                                                )}
+                                              </>
+                                            )
+                                        )
                                       ) : (
                                         <>
-                                          <input
+                                          {/* <input
                                             id={p.id}
                                             type="checkbox"
                                             disabled={
@@ -429,12 +515,66 @@ export default function ResellerEdit({ resellerId }) {
                                             value={p.id}
                                             onChange={handelMikrotikPakages}
                                           />
-                                          <label htmlFor={p.id}>{p.name}</label>
+                                          <label htmlFor={p.id}>{p.name}</label> */}
+
+                                          <div className="form-check">
+                                            <input
+                                              id={p.id}
+                                              type="checkbox"
+                                              value={p.id}
+                                              onChange={handelMikrotikPakages}
+                                              disabled={
+                                                !mikrotikIds_Edit?.includes(
+                                                  p.mikrotik
+                                                )
+                                              }
+                                              className="form-check-input"
+                                            />
+                                            <label
+                                              className="form-check-label"
+                                              htmlFor={p.id}
+                                            >
+                                              {p.name}
+                                            </label>
+                                          </div>
+
+                                          {commissionType ===
+                                            "packageBased" && (
+                                            <div
+                                              className={`d-flex align-items-center ${
+                                                mikroTikPackagesId.includes(
+                                                  p.id
+                                                )
+                                                  ? "d-block"
+                                                  : "d-none"
+                                              }`}
+                                            >
+                                              <input
+                                                className="form-control w-50 shadow-none m-1"
+                                                type="number"
+                                                id={p.id}
+                                                name={p.id}
+                                                onChange={
+                                                  handlePackageDividerInput
+                                                }
+                                                min={0}
+                                                max={100}
+                                                placeholder="Package Rate"
+                                              />
+                                              {packageRateType ===
+                                              "percentage" ? (
+                                                <p className="mx-1">%</p>
+                                              ) : (
+                                                <p className="mx-1">&#2547;</p>
+                                              )}
+                                            </div>
+                                          )}
                                         </>
                                       )}
                                     </div>
                                   )
-                              )}
+                                );
+                              })}
                             </div>
                           ))}
                         </div>
