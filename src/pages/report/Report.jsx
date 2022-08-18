@@ -249,8 +249,8 @@ export default function Report() {
     let start = data?.start ? moment(data?.start).format("DD/MM/YY") : "";
     let end = data?.end ? moment(data?.end).format("DD/MM/YY") : "";
     return {
-      name: data?.customer.name,
-      package: data.customer.mikrotikPackage.name,
+      name: data?.customer?.name,
+      package: data.customer?.mikrotikPackage?.name,
       amount: data.amount,
       due: data.due,
       medium: data.medium,
