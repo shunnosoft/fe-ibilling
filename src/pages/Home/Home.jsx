@@ -434,7 +434,7 @@ export default function Home() {
                   />
                 </div>
                 <button
-                  className="btn btn-sm btn-success ms-1 shadow-none"
+                  className="btn btn-primary w-140 ms-1"
                   onClick={dashboardFilterController}
                 >
                   {isLoading ? <Loader /> : t("filter")}
@@ -526,7 +526,7 @@ export default function Home() {
               <>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>
-                    <h3 className="mb-0">{t("roleAdmin")}</h3>
+                    <h4 className="mb-0">{t("roleAdmin")}</h4>
                   </Accordion.Header>
 
                   <Accordion.Body>
@@ -610,7 +610,7 @@ export default function Home() {
 
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>
-                    <h3 className="mb-0">{t("roleManager")}</h3>
+                    <h4 className="mb-0">{t("roleManager")}</h4>
                   </Accordion.Header>
                   <Accordion.Body>
                     <div className="row">
@@ -748,7 +748,7 @@ export default function Home() {
 
                 <Accordion.Item eventKey="2">
                   <Accordion.Header className="shadow-none">
-                    <h3 className="mb-0">{t("roleCollector")}</h3>
+                    <h4 className="mb-0">{t("roleCollector")}</h4>
                   </Accordion.Header>
                   <Accordion.Body>
                     <div className="row ">
@@ -861,7 +861,7 @@ export default function Home() {
           <FourGround>
             <div className="ChartsHeadernew">
               <div className="selectGraph">
-                <h3>{t("collection")}</h3>
+                <h4>{t("collection")}</h4>
                 <div>
                   <input
                     type="radio"

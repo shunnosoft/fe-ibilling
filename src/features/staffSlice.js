@@ -26,10 +26,8 @@ const staffSlice = createSlice({
     addSalarySuccess: (state, action) => {
       state.salary.push(action.payload);
     },
-    updateSalarySuccess: (state, action) => {
-      state.salary[
-        state.salary.findIndex((item) => item.id === action.payload.id)
-      ] = action.payload;
+    deleteSalarySuccess: (state, action) => {
+      state.salary = state.salary.filter((item) => item.id !== action.payload);
     },
   },
 });
@@ -40,7 +38,7 @@ export const {
   editStaff,
   getSalarySuccess,
   addSalarySuccess,
-  updateSalarySuccess,
+  deleteSalarySuccess,
 } = staffSlice.actions;
 
 export default staffSlice.reducer;

@@ -15,8 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   ArrowClockwise,
+  FileExcelFill,
   PenFill,
-  PersonFill,
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -26,11 +26,17 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import EditReport from "./modal/EditReport";
 import ReportView from "./modal/ReportView";
+import { CSVLink } from "react-csv";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth?.userData
+  );
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -236,6 +242,37 @@ export default function Report() {
     totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
+  // csv start
+  // get data from main data for csv
+  let reportForCsVTableInfo = mainData.map((data) => {
+    const note = data?.note ? data?.note : "";
+    let start = data?.start ? moment(data?.start).format("DD/MM/YY") : "";
+    let end = data?.end ? moment(data?.end).format("DD/MM/YY") : "";
+    return {
+      name: data?.customer.name,
+      package: data.customer.mikrotikPackage.name,
+      amount: data.amount,
+      due: data.due,
+      medium: data.medium,
+      collector: data.name,
+      comment: note + " - " + start + " - " + end,
+      createdAt: moment(data.createdAt).format("MM/DD/YYYY"),
+    };
+  });
+
+  // set csv header
+  const reportForCsVTableInfoHeader = [
+    { label: "Name", key: "name" },
+    { label: "Package", key: "package" },
+    { label: "Bill_Amount", key: "amount" },
+    { label: "Bill_Due", key: "due" },
+    { label: "Bill_Medium", key: "medium" },
+    { label: "Collector_Name", key: "collector" },
+    { label: "Comment", key: "comment" },
+    { label: "Bill_Collect_Date", key: "createdAt" },
+  ];
+  // end csv
+
   const columns = useMemo(
     () => [
       {
@@ -341,20 +378,6 @@ export default function Report() {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                {/* <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerDetails"
-                  onClick={() => {
-                    // getSpecificCustomer(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PersonFill />
-                      <p className="actionP">{t("profile")}</p>
-                    </div>
-                  </div>
-                </li> */}
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#reportEditModal"
@@ -408,19 +431,31 @@ export default function Report() {
                     </div>
                   </div>
                   {/* <div> {t("billReport")} </div> */}
-                  <ReactToPrint
-                    documentTitle={t("billReport")}
-                    trigger={() => (
-                      <button
-                        className="header_icon border-0"
-                        type="button"
-                        title={t("downloadPdf")}
+                  <div className="report_bill d-flex">
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={reportForCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={reportForCsVTableInfoHeader}
+                        title="Bill Report"
                       >
-                        <PrinterFill />
-                      </button>
-                    )}
-                    content={() => componentRef.current}
-                  />
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle={t("billReport")}
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
+                  </div>
                 </div>
               </FourGround>
 

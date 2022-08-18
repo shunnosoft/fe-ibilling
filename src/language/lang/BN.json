@@ -513,5 +513,7 @@
   "promiseDate": "প্রমিজ ডেট",
   "packageAliasName": "এলিয়াস নাম",
   "online": "অনলাইন",
-  "ofline": "অফলাইন"
+  "ofline": "অফলাইন",
+  "salaryDeleteAlert": "আপনি স্যালারি ডিলিট করতে চান ?",
+  "salaryDelete": "স্যালারি ডিলিট"
 }
