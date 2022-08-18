@@ -111,6 +111,7 @@ export default function ResellerPost() {
         billCollectionType: "prepaid",
         mikrotikPackages: mikroTikPackagesId,
         permission: permissionData,
+        commissionType,
       };
 
       if (bpSettings.hasMikrotik) {
@@ -130,7 +131,6 @@ export default function ResellerPost() {
         sendingData.resellerPackageRates = commision;
       }
       postReseller(dispatch, sendingData, setIsLoading, resetForm);
-      console.log(sendingData);
     }
   };
   const setAreaHandler = () => {
@@ -141,7 +141,6 @@ export default function ResellerPost() {
         IDS_temp.push(temp[i].value);
       }
     }
-    // console.log("IDS: ", IDS_temp);
     setAreaIds(IDS_temp);
   };
 
@@ -153,7 +152,6 @@ export default function ResellerPost() {
         IDS_temp.push(temp[i].value);
       }
     }
-
     setMikrotikIds(IDS_temp);
   };
 
@@ -347,9 +345,7 @@ export default function ResellerPost() {
                             className="form-select mw-100 mt-0"
                             onChange={(e) => setPackageRateType(e.target.value)}
                           >
-                            <option defaultValue="" disabled>
-                              Select
-                            </option>
+                            <option value="">Select</option>
 
                             <option value="percentage">Percentage</option>
                             <option value="fixedRate">Fixed Rate</option>
@@ -428,7 +424,10 @@ export default function ResellerPost() {
                                                   handlePackageDividerInput
                                                 }
                                                 min={0}
-                                                max={100}
+                                                max={
+                                                  packageRateType ===
+                                                    "percentage" && 100
+                                                }
                                                 placeholder="Package Rate"
                                               />
 
