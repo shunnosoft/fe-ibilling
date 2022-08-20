@@ -13,7 +13,7 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 
 import Loader from "../../components/common/Loader";
-import { fetchActivepppoeUser, fetchpppoeUser } from "../../features/apiCalls";
+import { fetchMikrotik, fetchpppoeUser } from "../../features/apiCalls";
 
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 
@@ -43,6 +43,7 @@ export default function ConfigMikrotik() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    !mikrotik.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
     const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
     const name = mtkId ? singleMik?.name : "";
     setMikrotikId(mtkId);

@@ -72,7 +72,6 @@ import StaticActiveCustomer from "./pages/staticActiveCustomer/StaticActiveCusto
 import RMessage from "./reseller/message/Message";
 import RSettings from "./reseller/settings/Settings";
 import RActiveCustomer from "./reseller/activeustomer/ActiveCustomer";
-import { toast } from "react-toastify";
 import AllComments from "./admin/allComments/AllComments";
 import AllInvoices from "./admin/allInvoices/AllInvoices";
 import ActivityLog from "./pages/activityLog/ActivityLog";
@@ -103,7 +102,6 @@ function App() {
   const pathName = useLocation().pathname;
 
   useEffect(() => {
-    // toast.success("App js test triggered");
     if (userRole === "ispOwner") {
       getUpdatedUserData(dispatch, "ispOwner", user?.ispOwner?.id);
     }

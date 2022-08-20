@@ -513,5 +513,7 @@
   "online": "Online",
   "ofline": "Offline",
   "salaryDeleteAlert": "Do you want to delete salary ?",
-  "salaryDelete": "Delete Salary"
+  "salaryDelete": "Delete Salary",
+  "staffDeleteAlert": "Do you want to delete staff ?",
+  "staffDelete": "Delete Staff"
 }

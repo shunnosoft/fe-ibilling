@@ -51,7 +51,9 @@ const ActionButton = ({
               </div>
             </li>
           </Link>
-          <li
+          {/* <li
+            data-bs-toggle="modal"
+            data-bs-target="#deleteStaff"
             onClick={() => {
               deleteStaff(data.id);
             }}
@@ -62,7 +64,7 @@ const ActionButton = ({
                 <p className="actionP"> {t("delete")} </p>
               </div>
             </div>
-          </li>
+          </li> */}
           {data.mobile && (
             <li
               data-bs-toggle="modal"

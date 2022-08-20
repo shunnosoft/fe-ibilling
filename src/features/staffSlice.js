@@ -14,10 +14,12 @@ const staffSlice = createSlice({
       state.staff.push(action.payload);
     },
     editStaff: (state, action) => {
-      // console.log(action.payload);
       state.staff[
         state.staff.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
+    },
+    deleteStaffSuccess: (state, action) => {
+      state.staff = state.staff.filter((item) => item.id !== action.payload);
     },
 
     getSalarySuccess: (state, action) => {
@@ -36,6 +38,7 @@ export const {
   getStaffSuccess,
   addStaffSuccess,
   editStaff,
+  deleteStaffSuccess,
   getSalarySuccess,
   addSalarySuccess,
   deleteSalarySuccess,

@@ -515,5 +515,7 @@
   "online": "অনলাইন",
   "ofline": "অফলাইন",
   "salaryDeleteAlert": "আপনি স্যালারি ডিলিট করতে চান ?",
-  "salaryDelete": "স্যালারি ডিলিট"
+  "salaryDelete": "স্যালারি ডিলিট",
+  "staffDeleteAlert": "আপনি স্টাফ ডিলিট করতে চান ?",
+  "staffDelete": "স্টাফ ডিলিট"
 }

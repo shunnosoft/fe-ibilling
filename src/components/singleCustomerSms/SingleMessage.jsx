@@ -160,11 +160,11 @@ const SingleMessage = ({ single, sendCustomer }) => {
           <div className="modal-body">
             {/* model body here */}
             <form onSubmit={handleSubmit}>
-              <div class="mb-3">
+              <div className="mb-3">
                 <div className="d-flex justify-content-between">
                   <label
                     for="exampleFormControlTextarea1"
-                    class="form-label fw-bold mb-0"
+                    className="form-label fw-bold mb-0"
                   >
                     {t("message")}
                   </label>
@@ -176,14 +176,14 @@ const SingleMessage = ({ single, sendCustomer }) => {
                   </div>
                 </div>
                 <textarea
-                  class="form-control"
+                  className="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
                   placeholder={t("messageLikhun")}
                   onChange={handleChange}
                   onBlur={hadleRequired}
                 ></textarea>
-                <div id="emailHelp" class="form-text text-danger">
+                <div id="emailHelp" className="form-text text-danger">
                   {errMsg}
                 </div>
               </div>
