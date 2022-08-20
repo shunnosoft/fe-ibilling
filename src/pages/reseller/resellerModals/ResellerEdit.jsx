@@ -76,7 +76,7 @@ export default function ResellerEdit({ resellerId }) {
       });
       setPermissions(temp);
     }
-  }, [resellerId]);
+  }, [reseller]);
 
   useEffect(() => {
     if (!bpSettings.hasMikrotik) {
@@ -384,8 +384,18 @@ export default function ResellerEdit({ resellerId }) {
                           >
                             <option value="">Select</option>
 
-                            <option value="percentage">Percentage</option>
-                            <option value="fixedRate">Fixed Rate</option>
+                            <option
+                              selected={packageRateType === "percentage"}
+                              value="percentage"
+                            >
+                              Percentage
+                            </option>
+                            <option
+                              selected={packageRateType === "fixedRate"}
+                              value="fixedRate"
+                            >
+                              Fixed Rate
+                            </option>
                           </select>
                         </div>
                       )}
@@ -486,7 +496,10 @@ export default function ResellerEdit({ resellerId }) {
                                                       }
                                                       value={item.ispOwnerRate}
                                                       min={0}
-                                                      max={100}
+                                                      max={
+                                                        packageRateType ===
+                                                          "percentage" && 100
+                                                      }
                                                       placeholder="Package Rate"
                                                     />
                                                     {packageRateType ===
@@ -558,7 +571,10 @@ export default function ResellerEdit({ resellerId }) {
                                                   handlePackageDividerInput
                                                 }
                                                 min={0}
-                                                max={100}
+                                                max={
+                                                  packageRateType ===
+                                                    "percentage" && 100
+                                                }
                                                 placeholder="Package Rate"
                                               />
                                               {packageRateType ===
