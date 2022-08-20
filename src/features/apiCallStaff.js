@@ -8,6 +8,7 @@ import {
   addSalarySuccess,
   getSalarySuccess,
   updateSalarySuccess,
+  deleteSalarySuccess,
 } from "./staffSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
@@ -50,7 +51,6 @@ export const addStaff = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff", data);
-    console.log(res.data);
     dispatch(addStaffSuccess(res.data));
     setIsLoading(false);
     document.querySelector("#staffModal").click();
@@ -110,7 +110,6 @@ export const addSalaryApi = async (dispatch, data, resetForm, setIsLoading) => {
   try {
     const res = await apiLink.post("/staff/salary", data);
     dispatch(addSalarySuccess(res.data));
-    console.log(res.data);
     setIsLoading(false);
     document.querySelector("#addSalaryPostModal").click();
     langMessage(
@@ -141,36 +140,20 @@ export const getSalaryApi = async (dispatch, staffId, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const updateSalary = async (dispatch, salaryId, data, setIsLoading) => {
+export const deleteSalary = async (dispatch, setIsLoading, salaryId) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.patch("/staff/salary/" + salaryId, data);
-    console.log(res.data);
-    dispatch(updateSalarySuccess(res.data));
-    document.querySelector("#editSalaryPostModal").click();
-    setIsLoading(false);
-  } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-      console.log(err.response);
-    }
-    setIsLoading(false);
+    const res = await apiLink.delete("/staff/salary/" + salaryId);
+    dispatch(deleteSalarySuccess(salaryId));
+    document.querySelector("#deleteSalaryModal").click();
+    langMessage(
+      "success",
+      "স্যালারি ডিলিট সফল হয়েছে",
+      "Salary Deleted Successfully"
+    );
+  } catch (error) {
+    toast.error(error.response.data.message);
   }
-};
 
-// export const deleteSalary = async (dispatch, salaryId, setIsLoading) => {
-//   setIsLoading(true);
-//   try {
-//     const res = await apiLink.patch("/staff/salary/" + salaryId);
-//     console.log(res.data);
-//     dispatch(updateSalarySuccess(res.data));
-//     document.querySelector("#editSalaryPostModal").click();
-//     setIsLoading(false);
-//   } catch (err) {
-//     if (err.response) {
-//       toast.error(err.response.data.message);
-//       console.log(err.response);
-//     }
-//     setIsLoading(false);
-//   }
-// };
+  setIsLoading(false);
+};

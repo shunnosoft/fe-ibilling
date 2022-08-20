@@ -13,6 +13,6 @@ const monthName = {
   12: "December",
 };
 
-export const month = (item) => {
+export const getMonth = (item) => {
   return <span>{monthName[item]}</span>;
 };

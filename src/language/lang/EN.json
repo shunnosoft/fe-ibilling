@@ -511,5 +511,7 @@
   "promiseDate": "Promise Date",
   "packageAliasName": "Alias Name",
   "online": "Online",
-  "ofline": "Offline"
+  "ofline": "Offline",
+  "salaryDeleteAlert": "Do you want to delete salary ?",
+  "salaryDelete": "Delete Salary"
 }

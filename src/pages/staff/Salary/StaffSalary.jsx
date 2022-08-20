@@ -12,12 +12,12 @@ import Sidebar from "../../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../../assets/js/theme";
 import Footer from "../../../components/admin/footer/Footer";
 import StaffSalaryPostModal from "./StaffSalaryPostModal";
-import StaffSalaryEditModal from "./StaffSalaryEditModal";
 import { getSalaryApi, getStaffs } from "../../../features/apiCallStaff";
 import Table from "../../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-import { month } from "../../../components/common/getMonth";
+import { getMonth } from "../../../components/common/getMonth";
+import SalaryDeleteModal from "./SalaryDeleteModal";
 
 export default function StaffSalary() {
   const { t } = useTranslation();
@@ -36,11 +36,6 @@ export default function StaffSalary() {
 
   const [salaryId, setSalaryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  //editHandler
-  const editHandler = (id) => {
-    // console.log(id);
-    setSalaryId(id);
-  };
 
   useEffect(() => {
     getSalaryApi(dispatch, staffId, setIsLoading);
@@ -66,7 +61,7 @@ export default function StaffSalary() {
         Header: t("month"),
         accessor: "month",
         Cell: ({ cell: { value } }) => {
-          return month(value);
+          return getMonth(value);
         },
       },
       {
@@ -99,28 +94,23 @@ export default function StaffSalary() {
             />
 
             <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#editSalaryPostModal"
-                onClick={() => {
-                  editHandler(original.id);
-                }}
-              >
-                {/* <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PenFill />
-                    <p className="actionP">{t("edit")}</p>
+              {new Date(original.createdAt).getMonth() ===
+                new Date().getMonth() && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteSalaryModal"
+                  onClick={() => {
+                    setSalaryId(original.id);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">{t("delete")}</p>
+                    </div>
                   </div>
-                </div> */}
-              </li>
-              <li>
-                <div className="dropdown-item actionManager">
-                  <div className="customerAction">
-                    <ArchiveFill />
-                    <p className="actionP">{t("delete")}</p>
-                  </div>
-                </div>
-              </li>
+                </li>
+              )}
             </ul>
           </>
         ),
@@ -176,7 +166,7 @@ export default function StaffSalary() {
                   </div>
 
                   <StaffSalaryPostModal staffId={staffId} />
-                  {/* <StaffSalaryEditModal salaryId={salaryId} /> */}
+                  <SalaryDeleteModal salaryId={salaryId} />
                 </div>
               </FourGround>
               <Footer />
