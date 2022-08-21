@@ -172,10 +172,10 @@ export default function CustomerEdit({ single }) {
       mainData.mikrotik = data?.mikrotik;
       mainData.autoDisable = autoDisable;
     }
+    // console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
 
-  console.log(permission);
   return (
     <div>
       <div

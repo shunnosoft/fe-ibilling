@@ -135,7 +135,7 @@ export default function Customer() {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     }
     getCustomer(dispatch, ispOwner, setIsloading);
-}
+  };
 
   // get customer api call
   useEffect(() => {

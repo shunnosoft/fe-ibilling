@@ -80,6 +80,7 @@ import RstaticCustomer from "./reseller/staticCustomer/StaticCustomer";
 
 import ClientPage from "./ownerCustomer/index";
 import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCustomer";
+import NewCustomer from "./pages/newCustomer/NewCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -454,6 +455,7 @@ function App() {
               />
               <Route path="customer" element={<Customer />} />
               <Route path="activeCustomer" element={<ActiveCustomer />} />
+              <Route path="new/customer" element={<NewCustomer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
               <Route path="message-request" element={<ResellerSmsRequest />} />
 
