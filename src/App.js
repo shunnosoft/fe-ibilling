@@ -81,6 +81,7 @@ import RstaticCustomer from "./reseller/staticCustomer/StaticCustomer";
 import ClientPage from "./ownerCustomer/index";
 import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCustomer";
 import NewCustomer from "./pages/newCustomer/NewCustomer";
+import MessageLog from "./pages/messageLog/MessageLog";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -376,6 +377,16 @@ function App() {
                 !bpSettings?.hasMikrotik &&
                 (userRole === "ispOwner" || userRole === "manager") ? (
                   <Package />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+            <Route
+              path="/message/log"
+              element={
+                user && userRole === "ispOwner" ? (
+                  <MessageLog />
                 ) : (
                   <Navigate to={"/home"} />
                 )

@@ -28,6 +28,7 @@ import {
   Basket3Fill,
   GeoAltFill,
   EjectFill,
+  EnvelopeOpen,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -833,6 +834,33 @@ export default function Sidebar() {
                           </NavLink>
                         ) : (
                           ""
+                        )}
+                        {userRole === "ispOwner" && (
+                          <NavLink
+                            key={338}
+                            to={"/message/log"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/message/log"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<EnvelopeOpen />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("messageLog")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
                         )}
                       </Accordion.Body>
                     </Accordion.Item>

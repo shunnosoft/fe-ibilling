@@ -11,6 +11,7 @@ const addClass = {
   complainManagement: "danger",
   smsBalance: "success",
 
+  sent: "success",
   pending: "primary",
   processing: "secondary",
   completed: "success",

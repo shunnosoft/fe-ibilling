@@ -25,6 +25,7 @@ import resellerCustomerAdminSlice from "../features/resellerCustomerAdminSlice";
 import activityLogSlice from "../features/activityLogSlice";
 import getIspOwnerUsersSlice from "../features/getIspOwnerUsersSlice";
 import finalClientSlice from "../features/finalClientSlice";
+import messageLogSlice from "../features/messageLogSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -62,6 +63,7 @@ const store = configureStore({
     ownerInvoice: ispOwnerInvoiceSlice,
     expenditure: expenditureSlice,
     client: finalClientSlice,
+    messageLog: messageLogSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

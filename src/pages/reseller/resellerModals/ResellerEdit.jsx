@@ -32,6 +32,7 @@ export default function ResellerEdit({ resellerId }) {
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
+  console.log(reseller);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [allowedMikrotik, setAllowedMikrotik] = useState([]);
