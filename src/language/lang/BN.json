@@ -427,6 +427,8 @@
   "accepted": "গ্রহণ করা হয়েছে",
   "canceld": "বাতিল হয়েছে",
   "pending": "অপেক্ষা করুন",
+  "selectPending": "পেন্ডিং",
+  "send": "সেন্ড",
   "totalDiposit": "মোট ডিপোজিটঃ",
   "totalBalance": "মোট ব্যালান্স",
   "newDiposit": "নিজ ডিপোজিটঃ",
@@ -518,5 +520,6 @@
   "salaryDeleteAlert": "আপনি স্যালারি ডিলিট করতে চান ?",
   "salaryDelete": "স্যালারি ডিলিট",
   "staffDeleteAlert": "আপনি স্টাফ ডিলিট করতে চান ?",
-  "staffDelete": "স্টাফ ডিলিট"
+  "staffDelete": "স্টাফ ডিলিট",
+  "count": "কাউন্ট"
 }

@@ -1,10 +1,13 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { ArrowClockwise } from "react-bootstrap-icons";
+import ReactDatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
+import Loader from "../../components/common/Loader";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getMessageLog } from "../../features/messageLogApi";
@@ -14,22 +17,73 @@ const MessageLog = () => {
   // import dispatch
   const dispatch = useDispatch();
 
-  // loading state
-  const [isLoading, setIsloading] = useState(false);
-
   // get isp owner id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // get all data from redux
   const data = useSelector((state) => state?.messageLog?.messageLog);
-  console.log(data);
+
+  // main data state
+  const [mainData, setMainData] = useState([]);
+  console.log(mainData);
+
+  // get Current date
+  const today = new Date();
+
+  // get first date of month
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  // loading state
+  const [isLoading, setIsloading] = useState(false);
+
+  // start date state
+  const [startDate, setStartDate] = useState(firstDay);
+
+  // end date state
+  const [endDate, setEndDate] = useState(today);
+
+  // status state
+  const [status, setStatus] = useState("");
+
+  // reload handler
+  const reloadHandler = () => {
+    getMessageLog(dispatch, setIsloading, ispOwner);
+  };
+
+  // filter function
+  const onClickFilter = () => {
+    let filterData = [...data];
+
+    // status filter
+    if (status) {
+      filterData = filterData.filter((item) => item.status === status);
+    }
+
+    // date filter
+    filterData = filterData.filter(
+      (value) =>
+        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
+    );
+
+    setMainData(filterData);
+  };
 
   // get customer api call
   useEffect(() => {
-    getMessageLog(dispatch, setIsloading, ispOwner);
+    if (mainData.length === 0) getMessageLog(dispatch, setIsloading, ispOwner);
   }, []);
 
+  // set main data at state
+  useEffect(() => {
+    setMainData(data);
+  }, [data]);
+
+  // table column
   const columns = React.useMemo(
     () => [
       {
@@ -53,7 +107,23 @@ const MessageLog = () => {
         },
       },
       {
-        width: "13%",
+        width: "8%",
+        Header: t("type"),
+        accessor: "type",
+        Cell: ({ cell: { value } }) => {
+          return <div className="text-center">{badge(value)}</div>;
+        },
+      },
+      {
+        width: "8%",
+        Header: t("count"),
+        accessor: "count",
+        Cell: ({ cell: { value } }) => {
+          return <div className="text-center">{value}</div>;
+        },
+      },
+      {
+        width: "12%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -61,7 +131,7 @@ const MessageLog = () => {
         },
       },
       {
-        width: "64%",
+        width: "45%",
         Header: t("message"),
         accessor: "message",
       },
@@ -80,17 +150,69 @@ const MessageLog = () => {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
                     <h2>{t("messageLog")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
                   </div>
                 </div>
               </FourGround>
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector"></div>
+                  <div className="addCollector">
+                    <div className="selectFilteringg">
+                      <div className="mx-2">
+                        <select
+                          className="form-select mt-0"
+                          onChange={(event) => setStatus(event.target.value)}
+                        >
+                          <option value="" selected>
+                            {t("selectStatus")}
+                          </option>
+
+                          <option value="sent">{t("send")}</option>
+                          <option value="Pending">{t("selectPending")}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <ReactDatePicker
+                          className="form-control mw-100"
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <div className="mx-2">
+                        <ReactDatePicker
+                          className="form-control mw-100"
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <div className="">
+                        <button
+                          className="btn btn-outline-primary w-140 "
+                          type="button"
+                          onClick={onClickFilter}
+                        >
+                          {t("filter")}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
                   <Table
                     isLoading={isLoading}
                     columns={columns}
-                    data={data}
+                    data={mainData}
                   ></Table>
                 </div>
               </FourGround>

@@ -22,6 +22,11 @@ const addClass = {
   registration: "danger",
   monthlyServiceCharge: "primary",
   smsPurchase: "info",
+
+  other: "info",
+  bill: "success",
+  bulk: "primary",
+  alert: "warning",
 };
 
 export const badge = (item) => {

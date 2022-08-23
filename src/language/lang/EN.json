@@ -420,6 +420,8 @@
   "accepted": "Accepted",
   "canceld": "canceld",
   "pending": "Pending",
+  "selectPending": "Pending",
+  "send": "Send",
   "totalDiposit": "Total Diposits",
   "totalBalance": "Total Balance",
   "totalExpenditure": "Total Expenditure",
@@ -516,5 +518,6 @@
   "salaryDeleteAlert": "Do you want to delete salary ?",
   "salaryDelete": "Delete Salary",
   "staffDeleteAlert": "Do you want to delete staff ?",
-  "staffDelete": "Delete Staff"
+  "staffDelete": "Delete Staff",
+  "count": "Count"
 }

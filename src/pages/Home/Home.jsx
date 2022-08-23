@@ -40,6 +40,7 @@ import Table from "../../components/table/Table";
 import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -452,10 +453,12 @@ export default function Home() {
                   <p style={{ fontSize: "16px" }}>{t("total customer")}</p>
                   <h2>{FormatNumber(customerStat.total)}</h2>
 
-                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("new customer")}:{" "}
-                    {FormatNumber(customerStat.newCustomer)}
-                  </p>
+                  <Link to={"/new/customer"}>
+                    <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                      {t("new customer")}:{" "}
+                      {FormatNumber(customerStat.newCustomer)}
+                    </p>
+                  </Link>
                 </div>
               </div>
             </div>
