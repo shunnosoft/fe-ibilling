@@ -90,7 +90,8 @@ const NewCustomer = () => {
   // get customer api call
   useEffect(() => {
     if (mainData.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
-    getStaticCustomer(dispatch, ispOwner, setIsloading);
+    if (staticData.length === 0)
+      getStaticCustomer(dispatch, ispOwner, setIsloading);
   }, []);
 
   // set customer data on maindata state
