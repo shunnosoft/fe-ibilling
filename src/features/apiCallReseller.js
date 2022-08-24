@@ -484,6 +484,7 @@ export const getMikrotikPackages = async (dispatch, ispOwnerId) => {
     const res = await apiLink.get(
       "/mikrotik/ppp/mikrotik/package/" + ispOwnerId
     );
+    console.log(res.data);
     dispatch(getAllMikrotikPakages(res.data));
   } catch (error) {
     console.log(error.response?.data.message);

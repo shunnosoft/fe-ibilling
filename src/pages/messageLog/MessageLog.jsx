@@ -168,7 +168,7 @@ const MessageLog = () => {
                     <div className="selectFilteringg">
                       <div className="mx-2">
                         <select
-                          className="form-select mt-0"
+                          className="form-select"
                           onChange={(event) => setStatus(event.target.value)}
                         >
                           <option value="" selected>
@@ -181,7 +181,7 @@ const MessageLog = () => {
                       </div>
                       <div>
                         <ReactDatePicker
-                          className="form-control mw-100"
+                          className="form-control mw-100 mt-2"
                           selected={startDate}
                           onChange={(date) => setStartDate(date)}
                           dateFormat="MMM dd yyyy"
@@ -190,7 +190,7 @@ const MessageLog = () => {
                       </div>
                       <div className="mx-2">
                         <ReactDatePicker
-                          className="form-control mw-100"
+                          className="form-control mw-100 mt-2"
                           selected={endDate}
                           onChange={(date) => setEndDate(date)}
                           dateFormat="MMM dd yyyy"
@@ -199,7 +199,7 @@ const MessageLog = () => {
                       </div>
                       <div className="">
                         <button
-                          className="btn btn-outline-primary w-140 "
+                          className="btn btn-outline-primary w-140 mt-2"
                           type="button"
                           onClick={onClickFilter}
                         >

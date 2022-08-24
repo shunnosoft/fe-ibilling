@@ -948,7 +948,7 @@ export default function Home() {
             </div>
           </FourGround>
           <FourGround>
-            <div className="collectorWrapper pt-1">
+            <div className="collectorWrapper pt-1 pb-2">
               <div className="table-section">
                 {collectorData && collectorData.length && (
                   <Table

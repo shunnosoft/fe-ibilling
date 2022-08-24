@@ -32,7 +32,7 @@ export default function ResellerEdit({ resellerId }) {
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
-  console.log(reseller);
+
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [allowedMikrotik, setAllowedMikrotik] = useState([]);
@@ -41,6 +41,7 @@ export default function ResellerEdit({ resellerId }) {
   const [commissionType, setCommissionType] = useState("");
   const [packageRateType, setPackageRateType] = useState("");
   const [packageCommisson, setPackageCommission] = useState([]);
+  const [clonePackageCommission, setClonePackageCommission] = useState([]);
 
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
@@ -72,6 +73,7 @@ export default function ResellerEdit({ resellerId }) {
       setCommissionType(reseller.commissionType);
       setPackageRateType(reseller.commissionStyle);
       setPackageCommission(reseller.resellerPackageRates);
+      setClonePackageCommission(reseller.resellerPackageRates);
       const temp = resellerPermissionLang.map((item) => {
         return { ...item, isChecked: reseller.permission[item.value] };
       });
@@ -383,7 +385,9 @@ export default function ResellerEdit({ resellerId }) {
                             className="form-select mw-100 mt-0"
                             onChange={(e) => setPackageRateType(e.target.value)}
                           >
-                            <option value="">Select</option>
+                            <option selected value="">
+                              Select
+                            </option>
 
                             <option
                               selected={packageRateType === "percentage"}
@@ -406,56 +410,115 @@ export default function ResellerEdit({ resellerId }) {
                       <>
                         <b className="mt-2"> {t("selectMikrotik")} </b>
                         <div className="AllAreaClass">
-                          {mikrotikpakages?.mikrotiks?.map((item) => (
-                            <div key={item.id}>
-                              <h6 className="areaParent ">
-                                <input
-                                  checked={
-                                    allowedMikrotik?.includes(item.id)
-                                      ? true
-                                      : false
-                                  }
-                                  disabled={reseller?.mikrotiks?.includes(
-                                    item?.id
-                                  )}
-                                  type="checkbox"
-                                  className="getValueUsingClassesforMikrotik"
-                                  value={item.id}
-                                  id={item.id}
-                                  onChange={(e) =>
-                                    setMikrotikHandler(e.target.value)
-                                  }
-                                />{" "}
-                                <label htmlFor={item.id}>
-                                  <b className="h5">{item.name}</b>
-                                </label>
-                              </h6>
-                              {mikrotikpakages.packages.map((p, index) => {
-                                return (
-                                  p.mikrotik === item.id && (
-                                    <div key={p.id} className="">
-                                      {reseller?.mikrotikPackages?.includes(
-                                        p.id
-                                      ) ? (
-                                        packageCommisson.map(
-                                          (item) =>
-                                            item.mikrotikPackage === p.id && (
-                                              <>
-                                                {/* <input
-                                                  className="form-check-input"
-                                                  id={p.id}
-                                                  type="checkbox"
-                                                  value={p.id}
-                                                  onChange={
-                                                    handelMikrotikPakages
-                                                  }
-                                                  checked={true}
-                                                  disabled={true}
-                                                />
-                                                <label htmlFor={p.id}>
-                                                  {p.name}
-                                                </label> */}
+                          {commissionType === "packageBased" ? (
+                            <>
+                              {mikrotikpakages?.mikrotiks?.map((item) => (
+                                <div key={item.id}>
+                                  <h6 className="areaParent ">
+                                    <input
+                                      checked={
+                                        allowedMikrotik?.includes(item.id)
+                                          ? true
+                                          : false
+                                      }
+                                      disabled={reseller?.mikrotiks?.includes(
+                                        item?.id
+                                      )}
+                                      type="checkbox"
+                                      className="getValueUsingClassesforMikrotik"
+                                      value={item.id}
+                                      id={item.id}
+                                      onChange={(e) =>
+                                        setMikrotikHandler(e.target.value)
+                                      }
+                                    />{" "}
+                                    <label htmlFor={item.id}>
+                                      <b className="h5">{item.name}</b>
+                                    </label>
+                                  </h6>
+                                  {mikrotikpakages.packages.map((p, index) => {
+                                    return (
+                                      p.mikrotik === item.id && (
+                                        <div key={p.id} className="">
+                                          {reseller?.mikrotikPackages?.includes(
+                                            p.id
+                                          ) ? (
+                                            clonePackageCommission.length >
+                                            0 ? (
+                                              packageCommisson.map(
+                                                (item) =>
+                                                  item.mikrotikPackage ===
+                                                    p.id && (
+                                                    <>
+                                                      <div className="form-check">
+                                                        <input
+                                                          id={p.id}
+                                                          type="checkbox"
+                                                          value={
+                                                            item.ispOwnerRate
+                                                          }
+                                                          onChange={
+                                                            handelMikrotikPakages
+                                                          }
+                                                          checked={true}
+                                                          disabled={true}
+                                                          className="form-check-input"
+                                                        />
+                                                        <label
+                                                          className="form-check-label"
+                                                          htmlFor={p.id}
+                                                        >
+                                                          {p.name}
+                                                        </label>
+                                                      </div>
 
+                                                      {commissionType ===
+                                                        "packageBased" && (
+                                                        <div
+                                                          className={`d-flex align-items-center ${
+                                                            mikroTikPackagesId.includes(
+                                                              p.id
+                                                            )
+                                                              ? "d-block"
+                                                              : "d-none"
+                                                          }`}
+                                                        >
+                                                          <input
+                                                            className="form-control w-50 shadow-none m-1"
+                                                            type="number"
+                                                            id={p.id}
+                                                            name={p.id}
+                                                            onChange={
+                                                              handlePackageDividerInput
+                                                            }
+                                                            value={
+                                                              item.ispOwnerRate
+                                                            }
+                                                            min={0}
+                                                            max={
+                                                              packageRateType ===
+                                                                "percentage" &&
+                                                              100
+                                                            }
+                                                            placeholder="Package Rate"
+                                                          />
+                                                          {packageRateType ===
+                                                          "percentage" ? (
+                                                            <p className="mx-1">
+                                                              %
+                                                            </p>
+                                                          ) : (
+                                                            <p className="mx-1">
+                                                              &#2547;
+                                                            </p>
+                                                          )}
+                                                        </div>
+                                                      )}
+                                                    </>
+                                                  )
+                                              )
+                                            ) : (
+                                              <>
                                                 <div className="form-check">
                                                   <input
                                                     id={p.id}
@@ -515,85 +578,147 @@ export default function ResellerEdit({ resellerId }) {
                                                 )}
                                               </>
                                             )
-                                        )
-                                      ) : (
-                                        <>
-                                          {/* <input
-                                            id={p.id}
-                                            type="checkbox"
-                                            disabled={
-                                              !mikrotikIds_Edit?.includes(
-                                                p.mikrotik
-                                              )
-                                            }
-                                            value={p.id}
-                                            onChange={handelMikrotikPakages}
-                                          />
-                                          <label htmlFor={p.id}>{p.name}</label> */}
+                                          ) : (
+                                            <>
+                                              <div className="form-check">
+                                                <input
+                                                  id={p.id}
+                                                  type="checkbox"
+                                                  value={p.id}
+                                                  onChange={
+                                                    handelMikrotikPakages
+                                                  }
+                                                  disabled={
+                                                    !mikrotikIds_Edit?.includes(
+                                                      p.mikrotik
+                                                    )
+                                                  }
+                                                  className="form-check-input"
+                                                />
+                                                <label
+                                                  className="form-check-label"
+                                                  htmlFor={p.id}
+                                                >
+                                                  {p.name}
+                                                </label>
+                                              </div>
 
-                                          <div className="form-check">
-                                            <input
-                                              id={p.id}
-                                              type="checkbox"
-                                              value={p.id}
-                                              onChange={handelMikrotikPakages}
-                                              disabled={
-                                                !mikrotikIds_Edit?.includes(
-                                                  p.mikrotik
-                                                )
-                                              }
-                                              className="form-check-input"
-                                            />
-                                            <label
-                                              className="form-check-label"
-                                              htmlFor={p.id}
-                                            >
-                                              {p.name}
-                                            </label>
-                                          </div>
-
-                                          {commissionType ===
-                                            "packageBased" && (
-                                            <div
-                                              className={`d-flex align-items-center ${
-                                                mikroTikPackagesId.includes(
-                                                  p.id
-                                                )
-                                                  ? "d-block"
-                                                  : "d-none"
-                                              }`}
-                                            >
-                                              <input
-                                                className="form-control w-50 shadow-none m-1"
-                                                type="number"
-                                                id={p.id}
-                                                name={p.id}
-                                                onChange={
-                                                  handlePackageDividerInput
-                                                }
-                                                min={0}
-                                                max={
-                                                  packageRateType ===
-                                                    "percentage" && 100
-                                                }
-                                                placeholder="Package Rate"
-                                              />
-                                              {packageRateType ===
-                                              "percentage" ? (
-                                                <p className="mx-1">%</p>
-                                              ) : (
-                                                <p className="mx-1">&#2547;</p>
+                                              {commissionType ===
+                                                "packageBased" && (
+                                                <div
+                                                  className={`d-flex align-items-center ${
+                                                    mikroTikPackagesId.includes(
+                                                      p.id
+                                                    )
+                                                      ? "d-block"
+                                                      : "d-none"
+                                                  }`}
+                                                >
+                                                  <input
+                                                    className="form-control w-50 shadow-none m-1"
+                                                    type="number"
+                                                    id={p.id}
+                                                    name={p.id}
+                                                    onChange={
+                                                      handlePackageDividerInput
+                                                    }
+                                                    min={0}
+                                                    max={
+                                                      packageRateType ===
+                                                        "percentage" && 100
+                                                    }
+                                                    placeholder="Package Rate"
+                                                  />
+                                                  {packageRateType ===
+                                                  "percentage" ? (
+                                                    <p className="mx-1">%</p>
+                                                  ) : (
+                                                    <p className="mx-1">
+                                                      &#2547;
+                                                    </p>
+                                                  )}
+                                                </div>
                                               )}
-                                            </div>
+                                            </>
                                           )}
-                                        </>
+                                        </div>
+                                      )
+                                    );
+                                  })}
+                                </div>
+                              ))}
+                            </>
+                          ) : (
+                            <>
+                              {mikrotikpakages?.mikrotiks?.map((item) => (
+                                <div key={item.id}>
+                                  <h6 className="areaParent ">
+                                    <input
+                                      checked={
+                                        allowedMikrotik?.includes(item.id)
+                                          ? true
+                                          : false
+                                      }
+                                      disabled={reseller?.mikrotiks?.includes(
+                                        item?.id
                                       )}
-                                    </div>
-                                  )
-                                );
-                              })}
-                            </div>
-                          ))}
+                                      type="checkbox"
+                                      className="getValueUsingClassesforMikrotik"
+                                      value={item.id}
+                                      id={item.id}
+                                      onChange={(e) =>
+                                        setMikrotikHandler(e.target.value)
+                                      }
+                                    />{" "}
+                                    <label htmlFor={item.id}>
+                                      <b className="h5">{item.name}</b>
+                                    </label>
+                                  </h6>
+                                  {mikrotikpakages.packages.map(
+                                    (p) =>
+                                      p.mikrotik === item.id && (
+                                        <div key={p.id} className="displayFlex">
+                                          {reseller?.mikrotikPackages?.includes(
+                                            p.id
+                                          ) ? (
+                                            <>
+                                              <input
+                                                id={p.id}
+                                                type="checkbox"
+                                                value={p.id}
+                                                onChange={handelMikrotikPakages}
+                                                checked={true}
+                                                disabled={true}
+                                              />
+                                              <label htmlFor={p.id}>
+                                                {p.name}
+                                              </label>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <input
+                                                id={p.id}
+                                                type="checkbox"
+                                                disabled={
+                                                  !mikrotikIds_Edit?.includes(
+                                                    p.mikrotik
+                                                  )
+                                                }
+                                                value={p.id}
+                                                onChange={handelMikrotikPakages}
+                                              />
+                                              <label htmlFor={p.id}>
+                                                {p.name}
+                                              </label>
+                                            </>
+                                          )}
+                                        </div>
+                                      )
+                                  )}
+                                </div>
+                              ))}
+                            </>
+                          )}
                         </div>
                       </>
                     ) : (
