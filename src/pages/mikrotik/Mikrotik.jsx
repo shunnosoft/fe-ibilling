@@ -93,7 +93,7 @@ export default function Mikrotik() {
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
+        <div className="container-fluied collector ">
           <div className="container">
             <FontColor>
               {/* modals */}
@@ -125,7 +125,7 @@ export default function Mikrotik() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper py-2 mt-2">
                   {/* table */}
                   <Table
                     isLoading={isLoading}

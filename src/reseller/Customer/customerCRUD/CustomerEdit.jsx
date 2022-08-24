@@ -149,6 +149,7 @@ export default function CustomerEdit({ single }) {
       ispOwner: ispOwnerId,
       mikrotik: data?.mikrotik,
       mikrotikPackage: packageRate?.id,
+      monthlyFee,
       // billPayType: "prepaid",
 
       reseller: resellerId,
@@ -172,10 +173,10 @@ export default function CustomerEdit({ single }) {
       mainData.mikrotik = data?.mikrotik;
       mainData.autoDisable = autoDisable;
     }
+    console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
 
-  console.log(permission);
   return (
     <div>
       <div

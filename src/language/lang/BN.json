@@ -69,6 +69,7 @@
   "message": "মেসেজ",
   "bulk message": "বাল্ক মেসেজ",
   "message setting": "মেসেজ সেটিংস",
+  "messageLog": "মেসেজ লগ",
   "account": "একাউন্টস",
   "cost": "খরচ",
   "expenseDefination": "খরচের বিবরণ",
@@ -327,7 +328,7 @@
   "referenceAddress": "রেফারেন্সকারীর এড্রেস",
   "referenceRelation": "রেফারেন্স রিলেশন",
   "addNewReseller": " নতুন রিসেলার অ্যাড করুন",
-  "share": "শেয়ার (%)",
+  "share": "রিসেলার শেয়ার (%)",
   "addNewMikrotik": " নতুন মাইক্রোটিক অ্যাড করুন",
   "userName": "ইউজারনেম",
   "mikrotikIP": "মাইক্রোটিক আইপি",
@@ -426,6 +427,8 @@
   "accepted": "গ্রহণ করা হয়েছে",
   "canceld": "বাতিল হয়েছে",
   "pending": "অপেক্ষা করুন",
+  "selectPending": "পেন্ডিং",
+  "send": "সেন্ড",
   "totalDiposit": "মোট ডিপোজিটঃ",
   "totalBalance": "মোট ব্যালান্স",
   "newDiposit": "নিজ ডিপোজিটঃ",
@@ -515,5 +518,8 @@
   "online": "অনলাইন",
   "ofline": "অফলাইন",
   "salaryDeleteAlert": "আপনি স্যালারি ডিলিট করতে চান ?",
-  "salaryDelete": "স্যালারি ডিলিট"
+  "salaryDelete": "স্যালারি ডিলিট",
+  "staffDeleteAlert": "আপনি স্টাফ ডিলিট করতে চান ?",
+  "staffDelete": "স্টাফ ডিলিট",
+  "count": "কাউন্ট"
 }

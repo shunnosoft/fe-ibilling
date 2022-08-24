@@ -7,7 +7,7 @@ import ReactDatePicker from "react-datepicker";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
-import { fetchpppoePackage } from "../../../features/apiCalls";
+import { fetchMikrotik, fetchpppoePackage } from "../../../features/apiCalls";
 import { editResellerCustomer } from "../../../features/resellerCustomerAdminApi";
 import { useTranslation } from "react-i18next";
 import { useRef } from "react";
@@ -76,6 +76,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
 
   // get mikrotik
   const getMikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+
   // get single mikrotik
   const singleMikrotik = getMikrotik.find((item) => item.id === data?.mikrotik);
 
@@ -99,6 +100,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   // set package rate in state
   useEffect(() => {
     setFixPackageRate(findPackage?.rate);
+    fetchMikrotik(dispatch, data?.ispOwner, setIsLoading);
   }, [findPackage?.rate]);
 
   // handle submit

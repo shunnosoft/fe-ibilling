@@ -72,7 +72,6 @@ import StaticActiveCustomer from "./pages/staticActiveCustomer/StaticActiveCusto
 import RMessage from "./reseller/message/Message";
 import RSettings from "./reseller/settings/Settings";
 import RActiveCustomer from "./reseller/activeustomer/ActiveCustomer";
-import { toast } from "react-toastify";
 import AllComments from "./admin/allComments/AllComments";
 import AllInvoices from "./admin/allInvoices/AllInvoices";
 import ActivityLog from "./pages/activityLog/ActivityLog";
@@ -81,6 +80,8 @@ import RstaticCustomer from "./reseller/staticCustomer/StaticCustomer";
 
 import ClientPage from "./ownerCustomer/index";
 import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCustomer";
+import NewCustomer from "./pages/newCustomer/NewCustomer";
+import MessageLog from "./pages/messageLog/MessageLog";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -103,7 +104,6 @@ function App() {
   const pathName = useLocation().pathname;
 
   useEffect(() => {
-    // toast.success("App js test triggered");
     if (userRole === "ispOwner") {
       getUpdatedUserData(dispatch, "ispOwner", user?.ispOwner?.id);
     }
@@ -382,6 +382,16 @@ function App() {
                 )
               }
             />
+            <Route
+              path="/message/log"
+              element={
+                user && userRole === "ispOwner" ? (
+                  <MessageLog />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
 
             {/* dashboard */}
             <Route path="/*" element={<PrivateOutlet />}>
@@ -456,6 +466,7 @@ function App() {
               />
               <Route path="customer" element={<Customer />} />
               <Route path="activeCustomer" element={<ActiveCustomer />} />
+              <Route path="new/customer" element={<NewCustomer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
               <Route path="message-request" element={<ResellerSmsRequest />} />
 

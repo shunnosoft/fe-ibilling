@@ -487,11 +487,10 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   try {
     const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
     dispatch(getCustomerSuccess(res.data));
-    setIsloading(false);
   } catch (error) {
     console.log(error.message);
-    setIsloading(false);
   }
+  setIsloading(false);
 };
 
 //Static Customers

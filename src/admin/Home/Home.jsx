@@ -14,7 +14,6 @@ import {
   PenFill,
   ThreeDots,
   CardChecklist,
-  PrinterFill,
 } from "react-bootstrap-icons";
 import { getIspOwners } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -22,18 +21,11 @@ import EditModal from "./modal/EditModal";
 import "./home.css";
 import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
-import ReactToPrint from "react-to-print";
-import { useRef } from "react";
-import CustomerPdf from "./CustomerPDF";
-import apiLink from "../../api/apiLink";
-import PrintCustomer from "./CustomerPDF";
 
 export default function Home() {
-  //print customer ref
-  // const componentRef = useRef();
-
   // loading
   const [isLoading, setIsLoading] = useState(false);
+
   // import dispatch
   const dispatch = useDispatch();
 
@@ -48,7 +40,9 @@ export default function Home() {
 
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
+  console.log(ispOwners);
 
+  // get user role from redux
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
   // payment filter
@@ -90,13 +84,13 @@ export default function Home() {
       },
 
       {
-        width: "15%",
+        width: "9%",
         accessor: "company",
         Header: "Comapny",
       },
 
       {
-        width: "12%",
+        width: "8%",
         accessor: "name",
         Header: "Name",
       },
@@ -106,37 +100,37 @@ export default function Home() {
         Header: "Mobile",
       },
       {
-        width: "5%",
+        width: "8%",
         accessor: "bpSettings.hasMikrotik",
         Header: "MTK",
         Cell: ({ cell: { value } }) => {
-          return value ? "" : "NO";
+          return value ? "YES" : "NO";
         },
       },
       {
-        width: "5%",
+        width: "8%",
         accessor: "smsBalance",
         Header: "SMS",
       },
       {
-        width: "5%",
+        width: "10%",
         accessor: "bpSettings.customerLimit",
         Header: "Customer",
       },
       {
-        width: "5%",
+        width: "7%",
         accessor: "bpSettings.packageRate",
         Header: "Rate",
       },
 
       {
-        width: "15%",
+        width: "10%",
         accessor: "address",
         Header: "Address",
       },
       {
-        width: "5%",
-        Header: "Payment Status",
+        width: "10%",
+        Header: "Payment",
         Cell: ({ row: { original } }) => (
           <div
             style={{
@@ -160,7 +154,7 @@ export default function Home() {
       },
 
       {
-        width: "8%",
+        width: "9%",
         Header: "CreatedAt",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -169,7 +163,7 @@ export default function Home() {
       },
 
       {
-        width: "8%",
+        width: "10%",
         Header: "Bill Date",
         accessor: "bpSettings.monthlyDueDate",
         Cell: ({ cell: { value } }) => {
@@ -178,12 +172,11 @@ export default function Home() {
       },
 
       {
-        width: "5%",
+        width: "7%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => {
-          const componentRef = useRef();
           return (
             <div className="text-center">
               <>

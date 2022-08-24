@@ -8,10 +8,17 @@ import { useTranslation } from "react-i18next";
 
 const SingleMessage = ({ single, sendCustomer }) => {
   const { t } = useTranslation();
-  // get current user from redux
-  const cureentAuth = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser?.ispOwner
+  //get role from redux
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser
   );
+
+  let cureentAuth;
+  if (currentUser?.user?.role === "ispOwner") {
+    cureentAuth = currentUser?.ispOwner;
+  } else if (currentUser?.user?.role === "reseller") {
+    cureentAuth = currentUser?.reseller;
+  }
 
   // get all customer from redux
   const customer = useSelector((state) => state?.customer?.customer);
@@ -95,7 +102,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
         items: {
           app: "netfee",
           type: "other",
-          senderId: cureentAuth.id,
+          senderId: cureentAuth?.id,
           message: messageLength,
           mobile: data?.mobile,
           count: smsCount(messageLength),
@@ -104,8 +111,18 @@ const SingleMessage = ({ single, sendCustomer }) => {
       };
 
       try {
-        // owner api call
-        const owner = await apiLink.get(`/ispOwner/${cureentAuth?.id}`);
+        let owner;
+        if (currentUser?.user?.role === "ispOwner") {
+          owner = await apiLink.get(`/ispOwner/${cureentAuth?.id}`);
+        } else if (currentUser?.user?.role === "manager") {
+          owner = await apiLink.get(
+            `/ispOwner/${currentUser?.manager?.ispOwner}`
+          );
+        } else if (currentUser?.user?.role === "reseller") {
+          owner = await apiLink.get(
+            `/reseller/recharge/balance/${cureentAuth?.id}`
+          );
+        }
 
         alert(`${t("sampleSMS")} :\n\n${messageLength}`);
         if (owner.data.smsBalance >= smsAmount) {
@@ -114,12 +131,26 @@ const SingleMessage = ({ single, sendCustomer }) => {
             `${data.name}  ${t("getSMS")} ${smsAmount} ${t("expenseSMS")} `
           );
           if (condition) {
-            // sms api call
             setIsloading(true);
-            const res = await apiLink.post(
-              `sms/bulk/${cureentAuth.id}`,
-              sendingData
-            );
+
+            let res;
+            if (currentUser?.user?.role === "ispOwner") {
+              res = await apiLink.post(
+                `sms/bulk/${cureentAuth.id}`,
+                sendingData
+              );
+            } else if (currentUser?.user?.role === "manager") {
+              res = await apiLink.post(
+                `sms/bulk/${currentUser?.manager?.ispOwner}`,
+                sendingData
+              );
+            } else if (currentUser?.user?.role === "reseller") {
+              res = await apiLink.post(
+                `sms/reseller/bulk/${cureentAuth.id}`,
+                sendingData
+              );
+            }
+
             setIsloading(false);
             if (res.data.status) {
               document.querySelector("#customerMessageModal").click();
@@ -130,7 +161,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
           }
         }
       } catch (error) {
-        toast.error(error.response.message);
+        toast.error(error);
       }
     } else {
       setErrMsg(t("smsAmount"));
@@ -160,11 +191,11 @@ const SingleMessage = ({ single, sendCustomer }) => {
           <div className="modal-body">
             {/* model body here */}
             <form onSubmit={handleSubmit}>
-              <div class="mb-3">
+              <div className="mb-3">
                 <div className="d-flex justify-content-between">
                   <label
                     for="exampleFormControlTextarea1"
-                    class="form-label fw-bold mb-0"
+                    className="form-label fw-bold mb-0"
                   >
                     {t("message")}
                   </label>
@@ -176,14 +207,14 @@ const SingleMessage = ({ single, sendCustomer }) => {
                   </div>
                 </div>
                 <textarea
-                  class="form-control"
+                  className="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
                   placeholder={t("messageLikhun")}
                   onChange={handleChange}
                   onBlur={hadleRequired}
                 ></textarea>
-                <div id="emailHelp" class="form-text text-danger">
+                <div id="emailHelp" className="form-text text-danger">
                   {errMsg}
                 </div>
               </div>

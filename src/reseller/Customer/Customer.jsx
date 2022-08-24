@@ -66,6 +66,7 @@ export default function Customer() {
   );
 
   const [Customers, setCustomers] = useState(cus);
+  console.log(Customers);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 

@@ -66,6 +66,7 @@
   "message": "Message",
   "bulk message": "Bulk Message",
   "message setting": "SMS Template",
+  "messageLog": "Message Log",
   "account": "Accounts",
   "cost": "Expenditure",
   "expenseDefination": "Expense Defination",
@@ -325,7 +326,7 @@
   "referenceAddress": "Reference Address",
   "referenceRelation": "Reference Relation",
   "addNewReseller": "Add New Reseller",
-  "share": "Share (%)",
+  "share": "Reseller Share (%)",
   "addNewMikrotik": "Add New Mikrotik",
   "userName": "User Name",
   "mikrotikIP": "Mikrotik IP",
@@ -419,6 +420,8 @@
   "accepted": "Accepted",
   "canceld": "canceld",
   "pending": "Pending",
+  "selectPending": "Pending",
+  "send": "Send",
   "totalDiposit": "Total Diposits",
   "totalBalance": "Total Balance",
   "totalExpenditure": "Total Expenditure",
@@ -513,5 +516,8 @@
   "online": "Online",
   "ofline": "Offline",
   "salaryDeleteAlert": "Do you want to delete salary ?",
-  "salaryDelete": "Delete Salary"
+  "salaryDelete": "Delete Salary",
+  "staffDeleteAlert": "Do you want to delete staff ?",
+  "staffDelete": "Delete Staff",
+  "count": "Count"
 }

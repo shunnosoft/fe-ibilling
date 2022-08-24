@@ -17,6 +17,7 @@ import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
+import StaffDelete from "./staffModal/StaffDelete";
 
 const Staff = () => {
   const { t } = useTranslation();
@@ -34,14 +35,17 @@ const Staff = () => {
   const [staffId, setStafId] = useState(null);
   const [staffSmsId, setStafSmsId] = useState();
 
-  const deleteStaff = (staffId) => {
-    deleteStaffApi(dispatch, staffId, setIsLoading);
-  };
+  // delete method
+  // const deleteStaff = (staffId) => {
+  //   setStafId(staffId);
+  // };
 
+  // edit handler method
   const editHandler = (staffId) => {
     setStafId(staffId);
   };
 
+  // single message handler method
   const handleSingleMessage = (staffId) => {
     setStafSmsId(staffId);
   };
@@ -116,7 +120,7 @@ const Staff = () => {
             }}
           >
             <ActionButton
-              deleteStaff={deleteStaff}
+              // deleteStaff={deleteStaff}
               editHandler={editHandler}
               handleSingleMessage={handleSingleMessage}
               data={original}
@@ -134,9 +138,6 @@ const Staff = () => {
       <div className={useDash.dashboardWrapper}>
         <div className="container">
           <FontColor>
-            <StaffPost />
-            <SingleMessage single={staffSmsId} sendCustomer="staff" />
-            <StaffEdit staffId={staffId} />
             <FourGround>
               <div className="collectorTitle d-flex justify-content-between px-5">
                 {/* <div> {t("staff")} </div> */}
@@ -181,6 +182,10 @@ const Staff = () => {
           <Footer />
         </div>
       </div>
+      <StaffPost />
+      <SingleMessage single={staffSmsId} sendCustomer="staff" />
+      <StaffEdit staffId={staffId} />
+      <StaffDelete staffId={staffId} />
     </>
   );
 };

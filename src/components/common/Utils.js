@@ -11,6 +11,7 @@ const addClass = {
   complainManagement: "danger",
   smsBalance: "success",
 
+  sent: "success",
   pending: "primary",
   processing: "secondary",
   completed: "success",
@@ -21,6 +22,11 @@ const addClass = {
   registration: "danger",
   monthlyServiceCharge: "primary",
   smsPurchase: "info",
+
+  other: "info",
+  bill: "success",
+  bulk: "primary",
+  alert: "warning",
 };
 
 export const badge = (item) => {

@@ -95,6 +95,10 @@ export default function ResellerPost() {
   };
 
   const resellerHandler = async (data, resetForm) => {
+    if (!commissionType) {
+      alert("Commision type must be selected !");
+      return;
+    }
     let commision = data.commissionRate;
 
     const permissionData = {};

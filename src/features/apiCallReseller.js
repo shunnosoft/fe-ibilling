@@ -281,7 +281,7 @@ export const billCollect = async (
     document.querySelector("#collectCustomerBillModal").click();
     langMessage(
       "success",
-      "কালেক্টর সংযুক্ত সফল হয়েছে!",
+      "রিচার্জ সফল হয়েছে",
       "Bill Acceptance is Successful."
     );
     resetForm();
@@ -484,6 +484,7 @@ export const getMikrotikPackages = async (dispatch, ispOwnerId) => {
     const res = await apiLink.get(
       "/mikrotik/ppp/mikrotik/package/" + ispOwnerId
     );
+    console.log(res.data);
     dispatch(getAllMikrotikPakages(res.data));
   } catch (error) {
     console.log(error.response?.data.message);

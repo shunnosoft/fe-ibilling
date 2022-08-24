@@ -9,6 +9,7 @@ import {
   getSalarySuccess,
   updateSalarySuccess,
   deleteSalarySuccess,
+  deleteStaffSuccess,
 } from "./staffSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
@@ -91,7 +92,9 @@ export const deleteStaffApi = async (dispatch, staffId, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.delete("/staff/" + staffId);
-    setIsLoading(false);
+    console.log(res.data);
+    dispatch(deleteStaffSuccess(staffId));
+    document.querySelector("#deleteStaff").click();
     langMessage(
       "success",
       "কর্মচারী ডিলিট সফল হয়েছে",
@@ -99,10 +102,10 @@ export const deleteStaffApi = async (dispatch, staffId, setIsLoading) => {
     );
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
 export const addSalaryApi = async (dispatch, data, resetForm, setIsLoading) => {
