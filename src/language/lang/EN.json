@@ -326,7 +326,7 @@
   "referenceAddress": "Reference Address",
   "referenceRelation": "Reference Relation",
   "addNewReseller": "Add New Reseller",
-  "share": "Share (%)",
+  "share": "Reseller Share (%)",
   "addNewMikrotik": "Add New Mikrotik",
   "userName": "User Name",
   "mikrotikIP": "Mikrotik IP",

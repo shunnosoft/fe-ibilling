@@ -281,7 +281,7 @@ export const billCollect = async (
     document.querySelector("#collectCustomerBillModal").click();
     langMessage(
       "success",
-      "কালেক্টর সংযুক্ত সফল হয়েছে!",
+      "রিচার্জ সফল হয়েছে",
       "Bill Acceptance is Successful."
     );
     resetForm();
