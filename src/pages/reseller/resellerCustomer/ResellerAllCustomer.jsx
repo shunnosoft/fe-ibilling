@@ -63,8 +63,8 @@ const AllResellerCustomer = () => {
   );
   // get all reseller customer api call
   useEffect(() => {
-    getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
-  }, []);
+    if (ispOwner) getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
+  }, [ispOwner]);
 
   // cutomer delete
   const customerDelete = (customerId) => {

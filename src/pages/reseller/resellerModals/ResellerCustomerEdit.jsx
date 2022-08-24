@@ -100,7 +100,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   // set package rate in state
   useEffect(() => {
     setFixPackageRate(findPackage?.rate);
-    fetchMikrotik(dispatch, data?.ispOwner, setIsLoading);
+    if (data?.ispOwner) fetchMikrotik(dispatch, data?.ispOwner, setIsLoading);
   }, [findPackage?.rate]);
 
   // handle submit
