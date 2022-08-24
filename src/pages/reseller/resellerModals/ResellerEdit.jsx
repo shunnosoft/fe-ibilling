@@ -19,6 +19,7 @@ import {
   getPackagewithoutmikrotik,
 } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 // import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerEdit({ resellerId }) {
@@ -145,11 +146,55 @@ export default function ResellerEdit({ resellerId }) {
         reseller: commision,
         isp: 100 - commision,
       };
-
       if (commissionType === "packageBased") {
+        const matchedPackageIds = mikrotikpakages.packages
+          .map((mtkPackage) => {
+            if (mikroTikPackagesId.includes(mtkPackage.id))
+              return mtkPackage.id;
+          })
+          .filter((item) => item);
+
+        let errorFlag = false,
+          msg;
+        matchedPackageIds.map((id) => {
+          let commission = packageCommisson.find(
+            (rateItem) => rateItem.mikrotikPackage == id
+          );
+
+          if (!commission) {
+            errorFlag = true;
+            msg = "প্যাকেজ রেট পূরণ করুন।";
+          } else {
+            if (commission.ispOwnerRate == "") {
+              errorFlag = true;
+              msg = "প্যাকেজ রেট ফাঁকা রাখা যাবে না।";
+            } else {
+              let foundPackage = mikrotikpakages.packages.find(
+                (pack) => pack.id == commission.mikrotikPackage
+              );
+
+              if (
+                foundPackage &&
+                foundPackage.rate < Number(commission.ispOwnerRate)
+              ) {
+                errorFlag = true;
+                msg = "প্যাকেজ রেট সঠিক নয়।";
+              }
+            }
+          }
+        });
+
+        if (errorFlag) {
+          toast.error(msg);
+
+          return;
+        }
+
         const commision = packageCommisson.filter((item) => item.ispOwnerRate);
         sendingData.commissionStyle = packageRateType;
         sendingData.resellerPackageRates = commision;
+
+        sendingData.mikrotikPackages = matchedPackageIds;
       }
 
       editReseller(dispatch, sendingData, setIsLoading);
@@ -500,7 +545,7 @@ export default function ResellerEdit({ resellerId }) {
                                                                 "percentage" &&
                                                               100
                                                             }
-                                                            placeholder="Package Rate"
+                                                            placeholder=""
                                                           />
                                                           {packageRateType ===
                                                           "percentage" ? (
@@ -564,7 +609,7 @@ export default function ResellerEdit({ resellerId }) {
                                                         packageRateType ===
                                                           "percentage" && 100
                                                       }
-                                                      placeholder="Package Rate"
+                                                      placeholder=""
                                                     />
                                                     {packageRateType ===
                                                     "percentage" ? (
@@ -627,7 +672,7 @@ export default function ResellerEdit({ resellerId }) {
                                                       packageRateType ===
                                                         "percentage" && 100
                                                     }
-                                                    placeholder="Package Rate"
+                                                    placeholder=""
                                                   />
                                                   {packageRateType ===
                                                   "percentage" ? (
