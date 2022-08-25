@@ -563,6 +563,7 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
       dispatch(editCustomerSuccess(res.data));
     }
     setIsloading(false);
+    document.getElementById("filterBtn").click();
     langMessage(
       "success",
       "কাস্টমার এডিট সফল হয়েছে",

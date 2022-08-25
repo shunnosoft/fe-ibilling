@@ -1,9 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArchiveFill,
+  ArrowClockwise,
   CashStack,
+  FileExcelFill,
   PenFill,
   PersonFill,
+  PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
@@ -12,7 +15,7 @@ import { FontColor, FourGround } from "../../../assets/js/theme";
 import useDash from "../../../assets/css/dash.module.css";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
 import Loader from "../../../components/common/Loader";
-import { deleteACustomer } from "../../../features/apiCalls";
+import { fetchReseller } from "../../../features/apiCalls";
 import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
 import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
 import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
@@ -24,15 +27,23 @@ import { ToastContainer } from "react-toastify";
 import CustomerDelete from "../resellerModals/CustomerDelete";
 import BulkCustomerReturn from "../resellerModals/BulkCustomerReturn";
 import IndeterminateCheckbox from "../../../components/table/bulkCheckbox";
+import { CSVLink } from "react-csv";
+import ReactToPrint from "react-to-print";
+import PrintCustomer from "./customerPDF";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
-  const [singleCustomer, setSingleCustomer] = useState("");
-  // get specific customer Report
-  const [customerReportId, setcustomerReportId] = useState([]);
 
-  // delete state
-  const [isDelete, setIsDeleting] = useState(false);
+  // import dispatch
+  const dispatch = useDispatch();
+
+  // reference of pdf export component
+  const componentRef = useRef();
+
+  // get all data from redux state
+  let resellerCustomer = useSelector(
+    (state) => state?.resellerCustomer?.allResellerCustomer
+  );
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -41,8 +52,19 @@ const AllResellerCustomer = () => {
   // get reseller
   const resellers = useSelector((state) => state?.reseller.reseller);
 
-  // import dispatch
-  const dispatch = useDispatch();
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth?.userData
+  );
+
+  // customer state
+  const [customer, setCustomer] = useState([]);
+
+  // get single customer state
+  const [singleCustomer, setSingleCustomer] = useState("");
+
+  // get specific customer Report
+  const [customerReportId, setcustomerReportId] = useState([]);
 
   // loading local state
   const [isLoading, setIsLoading] = useState(false);
@@ -50,21 +72,38 @@ const AllResellerCustomer = () => {
   // status local state
   const [filterStatus, setFilterStatus] = useState(null);
 
+  // customer id state
   const [customerId, setCustomerId] = useState();
 
+  // mikrotik check state
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
   // payment status state
   const [filterPayment, setFilterPayment] = useState(null);
+
+  // reseller id state
   const [resellerId, setResellerId] = useState("");
-  // get all data from redux state
-  let resellerCustomer = useSelector(
-    (state) => state?.resellerCustomer?.allResellerCustomer
-  );
+
+  //bulk-operations state
+  const [bulkCustomer, setBulkCustomer] = useState([]);
+
+  // reload handler method
+  const reloadHandler = () => {
+    getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
+    fetchReseller(dispatch, ispOwner, setIsLoading);
+  };
+
   // get all reseller customer api call
   useEffect(() => {
-    if (ispOwner) getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
-  }, [ispOwner]);
+    if (customer.length === 0)
+      getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
+    if (resellers.length === 0) fetchReseller(dispatch, ispOwner, setIsLoading);
+  }, []);
+
+  // set customer at state
+  useEffect(() => {
+    if (resellerCustomer.length > 0) setCustomer(resellerCustomer);
+  }, [resellerCustomer]);
 
   // cutomer delete
   const customerDelete = (customerId) => {
@@ -73,31 +112,37 @@ const AllResellerCustomer = () => {
     setCustomerId(customerId);
   };
 
-  if (resellerId) {
-    if (resellerId !== "all") {
-      resellerCustomer = resellerCustomer.filter(
-        (customer) => customer.reseller.id === resellerId
-      );
+  let tempCustomer = [...resellerCustomer];
+  const filterClick = () => {
+    // reseller filter
+    if (resellerId) {
+      if (resellerId !== "all") {
+        tempCustomer = tempCustomer.filter(
+          (customer) => customer.reseller.id === resellerId
+        );
+      }
     }
-  }
 
-  // status filter
-  if (filterStatus && filterStatus !== t("status")) {
-    if (filterStatus !== "all") {
-      resellerCustomer = resellerCustomer.filter(
-        (value) => value.status === filterStatus
-      );
+    // status filter
+    if (filterStatus && filterStatus !== t("status")) {
+      if (filterStatus !== "all") {
+        tempCustomer = tempCustomer.filter(
+          (value) => value.status === filterStatus
+        );
+      }
     }
-  }
 
-  // payment status filter
-  if (filterPayment && filterPayment !== t("payment")) {
-    if (filterPayment !== "all") {
-      resellerCustomer = resellerCustomer.filter(
-        (value) => value.paymentStatus === filterPayment
-      );
+    // payment status filter
+    if (filterPayment && filterPayment !== t("payment")) {
+      if (filterPayment !== "all") {
+        tempCustomer = tempCustomer.filter(
+          (value) => value.paymentStatus === filterPayment
+        );
+      }
     }
-  }
+
+    setCustomer(tempCustomer);
+  };
 
   // get specific customer
   const getSpecificCustomer = (id) => {
@@ -109,18 +154,91 @@ const AllResellerCustomer = () => {
     setcustomerReportId(reportData);
   };
 
-  // DELETE handler
-  const deleteCustomer = async (ID) => {
-    setIsDeleting(true);
-    const IDs = {
-      ispID: ispOwner,
-      customerID: ID,
+  //export customer data
+  let customerForCsV = customer.map((customer) => {
+    return {
+      companyName: ispOwnerData.company,
+      home: "Home",
+      companyAddress: ispOwnerData.address,
+      name: customer.name,
+      customerAddress: customer.address,
+      connectionType: "Wired",
+      connectivity: "Dedicated",
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      ip: "",
+      road: ispOwnerData.address,
+      address: ispOwnerData.address,
+      area: ispOwnerData?.fullAddress?.area || "",
+      district: ispOwnerData?.fullAddress?.district || "",
+      thana: ispOwnerData?.fullAddress?.thana || "",
+      mobile: customer?.mobile.slice(1) || "",
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
     };
-    deleteACustomer(dispatch, IDs, true);
-    setIsDeleting(false);
+  });
+
+  const headers = [
+    { label: "name_operator", key: "companyName" },
+    { label: "type_of_client", key: "home" },
+    { label: "distribution Location point", key: "companyAddress" },
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "type_of_connection", key: "connectionType" },
+    { label: "type_of_connectivity", key: "connectivity" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "allowcated_ip", key: "ip" },
+    { label: "house_no", key: "address" },
+    { label: "road_no", key: "road" },
+    { label: "area", key: "area" },
+    { label: "district", key: "district" },
+    { label: "thana", key: "thana" },
+    { label: "client_phone", key: "mobile" },
+    { label: "mail", key: "email" },
+    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
+  ];
+
+  // find filter name
+  const resellerName = resellers.find((reseller) => reseller.id === resellerId);
+
+  // filter data for pdf
+  const filterData = {
+    reseller: resellerName?.name ? resellerName?.name : t("allReseller"),
+    status: filterStatus ? filterStatus : t("sokolCustomer"),
+    payment: filterPayment ? filterPayment : t("sokolCustomer"),
   };
-  //bulk-operations state
-  const [bulkCustomer, setBulkCustomer] = useState([]);
+
+  //export customer data
+  let customerForCsVTableInfo = customer.map((customer) => {
+    return {
+      name: customer.name,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
 
   // table column
   const columns = useMemo(
@@ -294,67 +412,135 @@ const AllResellerCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("customer")} </h2>
-              </FourGround>
-              <div className="card">
-                <div className="card-body">
-                  <div className="d-flex flex-row justify-content-center">
-                    {/* status filter */}
-                    <select
-                      className="form-select me-3"
-                      aria-label="Default select example"
-                      onChange={(event) => setResellerId(event.target.value)}
-                    >
-                      <option selected value="all">
-                        {t("allReseller")}
-                      </option>
-                      {resellers.map((reseller) => (
-                        <option value={reseller.id}> {reseller.name} </option>
-                      ))}
-                    </select>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      onChange={(event) => setFilterStatus(event.target.value)}
-                    >
-                      <option selected value="all">
-                        {" "}
-                        {t("status")}{" "}
-                      </option>
-                      <option value="active"> {t("active")} </option>
-                      <option value="inactive"> {t("in active")} </option>
-                      <option value="expired"> {t("expired")} </option>
-                    </select>
-                    {/* end status filter */}
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <h2>{t("customer")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
 
-                    {/* payment status filter */}
-                    <select
-                      className="form-select ms-4"
-                      aria-label="Default select example"
-                      onChange={(event) => setFilterPayment(event.target.value)}
-                    >
-                      <option selected value="all">
-                        {" "}
-                        {t("paymentFilter")}{" "}
-                      </option>
-                      <option value="paid"> {t("paid")} </option>
-                      <option value="unpaid"> {t("unpaid")} </option>
-                    </select>
-                    {/* end payment status filter */}
+                  <div className="d-flex">
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={customerForCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={customerForCsVTableInfoHeader}
+                        title="Customer Report"
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={customerForCsV}
+                        filename={ispOwnerData.company}
+                        headers={headers}
+                        title={t("downloadBTRCreport")}
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle="গ্রাহক লিস্ট"
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </FourGround>
+              <FourGround>
+                <div className="collectorWrapper mt-2 py-2">
+                  <div className="addCollector">
+                    <div className="d-flex flex-row justify-content-center">
+                      {/* status filter */}
+                      <select
+                        className="form-select mt-3"
+                        aria-label="Default select example"
+                        onChange={(event) => setResellerId(event.target.value)}
+                      >
+                        <option selected value="all">
+                          {t("allReseller")}
+                        </option>
+                        {resellers.map((reseller, key) => (
+                          <option key={key} value={reseller.id}>
+                            {reseller.name}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        className="form-select mt-3 mx-2"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterStatus(event.target.value)
+                        }
+                      >
+                        <option selected value="all">
+                          {t("status")}
+                        </option>
+                        <option value="active"> {t("active")} </option>
+                        <option value="inactive"> {t("in active")} </option>
+                        <option value="expired"> {t("expired")} </option>
+                      </select>
+                      {/* end status filter */}
+
+                      {/* payment status filter */}
+                      <select
+                        className="form-select mt-3 me-2"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterPayment(event.target.value)
+                        }
+                      >
+                        <option selected value="all">
+                          {t("paymentFilter")}
+                        </option>
+                        <option value="paid"> {t("paid")} </option>
+                        <option value="unpaid"> {t("unpaid")} </option>
+                      </select>
+                      {/* end payment status filter */}
+                      <button
+                        className="btn btn-outline-primary w-140 mt-3 chartFilteritem"
+                        onClick={filterClick}
+                      >
+                        {t("filter")}
+                      </button>
+                    </div>
+                  </div>
+                  <div style={{ display: "none" }}>
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={customer}
+                      ref={componentRef}
+                    />
                   </div>
                   {/* call table component */}
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
                       columns={columns}
-                      data={resellerCustomer}
+                      data={customer}
                       bulkState={{
                         setBulkCustomer,
                       }}
                     />
                   </div>
                 </div>
-              </div>
+              </FourGround>
             </FontColor>
           </div>
         </div>

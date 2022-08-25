@@ -221,7 +221,15 @@ export default function Home() {
     if (new Date(invoice?.dueDate).getTime() < new Date().getTime()) {
       invoiceFlag = "EXPIRED";
     } else {
-      invoiceFlag = "UNPAID";
+      const dt = new Date(),
+        expDate = new Date(invoice?.dueDate);
+
+      const diffTime = Math.abs(expDate - dt);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 7) {
+        invoiceFlag = "UNPAID";
+      }
     }
   }
 

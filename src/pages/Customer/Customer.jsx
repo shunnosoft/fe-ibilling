@@ -270,6 +270,7 @@ export default function Customer() {
     setCustomers1(tempCustomers);
     setCustomers(tempCustomers);
   };
+
   const handleFilterReset = () => {
     setMikrotikPac([]);
     setFilterOption({
@@ -1142,6 +1143,7 @@ export default function Customer() {
                             className="btn btn-outline-primary mt-2 w-6rem ms-2"
                             type="button"
                             onClick={handleActiveFilter}
+                            id="filterBtn"
                           >
                             {t("filter")}
                           </button>
