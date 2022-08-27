@@ -32,6 +32,7 @@ import BulkCustomerReturn from "../resellerModals/BulkCustomerReturn";
 import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
+import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 
 // get specific customer
 
@@ -531,6 +532,10 @@ const ResellerCustomer = () => {
         bulkCustomer={bulkCustomer}
         isAllCustomer={false}
       />
+      <BulkBillingCycleEdit
+        bulkCustomer={bulkCustomer}
+        modalId="customerBillingCycle"
+      />
       {bulkCustomer.length > 0 && (
         <div className="bulkActionButton">
           <button
@@ -543,6 +548,17 @@ const ResellerCustomer = () => {
           >
             <i class="fa-solid fa-right-left"></i>
             <span className="button_title"> {t("returnCustomer")} </span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title={t("editBillingCycle")}
+            data-bs-toggle="modal"
+            data-bs-target="#customerBillingCycle"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title"> {t("editBillingCycle")} </span>
           </button>
         </div>
       )}

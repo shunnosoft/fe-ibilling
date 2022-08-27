@@ -82,18 +82,18 @@ export const resellerPermissionBan = [
     value: "customerAutoDisableEdit",
     isChecked: false,
   },
-  // {
-  //   id: 8,
-  //   label: "এরিয়া ডিলিট",
-  //   value: "areaDelete",
-  //   isChecked: false,
-  // },
-  // {
-  //   id: 9,
-  //   label: "এড এরিয়া",
-  //   value: "areaAdd",
-  //   isChecked: false,
-  // },
+  {
+    id: 8,
+    label: "এরিয়া ডিলিট",
+    value: "areaDelete",
+    isChecked: false,
+  },
+  {
+    id: 9,
+    label: "এড এরিয়া",
+    value: "areaAdd",
+    isChecked: false,
+  },
 
   // { id: 3, label: "কাস্টমার ডিলিট", value: "customerDelete", isChecked: false },
 

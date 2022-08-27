@@ -263,7 +263,7 @@ export default function RstaticCustomer() {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMMM DD YYYY hh:mm A");
+          return moment(value).format("MMM DD YYYY hh:mm A");
         },
       },
 
