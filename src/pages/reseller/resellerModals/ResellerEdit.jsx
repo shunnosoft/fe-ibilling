@@ -233,6 +233,7 @@ export default function ResellerEdit({ resellerId }) {
 
   //handle mikrotik packages
   const handelMikrotikPakages = (e) => {
+    console.log(e.target.value);
     let newArray = [...mikroTikPackagesId, e.target.value];
     if (mikroTikPackagesId.includes(e.target.value)) {
       newArray = newArray.filter((item) => item !== e.target.value);
@@ -507,9 +508,7 @@ export default function ResellerEdit({ resellerId }) {
                                           return (
                                             p.mikrotik === item.id && (
                                               <div key={p.id} className="">
-                                                {reseller?.mikrotikPackages?.includes(
-                                                  p.id
-                                                ) ? (
+                                                {
                                                   clonePackageCommission.length >
                                                   0 ? (
                                                     packageCommisson.map(
@@ -521,14 +520,13 @@ export default function ResellerEdit({ resellerId }) {
                                                               <input
                                                                 id={p.id}
                                                                 type="checkbox"
-                                                                value={
-                                                                  item.ispOwnerRate
-                                                                }
+                                                                value={p.id}
                                                                 onChange={
                                                                   handelMikrotikPakages
                                                                 }
-                                                                checked={true}
-                                                                disabled={true}
+                                                                checked={mikroTikPackagesId.includes(
+                                                                  p.id
+                                                                )}
                                                                 className="form-check-input"
                                                               />
                                                               <label
@@ -594,8 +592,9 @@ export default function ResellerEdit({ resellerId }) {
                                                           onChange={
                                                             handelMikrotikPakages
                                                           }
-                                                          checked={true}
-                                                          disabled={true}
+                                                          checked={mikroTikPackagesId.includes(
+                                                            p.id
+                                                          )}
                                                           className="form-check-input"
                                                         />
                                                         <label
@@ -650,72 +649,73 @@ export default function ResellerEdit({ resellerId }) {
                                                       )}
                                                     </>
                                                   )
-                                                ) : (
-                                                  <>
-                                                    <div className="form-check">
-                                                      <input
-                                                        id={p.id}
-                                                        type="checkbox"
-                                                        value={p.id}
-                                                        onChange={
-                                                          handelMikrotikPakages
-                                                        }
-                                                        disabled={
-                                                          !mikrotikIds_Edit?.includes(
-                                                            p.mikrotik
-                                                          )
-                                                        }
-                                                        className="form-check-input"
-                                                      />
-                                                      <label
-                                                        className="form-check-label"
-                                                        htmlFor={p.id}
-                                                      >
-                                                        {p.name}
-                                                      </label>
-                                                    </div>
+                                                  // ) : (
+                                                  //   <>
+                                                  //     <div className="form-check">
+                                                  //       <input
+                                                  //         id={p.id}
+                                                  //         type="checkbox"
+                                                  //         value={p.id}
+                                                  //         onChange={
+                                                  //           handelMikrotikPakages
+                                                  //         }
+                                                  //         disabled={
+                                                  //           !mikrotikIds_Edit?.includes(
+                                                  //             p.mikrotik
+                                                  //           )
+                                                  //         }
+                                                  //         className="form-check-input"
+                                                  //       />
+                                                  //       <label
+                                                  //         className="form-check-label"
+                                                  //         htmlFor={p.id}
+                                                  //       >
+                                                  //         {p.name}
+                                                  //       </label>
+                                                  //     </div>
 
-                                                    {commissionType ===
-                                                      "packageBased" && (
-                                                      <div
-                                                        className={`d-flex align-items-center ${
-                                                          mikroTikPackagesId.includes(
-                                                            p.id
-                                                          )
-                                                            ? "d-block"
-                                                            : "d-none"
-                                                        }`}
-                                                      >
-                                                        <input
-                                                          className="form-control w-50 shadow-none m-1"
-                                                          type="number"
-                                                          id={p.id}
-                                                          name={p.id}
-                                                          onChange={
-                                                            handlePackageDividerInput
-                                                          }
-                                                          min={0}
-                                                          max={
-                                                            packageRateType ===
-                                                              "percentage" &&
-                                                            100
-                                                          }
-                                                          placeholder=""
-                                                        />
-                                                        {packageRateType ===
-                                                        "percentage" ? (
-                                                          <p className="mx-1">
-                                                            %
-                                                          </p>
-                                                        ) : (
-                                                          <p className="mx-1">
-                                                            &#2547;
-                                                          </p>
-                                                        )}
-                                                      </div>
-                                                    )}
-                                                  </>
-                                                )}
+                                                  //     {commissionType ===
+                                                  //       "packageBased" && (
+                                                  //       <div
+                                                  //         className={`d-flex align-items-center ${
+                                                  //           mikroTikPackagesId.includes(
+                                                  //             p.id
+                                                  //           )
+                                                  //             ? "d-block"
+                                                  //             : "d-none"
+                                                  //         }`}
+                                                  //       >
+                                                  //         <input
+                                                  //           className="form-control w-50 shadow-none m-1"
+                                                  //           type="number"
+                                                  //           id={p.id}
+                                                  //           name={p.id}
+                                                  //           onChange={
+                                                  //             handlePackageDividerInput
+                                                  //           }
+                                                  //           min={0}
+                                                  //           max={
+                                                  //             packageRateType ===
+                                                  //               "percentage" &&
+                                                  //             100
+                                                  //           }
+                                                  //           placeholder=""
+                                                  //         />
+                                                  //         {packageRateType ===
+                                                  //         "percentage" ? (
+                                                  //           <p className="mx-1">
+                                                  //             %
+                                                  //           </p>
+                                                  //         ) : (
+                                                  //           <p className="mx-1">
+                                                  //             &#2547;
+                                                  //           </p>
+                                                  //         )}
+                                                  //       </div>
+                                                  //     )}
+                                                  //   </>
+                                                  // )
+                                                }
                                               </div>
                                             )
                                           );
