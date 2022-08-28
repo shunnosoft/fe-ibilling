@@ -12,7 +12,6 @@ import { LoginField } from "./LoginField";
 import { asyncLogin } from "../../../features/actions/authAsyncAction";
 import "./login.css";
 import { useDispatch } from "react-redux";
-import { useRef } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
