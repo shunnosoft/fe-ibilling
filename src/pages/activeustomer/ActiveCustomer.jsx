@@ -32,8 +32,7 @@ export default function ConfigMikrotik() {
     : {};
 
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
-
-  // const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
+  console.log(allMikrotikUsers);
 
   const [loading, setLoading] = useState(false);
 
@@ -56,7 +55,7 @@ export default function ConfigMikrotik() {
       dispatch(resetMikrotikUserAndPackage());
       fetchpppoeUser(dispatch, IDs, name, setLoading);
     }
-  }, [ispOwnerId, selectedMikrotikId, dispatch, mikrotik]);
+  }, [ispOwnerId, selectedMikrotikId, mikrotik]);
 
   const filterIt = (e) => {
     let temp;
@@ -85,7 +84,7 @@ export default function ConfigMikrotik() {
     dispatch(resetMikrotikUserAndPackage());
     // fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
 
-    fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading);
+    fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading, "user");
   };
 
   const columns = React.useMemo(

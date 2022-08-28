@@ -11,6 +11,8 @@ import {
   PersonCheckFill,
   BagCheckFill,
   PersonLinesFill,
+  WifiOff,
+  Wifi,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -49,7 +51,7 @@ export default function ConfigMikrotik() {
   const singleMik = mikrotik.find((item) => item.id === mikrotikId)
     ? mikrotik.find((item) => item.id === mikrotikId)
     : {};
-  console.log(ispOwner);
+
   const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
   const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
   const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
@@ -176,7 +178,13 @@ export default function ConfigMikrotik() {
       fetchActivepppoeUser(dispatch, IDs, singleMik?.name, setIsloading);
       setWhatYouWantToShow("showActiveMikrotikUser");
     } else if (original === "showAllMikrotikUser") {
-      fetchpppoeUser(dispatch, IDs, singleMik?.name, setIsloading);
+      fetchpppoeUser(
+        dispatch,
+        IDs,
+        singleMik?.name,
+        setIsloading,
+        "mikrotikUser"
+      );
       setWhatYouWantToShow("showAllMikrotikUser");
     } else if (original === "showMikrotikPackage") {
       fetchPackagefromDatabase(dispatch, IDs, setIsloading);
@@ -303,27 +311,42 @@ export default function ConfigMikrotik() {
     ],
     [t]
   );
-  const columns2 = React.useMemo(
+
+  const columns = React.useMemo(
     () => [
       {
-        width: "10%",
+        width: "8%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "17%",
+        width: "11%",
+        Header: t("status"),
+        accessor: "running",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.running ? (
+              <Wifi color="green" />
+            ) : (
+              <WifiOff color="red" />
+            )}
+          </div>
+        ),
+      },
+      {
+        width: "20%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "18%",
-        Header: t("address"),
-        accessor: "address",
+        width: "12%",
+        Header: t("package"),
+        accessor: "profile",
       },
       {
-        width: "15%",
+        width: "12%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -332,12 +355,14 @@ export default function ConfigMikrotik() {
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(original.rxByte / 1024 / 1024).toFixed(2) + " MB"}
+            {original?.rxByte
+              ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+              : ""}
           </div>
         ),
       },
       {
-        width: "15%",
+        width: "12%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -346,57 +371,16 @@ export default function ConfigMikrotik() {
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {(original.txByte / 1024 / 1024).toFixed(2) + " MB"}
+            {original?.txByte
+              ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
+              : ""}
           </div>
         ),
       },
-
       {
         width: "25%",
-        Header: t("upTime"),
-        accessor: "uptime",
-
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {original.uptime
-              .replace("w", "w ")
-              .replace("d", "d ")
-              .replace("h", "h ")
-              .replace("m", "m ")
-              .replace("s", "s")}
-          </div>
-        ),
-      },
-    ],
-    [t]
-  );
-  const columns3 = React.useMemo(
-    () => [
-      {
-        width: "20%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        width: "25%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "30%",
-        Header: t("package"),
-        accessor: "profile",
-      },
-      {
-        width: "25%",
-        Header: t("colorId"),
-        accessor: "callerId",
+        Header: "Last Link Up Time",
+        accessor: "lastLinkUpTime",
       },
     ],
     [t]
@@ -596,7 +580,7 @@ export default function ConfigMikrotik() {
                         </h2>
                         <Table
                           isLoading={isLoading}
-                          columns={columns2}
+                          columns={columns}
                           data={activeUser}
                         ></Table>
                       </>
@@ -612,7 +596,7 @@ export default function ConfigMikrotik() {
                         </h2>
                         <Table
                           isLoading={isLoading}
-                          columns={columns3}
+                          columns={columns}
                           data={allMikrotikUsers}
                         ></Table>
                       </>

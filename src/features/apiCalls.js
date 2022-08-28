@@ -819,7 +819,13 @@ export const mikrotikTesting = async (IDs) => {
 };
 
 // get PPPoE user
-export const fetchpppoeUser = async (dispatch, IDs, mtkName, setIsLoading) => {
+export const fetchpppoeUser = async (
+  dispatch,
+  IDs,
+  mtkName,
+  setIsLoading,
+  userType
+) => {
   setIsLoading(true);
   dispatch(resetpppoeUser());
   dispatch(mtkIsLoading(true));
@@ -829,24 +835,44 @@ export const fetchpppoeUser = async (dispatch, IDs, mtkName, setIsLoading) => {
       url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
 
+    const customers = res.data?.customers;
     const pppsecretUsers = res.data?.pppsecretUsers;
     const interfaaceList = res.data?.interfaceList;
     const temp = [];
 
-    pppsecretUsers.forEach((i) => {
-      let match = false;
-      interfaaceList.forEach((j) => {
-        if (j.name === "<pppoe-" + i.name + ">") {
-          match = true;
+    if (userType === "user") {
+      customers.forEach((i) => {
+        let match = false;
+        interfaaceList.forEach((j) => {
+          if (j.name === "<pppoe-" + i.pppoe.name + ">") {
+            match = true;
 
-          temp.push({
-            ...j,
-            ...i,
-          });
-        }
+            temp.push({
+              ...j,
+              ...i.pppoe,
+            });
+          }
+        });
+        if (!match) temp.push(i);
       });
-      if (!match) temp.push(i);
-    });
+    }
+
+    if (userType === "mikrotikUser") {
+      pppsecretUsers.forEach((i) => {
+        let match = false;
+        interfaaceList.forEach((j) => {
+          if (j.name === "<pppoe-" + i.name + ">") {
+            match = true;
+
+            temp.push({
+              ...j,
+              ...i,
+            });
+          }
+        });
+        if (!match) temp.push(i);
+      });
+    }
 
     dispatch(getpppoeUserSuccess(temp));
     dispatch(mtkIsLoading(false));

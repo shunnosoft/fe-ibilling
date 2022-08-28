@@ -520,5 +520,6 @@
   "staffDeleteAlert": "Do you want to delete staff ?",
   "staffDelete": "Delete Staff",
   "count": "Count",
-  "basic": "Basic"
+  "basic": "Basic",
+  "monthlyFee": "Monthly Fee "
 }

@@ -56,6 +56,8 @@ import Loader from "../../components/common/Loader";
 import TransferToReseller from "./customerCRUD/TransferToReseller";
 import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { useCallback } from "react";
+import FormatNumber from "../../components/common/NumberFormat";
 
 // import apiLink from ""
 export default function Customer() {
@@ -719,6 +721,35 @@ export default function Customer() {
     }
   };
 
+  const sumMonthlyFee = useCallback(() => {
+    let initialValue = 0;
+    const sumMnthlyFee = Customers.reduce(
+      (previous, current) => previous + current.monthlyFee,
+      initialValue
+    );
+    return FormatNumber(sumMnthlyFee);
+  }, [Customers]);
+
+  const dueMonthlyFee = () => {
+    let dueAmount = 0;
+    let totalSumDue = 0;
+    Customers.map((item) => {
+      if (item.paymentStatus === "unpaid") {
+        dueAmount = item.monthlyFee - item.balance;
+        totalSumDue += dueAmount;
+      }
+    });
+    return FormatNumber(totalSumDue);
+  };
+
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {sumMonthlyFee()}
+      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+      {dueMonthlyFee()} &nbsp;{t("tk")}
+    </div>
+  );
+
   return (
     <>
       <Sidebar />
@@ -1170,6 +1201,7 @@ export default function Customer() {
                   <div className="filterresetbtn d-flex justify-content-between"></div>
                   <div className="table-section">
                     <Table
+                      customComponent={customComponent}
                       isLoading={isLoading}
                       columns={columns}
                       data={Customers1}
