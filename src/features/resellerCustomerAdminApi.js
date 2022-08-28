@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
 import {
+  bulkUpdate,
   deleteReCustomer,
   editAllResellerCustomerSuccess,
   editResellerCustomerSuccess,
@@ -105,6 +106,23 @@ export const editResellerCustomer = async (
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
+      toast.error(err.response.data.message);
+    }
+  }
+};
+
+export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch("/customer/bulk-billing-cycle", data);
+    dispatch(bulkUpdate(res.data.data));
+    document.querySelector("#customerBillingCycle").click();
+    setIsLoading(false);
+    toast.success("কাস্টমার বিলিং সাইকেল আপডেট হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#customerBillingCycle").click();
       toast.error(err.response.data.message);
     }
   }

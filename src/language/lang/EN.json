@@ -519,5 +519,6 @@
   "salaryDelete": "Delete Salary",
   "staffDeleteAlert": "Do you want to delete staff ?",
   "staffDelete": "Delete Staff",
-  "count": "Count"
+  "count": "Count",
+  "basic": "Basic"
 }

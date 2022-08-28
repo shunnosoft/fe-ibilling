@@ -14,7 +14,8 @@
   padding: 20px 0px;
 }
 #souceCheck {
-  margin-left: 10px;
+  margin-right: 10px;
+  margin-left: -1px;
 }
 .secondSection {
   background: #f6f6f6;

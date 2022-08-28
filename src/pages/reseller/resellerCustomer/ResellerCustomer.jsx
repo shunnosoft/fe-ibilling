@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -11,48 +11,61 @@ import useDash from "../../../assets/css/dash.module.css";
 import Table from "../../../components/table/Table";
 import {
   ArchiveFill,
+  ArrowClockwise,
   CashStack,
+  FileExcelFill,
   PenFill,
   PersonFill,
+  PersonPlusFill,
+  PrinterFill,
   ThreeDots,
   Wallet,
 } from "react-bootstrap-icons";
 import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
 import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
-import { deleteACustomer } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
 import { useTranslation } from "react-i18next";
 import CustomerDelete from "../resellerModals/CustomerDelete";
 import IndeterminateCheckbox from "../../../components/table/bulkCheckbox";
 import BulkCustomerReturn from "../resellerModals/BulkCustomerReturn";
+import { CSVLink } from "react-csv";
+import ReactToPrint from "react-to-print";
+import PrintCustomer from "./customerPDF";
+import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 
 // get specific customer
 
 const ResellerCustomer = () => {
   const { t } = useTranslation();
-  const [singleCustomer, setSingleCustomer] = useState("");
-  // get specific customer Report
-  const [customerReportId, setcustomerReportId] = useState([]);
 
-  // delete state
-  const [isDelete, setIsDeleting] = useState(false);
+  // reference of pdf export component
+  const componentRef = useRef();
 
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  // import dispatch
+  const dispatch = useDispatch();
 
   // get id from route
   const { resellerId } = useParams();
 
-  // import dispatch
-  const dispatch = useDispatch();
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth?.userData
+  );
 
   // get all data from redux state
   let resellerCustomer = useSelector(
     (state) => state?.resellerCustomer?.resellerCustomer
   );
+
+  // customer state
+  const [customer, setCustomer] = useState([]);
+
+  // get single customer id
+  const [singleCustomer, setSingleCustomer] = useState("");
+
+  // get specific customer Report
+  const [customerReportId, setcustomerReportId] = useState([]);
 
   // loading local state
   const [isLoading, setIsLoading] = useState(false);
@@ -63,18 +76,27 @@ const ResellerCustomer = () => {
   // payment status state
   const [filterPayment, setFilterPayment] = useState(null);
 
+  // customer id state
   const [customerId, setCustomerId] = useState();
 
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
-  const [customer, setCustomer] = useState([]);
+  //bulk-operations
+  const [bulkCustomer, setBulkCustomer] = useState([]);
+
+  // reload handler method
+  const reloadHandler = () => {
+    getResellerCustomer(dispatch, resellerId, setIsLoading);
+  };
 
   // get all reseller customer api call
   useEffect(() => {
-    getResellerCustomer(dispatch, resellerId, setIsLoading);
+    if (customer.length === 0)
+      getResellerCustomer(dispatch, resellerId, setIsLoading);
   }, []);
 
+  // set customer at state
   useEffect(() => {
     if (resellerCustomer.length > 0) setCustomer(resellerCustomer);
   }, [resellerCustomer]);
@@ -119,8 +141,86 @@ const ResellerCustomer = () => {
     setcustomerReportId(reportData);
   };
 
-  //bulk-operations
-  const [bulkCustomer, setBulkCustomer] = useState([]);
+  //export customer data
+  let customerForCsV = customer.map((customer) => {
+    return {
+      companyName: ispOwnerData.company,
+      home: "Home",
+      companyAddress: ispOwnerData.address,
+      name: customer.name,
+      customerAddress: customer.address,
+      connectionType: "Wired",
+      connectivity: "Dedicated",
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      ip: "",
+      road: ispOwnerData.address,
+      address: ispOwnerData.address,
+      area: ispOwnerData?.fullAddress?.area || "",
+      district: ispOwnerData?.fullAddress?.district || "",
+      thana: ispOwnerData?.fullAddress?.thana || "",
+      mobile: customer?.mobile.slice(1) || "",
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+    };
+  });
+
+  const headers = [
+    { label: "name_operator", key: "companyName" },
+    { label: "type_of_client", key: "home" },
+    { label: "distribution Location point", key: "companyAddress" },
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "type_of_connection", key: "connectionType" },
+    { label: "type_of_connectivity", key: "connectivity" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "allowcated_ip", key: "ip" },
+    { label: "house_no", key: "address" },
+    { label: "road_no", key: "road" },
+    { label: "area", key: "area" },
+    { label: "district", key: "district" },
+    { label: "thana", key: "thana" },
+    { label: "client_phone", key: "mobile" },
+    { label: "mail", key: "email" },
+    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
+  ];
+
+  const filterData = {
+    status: filterStatus ? filterStatus : t("sokolCustomer"),
+    payment: filterPayment ? filterPayment : t("sokolCustomer"),
+  };
+
+  //export customer data
+  let customerForCsVTableInfo = customer.map((customer) => {
+    return {
+      name: customer.name,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
 
   // table column
   const columns = React.useMemo(
@@ -193,7 +293,7 @@ const ResellerCustomer = () => {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MM DD YYYY hh:mm a");
+          return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
 
@@ -296,55 +396,112 @@ const ResellerCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("customer")} </h2>
-              </FourGround>
-              <div className="card">
-                <div className="card-body">
-                  <div className="d-flex flex-row justify-content-center">
-                    {/* status filter */}
-                    <select
-                      className="form-select mt-3"
-                      aria-label="Default select example"
-                      onChange={(event) => setFilterStatus(event.target.value)}
-                    >
-                      <option selected value="all">
-                        {" "}
-                        {t("status")}{" "}
-                      </option>
-                      <option value="active"> {t("active")} </option>
-                      <option value="inactive"> {t("in active")} </option>
-                      <option value="expired"> {t("expired")} </option>
-                    </select>
-                    {/* end status filter */}
-
-                    {/* payment status filter */}
-                    <select
-                      className="form-select ms-4 mt-3"
-                      aria-label="Default select example"
-                      onChange={(event) => setFilterPayment(event.target.value)}
-                    >
-                      <option selected value="all">
-                        {" "}
-                        {t("paymentFilter")}{" "}
-                      </option>
-                      <option value="paid"> {t("paid")} </option>
-                      <option value="unpaid"> {t("unpaid")} </option>
-                    </select>
-                    {/* end payment status filter */}
-                    <button
-                      className="btn btn-outline-primary w-140 mt-3 chartFilteritem ms-2"
-                      onClick={filterClick}
-                    >
-                      {t("filter")}
-                    </button>
-                  </div>
-                  {isDelete ? (
-                    <div className="deletingAction">
-                      <Loader /> <b>Deleting...</b>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <h2>{t("customer")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
                     </div>
-                  ) : (
-                    ""
-                  )}
+                  </div>
+
+                  <div className="d-flex">
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={customerForCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={customerForCsVTableInfoHeader}
+                        title="Customer Report"
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={customerForCsV}
+                        filename={ispOwnerData.company}
+                        headers={headers}
+                        title={t("downloadBTRCreport")}
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle="গ্রাহক লিস্ট"
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </FourGround>
+              <FourGround>
+                <div className="collectorWrapper mt-2 py-2">
+                  <div className="addCollector">
+                    <div className="d-flex flex-row justify-content-center">
+                      {/* status filter */}
+                      <select
+                        className="form-select mt-3"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterStatus(event.target.value)
+                        }
+                      >
+                        <option selected value="all">
+                          {" "}
+                          {t("status")}{" "}
+                        </option>
+                        <option value="active"> {t("active")} </option>
+                        <option value="inactive"> {t("in active")} </option>
+                        <option value="expired"> {t("expired")} </option>
+                      </select>
+                      {/* end status filter */}
+
+                      {/* payment status filter */}
+                      <select
+                        className="form-select ms-2 mt-3"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterPayment(event.target.value)
+                        }
+                      >
+                        <option selected value="all">
+                          {" "}
+                          {t("paymentFilter")}{" "}
+                        </option>
+                        <option value="paid"> {t("paid")} </option>
+                        <option value="unpaid"> {t("unpaid")} </option>
+                      </select>
+                      {/* end payment status filter */}
+                      <button
+                        className="btn btn-outline-primary w-140 mt-3 chartFilteritem ms-2"
+                        onClick={filterClick}
+                      >
+                        {t("filter")}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "none" }}>
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={customer}
+                      ref={componentRef}
+                    />
+                  </div>
+
                   {/* call table component */}
                   <div className="table-section">
                     <Table
@@ -357,7 +514,7 @@ const ResellerCustomer = () => {
                     />
                   </div>
                 </div>
-              </div>
+              </FourGround>
             </FontColor>
           </div>
         </div>
@@ -375,6 +532,10 @@ const ResellerCustomer = () => {
         bulkCustomer={bulkCustomer}
         isAllCustomer={false}
       />
+      <BulkBillingCycleEdit
+        bulkCustomer={bulkCustomer}
+        modalId="customerBillingCycle"
+      />
       {bulkCustomer.length > 0 && (
         <div className="bulkActionButton">
           <button
@@ -387,6 +548,17 @@ const ResellerCustomer = () => {
           >
             <i class="fa-solid fa-right-left"></i>
             <span className="button_title"> {t("returnCustomer")} </span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title={t("editBillingCycle")}
+            data-bs-toggle="modal"
+            data-bs-target="#customerBillingCycle"
+            type="button"
+            class="btn btn-warning btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title"> {t("editBillingCycle")} </span>
           </button>
         </div>
       )}

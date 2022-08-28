@@ -72,7 +72,8 @@ export default function Reseller() {
 
   useEffect(() => {
     if (auth.ispOwner) {
-      fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
+      if (reseller.length == 0)
+        fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
       getArea(dispatch, auth.ispOwner.id, setIsLoading);
     }
   }, [dispatch, auth.ispOwner]);
