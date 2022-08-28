@@ -231,7 +231,6 @@ export default function ResellerEdit({ resellerId }) {
 
   //handle mikrotik packages
   const handelMikrotikPakages = (e) => {
-    console.log(e.target.value);
     let newArray = [...mikroTikPackagesId, e.target.value];
     if (mikroTikPackagesId.includes(e.target.value)) {
       newArray = newArray.filter((item) => item !== e.target.value);
@@ -515,7 +514,7 @@ export default function ResellerEdit({ resellerId }) {
                                                       <>
                                                         <div className="form-check">
                                                           <input
-                                                            id={p.id}
+                                                            id={p.id + "006"}
                                                             type="checkbox"
                                                             value={p.id}
                                                             onChange={
@@ -533,7 +532,9 @@ export default function ResellerEdit({ resellerId }) {
                                                           />
                                                           <label
                                                             className="form-check-label"
-                                                            htmlFor={p.id}
+                                                            htmlFor={
+                                                              p.id + "006"
+                                                            }
                                                           >
                                                             {p.name}
                                                           </label>
