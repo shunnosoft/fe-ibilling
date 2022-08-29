@@ -499,7 +499,6 @@ export default function Customer() {
       setPrintOptions(updatedState);
     }
   };
-  console.log(printOption);
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
