@@ -58,6 +58,10 @@ import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransf
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { useCallback } from "react";
 import FormatNumber from "../../components/common/NumberFormat";
+import {
+  printOptionDataBangla,
+  printOptionDataEng,
+} from "./customerCRUD/printOptionData";
 
 // import apiLink from ""
 export default function Customer() {
@@ -127,6 +131,9 @@ export default function Customer() {
 
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
+  //state for select print option print
+  const [printOption, setPrintOptions] = useState([]);
 
   // reload handler
   const reloadHandler = () => {
@@ -290,6 +297,14 @@ export default function Customer() {
   useEffect(() => {
     if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setIsloading);
     if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
+
+    //set inistial state for print oprions
+    const lang = localStorage.getItem("netFee:lang");
+    if (lang === "en") {
+      setPrintOptions(printOptionDataEng);
+      return;
+    }
+    setPrintOptions(printOptionDataBangla);
   }, []);
 
   useEffect(() => {
@@ -465,6 +480,26 @@ export default function Customer() {
     setSingleData(customerId);
   };
 
+  //controller for print options
+
+  const printOptionsController = ({ target }) => {
+    if (target.value === "default" && target.checked) {
+      setPrintOptions(
+        printOption.map((item) => {
+          return { ...item, checked: true };
+        })
+      );
+    } else {
+      const updatedState = printOption.map((item) => {
+        if (item.value === target.value) {
+          item.checked = target.checked;
+        }
+        return item;
+      });
+      setPrintOptions(updatedState);
+    }
+  };
+  console.log(printOption);
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
@@ -804,15 +839,11 @@ export default function Customer() {
                       </div>
 
                       <div className="addAndSettingIcon">
-                        <ReactToPrint
-                          documentTitle="গ্রাহক লিস্ট"
-                          trigger={() => (
-                            <PrinterFill
-                              title={t("print")}
-                              className="addcutmButton"
-                            />
-                          )}
-                          content={() => componentRef.current}
+                        <PrinterFill
+                          title={t("print")}
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#printModal"
                         />
                       </div>
 
@@ -1006,7 +1037,7 @@ export default function Customer() {
                             value=""
                             defaultValue
                           >
-                            {t("paymentFilter")}
+                            {t("paymentStatus")}
                           </option>
                           <option
                             selected={filterOptions.paymentStatus === "paid"}
@@ -1196,6 +1227,7 @@ export default function Customer() {
                       filterData={filterData}
                       currentCustomers={Customers}
                       ref={componentRef}
+                      printOptions={printOption}
                     />
                   </div>
                   <div className="filterresetbtn d-flex justify-content-between"></div>
@@ -1287,6 +1319,88 @@ export default function Customer() {
           </button>
         </div>
       )}
+
+      <div
+        class="modal fade"
+        id="printModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Select print option
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div className="container d-flex align-items-center justify-content-between">
+                <div className="select-options">
+                  {printOption.map((item) => (
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id={item.id}
+                        value={item.value}
+                        checked={item.checked}
+                        onChange={printOptionsController}
+                      />
+                      <label htmlFor={item.id} className="form-check-label">
+                        {item.label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                <div className="default-option">
+                  <div className="form-check d-3">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="default-print-option"
+                      value="default"
+                      onChange={printOptionsController}
+                      checked={printOption.every((item) => item.checked)}
+                    />
+                    <label
+                      htmlFor="default-print-option"
+                      className="form-check-label"
+                    >
+                      Set Default
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+
+              <ReactToPrint
+                documentTitle="গ্রাহক লিস্ট"
+                trigger={() => (
+                  <button type="button" class="btn btn-primary">
+                    Print
+                  </button>
+                )}
+                content={() => componentRef.current}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

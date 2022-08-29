@@ -66,7 +66,7 @@ export default function CustomerDetails({ single }) {
                     {t("status")} : <b>{badge(data?.status)}</b>
                   </h6>
                   <h6>
-                    {t("paymentFilter")} : <b>{badge(data?.paymentStatus)}</b>
+                    {t("paymentStatus")} : <b>{badge(data?.paymentStatus)}</b>
                   </h6>
                   <h6>
                     {t("monthFee")} :<b> {FormatNumber(data?.monthlyFee)}</b>

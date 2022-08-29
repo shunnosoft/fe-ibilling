@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const PrintCustomer = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  const { currentCustomers, filterData } = props;
+  const { currentCustomers, filterData, printOptions } = props;
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
@@ -50,37 +50,61 @@ const PrintCustomer = React.forwardRef((props, ref) => {
       <table className="table table-striped ">
         <thead>
           <tr className="spetialSortingRow">
-            <th scope="col">{t("id")}</th>
-            <th scope="col">{t("name")}</th>
-            <th scope="col">{t("address")}</th>
-            <th scope="col">{t("mobile")}</th>
-            <th scope="col">{t("status")}</th>
-            <th scope="col">{t("paymentFilter")}</th>
-            <th scope="col">{t("package")}</th>
-            <th scope="col">{t("month")}</th>
-            <th scope="col">{t("balance")}</th>
-            <th scope="col">{t("billingCycle")}</th>
+            {printOptions.map(
+              (item) =>
+                item.checked && (
+                  <>
+                    <th scope="col">{t(item.value)}</th>
+                  </>
+                )
+            )}
           </tr>
         </thead>
         <tbody>
-          {currentCustomers.map((val, key) => (
-            <tr key={key} id={val.id}>
-              <td className="prin_td">{val.customerId}</td>
-              <td className="prin_td">{val.name}</td>
-              <td className="prin_td">{val.address}</td>
-              <td className="prin_td">{val.mobile}</td>
-              <td className="prin_td">{badge(val.status)}</td>
-              <td className="prin_td">{badge(val.paymentStatus)}</td>
-              <td className="prin_td">{val.pppoe.profile}</td>
-              <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
-              <td className="prin_td">
-                <strong>{FormatNumber(val.balance)}</strong>
-              </td>
-              <td className="prin_td">
-                {moment(val.billingCycle).format("DD-MM-YYYY")}
-              </td>
-            </tr>
-          ))}
+          {currentCustomers.map(
+            (val, key) =>
+              printOptions.length > 0 && (
+                <tr key={key} id={val.id}>
+                  {printOptions[0].checked && (
+                    <td className="prin_td">{val.customerId}</td>
+                  )}
+                  {printOptions[1].checked && (
+                    <td className="prin_td">{val.name}</td>
+                  )}
+                  {printOptions[2].checked && (
+                    <td className="prin_td">{val.address}</td>
+                  )}
+                  {printOptions[3].checked && (
+                    <td className="prin_td">{val.mobile}</td>
+                  )}
+                  {printOptions[4].checked && (
+                    <td className="prin_td">{val.pppoe.name}</td>
+                  )}
+                  {printOptions[5].checked && (
+                    <td className="prin_td">{badge(val.status)}</td>
+                  )}
+                  {printOptions[6].checked && (
+                    <td className="prin_td">{badge(val.paymentStatus)}</td>
+                  )}
+                  {printOptions[7].checked && (
+                    <td className="prin_td">{val.pppoe.profile}</td>
+                  )}
+                  {printOptions[8].checked && (
+                    <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
+                  )}
+                  {printOptions[9].checked && (
+                    <td className="prin_td">
+                      <strong>{FormatNumber(val.balance)}</strong>
+                    </td>
+                  )}
+                  {printOptions[10].checked && (
+                    <td className="prin_td">
+                      {moment(val.billingCycle).format("DD-MM-YYYY")}
+                    </td>
+                  )}
+                </tr>
+              )
+          )}
         </tbody>
       </table>
     </div>

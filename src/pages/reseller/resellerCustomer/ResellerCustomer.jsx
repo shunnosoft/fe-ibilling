@@ -479,7 +479,7 @@ const ResellerCustomer = () => {
                       >
                         <option selected value="all">
                           {" "}
-                          {t("paymentFilter")}{" "}
+                          {t("paymentStatus")}{" "}
                         </option>
                         <option value="paid"> {t("paid")} </option>
                         <option value="unpaid"> {t("unpaid")} </option>

@@ -966,7 +966,7 @@ export default function Customer() {
                             value=""
                             defaultValue
                           >
-                            {t("paymentFilter")}
+                            {t("paymentStatus")}
                           </option>
                           <option
                             selected={filterOptions.paymentStatus === "paid"}

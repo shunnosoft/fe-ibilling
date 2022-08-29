@@ -447,7 +447,7 @@
   "fee": "Fee",
   "expiredFee": "Tk. Please make payment before",
   "payment": "Pay Now",
-  "paymentFilter": "Payment",
+  "paymentStatus": "Payment",
   "january": "January",
   "february": "February",
   "march": "March",

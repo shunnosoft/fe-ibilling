@@ -551,7 +551,7 @@ export default function Customer() {
                           onChange={handlePaymentChange}
                         >
                           <option value="" defaultValue>
-                            {t("paymentFilter")}
+                            {t("paymentStatus")}
                           </option>
                           <option value="paid"> {t("paid")} </option>
                           <option value="unpaid"> {t("unpaid")} </option>
