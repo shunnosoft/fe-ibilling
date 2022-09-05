@@ -4,7 +4,6 @@ import "./sidebar.css";
 import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
 import {
   List,
-  ArrowLeft,
   HouseDoorFill,
   People,
   PeopleFill,
@@ -39,12 +38,12 @@ import { Accordion } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 export default function Sidebar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
-  // const bpSettings = useSelector(
-  //   (state) => state.persistedReducer.auth?.userData?.bpSettings
-  // );
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
   const getIspOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData
   );
@@ -178,7 +177,7 @@ export default function Sidebar() {
                   </NavLink>
                 )}
 
-                {!getIspOwnerData?.bpSettings?.hasReseller &&
+                {!getIspOwnerData?.bpSettings?.hasMikrotik &&
                 (userRole === "ispOwner" || userRole === "manager") ? (
                   <NavLink
                     key={55}
@@ -205,7 +204,7 @@ export default function Sidebar() {
                   ""
                 )}
                 {userRole === "ispOwner" &&
-                getIspOwnerData?.bpSettings?.hasReseller ? (
+                getIspOwnerData?.bpSettings?.hasMikrotik ? (
                   <NavLink
                     key={5}
                     to={"/mikrotik"}
@@ -279,7 +278,7 @@ export default function Sidebar() {
                           </FontColor>
                         </NavLink>
 
-                        {getIspOwnerData?.bpSettings?.hasReseller &&
+                        {getIspOwnerData?.bpSettings?.hasMikrotik &&
                         (userRole === "ispOwner" ||
                           userRole === "manager" ||
                           userRole === "reseller" ||
@@ -381,7 +380,7 @@ export default function Sidebar() {
                           ""
                         )}
 
-                        {getIspOwnerData?.bpSettings?.hasReseller &&
+                        {getIspOwnerData?.bpSettings?.hasMikrotik &&
                         (userRole === "ispOwner" ||
                           userRole === "manager" ||
                           userRole === "reseller" ||
@@ -628,7 +627,7 @@ export default function Sidebar() {
                           </span>
                         </Accordion.Header>
                         <Accordion.Body>
-                          {getIspOwnerData?.bpSettings?.hasReseller &&
+                          {bpSettings?.hasReseller &&
                           userRole === "ispOwner" ? (
                             <NavLink
                               key={33}
@@ -660,7 +659,7 @@ export default function Sidebar() {
                           )}
 
                           {(userRole === "ispOwner" &&
-                            getIspOwnerData?.bpSettings?.hasReseller) ||
+                            bpSettings?.hasReseller) ||
                           userRole === "reseller" ? (
                             <NavLink
                               key={70}
@@ -771,7 +770,7 @@ export default function Sidebar() {
                         )}
 
                         {
-                          /*(userRole === "ispOwner" && getIspOwnerData?.bpSettings?.hasReseller) ||*/
+                          /*(userRole === "ispOwner" && bpSettings?.hasReseller) ||*/
                           userRole === "reseller" ? (
                             <NavLink
                               key={71}
