@@ -251,7 +251,7 @@ export default function CustomerEdit({ single }) {
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
-                          disabled={!permission.customerMikrotikPackageEdit}
+                          disabled={!permission?.customerMikrotikPackageEdit}
                         >
                           {ppPackage &&
                             ppPackage?.map(
@@ -276,7 +276,7 @@ export default function CustomerEdit({ single }) {
                         label={t("monthFee")}
                         name="monthlyFee"
                         min={packageRate?.rate || data?.monthlyFee}
-                        disabled={!permission.monthlyFeeEdit}
+                        disabled={!permission?.monthlyFeeEdit}
                       />
                     </div>
 
@@ -366,7 +366,7 @@ export default function CustomerEdit({ single }) {
                             type="checkBox"
                             checked={autoDisable}
                             onChange={(e) => setAutoDisable(e.target.checked)}
-                            disabled={!permission.customerAutoDisableEdit}
+                            disabled={!permission?.customerAutoDisableEdit}
                           />
                         </div>
                       )}
@@ -383,7 +383,7 @@ export default function CustomerEdit({ single }) {
                           id="changeToActive"
                           onChange={(e) => setStatus(e.target.value)}
                           checked={status === "active"}
-                          disabled={!permission.customerStatusEdit}
+                          disabled={!permission?.customerStatusEdit}
                         />
                         <label
                           className="form-check-label"
@@ -400,7 +400,7 @@ export default function CustomerEdit({ single }) {
                           value={"inactive"}
                           onChange={(e) => setStatus(e.target.value)}
                           checked={status === "inactive"}
-                          disabled={!permission.customerStatusEdit}
+                          disabled={!permission?.customerStatusEdit}
                         />
                         <label
                           className="form-check-label"
