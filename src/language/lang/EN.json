@@ -261,7 +261,7 @@
   "on": "On",
   "off": "Off",
   "save": "Save",
-  "cancel": "cancel",
+  "cancel": "Cancel",
   "alertSMStemplateSaveAlert": "Alert SMS Template Save succeess!",
   "alertSMStemplate": "Alert SMS Template",
   "selectTemplate": "Select Template",
@@ -521,5 +521,8 @@
   "staffDelete": "Delete Staff",
   "count": "Count",
   "basic": "Basic",
-  "monthlyFee": "Monthly Fee "
+  "monthlyFee": "Monthly Fee ",
+  "totalMonthlyBillCollect": "Collect Bill",
+  "billCollected": "Bill Collected",
+  "billDue": "Bill Due"
 }

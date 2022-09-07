@@ -523,5 +523,8 @@
   "staffDelete": "স্টাফ ডিলিট",
   "count": "কাউন্ট",
   "basic": "বেসিক",
-  "monthlyFee": "মাসিক বিল "
+  "monthlyFee": "মাসিক বিল ",
+  "totalMonthlyBillCollect": "কালেক্ট বিল",
+  "billCollected": "কালেক্ট বিল",
+  "billDue": "বিল বকেয়া"
 }

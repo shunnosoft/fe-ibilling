@@ -53,7 +53,7 @@ export default function ConfigMikrotik() {
 
     if (mtkId) {
       dispatch(resetMikrotikUserAndPackage());
-      fetchpppoeUser(dispatch, IDs, name, setLoading);
+      fetchpppoeUser(dispatch, IDs, name, setLoading, "user");
     }
   }, [ispOwnerId, selectedMikrotikId, mikrotik]);
 
