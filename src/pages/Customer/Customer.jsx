@@ -62,6 +62,7 @@ import {
   printOptionDataBangla,
   printOptionDataEng,
 } from "./customerCRUD/printOptionData";
+import BandwidthModal from "./BandwidthModal";
 
 // import apiLink from ""
 export default function Customer() {
@@ -134,6 +135,9 @@ export default function Customer() {
 
   //state for select print option print
   const [printOption, setPrintOptions] = useState([]);
+
+  //bandwidth modal state
+  const [modalShow, setModalShow] = useState(false);
 
   // reload handler
   const reloadHandler = () => {
@@ -499,6 +503,12 @@ export default function Customer() {
       setPrintOptions(updatedState);
     }
   };
+
+  const bandwidthModalController = (customerID) => {
+    setSingleCustomer(customerID);
+    setModalShow(true);
+  };
+
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
@@ -727,6 +737,17 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
+                {/* {(role === "ispOwner" || role === "manager") &&
+                  ispOwnerData.bpSettings.hasMikrotik && (
+                    <li onClick={() => bandwidthModalController(original.id)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ArrowRightSquareFill />
+                          <p className="actionP">{t("bandwidth")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )} */}
               </ul>
             </div>
           </div>
@@ -761,7 +782,7 @@ export default function Customer() {
       (previous, current) => previous + current.monthlyFee,
       initialValue
     );
-    return FormatNumber(sumMnthlyFee);
+    return sumMnthlyFee;
   }, [Customers]);
 
   const dueMonthlyFee = () => {
@@ -773,14 +794,17 @@ export default function Customer() {
         totalSumDue += dueAmount;
       }
     });
-    return FormatNumber(totalSumDue);
+    return totalSumDue;
   };
 
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {sumMonthlyFee()}
+      {t("monthlyFee")}&nbsp; {FormatNumber(sumMonthlyFee())}
       {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {dueMonthlyFee()} &nbsp;{t("tk")}
+      {FormatNumber(dueMonthlyFee())} &nbsp;{t("tk")} &nbsp;
+      {/* {t("collection")}&nbsp;{" "} */}
+      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
+      {t("tk")} */}
     </div>
   );
 
@@ -903,7 +927,11 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="bulkTransferToReseller"
               />
-
+              {/* <BandwidthModal
+                modalShow={modalShow}
+                setModalShow={setModalShow}
+                customerId={singleCustomer}
+              /> */}
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">

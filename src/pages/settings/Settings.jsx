@@ -14,6 +14,7 @@ import CustomerInactiveSmsTemplate from "./template/CustomerInactiveSmsTemplate"
 import { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import SalarySMSTemplate from "./template/SalarySMSTemplate";
 export default function Settings() {
   const { t } = useTranslation();
   const [settingSelect, setSettingSelect] = useState("confirmation");
@@ -76,6 +77,15 @@ export default function Settings() {
                     >
                       <FourGround>
                         <CustomerInactiveSmsTemplate></CustomerInactiveSmsTemplate>
+                      </FourGround>
+                    </Tab>
+                    <Tab
+                      className="mt-5"
+                      eventKey="staffSalary"
+                      title={t("SalarySMS")}
+                    >
+                      <FourGround>
+                        <SalarySMSTemplate />
                       </FourGround>
                     </Tab>
                   </Tabs>
