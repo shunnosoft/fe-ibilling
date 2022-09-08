@@ -521,5 +521,6 @@
   "staffDelete": "Delete Staff",
   "count": "Count",
   "basic": "Basic",
-  "monthlyFee": "Monthly Fee "
+  "monthlyFee": "Monthly Fee ",
+  "bandwidth":"BandWidth"
 }
