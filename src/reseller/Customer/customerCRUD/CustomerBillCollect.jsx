@@ -170,7 +170,7 @@ export default function CustomerBillCollect({ single }) {
                           </option>
                           <option value="bKash"> {t("bKash")} </option>
                           <option value="rocket"> {t("rocket")} </option>
-                          <option value="nagod"> {t("nagad")} </option>
+                          <option value="nagad"> {t("nagad")} </option>
                           <option value="others"> {t("others")} </option>
                         </select>
                       </div>
