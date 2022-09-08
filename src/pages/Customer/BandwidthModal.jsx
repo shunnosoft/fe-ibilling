@@ -5,7 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import apiLink from "../../api/apiLink";
 import { Chart } from "chart.js";
 import { Line } from "react-chartjs-2";
-import "chartjs-adapter-luxon";
+// import "chartjs-adapter-luxon";
 import StreamingPlugin from "chartjs-plugin-streaming";
 import { toast } from "react-toastify";
 
