@@ -261,7 +261,7 @@
   "on": "On",
   "off": "Off",
   "save": "Save",
-  "cancel": "cancel",
+  "cancel": "Cancel",
   "alertSMStemplateSaveAlert": "Alert SMS Template Save succeess!",
   "alertSMStemplate": "Alert SMS Template",
   "selectTemplate": "Select Template",
@@ -522,5 +522,11 @@
   "count": "Count",
   "basic": "Basic",
   "monthlyFee": "Monthly Fee ",
+<<<<<<< HEAD
   "bandwidth":"BandWidth"
+=======
+  "totalMonthlyBillCollect": "Collect Bill",
+  "billCollected": "Bill Collected",
+  "billDue": "Bill Due"
+>>>>>>> 612101605c07d459a3e0cc415f1c05902350f199
 }

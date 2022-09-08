@@ -524,5 +524,8 @@
   "count": "কাউন্ট",
   "basic": "বেসিক",
   "monthlyFee": "মাসিক বিল ",
-  "bandwidth": "ব্যান্ডউইথ"
+  "bandwidth": "ব্যান্ডউইথ",
+  "totalMonthlyBillCollect": "কালেক্ট বিল",
+  "billCollected": "কালেক্ট বিল",
+  "billDue": "বিল বকেয়া"
 }
