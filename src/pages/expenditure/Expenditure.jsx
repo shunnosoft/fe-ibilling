@@ -34,6 +34,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import Loader from "../../components/common/Loader";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Expenditure() {
   const { t } = useTranslation();
@@ -53,10 +54,11 @@ export default function Expenditure() {
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
+  // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // pagination
-  let [allExpenditures, setAllExpenditure] = useState(expenditures);
+  let [allExpenditures, setAllExpenditure] = useState([]);
   const [filterName, setFilterName] = useState();
   const [filterState, setFilterState] = useState(allExpenditures);
 
@@ -110,6 +112,7 @@ export default function Expenditure() {
       getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   }, [ispOwnerId, dispatch]);
 
+  // table column
   const columns = React.useMemo(
     () => [
       {
@@ -201,6 +204,7 @@ export default function Expenditure() {
     ],
     [ownerUsers, t]
   );
+
   const columns2 = React.useMemo(
     () => [
       {
@@ -270,6 +274,7 @@ export default function Expenditure() {
     [t]
   );
 
+  // filter function
   const onClickFilter = () => {
     let expenditureValue = [...filterState];
 
@@ -322,19 +327,23 @@ export default function Expenditure() {
     return total;
   };
 
+  // send total expenditure value in table header
   const customComponent = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
       {role === "ispOwner" ? (
         <div>
-          {t("totalExpenditure")} {getTotalExpenditure()} {t("tk")}
+          {t("totalExpenditure")} {FormatNumber(getTotalExpenditure())}{" "}
+          {t("tk")}
         </div>
       ) : (
         <div style={{ marginRight: "10px" }}>
-          {t("totalExpenditure")} {getTotalExpenditure()} {t("tk")}
+          {t("totalExpenditure")} {FormatNumber(getTotalExpenditure())}{" "}
+          {t("tk")}
         </div>
       )}
     </div>
   );
+
   return (
     <>
       <Sidebar />
@@ -431,7 +440,7 @@ export default function Expenditure() {
                             }
                           >
                             <option value="Select" selected>
-                              Select
+                              {t("name")}
                             </option>
                             {ownerUsers.map((item) => {
                               for (const key in item) {
@@ -458,7 +467,7 @@ export default function Expenditure() {
                             }
                           >
                             <option value="Select" selected>
-                              Select
+                              {t("expenseSector")}
                             </option>
                             {expenditurePurpose.map((item, key) => (
                               <option value={item?.name}>{item?.name}</option>
@@ -502,7 +511,7 @@ export default function Expenditure() {
                           <Table
                             isLoading={isLoading}
                             customComponent={customComponent}
-                            data={allExpenditures}
+                            data={allExpenditures.reverse()}
                             columns={columns}
                           ></Table>
                         </div>

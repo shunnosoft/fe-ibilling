@@ -54,6 +54,7 @@ export default function Home() {
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
 
+  const reseller = useSelector((state) => state.reseller?.reseller);
   const allCollector = useSelector((state) => state.collector.collector);
   const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
@@ -627,7 +628,7 @@ export default function Home() {
                               <Coin />
                             </div>
                             <div className="chartSection">
-                              <p style={{ fontSize: "16px" }}>{t("cost")}</p>
+                              <p style={{ fontSize: "16px" }}>{t("ownCost")}</p>
                               <h2>
                                 ৳{" "}
                                 {FormatNumber(customerStat.ispOwnerExpenditure)}
@@ -928,42 +929,47 @@ export default function Home() {
                     </Accordion.Body>
                   </Accordion.Item>
 
-                  <Accordion.Item eventKey="3">
-                    <Accordion.Header className="shadow-none">
-                      <h4 className="mb-0">{t("reseller")}</h4>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <div className="row ">
-                        <div className="col-md-3">
-                          <div
-                            id="card1"
-                            className="dataCard"
-                            data-bs-toggle="modal"
-                            data-bs-target="#resellerInformationModal"
-                            style={{ cursor: "pointer" }}
-                          >
-                            <ThreeDotsVertical className="ThreeDots" />
-                            <div className="cardIcon">
-                              <People />
-                            </div>
-                            <div className="chartSection">
-                              <p style={{ fontSize: "16px" }}>
-                                {t("reseller")}
-                              </p>
-                              <h2> {FormatNumber(resellerData.length)}</h2>
+                  {reseller.length > 0 && (
+                    <Accordion.Item eventKey="3">
+                      <Accordion.Header className="shadow-none">
+                        <h4 className="mb-0">{t("reseller")}</h4>
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <div className="row ">
+                          <div className="col-md-3">
+                            <div
+                              id="card1"
+                              className="dataCard"
+                              data-bs-toggle="modal"
+                              data-bs-target="#resellerInformationModal"
+                              style={{ cursor: "pointer" }}
+                            >
+                              <ThreeDotsVertical className="ThreeDots" />
+                              <div className="cardIcon">
+                                <People />
+                              </div>
+                              <div className="chartSection">
+                                <p style={{ fontSize: "16px" }}>
+                                  {t("reseller")}
+                                </p>
+                                <h2> {FormatNumber(resellerData.length)}</h2>
 
-                              <p
-                                style={{ fontSize: "15px", paddingTop: "10px" }}
-                              >
-                                {t("totalMonthlyBillCollect")}:{" "}
-                                {FormatNumber(calculationCollectBill())}
-                              </p>
+                                <p
+                                  style={{
+                                    fontSize: "15px",
+                                    paddingTop: "10px",
+                                  }}
+                                >
+                                  {t("totalMonthlyBillCollect")}:{" "}
+                                  {FormatNumber(calculationCollectBill())}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </Accordion.Body>
-                  </Accordion.Item>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  )}
                 </>
               )}
             </Accordion>
@@ -1059,7 +1065,7 @@ export default function Home() {
             <FourGround>
               <div className="collectorWrapper pt-1 pb-2">
                 <div className="table-section">
-                  {collectorData && collectorData.length && (
+                  {collectorData && collectorData.length > 0 && (
                     <Table
                       isLoading={isLoading}
                       columns={columns}

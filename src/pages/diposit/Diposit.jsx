@@ -15,7 +15,9 @@ import { useCallback, useEffect } from "react";
 import {
   addDeposit,
   depositAcceptReject,
+  getCollector,
   getDeposit,
+  getManger,
   getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
@@ -158,6 +160,11 @@ export default function Diposit() {
       );
     }
   };
+
+  useEffect(() => {
+    getCollector(dispatch, ispOwner, setLoading);
+    getManger(dispatch, ispOwner);
+  }, []);
 
   // get own deposit, ownerUser & total balance api call
   useEffect(() => {
@@ -580,42 +587,45 @@ export default function Diposit() {
                         <Tab eventKey="profile" title={t("depositReport")}>
                           <div>
                             <div className="selectFilteringg">
-                              {userRole === "ispOwner" && (
-                                <select
-                                  className="form-select"
-                                  onChange={(e) =>
-                                    setCollectorIds(e.target.value)
-                                  }
-                                >
-                                  <option value="all" defaultValue>
-                                    {t("all collector")}
+                              <select
+                                className="form-select me-2"
+                                onChange={(e) =>
+                                  setCollectorIds(e.target.value)
+                                }
+                              >
+                                <option value="all" defaultValue>
+                                  {t("all collector")}
+                                </option>
+                                {allCollector?.map((c, key) => (
+                                  <option key={key} value={c.user}>
+                                    {c.name}
                                   </option>
-                                  {allCollector?.map((c, key) => (
-                                    <option key={key} value={c.user}>
-                                      {c.name}
-                                    </option>
-                                  ))}
+                                ))}
+                                {userRole === "ispOwner" && (
                                   <option value={manager?.user}>
                                     {manager?.name}
                                   </option>
-                                </select>
-                              )}
-                              <div className="mx-2">
-                                <select
-                                  className="form-select"
-                                  aria-label="Default select example"
-                                  onChange={(e) =>
-                                    setSelectedCustomer(e.target.value)
-                                  }
-                                >
-                                  <option value="">Select Collector</option>
-                                  {allCollector.map((item) => (
-                                    <option value={item.user}>
-                                      {item.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
+                                )}
+                              </select>
+
+                              {/* {userRole === "manager" && (
+                                <div className="mx-2">
+                                  <select
+                                    className="form-select"
+                                    aria-label="Default select example"
+                                    onChange={(e) =>
+                                      setSelectedCustomer(e.target.value)
+                                    }
+                                  >
+                                    <option value="">Select Collector</option>
+                                    {allCollector.map((item) => (
+                                      <option value={item.user}>
+                                        {item.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              )} */}
                               <div className="">
                                 <input
                                   className="form-select"

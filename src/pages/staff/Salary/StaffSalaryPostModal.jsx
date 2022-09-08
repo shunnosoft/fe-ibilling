@@ -56,7 +56,6 @@ export default function StaffSalaryPostModal({ staffId }) {
       staff: staffId,
       user: currentUser.user.id,
     };
-    console.log(sendingData);
     addSalaryApi(dispatch, sendingData, resetForm, setIsLoading);
   };
 

@@ -69,6 +69,7 @@
   "messageLog": "Message Log",
   "account": "Accounts",
   "cost": "Expenditure",
+  "ownCost": "Own Expenditure",
   "expenseDefination": "Expense Defination",
   "search": "Search",
   "invoice": "Invoices",
