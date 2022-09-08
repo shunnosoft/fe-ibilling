@@ -737,7 +737,7 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
-                {(role === "ispOwner" || role === "manager") &&
+                {/* {(role === "ispOwner" || role === "manager") &&
                   ispOwnerData.bpSettings.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
                       <div className="dropdown-item">
@@ -747,7 +747,7 @@ export default function Customer() {
                         </div>
                       </div>
                     </li>
-                  )}
+                  )} */}
               </ul>
             </div>
           </div>
@@ -802,7 +802,7 @@ export default function Customer() {
       {t("monthlyFee")}&nbsp; {FormatNumber(sumMonthlyFee())}
       {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
       {FormatNumber(dueMonthlyFee())} &nbsp;{t("tk")} &nbsp;
-      {t("collection")}&nbsp;{" "}
+      {/* {t("collection")}&nbsp;{" "} */}
       {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
       {t("tk")} */}
     </div>
@@ -927,11 +927,11 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="bulkTransferToReseller"
               />
-              <BandwidthModal
+              {/* <BandwidthModal
                 modalShow={modalShow}
                 setModalShow={setModalShow}
                 customerId={singleCustomer}
-              />
+              /> */}
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">

@@ -525,5 +525,8 @@
   "bandwidth":"BandWidth",
   "totalMonthlyBillCollect": "Collect Bill",
   "billCollected": "Bill Collected",
-  "billDue": "Bill Due"
+  "billDue": "Bill Due",
+  "SalarySMS":"Salary SMS",
+  "SalarySMSTemplate":"Salary SMS",
+  "SalarySMSToast":"Salary SMS template Updated"
 }

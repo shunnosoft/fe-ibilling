@@ -527,5 +527,8 @@
   "bandwidth": "ব্যান্ডউইথ",
   "totalMonthlyBillCollect": "কালেক্ট বিল",
   "billCollected": "কালেক্ট বিল",
-  "billDue": "বিল বকেয়া"
+  "billDue": "বিল বকেয়া",
+  "SalarySMS": "স্যালারি এসএমএস",
+  "SalarySMSTemplate": "স্যালারি এসএমএস টেমপ্লেট",
+  "SalarySMSToast": "স্যালারি এসএমএস টেমপ্লেট আপডেট সফল হয়েছে"
 }
