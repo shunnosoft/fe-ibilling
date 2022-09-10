@@ -45,6 +45,10 @@ import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import { CSVLink } from "react-csv";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
+import BulkBillingCycleEdit from "./bulkOpration/bulkBillingCycleEdit";
+import BulkStatusEdit from "./bulkOpration/bulkStatusEdit";
+import BulkSubAreaEdit from "./bulkOpration/bulkSubAreaEdit";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -64,9 +68,10 @@ export default function Customer() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
+  console.log(permission);
 
   const [Customers, setCustomers] = useState(cus);
-  console.log(Customers);
+
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 
@@ -212,8 +217,26 @@ export default function Customer() {
     }
   }, [cus, subAreaIds]);
 
+  //bulk-operations
+  const [bulkCustomer, setBulkCustomer] = useState([]);
+
   const columns = React.useMemo(
     () => [
+      {
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: "2%",
+      },
       {
         width: "8%",
         Header: t("id"),
@@ -513,6 +536,22 @@ export default function Customer() {
               <CustomerReport single={customerReportData} />
               <SingleMessage single={singleCustomer} sendCustomer="customer" />
 
+              {/* bulk operation modal section */}
+              <BulkSubAreaEdit
+                bulkCustomer={bulkCustomer}
+                modalId="customerBulkEdit"
+              />
+              <BulkBillingCycleEdit
+                bulkCustomer={bulkCustomer}
+                modalId="customerBillingCycle"
+              />
+
+              <BulkStatusEdit
+                bulkCustomer={bulkCustomer}
+                modalId="bulkStatusEdit"
+              />
+              {/*  bulk operation modal section */}
+
               {/* Model finish */}
 
               <FourGround>
@@ -582,6 +621,9 @@ export default function Customer() {
                       isLoading={isLoading}
                       columns={columns}
                       data={Customers}
+                      bulkState={{
+                        setBulkCustomer,
+                      }}
                     ></Table>
                   </div>
                 </div>
@@ -591,6 +633,50 @@ export default function Customer() {
           </div>
         </div>
       </div>
+
+      {bulkCustomer.length > 0 && (
+        <div className="bulkActionButton">
+          {permission?.bulkAreaEdit && (
+            <button
+              className="bulk_action_button"
+              title={t("editArea")}
+              data-bs-toggle="modal"
+              data-bs-target="#customerBulkEdit"
+              type="button"
+              class="btn btn-primary btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title">{t("editArea")}</span>
+            </button>
+          )}
+          {permission?.bulkCustomerStatusEdit && (
+            <button
+              className="bulk_action_button"
+              title={t("editStatus")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkStatusEdit"
+              type="button"
+              class="btn btn-dark btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title"> {t("editStatus")}</span>
+            </button>
+          )}
+          {permission?.bulkCustomerBillingCycleEdit && (
+            <button
+              className="bulk_action_button"
+              title={t("editBillingCycle")}
+              data-bs-toggle="modal"
+              data-bs-target="#customerBillingCycle"
+              type="button"
+              class="btn btn-warning btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title"> {t("editBillingCycle")} </span>
+            </button>
+          )}
+        </div>
+      )}
     </>
   );
 }

@@ -51,10 +51,28 @@ export const resellerPermissionEng = [
     value: "areaDelete",
     isChecked: false,
   },
+  // {
+  //   id: 9,
+  //   label: "Area Add",
+  //   value: "areaAdd",
+  //   isChecked: false,
+  // },
   {
-    id: 9,
-    label: "Area Add",
-    value: "areaAdd",
+    id: 10,
+    label: "Bulk Area Edit",
+    value: "bulkAreaEdit",
+    isChecked: false,
+  },
+  {
+    id: 11,
+    label: "Bulk Status Edit",
+    value: "bulkCustomerStatusEdit",
+    isChecked: false,
+  },
+  {
+    id: 12,
+    label: "Bulk BillingCycle Edit",
+    value: "bulkCustomerBillingCycleEdit",
     isChecked: false,
   },
 ];
@@ -88,10 +106,28 @@ export const resellerPermissionBan = [
     value: "areaDelete",
     isChecked: false,
   },
+  // {
+  //   id: 9,
+  //   label: "এড এরিয়া",
+  //   value: "areaAdd",
+  //   isChecked: false,
+  // },
   {
-    id: 9,
-    label: "এড এরিয়া",
-    value: "areaAdd",
+    id: 10,
+    label: "বাল্ক এরিয়া এডিট",
+    value: "bulkAreaEdit",
+    isChecked: false,
+  },
+  {
+    id: 11,
+    label: "বাল্ক স্ট্যাটাস এডিট",
+    value: "bulkCustomerStatusEdit",
+    isChecked: false,
+  },
+  {
+    id: 12,
+    label: "বাল্ক বিলিং সাইকেল এডিট",
+    value: "bulkCustomerBillingCycleEdit",
     isChecked: false,
   },
 

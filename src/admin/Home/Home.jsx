@@ -40,7 +40,6 @@ export default function Home() {
 
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
-  console.log(ispOwners);
 
   // get user role from redux
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
