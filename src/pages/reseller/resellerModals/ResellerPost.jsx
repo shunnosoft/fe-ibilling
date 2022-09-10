@@ -251,15 +251,19 @@ export default function ResellerPost() {
 
                       {/* second part */}
                       <div className="secondSection text-start">
-                        <p className="radioTitle">
-                          পারমিশন দিন
-                          <input
-                            id="souceCheck"
-                            type="checkbox"
-                            onChange={permissionHandler}
-                            name="allChecked"
-                          />
-                        </p>
+                        <input
+                          className="form-check-input"
+                          id="souceCheck"
+                          type="checkbox"
+                          onChange={permissionHandler}
+                          name="allChecked"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="souceCheck"
+                        >
+                          <p className="radioTitle">পারমিশন দিন</p>
+                        </label>
 
                         {permissions.map((item, i) => (
                           <div key={i} className="displayFlex">
@@ -430,7 +434,9 @@ export default function ResellerPost() {
                                                 min={0}
                                                 max={
                                                   packageRateType ===
-                                                    "percentage" && 100
+                                                  "percentage"
+                                                    ? 100
+                                                    : undefined
                                                 }
                                                 placeholder="Package Rate"
                                               />
@@ -456,8 +462,8 @@ export default function ResellerPost() {
                       <>
                         <b className="mt-2"> {t("package")} </b>
                         <div className="AllAreaClass">
-                          <div className="d-flex flex-wrap">
-                            {packages.map((p) => (
+                          <div className="">
+                            {/* {packages.map((p) => (
                               <div key={p.id} className="w-50 my-1">
                                 <input
                                   id={p.id}
@@ -474,6 +480,65 @@ export default function ResellerPost() {
                                   {p.id}
                                 </label>
                               </div>
+                            ))} */}
+                            {packages.map((p) => (
+                              <>
+                                <div className="form-check">
+                                  <input
+                                    id={p.id}
+                                    className="form-check-input me-2"
+                                    type="checkbox"
+                                    value={p.id}
+                                    onChange={handelMikrotikPakages}
+                                    disabled={
+                                      commissionType === "packageBased" &&
+                                      !packageRateType
+                                    }
+                                  />
+                                  <label
+                                    htmlFor={p.id}
+                                    className="form-check-label"
+                                  >
+                                    {p.name}
+                                  </label>
+                                </div>
+                                {commissionType === "packageBased" && (
+                                  <>
+                                    <div
+                                      className={`d-flex align-items-center ${
+                                        mikroTikPackagesId.includes(p.id)
+                                          ? "d-block"
+                                          : "d-none"
+                                      }`}
+                                    >
+                                      <input
+                                        className={`form-control w-50 shadow-none m-1 ${
+                                          mikroTikPackagesId.includes(p.id)
+                                            ? "d-block"
+                                            : "d-none"
+                                        }`}
+                                        type="number"
+                                        id={p.id}
+                                        name={p.id}
+                                        onChange={handlePackageDividerInput}
+                                        min={0}
+                                        max={
+                                          packageRateType === "percentage"
+                                            ? 100
+                                            : undefined
+                                        }
+                                        placeholder="Package Rate"
+                                      />
+
+                                      {packageRateType === "percentage" ? (
+                                        <p className="mx-1">%</p>
+                                      ) : (
+                                        <p className="mx-1">&#2547;</p>
+                                      )}
+                                    </div>
+                                  </>
+                                )}
+                              </>
                             ))}
                           </div>
                         </div>
