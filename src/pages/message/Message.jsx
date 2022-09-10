@@ -19,6 +19,7 @@ import useDash from "../../assets/css/dash.module.css";
 import apiLink from "../../api/apiLink";
 import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
+import { getArea } from "../../features/apiCalls";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -108,6 +109,7 @@ export default function Message() {
   useEffect(() => {
     if (userRole === "ispOwner" || userRole === "manager") {
       getIspownerwitSMS();
+      if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     }
   }, [userRole, getIspownerwitSMS]);
 
@@ -139,7 +141,7 @@ export default function Message() {
   //   (state) => state.customer.customer
   // );
 
-  // const [loading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
     console.log(smsReceiverType);
