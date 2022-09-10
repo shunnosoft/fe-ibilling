@@ -19,6 +19,7 @@ import useDash from "../../assets/css/dash.module.css";
 import apiLink from "../../api/apiLink";
 import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
+import { getArea } from "../../features/apiCalls";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -35,7 +36,13 @@ const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
         "BILL_DATE",
         moment(customer?.billingCycle).format("DD-MM-YYYY hh:mm A")
       )
-      .replace("AMOUNT", customer?.monthlyFee);
+      .replace("AMOUNT", customer?.monthlyFee)
+      .replace(
+        "BILL_DUE",
+        customer.monthlyFee - customer.balance > 0
+          ? customer.monthlyFee - customer.balance
+          : 0
+      );
 
     if (customer.userType === "pppoe") {
       msg = msg.replace("USERNAME", customer?.pppoe?.name);
@@ -108,6 +115,7 @@ export default function Message() {
   useEffect(() => {
     if (userRole === "ispOwner" || userRole === "manager") {
       getIspownerwitSMS();
+      if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     }
   }, [userRole, getIspownerwitSMS]);
 
@@ -139,10 +147,9 @@ export default function Message() {
   //   (state) => state.customer.customer
   // );
 
-  // const [loading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
-    console.log(smsReceiverType);
     let messageTemplate = upperText + "\n" + bottomText;
     const now = moment();
     try {
@@ -752,6 +759,23 @@ export default function Message() {
                                 />
                                 <label className="templatelabel" htmlFor="5">
                                   {"LAST DATE: BILL_DATE"}
+                                </label>
+                              </div>
+                              <div className="radioselect">
+                                <input
+                                  id="5"
+                                  type="checkbox"
+                                  className="getValueUsingClass"
+                                  checked={smsTemplet.includes(
+                                    "BILL DUE: BILL_DUE"
+                                  )}
+                                  value={"BILL DUE: BILL_DUE"}
+                                  onChange={(e) => {
+                                    itemSettingHandler(e.target.value);
+                                  }}
+                                />
+                                <label className="templatelabel" htmlFor="6">
+                                  {"BILL DUE: BILL_DUE"}
                                 </label>
                               </div>
                             </div>
