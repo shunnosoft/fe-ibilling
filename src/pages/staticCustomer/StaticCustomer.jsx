@@ -330,76 +330,106 @@ export default function Customer() {
     if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
   }, []);
 
+  //Filter function
   const handleActiveFilter = () => {
-    let tempCustomers = Customers2;
+    let tempCustomers = [...Customers2];
 
-    if (filterOptions.area) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.area === filterOptions.area
-      );
-    }
-
-    if (filterOptions.freeUser) {
-      if (filterOptions.freeUser === "freeUser") {
-        tempCustomers = tempCustomers.filter(
-          (customer) => customer.monthlyFee === parseInt("0")
-        );
-      } else if (filterOptions.freeUser === "nonFreeUser") {
-        tempCustomers = tempCustomers.filter(
-          (customer) => customer.monthlyFee !== parseInt("0")
-        );
+    const filteredCustomer = tempCustomers.filter((customer) => {
+      let isFound = false;
+      //filter by area
+      if (filterOptions.area) {
+        if (customer.area === filterOptions.area) {
+          isFound = true;
+        } else {
+          return false;
+        }
       }
-    }
-
-    if (filterOptions.subArea) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.subArea === filterOptions.subArea
-      );
-    }
-
-    if (filterOptions.status) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.status === filterOptions.status
-      );
-    }
-
-    if (filterOptions.paymentStatus) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.paymentStatus === filterOptions.paymentStatus
-      );
-    }
-    if (filterOptions.mikrotik) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.mikrotik === filterOptions.mikrotik
-      );
-    }
-    if (filterOptions.package) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.profile === filterOptions.package
-      );
-    }
-
-    if (filterOptions.filterDate) {
-      const convertStingToDate = moment(filterOptions.filterDate).format(
-        "YYYY-MM-DD"
-      );
-
-      tempCustomers = tempCustomers.filter(
-        (customer) =>
+      //filter by subarea
+      if (filterOptions.subArea) {
+        if (customer.subArea === filterOptions.subArea) {
+          isFound = true;
+        } else {
+          return false;
+        }
+      }
+      //free user filter
+      if (filterOptions.freeUser) {
+        if (filterOptions.freeUser === "freeUser") {
+          if (customer.monthlyFee === parseInt("0")) {
+            isFound = true;
+          } else {
+            return false;
+          }
+        } else if (filterOptions.freeUser === "nonFreeUser") {
+          if (customer.monthlyFee !== parseInt("0")) {
+            isFound = true;
+          } else {
+            return false;
+          }
+        }
+      }
+      //status filter active/incative
+      if (filterOptions.status) {
+        if (customer.status === filterOptions.status) {
+          isFound = true;
+        } else {
+          return false;
+        }
+      }
+      //payment status filter
+      if (filterOptions.paymentStatus) {
+        if (customer.paymentStatus === filterOptions.paymentStatus) {
+          isFound = true;
+        } else {
+          return false;
+        }
+      }
+      //filter by mikrotik
+      if (filterOptions.mikrotik) {
+        if (customer.mikrotik === filterOptions.mikrotik) {
+          isFound = true;
+        } else {
+          return false;
+        }
+      }
+      //filter using mikrotik package
+      if (filterOptions.package) {
+        if (customer.profile === filterOptions.package) {
+          isFound = true;
+        } else {
+          return false;
+        }
+      }
+      //filter by billing cycle
+      if (filterOptions.filterDate) {
+        const convertStingToDate = moment(filterOptions.filterDate).format(
+          "YYYY-MM-DD"
+        );
+        if (
           new Date(
             moment(customer.billingCycle).format("YYYY-MM-DD")
           ).getTime() === new Date(convertStingToDate).getTime()
-      );
-    }
-    if (filterOptions.dayFilter) {
-      tempCustomers = tempCustomers.filter(
-        (item) =>
-          moment(item.billingCycle).diff(moment(), "days") ===
+        ) {
+          isFound = true;
+        } else {
+          return false;
+        }
+      }
+      //bill date  filter
+      if (filterOptions.dayFilter) {
+        if (
+          moment(customer.billingCycle).diff(moment(), "days") ===
           Number(filterOptions.dayFilter)
-      );
-    }
-    setCustomers1(tempCustomers);
-    setCustomers(tempCustomers);
+        ) {
+          isFound = true;
+        } else {
+          return false;
+        }
+      }
+      return isFound;
+    });
+    setCustomers1(filteredCustomer);
+    setCustomers(filteredCustomer);
   };
   const handleFilterReset = () => {
     setMikrotikPac([]);
