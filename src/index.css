@@ -117,3 +117,14 @@ p {
 .see_more:hover {
   color: #328eea;
 }
+
+.newCustomer {
+  font-size: 15px;
+  padding-top: 10px;
+  color: #ffffff !important;
+  transition: ease-in-out 0.3s;
+}
+
+.newCustomer:hover {
+  color: #2c8beb !important;
+}

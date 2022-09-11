@@ -70,6 +70,7 @@
   "account": "Accounts",
   "cost": "Expenditure",
   "ownCost": "Own Expenditure",
+  "ownBalance": "Own Balance",
   "expenseDefination": "Expense Defination",
   "search": "Search",
   "invoice": "Invoices",
@@ -523,11 +524,11 @@
   "count": "Count",
   "basic": "Basic",
   "monthlyFee": "Monthly Fee ",
-  "bandwidth":"BandWidth",
+  "bandwidth": "BandWidth",
   "totalMonthlyBillCollect": "Collect Bill",
   "billCollected": "Bill Collected",
   "billDue": "Bill Due",
-  "SalarySMS":"Salary SMS",
-  "SalarySMSTemplate":"Salary SMS",
-  "SalarySMSToast":"Salary SMS template Updated"
+  "SalarySMS": "Salary SMS",
+  "SalarySMSTemplate": "Salary SMS",
+  "SalarySMSToast": "Salary SMS template Updated"
 }

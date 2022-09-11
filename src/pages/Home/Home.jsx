@@ -61,6 +61,7 @@ export default function Home() {
   const ChartsData = useSelector((state) => state.chart.charts);
 
   const customerStat = useSelector((state) => state.chart.customerStat);
+  console.log(customerStat);
   const invoice = useSelector((state) => state.invoice.invoice);
   const [isLoading, setIsloading] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
@@ -513,8 +514,8 @@ export default function Home() {
                     <h2>{FormatNumber(customerStat.total)}</h2>
 
                     <Link to={"/new/customer"}>
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("new customer")}:{" "}
+                      <p className="newCustomer">
+                        {t("new customer")}{" "}
                         {FormatNumber(customerStat.newCustomer)}
                       </p>
                     </Link>
@@ -671,6 +672,27 @@ export default function Home() {
                               <p style={{ fontSize: "16px" }}>{t("salary")}</p>
                               <h2>
                                 ৳ {FormatNumber(customerStat.totalSalary)}
+                              </h2>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-md-3">
+                          <div id="card1" className="dataCard">
+                            <ThreeDotsVertical className="ThreeDots" />
+                            <div className="cardIcon">
+                              <CurrencyDollar />
+                            </div>
+                            <div className="chartSection">
+                              <p style={{ fontSize: "16px" }}>
+                                {t("ownBalance")}
+                              </p>
+                              <h2>
+                                ৳{" "}
+                                {FormatNumber(
+                                  totalCollection -
+                                    (customerStat.totalExpenditure +
+                                      customerStat.totalSalary)
+                                )}
                               </h2>
                             </div>
                           </div>

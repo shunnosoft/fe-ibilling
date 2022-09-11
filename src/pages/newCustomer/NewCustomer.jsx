@@ -179,7 +179,7 @@ const NewCustomer = () => {
       },
       {
         width: "11%",
-        Header: t("paymentFilter"),
+        Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -250,7 +250,7 @@ const NewCustomer = () => {
       },
       {
         width: "9%",
-        Header: t("paymentFilter"),
+        Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
