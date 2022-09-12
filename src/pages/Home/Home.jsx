@@ -61,7 +61,6 @@ export default function Home() {
   const ChartsData = useSelector((state) => state.chart.charts);
 
   const customerStat = useSelector((state) => state.chart.customerStat);
-  console.log(customerStat);
   const invoice = useSelector((state) => state.invoice.invoice);
   const [isLoading, setIsloading] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");

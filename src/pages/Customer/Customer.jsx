@@ -66,6 +66,7 @@ const PPPOECustomer = () => {
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
+
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
@@ -73,10 +74,12 @@ const PPPOECustomer = () => {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
+
   // get user permission
   const permission = useSelector(
     (state) => state.persistedReducer.auth.userData.permissions
@@ -87,9 +90,12 @@ const PPPOECustomer = () => {
     (state) => state.persistedReducer.auth.userData.bpSettings
   );
 
-  //get all areas and subAreas
-  const areas = useSelector((state) => state.area.area);
-  const subAreas = useSelector((state) => state.area.subArea);
+  //get all areas
+  const areas = useSelector((state) => state.area?.area);
+
+  // get all subarea
+  const subAreas = useSelector((state) => state.area?.subArea);
+
   //get mikrotik
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
@@ -108,22 +114,38 @@ const PPPOECustomer = () => {
   //component states
   const [loading, setLoading] = useState(false);
 
+  // customer loading state
   const [customerLoading, setCustomerLoading] = useState(false);
+
+  // customer state
   const [pppoeCustomers, setPPPoeCustomers] = useState([]);
+
+  // bulk customer state
   const [bulkCustomers, setBulkCustomer] = useState([]);
+
+  // customer id state
   const [customerId, setCustomerId] = useState("");
-  //check uncheck mikrotik state when delete customer
+
+  // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
-  //single customer object state
+
+  // single customer object state
   const [customerData, setCustomerData] = useState({});
-  //state for select print option print
+
+  // state for select print option print
   const [printOption, setPrintOptions] = useState([]);
 
-  //print modal state
+  // print modal state
   const [modalShow, setModalShow] = useState(false);
 
-  //state for date picker
-  // const [date, setDate] = useState(null);
+  // Single area state
+  const [areaId, setAreaId] = useState("");
+
+  // sub area state
+  const [subAreaId, setSubAreaId] = useState("");
+
+  // mikrotik package state
+  const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
   //filter state
   const [filterOptions, setFilterOption] = useState({
@@ -138,49 +160,52 @@ const PPPOECustomer = () => {
     dayFilter: "",
   });
 
-  //Single area and subarea state
-  const [areaId, setAreaId] = useState("");
-  const [subAreaId, setSubAreaId] = useState("");
-
-  const [mikrotikPackages, setMikrotikPackages] = useState([]);
-
   //initial api calls
   useEffect(() => {
+    // get mikrotik api without mikrotik / has mikrotik
     if (!bpSettings?.hasMikrotik) {
       getPackagewithoutmikrotik(ispOwner, dispatch, setLoading);
     } else {
       if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setLoading);
     }
+
+    // get area api
     if (areas.length === 0) getArea(dispatch, ispOwner, setLoading);
+
+    // get sub area api
     if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwner);
+
+    // get customer api
     if (customers.length === 0)
       getCustomer(dispatch, ispOwner, setCustomerLoading);
 
-    //set initial state for print oprions
+    // set initial state for print oprions
     const lang = localStorage.getItem("netFee:lang");
     if (lang === "en") {
       setPrintOptions(printOptionDataEng);
       return;
     }
+
     setPrintOptions(printOptionDataBangla);
   }, []);
 
+  // set all customer in state
   useEffect(() => {
     setPPPoeCustomers(customers);
   }, [customers]);
 
-  //get single customer from user action
-
+  // get single customer from user action
   const getSpecificCustomer = (customerId) => {
     setCustomerId(customerId);
   };
 
-  //customer delete controller
+  // customer delete controller
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
     setCustomerId(customerId);
   };
 
+  // mikrotik handler method
   const mikrotikHandler = async (id) => {
     setFilterOption({
       ...filterOptions,
@@ -204,7 +229,7 @@ const PPPOECustomer = () => {
     getCustomer(dispatch, ispOwner, setCustomerLoading);
   };
 
-  //filter and filter reset
+  // filter and filter reset
   const handleActiveFilter = () => {
     let tempCustomers = [...customers];
 
@@ -220,7 +245,8 @@ const PPPOECustomer = () => {
           return false;
         }
       }
-      //filter by subarea
+
+      // filter by subarea
       if (filterOptions.subArea) {
         if (customer.subArea === filterOptions.subArea) {
           isFound = true;
@@ -228,7 +254,8 @@ const PPPOECustomer = () => {
           return false;
         }
       }
-      //free user filter
+
+      // free user filter
       if (filterOptions.freeUser) {
         if (filterOptions.freeUser === "freeUser") {
           if (customer.monthlyFee === parseInt("0")) {
@@ -244,7 +271,8 @@ const PPPOECustomer = () => {
           }
         }
       }
-      //status filter active/incative
+
+      // status filter active/incative
       if (filterOptions.status) {
         if (customer.status === filterOptions.status) {
           isFound = true;
@@ -252,7 +280,8 @@ const PPPOECustomer = () => {
           return false;
         }
       }
-      //payment status filter
+
+      // payment status filter
       if (filterOptions.paymentStatus) {
         if (customer.paymentStatus === filterOptions.paymentStatus) {
           isFound = true;
@@ -260,7 +289,8 @@ const PPPOECustomer = () => {
           return false;
         }
       }
-      //filter by mikrotik
+
+      // filter by mikrotik
       if (filterOptions.mikrotik) {
         if (customer.mikrotik === filterOptions.mikrotik) {
           isFound = true;
@@ -269,7 +299,7 @@ const PPPOECustomer = () => {
         }
       }
 
-      //filter using mikrotik package
+      // filter using mikrotik package
       if (filterOptions.package) {
         if (customer.mikrotikPackage === filterOptions.package) {
           isFound = true;
@@ -282,7 +312,7 @@ const PPPOECustomer = () => {
         const convertStingToDate = moment(filterOptions.filterDate).format(
           "YYYY-MM-DD"
         );
-        console.log(convertStingToDate);
+
         if (
           new Date(
             moment(customer.billingCycle).format("YYYY-MM-DD")
@@ -293,7 +323,8 @@ const PPPOECustomer = () => {
           return false;
         }
       }
-      //bill date  filter
+
+      // bill date  filter
       if (filterOptions.dayFilter) {
         if (
           moment(customer.billingCycle).diff(moment(), "days") ===
@@ -307,10 +338,11 @@ const PPPOECustomer = () => {
       return isFound;
     });
 
+    // set filter customer in customer state
     setPPPoeCustomers(filteredCustomer);
   };
 
-  //filter reset controller
+  // filter reset controller
   const handleFilterReset = () => {
     setMikrotikPackages([]);
     setFilterOption({
@@ -330,13 +362,20 @@ const PPPOECustomer = () => {
     let dueAmount = 0;
     let totalSumDue = 0;
     let totalMonthlyFee = 0;
+
     pppoeCustomers.map((item) => {
       if (item.paymentStatus === "unpaid") {
+        // filter due ammount
         dueAmount = item.monthlyFee - item.balance;
+
+        // total sum due
         totalSumDue += dueAmount;
       }
+
+      // sum of all monthly fee
       totalMonthlyFee += item.monthlyFee;
     });
+
     return { totalSumDue, totalMonthlyFee };
   }, [pppoeCustomers]);
 
@@ -372,7 +411,6 @@ const PPPOECustomer = () => {
   };
 
   //print modal controller
-
   const printModalController = (customerID) => {
     setModalShow(true);
   };
@@ -618,6 +656,7 @@ const PPPOECustomer = () => {
     ],
     [t]
   );
+
   //export customer data
   let customerForCsV = customers.map((customer) => {
     return {
@@ -642,6 +681,7 @@ const PPPOECustomer = () => {
     };
   });
 
+  // csv header
   const headers = [
     { label: "name_operator", key: "companyName" },
     { label: "type_of_client", key: "home" },
@@ -662,6 +702,7 @@ const PPPOECustomer = () => {
     { label: "mail", key: "email" },
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
+
   //export customer data
   let customerForCsVTableInfo = customers.map((customer) => {
     return {
@@ -679,6 +720,7 @@ const PPPOECustomer = () => {
     };
   });
 
+  // csv table header
   const customerForCsVTableInfoHeader = [
     { label: "name_of_client", key: "name" },
     { label: "address_of_client", key: "customerAddress" },
@@ -692,17 +734,23 @@ const PPPOECustomer = () => {
     { label: "balance", key: "balance" },
     { label: "billing_cycle", key: "billingCycle" },
   ];
+
+  // filter value for pdf
   let filterData = {};
   if (modalShow) {
     let area, subArea, customerStatus, customerPaymentStatus;
+
+    // area
     if (filterOptions.area) {
       area = areas.find((item) => item.id === filterOptions.area);
     }
 
+    // subarea
     if (filterOptions.subArea) {
       subArea = subAreas.find((item) => item.id === filterOptions.subArea);
     }
 
+    // status
     if (filterOptions.status) {
       if (filterOptions.status === "active") {
         customerStatus = t("active");
@@ -711,6 +759,7 @@ const PPPOECustomer = () => {
       }
     }
 
+    // payment status
     if (filterOptions.paymentStatus) {
       if (filterOptions.paymentStatus === "unpaid") {
         customerPaymentStatus = t("due");
@@ -721,8 +770,9 @@ const PPPOECustomer = () => {
       }
     }
 
+    // set filter value in pdf
     filterData = {
-      area: area?.name ? area.name : t("allArea"),
+      area: area?.name ? area?.name : t("allArea"),
       subArea: subArea?.name ? subArea.name : t("allSubArea"),
       status: customerStatus ? customerStatus : t("sokolCustomer"),
       payment: customerPaymentStatus
@@ -809,7 +859,7 @@ const PPPOECustomer = () => {
                       <div className="d-flex flex-wrap">
                         {/* area filter  */}
                         <select
-                          className="form-select"
+                          className="form-select mt-3"
                           onChange={(e) => {
                             setAreaId(e.target.value);
                             setFilterOption({
@@ -835,11 +885,11 @@ const PPPOECustomer = () => {
                             (area, key) => {
                               return (
                                 <option
-                                  selected={filterOptions.area === area.id}
+                                  selected={filterOptions.area === area?.id}
                                   key={key}
-                                  value={area.id}
+                                  value={area?.id}
                                 >
-                                  {area.name}
+                                  {area?.name}
                                 </option>
                               );
                             }
@@ -847,7 +897,7 @@ const PPPOECustomer = () => {
                         </select>
                         {/* sub area filter  */}
                         <select
-                          className="form-select ms-2"
+                          className="form-select mt-3"
                           onChange={(e) => {
                             setSubAreaId(e.target.value);
                             setFilterOption({
@@ -865,11 +915,11 @@ const PPPOECustomer = () => {
                           </option>
                           {subAreas?.map(
                             (item, key) =>
-                              item.area.id === areaId && (
+                              item.area?.id === areaId && (
                                 <option
-                                  selected={filterOptions.subArea === item.id}
+                                  selected={filterOptions.subArea === item?.id}
                                   key={key}
-                                  value={item.id}
+                                  value={item?.id}
                                 >
                                   {item.name}
                                 </option>
@@ -878,7 +928,7 @@ const PPPOECustomer = () => {
                         </select>
                         {/* status filter  */}
                         <select
-                          className="form-select ms-2"
+                          className="form-select mt-3"
                           onChange={(e) => {
                             setFilterOption({
                               ...filterOptions,
@@ -915,7 +965,7 @@ const PPPOECustomer = () => {
 
                         {/* payment status filter  */}
                         <select
-                          className="form-select ms-2"
+                          className="form-select mt-3"
                           onChange={(e) => {
                             setFilterOption({
                               ...filterOptions,
@@ -946,7 +996,7 @@ const PPPOECustomer = () => {
                         {bpSettings?.hasMikrotik && (
                           //filter by mikrotik
                           <select
-                            className="form-select ms-2"
+                            className="form-select mt-3"
                             onChange={(e) => {
                               mikrotikHandler(e.target.value);
                             }}
@@ -977,7 +1027,7 @@ const PPPOECustomer = () => {
                         {bpSettings?.hasMikrotik ? (
                           //package filter with mikrotik
                           <select
-                            className="form-select ms-2"
+                            className="form-select mt-3"
                             onChange={(e) => {
                               setFilterOption({
                                 ...filterOptions,
@@ -1008,7 +1058,7 @@ const PPPOECustomer = () => {
                         ) : (
                           //without mikrotik package filter
                           <select
-                            className="form-select ms-2"
+                            className="form-select mt-3"
                             onChange={(e) => {
                               setFilterOption({
                                 ...filterOptions,
@@ -1038,7 +1088,7 @@ const PPPOECustomer = () => {
                           </select>
                         )}
 
-                        {/* free/no-free customer filter */}
+                        {/* free/non-free customer filter */}
                         <select
                           onChange={(e) =>
                             setFilterOption({
@@ -1046,7 +1096,7 @@ const PPPOECustomer = () => {
                               freeUser: e.target.value,
                             })
                           }
-                          className="form-select ms-2"
+                          className="form-select  mt-3"
                         >
                           <option selected={!filterOptions.freeUser} value="">
                             {t("sokolCustomer")}
@@ -1067,7 +1117,7 @@ const PPPOECustomer = () => {
 
                         {/*how many day left from  bill date select*/}
                         <select
-                          className="form-select ms-2"
+                          className="form-select mt-3"
                           onChange={(e) =>
                             setFilterOption({
                               ...filterOptions,
@@ -1082,7 +1132,7 @@ const PPPOECustomer = () => {
                           <option value="4">{t("fourDayLeft")}</option>
                         </select>
                         {/* date picker for filter billing cycle */}
-                        <div className="mt-3 ms-2">
+                        <div className="mt-3" style={{ width: "200px" }}>
                           <DatePicker
                             className="form-control"
                             selected={filterOptions.filterDate}
@@ -1098,7 +1148,7 @@ const PPPOECustomer = () => {
                         </div>
                         <div>
                           <button
-                            className="btn btn-outline-primary mt-2 w-6rem ms-2"
+                            className="btn btn-outline-primary mt-3 w-6rem ms-2"
                             type="button"
                             onClick={handleActiveFilter}
                             id="filterBtn"
@@ -1106,7 +1156,7 @@ const PPPOECustomer = () => {
                             {t("filter")}
                           </button>
                           <button
-                            className="btn btn-outline-secondary ms-2 w-6rem mt-2"
+                            className="btn btn-outline-secondary ms-1 w-6rem mt-3"
                             type="button"
                             onClick={handleFilterReset}
                           >

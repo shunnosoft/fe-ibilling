@@ -24,7 +24,6 @@ const ResellerRechargeSmsTemplate = () => {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
 
   // handle submit method
   const handleSubmit = async (e) => {
