@@ -16,6 +16,7 @@ function SalarySMSTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+  console.log(settings);
   const [salarySMS, setSalarySMS] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -25,19 +26,16 @@ function SalarySMSTemplate() {
       staffSalary: salarySMS,
     };
     setLoading(true);
-    console.log(data);
     try {
       await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
       setLoading(false);
       toast.success(t("SalarySMSToast"));
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log(salarySMS);
     setSalarySMS(settings.sms.staffSalary);
   }, [settings]);
 

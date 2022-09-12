@@ -27,37 +27,6 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
           </div>
         </div>
 
-        {/* <table className="table table-striped ">
-          <thead>
-            <tr>
-              <th scope="col">নাম</th>
-              <th scope="col">মোবাইল</th>
-              <th scope="col">বিল টাইপ</th>
-              <th scope="col">বিলের ধরণ</th>
-              <th scope="col">এমাউন্ট</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{customerData?.name}</td>
-              <td>{customerData?.mobile}</td>
-              <td>{customerData?.billPayType}</td>
-              <td>{billingData?.billType == "bill" ? "বিল" : "কানেকশন ফি"}</td>
-              <td>{billingData?.amount && customerData?.monthlyFee}</td>
-            </tr>
-          </tbody>
-        </table> */}
-        {/* <div className="page-footer">
-          <div className="signature_container">
-            <div className="p-3 signature_wraper">
-              <div className="signamture_field">ম্যানেজার</div>
-              <div className="signamture_field">এডমিন</div>
-            </div>
-          </div>
-        </div>
-        </div>
-        */}
-
         <div className="container mt-3 mb-5">
           <table>
             <tbody>
@@ -116,13 +85,6 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
               </tr>
             </tbody>
           </table>
-
-          {/* <div className="mt-4">
-            <strong>নোটঃ</strong>{" "}
-            {moment(billingData?.startDate).format("DD/MM/YYYY")}-
-            {moment(billingData?.endDate).format("DD/MM/YYYY")} সময়কালীন বিল
-            পরিশোধ করা হয়েছে।
-          </div> */}
 
           <div className="page-footer">
             <div className="signature_container">
