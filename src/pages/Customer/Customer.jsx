@@ -100,7 +100,7 @@ const PPPOECustomer = () => {
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   //get collector areas
-  const collectorArea = useSelector((state) =>
+  const collectorSubAreas = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
@@ -146,6 +146,9 @@ const PPPOECustomer = () => {
 
   // mikrotik package state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
+
+  //collector area
+  const [collectorAreas, setCollectorAreas] = useState([]);
 
   //filter state
   const [filterOptions, setFilterOption] = useState({
@@ -194,7 +197,21 @@ const PPPOECustomer = () => {
     setPPPoeCustomers(customers);
   }, [customers]);
 
-  // get single customer from user action
+  //collector area state update
+  useEffect(() => {
+    if (role === "collector") {
+      //loop over areas
+      const tempCollectorAreas = areas.filter((item) => {
+        return collectorSubAreas.some((subArea) => {
+          return item.subAreas.some((s) => s.id === subArea);
+        });
+      });
+      //update the collector area state
+      setCollectorAreas(tempCollectorAreas);
+    }
+  }, [collectorSubAreas, areas, subAreas]);
+
+  //get single customer from user action
   const getSpecificCustomer = (customerId) => {
     setCustomerId(customerId);
   };
@@ -780,7 +797,6 @@ const PPPOECustomer = () => {
         : t("sokolCustomer"),
     };
   }
-
   return (
     <>
       <Sidebar />
@@ -881,7 +897,7 @@ const PPPOECustomer = () => {
                               {t("customerWithoutArea")}
                             </option>
                           )}
-                          {(role === "collector" ? collectorArea : areas)?.map(
+                          {(role === "collector" ? collectorAreas : areas)?.map(
                             (area, key) => {
                               return (
                                 <option
@@ -899,7 +915,6 @@ const PPPOECustomer = () => {
                         <select
                           className="form-select mt-3"
                           onChange={(e) => {
-                            setSubAreaId(e.target.value);
                             setFilterOption({
                               ...filterOptions,
                               subArea: e.target.value,
