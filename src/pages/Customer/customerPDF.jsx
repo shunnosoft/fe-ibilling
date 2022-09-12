@@ -35,16 +35,16 @@ const PrintCustomer = React.forwardRef((props, ref) => {
 
       <ul className="d-flex justify-content-evenly filter_list">
         <li>
-          {t("area")} : {filterData.area}
+          {t("area")} : {filterData?.area}
         </li>
         <li>
-          {t("subArea")} : {filterData.subArea}
+          {t("subArea")} : {filterData?.subArea}
         </li>
         <li>
-          {t("status")} : {filterData.status}
+          {t("status")} : {filterData?.status}
         </li>
         <li>
-          {t("payment")} : {filterData.payment}
+          {t("payment")} : {filterData?.payment}
         </li>
       </ul>
       <table className="table table-striped ">

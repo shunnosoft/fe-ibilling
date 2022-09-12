@@ -1,123 +1,131 @@
-import React, { useEffect, useState, useRef } from "react";
-import "../collector/collector.css";
-import moment from "moment";
-import { CSVLink } from "react-csv";
-//internal import
-import useDash from "../../assets/css/dash.module.css";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
+import { useEffect, useMemo, useState, useRef } from "react";
 import {
-  PersonPlusFill,
-  Wallet,
-  ThreeDots,
   ArchiveFill,
-  PenFill,
-  PersonFill,
-  CashStack,
-  FileExcelFill,
-  PrinterFill,
-  ChatText,
   ArrowClockwise,
   ArrowRightSquareFill,
+  CashStack,
+  ChatText,
+  FileExcelFill,
+  PenFill,
+  PersonFill,
+  PersonPlusFill,
+  PrinterFill,
+  ThreeDots,
+  Wallet,
 } from "react-bootstrap-icons";
-import { ToastContainer } from "react-toastify";
-import { useSelector, useDispatch } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
-import ReactToPrint from "react-to-print";
+import Table from "../../components/table/Table";
 
-// internal imports
-import Footer from "../../components/admin/footer/Footer";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import CustomerPost from "./customerCRUD/CustomerPost";
-import CustomerDetails from "./customerCRUD/CustomerDetails";
-import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-import CustomerEdit from "./customerCRUD/CustomerEdit";
+import { CSVLink } from "react-csv";
+import moment from "moment";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
+import { badge } from "../../components/common/Utils";
+import ReactToPrint from "react-to-print";
+import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import {
   fetchMikrotik,
-  fetchReseller,
   getArea,
   getCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
+import { ToastContainer } from "react-toastify";
+import useDash from "../../assets/css/dash.module.css";
+import { FontColor, FourGround } from "../../assets/js/theme";
+import Loader from "../../components/common/Loader";
+import CustomerPost from "./customerCRUD/CustomerPost";
+import CustomerDetails from "./customerCRUD/CustomerDetails";
+import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
+import CustomerEdit from "./customerCRUD/CustomerEdit";
 import CustomerReport from "./customerCRUD/showCustomerReport";
-import { badge } from "../../components/common/Utils";
-import PrintCustomer from "./customerPDF";
-import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
-import CustomerDelete from "./customerCRUD/CustomerDelete";
-import apiLink from "../../api/apiLink";
+import TransferToReseller from "./customerCRUD/TransferToReseller";
 import BulkSubAreaEdit from "./customerCRUD/bulkOpration/bulkSubAreaEdit";
 import BulkBillingCycleEdit from "./customerCRUD/bulkOpration/bulkBillingCycleEdit";
 import BulkStatusEdit from "./customerCRUD/bulkOpration/bulkStatusEdit";
 import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
-import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
-import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
-import Loader from "../../components/common/Loader";
-import TransferToReseller from "./customerCRUD/TransferToReseller";
 import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
-import { useCallback } from "react";
-import FormatNumber from "../../components/common/NumberFormat";
+import CustomerDelete from "./customerCRUD/CustomerDelete";
 import {
   printOptionDataBangla,
   printOptionDataEng,
 } from "./customerCRUD/printOptionData";
-// import BandwidthModal from "./BandwidthModal";
+import apiLink from "../../api/apiLink";
+import DatePicker from "react-datepicker";
+import PrintCustomer from "./customerPDF";
+import { Button, Modal } from "react-bootstrap";
+import FormatNumber from "../../components/common/NumberFormat";
+import { useCallback } from "react";
 
-// import apiLink from ""
-export default function Customer() {
+const PPPOECustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const componentRef = useRef(); //reference of pdf export component
+  const componentRef = useRef();
 
   // get all customer
-  const cus = useSelector((state) => state?.customer?.customer);
-
+  const customers = useSelector((state) => state.customer.customer);
   // get all role
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // get isp owner id
   const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
+    (state) => state.persistedReducer.auth.ispOwnerId
   );
   // get isp owner data
   const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth?.userData
+    (state) => state.persistedReducer.auth.userData
   );
   // get user permission
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
+    (state) => state.persistedReducer.auth.userData.permissions
   );
 
-  // get all area
-  const allareas = useSelector((state) => state?.area?.area);
+  // get bp setting permisson
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData.bpSettings
+  );
+
+  //get all areas and subAreas
+  const areas = useSelector((state) => state.area.area);
+  const subAreas = useSelector((state) => state.area.subArea);
+  //get mikrotik
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
-  // get collector area
+
+  //get collector areas
   const collectorArea = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
   );
 
-  // get bp setting permisson
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  //without mikrotik packages
+  const withOutMikrotikPackages = useSelector(
+    (state) => state.package.packages
   );
 
-  const nonMikrotikPackages = useSelector((state) => state.package.packages);
+  //component states
+  const [loading, setLoading] = useState(false);
 
-  const [isLoading, setIsloading] = useState(false);
-  const [cusSearch, setCusSearch] = useState("");
-  const [Customers, setCustomers] = useState(cus);
-  const [allArea, setAreas] = useState([]);
-  const [singleCustomer, setSingleCustomer] = useState("");
-  const [customerReportData, setId] = useState([]);
-  const [subAreaIds, setSubArea] = useState([]);
-  const [singleArea, setArea] = useState({});
-  const [singleData, setSingleData] = useState();
-  const [Customers1, setCustomers1] = useState([]);
-  const [Customers2, setCustomers2] = useState([]);
-  const [mikrotikPac, setMikrotikPac] = useState([]);
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const [pppoeCustomers, setPPPoeCustomers] = useState([]);
+  const [bulkCustomers, setBulkCustomer] = useState([]);
+  const [customerId, setCustomerId] = useState("");
+  //check uncheck mikrotik state when delete customer
+  const [checkMikrotik, setMikrotikCheck] = useState(false);
+  //single customer object state
+  const [customerData, setCustomerData] = useState({});
+  //state for select print option print
+  const [printOption, setPrintOptions] = useState([]);
+
+  //print modal state
+  const [modalShow, setModalShow] = useState(false);
+
+  //state for date picker
+  // const [date, setDate] = useState(null);
+
+  //filter state
   const [filterOptions, setFilterOption] = useState({
     status: "",
     paymentStatus: "",
@@ -130,96 +138,83 @@ export default function Customer() {
     dayFilter: "",
   });
 
-  // check mikrotik checkbox
-  const [mikrotikCheck, setMikrotikCheck] = useState(false);
+  //Single area and subarea state
+  const [areaId, setAreaId] = useState("");
+  const [subAreaId, setSubAreaId] = useState("");
 
-  //state for select print option print
-  const [printOption, setPrintOptions] = useState([]);
+  const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
-  //bandwidth modal state
-  const [modalShow, setModalShow] = useState(false);
+  //initial api calls
+  useEffect(() => {
+    if (!bpSettings?.hasMikrotik) {
+      getPackagewithoutmikrotik(ispOwner, dispatch, setLoading);
+    } else {
+      if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setLoading);
+    }
+    if (areas.length === 0) getArea(dispatch, ispOwner, setLoading);
+    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwner);
+    if (customers.length === 0)
+      getCustomer(dispatch, ispOwner, setCustomerLoading);
+
+    //set initial state for print oprions
+    const lang = localStorage.getItem("netFee:lang");
+    if (lang === "en") {
+      setPrintOptions(printOptionDataEng);
+      return;
+    }
+    setPrintOptions(printOptionDataBangla);
+  }, []);
+
+  useEffect(() => {
+    setPPPoeCustomers(customers);
+  }, [customers]);
+
+  //get single customer from user action
+
+  const getSpecificCustomer = (customerId) => {
+    setCustomerId(customerId);
+  };
+
+  //customer delete controller
+  const customerDelete = (customerId) => {
+    setMikrotikCheck(false);
+    setCustomerId(customerId);
+  };
+
+  const mikrotikHandler = async (id) => {
+    setFilterOption({
+      ...filterOptions,
+      mikrotik: id,
+    });
+    if (!id) {
+      setMikrotikPackages([]);
+    }
+    if (id) {
+      try {
+        const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
+        setMikrotikPackages(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   // reload handler
   const reloadHandler = () => {
-    if (
-      !bpSettings?.hasMikrotik &&
-      (role === "manager" || role === "ispOwner")
-    ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
-    }
-    getCustomer(dispatch, ispOwner, setIsloading);
+    getCustomer(dispatch, ispOwner, setCustomerLoading);
   };
 
-  // get customer api call
-  useEffect(() => {
-    if (
-      !bpSettings?.hasMikrotik
-      // && (role === "manager" || role === "ispOwner")
-    ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
-    }
-    if (cus.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
-    getSubAreasApi(dispatch, ispOwner);
-  }, [dispatch, ispOwner, role, bpSettings]);
-
-  // collector filter
-  useEffect(() => {
-    if (role === "collector") {
-      let areas = [];
-
-      collectorArea?.map((item) => {
-        let area = {
-          id: item.area?.id,
-          name: item.area?.name,
-          subAreas: [
-            {
-              id: item?.id,
-              name: item?.name,
-            },
-          ],
-        };
-
-        let found = areas?.find((area) => area?.id === item.area?.id);
-        if (found) {
-          found.subAreas.push({ id: item?.id, name: item?.name });
-
-          return (areas[areas.findIndex((item) => item.id === found?.id)] =
-            found);
-        } else {
-          return areas.push(area);
-        }
-      });
-      setAreas(areas);
-    }
-  }, [collectorArea, role]);
-  // end collector filter
-
-  const onChangeArea = (param) => {
-    let area = JSON.parse(param);
-    console.log(area);
-    setArea(area);
-    if (
-      area &&
-      Object.keys(area).length === 0 &&
-      Object.getPrototypeOf(area) === Object.prototype
-    ) {
-      setSubArea([]);
-    } else {
-      let subAreaIds = [];
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
-      setSubArea(subAreaIds);
-    }
-  };
-
-  //   filter
+  //filter and filter reset
   const handleActiveFilter = () => {
-    let tempCustomers = [...Customers2];
+    let tempCustomers = [...customers];
 
     const filteredCustomer = tempCustomers.filter((customer) => {
       let isFound = false;
+
       //filter by area
       if (filterOptions.area) {
-        if (customer.area === filterOptions.area) {
+        const getArea = areas.find((item) => item.id === filterOptions.area);
+        if (getArea.subAreas.some((item) => item.id === customer.subArea)) {
           isFound = true;
         } else {
           return false;
@@ -273,19 +268,21 @@ export default function Customer() {
           return false;
         }
       }
+
       //filter using mikrotik package
       if (filterOptions.package) {
-        if (customer.profile === filterOptions.package) {
+        if (customer.mikrotikPackage === filterOptions.package) {
           isFound = true;
         } else {
           return false;
         }
       }
-      //filter by billing cycle
+      // filter by billing cycle
       if (filterOptions.filterDate) {
         const convertStingToDate = moment(filterOptions.filterDate).format(
           "YYYY-MM-DD"
         );
+        console.log(convertStingToDate);
         if (
           new Date(
             moment(customer.billingCycle).format("YYYY-MM-DD")
@@ -309,12 +306,13 @@ export default function Customer() {
       }
       return isFound;
     });
-    setCustomers1(filteredCustomer);
-    setCustomers(filteredCustomer);
+
+    setPPPoeCustomers(filteredCustomer);
   };
 
+  //filter reset controller
   const handleFilterReset = () => {
-    setMikrotikPac([]);
+    setMikrotikPackages([]);
     setFilterOption({
       status: "",
       paymentStatus: "",
@@ -324,197 +322,37 @@ export default function Customer() {
       isFree: "",
       filterDate: null,
     });
-    setCustomers1(Customers2);
+    setPPPoeCustomers(customers);
   };
 
-  useEffect(() => {
-    if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setIsloading);
-    if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
-
-    //set initial state for print oprions
-    const lang = localStorage.getItem("netFee:lang");
-    if (lang === "en") {
-      setPrintOptions(printOptionDataEng);
-      return;
-    }
-    setPrintOptions(printOptionDataBangla);
-  }, []);
-
-  useEffect(() => {
-    const temp = [];
-    cus.map((customer) => {
-      let areaFound = false;
-      allareas.map((area) => {
-        area.subAreas.map((sub) => {
-          if (customer.subArea === sub.id) {
-            areaFound = true;
-            // if (!temp.find((item) => item.id === customer.id)) {
-            temp.push({
-              ...customer,
-              area: area.id,
-              profile: customer.pppoe.profile,
-            });
-            // }
-          }
-        });
-      });
-
-      if (!areaFound) {
-        temp.push({
-          ...customer,
-          area: "noArea",
-          profile: customer.pppoe?.profile,
-        });
+  //total monthly fee and due calculation
+  const dueMonthlyFee = useCallback(() => {
+    let dueAmount = 0;
+    let totalSumDue = 0;
+    let totalMonthlyFee = 0;
+    pppoeCustomers.map((item) => {
+      if (item.paymentStatus === "unpaid") {
+        dueAmount = item.monthlyFee - item.balance;
+        totalSumDue += dueAmount;
       }
+      totalMonthlyFee += item.monthlyFee;
     });
+    return { totalSumDue, totalMonthlyFee };
+  }, [pppoeCustomers]);
 
-    setCustomers(temp);
-    setCustomers1(temp);
-    setCustomers2(temp);
-  }, [allareas, cus]);
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
+      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+      {/* {t("collection")}&nbsp;{" "} */}
+      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
+      {t("tk")} */}
+    </div>
+  );
 
-  useEffect(() => {
-    if (subAreaIds.length) {
-      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
-    } else {
-      setCustomers(cus);
-    }
-  }, [cus, subAreaIds]);
-
-  //call all reseller for transfer customer to reseller
-  useEffect(() => {
-    if (ispOwnerData) {
-      fetchReseller(dispatch, ispOwnerData.id, setIsloading);
-    }
-  }, [ispOwnerData]);
-
-  const onChangeSubArea = (id) => {
-    setCusSearch(id);
-  };
-
-  let subArea, customerStatus, customerPaymentStatus;
-  if (singleArea && cusSearch) {
-    subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
-  }
-
-  if (filterOptions.status) {
-    if (filterOptions.status === "active") {
-      customerStatus = t("active");
-    } else if (filterOptions.status === "inactive") {
-      customerStatus = t("in active");
-    }
-  }
-
-  if (filterOptions.paymentStatus) {
-    if (filterOptions.paymentStatus === "unpaid") {
-      customerPaymentStatus = t("due");
-    } else if (filterOptions.paymentStatus === "paid") {
-      customerPaymentStatus = t("paid");
-    } else if (filterOptions.paymentStatus === "expired") {
-      customerPaymentStatus = t("expired");
-    }
-  }
-
-  const filterData = {
-    area: singleArea?.name ? singleArea.name : t("allArea"),
-    subArea: subArea ? subArea.name : t("allSubArea"),
-    status: customerStatus ? customerStatus : t("sokolCustomer"),
-    payment: customerPaymentStatus ? customerPaymentStatus : t("sokolCustomer"),
-  };
-
-  //export customer data
-  let customerForCsV = Customers.map((customer) => {
-    return {
-      companyName: ispOwnerData.company,
-      home: "Home",
-      companyAddress: ispOwnerData.address,
-      name: customer.name,
-      customerAddress: customer.address,
-      connectionType: "Wired",
-      connectivity: "Dedicated",
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
-      ip: "",
-      road: ispOwnerData.address,
-      address: ispOwnerData.address,
-      area: ispOwnerData?.fullAddress?.area || "",
-      district: ispOwnerData?.fullAddress?.district || "",
-      thana: ispOwnerData?.fullAddress?.thana || "",
-      mobile: customer?.mobile.slice(1) || "",
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-    };
-  });
-
-  const headers = [
-    { label: "name_operator", key: "companyName" },
-    { label: "type_of_client", key: "home" },
-    { label: "distribution Location point", key: "companyAddress" },
-    { label: "name_of_client", key: "name" },
-    { label: "address_of_client", key: "customerAddress" },
-    { label: "type_of_connection", key: "connectionType" },
-    { label: "type_of_connectivity", key: "connectivity" },
-    { label: "activation_date", key: "createdAt" },
-    { label: "bandwidth_allocation MB", key: "package" },
-    { label: "allowcated_ip", key: "ip" },
-    { label: "house_no", key: "address" },
-    { label: "road_no", key: "road" },
-    { label: "area", key: "area" },
-    { label: "district", key: "district" },
-    { label: "thana", key: "thana" },
-    { label: "client_phone", key: "mobile" },
-    { label: "mail", key: "email" },
-    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
-  ];
-  //export customer data
-  let customerForCsVTableInfo = Customers.map((customer) => {
-    return {
-      name: customer.name,
-      customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
-      mobile: customer?.mobile || "",
-      status: customer.status,
-      paymentStatus: customer.paymentStatus,
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-      balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
-    };
-  });
-
-  const customerForCsVTableInfoHeader = [
-    { label: "name_of_client", key: "name" },
-    { label: "address_of_client", key: "customerAddress" },
-    { label: "activation_date", key: "createdAt" },
-    { label: "bandwidth_allocation MB", key: "package" },
-    { label: "client_phone", key: "mobile" },
-    { label: "status", key: "status" },
-    { label: "payment Status", key: "paymentStatus" },
-    { label: "email", key: "email" },
-    { label: "monthly_fee", key: "monthlyFee" },
-    { label: "balance", key: "balance" },
-    { label: "billing_cycle", key: "billingCycle" },
-  ];
-
-  // get specific customer
-  const getSpecificCustomer = (id) => {
-    setSingleCustomer(id);
-  };
-
-  // get specific customer Report
-  const getSpecificCustomerReport = (reportData) => {
-    setId(reportData);
-  };
-
-  // cutomer delete
-  const customerDelete = (customerId) => {
-    setMikrotikCheck(false);
-    setSingleData(customerId);
-  };
-
-  //controller for print options
-
+  //print option controller
   const printOptionsController = ({ target }) => {
     if (target.value === "default" && target.checked) {
       setPrintOptions(
@@ -533,15 +371,14 @@ export default function Customer() {
     }
   };
 
-  const bandwidthModalController = (customerID) => {
-    setSingleCustomer(customerID);
+  //print modal controller
+
+  const printModalController = (customerID) => {
     setModalShow(true);
   };
 
-  //bulk-operations
-  const [bulkCustomer, setBulkCustomer] = useState([]);
-
-  const columns = React.useMemo(
+  //column for table
+  const columns = useMemo(
     () => [
       {
         id: "selection",
@@ -664,7 +501,7 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-                {permission?.billPosting || role === "ispOwner" ? (
+                {(permission?.billPosting || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#collectCustomerBillModal"
@@ -679,11 +516,9 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
 
-                {permission?.customerEdit || role === "ispOwner" ? (
+                {(permission?.customerEdit || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerEditModal"
@@ -698,15 +533,13 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
 
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#showCustomerReport"
                   onClick={() => {
-                    getSpecificCustomerReport(original);
+                    setCustomerData(original);
                   }}
                 >
                   <div className="dropdown-item">
@@ -785,57 +618,118 @@ export default function Customer() {
     ],
     [t]
   );
+  //export customer data
+  let customerForCsV = customers.map((customer) => {
+    return {
+      companyName: ispOwnerData.company,
+      home: "Home",
+      companyAddress: ispOwnerData.address,
+      name: customer.name,
+      customerAddress: customer.address,
+      connectionType: "Wired",
+      connectivity: "Dedicated",
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      ip: "",
+      road: ispOwnerData.address,
+      address: ispOwnerData.address,
+      area: ispOwnerData?.fullAddress?.area || "",
+      district: ispOwnerData?.fullAddress?.district || "",
+      thana: ispOwnerData?.fullAddress?.thana || "",
+      mobile: customer?.mobile.slice(1) || "",
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+    };
+  });
 
-  const mikrotikHandler = async (id) => {
-    setFilterOption({
-      ...filterOptions,
-      mikrotik: id,
-    });
-    if (!id) {
-      setMikrotikPac([]);
+  const headers = [
+    { label: "name_operator", key: "companyName" },
+    { label: "type_of_client", key: "home" },
+    { label: "distribution Location point", key: "companyAddress" },
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "type_of_connection", key: "connectionType" },
+    { label: "type_of_connectivity", key: "connectivity" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "allowcated_ip", key: "ip" },
+    { label: "house_no", key: "address" },
+    { label: "road_no", key: "road" },
+    { label: "area", key: "area" },
+    { label: "district", key: "district" },
+    { label: "thana", key: "thana" },
+    { label: "client_phone", key: "mobile" },
+    { label: "mail", key: "email" },
+    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
+  ];
+  //export customer data
+  let customerForCsVTableInfo = customers.map((customer) => {
+    return {
+      name: customer.name,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+  let filterData = {};
+  if (modalShow) {
+    let area, subArea, customerStatus, customerPaymentStatus;
+    if (filterOptions.area) {
+      area = areas.find((item) => item.id === filterOptions.area);
     }
-    if (id) {
-      try {
-        const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
 
-        setMikrotikPac(res.data);
-      } catch (error) {
-        console.log(error);
+    if (filterOptions.subArea) {
+      subArea = subAreas.find((item) => item.id === filterOptions.subArea);
+    }
+
+    if (filterOptions.status) {
+      if (filterOptions.status === "active") {
+        customerStatus = t("active");
+      } else if (filterOptions.status === "inactive") {
+        customerStatus = t("in active");
       }
     }
-  };
 
-  const sumMonthlyFee = useCallback(() => {
-    let initialValue = 0;
-    const sumMnthlyFee = Customers.reduce(
-      (previous, current) => previous + current.monthlyFee,
-      initialValue
-    );
-    return sumMnthlyFee;
-  }, [Customers]);
-
-  const dueMonthlyFee = () => {
-    let dueAmount = 0;
-    let totalSumDue = 0;
-    Customers.map((item) => {
-      if (item.paymentStatus === "unpaid") {
-        dueAmount = item.monthlyFee - item.balance;
-        totalSumDue += dueAmount;
+    if (filterOptions.paymentStatus) {
+      if (filterOptions.paymentStatus === "unpaid") {
+        customerPaymentStatus = t("due");
+      } else if (filterOptions.paymentStatus === "paid") {
+        customerPaymentStatus = t("paid");
+      } else if (filterOptions.paymentStatus === "expired") {
+        customerPaymentStatus = t("expired");
       }
-    });
-    return totalSumDue;
-  };
+    }
 
-  const customComponent = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {FormatNumber(sumMonthlyFee())}
-      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {FormatNumber(dueMonthlyFee())} &nbsp;{t("tk")} &nbsp;
-      {/* {t("collection")}&nbsp;{" "} */}
-      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
-      {t("tk")} */}
-    </div>
-  );
+    filterData = {
+      area: area?.name ? area.name : t("allArea"),
+      subArea: subArea?.name ? subArea.name : t("allSubArea"),
+      status: customerStatus ? customerStatus : t("sokolCustomer"),
+      payment: customerPaymentStatus
+        ? customerPaymentStatus
+        : t("sokolCustomer"),
+    };
+  }
 
   return (
     <>
@@ -851,17 +745,15 @@ export default function Customer() {
                   <div className="d-flex">
                     <h2>{t("customer")}</h2>
                     <div className="reloadBtn">
-                      {isLoading ? (
-                        <Loader></Loader>
+                      {customerLoading ? (
+                        <Loader />
                       ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
+                        <ArrowClockwise onClick={reloadHandler} />
                       )}
                     </div>
                   </div>
-
-                  {permission?.customerAdd || role === "ispOwner" ? (
+                  {/* customer page header area  */}
+                  {(permission?.customerAdd || role === "ispOwner") && (
                     <div
                       style={{
                         display: "flex",
@@ -894,8 +786,7 @@ export default function Customer() {
                         <PrinterFill
                           title={t("print")}
                           className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#printModal"
+                          onClick={printModalController}
                         />
                       </div>
 
@@ -908,105 +799,45 @@ export default function Customer() {
                         />
                       </div>
                     </div>
-                  ) : (
-                    ""
                   )}
                 </div>
               </FourGround>
-
-              {/* Model start */}
-              <CustomerPost />
-              <CustomerEdit single={singleCustomer} />
-              <CustomerBillCollect single={singleCustomer} />
-              <CustomerDetails single={singleCustomer} />
-              <CustomerReport single={customerReportData} />
-              <CustomerDelete
-                single={singleData}
-                mikrotikCheck={mikrotikCheck}
-                setMikrotikCheck={setMikrotikCheck}
-              />
-              <SingleMessage single={singleCustomer} sendCustomer="customer" />
-
-              {/* transferReseller modal */}
-              <TransferToReseller customerId={singleCustomer} />
-
-              {/* bulk Modal */}
-              <BulkSubAreaEdit
-                bulkCustomer={bulkCustomer}
-                modalId="customerBulkEdit"
-              />
-              <BulkBillingCycleEdit
-                bulkCustomer={bulkCustomer}
-                modalId="customerBillingCycle"
-              />
-
-              <BulkStatusEdit
-                bulkCustomer={bulkCustomer}
-                modalId="bulkStatusEdit"
-              />
-              <BulkCustomerDelete
-                bulkCustomer={bulkCustomer}
-                modalId="bulkDeleteCustomer"
-              />
-              <BulkAutoConnectionEdit
-                bulkCustomer={bulkCustomer}
-                modalId="autoDisableEditModal"
-              />
-              <BulkCustomerTransfer
-                bulkCustomer={bulkCustomer}
-                modalId="bulkTransferToReseller"
-              />
-              {/* <BandwidthModal
-                modalShow={modalShow}
-                setModalShow={setModalShow}
-                customerId={singleCustomer}
-              /> */}
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="displexFlexSys">
-                      {/* filter selector */}
-                      <div className=" d-flex flex-wrap">
+                      <div className="d-flex flex-wrap">
+                        {/* area filter  */}
                         <select
                           className="form-select"
                           onChange={(e) => {
-                            onChangeArea(e.target.value);
+                            setAreaId(e.target.value);
                             setFilterOption({
                               ...filterOptions,
-                              area: JSON.parse(e.target.value).id,
+                              area: e.target.value,
                             });
                           }}
                         >
-                          <option
-                            value={JSON.stringify({
-                              id: "",
-                              name: "",
-                              subAreas: [],
-                            })}
-                            defaultValue
-                            selected={filterOptions.area === ""}
-                          >
+                          <option value="" selected={filterOptions.area === ""}>
                             {t("allArea")}
                           </option>
-                          {Customers2.some((c) => c.area === "noArea") && (
+                          {customers.some(
+                            (customer) => customer.area === "noArea"
+                          ) && (
                             <option
-                              value={JSON.stringify({
-                                id: "noArea",
-                                name: "",
-                                subAreas: [],
-                              })}
+                              value=""
                               selected={filterOptions.area === "noArea"}
                             >
                               {t("customerWithoutArea")}
                             </option>
                           )}
-                          {(role === "collector" ? allArea : allareas)?.map(
+                          {(role === "collector" ? collectorArea : areas)?.map(
                             (area, key) => {
                               return (
                                 <option
                                   selected={filterOptions.area === area.id}
                                   key={key}
-                                  value={JSON.stringify(area)}
+                                  value={area.id}
                                 >
                                   {area.name}
                                 </option>
@@ -1014,12 +845,11 @@ export default function Customer() {
                             }
                           )}
                         </select>
-
-                        {/* //Todo */}
+                        {/* sub area filter  */}
                         <select
                           className="form-select ms-2"
                           onChange={(e) => {
-                            onChangeSubArea(e.target.value);
+                            setSubAreaId(e.target.value);
                             setFilterOption({
                               ...filterOptions,
                               subArea: e.target.value,
@@ -1033,16 +863,20 @@ export default function Customer() {
                           >
                             {t("subArea")}
                           </option>
-                          {singleArea?.subAreas?.map((sub, key) => (
-                            <option
-                              selected={filterOptions.subArea === sub.id}
-                              key={key}
-                              value={sub.id}
-                            >
-                              {sub.name}
-                            </option>
-                          ))}
+                          {subAreas?.map(
+                            (item, key) =>
+                              item.area.id === areaId && (
+                                <option
+                                  selected={filterOptions.subArea === item.id}
+                                  key={key}
+                                  value={item.id}
+                                >
+                                  {item.name}
+                                </option>
+                              )
+                          )}
                         </select>
+                        {/* status filter  */}
                         <select
                           className="form-select ms-2"
                           onChange={(e) => {
@@ -1079,6 +913,7 @@ export default function Customer() {
                           </option>
                         </select>
 
+                        {/* payment status filter  */}
                         <select
                           className="form-select ms-2"
                           onChange={(e) => {
@@ -1109,6 +944,7 @@ export default function Customer() {
                           </option>
                         </select>
                         {bpSettings?.hasMikrotik && (
+                          //filter by mikrotik
                           <select
                             className="form-select ms-2"
                             onChange={(e) => {
@@ -1139,38 +975,7 @@ export default function Customer() {
                           </select>
                         )}
                         {bpSettings?.hasMikrotik ? (
-                          <select
-                            className="form-select"
-                            onChange={(e) => {
-                              setFilterOption({
-                                ...filterOptions,
-                                package: e.target.value,
-                              });
-                            }}
-                          >
-                            <option
-                              selected={filterOptions.mikrotik === ""}
-                              value=""
-                              defaultValue
-                            >
-                              {t("package")}
-                            </option>
-
-                            {mikrotikPac?.map((m, i) => {
-                              return (
-                                <option
-                                  key={i}
-                                  selected={
-                                    filterOptions.package === `${m.name}`
-                                  }
-                                  value={m.name}
-                                >
-                                  {m.name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        ) : (
+                          //package filter with mikrotik
                           <select
                             className="form-select ms-2"
                             onChange={(e) => {
@@ -1188,14 +993,43 @@ export default function Customer() {
                               {t("package")}
                             </option>
 
-                            {nonMikrotikPackages?.map((m, i) => {
+                            {mikrotikPackages?.map((m, i) => {
                               return (
                                 <option
                                   key={i}
-                                  selected={
-                                    filterOptions.package === `${m.name}`
-                                  }
-                                  value={m.name}
+                                  selected={filterOptions.package === `${m.id}`}
+                                  value={m.id}
+                                >
+                                  {m.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        ) : (
+                          //without mikrotik package filter
+                          <select
+                            className="form-select ms-2"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOptions,
+                                package: e.target.value,
+                              });
+                            }}
+                          >
+                            <option
+                              selected={filterOptions.mikrotik === ""}
+                              value=""
+                              defaultValue
+                            >
+                              {t("package")}
+                            </option>
+
+                            {withOutMikrotikPackages?.map((m, i) => {
+                              return (
+                                <option
+                                  key={i}
+                                  selected={filterOptions.package === `${m.id}`}
+                                  value={m.id}
                                 >
                                   {m.name}
                                 </option>
@@ -1203,6 +1037,8 @@ export default function Customer() {
                             })}
                           </select>
                         )}
+
+                        {/* free/no-free customer filter */}
                         <select
                           onChange={(e) =>
                             setFilterOption({
@@ -1228,16 +1064,8 @@ export default function Customer() {
                             {t("nonFreeCustomer")}
                           </option>
                         </select>
-                        <input
-                          className="form-select ms-2"
-                          type="date"
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              filterDate: e.target.value,
-                            })
-                          }
-                        />
+
+                        {/*how many day left from  bill date select*/}
                         <select
                           className="form-select ms-2"
                           onChange={(e) =>
@@ -1253,6 +1081,21 @@ export default function Customer() {
                           <option value="3">{t("threeDayLeft")}</option>
                           <option value="4">{t("fourDayLeft")}</option>
                         </select>
+                        {/* date picker for filter billing cycle */}
+                        <div className="mt-3 ms-2">
+                          <DatePicker
+                            className="form-control"
+                            selected={filterOptions.filterDate}
+                            onChange={(date) =>
+                              setFilterOption({
+                                ...filterOptions,
+                                filterDate: date,
+                              })
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
+                          />
+                        </div>
                         <div>
                           <button
                             className="btn btn-outline-primary mt-2 w-6rem ms-2"
@@ -1272,37 +1115,92 @@ export default function Customer() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  {/* table */}
-                  {/* print report */}
-                  <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={Customers}
-                      ref={componentRef}
-                      printOptions={printOption}
-                    />
-                  </div>
-                  <div className="filterresetbtn d-flex justify-content-between"></div>
-                  <div className="table-section">
-                    <Table
-                      customComponent={customComponent}
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={Customers1}
-                      bulkState={{
-                        setBulkCustomer,
-                      }}
-                    ></Table>
+                    <div className="table-section">
+                      <Table
+                        customComponent={customComponent}
+                        isLoading={customerLoading}
+                        columns={columns}
+                        data={pppoeCustomers}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      ></Table>
+                    </div>
                   </div>
                 </div>
+
+                {/* print component table  */}
+                <div style={{ display: "none" }}>
+                  <PrintCustomer
+                    filterData={filterData}
+                    currentCustomers={pppoeCustomers}
+                    ref={componentRef}
+                    printOptions={printOption}
+                  />
+                </div>
               </FourGround>
-              <Footer />
             </FontColor>
           </div>
         </div>
       </div>
-      {bulkCustomer.length > 0 && (
+      {/* all modal */}
+      {/* customer create modal  */}
+      <CustomerPost />
+
+      {/* customer edit modal  */}
+      <CustomerEdit single={customerId} />
+
+      {/* bill collection modal  */}
+      <CustomerBillCollect single={customerId} />
+
+      {/* customer details modal  */}
+      <CustomerDetails single={customerId} />
+
+      {/* customer report modal  */}
+      <CustomerReport single={customerData} />
+
+      {/* customer delete modal  */}
+      <CustomerDelete
+        single={customerId}
+        mikrotikCheck={checkMikrotik}
+        setMikrotikCheck={setMikrotikCheck}
+      />
+
+      {/* single message send modal  */}
+      <SingleMessage single={customerId} sendCustomer="customer" />
+
+      {/* transferReseller modal */}
+      <TransferToReseller customerId={customerId} />
+
+      {/* bulk Modal */}
+      <BulkSubAreaEdit
+        bulkCustomer={bulkCustomers}
+        modalId="customerBulkEdit"
+      />
+      <BulkBillingCycleEdit
+        bulkCustomer={bulkCustomers}
+        modalId="customerBillingCycle"
+      />
+
+      <BulkStatusEdit bulkCustomer={bulkCustomers} modalId="bulkStatusEdit" />
+      <BulkCustomerDelete
+        bulkCustomer={bulkCustomers}
+        modalId="bulkDeleteCustomer"
+      />
+      <BulkAutoConnectionEdit
+        bulkCustomer={bulkCustomers}
+        modalId="autoDisableEditModal"
+      />
+      <BulkCustomerTransfer
+        bulkCustomer={bulkCustomers}
+        modalId="bulkTransferToReseller"
+      />
+      {/* <BandwidthModal
+                modalShow={modalShow}
+                setModalShow={setModalShow}
+                customerId={singleCustomer}
+              /> */}
+      {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">
           <button
             className="bulk_action_button"
@@ -1373,87 +1271,69 @@ export default function Customer() {
         </div>
       )}
 
-      <div
-        class="modal fade"
-        id="printModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+      {/* print option modal */}
+      <Modal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        aria-labelledby="customerBandWidth"
       >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                Select print option
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+        <Modal.Header closeButton>
+          <Modal.Title id="customerBandWidth"></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="container d-flex align-items-center justify-content-between">
+            <div className="select-options">
+              {printOption.map((item) => (
+                <div className="form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id={item.id}
+                    value={item.value}
+                    checked={item.checked}
+                    onChange={printOptionsController}
+                  />
+                  <label htmlFor={item.id} className="form-check-label">
+                    {item.label}
+                  </label>
+                </div>
+              ))}
             </div>
-            <div class="modal-body">
-              <div className="container d-flex align-items-center justify-content-between">
-                <div className="select-options">
-                  {printOption.map((item) => (
-                    <div className="form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id={item.id}
-                        value={item.value}
-                        checked={item.checked}
-                        onChange={printOptionsController}
-                      />
-                      <label htmlFor={item.id} className="form-check-label">
-                        {item.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                <div className="default-option">
-                  <div className="form-check d-3">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="default-print-option"
-                      value="default"
-                      onChange={printOptionsController}
-                      checked={printOption.every((item) => item.checked)}
-                    />
-                    <label
-                      htmlFor="default-print-option"
-                      className="form-check-label"
-                    >
-                      Set Default
-                    </label>
-                  </div>
-                </div>
+            <div className="default-option">
+              <div className="form-check d-3">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="default-print-option"
+                  value="default"
+                  onChange={printOptionsController}
+                  checked={printOption.every((item) => item.checked)}
+                />
+                <label
+                  htmlFor="default-print-option"
+                  className="form-check-label"
+                >
+                  Set Default
+                </label>
               </div>
             </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-
-              <ReactToPrint
-                documentTitle="গ্রাহক লিস্ট"
-                trigger={() => (
-                  <button type="button" class="btn btn-primary">
-                    Print
-                  </button>
-                )}
-                content={() => componentRef.current}
-              />
-            </div>
           </div>
-        </div>
-      </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setModalShow(false)}>Close</Button>
+          <ReactToPrint
+            documentTitle="গ্রাহক লিস্ট"
+            trigger={() => (
+              <Button onClick={() => setModalShow(false)} variant="primary">
+                Print
+              </Button>
+            )}
+            content={() => componentRef.current}
+          />
+        </Modal.Footer>
+      </Modal>
     </>
   );
-}
+};
+
+export default PPPOECustomer;
