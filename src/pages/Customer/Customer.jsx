@@ -172,19 +172,14 @@ const PPPOECustomer = () => {
   //collector area state update
   useEffect(() => {
     if (role === "collector") {
-      const tempCollectorAreas = [];
-      areas.forEach((item) => {
-        console.log(item.subAreas);
-        const isExist = collectorSubAreas.some((subArea) => {
+      //loop over areas
+      const tempCollectorAreas = areas.filter((item) => {
+        return collectorSubAreas.some((subArea) => {
           return item.subAreas.some((s) => s.id === subArea);
         });
-        //if found set temporary areas
-        if (isExist) {
-          tempCollectorAreas.push(item);
-        }
-        //set collector areas
-        setCollectorAreas(tempCollectorAreas);
       });
+      //update the collector area state
+      setCollectorAreas(tempCollectorAreas);
     }
   }, [collectorSubAreas]);
 
@@ -300,7 +295,7 @@ const PPPOECustomer = () => {
         const convertStingToDate = moment(filterOptions.filterDate).format(
           "YYYY-MM-DD"
         );
-        console.log(convertStingToDate);
+
         if (
           new Date(
             moment(customer.billingCycle).format("YYYY-MM-DD")

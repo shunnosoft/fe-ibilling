@@ -63,7 +63,6 @@ const resellerCustomerSlice = createSlice({
       );
     },
     bulkCustomerReturn: (state, { payload }) => {
-      console.log({ payload });
       let customers = [];
       if (payload.isAllCustomer) {
         customers = [...state.allResellerCustomer];
