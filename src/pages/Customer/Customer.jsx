@@ -94,7 +94,7 @@ const PPPOECustomer = () => {
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   //get collector areas
-  const collectorArea = useSelector((state) =>
+  const collectorSubAreas = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
@@ -140,8 +140,8 @@ const PPPOECustomer = () => {
 
   //Single area and subarea state
   const [areaId, setAreaId] = useState("");
-  const [subAreaId, setSubAreaId] = useState("");
-
+  //collector area
+  const [collectorAreas, setCollectorAreas] = useState([]);
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
   //initial api calls
@@ -169,8 +169,26 @@ const PPPOECustomer = () => {
     setPPPoeCustomers(customers);
   }, [customers]);
 
-  //get single customer from user action
+  //collector area state update
+  useEffect(() => {
+    if (role === "collector") {
+      const tempCollectorAreas = [];
+      areas.forEach((item) => {
+        console.log(item.subAreas);
+        const isExist = collectorSubAreas.some((subArea) => {
+          return item.subAreas.some((s) => s.id === subArea);
+        });
+        //if found set temporary areas
+        if (isExist) {
+          tempCollectorAreas.push(item);
+        }
+        //set collector areas
+        setCollectorAreas(tempCollectorAreas);
+      });
+    }
+  }, [collectorSubAreas]);
 
+  //get single customer from user action
   const getSpecificCustomer = (customerId) => {
     setCustomerId(customerId);
   };
@@ -730,7 +748,6 @@ const PPPOECustomer = () => {
         : t("sokolCustomer"),
     };
   }
-
   return (
     <>
       <Sidebar />
@@ -831,7 +848,7 @@ const PPPOECustomer = () => {
                               {t("customerWithoutArea")}
                             </option>
                           )}
-                          {(role === "collector" ? collectorArea : areas)?.map(
+                          {(role === "collector" ? collectorAreas : areas)?.map(
                             (area, key) => {
                               return (
                                 <option
@@ -849,7 +866,6 @@ const PPPOECustomer = () => {
                         <select
                           className="form-select ms-2"
                           onChange={(e) => {
-                            setSubAreaId(e.target.value);
                             setFilterOption({
                               ...filterOptions,
                               subArea: e.target.value,
