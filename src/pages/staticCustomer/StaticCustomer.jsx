@@ -73,6 +73,7 @@ export default function Customer() {
   );
 
   const [isLoading, setIsloading] = useState(false);
+  const [customerLoading, setCustomerLoading] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
 
   const [filterOptions, setFilterOption] = useState({
@@ -248,7 +249,7 @@ export default function Customer() {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     }
 
-    getStaticCustomer(dispatch, ispOwner, setIsloading);
+    getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
   };
 
   useEffect(() => {
@@ -1159,7 +1160,7 @@ export default function Customer() {
                   </div>
                   <div className="table-section">
                     <Table
-                      isLoading={isLoading}
+                      isLoading={customerLoading}
                       columns={columns}
                       data={Customers1}
                       bulkState={{
