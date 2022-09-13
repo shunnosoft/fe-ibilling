@@ -40,6 +40,7 @@ export default function Diposit() {
 
   // get balance from redux
   const balancee = useSelector((state) => state?.payment?.balance);
+  console.log(balancee);
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);
@@ -98,6 +99,7 @@ export default function Diposit() {
 
   const [acceptLoading, setAccLoading] = useState(false);
   const [selectedCollector, setSelectedCustomer] = useState("");
+
   // add deposit form validation
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
@@ -162,8 +164,8 @@ export default function Diposit() {
   };
 
   useEffect(() => {
-    getCollector(dispatch, ispOwner, setLoading);
-    getManger(dispatch, ispOwner);
+    if (userRole !== "collector") getCollector(dispatch, ispOwner, setLoading);
+    if (userRole === "ispOwner") getManger(dispatch, ispOwner);
   }, []);
 
   // get own deposit, ownerUser & total balance api call

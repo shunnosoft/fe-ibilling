@@ -83,7 +83,10 @@ import {
   editBillReportSuccess,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
-import { getAllRechargeHistory } from "./rechargeSlice";
+import {
+  getAllRechargeHistory,
+  resellerRechargeHistorySlice,
+} from "./rechargeSlice";
 import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
 import { showModal } from "./uiSlice";
 import {
@@ -1118,15 +1121,15 @@ export const deletePPPoEpackage = async (dispatch, IDs) => {
 // Reseller
 
 // GET reseller
-export const fetchReseller = async (dispatch, ispOwner, setIsLoading) => {
+export const fetchReseller = async (dispatch, ispOwner, setDataLoader) => {
   try {
-    setIsLoading(true);
+    setDataLoader(true);
     const res = await apiLink.get(`/ispOwner/reseller/${ispOwner}`);
     dispatch(getResellerrSuccess(res.data));
   } catch (error) {
     console.log(error.message);
   }
-  setIsLoading(false);
+  setDataLoader(false);
 };
 
 // add reseller
@@ -1351,6 +1354,7 @@ export const getTotalbal = async (dispatch, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.get(`bill/monthlyBill/balance`);
+    console.log(res.data);
     dispatch(getTotalBalanceSuccess(res.data));
     setLoading(false);
   } catch (error) {
@@ -1507,6 +1511,21 @@ export const rechargeHistoryfunc = async (dispatch, ispOwnerId) => {
   } catch (error) {
     console.log(error.response?.data.message);
   }
+};
+
+export const getResellerRechargeHistioty = async (
+  resellerId,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/reseller/recharge/${resellerId}`);
+    dispatch(resellerRechargeHistorySlice(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
 };
 
 export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {

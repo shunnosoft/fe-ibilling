@@ -13,6 +13,7 @@ import {
   CurrencyDollar,
   PencilSquare,
   KeyFill,
+  CashStack,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -47,43 +48,54 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { useTranslation } from "react-i18next";
 import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import RechargeReport from "./resellerModals/RechargeReport";
 
 export default function Reseller() {
   const { t } = useTranslation();
+
+  // import dispatch
   const dispatch = useDispatch();
+
+  // get all auth
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+
+  // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  // get user role
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
-  const [resellerId, setResellerId] = useState({});
+  // get all reseller
+  const reseller = useSelector((state) => state?.reseller?.reseller);
 
+  // reseller id state
+  const [resellerId, setResellerId] = useState("");
+
+  // user id state
   const [userId, setUserId] = useState();
 
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  const reseller = useSelector((state) => state?.reseller?.reseller);
+  // singl reseler sms id
+  const [resellerSmsId, setResellerSmsId] = useState();
+
+  // data loader
+  const [dataLoader, setDataLoader] = useState(false);
 
   // reload handler
   const reloadHandler = () => {
-    fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
+    fetchReseller(dispatch, auth.ispOwner.id, setDataLoader);
   };
-
-  useEffect(() => {
-    if (auth.ispOwner) {
-      if (reseller.length == 0)
-        fetchReseller(dispatch, auth.ispOwner.id, setIsLoading);
-      getArea(dispatch, auth.ispOwner.id, setIsLoading);
-    }
-  }, [dispatch, auth.ispOwner]);
 
   // get Single reseller
   const getSpecificReseller = (id) => {
     setResellerId(id);
   };
 
-  const [resellerSmsId, setResellerSmsId] = useState();
+  // handle single sms method
   const handleSingleMessage = (resellerID) => {
     setResellerSmsId(resellerID);
   };
@@ -94,12 +106,23 @@ export default function Reseller() {
     deleteReseller(dispatch, IDs, setIsLoading);
   };
 
+  // reseller and area api call
+  useEffect(() => {
+    if (auth.ispOwner) {
+      if (reseller.length == 0)
+        fetchReseller(dispatch, auth.ispOwner.id, setDataLoader);
+      getArea(dispatch, auth.ispOwner.id, setIsLoading);
+    }
+  }, [dispatch, auth.ispOwner]);
+
+  // mikrotik package get api
   useEffect(() => {
     if (ispOwnerId !== undefined) {
       getMikrotikPackages(dispatch, ispOwnerId);
     }
-  }, [dispatch, ispOwnerId]);
+  }, [ispOwnerId]);
 
+  // table column
   const columns = React.useMemo(
     () => [
       {
@@ -186,6 +209,21 @@ export default function Reseller() {
                     <div className="customerAction">
                       <Wallet />
                       <p className="actionP">{t("useMemoRecharge")}</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#rechargeReport"
+                  onClick={() => {
+                    getSpecificReseller(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("report")}</p>
                     </div>
                   </div>
                 </li>
@@ -298,22 +336,12 @@ export default function Reseller() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              {/* modals */}
-              <ResellerPost />
-              {/* <ResellerRecharge reseller={resellerId}></ResellerRecharge> */}
-              <ResellerEdit resellerId={resellerId} />
-              <ResellerDetails resellerId={resellerId} />
-              <Recharge resellerId={resellerId}></Recharge>
-              <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
-              <EditResellerBalance resellerId={resellerId} />
-              <PasswordReset resetCustomerId={userId} />
-              {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
                     <div>{t("reseller")}</div>
                     <div className="reloadBtn">
-                      {isLoading ? (
+                      {dataLoader ? (
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
@@ -358,7 +386,7 @@ export default function Reseller() {
                   <div className="addCollector">
                     <div className="table-section">
                       <Table
-                        isLoading={isLoading}
+                        isLoading={dataLoader}
                         columns={columns}
                         data={reseller}
                       ></Table>
@@ -371,6 +399,33 @@ export default function Reseller() {
           </div>
         </div>
       </div>
+
+      {/* start modals section */}
+      {/* add reseller modal */}
+      <ResellerPost />
+
+      {/* reseller edit modal */}
+      <ResellerEdit resellerId={resellerId} />
+
+      {/* reseller details modal */}
+      <ResellerDetails resellerId={resellerId} />
+
+      {/* reseller rechare modal  */}
+      <Recharge resellerId={resellerId} />
+
+      {/* recharge report  */}
+      <RechargeReport resellerId={resellerId} />
+
+      {/* reseller msg modal  */}
+      <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
+
+      {/* reseler edit balnce modal  */}
+      <EditResellerBalance resellerId={resellerId} />
+
+      {/* password reset modal */}
+      <PasswordReset resetCustomerId={userId} />
+
+      {/* end modals section*/}
     </>
   );
 }
