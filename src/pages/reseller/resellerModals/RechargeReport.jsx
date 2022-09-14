@@ -62,7 +62,7 @@ const RechargeReport = ({ resellerId }) => {
                 {findName?.name} {t("report")}
               </h5>
               <ReactToPrint
-                documentTitle={t("billReport")}
+                documentTitle={t("rechargeHistory")}
                 trigger={() => (
                   <PrinterFill title={t("print")} className="addcutmButton" />
                 )}

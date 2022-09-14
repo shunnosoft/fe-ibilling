@@ -162,6 +162,7 @@ const PPPOECustomer = () => {
     filterDate: null,
     dayFilter: "",
   });
+  console.log(filterOptions);
 
   //initial api calls
   useEffect(() => {
@@ -248,115 +249,148 @@ const PPPOECustomer = () => {
 
   // filter and filter reset
   const handleActiveFilter = () => {
+    let filterLoading = true;
     let tempCustomers = [...customers];
 
-    const filteredCustomer = tempCustomers.filter((customer) => {
-      let isFound = false;
+    // distructured filterd value
+    const {
+      status,
+      paymentStatus,
+      area,
+      subArea,
+      mikrotik,
+      freeUser,
+      filterDate,
+      dayFilter,
+    } = filterOptions;
 
-      //filter by area
-      if (filterOptions.area) {
-        const getArea = areas.find((item) => item.id === filterOptions.area);
-        if (getArea.subAreas.some((item) => item.id === customer.subArea)) {
-          isFound = true;
-        } else {
-          return false;
-        }
-      }
+    // initial filter customer
+    let filteredCustomer = [];
 
-      // filter by subarea
-      if (filterOptions.subArea) {
-        if (customer.subArea === filterOptions.subArea) {
-          isFound = true;
-        } else {
-          return false;
-        }
-      }
+    // check filterd value
+    if (
+      status ||
+      paymentStatus ||
+      area ||
+      subArea ||
+      mikrotik ||
+      freeUser ||
+      filterDate ||
+      dayFilter ||
+      filterOptions.package
+    ) {
+      console.log("hello");
+      filteredCustomer = tempCustomers.filter((customer) => {
+        let isFound = false;
 
-      // free user filter
-      if (filterOptions.freeUser) {
-        if (filterOptions.freeUser === "freeUser") {
-          if (customer.monthlyFee === parseInt("0")) {
+        //filter by area
+        if (filterOptions.area) {
+          const getArea = areas.find((item) => item.id === filterOptions.area);
+          if (getArea.subAreas.some((item) => item.id === customer.subArea)) {
             isFound = true;
           } else {
             return false;
           }
-        } else if (filterOptions.freeUser === "nonFreeUser") {
-          if (customer.monthlyFee !== parseInt("0")) {
+        }
+
+        // filter by subarea
+        if (filterOptions.subArea) {
+          if (customer.subArea === filterOptions.subArea) {
             isFound = true;
           } else {
             return false;
           }
         }
-      }
 
-      // status filter active/incative
-      if (filterOptions.status) {
-        if (customer.status === filterOptions.status) {
-          isFound = true;
-        } else {
-          return false;
+        // free user filter
+        if (filterOptions.freeUser) {
+          if (filterOptions.freeUser === "freeUser") {
+            if (customer.monthlyFee === parseInt("0")) {
+              isFound = true;
+            } else {
+              return false;
+            }
+          } else if (filterOptions.freeUser === "nonFreeUser") {
+            if (customer.monthlyFee !== parseInt("0")) {
+              isFound = true;
+            } else {
+              return false;
+            }
+          }
         }
-      }
 
-      // payment status filter
-      if (filterOptions.paymentStatus) {
-        if (customer.paymentStatus === filterOptions.paymentStatus) {
-          isFound = true;
-        } else {
-          return false;
+        // status filter active/incative
+        if (filterOptions.status) {
+          if (customer.status === filterOptions.status) {
+            isFound = true;
+          } else {
+            return false;
+          }
         }
-      }
 
-      // filter by mikrotik
-      if (filterOptions.mikrotik) {
-        if (customer.mikrotik === filterOptions.mikrotik) {
-          isFound = true;
-        } else {
-          return false;
+        // payment status filter
+        if (filterOptions.paymentStatus) {
+          if (customer.paymentStatus === filterOptions.paymentStatus) {
+            isFound = true;
+          } else {
+            return false;
+          }
         }
-      }
 
-      // filter using mikrotik package
-      if (filterOptions.package) {
-        if (customer.mikrotikPackage === filterOptions.package) {
-          isFound = true;
-        } else {
-          return false;
+        // filter by mikrotik
+        if (filterOptions.mikrotik) {
+          if (customer.mikrotik === filterOptions.mikrotik) {
+            isFound = true;
+          } else {
+            return false;
+          }
         }
-      }
-      // filter by billing cycle
-      if (filterOptions.filterDate) {
-        const convertStingToDate = moment(filterOptions.filterDate).format(
-          "YYYY-MM-DD"
-        );
 
-        if (
-          new Date(
-            moment(customer.billingCycle).format("YYYY-MM-DD")
-          ).getTime() === new Date(convertStingToDate).getTime()
-        ) {
-          isFound = true;
-        } else {
-          return false;
+        // filter using mikrotik package
+        if (filterOptions.package) {
+          if (customer.mikrotikPackage === filterOptions.package) {
+            isFound = true;
+          } else {
+            return false;
+          }
         }
-      }
+        // filter by billing cycle
+        if (filterOptions.filterDate) {
+          const convertStingToDate = moment(filterOptions.filterDate).format(
+            "YYYY-MM-DD"
+          );
 
-      // bill date  filter
-      if (filterOptions.dayFilter) {
-        if (
-          moment(customer.billingCycle).diff(moment(), "days") ===
-          Number(filterOptions.dayFilter)
-        ) {
-          isFound = true;
-        } else {
-          return false;
+          if (
+            new Date(
+              moment(customer.billingCycle).format("YYYY-MM-DD")
+            ).getTime() === new Date(convertStingToDate).getTime()
+          ) {
+            isFound = true;
+          } else {
+            return false;
+          }
         }
-      }
-      return isFound;
-    });
 
-    // set filter customer in customer state
-    setPPPoeCustomers(filteredCustomer);
+        // bill date  filter
+        if (filterOptions.dayFilter) {
+          if (
+            moment(customer.billingCycle).diff(moment(), "days") ===
+            Number(filterOptions.dayFilter)
+          ) {
+            isFound = true;
+          } else {
+            return false;
+          }
+        }
+        return isFound;
+      });
+      // set filter customer in customer state
+      setPPPoeCustomers(filteredCustomer);
+    } else {
+      setPPPoeCustomers(customers);
+    }
+
+    filterLoading = false;
   };
 
   // filter reset controller
@@ -1145,6 +1179,7 @@ const PPPOECustomer = () => {
                           <option value="2">{t("twoDayLeft")}</option>
                           <option value="3">{t("threeDayLeft")}</option>
                           <option value="4">{t("fourDayLeft")}</option>
+                          <option value="7">{t("sevenDayLeft")}</option>
                         </select>
                         {/* date picker for filter billing cycle */}
                         <div className="mt-3" style={{ width: "200px" }}>

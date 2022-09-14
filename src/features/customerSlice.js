@@ -15,6 +15,7 @@ const customerSliec = createSlice({
       state.customer.push(action.payload);
     },
     editCustomerSuccess: (state, action) => {
+      console.log(action.payload);
       state.customer[
         state.customer.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;

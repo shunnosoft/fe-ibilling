@@ -352,7 +352,10 @@ export default function Reseller() {
                   </div>
                   {role === "ispOwner" && (
                     <div className="d-flex">
-                      <div className="settingbtn me-2">
+                      <div
+                        className="settingbtn me-2"
+                        style={{ marginTop: "-8px" }}
+                      >
                         <Link
                           to={`/reseller/customer`}
                           className="mikrotikConfigureButtom"
