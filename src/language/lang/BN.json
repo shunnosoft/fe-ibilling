@@ -122,6 +122,7 @@
   "addNewArea": "নতুন এরিয়া অ্যাড করুন",
   "editStatus": "এডিট স্টাটাস",
   "editBillingCycle": "এডিট বিলিং সাইকেল",
+  "editPromiseDate": "এডিট প্রমিজ ডেট",
   "autoConnectOnOff": "অটো সংযোগ অন/অফ",
   "customerDelete": "গ্রাহক ডিলিট",
   "customerWithoutArea": "এরিয়া বিহীন গ্রাহক",

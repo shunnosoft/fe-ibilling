@@ -129,6 +129,7 @@
   "editStatus": "Edit Status",
   "billCycle": "Bill Cycle",
   "editBillingCycle": "Edit Billing Cycle",
+  "editPromiseDate": "Edit Promise Date",
   "autoConnectOnOff": "Auto Connect On/Off",
   "customerDelete": "Customer Delete",
   "customerWithoutArea": "Customer Without Area",

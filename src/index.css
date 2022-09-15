@@ -128,3 +128,7 @@ p {
 .newCustomer:hover {
   color: #2c8beb !important;
 }
+
+#custom-form-select .form-select {
+  margin-top: 1rem !important;
+}

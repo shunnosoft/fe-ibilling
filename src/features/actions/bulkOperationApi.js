@@ -77,11 +77,27 @@ export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
   }
 };
 
+export const bulkPromiseDateEdit = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch("/customer/bulk-promise-date", data);
+    dispatch(bulkUpdate(res.data.data));
+    document.querySelector("#bulkPromiseDateEdit").click();
+    setIsLoading(false);
+    toast.success("কাস্টমার প্রমিস ডেট আপডেট হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#bulkPromiseDateEdit").click();
+      toast.error(err.response.data.message);
+    }
+  }
+};
+
 export const bulkAutoConnectionEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.patch("/customer/bulk-auto-disable", data);
-    console.log(res);
     dispatch(bulkUpdate(res.data.data));
     document.querySelector("#autoDisableEditModal").click();
     setIsLoading(false);

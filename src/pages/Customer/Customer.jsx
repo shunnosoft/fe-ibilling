@@ -58,6 +58,7 @@ import PrintCustomer from "./customerPDF";
 import { Button, Modal } from "react-bootstrap";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useCallback } from "react";
+import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -162,7 +163,6 @@ const PPPOECustomer = () => {
     filterDate: null,
     dayFilter: "",
   });
-  console.log(filterOptions);
 
   //initial api calls
   useEffect(() => {
@@ -279,7 +279,6 @@ const PPPOECustomer = () => {
       dayFilter ||
       filterOptions.package
     ) {
-      console.log("hello");
       filteredCustomer = tempCustomers.filter((customer) => {
         let isFound = false;
 
@@ -906,10 +905,10 @@ const PPPOECustomer = () => {
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="displexFlexSys">
-                      <div className="d-flex flex-wrap">
+                      <div id="custom-form-select" className="d-flex flex-wrap">
                         {/* area filter  */}
                         <select
-                          className="form-select mt-3"
+                          className="form-select"
                           onChange={(e) => {
                             setAreaId(e.target.value);
                             setFilterOption({
@@ -947,7 +946,7 @@ const PPPOECustomer = () => {
                         </select>
                         {/* sub area filter  */}
                         <select
-                          className="form-select mt-3"
+                          className="form-select"
                           onChange={(e) => {
                             setFilterOption({
                               ...filterOptions,
@@ -977,7 +976,7 @@ const PPPOECustomer = () => {
                         </select>
                         {/* status filter  */}
                         <select
-                          className="form-select mt-3"
+                          className="form-select"
                           onChange={(e) => {
                             setFilterOption({
                               ...filterOptions,
@@ -1014,7 +1013,7 @@ const PPPOECustomer = () => {
 
                         {/* payment status filter  */}
                         <select
-                          className="form-select mt-3"
+                          className="form-select"
                           onChange={(e) => {
                             setFilterOption({
                               ...filterOptions,
@@ -1045,7 +1044,7 @@ const PPPOECustomer = () => {
                         {bpSettings?.hasMikrotik && (
                           //filter by mikrotik
                           <select
-                            className="form-select mt-3"
+                            className="form-select"
                             onChange={(e) => {
                               mikrotikHandler(e.target.value);
                             }}
@@ -1076,7 +1075,7 @@ const PPPOECustomer = () => {
                         {bpSettings?.hasMikrotik ? (
                           //package filter with mikrotik
                           <select
-                            className="form-select mt-3"
+                            className="form-select"
                             onChange={(e) => {
                               setFilterOption({
                                 ...filterOptions,
@@ -1107,7 +1106,7 @@ const PPPOECustomer = () => {
                         ) : (
                           //without mikrotik package filter
                           <select
-                            className="form-select mt-3"
+                            className="form-select"
                             onChange={(e) => {
                               setFilterOption({
                                 ...filterOptions,
@@ -1145,7 +1144,7 @@ const PPPOECustomer = () => {
                               freeUser: e.target.value,
                             })
                           }
-                          className="form-select  mt-3"
+                          className="form-select "
                         >
                           <option selected={!filterOptions.freeUser} value="">
                             {t("sokolCustomer")}
@@ -1166,7 +1165,7 @@ const PPPOECustomer = () => {
 
                         {/*how many day left from  bill date select*/}
                         <select
-                          className="form-select mt-3"
+                          className="form-select"
                           onChange={(e) =>
                             setFilterOption({
                               ...filterOptions,
@@ -1281,6 +1280,10 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="customerBillingCycle"
       />
+      <BulkPromiseDateEdit
+        bulkCustomer={bulkCustomers}
+        modalId="bulkPromiseDateEdit"
+      />
 
       <BulkStatusEdit bulkCustomer={bulkCustomers} modalId="bulkStatusEdit" />
       <BulkCustomerDelete
@@ -1334,6 +1337,17 @@ const PPPOECustomer = () => {
           >
             <i class="fas fa-edit"></i>
             <span className="button_title"> {t("editBillingCycle")} </span>
+          </button>
+          <button
+            className="bulk_action_button"
+            title={t("editPromiseDate")}
+            data-bs-toggle="modal"
+            data-bs-target="#bulkPromiseDateEdit"
+            type="button"
+            class="btn btn-secondary btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title"> {t("editPromiseDate")} </span>
           </button>
           <button
             className="bulk_action_button"

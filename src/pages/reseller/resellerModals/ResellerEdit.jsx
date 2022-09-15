@@ -669,7 +669,6 @@ export default function ResellerEdit({ resellerId }) {
                                           )
                                         );
                                       })}
-                                      ========
                                     </div>
                                   ))}
                                 </>
