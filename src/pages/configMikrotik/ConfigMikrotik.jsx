@@ -407,7 +407,7 @@ export default function ConfigMikrotik() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="addNewCollector showMikrotikUpperSection mx-auto">
                       <div className="LeftSideMikrotik justify-content-center">

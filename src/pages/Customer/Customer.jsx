@@ -249,7 +249,6 @@ const PPPOECustomer = () => {
 
   // filter and filter reset
   const handleActiveFilter = () => {
-    let filterLoading = true;
     let tempCustomers = [...customers];
 
     // distructured filterd value
@@ -388,8 +387,6 @@ const PPPOECustomer = () => {
     } else {
       setPPPoeCustomers(customers);
     }
-
-    filterLoading = false;
   };
 
   // filter reset controller
