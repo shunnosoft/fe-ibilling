@@ -442,13 +442,14 @@ export const addCollector = async (dispatch, data, setIsLoading) => {
 
 export const editCollector = async (dispatch, data, setIsLoading) => {
   const { ispOwnerId, collectorId, ...rest } = data;
+  setIsLoading(true);
   try {
     const res = await apiLink.patch(
       `ispOwner/collector/${ispOwnerId}/${collectorId}`,
       rest
     );
     dispatch(editCollectorSuccess(res.data));
-    setIsLoading(false);
+
     langMessage(
       "success",
       "কালেক্টর এডিট সফল হয়েছে",
@@ -457,10 +458,10 @@ export const editCollector = async (dispatch, data, setIsLoading) => {
     document.querySelector("#collectorEditModal").click();
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
 export const deleteCollector = async (dispatch, ids, setIsDeleting) => {

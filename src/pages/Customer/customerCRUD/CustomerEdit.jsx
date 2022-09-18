@@ -42,6 +42,12 @@ export default function CustomerEdit(props) {
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth?.role);
+  console.log(role);
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
 
   // get ppoe package
   const ppPackage = useSelector((state) =>
@@ -388,6 +394,10 @@ export default function CustomerEdit(props) {
                         type="text"
                         label={t("mobile")}
                         name="mobile"
+                        disabled={
+                          !permission?.customerMobileEdit &&
+                          role === "collector"
+                        }
                       />
                       <FtextField
                         type="text"
@@ -444,6 +454,7 @@ export default function CustomerEdit(props) {
                           placeholderText={t("selectDate")}
                         />
                       </div>
+
                       <div className="pppoeStatus">
                         <p className="p-0 mt-2">{t("status")}</p>
                         <div className="form-check form-check-inline mt-0">
@@ -452,6 +463,10 @@ export default function CustomerEdit(props) {
                             type="radio"
                             name="staus"
                             value={"active"}
+                            disabled={
+                              !permission?.customerActivate &&
+                              role !== "ispOwner"
+                            }
                             onChange={(e) => setStatus(e.target.value)}
                             checked={status === "active"}
                           />
@@ -468,6 +483,10 @@ export default function CustomerEdit(props) {
                             type="radio"
                             id="inlineRadio2"
                             value={"inactive"}
+                            disabled={
+                              !permission?.customerDeactivate &&
+                              role !== "ispOwner"
+                            }
                             onChange={(e) => setStatus(e.target.value)}
                             checked={status === "inactive"}
                           />
@@ -496,6 +515,7 @@ export default function CustomerEdit(props) {
                           </div>
                         )}
                       </div>
+
                       {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>

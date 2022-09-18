@@ -29,7 +29,6 @@ export default function CollectorEdit({ collectorId }) {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
-    console.log({ single });
     if (single) {
       setAllowedAreas(single?.areas);
       setPermissions(collectorPermission(single.permissions));
@@ -61,7 +60,6 @@ export default function CollectorEdit({ collectorId }) {
   };
 
   const collectorEditHandler = async (data) => {
-    setIsLoading(true);
     let temp = {};
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;

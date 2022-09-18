@@ -44,7 +44,7 @@ export const collectorPermission = (permission) => {
     },
     {
       id: 5,
-      value: "viewCustomer",
+      value: "viewCustomerList",
       label: "গ্রাহক দেখবে",
       isChecked: permission?.viewCustomerList,
     },
@@ -56,27 +56,33 @@ export const collectorPermission = (permission) => {
     },
     {
       id: 7,
-      value: "CustomerMobileEdit",
+      value: "customerMobileEdit",
       label: "মোবাইল পরিবর্তন",
       isChecked: permission?.customerMobileEdit, //ToDo
     },
     {
       id: 8,
       value: "sendSMS",
-      label: "ম্যাসেজ বোর্ড",
+      label: "সিঙ্গেল ম্যাসেজ",
       isChecked: permission?.sendSMS,
     },
     {
-      id: 10,
+      id: 9,
       value: "billPosting",
       label: "বিল পোস্টিং",
       isChecked: permission?.billPosting,
     },
     {
-      id: 11,
-      value: "billPosting",
+      id: 10,
+      value: "billPrint",
       label: "বিল প্রিন্ট",
       isChecked: permission?.billPrint,
+    },
+    {
+      id: 11,
+      value: "billDelete",
+      label: "বিল ডিলিট",
+      isChecked: permission?.billDelete,
     },
   ];
 
@@ -107,7 +113,7 @@ export const collectorPermission = (permission) => {
     },
     {
       id: 5,
-      value: "viewCustomer",
+      value: "viewCustomerList",
       label: "View Customer",
       isChecked: permission?.viewCustomerList,
     },
@@ -126,20 +132,26 @@ export const collectorPermission = (permission) => {
     {
       id: 8,
       value: "sendSMS",
-      label: "Message Board",
+      label: "Single Message",
       isChecked: permission?.sendSMS,
     },
     {
-      id: 10,
+      id: 9,
       value: "billPosting",
       label: "Bill Posting",
       isChecked: permission?.billPosting,
     },
     {
-      id: 11,
-      value: "billPosting",
+      id: 10,
+      value: "billPrint",
       label: "Print Bill",
       isChecked: permission?.billPrint,
+    },
+    {
+      id: 11,
+      value: "billDelete",
+      label: "Bill Delete",
+      isChecked: permission?.billDelete,
     },
   ];
 

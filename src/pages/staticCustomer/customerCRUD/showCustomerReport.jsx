@@ -24,6 +24,14 @@ export default function CustomerReport({ single }) {
     (state) => state.persistedReducer.auth.userData
   );
 
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
   useEffect(() => {
     const getCustoemrReport = async () => {
       try {
@@ -38,12 +46,10 @@ export default function CustomerReport({ single }) {
   }, [single]);
 
   const deletReport = async (reportId) => {
-    console.log(reportId);
     const con = window.confirm(t("deleteAlert"));
     if (con) {
       try {
         const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
-        console.log(res);
         const updatedState = customerReport.filter(
           (item) => item.id !== reportId
         );
@@ -183,7 +189,6 @@ export default function CustomerReport({ single }) {
                       <TdLoader colspan={5} />
                     ) : customerReport.length > 0 ? (
                       customerReport.map((val, index) => {
-                        console.log(val);
                         return (
                           <tr className="spetialSortingRow" key={index}>
                             <td>{val.package}</td>
@@ -224,31 +229,41 @@ export default function CustomerReport({ single }) {
                                     ispOwnerData={ispOwnerData}
                                   />
                                 </div>
-                                <div>
-                                  <ReactToPrint
-                                    documentTitle={t("billIvoice")}
-                                    trigger={() => (
-                                      <div
-                                        title={t("printInvoiceBill")}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <PrinterFill />
-                                      </div>
-                                    )}
-                                    content={() => billRefwithNote.current}
-                                  />
-                                </div>
-                                <div title={t("deleteReport")}>
-                                  <button
-                                    className="border-0 bg-transparent"
-                                    onClick={() => deletReport(val.id)}
-                                  >
-                                    <TrashFill
-                                      color="#dc3545"
-                                      style={{ cursor: "pointer" }}
+                                {permission?.billPrint ||
+                                role !== "collector" ? (
+                                  <div>
+                                    <ReactToPrint
+                                      documentTitle={t("billIvoice")}
+                                      trigger={() => (
+                                        <div
+                                          title={t("printInvoiceBill")}
+                                          style={{ cursor: "pointer" }}
+                                        >
+                                          <PrinterFill />
+                                        </div>
+                                      )}
+                                      content={() => billRefwithNote.current}
                                     />
-                                  </button>
-                                </div>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                                {permission?.billDelete ||
+                                role !== "collector" ? (
+                                  <div title={t("deleteReport")}>
+                                    <button
+                                      className="border-0 bg-transparent"
+                                      onClick={() => deletReport(val.id)}
+                                    >
+                                      <TrashFill
+                                        color="#dc3545"
+                                        style={{ cursor: "pointer" }}
+                                      />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
                               </td>
                             ) : (
                               <td className="text-center">
@@ -265,31 +280,41 @@ export default function CustomerReport({ single }) {
                                     ispOwnerData={ispOwnerData}
                                   />
                                 </div>
-                                <div>
-                                  <ReactToPrint
-                                    documentTitle={t("billIvoice")}
-                                    trigger={() => (
-                                      <div
-                                        title={t("printInvoiceBill")}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <PrinterFill />
-                                      </div>
-                                    )}
-                                    content={() => billRefwithOutNote.current}
-                                  />
-                                </div>
-                                <div title={t("deleteReport")}>
-                                  <button
-                                    className="border-0 bg-transparent"
-                                    onClick={() => deletReport(val.id)}
-                                  >
-                                    <TrashFill
-                                      color="#dc3545"
-                                      style={{ cursor: "pointer" }}
+                                {permission?.billPrint ||
+                                role !== "collector" ? (
+                                  <div>
+                                    <ReactToPrint
+                                      documentTitle={t("billIvoice")}
+                                      trigger={() => (
+                                        <div
+                                          title={t("printInvoiceBill")}
+                                          style={{ cursor: "pointer" }}
+                                        >
+                                          <PrinterFill />
+                                        </div>
+                                      )}
+                                      content={() => billRefwithOutNote.current}
                                     />
-                                  </button>
-                                </div>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                                {permission?.billDelete ||
+                                role !== "collector" ? (
+                                  <div title={t("deleteReport")}>
+                                    <button
+                                      className="border-0 bg-transparent"
+                                      onClick={() => deletReport(val.id)}
+                                    >
+                                      <TrashFill
+                                        color="#dc3545"
+                                        style={{ cursor: "pointer" }}
+                                      />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
                               </td>
                             )}
                           </tr>

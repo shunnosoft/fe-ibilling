@@ -21,6 +21,13 @@ export default function CustomerReport(props) {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
 
   const [customerReport, setCustomerReport] = useState([]);
   // const [canDelete, setDelete] = useState(true);
@@ -160,33 +167,42 @@ export default function CustomerReport(props) {
                                     ispOwnerData={ispOwnerData}
                                   />
                                 </div>
-                                <div>
-                                  <ReactToPrint
-                                    documentTitle={t("billIvoice")}
-                                    trigger={() => (
-                                      <div
-                                        title={t("printInvoiceBill")}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <PrinterFill />
-                                      </div>
-                                    )}
-                                    content={() => billRefwithNote.current}
-                                  />
-                                </div>
-                                {!props?.hideReportDelete && (
-                                  <div title={t("deleteReport")}>
-                                    <button
-                                      className="border-0 bg-transparent"
-                                      onClick={() => deletReport(val.id)}
-                                    >
-                                      <TrashFill
-                                        color="#dc3545"
-                                        style={{ cursor: "pointer" }}
-                                      />
-                                    </button>
+                                {permission?.billPrint ||
+                                role !== "collector" ? (
+                                  <div>
+                                    <ReactToPrint
+                                      documentTitle={t("billIvoice")}
+                                      trigger={() => (
+                                        <div
+                                          title={t("printInvoiceBill")}
+                                          style={{ cursor: "pointer" }}
+                                        >
+                                          <PrinterFill />
+                                        </div>
+                                      )}
+                                      content={() => billRefwithNote.current}
+                                    />
                                   </div>
+                                ) : (
+                                  ""
                                 )}
+                                {!props?.hideReportDelete &&
+                                  (permission?.billDelete ||
+                                  role !== "collector" ? (
+                                    <div title={t("deleteReport")}>
+                                      <button
+                                        className="border-0 bg-transparent"
+                                        onClick={() => deletReport(val.id)}
+                                      >
+                                        <TrashFill
+                                          color="#dc3545"
+                                          style={{ cursor: "pointer" }}
+                                        />
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    ""
+                                  ))}
                               </td>
                             ) : (
                               <td className="text-center">
@@ -203,34 +219,43 @@ export default function CustomerReport(props) {
                                     ispOwnerData={ispOwnerData}
                                   />
                                 </div>
-                                <div>
-                                  <ReactToPrint
-                                    documentTitle={t("billIvoice")}
-                                    trigger={() => (
-                                      <div
-                                        title={t("printInvoiceBill")}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <PrinterFill />
-                                      </div>
-                                    )}
-                                    content={() => billRefwithOutNote.current}
-                                  />
-                                </div>
-                                {!props?.hideReportDelete && (
-                                  <div title={t("deleteReport")}>
-                                    <button
-                                      className="border-0 bg-transparent"
-                                      onClick={() => deletReport(val.id)}
-                                      disabled={props?.hideReportDelete}
-                                    >
-                                      <TrashFill
-                                        color="#dc3545"
-                                        style={{ cursor: "pointer" }}
-                                      />
-                                    </button>
+                                {permission?.billPrint ||
+                                role !== "collector" ? (
+                                  <div>
+                                    <ReactToPrint
+                                      documentTitle={t("billIvoice")}
+                                      trigger={() => (
+                                        <div
+                                          title={t("printInvoiceBill")}
+                                          style={{ cursor: "pointer" }}
+                                        >
+                                          <PrinterFill />
+                                        </div>
+                                      )}
+                                      content={() => billRefwithOutNote.current}
+                                    />
                                   </div>
+                                ) : (
+                                  ""
                                 )}
+                                {!props?.hideReportDelete &&
+                                  (permission?.billDelete ||
+                                  role !== "collector" ? (
+                                    <div title={t("deleteReport")}>
+                                      <button
+                                        className="border-0 bg-transparent"
+                                        onClick={() => deletReport(val.id)}
+                                        disabled={props?.hideReportDelete}
+                                      >
+                                        <TrashFill
+                                          color="#dc3545"
+                                          style={{ cursor: "pointer" }}
+                                        />
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    ""
+                                  ))}
                               </td>
                             )}
                           </tr>

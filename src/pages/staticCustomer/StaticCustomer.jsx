@@ -671,22 +671,21 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
-                {role !== "collector" && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#showCustomerReport"
-                    onClick={() => {
-                      getSpecificCustomerReport(original);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <CashStack />
-                        <p className="actionP">{t("report")}</p>
-                      </div>
+
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#showCustomerReport"
+                  onClick={() => {
+                    getSpecificCustomerReport(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("report")}</p>
                     </div>
-                  </li>
-                )}
+                  </div>
+                </li>
 
                 {role === "ispOwner" || permission.customerDelete ? (
                   <li
@@ -802,7 +801,7 @@ export default function Customer() {
                           </Link>
                         </div>
                       )}
-                      {(role === "ispOwner" || permission.customerAdd) && (
+                      {permission?.viewCustomerList || role !== "collector" ? (
                         <>
                           <div className="addAndSettingIcon">
                             <CSVLink
@@ -838,6 +837,8 @@ export default function Customer() {
                             />
                           </div>
                         </>
+                      ) : (
+                        ""
                       )}
 
                       {(role === "ispOwner" || permission.customerAdd) && (
@@ -896,158 +897,194 @@ export default function Customer() {
               {/* Model finish */}
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="displexFlexSys">
-                      {/* filter selector */}
-                      {/* filter selector */}
-                      <div className="d-flex flex-wrap">
-                        <select
-                          className="form-select "
-                          onChange={(e) => {
-                            onChangeArea(e.target.value);
-                            setFilterOption({
-                              ...filterOptions,
-                              area: JSON.parse(e.target.value).id,
-                            });
-                          }}
-                        >
-                          <option
-                            value={JSON.stringify({
-                              id: "",
-                              name: "",
-                              subAreas: [],
-                            })}
-                            defaultValue
-                            selected={filterOptions.area === ""}
+                {permission?.viewCustomerList || role !== "collector" ? (
+                  <div className="collectorWrapper mt-2 py-2">
+                    <div className="addCollector">
+                      <div className="displexFlexSys">
+                        {/* filter selector */}
+                        {/* filter selector */}
+                        <div className="d-flex flex-wrap">
+                          <select
+                            className="form-select "
+                            onChange={(e) => {
+                              onChangeArea(e.target.value);
+                              setFilterOption({
+                                ...filterOptions,
+                                area: JSON.parse(e.target.value).id,
+                              });
+                            }}
                           >
-                            {t("allArea")}
-                          </option>
-                          {Customers2.some((c) => c.area === "noArea") && (
                             <option
                               value={JSON.stringify({
-                                id: "noArea",
+                                id: "",
                                 name: "",
                                 subAreas: [],
                               })}
-                              selected={filterOptions.area === "noArea"}
+                              defaultValue
+                              selected={filterOptions.area === ""}
                             >
-                              {t("customerWithoutArea")}
+                              {t("allArea")}
                             </option>
-                          )}
-                          {(role === "collector" ? allArea : allareas)?.map(
-                            (area, key) => {
-                              return (
-                                <option
-                                  selected={filterOptions.area === area.id}
-                                  key={key}
-                                  value={JSON.stringify(area)}
-                                >
-                                  {area.name}
-                                </option>
-                              );
-                            }
-                          )}
-                        </select>
+                            {Customers2.some((c) => c.area === "noArea") && (
+                              <option
+                                value={JSON.stringify({
+                                  id: "noArea",
+                                  name: "",
+                                  subAreas: [],
+                                })}
+                                selected={filterOptions.area === "noArea"}
+                              >
+                                {t("customerWithoutArea")}
+                              </option>
+                            )}
+                            {(role === "collector" ? allArea : allareas)?.map(
+                              (area, key) => {
+                                return (
+                                  <option
+                                    selected={filterOptions.area === area.id}
+                                    key={key}
+                                    value={JSON.stringify(area)}
+                                  >
+                                    {area.name}
+                                  </option>
+                                );
+                              }
+                            )}
+                          </select>
 
-                        {/* //Todo */}
-                        <select
-                          className="form-select ms-2"
-                          onChange={(e) => {
-                            onChangeSubArea(e.target.value);
-                            setFilterOption({
-                              ...filterOptions,
-                              subArea: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.subArea === ""}
-                            value=""
-                            defaultValue
-                          >
-                            {t("subArea")}
-                          </option>
-                          {singleArea?.subAreas?.map((sub, key) => (
-                            <option
-                              selected={filterOptions.subArea === sub.id}
-                              key={key}
-                              value={sub.id}
-                            >
-                              {sub.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className="form-select ms-2"
-                          onChange={(e) => {
-                            setFilterOption({
-                              ...filterOptions,
-                              status: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.status === ""}
-                            value=""
-                            defaultValue
-                          >
-                            {t("status")}
-                          </option>
-                          <option
-                            selected={filterOptions.status === "active"}
-                            value="active"
-                          >
-                            {t("active")}
-                          </option>
-                          <option
-                            selected={filterOptions.status === "inactive"}
-                            value="inactive"
-                          >
-                            {t("in active")}
-                          </option>
-                          <option
-                            selected={filterOptions.status === "expired"}
-                            value="expired"
-                          >
-                            {t("expired")}
-                          </option>
-                        </select>
-
-                        <select
-                          className="form-select ms-2"
-                          onChange={(e) => {
-                            setFilterOption({
-                              ...filterOptions,
-                              paymentStatus: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.paymentStatus === ""}
-                            value=""
-                            defaultValue
-                          >
-                            {t("paymentStatus")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "paid"}
-                            value="paid"
-                          >
-                            {t("payPaid")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "unpaid"}
-                            value="unpaid"
-                          >
-                            {t("unpaid")}
-                          </option>
-                        </select>
-                        {bpSettings?.hasMikrotik && (
+                          {/* //Todo */}
                           <select
                             className="form-select ms-2"
                             onChange={(e) => {
-                              mikrotikHandler(e.target.value);
+                              onChangeSubArea(e.target.value);
+                              setFilterOption({
+                                ...filterOptions,
+                                subArea: e.target.value,
+                              });
+                            }}
+                          >
+                            <option
+                              selected={filterOptions.subArea === ""}
+                              value=""
+                              defaultValue
+                            >
+                              {t("subArea")}
+                            </option>
+                            {singleArea?.subAreas?.map((sub, key) => (
+                              <option
+                                selected={filterOptions.subArea === sub.id}
+                                key={key}
+                                value={sub.id}
+                              >
+                                {sub.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="form-select ms-2"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOptions,
+                                status: e.target.value,
+                              });
+                            }}
+                          >
+                            <option
+                              selected={filterOptions.status === ""}
+                              value=""
+                              defaultValue
+                            >
+                              {t("status")}
+                            </option>
+                            <option
+                              selected={filterOptions.status === "active"}
+                              value="active"
+                            >
+                              {t("active")}
+                            </option>
+                            <option
+                              selected={filterOptions.status === "inactive"}
+                              value="inactive"
+                            >
+                              {t("in active")}
+                            </option>
+                            <option
+                              selected={filterOptions.status === "expired"}
+                              value="expired"
+                            >
+                              {t("expired")}
+                            </option>
+                          </select>
+
+                          <select
+                            className="form-select ms-2"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOptions,
+                                paymentStatus: e.target.value,
+                              });
+                            }}
+                          >
+                            <option
+                              selected={filterOptions.paymentStatus === ""}
+                              value=""
+                              defaultValue
+                            >
+                              {t("paymentStatus")}
+                            </option>
+                            <option
+                              selected={filterOptions.paymentStatus === "paid"}
+                              value="paid"
+                            >
+                              {t("payPaid")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.paymentStatus === "unpaid"
+                              }
+                              value="unpaid"
+                            >
+                              {t("unpaid")}
+                            </option>
+                          </select>
+                          {bpSettings?.hasMikrotik && (
+                            <select
+                              className="form-select ms-2"
+                              onChange={(e) => {
+                                mikrotikHandler(e.target.value);
+                              }}
+                            >
+                              <option
+                                selected={filterOptions.mikrotik === ""}
+                                value=""
+                                defaultValue
+                              >
+                                {t("mikrotik")}
+                              </option>
+
+                              {mikrotiks.map((m, i) => {
+                                return (
+                                  <option
+                                    key={i}
+                                    selected={
+                                      filterOptions.mikrotik === `${m.id}`
+                                    }
+                                    value={m.id}
+                                  >
+                                    {m.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          )}
+
+                          <select
+                            className="form-select "
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOptions,
+                                package: e.target.value,
+                              });
                             }}
                           >
                             <option
@@ -1055,151 +1092,125 @@ export default function Customer() {
                               value=""
                               defaultValue
                             >
-                              {t("mikrotik")}
+                              {t("package")}
                             </option>
 
-                            {mikrotiks.map((m, i) => {
+                            {mikrotikPac?.map((m, i) => {
                               return (
                                 <option
                                   key={i}
                                   selected={
-                                    filterOptions.mikrotik === `${m.id}`
+                                    filterOptions.package === `${m.name}`
                                   }
-                                  value={m.id}
+                                  value={m.name}
                                 >
                                   {m.name}
                                 </option>
                               );
                             })}
                           </select>
-                        )}
 
-                        <select
-                          className="form-select "
-                          onChange={(e) => {
-                            setFilterOption({
-                              ...filterOptions,
-                              package: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.mikrotik === ""}
-                            value=""
-                            defaultValue
+                          <select
+                            onChange={(e) =>
+                              setFilterOption({
+                                ...filterOptions,
+                                freeUser: e.target.value,
+                              })
+                            }
+                            className="form-select ms-2"
                           >
-                            {t("package")}
-                          </option>
-
-                          {mikrotikPac?.map((m, i) => {
-                            return (
-                              <option
-                                key={i}
-                                selected={filterOptions.package === `${m.name}`}
-                                value={m.name}
-                              >
-                                {m.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-
-                        <select
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              freeUser: e.target.value,
-                            })
-                          }
-                          className="form-select ms-2"
-                        >
-                          <option
-                            selected={filterOptions.freeUser === "allUser"}
-                            value="allUser"
+                            <option
+                              selected={filterOptions.freeUser === "allUser"}
+                              value="allUser"
+                            >
+                              {t("sokolCustomer")}
+                            </option>
+                            <option
+                              selected={filterOptions.freeUser === "freeUser"}
+                              value="freeUser"
+                            >
+                              {t("freeCustomer")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.freeUser === "nonFreeUser"
+                              }
+                              value="nonFreeUser"
+                            >
+                              {t("nonFreeCustomer")}
+                            </option>
+                          </select>
+                          <input
+                            className="form-select ms-2"
+                            type="date"
+                            onChange={(e) =>
+                              setFilterOption({
+                                ...filterOptions,
+                                filterDate: e.target.value,
+                              })
+                            }
+                          />
+                          <select
+                            className="form-select ms-2"
+                            onChange={(e) =>
+                              setFilterOption({
+                                ...filterOptions,
+                                dayFilter: e.target.value,
+                              })
+                            }
                           >
-                            {t("sokolCustomer")}
-                          </option>
-                          <option
-                            selected={filterOptions.freeUser === "freeUser"}
-                            value="freeUser"
-                          >
-                            {t("freeCustomer")}
-                          </option>
-                          <option
-                            selected={filterOptions.freeUser === "nonFreeUser"}
-                            value="nonFreeUser"
-                          >
-                            {t("nonFreeCustomer")}
-                          </option>
-                        </select>
-                        <input
-                          className="form-select ms-2"
-                          type="date"
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              filterDate: e.target.value,
-                            })
-                          }
-                        />
-                        <select
-                          className="form-select ms-2"
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              dayFilter: e.target.value,
-                            })
-                          }
-                        >
-                          <option value="">{t("filterBillDate")}</option>
-                          <option value="1">{t("oneDayLeft")}</option>
-                          <option value="2">{t("twoDayLeft")}</option>
-                          <option value="3">{t("threeDayLeft")}</option>
-                          <option value="4">{t("fourDayLeft")}</option>
-                        </select>
-                        <div>
-                          <button
-                            className="btn btn-outline-primary w-6rem mt-2 ms-2"
-                            type="button"
-                            onClick={handleActiveFilter}
-                          >
-                            {t("filter")}
-                          </button>
-                          <button
-                            className="btn btn-outline-secondary ms-2 w-6rem mt-2"
-                            type="button"
-                            onClick={handleFilterReset}
-                          >
-                            {t("reset")}
-                          </button>
+                            <option value="">{t("filterBillDate")}</option>
+                            <option value="1">{t("oneDayLeft")}</option>
+                            <option value="2">{t("twoDayLeft")}</option>
+                            <option value="3">{t("threeDayLeft")}</option>
+                            <option value="4">{t("fourDayLeft")}</option>
+                          </select>
+                          <div>
+                            <button
+                              className="btn btn-outline-primary w-6rem mt-2 ms-2"
+                              type="button"
+                              onClick={handleActiveFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                            <button
+                              className="btn btn-outline-secondary ms-2 w-6rem mt-2"
+                              type="button"
+                              onClick={handleFilterReset}
+                            >
+                              {t("reset")}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    {/* print report */}
+                    <div style={{ display: "none" }}>
+                      <PrintCustomer
+                        filterData={filterData}
+                        currentCustomers={Customers}
+                        ref={componentRef}
+                      />
+                    </div>
+                    <div className="filterresetbtn d-flex justify-content-between">
+                      {/* <button onClick={handleActiveFilter}>filter</button> */}
+                      <div></div>
+                      {/* <button onClick={handleFilterReset}>reset</button> */}
+                    </div>
+                    <div className="table-section">
+                      <Table
+                        isLoading={customerLoading}
+                        columns={columns}
+                        data={Customers1}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      ></Table>
+                    </div>
                   </div>
-                  {/* print report */}
-                  <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={Customers}
-                      ref={componentRef}
-                    />
-                  </div>
-                  <div className="filterresetbtn d-flex justify-content-between">
-                    {/* <button onClick={handleActiveFilter}>filter</button> */}
-                    <div></div>
-                    {/* <button onClick={handleFilterReset}>reset</button> */}
-                  </div>
-                  <div className="table-section">
-                    <Table
-                      isLoading={customerLoading}
-                      columns={columns}
-                      data={Customers1}
-                      bulkState={{
-                        setBulkCustomer,
-                      }}
-                    ></Table>
-                  </div>
-                </div>
+                ) : (
+                  ""
+                )}
               </FourGround>
               <Footer />
             </FontColor>

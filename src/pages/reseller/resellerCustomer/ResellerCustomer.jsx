@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -16,10 +16,8 @@ import {
   FileExcelFill,
   PenFill,
   PersonFill,
-  PersonPlusFill,
   PrinterFill,
   ThreeDots,
-  Wallet,
 } from "react-bootstrap-icons";
 import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
 import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
@@ -33,6 +31,7 @@ import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
+import FormatNumber from "../../../components/common/NumberFormat";
 
 // get specific customer
 
@@ -386,6 +385,38 @@ const ResellerCustomer = () => {
     [t]
   );
 
+  //total monthly fee and due calculation
+  const dueMonthlyFee = useCallback(() => {
+    let dueAmount = 0;
+    let totalSumDue = 0;
+    let totalMonthlyFee = 0;
+
+    customer.map((item) => {
+      if (item.paymentStatus === "unpaid") {
+        // filter due ammount
+        dueAmount = item.monthlyFee - item.balance;
+
+        // total sum due
+        totalSumDue += dueAmount;
+      }
+
+      // sum of all monthly fee
+      totalMonthlyFee += item.monthlyFee;
+    });
+
+    return { totalSumDue, totalMonthlyFee };
+  }, [customer]);
+
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+    </div>
+  );
+
   return (
     <>
       <Sidebar />
@@ -506,6 +537,7 @@ const ResellerCustomer = () => {
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
+                      customComponent={customComponent}
                       columns={columns}
                       data={customer}
                       bulkState={{

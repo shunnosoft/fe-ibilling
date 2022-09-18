@@ -23,7 +23,7 @@ import CollectorPost from "./collectorCRUD/CollectorPost";
 
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
-import { getCollector } from "../../features/apiCalls";
+import { getArea, getCollector } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { useTranslation } from "react-i18next";
@@ -64,8 +64,10 @@ export default function Collector() {
   };
 
   useEffect(() => {
-    getCollector(dispatch, ispOwnerId, setIsLoading);
-  }, [ispOwnerId, dispatch]);
+    if (collector.lenght === 0)
+      getCollector(dispatch, ispOwnerId, setIsLoading);
+    getArea(dispatch, ispOwnerId, setIsLoading);
+  }, []);
 
   const [singleCollector, setSingleCollector] = useState();
   const getSpecificCollector = (collectorId) => {

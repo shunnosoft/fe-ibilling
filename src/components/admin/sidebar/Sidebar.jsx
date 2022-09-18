@@ -729,56 +729,23 @@ export default function Sidebar() {
                       </Accordion.Item>
                     )}
                     {/* মেসেজ */}
-                    <Accordion.Item eventKey="4">
-                      <Accordion.Header
-                        onClick={() => handleActiveAccordian("4")}
-                      >
-                        <div className="sidebarIcon">{<Messenger />}</div>
-                        <span className="sidebarLinksName">{t("message")}</span>
-                      </Accordion.Header>
-                      <Accordion.Body>
-                        {userRole === "ispOwner" ||
-                        userRole === "manager" ||
-                        userRole === "reseller" ? (
-                          <NavLink
-                            key={99}
-                            to={"/message"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/message"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<ChatDots />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("bulk message")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        ) : (
-                          ""
-                        )}
-
-                        {
-                          /*(userRole === "ispOwner" && bpSettings?.hasReseller) ||*/
+                    {userRole !== "collector" && (
+                      <Accordion.Item eventKey="4">
+                        <Accordion.Header
+                          onClick={() => handleActiveAccordian("4")}
+                        >
+                          <div className="sidebarIcon">{<Messenger />}</div>
+                          <span className="sidebarLinksName">
+                            {t("message")}
+                          </span>
+                        </Accordion.Header>
+                        <Accordion.Body>
+                          {userRole === "ispOwner" ||
+                          userRole === "manager" ||
                           userRole === "reseller" ? (
                             <NavLink
-                              key={71}
-                              to={
-                                userRole === "reseller"
-                                  ? "/reseller/sms-receharge"
-                                  : "/recharge"
-                              }
+                              key={99}
+                              to={"/message"}
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -787,83 +754,121 @@ export default function Sidebar() {
                                 <li
                                   className="sidebarItems"
                                   id={
-                                    window.location.pathname ===
-                                    (userRole === "reseller"
-                                      ? "/reseller/sms-receharge"
-                                      : "/recharge")
+                                    window.location.pathname === "/message"
                                       ? "active"
                                       : ""
                                   }
                                 >
                                   <div className="sidebarIcon">
-                                    {<Envelope />}
+                                    {<ChatDots />}
                                   </div>
                                   <span className="sidebarLinksName">
-                                    {t("message")}
+                                    {t("bulk message")}
                                   </span>
                                 </li>
                               </FontColor>
                             </NavLink>
                           ) : (
                             ""
-                          )
-                        }
-                        {userRole === "ispOwner" || userRole === "reseller" ? (
-                          <NavLink
-                            key={337}
-                            to={"/settings"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/settings"
-                                    ? "active"
-                                    : ""
+                          )}
+
+                          {
+                            /*(userRole === "ispOwner" && bpSettings?.hasReseller) ||*/
+                            userRole === "reseller" ? (
+                              <NavLink
+                                key={71}
+                                to={
+                                  userRole === "reseller"
+                                    ? "/reseller/sms-receharge"
+                                    : "/recharge"
+                                }
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
                                 }
                               >
-                                <div className="sidebarIcon">{<Gear />}</div>
-                                <span className="sidebarLinksName">
-                                  {t("message setting")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        ) : (
-                          ""
-                        )}
-                        {userRole === "ispOwner" && (
-                          <NavLink
-                            key={338}
-                            to={"/message/log"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/message/log"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<EnvelopeOpen />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("messageLog")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        )}
-                      </Accordion.Body>
-                    </Accordion.Item>
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      (userRole === "reseller"
+                                        ? "/reseller/sms-receharge"
+                                        : "/recharge")
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<Envelope />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("message")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            ) : (
+                              ""
+                            )
+                          }
+                          {userRole === "ispOwner" ||
+                          userRole === "reseller" ? (
+                            <NavLink
+                              key={337}
+                              to={"/settings"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname === "/settings"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">{<Gear />}</div>
+                                  <span className="sidebarLinksName">
+                                    {t("message setting")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
+                          {userRole === "ispOwner" && (
+                            <NavLink
+                              key={338}
+                              to={"/message/log"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname === "/message/log"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<EnvelopeOpen />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("messageLog")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          )}
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    )}
                     {/* একাউন্টস */}
                     {userRole === "ispOwner" || userRole === "manager" ? (
                       <Accordion.Item eventKey="5">

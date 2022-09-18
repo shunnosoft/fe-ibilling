@@ -22,6 +22,11 @@ export default function StaticCustomerEdit({ single }) {
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
 
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
   // get role from redux
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -516,6 +521,10 @@ export default function StaticCustomerEdit({ single }) {
                           type="text"
                           label={t("mobile")}
                           name="mobile"
+                          disabled={
+                            !permission?.customerMobileEdit &&
+                            role === "collector"
+                          }
                         />
                       </div>
                       <div className="static_edit_item">
@@ -598,6 +607,10 @@ export default function StaticCustomerEdit({ single }) {
                             type="radio"
                             name="status"
                             value={"active"}
+                            disabled={
+                              !permission?.customerActivate &&
+                              role !== "ispOwner"
+                            }
                             checked={status === "active"}
                             onChange={(e) => setStatus("active")}
                           />
@@ -614,6 +627,10 @@ export default function StaticCustomerEdit({ single }) {
                             type="radio"
                             id="inlineRadio2"
                             value={"inactive"}
+                            disabled={
+                              !permission?.customerDeactivate &&
+                              role !== "ispOwner"
+                            }
                             checked={status === "inactive"}
                             onChange={(e) => setStatus("inactive")}
                           />

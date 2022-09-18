@@ -24,7 +24,7 @@ export default function CustomerBillCollect({ single }) {
     { value: "April", label: t("april") },
     { value: "May", label: t("may") },
     { value: "June", label: t("june") },
-    { value: "July", label: t("july") },
+    { value: "July", label: t("July") },
     { value: "August", label: t("august") },
     { value: "September", label: t("september") },
     { value: "October", label: t("october") },
@@ -37,6 +37,14 @@ export default function CustomerBillCollect({ single }) {
 
   // find editable data
   const data = customer.find((item) => item.id === single);
+
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
 
   const [billType, setBillType] = useState("bill");
   const [amount, setAmount] = useState(null);
@@ -201,9 +209,13 @@ export default function CustomerBillCollect({ single }) {
                         onChange={(e) => setBillType(e.target.value)}
                       >
                         <option value="bill"> {t("bill")} </option>
-                        <option value="connectionFee">
-                          {t("connectionFee")}
-                        </option>
+                        {permission?.connectionFee || role !== "collector" ? (
+                          <option value="connectionFee">
+                            {t("connectionFee")}
+                          </option>
+                        ) : (
+                          ""
+                        )}
                       </select>
 
                       <div className="mb-2 mt-3">
