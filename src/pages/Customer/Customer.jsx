@@ -85,6 +85,7 @@ const PPPOECustomer = () => {
   const permission = useSelector(
     (state) => state.persistedReducer.auth.userData.permissions
   );
+  console.log(permission);
 
   // get bp setting permisson
   const bpSettings = useSelector(

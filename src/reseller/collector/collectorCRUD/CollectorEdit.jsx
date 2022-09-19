@@ -32,10 +32,14 @@ export default function CollectorEdit({ collectorId }) {
     (state) => state.persistedReducer.auth?.userData.id
   );
 
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
+
   useEffect(() => {
     if (single) {
       setAllowedAreas(single?.areas);
-      setPermissions(collectorPermission(single.permissions));
+      setPermissions(collectorPermission(single.permissions, permission));
     }
   }, [single]);
 
@@ -175,7 +179,7 @@ export default function CollectorEdit({ collectorId }) {
 
                     {/* area */}
                     <b className="mt-2">{t("selectArea")}</b>
-                    <div className="AllAreaClass">
+                    <div className="AllAreaClass mb-3">
                       {area?.map((val, key) => (
                         <div key={key}>
                           <div key={key} className="displayFlex">
@@ -194,18 +198,28 @@ export default function CollectorEdit({ collectorId }) {
                       ))}
                     </div>
 
-                    <b className="mt-2">পারমিশান পরিবর্তন করুন</b>
+                    <b className="mt-2">{t("changePermission")}</b>
                     <div className="AllAreaClass">
                       {permissions.map((val, key) => (
+                        // {
+                        //   console.log(val?.isDisabled);
+                        // }
                         <div className="CheckboxContainer p-1" key={key}>
                           <input
                             type="checkbox"
                             className="CheckBox"
                             name={val.value}
                             checked={val.isChecked}
+                            disabled={val?.isDisabled}
                             onChange={handleChange}
+                            id={val.value + key}
                           />
-                          <label className="checkboxLabel">{val.label}</label>
+                          <label
+                            htmlFor={val.value + key}
+                            className="checkboxLabel"
+                          >
+                            {val.label}
+                          </label>
                         </div>
                       ))}
                     </div>

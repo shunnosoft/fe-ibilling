@@ -31,6 +31,17 @@ export default function CustomerEdit({ single }) {
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
+
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  const collectorPermission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permissions
+  );
+
+  const bpSetting = useSelector(
+    (state) =>
+      state.persistedReducer.auth?.ispOwnerData?.bpSettings?.hasMikrotik
+  );
   // get mikrotik package from redux
   const withOutMtkPackage = useSelector(
     (state) => state?.mikrotik?.pppoePackage
@@ -69,7 +80,9 @@ export default function CustomerEdit({ single }) {
     setBilltime(moment(data?.billingCycle).format("HH:mm"));
     const temp = Getmikrotik?.find((val) => val.id === data?.mikrotik);
     setmikrotikName(temp);
-    setppPackage(withOutMtkPackage);
+    if (!bpSetting) {
+      setppPackage(withOutMtkPackage);
+    }
   }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
 
   useEffect(() => {
@@ -173,7 +186,6 @@ export default function CustomerEdit({ single }) {
       mainData.mikrotik = data?.mikrotik;
       mainData.autoDisable = autoDisable;
     }
-    console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
 
@@ -325,6 +337,10 @@ export default function CustomerEdit({ single }) {
                     <div className="displayGrid3">
                       <FtextField type="text" label={t("name")} name="name" />
                       <FtextField
+                        disabled={
+                          !collectorPermission?.customerMobileEdit &&
+                          role === "collector"
+                        }
                         type="text"
                         label={t("mobile")}
                         name="mobile"
@@ -383,7 +399,11 @@ export default function CustomerEdit({ single }) {
                           id="changeToActive"
                           onChange={(e) => setStatus(e.target.value)}
                           checked={status === "active"}
-                          disabled={!permission?.customerStatusEdit}
+                          disabled={
+                            permission?.customerStatusEdit
+                              ? !permission?.customerStatusEdit
+                              : !collectorPermission?.customerActivate
+                          }
                         />
                         <label
                           className="form-check-label"
@@ -400,7 +420,11 @@ export default function CustomerEdit({ single }) {
                           value={"inactive"}
                           onChange={(e) => setStatus(e.target.value)}
                           checked={status === "inactive"}
-                          disabled={!permission?.customerStatusEdit}
+                          disabled={
+                            permission?.customerStatusEdit
+                              ? !permission?.customerStatusEdit
+                              : !collectorPermission?.customerDeactivate
+                          }
                         />
                         <label
                           className="form-check-label"

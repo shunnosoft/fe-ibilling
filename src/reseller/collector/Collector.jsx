@@ -59,8 +59,9 @@ export default function Collector() {
   };
 
   useEffect(() => {
-    if (collector.length === 0)
+    if (collector.length === 0) {
       getCollector(dispatch, userData.id, setIsloading);
+    }
     getSubAreas(dispatch, userData.id);
   }, [userData, dispatch]);
 

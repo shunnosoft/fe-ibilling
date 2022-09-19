@@ -37,12 +37,16 @@ export default function CustomerBillCollect({ single }) {
 
   const [billType, setBillType] = useState("bill");
 
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
+  );
+  const collectorPermission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
   const currentUserId = useSelector(
@@ -180,9 +184,14 @@ export default function CustomerBillCollect({ single }) {
                         onChange={(e) => setBillType(e.target.value)}
                       >
                         <option value="bill"> {t("bill")} </option>
-                        <option value="connectionFee">
-                          {t("connectionFee")}
-                        </option>
+                        {role === "reseller" ||
+                        collectorPermission?.connectionFee ? (
+                          <option value="connectionFee">
+                            {t("connectionFee")}
+                          </option>
+                        ) : (
+                          ""
+                        )}
                       </select>
                       <div className="mb-2 mt-3">
                         <input

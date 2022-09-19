@@ -50,7 +50,7 @@ export default function CustomerBillCollect({ single }) {
   );
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
-  console.log(data);
+
   //billing date
   const [startDate, setStartDate] = useState(false);
   const [endDate, setEndDate] = useState(false);

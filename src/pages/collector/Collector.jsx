@@ -54,10 +54,6 @@ export default function Collector() {
   );
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   // reload handler
   const reloadHandler = () => {
     getCollector(dispatch, ispOwnerId, setIsLoading);

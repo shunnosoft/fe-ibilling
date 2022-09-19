@@ -57,6 +57,7 @@ export default function Customer() {
   const cus = useSelector((state) => state?.customer?.customer);
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
+
   const dispatch = useDispatch();
   const resellerId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
@@ -68,7 +69,10 @@ export default function Customer() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
-  console.log(permission);
+
+  const collectorPermission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permissions
+  );
 
   const [Customers, setCustomers] = useState(cus);
 
@@ -165,6 +169,7 @@ export default function Customer() {
 
   useEffect(() => {
     withMtkPackage(dispatch, resellerId);
+    getSubAreas(dispatch, resellerId);
 
     if (role === "collector") {
       getMikrotik(dispatch, userData.collector.reseller);
@@ -173,7 +178,6 @@ export default function Customer() {
       getMikrotik(dispatch, resellerId);
       if (cus.length === 0)
         getCustomer(dispatch, userData?.reseller.id, setIsloading);
-      getSubAreas(dispatch, resellerId);
     } else if (role === "collector") {
       if (cus.length === 0)
         getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
@@ -329,7 +333,7 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-                {(role === "reseller" || role === "collector") && (
+                {(role === "reseller" || collectorPermission?.billPosting) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#collectCustomerBillModal"
@@ -346,7 +350,8 @@ export default function Customer() {
                   </li>
                 )}
 
-                {permission?.customerEdit && (
+                {permission?.customerEdit ||
+                collectorPermission?.customerEdit ? (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerEditModal"
@@ -361,6 +366,8 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
+                ) : (
+                  ""
                 )}
                 {role !== "collector" && (
                   <li
@@ -379,7 +386,7 @@ export default function Customer() {
                   </li>
                 )}
 
-                {permission?.customerDelete && role === "ispOwner" && (
+                {permission?.customerDelete && (
                   <li
                     onClick={() => {
                       let con = window.confirm(
@@ -397,22 +404,25 @@ export default function Customer() {
                   </li>
                 )}
 
-                {original.mobile && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
-                    onClick={() => {
-                      getSpecificCustomer(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <ChatText />
-                        <p className="actionP">{t("message")}</p>
+                {original.mobile &&
+                  (collectorPermission?.sendSMS || role !== "collector" ? (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#customerMessageModal"
+                      onClick={() => {
+                        getSpecificCustomer(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ChatText />
+                          <p className="actionP">{t("message")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                )}
+                    </li>
+                  ) : (
+                    ""
+                  ))}
               </ul>
             </div>
           </div>
@@ -453,8 +463,6 @@ export default function Customer() {
     { label: "billing_cycle", key: "billingCycle" },
   ];
 
-  console.log(permission);
-
   return (
     <>
       <Sidebar />
@@ -481,22 +489,6 @@ export default function Customer() {
                     </div>
                   </div>
 
-                  {/* <div className="h6 d-flex justify-content-center align-items-start">
-                    <p>
-                      {t("totalPossibilityBill")} : {totalMonthlyFee}
-                    </p>
-                    {hasDue && (
-                      <>
-                        <p>
-                          {t("totalPrevDue")} : {totalDue}
-                        </p>
-                        <p>
-                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
-                        </p>
-                      </>
-                    )}
-                  </div> */}
-
                   <div className="addAndSettingIcon">
                     <CSVLink
                       data={customerForCsVTableInfo}
@@ -517,12 +509,15 @@ export default function Customer() {
                       )}
                       content={() => componentRef.current}
                     />
-                    {permission?.customerAdd && (
+                    {permission?.customerAdd ||
+                    collectorPermission?.customerAdd ? (
                       <PersonPlusFill
                         className="addcutmButton"
                         data-bs-toggle="modal"
                         data-bs-target="#customerModal"
                       />
+                    ) : (
+                      ""
                     )}
                   </div>
                 </div>
@@ -554,80 +549,86 @@ export default function Customer() {
 
               {/* Model finish */}
 
-              <FourGround>
-                <div className="collectorWrapper mt-e py-2">
-                  <div className="addCollector">
-                    <div className="displexFlexSys">
-                      {/* filter selector */}
-                      <div className="selectFiltering allFilter">
-                        {/* //Todo */}
-                        <select
-                          className="form-select"
-                          onChange={(e) => handleSubAreaChange(e.target.value)}
-                        >
-                          <option value="" defaultValue>
-                            {t("area")}
-                          </option>
-                          {subAreas?.map((sub, key) => (
-                            <option key={key} value={sub.id}>
-                              {sub.name}
+              {role === "reseller" || collectorPermission?.viewCustomerList ? (
+                <FourGround>
+                  <div className="collectorWrapper mt-e py-2">
+                    <div className="addCollector">
+                      <div className="displexFlexSys">
+                        {/* filter selector */}
+                        <div className="selectFiltering allFilter">
+                          {/* //Todo */}
+                          <select
+                            className="form-select"
+                            onChange={(e) =>
+                              handleSubAreaChange(e.target.value)
+                            }
+                          >
+                            <option value="" defaultValue>
+                              {t("area")}
                             </option>
-                          ))}
-                        </select>
-                        <select
-                          className="form-select"
-                          onChange={handleStatusChange}
-                        >
-                          <option value="" defaultValue>
-                            {t("status")}
-                          </option>
-                          <option value="active"> {t("active")} </option>
-                          <option value="inactive"> {t("in active")} </option>
-                          <option value="expired"> {t("expired")} </option>
-                        </select>
-                        <select
-                          className="form-select"
-                          onChange={handlePaymentChange}
-                        >
-                          <option value="" defaultValue>
-                            {t("paymentStatus")}
-                          </option>
-                          <option value="paid"> {t("paid")} </option>
-                          <option value="unpaid"> {t("unpaid")} </option>
-                        </select>
+                            {subAreas?.map((sub, key) => (
+                              <option key={key} value={sub.id}>
+                                {sub.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="form-select"
+                            onChange={handleStatusChange}
+                          >
+                            <option value="" defaultValue>
+                              {t("status")}
+                            </option>
+                            <option value="active"> {t("active")} </option>
+                            <option value="inactive"> {t("in active")} </option>
+                            <option value="expired"> {t("expired")} </option>
+                          </select>
+                          <select
+                            className="form-select"
+                            onChange={handlePaymentChange}
+                          >
+                            <option value="" defaultValue>
+                              {t("paymentStatus")}
+                            </option>
+                            <option value="paid"> {t("paid")} </option>
+                            <option value="unpaid"> {t("unpaid")} </option>
+                          </select>
+                        </div>
+
+                        <div style={{ display: "none" }}>
+                          <PrintCustomer
+                            filterData={filterData}
+                            currentCustomers={Customers}
+                            ref={componentRef}
+                          />
+                        </div>
+
+                        <div className="addNewCollector"></div>
                       </div>
 
-                      <div style={{ display: "none" }}>
-                        <PrintCustomer
-                          filterData={filterData}
-                          currentCustomers={Customers}
-                          ref={componentRef}
-                        />
-                      </div>
-
-                      <div className="addNewCollector"></div>
+                      {isDeleting ? (
+                        <div className="deletingAction">
+                          <Loader /> <b>Deleting...</b>
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
-
-                    {isDeleting ? (
-                      <div className="deletingAction">
-                        <Loader /> <b>Deleting...</b>
-                      </div>
-                    ) : (
-                      ""
-                    )}
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={Customers}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      ></Table>
+                    </div>
                   </div>
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={Customers}
-                      bulkState={{
-                        setBulkCustomer,
-                      }}
-                    ></Table>
-                  </div>
-                </div>
-              </FourGround>
+                </FourGround>
+              ) : (
+                ""
+              )}
               <Footer />
             </FontColor>
           </div>

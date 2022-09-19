@@ -419,7 +419,7 @@ export default function Report() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
-                    <div>{t("billReport")}</div>
+                    <div>{t("billRepor")}</div>
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -430,7 +430,6 @@ export default function Report() {
                       )}
                     </div>
                   </div>
-                  {/* <div> {t("billReport")} </div> */}
                   <div className="report_bill d-flex">
                     <div className="addAndSettingIcon">
                       <CSVLink

@@ -1,22 +1,4 @@
 export const collectorPermission = (permission) => {
-  // currently added
-  // customerAdd(pin):true
-  // customerEdit(pin):true
-  // customerActivate(pin):true
-  // customerDeactivate(pin):true
-  // sendSMS(pin):true
-  // billPosting(pin):true
-
-  //NOt implimented
-  // viewTotalReport(pin):true
-  // webLogin(pin):true
-
-  //these are not matched with manager
-  // viewCustomerList(pin):true//
-  // connectionFee(pin):true //
-  // customerMobileEdit(pin):true //
-  // billPrint(pin):true //
-
   const permissionBn = [
     {
       id: 1,
