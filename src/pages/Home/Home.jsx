@@ -77,7 +77,7 @@ export default function Home() {
   const [resellerData, setResellerData] = useState([]);
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
-  const [filterDate, setFilterDate] = useState(null);
+  const [filterDate, setFilterDate] = useState(date);
 
   const collectorArea = useSelector((state) =>
     role === "collector"

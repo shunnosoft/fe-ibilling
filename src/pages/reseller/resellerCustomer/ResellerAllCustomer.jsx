@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ArchiveFill,
   ArrowClockwise,
@@ -30,6 +36,7 @@ import IndeterminateCheckbox from "../../../components/table/bulkCheckbox";
 import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
+import FormatNumber from "../../../components/common/NumberFormat";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -153,6 +160,38 @@ const AllResellerCustomer = () => {
   const getSpecificCustomerReport = (reportData) => {
     setcustomerReportId(reportData);
   };
+
+  //total monthly fee and due calculation
+  const dueMonthlyFee = useCallback(() => {
+    let dueAmount = 0;
+    let totalSumDue = 0;
+    let totalMonthlyFee = 0;
+
+    customer.map((item) => {
+      if (item.paymentStatus === "unpaid") {
+        // filter due ammount
+        dueAmount = item.monthlyFee - item.balance;
+
+        // total sum due
+        totalSumDue += dueAmount;
+      }
+
+      // sum of all monthly fee
+      totalMonthlyFee += item.monthlyFee;
+    });
+
+    return { totalSumDue, totalMonthlyFee };
+  }, [customer]);
+
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+    </div>
+  );
 
   //export customer data
   let customerForCsV = customer.map((customer) => {
@@ -288,7 +327,7 @@ const AllResellerCustomer = () => {
       },
       {
         width: "11%",
-        Header: t("paymentFilter"),
+        Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
           return badge(value);
@@ -301,7 +340,7 @@ const AllResellerCustomer = () => {
       },
       {
         width: "9%",
-        Header: t("month"),
+        Header: t("bill"),
         accessor: "monthlyFee",
       },
       {
@@ -533,6 +572,7 @@ const AllResellerCustomer = () => {
                     <Table
                       isLoading={isLoading}
                       columns={columns}
+                      customComponent={customComponent}
                       data={customer}
                       bulkState={{
                         setBulkCustomer,

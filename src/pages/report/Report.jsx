@@ -419,7 +419,7 @@ export default function Report() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
-                    <div>{t("billRepor")}</div>
+                    <div>{t("billReport")}</div>
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
