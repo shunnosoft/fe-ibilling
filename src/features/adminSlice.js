@@ -8,6 +8,7 @@ const adminSlice = createSlice({
     comments: [],
     ispOwnerIds: {},
     invoices: [],
+    staffs: [],
   },
   reducers: {
     getIspOwnersSuccess: (state, action) => {
@@ -15,6 +16,9 @@ const adminSlice = createSlice({
       const ids = {};
       action.payload.map((ispOwner) => (ids[ispOwner.id] = ispOwner.company));
       state.ispOwnerIds = ids;
+    },
+    getIspOwnerStaffsSuccess: (state, action) => {
+      state.staffs = action.payload;
     },
     editOwner: (state, actions) => {
       state.ispOwners[
@@ -52,6 +56,7 @@ const adminSlice = createSlice({
 
 export const {
   getIspOwnersSuccess,
+  getIspOwnerStaffsSuccess,
   editOwner,
   addCommentSuccess,
   getSingleCommentSuccess,

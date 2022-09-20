@@ -1,4 +1,3 @@
-import { t } from "i18next";
 import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
@@ -29,10 +28,17 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   // initial fix package rate
   const [fixPackageRate, setFixPackageRate] = useState();
 
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
+  // get reseller customer
   const resellerCustomers = useSelector(
     (state) => state?.resellerCustomer?.resellerCustomer
   );
 
+  // get all reseller customer
   const resellerAllCustomer = useSelector(
     (state) => state?.resellerCustomer?.allResellerCustomer
   );
@@ -57,6 +63,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
 
   // get single customer
   const data = resellerCustomer.find((item) => item.id === customerId);
+
   const [status, setStatus] = useState("");
   const [autoDisable, setAutoDisable] = useState("");
   const [billDate, setBillDate] = useState(new Date());
@@ -88,7 +95,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
 
     if (singleMikrotik) {
       const IDs = {
-        ispOwner: data?.ispOwner,
+        ispOwner: ispOwnerId,
         mikrotikId: singleMikrotik?.id,
       };
 
@@ -100,7 +107,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   // set package rate in state
   useEffect(() => {
     setFixPackageRate(findPackage?.rate);
-    if (data?.ispOwner) fetchMikrotik(dispatch, data?.ispOwner, setIsLoading);
+    fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   }, [findPackage?.rate]);
 
   // handle submit
@@ -149,11 +156,11 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog modal-lg">
+      <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              {t("edit")}
+              {data?.name} {t("edit")}
             </h5>
             <button
               type="button"
@@ -221,36 +228,26 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
                   />
                 </div>
               </div>
-              <div className="d-flex justify-content-evenly align-items-center">
-                <div className="billCycle">
-                  <div className="me-3 mt-2">
-                    <label className="form-control-label">
-                      {t("billingCycle")}
-                    </label>
-                    <ReactDatePicker
-                      className="form-control"
-                      selected={billDate}
-                      onChange={(date) => setBillDate(date)}
-                      dateFormat="dd/MM/yyyy h:mm"
-                      showTimeSelect
-                      minDate={billDate}
-                    />
-                  </div>
-                </div>
-                <div className="autoDisable mt-4 m-75 me-3">
-                  <label htmlFor="auto_disabled">
-                    {t("automaticConnectionOff")}
+
+              <div className="billCycle">
+                <div className="mt-2">
+                  <label className="form-control-label">
+                    {t("billingCycle")}
                   </label>
-                  <input
-                    id="auto_disabled"
-                    type="checkBox"
-                    checked={autoDisable}
-                    onChange={(e) => setAutoDisable(e.target.checked)}
+                  <ReactDatePicker
+                    className="form-control"
+                    selected={billDate}
+                    onChange={(date) => setBillDate(date)}
+                    dateFormat="MMM dd yyyy h:mm"
+                    showTimeSelect
+                    minDate={billDate}
                   />
                 </div>
-                <div className="pppoeStatus mt-4 mw-100">
+              </div>
+              <div className="d-flex justify-content-evenly align-items-center">
+                <div className="pppoeStatus mt-4 d-flex">
                   {/* <p>স্ট্যাটাস পরিবর্তন</p> */}
-                  <div className="form-check form-check-inline mw-100">
+                  <div className="form-check  ">
                     <input
                       className="form-check-input"
                       type="radio"
@@ -264,7 +261,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
                       {t("active")}
                     </label>
                   </div>
-                  <div className="form-check form-check-inline">
+                  <div className="form-check ">
                     <input
                       className="form-check-input"
                       type="radio"
@@ -279,7 +276,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
                     </label>
                   </div>
                   {data?.status === "expired" && (
-                    <div className="form-check form-check-inline">
+                    <div className="form-check ">
                       <input
                         className="form-check-input"
                         type="radio"
@@ -292,6 +289,17 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
                       </label>
                     </div>
                   )}
+                </div>
+                <div className="autoDisable mt-4 m-75">
+                  <label htmlFor="auto_disabled">
+                    {t("autoConnectionOff")}
+                  </label>
+                  <input
+                    id="auto_disabled"
+                    type="checkBox"
+                    checked={autoDisable}
+                    onChange={(e) => setAutoDisable(e.target.checked)}
+                  />
                 </div>
               </div>
             </div>

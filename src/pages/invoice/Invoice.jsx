@@ -43,7 +43,7 @@ function Invoice() {
     if (invoices.length === 0) getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
 
-  const columns2 = React.useMemo(
+  const columns = React.useMemo(
     () => [
       {
         width: "10%",
@@ -54,7 +54,7 @@ function Invoice() {
       },
       {
         width: "16%",
-        Header: t("type"),
+        Header: t("invoiceType"),
         accessor: "reseller.name",
         Cell: ({ row: { original } }) => (
           <td>
@@ -70,7 +70,7 @@ function Invoice() {
       },
       {
         width: "16%",
-        Header: t("amount"),
+        Header: t("moneyAmount"),
         accessor: "amount",
         Cell: ({ row: { original } }) => <td>{original.amount} Tk</td>,
       },
@@ -176,7 +176,7 @@ function Invoice() {
                     <Table
                       isLoading={isLoading}
                       data={invoices}
-                      columns={columns2}
+                      columns={columns}
                     ></Table>
                   </div>
                 </div>

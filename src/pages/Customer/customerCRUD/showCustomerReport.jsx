@@ -133,7 +133,7 @@ export default function CustomerReport(props) {
                             <td>{FormatNumber(val.amount)}</td>
                             <td>
                               {moment(val.createdAt).format(
-                                "MMM-DD-YYYY hh:mm:ss A"
+                                "MMM DD YYYY hh:mm a"
                               )}
                             </td>
 

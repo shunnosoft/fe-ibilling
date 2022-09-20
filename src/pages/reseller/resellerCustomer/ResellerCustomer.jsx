@@ -32,6 +32,7 @@ import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 import FormatNumber from "../../../components/common/NumberFormat";
+import { fetchMikrotik } from "../../../features/apiCalls";
 
 // get specific customer
 
@@ -46,6 +47,11 @@ const ResellerCustomer = () => {
 
   // get id from route
   const { resellerId } = useParams();
+
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
 
   // get isp owner data
   const ispOwnerData = useSelector(
@@ -93,6 +99,7 @@ const ResellerCustomer = () => {
   useEffect(() => {
     if (customer.length === 0)
       getResellerCustomer(dispatch, resellerId, setIsLoading);
+    // fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   }, []);
 
   // set customer at state

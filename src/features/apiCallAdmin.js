@@ -9,6 +9,7 @@ import {
   editCommentSuccess,
   getInvoicesSuccess,
   editInvoiceSuccessSuper,
+  getIspOwnerStaffsSuccess,
 } from "./adminSlice";
 import {
   getIspOwnerInvoicesSuccess,
@@ -23,6 +24,23 @@ export const getIspOwners = async (dispatch, setIsLoading) => {
 
     setIsLoading(false);
     dispatch(getIspOwnersSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+    setIsLoading(false);
+  }
+};
+
+export const getIspOwnersStaffs = async (
+  ispOwnerId,
+  dispatch,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/admin/ispOwner-details/${ispOwnerId}`);
+
+    setIsLoading(false);
+    dispatch(getIspOwnerStaffsSuccess(res.data));
   } catch (error) {
     console.log(error);
     setIsLoading(false);
