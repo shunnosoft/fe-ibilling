@@ -13,6 +13,7 @@ import {
   PersonLinesFill,
   WifiOff,
   Wifi,
+  Check2Circle,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -34,6 +35,7 @@ import {
   fetchPackagefromDatabase,
   deletePPPoEpackage,
   fetchReseller,
+  fetchMikrotik,
 } from "../../features/apiCalls";
 import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
 import apiLink from "../../api/apiLink";
@@ -47,21 +49,21 @@ export default function ConfigMikrotik() {
   const navigate = useNavigate();
 
   const { ispOwner, mikrotikId } = useParams();
+
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  const singleMik = mikrotik.find((item) => item.id === mikrotikId)
-    ? mikrotik.find((item) => item.id === mikrotikId)
-    : {};
+
+  const singleMik = mikrotik.find((item) => item.id === mikrotikId);
 
   const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
-  const activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
+
+  let [allUsers, setAllUsers] = useState(allMikrotikUsers);
   const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
   const mtkIsLoading = useSelector((state) => state?.mikrotik?.isLoading);
-  // const mikrotikSyncUser = useSelector(
-  //   state => state.mikrotik.mikrotikSyncUser
-  // );
 
   const [isLoading, setIsloading] = useState(false);
+  const [userLoading, setUserLoading] = useState(false);
   const [isLoadingPac, setIsLoadingPac] = useState(false);
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
@@ -69,13 +71,14 @@ export default function ConfigMikrotik() {
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
     "showMikrotikPackage"
   );
+
   const [inActiveCustomer, setInActiveCustomer] = useState(false);
-  // const [syncUserRefresh, setSyncUserRefresh] = useState(0);
   const dispatch = useDispatch();
 
   //get Reseller
   useEffect(() => {
     fetchReseller(dispatch, ispOwner, setIsloading);
+    fetchMikrotik(dispatch, ispOwner, setIsloading);
   }, []);
 
   // fetch single mikrotik
@@ -95,25 +98,21 @@ export default function ConfigMikrotik() {
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
     };
-    // dispatch(clearMikrotik());
-    // fetchMikrotik(dispatch, ispOwner);
-
-    // fetchpppoeUser(dispatch, IDs);
-    // fetchpppoePackage(dispatch, IDs, setIsLoadingPac);
-    // fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus);
-    // fetchActivepppoeUser(dispatch, IDs);
     dispatch(resetMikrotikUserAndPackage());
     fetchPackagefromDatabase(dispatch, IDs, setIsloading, singleMik?.name);
-  }, [ispOwner, mikrotikId, dispatch]);
+
+    fetchpppoeUser(
+      dispatch,
+      IDs,
+      singleMik?.name,
+      setUserLoading,
+      "mikrotikUser"
+    );
+  }, [ispOwner, mikrotikId]);
 
   // get single pppoe package
   const getSpecificPPPoEPackage = (id) => {
-    // if (pppoePackage.length !== undefined) {
-    //   const temp = pppoePackage.find((original) => {
-    //     return original.id === id;
-    //   });
     setSinglePackage(id);
-    // }
   };
 
   // delete single pppoe package
@@ -136,16 +135,6 @@ export default function ConfigMikrotik() {
     navigate("/mikrotik");
   };
 
-  // const deleteSingleMKHandler = async () => {
-  //   if (window.confirm("মাইক্রোটিক ডিলিট করতে চান?") === true) {
-  //     const IDs = {
-  //       ispOwner: ispOwner,
-  //       id: mikrotikId,
-  //     };
-  //     deleteSingleMikrotik(dispatch, IDs, setIsloading, navigate);
-  //   }
-  // };
-
   const MikrotikConnectionTest = async () => {
     setIsChecking(true);
 
@@ -164,59 +153,6 @@ export default function ConfigMikrotik() {
       });
   };
 
-  const selectMikrotikOptionsHandler = (e) => {
-    const original = e.target.value;
-
-    const IDs = {
-      ispOwner: ispOwner,
-      mikrotikId: mikrotikId,
-    };
-
-    dispatch(resetMikrotikUserAndPackage());
-
-    if (original === "showActiveMikrotikUser") {
-      fetchActivepppoeUser(dispatch, IDs, singleMik?.name, setIsloading);
-      setWhatYouWantToShow("showActiveMikrotikUser");
-    } else if (original === "showAllMikrotikUser") {
-      fetchpppoeUser(
-        dispatch,
-        IDs,
-        singleMik?.name,
-        setIsloading,
-        "mikrotikUser"
-      );
-      setWhatYouWantToShow("showAllMikrotikUser");
-    } else if (original === "showMikrotikPackage") {
-      fetchPackagefromDatabase(dispatch, IDs, setIsloading);
-      setWhatYouWantToShow("showMikrotikPackage");
-    }
-
-    // setWhatYouWantToShow(original);
-  };
-
-  // const syncCustomer = (PPPoE) => {
-  //   console.log(PPPoE);
-  //   if (window.confirm("আপনি কি মাইক্রোটিকের গ্রাহক সিংক করতে চান?")) {
-  //     const IDs = {
-  //       ispOwner: ispOwner,
-  //       mikrotikId: mikrotikId,
-  //     };
-  //     fetchMikrotikSyncUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
-  //   }
-  // };
-
-  // const syncStaticCustomer = () => {
-  //   if (
-  //     window.confirm("আপনি কি মাইক্রোটিকের স্ট্যাটিক গ্রাহক সিংক করতে চান?")
-  //   ) {
-  //     const IDs = {
-  //       ispOwner: ispOwner,
-  //       mikrotikId: mikrotikId,
-  //     };
-  //     syncMikrotikStaticUser(dispatch, IDs, setIsLoadingCus, singleMik?.name);
-  //   }
-  // };
-
   const syncPackage = () => {
     if (window.confirm(t("syncMikrotikPackage"))) {
       const IDs = {
@@ -226,6 +162,25 @@ export default function ConfigMikrotik() {
       fetchpppoePackage(dispatch, IDs, setIsLoadingPac, singleMik?.name);
     }
   };
+
+  // status filter
+  const filterIt = (e) => {
+    let temp;
+    if (e.target.value === "allCustomer") {
+      setAllUsers(allMikrotikUsers);
+    } else if (e.target.value === "true") {
+      temp = allMikrotikUsers.filter((item) => item.disabled == true);
+      setAllUsers(temp);
+    } else if (e.target.value === "false") {
+      temp = allMikrotikUsers.filter((item) => item.disabled != true);
+      setAllUsers(temp);
+    }
+  };
+
+  useEffect(() => {
+    setAllUsers(allMikrotikUsers);
+  }, [allMikrotikUsers]);
+
   const columns1 = React.useMemo(
     () => [
       {
@@ -327,10 +282,10 @@ export default function ConfigMikrotik() {
         accessor: "running",
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.running ? (
-              <Wifi color="green" />
+            {original?.disabled ? (
+              <Check2Circle color="red" />
             ) : (
-              <WifiOff color="red" />
+              <Check2Circle color="green" />
             )}
           </div>
         ),
@@ -441,11 +396,6 @@ export default function ConfigMikrotik() {
                             {t("edit")} <PencilFill />
                           </button>
 
-                          {/* <Trash2Fill
-                            className="addcutmButton deleteColorBtn"
-                            // onClick={deleteSingleMKHandler}
-                          /> */}
-
                           {mtkIsLoading ? (
                             <span>
                               <Loader />
@@ -503,14 +453,6 @@ export default function ConfigMikrotik() {
                               {t("staticCustomerSync")} <PersonLinesFill />
                             </button>
                           )}
-
-                          {/* {isLoading ? (
-                            <div className="deletingAction">
-                              <Loader /> <b>Deleting...</b>
-                            </div>
-                          ) : (
-                            ""
-                          )} */}
                         </div>
                       </div>
 
@@ -520,22 +462,24 @@ export default function ConfigMikrotik() {
                             {t("name")} : <b>{singleMik?.name || "..."}</b>
                           </p>
                           <p>
-                            {t("ip")} : <b>{singleMik.host || "..."}</b>
+                            {t("ip")} : <b>{singleMik?.host || "..."}</b>
                           </p>
                           <p>
                             {t("userName")} :{" "}
-                            <b>{singleMik.username || "..."}</b>
+                            <b>{singleMik?.username || "..."}</b>
                           </p>
                           <p>
-                            {t("port")} : <b>{singleMik.port || "..."}</b>
+                            {t("port")} : <b>{singleMik?.port || "..."}</b>
                           </p>
                         </div>
                         <div className="rightSideMikrotik ms-5">
                           <h4> {t("select")} </h4>
                           <select
                             id="selectMikrotikOption"
-                            onChange={selectMikrotikOptionsHandler}
-                            className="form-select"
+                            className="form-select mt-0"
+                            onChange={(event) =>
+                              setWhatYouWantToShow(event.target.value)
+                            }
                           >
                             <option value="showMikrotikPackage">
                               {t("PPPoEPackage")}
@@ -543,18 +487,27 @@ export default function ConfigMikrotik() {
                             <option value="showAllMikrotikUser">
                               {t("sokolCustomer")}
                             </option>
-                            <option value="showActiveMikrotikUser">
-                              {t("activeCustomer")}
-                            </option>
                           </select>
                         </div>
+
+                        {whatYouWantToShow === "showAllMikrotikUser" && (
+                          <div className="rightSideMikrotik ms-5">
+                            <h4> {t("status")} </h4>
+                            <select
+                              id="selectMikrotikOption"
+                              onChange={filterIt}
+                              className="form-select mt-0"
+                            >
+                              <option value={"allCustomer"}>
+                                {t("sokolCustomer")}
+                              </option>
+                              <option value={"false"}>{t("active")}</option>
+                              <option value={"true"}>{t("in active")}</option>
+                            </select>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    {/* <div className="AllMikrotik" onClick={gotoAllMiktorik}>
-                      <ArrowLeftShort className="arrowLeftSize" />
-                      <span style={{ marginLeft: "3px" }}>সকল মাইক্রোটিক</span>
-                    </div> */}
 
                     {/* PPPoE Package */}
                     {whatYouWantToShow === "showMikrotikPackage" ? (
@@ -572,32 +525,16 @@ export default function ConfigMikrotik() {
                       ""
                     )}
 
-                    {/* PPPoE users */}
-                    {whatYouWantToShow === "showActiveMikrotikUser" ? (
-                      <>
-                        <h2 style={{ width: "100%", textAlign: "center" }}>
-                          {t("activeCustomer")}
-                        </h2>
-                        <Table
-                          isLoading={isLoading}
-                          columns={columns}
-                          data={activeUser}
-                        ></Table>
-                      </>
-                    ) : (
-                      ""
-                    )}
-
                     {/* Active PPPoE users */}
                     {whatYouWantToShow === "showAllMikrotikUser" ? (
                       <>
                         <h2 style={{ width: "100%", textAlign: "center" }}>
-                          {t("sokolCustomer")}
+                          {t("customer")}
                         </h2>
                         <Table
-                          isLoading={isLoading}
+                          isLoading={userLoading}
                           columns={columns}
-                          data={allMikrotikUsers}
+                          data={allUsers}
                         ></Table>
                       </>
                     ) : (

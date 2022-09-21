@@ -71,10 +71,10 @@ export default function ConfigMikrotikModal(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: mik.name || "",
-                  username: mik.username || "",
-                  host: mik.host || "",
-                  port: mik.port || "",
+                  name: mik?.name || "",
+                  username: mik?.username || "",
+                  host: mik?.host || "",
+                  port: mik?.port || "",
                   password: "",
                 }}
                 validationSchema={mikrotikValidator}

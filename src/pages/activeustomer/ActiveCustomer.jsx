@@ -32,7 +32,6 @@ export default function ConfigMikrotik() {
     : {};
 
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
-  console.log(allMikrotikUsers);
 
   const [loading, setLoading] = useState(false);
 
