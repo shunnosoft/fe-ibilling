@@ -67,6 +67,10 @@ export default function StaticCustomerEdit({ single }) {
   const [status, setStatus] = useState("");
   const [promiseDate, setPromiseDate] = useState(null);
 
+  // fix promise date
+  let mxDate = new Date(customer?.billingCycle);
+  mxDate.setDate(mxDate.getDate() + parseInt(3));
+
   // customer validator
   useEffect(() => {
     setAutoDisable(customer?.autoDisable);
@@ -550,7 +554,7 @@ export default function StaticCustomerEdit({ single }) {
                           className="form-control mw-100"
                           selected={billDate}
                           onChange={(date) => setBillDate(date)}
-                          dateFormat="dd/MM/yyyy:hh:mm"
+                          dateFormat="MMM dd yyyy hh:mm a"
                           showTimeSelect
                         />
                       </div>
@@ -563,43 +567,16 @@ export default function StaticCustomerEdit({ single }) {
                             className="form-control mw-100"
                             selected={promiseDate}
                             onChange={(date) => setPromiseDate(date)}
-                            dateFormat="dd/MM/yyyy:hh:mm"
+                            dateFormat="MMM dd yyyy hh:mm a"
                             placeholderText={t("selectDate")}
                             minDate={new Date(customer?.billingCycle)}
+                            maxDate={mxDate}
                             showTimeSelect
                           />
                         </div>
                       )}
 
                       <div className="static_edit_item">
-                        {/* <div className="timeDate">
-                          <input
-                            value={billDate}
-                            onChange={(e) => setBillDate(e.target.value)}
-                            type="date"
-                          />
-                          <input
-                            className="billTime"
-                            value={billTime}
-                            onChange={(e) => setBilltime(e.target.value)}
-                            type="time"
-                          />
-                        </div> */}
-                      </div>
-                      <div className="static_edit_item">
-                        {bpSettings?.hasMikrotik && (
-                          <div className="autoDisable">
-                            <label> {t("automaticConnectionOff")} </label>
-                            <input
-                              type="checkBox"
-                              checked={autoDisable}
-                              onChange={(e) => setAutoDisable(e.target.checked)}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="pppoeStatus">
                         <p> {t("status")} </p>
                         <div className="form-check form-check-inline">
                           <input
@@ -660,7 +637,23 @@ export default function StaticCustomerEdit({ single }) {
                           </div>
                         )}
                       </div>
+
+                      <div className="static_edit_item">
+                        {bpSettings?.hasMikrotik && (
+                          <div className="autoDisable">
+                            <label> {t("automaticConnectionOff")} </label>
+                            <input
+                              type="checkBox"
+                              checked={autoDisable}
+                              onChange={(e) => setAutoDisable(e.target.checked)}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div className="static_edit_item"></div>
+                      <div className="static_edit_item"></div>
                     </div>
+
                     <div className="modal-footer" style={{ border: "none" }}>
                       <button
                         type="button"

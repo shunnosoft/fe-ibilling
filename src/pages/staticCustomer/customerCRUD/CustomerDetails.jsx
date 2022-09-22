@@ -85,7 +85,11 @@ export default function CustomerDetails({ single }) {
                   </h6>
                   <h6>
                     {t("billingCycle")}:{" "}
-                    {moment(data?.billingCycle).format("DD-MM-YYYY hh:mm A")}
+                    {moment(data?.billingCycle).format("MMM DD YYYY hh:mm A")}
+                  </h6>
+                  <h6>
+                    {t("promiseDate")}:{" "}
+                    {moment(data?.promiseDate).format("MMM DD YYYY hh:mm A")}
                   </h6>
                   {bpSettings?.hasMikrotik && (
                     <h6>

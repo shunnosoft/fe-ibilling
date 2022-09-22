@@ -42,7 +42,6 @@ export default function CustomerEdit(props) {
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth?.role);
-  console.log(role);
 
   // get user permission
   const permission = useSelector(
@@ -75,6 +74,11 @@ export default function CustomerEdit(props) {
   const [promiseDate, setPromiseDate] = useState(null);
 
   const [packageId, setPackageId] = useState("");
+
+  // fix max promise date
+  let mxDate = new Date(data?.billingCycle);
+  mxDate.setDate(mxDate.getDate() + parseInt(3));
+
   useEffect(() => {
     setPackageId(data?.mikrotikPackage);
     setStatus(data?.status);
@@ -419,7 +423,7 @@ export default function CustomerEdit(props) {
                             className="form-control mw-100"
                             selected={billDate}
                             onChange={(date) => setBillDate(date)}
-                            dateFormat="dd/MM/yyyy:hh:mm"
+                            dateFormat="MMM dd yyyy hh:mm a"
                             showTimeSelect
                           />
                         </div>
@@ -433,9 +437,10 @@ export default function CustomerEdit(props) {
                             className="form-control mw-100"
                             selected={promiseDate}
                             onChange={(date) => setPromiseDate(date)}
-                            dateFormat="dd/MM/yyyy:hh:mm"
+                            dateFormat="MMM dd yyyy hh:mm a"
                             placeholderText={t("selectDate")}
                             minDate={new Date(data?.billingCycle)}
+                            maxDate={mxDate}
                             showTimeSelect
                           />
                         </div>
