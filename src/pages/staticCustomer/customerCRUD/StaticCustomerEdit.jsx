@@ -247,7 +247,6 @@ export default function StaticCustomerEdit({ single }) {
     } else if (status === "inactive") {
       sendingData.status = status;
     }
-    // console.log(sendingData);
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
   return (

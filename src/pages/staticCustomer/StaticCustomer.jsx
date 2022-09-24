@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -47,12 +47,14 @@ import AddStaticCustomer from "./customerCRUD/AddStaticCustomer";
 import apiLink from "../../api/apiLink";
 import BulkSubAreaEdit from "../Customer/customerCRUD/bulkOpration/bulkSubAreaEdit";
 import BulkBillingCycleEdit from "../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
+import BulkPromiseDateEdit from "../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -737,20 +739,37 @@ export default function Customer() {
   //bulk operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
-  //free users filter
+  //total monthly fee and due calculation
+  const dueMonthlyFee = useCallback(() => {
+    let dueAmount = 0;
+    let totalSumDue = 0;
+    let totalMonthlyFee = 0;
 
-  const handleFreeUser = (value) => {
-    let getFreeUser;
-    if (value === "freeUser") {
-      getFreeUser = cus.filter((item) => item.monthlyFee === parseInt("0"));
-    } else if (value === "nonFreeUser") {
-      getFreeUser = cus.filter((item) => item.monthlyFee !== parseInt("0"));
-    } else {
-      return setCustomers1(cus);
-    }
-    setCustomers1(getFreeUser);
-  };
+    Customers1.map((item) => {
+      if (item.paymentStatus === "unpaid") {
+        // filter due ammount
+        dueAmount = item.monthlyFee - item.balance;
 
+        // total sum due
+        totalSumDue += dueAmount;
+      }
+
+      // sum of all monthly fee
+      totalMonthlyFee += item.monthlyFee;
+    });
+
+    return { totalSumDue, totalMonthlyFee };
+  }, [Customers1]);
+
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+    </div>
+  );
   return (
     <>
       <Sidebar />
@@ -878,6 +897,11 @@ export default function Customer() {
               <BulkBillingCycleEdit
                 bulkCustomer={bulkCustomer}
                 modalId="customerBillingCycle"
+              />
+
+              <BulkPromiseDateEdit
+                bulkCustomer={bulkCustomer}
+                modalId="bulkPromiseDateEdit"
               />
 
               <BulkStatusEdit
@@ -1200,6 +1224,7 @@ export default function Customer() {
                     <div className="table-section">
                       <Table
                         isLoading={customerLoading}
+                        customComponent={customComponent}
                         columns={columns}
                         data={Customers1}
                         bulkState={{
@@ -1251,6 +1276,18 @@ export default function Customer() {
           >
             <i class="fas fa-edit"></i>
             <span className="button_title">{t("editBillingCycle")}</span>
+          </button>
+
+          <button
+            className="bulk_action_button"
+            title={t("editPromiseDate")}
+            data-bs-toggle="modal"
+            data-bs-target="#bulkPromiseDateEdit"
+            type="button"
+            class="btn btn-secondary btn-floating btn-sm"
+          >
+            <i class="fas fa-edit"></i>
+            <span className="button_title"> {t("editPromiseDate")} </span>
           </button>
           <button
             className="bulk_action_button"

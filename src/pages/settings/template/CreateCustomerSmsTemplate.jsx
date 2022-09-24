@@ -109,6 +109,7 @@ function CreateCustomerSmsTemplate() {
     const fixedvalues = [
       "USER: USERNAME",
       "ID: CUSTOMER_ID",
+      "PASSWORD: PASSWORD",
       "NAME: CUSTOMER_NAME",
       "BILL: AMOUNT",
       "LAST DATE: BILL_DATE",
@@ -118,6 +119,7 @@ function CreateCustomerSmsTemplate() {
     let messageBoxStr = settings?.sms?.template?.createCustomer
       ?.replace("USER: USERNAME", "")
       .replace("ID: CUSTOMER_ID", "")
+      .replace("PASSWORD: PASSWORD", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
@@ -208,6 +210,21 @@ function CreateCustomerSmsTemplate() {
                 />
                 <label className="templatelabel" htmlFor="2">
                   {"ID: CUSTOMER_ID"}
+                </label>
+              </div>
+              <div className="radioselect">
+                <input
+                  id="6"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  checked={matchFound.includes("PASSWORD: PASSWORD")}
+                  value={"PASSWORD: PASSWORD"}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="2">
+                  {"PASSWORD: PASSWORD"}
                 </label>
               </div>
               <div className="radioselect">

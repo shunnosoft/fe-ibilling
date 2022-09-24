@@ -12,8 +12,10 @@ import BillCollectInvoiceWithNote from "../../Customer/customerCRUD/customerBill
 import BillCollectInvoiceWithoutNote from "../../Customer/customerCRUD/customerBillReportPDFwithNote";
 import TdLoader from "../../../components/common/TdLoader";
 import { useTranslation } from "react-i18next";
+import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 
 export default function CustomerReport({ single }) {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [customerReport, setCustomerReport] = useState([]);
   const billRefwithNote = useRef();
@@ -31,6 +33,30 @@ export default function CustomerReport({ single }) {
   const permission = useSelector(
     (state) => state.persistedReducer.auth.userData.permissions
   );
+
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
+
+  const ppPackage = useSelector((state) =>
+    bpSettings?.hasMikrotik
+      ? state?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
+  );
+
+  const userPackage = ppPackage.find(
+    (item) => item?.id === single?.mikrotikPackage
+  );
+
+  useEffect(() => {
+    const IDs = {
+      ispOwner: ispOwnerData?.id,
+      mikrotikId: single?.mikrotik,
+    };
+    if (bpSettings?.hasMikrotik) {
+      fetchPackagefromDatabase(dispatch, IDs, setIsLoading);
+    }
+  }, [single?.mikrotik]);
 
   useEffect(() => {
     const getCustoemrReport = async () => {
@@ -191,7 +217,7 @@ export default function CustomerReport({ single }) {
                       customerReport.map((val, index) => {
                         return (
                           <tr className="spetialSortingRow" key={index}>
-                            <td>{val.package}</td>
+                            <td>{userPackage?.name}</td>
                             <td>{FormatNumber(val.amount)}</td>
                             <td>
                               {moment(val.createdAt).format(

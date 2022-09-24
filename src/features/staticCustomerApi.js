@@ -70,7 +70,6 @@ export const updateStaticCustomerApi = async (
       "কাস্টমার আপডেট সফল হয়েছে",
       "Customer Updated Successfully"
     );
-    toast.success("কাস্টমার আপডেট সফল হয়েছে");
   } catch (error) {
     toast.error(error.response?.data?.message);
     console.log(error.response?.data?.message);

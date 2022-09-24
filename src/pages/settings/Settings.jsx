@@ -67,7 +67,7 @@ export default function Settings() {
                       title={t("newCustomerSMS")}
                     >
                       <FourGround>
-                        <CreateCustomerSmsTemplate></CreateCustomerSmsTemplate>
+                        <CreateCustomerSmsTemplate />
                       </FourGround>
                     </Tab>
 
