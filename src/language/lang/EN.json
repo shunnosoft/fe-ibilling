@@ -338,6 +338,7 @@
   "port": "Port",
   "customerId": "Customer ID",
   "ip": "IP",
+  "ID": "ID",
   "updateCustomer": "Update Customer",
   "note": "Note",
   "action": "Action",

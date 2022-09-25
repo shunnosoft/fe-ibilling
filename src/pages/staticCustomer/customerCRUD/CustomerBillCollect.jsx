@@ -112,7 +112,7 @@ export default function CustomerBillCollect({ single }) {
           aria-labelledby="customerModalDetails"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-dialog-scrollable modal-lg">
+          <div className="modal-dialog modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5
@@ -120,7 +120,7 @@ export default function CustomerBillCollect({ single }) {
                   className="modal-title"
                   id="customerModalDetails"
                 >
-                  {t("recharge")}
+                  {t("recharge")} {data?.name}
                 </h5>
                 <button
                   type="button"
@@ -146,41 +146,56 @@ export default function CustomerBillCollect({ single }) {
                 >
                   {() => (
                     <Form>
-                      <h4>Name:{data?.name}</h4>
-                      <h4>ID:{data?.customerId}</h4>
-
-                      <FtextField
-                        type="number"
-                        name="amount"
-                        label={t("amount")}
-                      />
-                      <div className="d-inline w-100 mb-3">
-                        <label
-                          htmlFor="receiver_type"
-                          className="form-control-label changeLabelFontColor"
-                        >
-                          {t("medium")}
-                        </label>
-
-                        <select
-                          as="select"
-                          id="receiver_type"
-                          className="form-select mt-0 mw-100"
-                          aria-label="Default select example"
-                          onChange={(e) => setMedium(e.target.value)}
-                        >
-                          <option value="cash" selected>
-                            {t("handCash")}
-                          </option>
-                          <option value="bKash"> {t("bKash")} </option>
-                          <option value="rocket">{t("rocket")} </option>
-                          <option value="nagad">{t("nagad")} </option>
-                          <option value="others"> {t("others")} </option>
-                        </select>
+                      <div className="d-flex flex-wrap">
+                        <h5 className="me-3 text-secondary">
+                          {t("ip")}{" "}
+                          {data?.userType === "firewall-queue"
+                            ? data?.queue.address
+                            : data?.queue.target}
+                        </h5>
+                        <h5 className="text-secondary">
+                          {t("ID")} {data?.customerId}
+                        </h5>
                       </div>
-                      <label> {t("billType")} </label>
+                      <div className="bill_collect_form">
+                        <div className="w-100 me-2">
+                          <FtextField
+                            type="number"
+                            name="amount"
+                            label={t("amount")}
+                          />
+                        </div>
+                        <div className="d-inline w-100 mb-3">
+                          <label
+                            htmlFor="receiver_type"
+                            className="form-control-label changeLabelFontColor"
+                          >
+                            {t("medium")}
+                          </label>
+
+                          <select
+                            as="select"
+                            id="receiver_type"
+                            className="form-select mt-0 mw-100"
+                            aria-label="Default select example"
+                            onChange={(e) => setMedium(e.target.value)}
+                          >
+                            <option value="cash" selected>
+                              {t("handCash")}
+                            </option>
+                            <option value="bKash"> {t("bKash")} </option>
+                            <option value="rocket">{t("rocket")} </option>
+                            <option value="nagad">{t("nagad")} </option>
+                            <option value="others"> {t("others")} </option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("billType")}
+                      </label>
                       <select
-                        className="form-select"
+                        className="form-select mt-0 mw-100"
                         onChange={(e) => setBillType(e.target.value)}
                       >
                         <option value="bill"> {t("bill")} </option>
@@ -205,60 +220,64 @@ export default function CustomerBillCollect({ single }) {
                       </div>
                       {noteCheck && (
                         <>
-                          <div className="bill_collect_form mb-1">
-                            <div class="form-floating me-3">
-                              <textarea
-                                cols={200}
-                                class="form-control shadow-none"
-                                placeholder="নোট লিখুন"
-                                id="noteField"
-                                onChange={(e) => setNote(e.target.value)}
-                              ></textarea>
-                              <label for="noteField"> {t("addNote")} </label>
-                            </div>
-                            <div className="me-3" style={{ width: "100%" }}>
-                              <label className="form-control-label changeLabelFontColor">
-                                {t("startDate")}
-                              </label>
-                              <DatePicker
-                                selected={startDate}
-                                className="form-control mw-100"
-                                onChange={(date) => setStartDate(date)}
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText={t("selectDate")}
-                              />
-                            </div>
-                            <div cla style={{ width: "100%" }}>
-                              <label className="form-control-label changeLabelFontColor">
-                                {t("endDate")}
-                              </label>
+                          <div className="mb-1">
+                            <div className="d-flex">
+                              <div className="me-2">
+                                <label className="form-control-label changeLabelFontColor">
+                                  {t("startDate")}
+                                </label>
+                                <DatePicker
+                                  selected={startDate}
+                                  className="form-control mw-100"
+                                  onChange={(date) => setStartDate(date)}
+                                  dateFormat="dd/MM/yyyy"
+                                  placeholderText={t("selectDate")}
+                                />
+                              </div>
+                              <div>
+                                <label className="form-control-label changeLabelFontColor">
+                                  {t("endDate")}
+                                </label>
 
-                              <DatePicker
-                                selected={endDate}
-                                className="form-control mw-100"
-                                onChange={(date) => setEndDate(date)}
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText={t("selectDate")}
-                              />
+                                <DatePicker
+                                  selected={endDate}
+                                  className="form-control mw-100"
+                                  onChange={(date) => setEndDate(date)}
+                                  dateFormat="dd/MM/yyyy"
+                                  placeholderText={t("selectDate")}
+                                />
+                              </div>
                             </div>
                           </div>
-                          <label
-                            className="form-check-label changeLabelFontColor"
-                            htmlFor="selectMonth"
-                          >
-                            {t("selectMonth")}
-                          </label>
-                          <Select
-                            className="w-50 mt-1"
-                            defaultValue={selectedMonth}
-                            onChange={setSelectedMonth}
-                            options={options}
-                            isMulti={true}
-                            placeholder={t("selectMonth")}
-                            isSearchable
-                            components={animatedComponents}
-                            id="selectMonth"
-                          />
+                          <div className="month">
+                            <label
+                              className="form-check-label changeLabelFontColor"
+                              htmlFor="selectMonth"
+                            >
+                              {t("selectMonth")}
+                            </label>
+                            <Select
+                              className="mt-1"
+                              defaultValue={selectedMonth}
+                              onChange={setSelectedMonth}
+                              options={options}
+                              isMulti={true}
+                              placeholder={t("selectMonth")}
+                              isSearchable
+                              components={animatedComponents}
+                              id="selectMonth"
+                            />
+                          </div>
+                          <div class="form-floating mt-3">
+                            <textarea
+                              cols={200}
+                              class="form-control shadow-none"
+                              placeholder="নোট লিখুন"
+                              id="noteField"
+                              onChange={(e) => setNote(e.target.value)}
+                            ></textarea>
+                            <label for="noteField"> {t("addNote")} </label>
+                          </div>
                         </>
                       )}
                       <div className="mt-4">

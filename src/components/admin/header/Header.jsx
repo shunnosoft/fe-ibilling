@@ -5,6 +5,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ArrowClockwise,
   BoxArrowLeft,
+  PersonBoundingBox,
   PersonFill,
 } from "react-bootstrap-icons";
 
