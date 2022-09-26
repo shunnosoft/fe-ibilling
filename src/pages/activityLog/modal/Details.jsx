@@ -31,7 +31,7 @@ export default function Details({ activityId }) {
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
     >
-      <div className={`modal-dialog ${checkOp != "add" && "modal-xl"}`}>
+      <div className={`modal-dialog`}>
         <div className="modal-content">
           <div className="modal-header">
             <h5
@@ -50,9 +50,10 @@ export default function Details({ activityId }) {
           </div>
 
           <div className="modal-body">
-            {Object.keys(value).forEach((k) => {
-              console.log(value[k]);
-              // <p>{value[k]}</p>
+            {Object.entries(value).forEach(([k]) => {
+              console.log(value[k], k);
+              console.log(typeof k);
+              return <p>{value[k].val}</p>;
             })}
           </div>
         </div>

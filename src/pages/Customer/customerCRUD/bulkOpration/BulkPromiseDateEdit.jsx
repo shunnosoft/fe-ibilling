@@ -13,6 +13,10 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
   const [billDate, setBillDate] = useState(false);
 
   const dispatch = useDispatch();
+
+  let mxDate = new Date();
+  mxDate.setDate(mxDate.getDate() + parseInt(3));
+
   const promiseDateHandler = (e) => {
     e.preventDefault();
     if (billDate) {
@@ -37,6 +41,8 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
             showTimeSelect
             timeIntervals={1}
             placeholderText={t("selectDate")}
+            minDate={new Date()}
+            maxDate={mxDate}
           />
         </div>
 

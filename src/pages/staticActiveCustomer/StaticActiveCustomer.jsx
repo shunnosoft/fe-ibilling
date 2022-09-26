@@ -4,7 +4,10 @@ import useDash from "../../assets/css/dash.module.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { getStaticActiveCustomer } from "../../features/apiCalls";
+import {
+  fetchMikrotik,
+  getStaticActiveCustomer,
+} from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 // get specific customer
@@ -16,13 +19,14 @@ const StaticActiveCustomer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);
+  const [mtkLoading, setMtkLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState();
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // set initialy mikrotik id
-  const [mikrotikId, setMikrotikId] = useState(mikrotik[0].id);
+  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
 
   // get all static customer
   let staticActiveCustomer = useSelector(
@@ -53,6 +57,7 @@ const StaticActiveCustomer = () => {
 
   // api call for get update static customer
   useEffect(() => {
+    fetchMikrotik(dispatch, ispOwnerId, setMtkLoading);
     getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
   }, [mikrotikId]);
 

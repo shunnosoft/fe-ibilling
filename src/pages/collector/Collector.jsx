@@ -60,7 +60,7 @@ export default function Collector() {
   };
 
   useEffect(() => {
-    if (collector.lenght === 0)
+    if (collector.length === 0)
       getCollector(dispatch, ispOwnerId, setIsLoading);
     getArea(dispatch, ispOwnerId, setIsLoading);
   }, []);

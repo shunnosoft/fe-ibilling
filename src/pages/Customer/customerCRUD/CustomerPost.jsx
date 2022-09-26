@@ -43,6 +43,7 @@ export default function CustomerModal() {
   const dispatch = useDispatch();
   const [billDate, setBillDate] = useState(null);
   const [connectionDate, setConnectionDate] = useState();
+  console.log(connectionDate);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -137,8 +138,8 @@ export default function CustomerModal() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      connectionDate: connectionDate.toISOString(),
-      billingCycle: billDate.toISOString(),
+      connectionDate: connectionDate?.toISOString(),
+      billingCycle: billDate?.toISOString(),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -208,7 +209,7 @@ export default function CustomerModal() {
                             {t("selectMikrotik")}
                           </label>
                           <select
-                            className="form-select mw-100"
+                            className="form-select mw-100 mt-0"
                             aria-label="Default select example"
                             onChange={selectMikrotik}
                           >
@@ -232,7 +233,7 @@ export default function CustomerModal() {
                           {t("selectPackage")}
                         </label>
                         <select
-                          className="form-select mb-3 mw-100"
+                          className="form-select mb-3 mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                         >
