@@ -8,6 +8,7 @@ import React, {
 import {
   ArchiveFill,
   ArrowClockwise,
+  ArrowLeft,
   CashStack,
   FileExcelFill,
   PenFill,
@@ -37,9 +38,11 @@ import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import FormatNumber from "../../../components/common/NumberFormat";
+import { useNavigate } from "react-router-dom";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
+  let navigate = useNavigate();
 
   // import dispatch
   const dispatch = useDispatch();
@@ -300,25 +303,25 @@ const AllResellerCustomer = () => {
       {
         Header: t("id"),
         accessor: "customerId",
-        width: "9%",
+        width: "8%",
       },
       {
         Header: t("reseller"),
         accessor: "reseller.name",
-        width: "11%",
+        width: "9%",
       },
       {
         Header: t("name"),
         accessor: "name",
-        width: "11%",
+        width: "9%",
       },
       {
         Header: t("mobile"),
         accessor: "mobile",
-        width: "12%",
+        width: "11%",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -326,7 +329,7 @@ const AllResellerCustomer = () => {
         },
       },
       {
-        width: "11%",
+        width: "9%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -340,8 +343,13 @@ const AllResellerCustomer = () => {
       },
       {
         width: "9%",
-        Header: t("bill"),
+        Header: t("month"),
         accessor: "monthlyFee",
+      },
+      {
+        width: "9%",
+        Header: t("balance"),
+        accessor: "balance",
       },
       {
         width: "11%",
@@ -353,7 +361,7 @@ const AllResellerCustomer = () => {
       },
 
       {
-        width: "7%",
+        width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
@@ -453,6 +461,13 @@ const AllResellerCustomer = () => {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
+                    <div
+                      className="pe-2 text-black"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(-1)}
+                    >
+                      <ArrowLeft className="arrowLeftSize" />
+                    </div>
                     <h2>{t("customer")}</h2>
                     <div className="reloadBtn">
                       {isLoading ? (

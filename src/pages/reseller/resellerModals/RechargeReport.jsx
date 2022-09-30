@@ -9,18 +9,16 @@ import ReactToPrint from "react-to-print";
 import FormatNumber from "../../../components/common/NumberFormat";
 import TdLoader from "../../../components/common/TdLoader";
 import { getResellerRechargeHistioty } from "../../../features/apiCalls";
-import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 import PrintReport from "./ReportPDF";
-import SingleReportPDF from "./SingleReportPDF";
 
 const RechargeReport = ({ resellerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
-  const singleDataRef = useRef();
 
   //get recharge history
   const data = useSelector((state) => state.recharge.singleHistory);
+  console.log(data);
 
   // get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
@@ -101,25 +99,6 @@ const RechargeReport = ({ resellerId }) => {
                                   "MMM DD YYYY hh:mm a"
                                 )}
                               </td>
-                              {/* <td>
-                                <div style={{ display: "none" }}>
-                                  <SingleReportPDF
-                                    ref={singleDataRef}
-                                    reportData={item?.id}
-                                    ispOwnerData={ispOwnerData}
-                                  />
-                                </div>
-                                <ReactToPrint
-                                  documentTitle={t("billReport")}
-                                  trigger={() => (
-                                    <PrinterFill
-                                      title={t("print")}
-                                      className="addcutmButton"
-                                    />
-                                  )}
-                                  content={() => singleDataRef.current}
-                                />
-                              </td> */}
                             </tr>
                           </>
                         );

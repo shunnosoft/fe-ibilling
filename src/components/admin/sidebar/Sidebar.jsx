@@ -502,6 +502,30 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
+                        <NavLink
+                          key={10}
+                          to={userRole === "ispOwner" && "/due/customer"}
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname ===
+                                (userRole === "ispOwner" && "/due/customer")
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">{<CashCoin />}</div>
+                              <span className="sidebarLinksName">
+                                {t("dueCustomer")}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
                       </Accordion.Body>
                     </Accordion.Item>
                     {/* স্টাফ */}

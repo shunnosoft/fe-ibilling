@@ -82,6 +82,7 @@ import ClientPage from "./ownerCustomer/index";
 import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCustomer";
 import NewCustomer from "./pages/newCustomer/NewCustomer";
 import MessageLog from "./pages/messageLog/MessageLog";
+import DueCustomer from "./pages/dueCustomer/DueCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -422,6 +423,10 @@ function App() {
               <Route path="area" element={<Area />} />
               {/* <Route path="bill" element={<Bill />} /> */}
               <Route path="diposit" element={<Diposit />} />
+              <Route
+                path="due/customer"
+                element={userRole === "ispOwner" && <DueCustomer />}
+              />
               <Route path="invoice" element={<Invoice />} />
               <Route
                 path="recharge"

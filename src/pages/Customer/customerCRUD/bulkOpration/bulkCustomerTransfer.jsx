@@ -3,10 +3,9 @@ import RootBulkModal from "./bulkModal";
 import Loader from "../../../../components/common/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import {
-  bulkCustomerTransfer,
-  bulkDeleteCustomer,
-} from "../../../../features/actions/bulkOperationApi";
+import { bulkCustomerTransfer } from "../../../../features/actions/bulkOperationApi";
+import { useEffect } from "react";
+import { fetchReseller } from "../../../../features/apiCalls";
 
 const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   const dispatch = useDispatch();
@@ -14,6 +13,14 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
 
   //get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
+
+  // get all subarea
+  const subAreas = useSelector((state) => state.area?.subArea);
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [resellerId, setResellerId] = useState();
@@ -43,6 +50,10 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
 
     if (confirm) bulkCustomerTransfer(dispatch, data, setIsLoading);
   };
+
+  useEffect(() => {
+    fetchReseller(dispatch, ispOwner, setIsLoading);
+  }, []);
 
   return (
     <RootBulkModal modalId={modalId} header={t("transferReseller")}>

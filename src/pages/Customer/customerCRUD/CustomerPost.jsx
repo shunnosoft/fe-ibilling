@@ -43,7 +43,6 @@ export default function CustomerModal() {
   const dispatch = useDispatch();
   const [billDate, setBillDate] = useState(null);
   const [connectionDate, setConnectionDate] = useState();
-  console.log(connectionDate);
 
   // customer validator
   const customerValidator = Yup.object({

@@ -28,6 +28,7 @@ import {
   fetchMikrotik,
   getArea,
   getCustomer,
+  getDueCustomer,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import { ToastContainer } from "react-toastify";
@@ -709,7 +710,7 @@ const PPPOECustomer = () => {
   );
 
   //export customer data
-  let customerForCsV = customers.map((customer) => {
+  let customerForCsV = pppoeCustomers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -755,7 +756,7 @@ const PPPOECustomer = () => {
   ];
 
   //export customer data
-  let customerForCsVTableInfo = customers.map((customer) => {
+  let customerForCsVTableInfo = pppoeCustomers.map((customer) => {
     return {
       name: customer.name,
       customerAddress: customer.address,

@@ -4,12 +4,17 @@ const customerSliec = createSlice({
   name: "customer",
   initialState: {
     customer: [],
+    dueCustomer: [],
     staticCustomer: [],
     staticActiveCustomer: [],
   },
   reducers: {
     getCustomerSuccess: (state, action) => {
       state.customer = action.payload;
+    },
+    getDueCustomerSuccess: (state, action) => {
+      console.log(action.payload);
+      state.dueCustomer = action.payload;
     },
     addCustomerSuccess: (state, action) => {
       state.customer.push(action.payload);
@@ -142,6 +147,7 @@ const customerSliec = createSlice({
 export const {
   getCustomerSuccess,
   clearCustomer,
+  getDueCustomerSuccess,
   addCustomerSuccess,
   editCustomerSuccess,
   deleteCustomerSuccess,

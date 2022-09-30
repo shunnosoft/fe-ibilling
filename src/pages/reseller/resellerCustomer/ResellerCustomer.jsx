@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { FontColor, FourGround } from "../../../assets/js/theme";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
@@ -12,6 +12,8 @@ import Table from "../../../components/table/Table";
 import {
   ArchiveFill,
   ArrowClockwise,
+  ArrowLeft,
+  ArrowLeftShort,
   CashStack,
   FileExcelFill,
   PenFill,
@@ -38,6 +40,7 @@ import { fetchMikrotik } from "../../../features/apiCalls";
 
 const ResellerCustomer = () => {
   const { t } = useTranslation();
+  let navigate = useNavigate();
 
   // reference of pdf export component
   const componentRef = useRef();
@@ -249,26 +252,26 @@ const ResellerCustomer = () => {
       {
         Header: t("id"),
         accessor: "customerId",
-        width: "9%",
+        width: "8%",
       },
       {
         Header: t("name"),
         accessor: "name",
-        width: "10%",
+        width: "9%",
       },
       {
         Header: "PPPoE",
         accessor: "pppoe.name",
-        width: "10%",
+        width: "9%",
       },
       {
         Header: t("mobile"),
         accessor: "mobile",
-        width: "12%",
+        width: "11%",
       },
 
       {
-        width: "9%",
+        width: "8%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -276,7 +279,7 @@ const ResellerCustomer = () => {
         },
       },
       {
-        width: "11%",
+        width: "9%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -284,19 +287,23 @@ const ResellerCustomer = () => {
         },
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("month"),
         accessor: "monthlyFee",
       },
       {
-        width: "11%",
-
-        Header: t("bill"),
+        width: "9%",
+        Header: t("balance"),
+        accessor: "balance",
+      },
+      {
+        width: "10%",
+        Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
@@ -304,7 +311,7 @@ const ResellerCustomer = () => {
       },
 
       {
-        width: "7%",
+        width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
@@ -436,6 +443,13 @@ const ResellerCustomer = () => {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
+                    <div
+                      className="pe-2 text-black"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(-1)}
+                    >
+                      <ArrowLeft className="arrowLeftSize" />
+                    </div>
                     <h2>{t("customer")}</h2>
                     <div className="reloadBtn">
                       {isLoading ? (
