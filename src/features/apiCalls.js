@@ -508,7 +508,6 @@ export const getDueCustomer = async (
   setIsloading,
   customerType
 ) => {
-  console.log(customerType);
   setIsloading(true);
   try {
     const res = await apiLink.get(

@@ -20,10 +20,18 @@ const DueCustomer = () => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // static Customr loading
+  const [staticLoading, setStaticLoading] = useState(false);
+
   // get current date
   const date = new Date();
 
-  const month = date.getMonth() - 1;
+  let month = date.getMonth();
+
+  if (month === 0) {
+    month = 12;
+  }
+  console.log(month);
 
   const year = date.getFullYear();
 
@@ -51,7 +59,14 @@ const DueCustomer = () => {
     if (dueCustomer.length === 0)
       getDueCustomer(dispatch, ispOwner, month, year, setIsLoading, "pppoe");
     if (staticDueCustomer.length === 0)
-      getDueCustomer(dispatch, ispOwner, month, year, setIsLoading, "static");
+      getDueCustomer(
+        dispatch,
+        ispOwner,
+        month,
+        year,
+        setStaticLoading,
+        "static"
+      );
   }, []);
 
   // pppoe column
@@ -243,7 +258,7 @@ const DueCustomer = () => {
 
                         <div className="table-section">
                           <Table
-                            isLoading={isLoading}
+                            isLoading={staticLoading}
                             columns={staticColumns}
                             data={staticDueCustomer}
                           ></Table>
