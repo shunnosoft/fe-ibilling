@@ -69,7 +69,7 @@ export default function StaticCustomerEdit({ single }) {
 
   // fix promise date
   let mxDate = new Date(customer?.billingCycle);
-  mxDate.setDate(mxDate.getDate() + parseInt(3));
+  mxDate.setDate(mxDate.getDate() + parseInt(20));
 
   // customer validator
   useEffect(() => {

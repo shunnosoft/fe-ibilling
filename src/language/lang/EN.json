@@ -539,5 +539,6 @@
   "resellerSMSTemplate": "Reseller Recharge SMS",
   "resellerRecharge": "Reseller Recharge",
   "SalarySMSToast": "Salary SMS template Updated",
-  "rechargeSMSToast": "Reseller Recharge SMS template Updated"
+  "rechargeSMSToast": "Reseller Recharge SMS template Updated",
+  "dueCustomer": "Due Customers"
 }

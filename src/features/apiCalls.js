@@ -40,6 +40,7 @@ import {
   updateBalanceStaticCustomer,
   getStaticCustomerActiveSuccess,
   getDueCustomerSuccess,
+  getStaticDueCustomerSuccess,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -504,15 +505,21 @@ export const getDueCustomer = async (
   ispOwner,
   month,
   year,
-  setIsloading
+  setIsloading,
+  customerType
 ) => {
+  console.log(customerType);
   setIsloading(true);
   try {
     const res = await apiLink.get(
-      `/customer/due/${ispOwner}?month=9&year=${year}&userType=pppoe`
+      `/customer/due/${ispOwner}?month=${month}&year=${year}&userType=${customerType}`
     );
-    console.log(res.data?.customers);
-    dispatch(getDueCustomerSuccess(res.data));
+    if (customerType === "pppoe") {
+      dispatch(getDueCustomerSuccess(res.data.customers));
+    }
+    if (customerType === "static") {
+      dispatch(getStaticDueCustomerSuccess(res.data.customers));
+    }
   } catch (error) {
     console.log(error.message);
   }

@@ -28,6 +28,7 @@ import {
   GeoAltFill,
   EjectFill,
   EnvelopeOpen,
+  PersonDash,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -519,7 +520,9 @@ export default function Sidebar() {
                                   : ""
                               }
                             >
-                              <div className="sidebarIcon">{<CashCoin />}</div>
+                              <div className="sidebarIcon">
+                                {<PersonDash />}
+                              </div>
                               <span className="sidebarLinksName">
                                 {t("dueCustomer")}
                               </span>

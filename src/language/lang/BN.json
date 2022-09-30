@@ -540,5 +540,6 @@
   "resellerSMSTemplate": "রিসেলার রিচার্জ এসএমএস",
   "resellerRecharge": "রিসেলার রিচার্জ",
   "SalarySMSToast": "স্যালারি এসএমএস টেমপ্লেট আপডেট সফল হয়েছে",
-  "rechargeSMSToast": "রিসেলার রিচার্জ টেমপ্লেট আপডেট সফল হয়েছে"
+  "rechargeSMSToast": "রিসেলার রিচার্জ টেমপ্লেট আপডেট সফল হয়েছে",
+  "dueCustomer": "ডিউ গ্রাহক"
 }

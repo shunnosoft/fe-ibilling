@@ -77,7 +77,7 @@ export default function CustomerEdit(props) {
 
   // fix max promise date
   let mxDate = new Date(data?.billingCycle);
-  mxDate.setDate(mxDate.getDate() + parseInt(3));
+  mxDate.setDate(mxDate.getDate() + parseInt(20));
 
   useEffect(() => {
     setPackageId(data?.mikrotikPackage);

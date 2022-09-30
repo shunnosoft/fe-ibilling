@@ -15,7 +15,7 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
   const dispatch = useDispatch();
 
   let mxDate = new Date();
-  mxDate.setDate(mxDate.getDate() + parseInt(3));
+  mxDate.setDate(mxDate.getDate() + parseInt(20));
 
   const promiseDateHandler = (e) => {
     e.preventDefault();
