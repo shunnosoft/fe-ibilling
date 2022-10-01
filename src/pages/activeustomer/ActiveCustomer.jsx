@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
 import { ArrowClockwise, WifiOff, Wifi } from "react-bootstrap-icons";
@@ -15,47 +14,45 @@ import Footer from "../../components/admin/footer/Footer";
 import Loader from "../../components/common/Loader";
 import { fetchMikrotik, fetchpppoeUser } from "../../features/apiCalls";
 
-import { resetMikrotikUserAndPackage } from "../../features/mikrotikSlice";
-
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
-// import TdLoader from "../../components/common/TdLoader";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  const [selectedMikrotikId, setMikrotikId] = useState();
-
-  const singleMik = mikrotik.find((item) => item.id === selectedMikrotikId)
-    ? mikrotik.find((item) => item.id === selectedMikrotikId)
-    : {};
-
+  // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
 
-  const [loading, setLoading] = useState(false);
-
+  // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    !mikrotik.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
-    const mtkId = selectedMikrotikId ? selectedMikrotikId : mikrotik[0]?.id;
-    const name = mtkId ? singleMik?.name : "";
-    setMikrotikId(mtkId);
-    const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: mtkId,
-    };
+  // mikrotik loading state
+  const [loading, setIsloading] = useState(false);
 
-    if (mtkId) {
-      dispatch(resetMikrotikUserAndPackage());
-      fetchpppoeUser(dispatch, IDs, name, setLoading, "user");
-    }
-  }, [ispOwnerId, selectedMikrotikId, mikrotik]);
+  // customer loading state
+  const [mtkLoading, setMtkLoading] = useState(false);
 
+  // set initialy mikrotik id
+  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+
+  // customer state
+  let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+
+  // find single mikrotik details
+  const singleMik = mikrotik.find((item) => item.id === mikrotikId);
+
+  // select mikrotik handler
+  const mikrotiSelectionHandler = (event) => {
+    setMikrotikId(event.target.value);
+  };
+
+  // customer filter state
   const filterIt = (e) => {
     let temp;
     if (e.target.value === "allCustomer") {
@@ -69,23 +66,33 @@ export default function ConfigMikrotik() {
     }
   };
 
-  const mikrotiSelectionHandler = (e) => {
-    const original = e.target.value;
-    setMikrotikId(original);
+  // initialize id
+  const IDs = {
+    ispOwner: ispOwnerId,
+    mikrotikId: mikrotikId,
   };
 
-  const refreshHandler = () => {
-    const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: selectedMikrotikId,
-    };
-
-    dispatch(resetMikrotikUserAndPackage());
-    // fetchActivepppoeUser(dispatch, IDs, singleMik.name, setLoading);
-
-    fetchpppoeUser(dispatch, IDs, singleMik.name, setLoading, "user");
+  // reload handler
+  const reloadHandler = () => {
+    fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
+    fetchMikrotik(dispatch, ispOwnerId, setIsloading);
   };
 
+  // api call for get update static customer
+  useEffect(() => {
+    fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+    if (mikrotikId) {
+      fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
+    }
+  }, [mikrotikId]);
+
+  // set mikrotik and customer into state
+  useEffect(() => {
+    setAllUsers(allMikrotikUsers);
+    setMikrotikId(mikrotik[0]?.id);
+  }, [allMikrotikUsers, mikrotik]);
+
+  // table column
   const columns = React.useMemo(
     () => [
       {
@@ -159,10 +166,6 @@ export default function ConfigMikrotik() {
     ],
     [t]
   );
-  let [allUsers, setAllUsers] = useState(allMikrotikUsers);
-  useEffect(() => {
-    setAllUsers(allMikrotikUsers);
-  }, [allMikrotikUsers]);
 
   return (
     <>
@@ -178,11 +181,11 @@ export default function ConfigMikrotik() {
                   <div className="d-flex">
                     <div>{t("activeCustomer")}</div>
                     <div className="reloadBtn">
-                      {loading ? (
+                      {mtkLoading ? (
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
-                          onClick={() => refreshHandler()}
+                          onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
                     </div>
@@ -200,9 +203,9 @@ export default function ConfigMikrotik() {
                         onChange={mikrotiSelectionHandler}
                         className="form-select mt-0"
                       >
-                        {mikrotik.map((m) => {
-                          return <option value={m.id}>{m.name}</option>;
-                        })}
+                        {mikrotik.map((item) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
                       </select>
                     </div>
 
@@ -229,7 +232,7 @@ export default function ConfigMikrotik() {
                   {/* Active PPPoE users */}
                   <div className="table-section">
                     <Table
-                      isLoading={loading}
+                      isLoading={mtkLoading}
                       columns={columns}
                       data={allUsers}
                     ></Table>
