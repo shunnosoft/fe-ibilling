@@ -540,5 +540,6 @@
   "resellerRecharge": "Reseller Recharge",
   "SalarySMSToast": "Salary SMS template Updated",
   "rechargeSMSToast": "Reseller Recharge SMS template Updated",
-  "dueCustomer": "Due Customers"
+  "dueCustomer": "Due Customers",
+  "bulk": "Bulk"
 }

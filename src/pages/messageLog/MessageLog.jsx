@@ -27,7 +27,6 @@ const MessageLog = () => {
 
   // main data state
   const [mainData, setMainData] = useState([]);
-  console.log(mainData);
 
   // get Current date
   const today = new Date();
@@ -44,6 +43,9 @@ const MessageLog = () => {
   // end date state
   const [endDate, setEndDate] = useState(today);
 
+  // type state
+  const [type, setType] = useState("");
+
   // status state
   const [status, setStatus] = useState("");
 
@@ -55,6 +57,11 @@ const MessageLog = () => {
   // filter function
   const onClickFilter = () => {
     let filterData = [...data];
+
+    // type filter
+    if (type) {
+      filterData = filterData.filter((item) => item.type === type);
+    }
 
     // status filter
     if (status) {
@@ -166,9 +173,23 @@ const MessageLog = () => {
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="selectFilteringg">
+                      <div className="typeFilter">
+                        <select
+                          className="form-select w-200"
+                          onChange={(event) => setType(event.target.value)}
+                        >
+                          <option value="" selected>
+                            {t("type")}
+                          </option>
+
+                          <option value="bill">{t("bill")}</option>
+                          <option value="bulk">{t("bulk")}</option>
+                          <option value="other">{t("other")}</option>
+                        </select>
+                      </div>
                       <div className="mx-2">
                         <select
-                          className="form-select"
+                          className="form-select w-200"
                           onChange={(event) => setStatus(event.target.value)}
                         >
                           <option value="" selected>
@@ -181,7 +202,7 @@ const MessageLog = () => {
                       </div>
                       <div>
                         <ReactDatePicker
-                          className="form-control mw-100 mt-2"
+                          className="form-control w-200 mt-2"
                           selected={startDate}
                           onChange={(date) => setStartDate(date)}
                           dateFormat="MMM dd yyyy"
@@ -190,7 +211,7 @@ const MessageLog = () => {
                       </div>
                       <div className="mx-2">
                         <ReactDatePicker
-                          className="form-control mw-100 mt-2"
+                          className="form-control w-200 mt-2"
                           selected={endDate}
                           onChange={(date) => setEndDate(date)}
                           dateFormat="MMM dd yyyy"

@@ -98,6 +98,10 @@ p {
   width: 6rem;
 }
 
+.w-200 {
+  width: 200px !important;
+}
+
 /* Reload Button */
 .reloadBtn {
   background-color: #fcf2f2;
