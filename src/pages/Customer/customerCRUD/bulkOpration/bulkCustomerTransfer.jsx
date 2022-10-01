@@ -15,7 +15,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
   // get all subarea
-  const subAreas = useSelector((state) => state.area?.subArea);
+  const allSubArea = useSelector((state) => state.area?.subArea);
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -24,6 +24,15 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [resellerId, setResellerId] = useState();
+  const [subAreaId, setSubAreaId] = useState("");
+  const selectedReseller = reseller.find((item) => item.id === resellerId);
+
+  let subAreas = [];
+  if (selectedReseller) {
+    subAreas = allSubArea?.filter((item) =>
+      selectedReseller.subAreas.includes(item.id)
+    );
+  }
 
   const bulkCustomerTransferController = () => {
     const enBn = localStorage.getItem("netFee:lang");
@@ -57,17 +66,34 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
 
   return (
     <RootBulkModal modalId={modalId} header={t("transferReseller")}>
-      <label htmlFor="selectReseller">{t("selectReseller")}</label>
-      <select
-        onChange={(e) => setResellerId(e.target.value)}
-        id="selectReseller"
-        className="form-select mw-100"
-      >
-        <option selected>{t("selectReseller")}</option>
-        {reseller.map((item) => (
-          <option value={item.id}>{item.name}</option>
-        ))}
-      </select>
+      <div className="reseller-section pb-2">
+        <label htmlFor="selectReseller">{t("reseller")}</label>
+        <select
+          onChange={(e) => setResellerId(e.target.value)}
+          id="selectReseller"
+          className="form-select mw-100 mt-0"
+        >
+          <option selected>{t("selectReseller")}</option>
+          {reseller.map((item) => (
+            <option value={item.id}>{item.name}</option>
+          ))}
+        </select>
+      </div>
+      {/* <div className="area-section">
+        <label htmlFor="selectReseller">{t("subArea")}</label>
+        <select
+          onClick={(e) => setSubAreaId(e.target.value)}
+          id="selectReseller"
+          className="form-select mw-100 mt-0"
+        >
+          <option selected value="">
+            {t("subArea")}
+          </option>
+          {subAreas.map((item) => (
+            <option value={item.id}>{item.name}</option>
+          ))}
+        </select>
+      </div> */}
 
       <div className="modal-footer" style={{ border: "none" }}>
         <button

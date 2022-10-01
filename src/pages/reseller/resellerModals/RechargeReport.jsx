@@ -29,11 +29,6 @@ const RechargeReport = ({ resellerId }) => {
   // find select reseller
   const findName = reseller.find((item) => item?.id === resellerId);
 
-  // get isp Owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
-
   useEffect(() => {
     if (resellerId) {
       getResellerRechargeHistioty(resellerId, setIsLoading, dispatch);
