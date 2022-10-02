@@ -24,6 +24,8 @@ import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import { PenFill, ThreeDots } from "react-bootstrap-icons";
+import CommentEdit from "./modal/CommentEdit";
 
 export default function RechargeHistoryofReseller() {
   const { t } = useTranslation();
@@ -43,11 +45,13 @@ export default function RechargeHistoryofReseller() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const [cusSearch, setCusSearch] = useState("");
+  const [rechargeId, setRechargeId] = useState();
 
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   const [collectorIds, setCollectorIds] = useState([]);
   const [mainData, setMainData] = useState(rechargeHistory);
+
   const [mainData2, setMainData2] = useState(rechargeHistory);
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   // const [depositAccepted, setDepositAccepet] = useState("")
@@ -148,14 +152,14 @@ export default function RechargeHistoryofReseller() {
   const columns2 = React.useMemo(
     () => [
       {
-        width: "17%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "30%",
+        width: "20%",
         Header: t("name"),
         accessor: "reseller.name",
         Cell: ({ cell: { value } }) => {
@@ -163,18 +167,64 @@ export default function RechargeHistoryofReseller() {
         },
       },
       {
-        width: "36%",
-        width: "17%",
+        width: "18%",
         Header: t("amount"),
         accessor: "amount",
       },
+      {
+        width: "30%",
+        Header: t("comment"),
+        accessor: "comment",
+      },
 
       {
+        width: "22%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
+      },
+      {
+        width: "7%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#rechargeCommentEdit"
+                  onClick={() => {
+                    setRechargeId(original?.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        ),
       },
     ],
     [t]
@@ -283,6 +333,7 @@ export default function RechargeHistoryofReseller() {
           </div>
         </div>
       </div>
+      <CommentEdit rechargeId={rechargeId} />
     </>
   );
 }

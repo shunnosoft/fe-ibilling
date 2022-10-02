@@ -18,7 +18,6 @@ const RechargeReport = ({ resellerId }) => {
 
   //get recharge history
   const data = useSelector((state) => state.recharge.singleHistory);
-  console.log(data);
 
   // get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);

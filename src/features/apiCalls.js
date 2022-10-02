@@ -87,6 +87,7 @@ import {
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
   getAllRechargeHistory,
+  historyEditSuccess,
   resellerRechargeHistorySlice,
 } from "./rechargeSlice";
 import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
@@ -1540,6 +1541,25 @@ export const rechargeHistoryfunc = async (dispatch, ispOwnerId) => {
   } catch (error) {
     console.log(error.response?.data.message);
   }
+};
+
+export const rechargeHistoryEdit = async (
+  dispatch,
+  rechargeId,
+  data,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(`/reseller/recharge/${rechargeId}`, data);
+    dispatch(historyEditSuccess(res.data));
+    document.querySelector("#rechargeCommentEdit").click();
+    langMessage("success", "কমেন্ট এডিট সফল হয়েছে", "Commnet edit Success");
+  } catch (error) {
+    console.log(error.response?.data.message);
+    langMessage("success", "কমেন্ট এডিট ব্যার্থ হয়েছে", "Commnet edit Failed");
+  }
+  setIsLoading(false);
 };
 
 export const getResellerRechargeHistioty = async (

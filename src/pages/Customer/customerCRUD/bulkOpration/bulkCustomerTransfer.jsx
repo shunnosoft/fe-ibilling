@@ -37,11 +37,14 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   const bulkCustomerTransferController = () => {
     const enBn = localStorage.getItem("netFee:lang");
     if (!resellerId) return alert("Please select a reseler");
+    if (!subAreaId) return alert("Please select a Sub Area");
+
     const data = {
       customerIds: bulkCustomer.map((item) => {
         return item.original.id;
       }),
       resellerId: resellerId,
+      subAreaId,
     };
 
     let confirm;
@@ -79,7 +82,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
           ))}
         </select>
       </div>
-      {/* <div className="area-section">
+      <div className="area-section">
         <label htmlFor="selectReseller">{t("subArea")}</label>
         <select
           onClick={(e) => setSubAreaId(e.target.value)}
@@ -93,7 +96,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
             <option value={item.id}>{item.name}</option>
           ))}
         </select>
-      </div> */}
+      </div>
 
       <div className="modal-footer" style={{ border: "none" }}>
         <button
