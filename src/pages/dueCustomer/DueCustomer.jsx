@@ -19,11 +19,13 @@ import { Tab, Tabs } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./print/ReportPDF";
+import StaticPrintReport from "./print/StaticReportPDF";
 
 const DueCustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const componentRef = useRef();
+  const staticRef = useRef();
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -31,8 +33,14 @@ const DueCustomer = () => {
   // static Customr loading
   const [staticLoading, setStaticLoading] = useState(false);
 
-  // print modal state
+  // pppoe payment status state
   const [paymentStatus, setPaymentStatus] = useState();
+
+  // static payment status state
+  const [staticPaymentStatus, setStaticPaymentStatus] = useState();
+
+  // customer type
+  const [customerType, setCustomerType] = useState("pppoe");
 
   // get current date
   const date = new Date();
@@ -54,7 +62,7 @@ const DueCustomer = () => {
   let dueCustomer = useSelector((state) => state.customer.dueCustomer);
 
   // get due static customer
-  const staticDueCustomer = useSelector(
+  let staticDueCustomer = useSelector(
     (state) => state.customer.staticDueCustomer
   );
 
@@ -63,10 +71,17 @@ const DueCustomer = () => {
     (state) => state.persistedReducer.auth.userData
   );
 
-  // payment filter
+  // pppoe customer payment filter
   if (paymentStatus && paymentStatus !== "select") {
     dueCustomer = dueCustomer.filter(
       (value) => value.paymentStatus === paymentStatus
+    );
+  }
+
+  // static customer payment filter
+  if (staticPaymentStatus && staticPaymentStatus !== "select") {
+    staticDueCustomer = staticDueCustomer.filter(
+      (value) => value.paymentStatus === staticPaymentStatus
     );
   }
 
@@ -91,7 +106,7 @@ const DueCustomer = () => {
       );
   }, []);
 
-  //export customer data
+  //pppoe customer export customer data
   let customerForCsVTableInfo = dueCustomer.map((customer) => {
     return {
       name: customer.name,
@@ -106,7 +121,7 @@ const DueCustomer = () => {
     };
   });
 
-  // csv table header
+  // pppoe customer csv table header
   const customerForCsVTableInfoHeader = [
     { label: "name_of_client", key: "name" },
     { label: "address_of_client", key: "customerAddress" },
@@ -114,6 +129,43 @@ const DueCustomer = () => {
     { label: "client_phone", key: "mobile" },
     { label: "status", key: "status" },
     { label: "payment Status", key: "paymentStatus" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+
+  // satic customer export customer data
+  let staticCustomerForCsVTableInfo = staticDueCustomer.map((customer) => {
+    return {
+      name: customer.name,
+      ip:
+        customer.userType === "firewall-queue"
+          ? customer.queue.address
+          : customer.queue.target,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.queue?.package,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  // static customer csv table header
+  const staticCustomerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "customer_ip", key: "ip" },
+    { label: "package", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
     { label: "monthly_fee", key: "monthlyFee" },
     { label: "balance", key: "balance" },
     { label: "billing_cycle", key: "billingCycle" },
@@ -291,18 +343,22 @@ const DueCustomer = () => {
                     }}
                   >
                     <>
+                      {/* for pppoe customer */}
                       <div className="addAndSettingIcon">
                         <CSVLink
                           data={customerForCsVTableInfo}
                           filename={ispOwnerData.company}
                           headers={customerForCsVTableInfoHeader}
-                          title="Customer Report"
+                          title="PPPoE Cutomer CSV"
                         >
                           <FileExcelFill className="addcutmButton" />
                         </CSVLink>
                       </div>
 
-                      <div className="addAndSettingIcon">
+                      <div
+                        className="addAndSettingIcon"
+                        title={t("PPPoE Cutomer Print")}
+                      >
                         <ReactToPrint
                           documentTitle={t("dueCustomer")}
                           trigger={() => (
@@ -314,11 +370,46 @@ const DueCustomer = () => {
                           content={() => componentRef.current}
                         />
                       </div>
+                      {/* end for pppoe customer */}
+
+                      {/* for static customer */}
+                      <div className="addAndSettingIcon">
+                        <CSVLink
+                          data={staticCustomerForCsVTableInfo}
+                          filename={ispOwnerData.company}
+                          headers={staticCustomerForCsVTableInfoHeader}
+                          title="Static Cutomer CSV"
+                        >
+                          <FileExcelFill className="addcutmButton" />
+                        </CSVLink>
+                      </div>
+
+                      <div
+                        className="addAndSettingIcon"
+                        title={t("Static Cutomer Print")}
+                      >
+                        <ReactToPrint
+                          documentTitle={t("dueCustomer")}
+                          trigger={() => (
+                            <PrinterFill
+                              title={t("print")}
+                              className="addcutmButton"
+                            />
+                          )}
+                          content={() => staticRef.current}
+                        />
+                      </div>
+                      {/* end for static customer */}
+
                       {/* print report */}
                       <div style={{ display: "none" }}>
                         <PrintReport
                           currentCustomers={dueCustomer}
                           ref={componentRef}
+                        />
+                        <StaticPrintReport
+                          currentCustomers={staticDueCustomer}
+                          ref={staticRef}
                         />
                       </div>
                       {/* print report end*/}
@@ -335,17 +426,19 @@ const DueCustomer = () => {
                       className="mb-3"
                     >
                       <Tab eventKey="pppoe" title={t("PPPoE")}>
-                        {/* filter selector */}
-                        <select
-                          className="form-select"
-                          onChange={(e) => {
-                            setPaymentStatus(e.target.value);
-                          }}
-                        >
-                          <option value={"select"}>{t("select")}</option>
-                          <option value={"paid"}>{t("paid")}</option>
-                          <option value={"unpaid"}>{t("unpaid")}</option>
-                        </select>
+                        <div className="filter-section">
+                          {/* filter selector */}
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              setPaymentStatus(e.target.value);
+                            }}
+                          >
+                            <option value={"select"}>{t("select")}</option>
+                            <option value={"paid"}>{t("paid")}</option>
+                            <option value={"unpaid"}>{t("unpaid")}</option>
+                          </select>
+                        </div>
 
                         <div className="table-section">
                           <Table
@@ -357,6 +450,16 @@ const DueCustomer = () => {
                       </Tab>
                       <Tab eventKey="static" title={t("static")}>
                         {/* filter selector */}
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            setStaticPaymentStatus(e.target.value);
+                          }}
+                        >
+                          <option value={"select"}>{t("select")}</option>
+                          <option value={"paid"}>{t("paid")}</option>
+                          <option value={"unpaid"}>{t("unpaid")}</option>
+                        </select>
 
                         <div className="table-section">
                           <Table

@@ -102,6 +102,7 @@ export default function Customer() {
       ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
   );
+
   const [allArea, setAreas] = useState([]);
 
   const bpSettings = useSelector(
