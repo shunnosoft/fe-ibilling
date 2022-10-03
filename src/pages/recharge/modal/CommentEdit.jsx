@@ -1,43 +1,47 @@
-import React, { useState } from "react";
-import { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import Loader from "../../../components/common/Loader";
-import { recharge } from "../../../features/apiCalls";
-
-import "../../message/message.css";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { rechargeHistoryEdit } from "../../../features/apiCalls";
+import { useDispatch } from "react-redux";
 
-function Recharge({ resellerId }) {
+const CommentEdit = ({ rechargeId }) => {
   const { t } = useTranslation();
-  const rechargeRef = useRef(Number);
   const dispatch = useDispatch();
-  const [isLoading, setIsloading] = useState(false);
-  const [comment, setComment] = useState("");
-  console.log(comment);
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+  // get recharge history form redux
+  const rechargeHistory = useSelector(
+    (state) => state.recharge.rechargeHistory
   );
 
-  const allReseller = useSelector((state) => state?.reseller?.reseller);
-  const reseller = allReseller.find((val) => {
-    return val.id === resellerId;
-  });
+  // find single data
+  const data = rechargeHistory.find((item) => item.id === rechargeId);
 
-  const rechargeHandler = () => {
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // comment state
+  const [comment, setComment] = useState("");
+
+  // set comment on state
+  useEffect(() => {
+    setComment(data?.comment);
+  }, [data]);
+
+  // comment handler
+  const editHandler = () => {
     const data = {
-      amount: parseInt(rechargeRef.current.value),
       comment,
-      ispOwner: ispOwnerId,
-      reseller: reseller.id,
     };
-    recharge(data, setIsloading, dispatch, rechargeRef);
+    rechargeHistoryEdit(dispatch, rechargeId, data, setIsLoading);
   };
+
   return (
     <>
       <div
         className="modal fade"
-        id="resellerRechargeModal"
+        id="rechargeCommentEdit"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -46,7 +50,7 @@ function Recharge({ resellerId }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {t("rechargeAmount")}
+                {t("editComment")}
               </h5>
               <button
                 type="button"
@@ -56,24 +60,16 @@ function Recharge({ resellerId }) {
               ></button>
             </div>
             <div className="modal-body">
-              <div className="amount-section">
-                <input
-                  ref={rechargeRef}
-                  className="form-control"
-                  type="number"
-                  min={0}
-                  placeholder={t("enterAmount")}
-                />
-              </div>
               <div class="form-floating mt-3">
                 <textarea
                   cols={200}
                   class="form-control shadow-none"
+                  value={comment}
                   placeholder={t("writeNote")}
                   id="noteField"
                   onChange={(e) => setComment(e.target.value)}
                 ></textarea>
-                <label for="noteField"> {t("addComment")} </label>
+                <label for="noteField"> {t("editComment")} </label>
               </div>
             </div>
 
@@ -89,9 +85,9 @@ function Recharge({ resellerId }) {
               <button
                 type="button"
                 className="btn btn-success"
-                onClick={rechargeHandler}
+                onClick={editHandler}
               >
-                {isLoading ? <Loader></Loader> : t("recharge")}
+                {isLoading ? <Loader /> : t("submit")}
               </button>
             </div>
           </div>
@@ -99,6 +95,6 @@ function Recharge({ resellerId }) {
       </div>
     </>
   );
-}
+};
 
-export default Recharge;
+export default CommentEdit;

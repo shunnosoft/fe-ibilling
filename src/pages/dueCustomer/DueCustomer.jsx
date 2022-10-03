@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getDueCustomer } from "../../features/apiCalls";
@@ -9,19 +9,30 @@ import { badge } from "../../components/common/Utils";
 import moment from "moment";
 import Loader from "../../components/common/Loader";
 import useDash from "../../assets/css/dash.module.css";
-import { ArrowClockwise } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FileExcelFill,
+  PrinterFill,
+} from "react-bootstrap-icons";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import { Tab, Tabs } from "react-bootstrap";
+import { CSVLink } from "react-csv";
+import ReactToPrint from "react-to-print";
+import PrintReport from "./print/ReportPDF";
 
 const DueCustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const componentRef = useRef();
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
   // static Customr loading
   const [staticLoading, setStaticLoading] = useState(false);
+
+  // print modal state
+  const [paymentStatus, setPaymentStatus] = useState();
 
   // get current date
   const date = new Date();
@@ -40,12 +51,24 @@ const DueCustomer = () => {
   );
 
   // get due customer
-  const dueCustomer = useSelector((state) => state.customer.dueCustomer);
+  let dueCustomer = useSelector((state) => state.customer.dueCustomer);
 
   // get due static customer
   const staticDueCustomer = useSelector(
     (state) => state.customer.staticDueCustomer
   );
+
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
+
+  // payment filter
+  if (paymentStatus && paymentStatus !== "select") {
+    dueCustomer = dueCustomer.filter(
+      (value) => value.paymentStatus === paymentStatus
+    );
+  }
 
   // reload handler
   const reloadHandler = () => {
@@ -67,6 +90,34 @@ const DueCustomer = () => {
         "static"
       );
   }, []);
+
+  //export customer data
+  let customerForCsVTableInfo = dueCustomer.map((customer) => {
+    return {
+      name: customer.name,
+      customerAddress: customer.address,
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  // csv table header
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
 
   // pppoe column
   const pppoeColumns = React.useMemo(
@@ -231,6 +282,48 @@ const DueCustomer = () => {
                       )}
                     </div>
                   </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <>
+                      <div className="addAndSettingIcon">
+                        <CSVLink
+                          data={customerForCsVTableInfo}
+                          filename={ispOwnerData.company}
+                          headers={customerForCsVTableInfoHeader}
+                          title="Customer Report"
+                        >
+                          <FileExcelFill className="addcutmButton" />
+                        </CSVLink>
+                      </div>
+
+                      <div className="addAndSettingIcon">
+                        <ReactToPrint
+                          documentTitle={t("dueCustomer")}
+                          trigger={() => (
+                            <PrinterFill
+                              title={t("print")}
+                              className="addcutmButton"
+                            />
+                          )}
+                          content={() => componentRef.current}
+                        />
+                      </div>
+                      {/* print report */}
+                      <div style={{ display: "none" }}>
+                        <PrintReport
+                          currentCustomers={dueCustomer}
+                          ref={componentRef}
+                        />
+                      </div>
+                      {/* print report end*/}
+                    </>
+                  </div>
                 </div>
               </FourGround>
               <FourGround>
@@ -243,6 +336,16 @@ const DueCustomer = () => {
                     >
                       <Tab eventKey="pppoe" title={t("PPPoE")}>
                         {/* filter selector */}
+                        <select
+                          className="form-select"
+                          onChange={(e) => {
+                            setPaymentStatus(e.target.value);
+                          }}
+                        >
+                          <option value={"select"}>{t("select")}</option>
+                          <option value={"paid"}>{t("paid")}</option>
+                          <option value={"unpaid"}>{t("unpaid")}</option>
+                        </select>
 
                         <div className="table-section">
                           <Table
