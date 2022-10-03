@@ -205,7 +205,7 @@ const PPPOECustomer = () => {
       //loop over areas
       const tempCollectorAreas = areas.filter((item) => {
         return collectorSubAreas.some((subArea) => {
-          return item.subAreas.some((s) => s.id === subArea);
+          return item.subAreas.some((s) => s.id === subArea.id);
         });
       });
       //update the collector area state
