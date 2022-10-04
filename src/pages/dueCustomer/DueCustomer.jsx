@@ -39,9 +39,6 @@ const DueCustomer = () => {
   // static payment status state
   const [staticPaymentStatus, setStaticPaymentStatus] = useState();
 
-  // customer type
-  const [customerType, setCustomerType] = useState("pppoe");
-
   // get current date
   const date = new Date();
 

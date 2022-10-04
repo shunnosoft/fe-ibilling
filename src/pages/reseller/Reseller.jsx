@@ -49,6 +49,7 @@ import { useTranslation } from "react-i18next";
 import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import RechargeReport from "./resellerModals/RechargeReport";
+import MonthlyReport from "./resellerModals/MonthlyReport";
 
 export default function Reseller() {
   const { t } = useTranslation();
@@ -227,6 +228,20 @@ export default function Reseller() {
                     </div>
                   </div>
                 </li>
+                {/* <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#monthlyReport"
+                  onClick={() => {
+                    getSpecificReseller(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("prevMonthReport")}</p>
+                    </div>
+                  </div>
+                </li> */}
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#resellerDetailsModal"
@@ -418,6 +433,9 @@ export default function Reseller() {
 
       {/* recharge report  */}
       <RechargeReport resellerId={resellerId} />
+
+      {/* monthly report */}
+      <MonthlyReport resellerID={resellerId} />
 
       {/* reseller msg modal  */}
       <SingleMessage single={resellerSmsId} sendCustomer="reseller" />

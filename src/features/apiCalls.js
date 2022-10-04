@@ -88,6 +88,7 @@ import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
   getAllRechargeHistory,
   historyEditSuccess,
+  prevMonthReportSlice,
   resellerRechargeHistorySlice,
 } from "./rechargeSlice";
 import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
@@ -1571,6 +1572,24 @@ export const getResellerRechargeHistioty = async (
   try {
     const res = await apiLink.get(`/reseller/recharge/${resellerId}`);
     dispatch(resellerRechargeHistorySlice(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
+export const prevMonthReport = async (
+  ispOwnerId,
+  resellerId,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `/ispOwner/prev-month-reseller-report/${ispOwnerId}/${resellerId}`
+    );
+    dispatch(prevMonthReportSlice(res.data.report));
   } catch (error) {
     console.log(error);
   }

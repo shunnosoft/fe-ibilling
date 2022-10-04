@@ -544,5 +544,11 @@
   "dueCustomer": "ডিউ গ্রাহক",
   "bulk": "বাল্ক",
   "editComment": "কমেন্ট এডিট",
-  "addComment": "এড কমেন্ট"
+  "addComment": "এড কমেন্ট",
+  "prevMonthReport": "পূর্বের মাসের রিপোর্ট",
+  "totalCustomer": "মোট গ্রাহক",
+  "totalPaidCustomer": "মোট পরিশোধ গ্রাহক",
+  "totalDueBill": "মোট বকেয়া বিল",
+  "totalUnpaidCustomer": "মোট বকেয়া গ্রাহক",
+  "totalPaidBill": "মোট পরিশোধ"
 }

@@ -333,7 +333,9 @@ function App() {
             <Route
               path="/staticActiveCustomer"
               element={
-                userRole === "ispOwner" || userRole === "manager" ? (
+                userRole === "ispOwner" ||
+                userRole === "manager" ||
+                userRole === "collector" ? (
                   <StaticActiveCustomer />
                 ) : (
                   <Navigate to={"/home"} />

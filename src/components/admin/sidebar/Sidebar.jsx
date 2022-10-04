@@ -283,8 +283,8 @@ export default function Sidebar() {
                         (userRole === "ispOwner" ||
                           userRole === "manager" ||
                           userRole === "reseller" ||
-                          (userRole === "collector" &&
-                            user.collector.reseller)) ? (
+                          userRole === "collector" ||
+                          user.collector.reseller) ? (
                           <NavLink
                             key={66}
                             to={
@@ -384,9 +384,9 @@ export default function Sidebar() {
                         {getIspOwnerData?.bpSettings?.hasMikrotik &&
                         (userRole === "ispOwner" ||
                           userRole === "manager" ||
-                          userRole === "reseller" ||
+                          // userRole === "reseller" ||
                           (userRole === "collector" &&
-                            user.collector.reseller)) ? (
+                            !user.collector.reseller)) ? (
                           <NavLink
                             key={61}
                             to={

@@ -31,7 +31,6 @@ const ActivityLog = () => {
 
   // get all data from redux
   const data = useSelector((state) => state?.activityLog?.activityLog);
-  console.log(data);
 
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);

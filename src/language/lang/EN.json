@@ -543,5 +543,11 @@
   "dueCustomer": "Due Customers",
   "bulk": "Bulk",
   "editComment": "Edit Comment",
-  "addComment": "Comment Add"
+  "addComment": "Comment Add",
+  "prevMonthReport": "Previous Month Report",
+  "totalCustomer": "Total Customer",
+  "totalPaidCustomer": "Total Paid Customer",
+  "totalDueBill": "Total Due Bill",
+  "totalUnpaidCustomer": "Total Unpaid Customer",
+  "totalPaidBill": "Total Paid"
 }

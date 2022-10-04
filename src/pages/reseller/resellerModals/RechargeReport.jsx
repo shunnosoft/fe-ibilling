@@ -81,8 +81,8 @@ const RechargeReport = ({ resellerId }) => {
                   <tbody>
                     {isLoading ? (
                       <TdLoader colspan={4} />
-                    ) : data.length > 0 ? (
-                      data.map((item, index) => {
+                    ) : data?.length > 0 ? (
+                      data?.map((item, index) => {
                         return (
                           <>
                             <tr key={index}>
