@@ -208,7 +208,7 @@ export default function Reseller() {
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <Wallet />
+                      <CurrencyDollar />
                       <p className="actionP">{t("useMemoRecharge")}</p>
                     </div>
                   </div>
@@ -228,7 +228,7 @@ export default function Reseller() {
                     </div>
                   </div>
                 </li>
-                {/* <li
+                <li
                   data-bs-toggle="modal"
                   data-bs-target="#monthlyReport"
                   onClick={() => {
@@ -241,7 +241,7 @@ export default function Reseller() {
                       <p className="actionP">{t("prevMonthReport")}</p>
                     </div>
                   </div>
-                </li> */}
+                </li>
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#resellerDetailsModal"

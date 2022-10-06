@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
+import Footer from "../../components/admin/footer/Footer";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Loader from "../../components/common/Loader";
 import { badge } from "../../components/common/Utils";
@@ -237,6 +238,7 @@ const MessageLog = () => {
                   ></Table>
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

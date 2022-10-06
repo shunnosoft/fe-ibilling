@@ -141,12 +141,18 @@ export default function CollectorEdit({ collectorId }) {
                           label={val.label}
                           name={val.name}
                           disabled={val.disabled}
+                          validation={"true"}
                         />
                       ))}
 
                       {/* status */}
                       <div className="form-check customerFormCheck">
-                        <p> {t("status")} </p>
+                        <div className="label">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("status")}
+                            <span className="text-danger">*</span>
+                          </label>
+                        </div>
                         <div className="form-check form-check-inline">
                           <FtextField
                             label="Active"

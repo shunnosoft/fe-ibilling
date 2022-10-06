@@ -279,19 +279,7 @@ export default function SubArea() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
-                  <div className="addCollector">
-                    <div>
-                      {isLoading ? (
-                        <div className="deletingAction">
-                          <Loader /> <b>Deleting...</b>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  </div>
-
+                <div className="collectorWrapper mt-2 py-2">
                   <Table columns={columns} data={subAreas}></Table>
                 </div>
               </FourGround>

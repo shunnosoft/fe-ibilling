@@ -23,7 +23,7 @@ const RechargeReport = ({ resellerId }) => {
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
   // loading state
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState();
 
   // find select reseller
   const findName = reseller.find((item) => item?.id === resellerId);

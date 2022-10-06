@@ -130,14 +130,31 @@ export default function Register() {
                       label={t("organizationName")}
                       name="company"
                       type="text"
+                      validation="true"
                     />
-                    <TextField label={t("adminName")} name="name" type="text" />
-                    <TextField label={t("mobile")} name="mobile" type="text" />
-                    <TextField label={t("email")} name="email" type="email" />
+                    <TextField
+                      label={t("adminName")}
+                      name="name"
+                      type="text"
+                      validation="true"
+                    />
+                    <TextField
+                      label={t("mobile")}
+                      name="mobile"
+                      type="text"
+                      validation="true"
+                    />
+                    <TextField
+                      label={t("email")}
+                      name="email"
+                      type="email"
+                      validation="true"
+                    />
                     <TextField
                       label={t("address")}
                       name="address"
                       type="text"
+                      validation="true"
                     />
 
                     {/* Options */}
@@ -149,7 +166,8 @@ export default function Register() {
                       </span>
                     </div>
                     <label className="form-label mt-2">
-                      {t("selectYourPreferablePackage")}
+                      {t("selectYourPreferablePackage")}{" "}
+                      <span className="text-danger">*</span>
                     </label>
 
                     {/* <option value="">প্যাকেজ সিলেক্ট করুন</option> */}

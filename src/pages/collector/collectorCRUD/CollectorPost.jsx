@@ -115,12 +115,18 @@ export default function CollectorPost() {
                           type={val.type}
                           label={val.label}
                           name={val.name}
+                          validation={"true"}
                         />
                       ))}
 
                       {/* status */}
                       <div className="form-check customerFormCheck">
-                        <p> {t("status")} </p>
+                        <div className="label">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("status")}
+                            <span className="text-danger">*</span>
+                          </label>
+                        </div>
                         <div className="form-check form-check-inline">
                           <FtextField
                             label="Active"

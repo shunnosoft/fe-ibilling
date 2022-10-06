@@ -20,6 +20,7 @@ import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./print/ReportPDF";
 import StaticPrintReport from "./print/StaticReportPDF";
+import Footer from "../../components/admin/footer/Footer";
 
 const DueCustomer = () => {
   const dispatch = useDispatch();
@@ -470,6 +471,7 @@ const DueCustomer = () => {
                   </div>
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

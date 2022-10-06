@@ -245,6 +245,7 @@ export default function ResellerPost() {
                             type={val.type}
                             label={val.label}
                             name={val.name}
+                            validation={true}
                           />
                         ))}
                       </div>

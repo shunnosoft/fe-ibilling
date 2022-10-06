@@ -38,10 +38,12 @@ export default function CustomerModal() {
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
+  console.log(mikrotikPackage);
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
-  const [billDate, setBillDate] = useState(null);
+  const [billDate, setBillDate] = useState();
+  console.log(billDate);
   const [connectionDate, setConnectionDate] = useState();
 
   // customer validator
@@ -111,6 +113,7 @@ export default function CustomerModal() {
     // console.log(mikrotikPackageId)
     if (mikrotikPackageId === "0") {
       setPackageRate({ rate: 0 });
+      setMikrotikPackage("");
     } else {
       // console.log(e.target.value)
       setMikrotikPackage(mikrotikPackageId);
@@ -127,6 +130,12 @@ export default function CustomerModal() {
       setIsloading(false);
       return alert(t("selectSubArea"));
     }
+
+    if (!billDate) {
+      setIsloading(false);
+      return alert(t("selectBillDate"));
+    }
+
     const { Pname, Ppassword, Pprofile, Pcomment, balance, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
@@ -205,7 +214,8 @@ export default function CustomerModal() {
                       {bpSettings?.hasMikrotik ? (
                         <div>
                           <label className="form-control-label changeLabelFontColor">
-                            {t("selectMikrotik")}
+                            {t("selectMikrotik")}{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <select
                             className="form-select mw-100 mt-0"
@@ -229,7 +239,8 @@ export default function CustomerModal() {
                       {/* pppoe package */}
                       <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {t("selectPackage")}
+                          {t("selectPackage")}{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           className="form-select mb-3 mw-100 mt-0"
@@ -250,6 +261,8 @@ export default function CustomerModal() {
                         label={t("monthFee")}
                         name="monthlyFee"
                         min={0}
+                        disabled={!mikrotikPackage}
+                        validation={"true"}
                         // value={packageRate?.rate}
                         // onChange={(e)=>{
                         //   setPackageRate((preval)=>{
@@ -275,28 +288,35 @@ export default function CustomerModal() {
                         type="text"
                         label={t("PPPoEName")}
                         name="Pname"
+                        disabled={!mikrotikPackage}
+                        validation={"true"}
                       />
                       <FtextField
                         type="text"
                         label={t("password")}
                         name="Ppassword"
+                        disabled={!mikrotikPackage}
+                        validation={"true"}
                       />
                       <FtextField
                         type="text"
                         label={t("comment")}
                         name="Pcomment"
+                        disabled={!mikrotikPackage}
                       />
                     </div>
 
                     <div className="displayGrid3">
                       <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {t("selectArea")}
+                          {t("selectArea")}{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectSubArea}
+                          disabled={!mikrotikPackage}
                         >
                           <option value="">...</option>
                           {area.length === undefined
@@ -312,13 +332,15 @@ export default function CustomerModal() {
                       <div>
                         <label className="form-control-label changeLabelFontColor">
                           {subArea ? subArea.name + " এর - " : ""}{" "}
-                          {t("selectSubArea")}
+                          {t("selectSubArea")}{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaId"
+                          disabled={!mikrotikPackage}
                         >
                           <option value="">...</option>
                           {subArea?.subAreas
@@ -331,28 +353,48 @@ export default function CustomerModal() {
                         </select>
                       </div>
 
-                      <FtextField type="text" label={t("NIDno")} name="nid" />
+                      <FtextField
+                        type="text"
+                        label={t("NIDno")}
+                        name="nid"
+                        disabled={!mikrotikPackage}
+                      />
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("name")}
+                        name="name"
+                        disabled={!mikrotikPackage}
+                        validation={"true"}
+                      />
                       <FtextField
                         type="text"
                         label={t("mobile")}
                         name="mobile"
+                        disabled={!mikrotikPackage}
+                        validation={"true"}
                       />
                       <FtextField
                         type="text"
                         label={t("address")}
                         name="address"
+                        disabled={!mikrotikPackage}
                       />
                     </div>
                     <div className="newDisplay">
-                      <FtextField type="text" label={t("email")} name="email" />
+                      <FtextField
+                        type="text"
+                        label={t("email")}
+                        name="email"
+                        disabled={!mikrotikPackage}
+                      />
 
                       <div className="billCycle">
                         <label className="form-control-label changeLabelFontColor">
                           {t("billingCycle")}{" "}
+                          <span className="text-danger">*</span>
                         </label>
 
                         <DatePicker
@@ -362,6 +404,7 @@ export default function CustomerModal() {
                           dateFormat="dd/MM/yyyy:hh:mm"
                           showTimeSelect
                           placeholderText={t("selectBillDate")}
+                          disabled={!mikrotikPackage}
                         />
                       </div>
                       <div className="billCycle">
@@ -375,6 +418,7 @@ export default function CustomerModal() {
                             onChange={(date) => setConnectionDate(date)}
                             dateFormat="MM/dd/yyyy"
                             placeholderText={t("selectDate")}
+                            disabled={!mikrotikPackage}
                           />
                         </div>
                       </div>

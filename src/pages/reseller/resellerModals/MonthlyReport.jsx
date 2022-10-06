@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import TdLoader from "../../../components/common/TdLoader";
 import { prevMonthReport } from "../../../features/apiCalls";
 
 const MonthlyReport = ({ resellerID }) => {
@@ -66,16 +67,20 @@ const MonthlyReport = ({ resellerID }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.mikrotikPackage}</td>
-                      <td>{item.totalCustomer}</td>
-                      <td>{item.paidCustomerCount}</td>
-                      <td>{item.totalBillCollected}</td>
-                      <td>{item.unpaidCustomerCount}</td>
-                      <td>{item.unpaidCustomerMonthlyFee}</td>
-                    </tr>
-                  ))}
+                  {isLoading ? (
+                    <TdLoader colspan={6} />
+                  ) : (
+                    data.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.mikrotikPackage}</td>
+                        <td>{item.totalCustomer}</td>
+                        <td>{item.paidCustomerCount}</td>
+                        <td>{item.totalBillCollected}</td>
+                        <td>{item.unpaidCustomerCount}</td>
+                        <td>{item.unpaidCustomerTotalMonthlyFee}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

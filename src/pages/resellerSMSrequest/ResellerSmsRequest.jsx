@@ -14,6 +14,7 @@ import {
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
+import Footer from "../../components/admin/footer/Footer";
 
 const ResellerSmsRequest = () => {
   const { t } = useTranslation();
@@ -191,6 +192,7 @@ const ResellerSmsRequest = () => {
                   </div>
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>
