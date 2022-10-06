@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 
 import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
+import Footer from "../../components/admin/footer/Footer";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
@@ -169,6 +170,7 @@ const StaticActiveCustomer = () => {
                   </div>
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

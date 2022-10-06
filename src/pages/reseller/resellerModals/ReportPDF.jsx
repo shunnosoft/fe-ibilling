@@ -38,7 +38,7 @@ const PrintReport = React.forwardRef((props, ref) => {
             {t("name")} {name}
           </li>
           <li>
-            {t("totalData")} {currentCustomers.length}
+            {t("totalData")} {currentCustomers?.length}
           </li>
         </ul>
         <table className="table table-striped">

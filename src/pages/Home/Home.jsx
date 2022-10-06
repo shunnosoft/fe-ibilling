@@ -41,6 +41,7 @@ import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Footer from "../../components/admin/footer/Footer";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -1097,6 +1098,7 @@ export default function Home() {
               </div>
             </FourGround>
           </div>
+          <Footer />
         </FontColor>
       </div>
       {/*  Start Reseller Information Modal */}

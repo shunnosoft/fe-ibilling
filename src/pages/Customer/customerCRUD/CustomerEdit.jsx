@@ -69,7 +69,7 @@ export default function CustomerEdit(props) {
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState({});
   const [connectionDate, setConnectionDate] = useState("");
-  const [billDate, setBillDate] = useState(null);
+  const [billDate, setBillDate] = useState();
   const [status, setStatus] = useState("");
   const [promiseDate, setPromiseDate] = useState(null);
 
@@ -174,6 +174,11 @@ export default function CustomerEdit(props) {
       return alert(t("selectSubArea"));
     }
 
+    if (!billDate) {
+      setIsloading(false);
+      return alert(t("selectBillDate"));
+    }
+
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
     const mainData = {
       singleCustomerID: data?.id,
@@ -269,11 +274,12 @@ export default function CustomerEdit(props) {
                     <div className="mikrotikSection">
                       {bpSettings?.hasMikrotik ? (
                         <div>
-                          <p className="comstomerFieldsTitle">
-                            {t("selectMikrotik")}
-                          </p>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectMikrotik")}{" "}
+                            <span className="text-danger">*</span>
+                          </label>
                           <select
-                            className="form-select mw-100"
+                            className="form-select mw-100 mt-0"
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
                             disabled
@@ -290,11 +296,12 @@ export default function CustomerEdit(props) {
 
                       {/* pppoe package */}
                       <div>
-                        <p className="comstomerFieldsTitle">
-                          {t("selectPackage")}
-                        </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPackage")}{" "}
+                          <span className="text-danger">*</span>
+                        </label>
                         <select
-                          className="form-select mb-3 mw-100"
+                          className="form-select mb-3 mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
@@ -315,6 +322,7 @@ export default function CustomerEdit(props) {
                         min={0}
                         label={t("monthFee")}
                         name="monthlyFee"
+                        validation={"true"}
                       />
 
                       {bpSettings?.hasMikrotik ? (
@@ -333,11 +341,13 @@ export default function CustomerEdit(props) {
                         type="text"
                         label={`PPPoE ${t("name")}`}
                         name="Pname"
+                        validation={"true"}
                       />
                       <FtextField
                         type="text"
                         label={t("password")}
                         name="Ppassword"
+                        validation={"true"}
                       />
                       <FtextField
                         type="text"
@@ -348,9 +358,12 @@ export default function CustomerEdit(props) {
 
                     <div className="displayGrid3">
                       <div>
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}{" "}
+                          <span className="text-danger">*</span>
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
@@ -369,9 +382,12 @@ export default function CustomerEdit(props) {
                       </div>
 
                       <div>
-                        <p> {t("selectSubArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectSubArea")}
+                          <span className="text-danger">*</span>
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaIdFromEdit"
@@ -393,7 +409,12 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("name")}
+                        name="name"
+                        validation={"true"}
+                      />
                       <FtextField
                         type="text"
                         label={t("mobile")}
@@ -413,10 +434,10 @@ export default function CustomerEdit(props) {
                       <FtextField type="text" label={t("email")} name="email" />
 
                       <div className="billCycle">
-                        <p className="customerFieldsTitle">
-                          {" "}
-                          {t("billingCycle")}{" "}
-                        </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("billingCycle")}
+                          <span className="text-danger">*</span>
+                        </label>
 
                         <div className="timeDate">
                           <DatePicker

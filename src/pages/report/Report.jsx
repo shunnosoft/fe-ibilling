@@ -27,6 +27,7 @@ import Loader from "../../components/common/Loader";
 import EditReport from "./modal/EditReport";
 import ReportView from "./modal/ReportView";
 import { CSVLink } from "react-csv";
+import FormatNumber from "../../components/common/NumberFormat";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -54,6 +55,7 @@ export default function Report() {
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
+
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
@@ -221,7 +223,7 @@ export default function Report() {
     mainData.forEach((item) => {
       count = count + item.amount;
     });
-    return count.toString();
+    return FormatNumber(count);
   }, [mainData]);
 
   let subArea, collector;

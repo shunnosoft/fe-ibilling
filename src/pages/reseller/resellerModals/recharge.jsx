@@ -13,7 +13,6 @@ function Recharge({ resellerId }) {
   const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);
   const [comment, setComment] = useState("");
-  console.log(comment);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.userData.id

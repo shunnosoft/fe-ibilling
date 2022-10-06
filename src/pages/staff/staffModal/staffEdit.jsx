@@ -116,16 +116,23 @@ export default function StaffEdit({ staffId }) {
                     {/* first part */}
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("name")}
+                        name="name"
+                        validation={"true"}
+                      />
                       <FtextField
                         type="text"
                         label={t("mobile")}
                         name="mobile"
+                        validation={"true"}
                       />
                       <FtextField
                         type="number"
                         label={t("salary")}
                         name="salary"
+                        validation={"true"}
                       />
                     </div>
 

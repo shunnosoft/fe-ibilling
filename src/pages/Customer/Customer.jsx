@@ -5,6 +5,7 @@ import {
   ArrowRightSquareFill,
   CashStack,
   ChatText,
+  CurrencyDollar,
   FileExcelFill,
   PenFill,
   PersonFill,
@@ -60,6 +61,7 @@ import { Button, Modal } from "react-bootstrap";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useCallback } from "react";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
+import Footer from "../../components/admin/footer/Footer";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -598,7 +600,7 @@ const PPPOECustomer = () => {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <Wallet />
+                        <CurrencyDollar />
                         <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
@@ -1268,6 +1270,7 @@ const PPPOECustomer = () => {
                   />
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

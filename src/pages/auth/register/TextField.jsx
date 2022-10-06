@@ -1,12 +1,14 @@
 import { ErrorMessage, useField } from "formik";
 import React from "react";
 
-export const TextField = ({ label, ...props }) => {
+export const TextField = ({ label, validation, ...props }) => {
   const [field, meta] = useField(props);
 
   return (
     <div className="mb-2">
-      <label htmlFor={field.name}>{label}</label>
+      <label htmlFor={field.name}>
+        {label} {validation && <span className="text-danger">*</span>}
+      </label>
       <input
         className={`form-control shadow-none ${
           meta.touched && meta.error && "is-invalid"

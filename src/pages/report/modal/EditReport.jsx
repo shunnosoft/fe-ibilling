@@ -104,9 +104,7 @@ const EditReport = ({ reportId, note, setNote }) => {
           <div className="modal-body">
             <>
               <div class="form-group">
-                <label for="exampleFormControlTextarea1">
-                  Example textarea
-                </label>
+                <label for="exampleFormControlTextarea1">{t("editNote")}</label>
                 <textarea
                   class="form-control"
                   id="exampleFormControlTextarea1"

@@ -5,6 +5,7 @@ export const rechargeSlice = createSlice({
   initialState: {
     rechargeHistory: [],
     singleHistory: [],
+    prevMonthReport: [],
   },
   reducers: {
     getAllRechargeHistory: (state, action) => {
@@ -18,6 +19,9 @@ export const rechargeSlice = createSlice({
     resellerRechargeHistorySlice: (state, action) => {
       state.singleHistory = action.payload;
     },
+    prevMonthReportSlice: (state, action) => {
+      state.prevMonthReport = action.payload;
+    },
   },
 });
 
@@ -25,5 +29,6 @@ export const {
   getAllRechargeHistory,
   resellerRechargeHistorySlice,
   historyEditSuccess,
+  prevMonthReportSlice,
 } = rechargeSlice.actions;
 export default rechargeSlice.reducer;

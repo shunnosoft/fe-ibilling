@@ -23,7 +23,7 @@ const RechargeReport = ({ resellerId }) => {
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
   // loading state
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState();
 
   // find select reseller
   const findName = reseller.find((item) => item?.id === resellerId);
@@ -81,8 +81,8 @@ const RechargeReport = ({ resellerId }) => {
                   <tbody>
                     {isLoading ? (
                       <TdLoader colspan={4} />
-                    ) : data.length > 0 ? (
-                      data.map((item, index) => {
+                    ) : data?.length > 0 ? (
+                      data?.map((item, index) => {
                         return (
                           <>
                             <tr key={index}>

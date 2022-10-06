@@ -112,11 +112,17 @@ export default function StaffPost() {
                     {/* first part */}
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("name")}
+                        name="name"
+                        validation={"true"}
+                      />
                       <FtextField
                         type="text"
                         label={t("mobile")}
                         name="mobile"
+                        validation={"true"}
                       />
                       <FtextField type="text" label={t("email")} name="email" />
                     </div>
@@ -139,6 +145,7 @@ export default function StaffPost() {
                         type="number"
                         label={t("salary")}
                         name="salary"
+                        validation={"true"}
                       />
                       {/* <div>
                         <h6 style={{ marginBottom: "-5px" }}>Salary Type</h6>

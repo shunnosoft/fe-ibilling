@@ -51,8 +51,8 @@
   "collector": "কালেক্টর",
   "Proprietor": "প্রোপাইটার",
   "registration": "রেজিস্ট্রেশন",
-  "organizationName": "*প্রতিষ্ঠান এর নাম",
-  "adminName": "*এডমিনের নাম",
+  "organizationName": "প্রতিষ্ঠান এর নাম",
+  "adminName": "এডমিনের নাম",
   "discountWithSignUpFee": "ডিসকাউন্ট (সাইন আপ ফি)",
   "signUpFee": "সাইন আপ ফি",
   "selectYourPreferablePackage": "আপনার পছন্দের প্যাকেজ সিলেক্ট করুন",
@@ -367,6 +367,7 @@
   "serviceCharge": "সার্ভিস চার্জ",
   "noteAndDate": "নোট এবং তারিখ",
   "addNote": "নোট এড করুন",
+  "editNote": "নোট এডিট করুন",
   "startDate": "শুরুর তারিখ",
   "endDate": "শেষ তারিখ",
   "selectDate": "তারিখ সিলেক্ট করুন",
@@ -544,5 +545,11 @@
   "dueCustomer": "ডিউ গ্রাহক",
   "bulk": "বাল্ক",
   "editComment": "কমেন্ট এডিট",
-  "addComment": "এড কমেন্ট"
+  "addComment": "এড কমেন্ট",
+  "prevMonthReport": "পূর্বের মাসের রিপোর্ট",
+  "totalCustomer": "মোট গ্রাহক",
+  "totalPaidCustomer": "মোট পরিশোধ গ্রাহক",
+  "totalDueBill": "মোট বকেয়া বিল",
+  "totalUnpaidCustomer": "মোট বকেয়া গ্রাহক",
+  "totalPaidBill": "মোট পরিশোধ"
 }
