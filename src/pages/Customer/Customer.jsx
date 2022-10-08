@@ -11,6 +11,7 @@ import {
   PersonFill,
   PersonPlusFill,
   PrinterFill,
+  Server,
   ThreeDots,
   Wallet,
 } from "react-bootstrap-icons";
@@ -62,6 +63,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { useCallback } from "react";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
+import BandwidthModal from "./BandwidthModal";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -141,6 +143,9 @@ const PPPOECustomer = () => {
 
   // print modal state
   const [modalShow, setModalShow] = useState(false);
+
+  //bandwidth modal state
+  const [bandWidthModal, setBandWidthModal] = useState(false);
 
   // Single area state
   const [areaId, setAreaId] = useState("");
@@ -429,6 +434,11 @@ const PPPOECustomer = () => {
     return { totalSumDue, totalMonthlyFee };
   }, [pppoeCustomers]);
 
+  const bandwidthModalController = (customerID) => {
+    setCustomerId(customerID);
+    setBandWidthModal(true);
+  };
+
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
@@ -691,17 +701,17 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
-                {/* {(role === "ispOwner" || role === "manager") &&
+                {(role === "ispOwner" || role === "manager") &&
                   ispOwnerData.bpSettings.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
                       <div className="dropdown-item">
                         <div className="customerAction">
-                          <ArrowRightSquareFill />
+                          <Server />
                           <p className="actionP">{t("bandwidth")}</p>
                         </div>
                       </div>
                     </li>
-                  )} */}
+                  )}
               </ul>
             </div>
           </div>
@@ -1331,11 +1341,11 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
       />
-      {/* <BandwidthModal
-                modalShow={modalShow}
-                setModalShow={setModalShow}
-                customerId={singleCustomer}
-              /> */}
+      <BandwidthModal
+        setModalShow={setBandWidthModal}
+        modalShow={bandWidthModal}
+        customerId={customerId}
+      />
       {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">
           <button
