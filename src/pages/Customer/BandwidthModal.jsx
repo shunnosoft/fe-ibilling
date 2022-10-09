@@ -3,113 +3,133 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import apiLink from "../../api/apiLink";
-import { Chart } from "chart.js";
-import { Line } from "react-chartjs-2";
-// import "chartjs-adapter-luxon";
-import StreamingPlugin from "chartjs-plugin-streaming";
 import { toast } from "react-toastify";
+import moment from "moment";
+import FormatNumber from "../../components/common/NumberFormat";
+import { useSelector } from "react-redux";
 
-Chart.register(StreamingPlugin);
+// let callCount = 0;
+let err = false;
+const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
+  // get all customer
+  const customer = useSelector((state) => state?.customer?.customer);
 
-const BandwidthModal = ({ brandWithModal, setBrandWithModal, customerId }) => {
-  const [bandwidth, setBandWidth] = useState({});
+  // find editable data
+  const data = customer.find((item) => item.id === customerId);
 
-  if (brandWithModal) {
-    console.log("bashar");
-  }
-  // let i = 0;
+  let [bandwidth, setBandWidth] = useState([]);
+  let [tx, setTx] = useState([]);
 
-  // const myFunc = () => {
-  //   console.log(++i);
-  //   if (i == 5) clearInterval(start);
-  // };
-  // const start = setInterval(myFunc, 1000);
+  let [time, setTime] = useState([]);
 
-  // const chartsData = {
-  //   datasets: [
-  //     {
-  //       label: "RX",
-  //       borderColor: "rgb(255, 99, 132)",
-  //       data: [],
-  //     },
-  //   ],
-  // };
-
-  // const options = {
-  //   scales: {
-  //     x: {
-  //       type: "realtime",
-  //       realtime: {
-  //         delay: 1000,
-  //         onRefresh: (chart) => {
-  //           console.log(chart.data);
-  //           chart.data.datasets.forEach((dataset) => {
-  //             dataset.data.push({
-  //               x: Date.now(),
-  //               y: Math.random(),
-  //             });
-  //           });
-  //         },
-  //       },
-  //     },
-  //   },
-  // };
-
-  let callCount = 1;
   const getCurrentSession = async () => {
-    try {
-      const res = await apiLink(
-        "customer/mikrotik/currentSession?customerId=" + customerId
-      );
-      console.log(res.data.data);
-      // setBandWidth({
-      //   RX: res.data.data[0].rxByte,
-      //   TX: res.data.data[0].txByte,
-      // });
-      callCount++;
-    } catch (error) {
-      toast.error(error.message);
+    if (!err) {
+      try {
+        const res = await apiLink(
+          "customer/mikrotik/currentSession?customerId=" + customerId
+        );
+
+        setBandWidth([
+          parseInt(res.data.data[0].rxPacket.toFixed(2) / 1024),
+          ...bandwidth,
+        ]);
+        setTx([parseInt(res.data.data[0].txPacket.toFixed(2) / 1024), ...tx]);
+
+        setTime([Date.now(), ...time]);
+        // callCount++;
+      } catch (error) {
+        // callCount++;
+        err = true;
+        toast.error(error.message);
+      }
     }
   };
-  // console.log(bandwidth);
+
   useEffect(() => {
-    if (brandWithModal) {
-      getCurrentSession();
-      const interval = setInterval(() => {
-        if (callCount < 2) {
-          getCurrentSession();
-        } else {
+    let interval;
+    if (modalShow) {
+      interval = setInterval(() => {
+        // if (callCount <= 5) {
+        if (err) {
           clearInterval(interval);
+          return;
         }
-      }, 1000);
+        getCurrentSession();
+        // } else {
+        //   clearInterval(interval);
+        // }
+      }, 5000);
       return () => {
         clearInterval(interval);
       };
+    } else {
+      clearInterval(interval);
     }
-  }, [brandWithModal]);
+  }, [modalShow, bandwidth, tx, time]);
+
+  const resetState = () => {
+    err = false;
+    setBandWidth([]);
+    setTx([]);
+    setTime([]);
+  };
+
+  const onCloseModal = () => {
+    setModalShow(false);
+    setTimeout(resetState, 3000);
+  };
 
   return (
     <>
       <Modal
-        show={brandWithModal}
-        onHide={() => setBrandWithModal(false)}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
         size="lg"
         aria-labelledby="customerBandWidth"
         centered
         backdrop="static"
       >
         <Modal.Header>
-          <Modal.Title id="customerBandWidth">Bandwidth</Modal.Title>
+          <Modal.Title id="customerBandWidth">
+            Bandwidth Live{" "}
+            <span className="text-secondary">{data?.pppoe?.name}</span>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* <h4>Centered Modal</h4> */}
-          <div className="bandwidth-graph">
-            {/* <Line data={chartsData} options={options} /> */}
+          <div
+            className="bandwidth-graph"
+            style={{ height: "36vh", overflow: "auto" }}
+          >
+            <div className="live-bandwith d-flex justify-content-around">
+              <div className="dateTime">
+                <h5>Time</h5>
+                {time.map((item, key) => (
+                  <p key={key}>{moment(item).format("LTS")}</p>
+                ))}
+              </div>
+              <div className="rx">
+                <h5>Rx</h5>
+                {bandwidth.map((item, key) => (
+                  <p key={key}>
+                    {FormatNumber(item)}
+                    <span className="text-secondary"> kbps</span>
+                  </p>
+                ))}
+              </div>
+              <div className="tx">
+                <h5>Tx</h5>
+                {tx.map((item, key) => (
+                  <p key={key}>
+                    {FormatNumber(item)}
+                    <span className="text-secondary"> kbps</span>
+                  </p>
+                ))}
+              </div>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setBrandWithModal(false)}>Close</Button>
-          <Button onClick={() => setBrandWithModal(false)}>Save</Button>
+          <Button onClick={onCloseModal}>Close</Button>
         </Modal.Footer>
       </Modal>
     </>

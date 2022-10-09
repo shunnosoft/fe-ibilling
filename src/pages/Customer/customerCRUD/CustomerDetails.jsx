@@ -105,9 +105,8 @@ export default function CustomerDetails({ single }) {
                     {t("userName")} : {data?.pppoe?.name}
                   </h6>
                   <h6>
-                    <h6>
-                      {t("password")} : {data?.pppoe?.password}
-                    </h6>
+                    {t("password")} : {data?.pppoe?.password}
+                    <br />
                     {t("profile")} : {data?.pppoe?.profile}
                   </h6>
                   <h6>
