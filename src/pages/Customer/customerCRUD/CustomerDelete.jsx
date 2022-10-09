@@ -82,7 +82,7 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 id="flexCheckDefault"
                 onChange={(event) => setMikrotikCheck(event.target.checked)}
               />
-              <label class="form-check-label" for="flexCheckDefault">
+              <label class="form-check-label" htmlFor="flexCheckDefault">
                 <small className="text-secondary">{t("deleteMikrotik")}</small>
               </label>
             </div>

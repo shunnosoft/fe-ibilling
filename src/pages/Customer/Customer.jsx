@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   ArchiveFill,
   ArrowClockwise,
@@ -11,6 +11,7 @@ import {
   PersonFill,
   PersonPlusFill,
   PrinterFill,
+  Server,
   ThreeDots,
   Wallet,
 } from "react-bootstrap-icons";
@@ -59,9 +60,9 @@ import DatePicker from "react-datepicker";
 import PrintCustomer from "./customerPDF";
 import { Button, Modal } from "react-bootstrap";
 import FormatNumber from "../../components/common/NumberFormat";
-import { useCallback } from "react";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
+import BandwidthModal from "./BandwidthModal";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -141,6 +142,9 @@ const PPPOECustomer = () => {
 
   // print modal state
   const [modalShow, setModalShow] = useState(false);
+
+  //bandwidth modal state
+  const [bandWidthModal, setBandWidthModal] = useState(false);
 
   // Single area state
   const [areaId, setAreaId] = useState("");
@@ -408,7 +412,7 @@ const PPPOECustomer = () => {
   };
 
   //total monthly fee and due calculation
-  const dueMonthlyFee = useCallback(() => {
+  const dueMonthlyFee = useMemo(() => {
     let dueAmount = 0;
     let totalSumDue = 0;
     let totalMonthlyFee = 0;
@@ -429,13 +433,18 @@ const PPPOECustomer = () => {
     return { totalSumDue, totalMonthlyFee };
   }, [pppoeCustomers]);
 
+  const bandwidthModalController = (customerID) => {
+    setCustomerId(customerID);
+    setBandWidthModal(true);
+  };
+
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
       &nbsp;
       {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+      {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
       {/* {t("collection")}&nbsp;{" "} */}
       {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
       {t("tk")} */}
@@ -691,17 +700,17 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
-                {/* {(role === "ispOwner" || role === "manager") &&
+                {(role === "ispOwner" || role === "manager") &&
                   ispOwnerData.bpSettings.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
                       <div className="dropdown-item">
                         <div className="customerAction">
-                          <ArrowRightSquareFill />
+                          <Server />
                           <p className="actionP">{t("bandwidth")}</p>
                         </div>
                       </div>
                     </li>
-                  )} */}
+                  )}
               </ul>
             </div>
           </div>
@@ -710,30 +719,33 @@ const PPPOECustomer = () => {
     ],
     [t]
   );
-
   //export customer data
-  let customerForCsV = pppoeCustomers.map((customer) => {
-    return {
-      companyName: ispOwnerData.company,
-      home: "Home",
-      companyAddress: ispOwnerData.address,
-      name: customer.name,
-      customerAddress: customer.address,
-      connectionType: "Wired",
-      connectivity: "Dedicated",
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
-      ip: "",
-      road: ispOwnerData.address,
-      address: ispOwnerData.address,
-      area: ispOwnerData?.fullAddress?.area || "",
-      district: ispOwnerData?.fullAddress?.district || "",
-      thana: ispOwnerData?.fullAddress?.thana || "",
-      mobile: customer?.mobile.slice(1) || "",
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-    };
-  });
+  let customerForCsV = useMemo(
+    () =>
+      pppoeCustomers.map((customer) => {
+        return {
+          companyName: ispOwnerData.company,
+          home: "Home",
+          companyAddress: ispOwnerData.address,
+          name: customer.name,
+          customerAddress: customer.address,
+          connectionType: "Wired",
+          connectivity: "Dedicated",
+          createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+          package: customer?.pppoe?.profile,
+          ip: "",
+          road: ispOwnerData.address,
+          address: ispOwnerData.address,
+          area: ispOwnerData?.fullAddress?.area || "",
+          district: ispOwnerData?.fullAddress?.district || "",
+          thana: ispOwnerData?.fullAddress?.thana || "",
+          mobile: customer?.mobile.slice(1) || "",
+          email: customer.email || "",
+          monthlyFee: customer.monthlyFee,
+        };
+      }),
+    [pppoeCustomers]
+  );
 
   // csv header
   const headers = [
@@ -758,21 +770,25 @@ const PPPOECustomer = () => {
   ];
 
   //export customer data
-  let customerForCsVTableInfo = pppoeCustomers.map((customer) => {
-    return {
-      name: customer.name,
-      customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
-      mobile: customer?.mobile || "",
-      status: customer.status,
-      paymentStatus: customer.paymentStatus,
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-      balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
-    };
-  });
+  let customerForCsVTableInfo = useMemo(
+    () =>
+      pppoeCustomers.map((customer) => {
+        return {
+          name: customer.name,
+          customerAddress: customer.address,
+          createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+          package: customer?.pppoe?.profile,
+          mobile: customer?.mobile || "",
+          status: customer.status,
+          paymentStatus: customer.paymentStatus,
+          email: customer.email || "",
+          monthlyFee: customer.monthlyFee,
+          balance: customer.balance,
+          billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+        };
+      }),
+    [pppoeCustomers]
+  );
 
   // csv table header
   const customerForCsVTableInfoHeader = [
@@ -834,6 +850,7 @@ const PPPOECustomer = () => {
         : t("sokolCustomer"),
     };
   }
+  const tableData = useMemo(() => pppoeCustomers, [pppoeCustomers]);
   return (
     <>
       <Sidebar />
@@ -1248,7 +1265,7 @@ const PPPOECustomer = () => {
                           customComponent={customComponent}
                           isLoading={customerLoading}
                           columns={columns}
-                          data={pppoeCustomers}
+                          data={tableData}
                           bulkState={{
                             setBulkCustomer,
                           }}
@@ -1261,14 +1278,16 @@ const PPPOECustomer = () => {
                 )}
 
                 {/* print component table  */}
-                <div style={{ display: "none" }}>
-                  <PrintCustomer
-                    filterData={filterData}
-                    currentCustomers={pppoeCustomers}
-                    ref={componentRef}
-                    printOptions={printOption}
-                  />
-                </div>
+                {modalShow && (
+                  <div style={{ display: "none" }}>
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={pppoeCustomers}
+                      ref={componentRef}
+                      printOptions={printOption}
+                    />
+                  </div>
+                )}
               </FourGround>
               <Footer />
             </FontColor>
@@ -1331,88 +1350,81 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
       />
-      {/* <BandwidthModal
-                modalShow={modalShow}
-                setModalShow={setModalShow}
-                customerId={singleCustomer}
-              /> */}
+      <BandwidthModal
+        setModalShow={setBandWidthModal}
+        modalShow={bandWidthModal}
+        customerId={customerId}
+      />
       {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-primary btn-floating btn-sm"
             title={t("editArea")}
             data-bs-toggle="modal"
             data-bs-target="#customerBulkEdit"
             type="button"
-            class="btn btn-primary btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title">{t("editArea")}</span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-dark btn-floating btn-sm"
             title={t("editStatus")}
             data-bs-toggle="modal"
             data-bs-target="#bulkStatusEdit"
             type="button"
-            class="btn btn-dark btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title"> {t("editStatus")}</span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-warning btn-floating btn-sm"
             title={t("editBillingCycle")}
             data-bs-toggle="modal"
             data-bs-target="#customerBillingCycle"
             type="button"
-            class="btn btn-warning btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title"> {t("editBillingCycle")} </span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-secondary btn-floating btn-sm"
             title={t("editPromiseDate")}
             data-bs-toggle="modal"
             data-bs-target="#bulkPromiseDateEdit"
             type="button"
-            class="btn btn-secondary btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title"> {t("editPromiseDate")} </span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-primary btn-floating btn-sm"
             title={t("autoConnectOnOff")}
             data-bs-toggle="modal"
             data-bs-target="#autoDisableEditModal"
             type="button"
-            class="btn btn-primary btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-info btn-floating btn-sm"
             title={t("transferReseller")}
             data-bs-toggle="modal"
             data-bs-target="#bulkTransferToReseller"
             type="button"
-            class="btn btn-info btn-floating btn-sm"
           >
-            <i class="fa-solid fa-right-left"></i>
+            <i className="fa-solid fa-right-left"></i>
             <span className="button_title"> {t("transferReseller")} </span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-danger btn-floating btn-sm"
             title={t("customerDelete")}
             data-bs-toggle="modal"
             data-bs-target="#bulkDeleteCustomer"
             type="button"
-            class="btn btn-danger btn-floating btn-sm"
           >
-            <i class="fas fa-trash-alt"></i>
+            <i className="fas fa-trash-alt"></i>
             <span className="button_title"> {t("customerDelete")} </span>
           </button>
         </div>
@@ -1483,4 +1495,4 @@ const PPPOECustomer = () => {
   );
 };
 
-export default PPPOECustomer;
+export default React.memo(PPPOECustomer);
