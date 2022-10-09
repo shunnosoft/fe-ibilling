@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   ArchiveFill,
   ArrowClockwise,
@@ -60,7 +60,6 @@ import DatePicker from "react-datepicker";
 import PrintCustomer from "./customerPDF";
 import { Button, Modal } from "react-bootstrap";
 import FormatNumber from "../../components/common/NumberFormat";
-import { useCallback } from "react";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
 import BandwidthModal from "./BandwidthModal";
@@ -413,7 +412,7 @@ const PPPOECustomer = () => {
   };
 
   //total monthly fee and due calculation
-  const dueMonthlyFee = useCallback(() => {
+  const dueMonthlyFee = useMemo(() => {
     let dueAmount = 0;
     let totalSumDue = 0;
     let totalMonthlyFee = 0;
@@ -442,10 +441,10 @@ const PPPOECustomer = () => {
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
       &nbsp;
       {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+      {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
       {/* {t("collection")}&nbsp;{" "} */}
       {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
       {t("tk")} */}
@@ -720,30 +719,33 @@ const PPPOECustomer = () => {
     ],
     [t]
   );
-
   //export customer data
-  let customerForCsV = pppoeCustomers.map((customer) => {
-    return {
-      companyName: ispOwnerData.company,
-      home: "Home",
-      companyAddress: ispOwnerData.address,
-      name: customer.name,
-      customerAddress: customer.address,
-      connectionType: "Wired",
-      connectivity: "Dedicated",
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
-      ip: "",
-      road: ispOwnerData.address,
-      address: ispOwnerData.address,
-      area: ispOwnerData?.fullAddress?.area || "",
-      district: ispOwnerData?.fullAddress?.district || "",
-      thana: ispOwnerData?.fullAddress?.thana || "",
-      mobile: customer?.mobile.slice(1) || "",
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-    };
-  });
+  let customerForCsV = useMemo(
+    () =>
+      pppoeCustomers.map((customer) => {
+        return {
+          companyName: ispOwnerData.company,
+          home: "Home",
+          companyAddress: ispOwnerData.address,
+          name: customer.name,
+          customerAddress: customer.address,
+          connectionType: "Wired",
+          connectivity: "Dedicated",
+          createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+          package: customer?.pppoe?.profile,
+          ip: "",
+          road: ispOwnerData.address,
+          address: ispOwnerData.address,
+          area: ispOwnerData?.fullAddress?.area || "",
+          district: ispOwnerData?.fullAddress?.district || "",
+          thana: ispOwnerData?.fullAddress?.thana || "",
+          mobile: customer?.mobile.slice(1) || "",
+          email: customer.email || "",
+          monthlyFee: customer.monthlyFee,
+        };
+      }),
+    [pppoeCustomers]
+  );
 
   // csv header
   const headers = [
@@ -768,21 +770,25 @@ const PPPOECustomer = () => {
   ];
 
   //export customer data
-  let customerForCsVTableInfo = pppoeCustomers.map((customer) => {
-    return {
-      name: customer.name,
-      customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
-      mobile: customer?.mobile || "",
-      status: customer.status,
-      paymentStatus: customer.paymentStatus,
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-      balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
-    };
-  });
+  let customerForCsVTableInfo = useMemo(
+    () =>
+      pppoeCustomers.map((customer) => {
+        return {
+          name: customer.name,
+          customerAddress: customer.address,
+          createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+          package: customer?.pppoe?.profile,
+          mobile: customer?.mobile || "",
+          status: customer.status,
+          paymentStatus: customer.paymentStatus,
+          email: customer.email || "",
+          monthlyFee: customer.monthlyFee,
+          balance: customer.balance,
+          billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+        };
+      }),
+    [pppoeCustomers]
+  );
 
   // csv table header
   const customerForCsVTableInfoHeader = [
@@ -844,6 +850,7 @@ const PPPOECustomer = () => {
         : t("sokolCustomer"),
     };
   }
+  const tableData = useMemo(() => pppoeCustomers, [pppoeCustomers]);
   return (
     <>
       <Sidebar />
@@ -1258,7 +1265,7 @@ const PPPOECustomer = () => {
                           customComponent={customComponent}
                           isLoading={customerLoading}
                           columns={columns}
-                          data={pppoeCustomers}
+                          data={tableData}
                           bulkState={{
                             setBulkCustomer,
                           }}
@@ -1271,14 +1278,16 @@ const PPPOECustomer = () => {
                 )}
 
                 {/* print component table  */}
-                <div style={{ display: "none" }}>
-                  <PrintCustomer
-                    filterData={filterData}
-                    currentCustomers={pppoeCustomers}
-                    ref={componentRef}
-                    printOptions={printOption}
-                  />
-                </div>
+                {modalShow && (
+                  <div style={{ display: "none" }}>
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={pppoeCustomers}
+                      ref={componentRef}
+                      printOptions={printOption}
+                    />
+                  </div>
+                )}
               </FourGround>
               <Footer />
             </FontColor>
@@ -1493,4 +1502,4 @@ const PPPOECustomer = () => {
   );
 };
 
-export default PPPOECustomer;
+export default React.memo(PPPOECustomer);
