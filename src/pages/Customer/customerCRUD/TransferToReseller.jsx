@@ -46,7 +46,7 @@ const TransferToReseller = ({ customerId }) => {
   };
 
   return (
-    <div className="modal fade" id="transferToReseller" tabindex="-1">
+    <div className="modal fade" id="transferToReseller" tabIndex="-1">
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">

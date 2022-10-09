@@ -1358,80 +1358,73 @@ const PPPOECustomer = () => {
       {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-primary btn-floating btn-sm"
             title={t("editArea")}
             data-bs-toggle="modal"
             data-bs-target="#customerBulkEdit"
             type="button"
-            class="btn btn-primary btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title">{t("editArea")}</span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-dark btn-floating btn-sm"
             title={t("editStatus")}
             data-bs-toggle="modal"
             data-bs-target="#bulkStatusEdit"
             type="button"
-            class="btn btn-dark btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title"> {t("editStatus")}</span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-warning btn-floating btn-sm"
             title={t("editBillingCycle")}
             data-bs-toggle="modal"
             data-bs-target="#customerBillingCycle"
             type="button"
-            class="btn btn-warning btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title"> {t("editBillingCycle")} </span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-secondary btn-floating btn-sm"
             title={t("editPromiseDate")}
             data-bs-toggle="modal"
             data-bs-target="#bulkPromiseDateEdit"
             type="button"
-            class="btn btn-secondary btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title"> {t("editPromiseDate")} </span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-primary btn-floating btn-sm"
             title={t("autoConnectOnOff")}
             data-bs-toggle="modal"
             data-bs-target="#autoDisableEditModal"
             type="button"
-            class="btn btn-primary btn-floating btn-sm"
           >
-            <i class="fas fa-edit"></i>
+            <i className="fas fa-edit"></i>
             <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-info btn-floating btn-sm"
             title={t("transferReseller")}
             data-bs-toggle="modal"
             data-bs-target="#bulkTransferToReseller"
             type="button"
-            class="btn btn-info btn-floating btn-sm"
           >
-            <i class="fa-solid fa-right-left"></i>
+            <i className="fa-solid fa-right-left"></i>
             <span className="button_title"> {t("transferReseller")} </span>
           </button>
           <button
-            className="bulk_action_button"
+            className="bulk_action_button btn btn-danger btn-floating btn-sm"
             title={t("customerDelete")}
             data-bs-toggle="modal"
             data-bs-target="#bulkDeleteCustomer"
             type="button"
-            class="btn btn-danger btn-floating btn-sm"
           >
-            <i class="fas fa-trash-alt"></i>
+            <i className="fas fa-trash-alt"></i>
             <span className="button_title"> {t("customerDelete")} </span>
           </button>
         </div>

@@ -194,7 +194,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
               <div className="mb-3">
                 <div className="d-flex justify-content-between">
                   <label
-                    for="exampleFormControlTextarea1"
+                    htmlFor="exampleFormControlTextarea1"
                     className="form-label fw-bold mb-0"
                   >
                     {t("message")}
