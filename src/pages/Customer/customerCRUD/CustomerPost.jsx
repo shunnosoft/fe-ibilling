@@ -38,12 +38,10 @@ export default function CustomerModal() {
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
-  console.log(mikrotikPackage);
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
   const [billDate, setBillDate] = useState();
-  console.log(billDate);
   const [connectionDate, setConnectionDate] = useState();
 
   // customer validator

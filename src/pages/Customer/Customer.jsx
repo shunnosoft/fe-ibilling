@@ -62,6 +62,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { useCallback } from "react";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
+import BandwidthModal from "./BandwidthModal";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -141,6 +142,9 @@ const PPPOECustomer = () => {
 
   // print modal state
   const [modalShow, setModalShow] = useState(false);
+
+  // brand with modal
+  const [brandWithModal, setBrandWithModal] = useState(false);
 
   // Single area state
   const [areaId, setAreaId] = useState("");
@@ -461,6 +465,12 @@ const PPPOECustomer = () => {
     }
   };
 
+  const bandwidthModalController = (customerID) => {
+    console.log(customerID);
+    setBrandWithModal(true);
+    setCustomerId(customerID);
+  };
+
   //print modal controller
   const printModalController = (customerID) => {
     setModalShow(true);
@@ -691,7 +701,7 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
-                {/* {(role === "ispOwner" || role === "manager") &&
+                {(role === "ispOwner" || role === "manager") &&
                   ispOwnerData.bpSettings.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
                       <div className="dropdown-item">
@@ -701,7 +711,7 @@ const PPPOECustomer = () => {
                         </div>
                       </div>
                     </li>
-                  )} */}
+                  )}
               </ul>
             </div>
           </div>
@@ -1331,11 +1341,12 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
       />
-      {/* <BandwidthModal
-                modalShow={modalShow}
-                setModalShow={setModalShow}
-                customerId={singleCustomer}
-              /> */}
+      <BandwidthModal
+        brandWithModal={brandWithModal}
+        setBrandWithModal={setBrandWithModal}
+        customerId={customerId}
+      />
+
       {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">
           <button

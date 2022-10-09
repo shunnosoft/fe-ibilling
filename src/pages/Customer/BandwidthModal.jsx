@@ -11,38 +11,49 @@ import { toast } from "react-toastify";
 
 Chart.register(StreamingPlugin);
 
-const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
+const BandwidthModal = ({ brandWithModal, setBrandWithModal, customerId }) => {
   const [bandwidth, setBandWidth] = useState({});
 
-  const chartsData = {
-    datasets: [
-      {
-        label: "RX",
-        borderColor: "rgb(255, 99, 132)",
-        data: [],
-      },
-    ],
-  };
+  if (brandWithModal) {
+    console.log("bashar");
+  }
+  // let i = 0;
 
-  const options = {
-    scales: {
-      x: {
-        type: "realtime",
-        realtime: {
-          delay: 1000,
-          onRefresh: (chart) => {
-            console.log(chart.data);
-            chart.data.datasets.forEach((dataset) => {
-              dataset.data.push({
-                x: Date.now(),
-                y: Math.random(),
-              });
-            });
-          },
-        },
-      },
-    },
-  };
+  // const myFunc = () => {
+  //   console.log(++i);
+  //   if (i == 5) clearInterval(start);
+  // };
+  // const start = setInterval(myFunc, 1000);
+
+  // const chartsData = {
+  //   datasets: [
+  //     {
+  //       label: "RX",
+  //       borderColor: "rgb(255, 99, 132)",
+  //       data: [],
+  //     },
+  //   ],
+  // };
+
+  // const options = {
+  //   scales: {
+  //     x: {
+  //       type: "realtime",
+  //       realtime: {
+  //         delay: 1000,
+  //         onRefresh: (chart) => {
+  //           console.log(chart.data);
+  //           chart.data.datasets.forEach((dataset) => {
+  //             dataset.data.push({
+  //               x: Date.now(),
+  //               y: Math.random(),
+  //             });
+  //           });
+  //         },
+  //       },
+  //     },
+  //   },
+  // };
 
   let callCount = 1;
   const getCurrentSession = async () => {
@@ -50,22 +61,22 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
       const res = await apiLink(
         "customer/mikrotik/currentSession?customerId=" + customerId
       );
-      // console.log(res.data.data);
-      setBandWidth({
-        RX: res.data.data[0].rxByte,
-        TX: res.data.data[0].txByte,
-      });
+      console.log(res.data.data);
+      // setBandWidth({
+      //   RX: res.data.data[0].rxByte,
+      //   TX: res.data.data[0].txByte,
+      // });
       callCount++;
     } catch (error) {
       toast.error(error.message);
     }
   };
-  console.log(bandwidth);
+  // console.log(bandwidth);
   useEffect(() => {
-    if (modalShow) {
+    if (brandWithModal) {
       getCurrentSession();
       const interval = setInterval(() => {
-        if (callCount <= 20) {
+        if (callCount < 2) {
           getCurrentSession();
         } else {
           clearInterval(interval);
@@ -75,13 +86,13 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         clearInterval(interval);
       };
     }
-  }, [modalShow]);
+  }, [brandWithModal]);
 
   return (
     <>
       <Modal
-        show={modalShow}
-        onHide={() => setModalShow(false)}
+        show={brandWithModal}
+        onHide={() => setBrandWithModal(false)}
         size="lg"
         aria-labelledby="customerBandWidth"
         centered
@@ -93,12 +104,12 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         <Modal.Body>
           {/* <h4>Centered Modal</h4> */}
           <div className="bandwidth-graph">
-            <Line data={chartsData} options={options} />
+            {/* <Line data={chartsData} options={options} /> */}
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setModalShow(false)}>Close</Button>
-          <Button onClick={() => setModalShow(false)}>Save</Button>
+          <Button onClick={() => setBrandWithModal(false)}>Close</Button>
+          <Button onClick={() => setBrandWithModal(false)}>Save</Button>
         </Modal.Footer>
       </Modal>
     </>
