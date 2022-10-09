@@ -3,21 +3,24 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import apiLink from "../../api/apiLink";
-// import { Chart } from "chart.js";
-import { Line } from "react-chartjs-2";
-
-// import "chartjs-adapter-luxon";
-// import StreamingPlugin from "chartjs-plugin-streaming";
 import { toast } from "react-toastify";
-import { Tab, Tabs } from "react-bootstrap";
+import moment from "moment";
+import FormatNumber from "../../components/common/NumberFormat";
+import { useSelector } from "react-redux";
 
-// Chart.register(StreamingPlugin);
-let callCount = 0;
+// let callCount = 0;
 let err = false;
 const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
-  // const [err, setErr] = useState(false);
-  const [bandwidth, setBandWidth] = useState([]);
-  const [tx, setTx] = useState([]);
+  // get all customer
+  const customer = useSelector((state) => state?.customer?.customer);
+
+  // find editable data
+  const data = customer.find((item) => item.id === customerId);
+
+  let [bandwidth, setBandWidth] = useState([]);
+  let [tx, setTx] = useState([]);
+
+  let [time, setTime] = useState([]);
 
   const getCurrentSession = async () => {
     if (!err) {
@@ -25,14 +28,17 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         const res = await apiLink(
           "customer/mikrotik/currentSession?customerId=" + customerId
         );
+
         setBandWidth([
+          parseInt(res.data.data[0].rxPacket.toFixed(2) / 1024),
           ...bandwidth,
-          parseInt((res.data.data[0].rxPacket / 1024).toFixed(2)),
         ]);
-        setTx([...tx, parseInt((res.data.data[0].txPacket / 1024).toFixed(2))]);
-        callCount++;
+        setTx([parseInt(res.data.data[0].txPacket.toFixed(2) / 1024), ...tx]);
+
+        setTime([Date.now(), ...time]);
+        // callCount++;
       } catch (error) {
-        callCount++;
+        // callCount++;
         err = true;
         toast.error(error.message);
       }
@@ -40,64 +46,37 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
   };
 
   useEffect(() => {
+    let interval;
     if (modalShow) {
-      const interval = setInterval(() => {
-        if (callCount <= 10) {
-          if (err) {
-            clearInterval(interval);
-            return;
-          }
-          getCurrentSession();
-        } else {
+      interval = setInterval(() => {
+        // if (callCount <= 5) {
+        if (err) {
           clearInterval(interval);
+          return;
         }
-      }, 1000);
+        getCurrentSession();
+        // } else {
+        //   clearInterval(interval);
+        // }
+      }, 5000);
       return () => {
         clearInterval(interval);
       };
+    } else {
+      clearInterval(interval);
     }
-  }, [modalShow, bandwidth]);
+  }, [modalShow, bandwidth, tx, time]);
 
-  const chartsData = {
-    labels: [...Array(10).keys()].map((item) => {
-      return item;
-    }),
-    datasets: [
-      {
-        label: "rx",
-        data: bandwidth,
-        backgroundColor: "rgb(110 110 110 / 24%)",
-        borderJoinStyle: "round",
-        borderColor: "#00a4e3",
-        fill: "origin",
-        borderWidth: 2,
-      },
-    ],
+  const resetState = () => {
+    err = false;
+    setBandWidth([]);
+    setTx([]);
+    setTime([]);
   };
 
   const onCloseModal = () => {
     setModalShow(false);
-    // setErr(false);
-    err = false;
-    setBandWidth([]);
-    setTx([]);
-  };
-
-  const txData = {
-    labels: [...Array(10).keys()].map((item) => {
-      return item;
-    }),
-    datasets: [
-      {
-        label: "tx",
-        data: tx,
-        backgroundColor: "rgb(110 110 110 / 24%)",
-        borderJoinStyle: "round",
-        borderColor: "#00a4e3",
-        fill: "origin",
-        borderWidth: 2,
-      },
-    ],
+    setTimeout(resetState, 3000);
   };
 
   return (
@@ -111,48 +90,46 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         backdrop="static"
       >
         <Modal.Header>
-          <Modal.Title id="customerBandWidth">Bandwidth</Modal.Title>
+          <Modal.Title id="customerBandWidth">
+            Bandwidth Live{" "}
+            <span className="text-secondary">{data?.pppoe?.name}</span>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* <h4>Centered Modal</h4> */}
-          <div className="bandwidth-graph">
-            <Tabs
-              defaultActiveKey="rx"
-              id="uncontrolled-tab-example"
-              className="mb-3"
-            >
-              <Tab eventKey="rx" title="Download">
-                <div className="lineChart">
-                  <Line
-                    data={chartsData}
-                    height={400}
-                    width={600}
-                    options={{
-                      tension: 0.4,
-                      maintainAspectRatio: false,
-                    }}
-                  />
-                </div>
-              </Tab>
-              <Tab eventKey="tx" title="Upload">
-                <div className="lineChart">
-                  <Line
-                    data={txData}
-                    height={400}
-                    width={600}
-                    options={{
-                      tension: 0.4,
-                      maintainAspectRatio: false,
-                    }}
-                  />
-                </div>
-              </Tab>
-            </Tabs>
+          <div
+            className="bandwidth-graph"
+            style={{ height: "36vh", overflow: "auto" }}
+          >
+            <div className="live-bandwith d-flex justify-content-around">
+              <div className="dateTime">
+                <h5>Time</h5>
+                {time.map((item, key) => (
+                  <p key={key}>{moment(item).format("LTS")}</p>
+                ))}
+              </div>
+              <div className="rx">
+                <h5>Rx</h5>
+                {bandwidth.map((item, key) => (
+                  <p key={key}>
+                    {FormatNumber(item)}
+                    <span className="text-secondary"> kbps</span>
+                  </p>
+                ))}
+              </div>
+              <div className="tx">
+                <h5>Tx</h5>
+                {tx.map((item, key) => (
+                  <p key={key}>
+                    {FormatNumber(item)}
+                    <span className="text-secondary"> kbps</span>
+                  </p>
+                ))}
+              </div>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onCloseModal}>Close</Button>
-          {/* <Button onClick={() => setModalShow(false)}>Save</Button> */}
         </Modal.Footer>
       </Modal>
     </>

@@ -65,7 +65,7 @@ export default function CustomerModal() {
   const [autoDisable, setAutoDisable] = useState(true);
 
   // set bill date state
-  const [billDate, setBillDate] = useState(null);
+  const [billDate, setBillDate] = useState(new Date());
 
   // form validation validator
   const customerValidator = Yup.object({
@@ -403,6 +403,7 @@ export default function CustomerModal() {
                           onChange={(date) => setBillDate(date)}
                           dateFormat="dd/MM/yyyy:hh:mm"
                           showTimeSelect
+                          maxDate={billDate}
                           placeholderText={t("selectBillDate")}
                         />
                       </div>
