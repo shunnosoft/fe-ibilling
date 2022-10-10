@@ -60,6 +60,7 @@ export default function Report() {
   const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state?.payment?.allBills);
+  console.log(allBills);
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
