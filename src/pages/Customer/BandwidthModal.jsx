@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
+import TdLoader from "../../components/common/TdLoader";
 
 // let callCount = 0;
 let err = false;
@@ -28,12 +29,12 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         const res = await apiLink(
           "customer/mikrotik/currentSession?customerId=" + customerId
         );
-
+        console.log(res.data);
         setBandWidth([
-          parseInt(res.data.data[0].rxPacket.toFixed(2) / 1024),
+          parseInt(res.data.data[0].rxByte.toFixed(2) / 1024),
           ...bandwidth,
         ]);
-        setTx([parseInt(res.data.data[0].txPacket.toFixed(2) / 1024), ...tx]);
+        setTx([parseInt(res.data.data[0].txByte.toFixed(2) / 1024), ...tx]);
 
         setTime([Date.now(), ...time]);
         // callCount++;
@@ -58,7 +59,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         // } else {
         //   clearInterval(interval);
         // }
-      }, 5000);
+      }, 1000);
       return () => {
         clearInterval(interval);
       };
@@ -96,37 +97,45 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div
-            className="bandwidth-graph"
-            style={{ height: "36vh", overflow: "auto" }}
-          >
-            <div className="live-bandwith d-flex justify-content-around">
-              <div className="dateTime">
-                <h5>Time</h5>
-                {time.map((item, key) => (
-                  <p key={key}>{moment(item).format("LTS")}</p>
-                ))}
-              </div>
-              <div className="rx">
-                <h5>Rx</h5>
-                {bandwidth.map((item, key) => (
-                  <p key={key}>
-                    {FormatNumber(item)}
-                    <span className="text-secondary"> kbps</span>
-                  </p>
-                ))}
-              </div>
-              <div className="tx">
-                <h5>Tx</h5>
-                {tx.map((item, key) => (
-                  <p key={key}>
-                    {FormatNumber(item)}
-                    <span className="text-secondary"> kbps</span>
-                  </p>
-                ))}
-              </div>
+          {true ? (
+            <div className="d-flex justify-content-center">
+              <TdLoader />
             </div>
-          </div>
+          ) : (
+            <>
+              <div
+                className="bandwidth-graph"
+                style={{ height: "36vh", overflow: "auto" }}
+              >
+                <div className="live-bandwith d-flex justify-content-around">
+                  <div className="dateTime">
+                    <h5>Time</h5>
+                    {time.map((item, key) => (
+                      <p key={key}>{moment(item).format("LTS")}</p>
+                    ))}
+                  </div>
+                  <div className="rx">
+                    <h5>Rx</h5>
+                    {bandwidth.map((item, key) => (
+                      <p key={key}>
+                        {FormatNumber(item)}
+                        <span className="text-secondary"> kbps</span>
+                      </p>
+                    ))}
+                  </div>
+                  <div className="tx">
+                    <h5>Tx</h5>
+                    {tx.map((item, key) => (
+                      <p key={key}>
+                        {FormatNumber(item)}
+                        <span className="text-secondary"> kbps</span>
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onCloseModal}>Close</Button>
