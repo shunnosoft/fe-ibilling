@@ -140,7 +140,6 @@ export default function CollectorEdit({ collectorId }) {
                           type={val.type}
                           label={val.label}
                           name={val.name}
-                          disabled={val.disabled}
                           validation={"true"}
                         />
                       ))}

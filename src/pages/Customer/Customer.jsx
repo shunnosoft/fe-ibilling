@@ -434,7 +434,6 @@ const PPPOECustomer = () => {
   }, [pppoeCustomers]);
 
   const bandwidthModalController = (customerID) => {
-    console.log(customerID);
     setCustomerId(customerID);
     setBandWidthModal(true);
   };

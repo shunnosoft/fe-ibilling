@@ -306,7 +306,7 @@
   "minimumShare": "সর্বনিম্ন শেয়ার ১% ",
   "maximumShare": "সর্বোচ্চ শেয়ার ৯৯%",
   "enterResellerShare": "রিসেলার শেয়ার দিন",
-  "canNotIncreaseResellerMonthlyFee": "রিসেলার গ্রাহকের মাসিক ফি বাড়ানো যাবে",
+  "canNotIncreaseResellerMonthlyFee": "রিসেলার গ্রাহকের মাসিক ফি বাড়ানো যাবে না",
   "enterMobile": "মোবাইল নম্বর *** ",
   "enterEmail": "ইমেইল দিন",
   "enterAddress": "ঠিকানা দিন",

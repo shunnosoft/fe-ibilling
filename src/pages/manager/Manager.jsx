@@ -5,6 +5,7 @@ import {
   // ArchiveFill,
   PenFill,
   PersonFill,
+  KeyFill,
 } from "react-bootstrap-icons";
 import { Formik, Form } from "formik";
 import { ToastContainer } from "react-toastify";
@@ -35,11 +36,13 @@ import {
 } from "../../features/apiCalls";
 import Loader from "../../components/common/Loader";
 import { useTranslation } from "react-i18next";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 export default function Manager() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState();
   const manager = useSelector((state) => state.manager?.manager);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
@@ -121,7 +124,6 @@ export default function Manager() {
       setIsLoading
     );
   };
-
 
   return (
     <>
@@ -276,6 +278,18 @@ export default function Manager() {
                                 </li> */}
                                 <li
                                   data-bs-toggle="modal"
+                                  data-bs-target="#showDwtailsModel"
+                                >
+                                  <div className="dropdown-item">
+                                    <div className="ManagerAactionLi">
+                                      <PersonFill />
+                                      <p className="actionP"> {t("profile")}</p>
+                                    </div>
+                                  </div>
+                                </li>
+
+                                <li
+                                  data-bs-toggle="modal"
                                   data-bs-target="#writeModal"
                                 >
                                   <div className="dropdown-item">
@@ -285,14 +299,20 @@ export default function Manager() {
                                     </div>
                                   </div>
                                 </li>
+
                                 <li
                                   data-bs-toggle="modal"
-                                  data-bs-target="#showDwtailsModel"
+                                  data-bs-target="#resetPassword"
+                                  onClick={() => {
+                                    setUserId(manager.user);
+                                  }}
                                 >
                                   <div className="dropdown-item">
                                     <div className="ManagerAactionLi">
-                                      <PersonFill />
-                                      <p className="actionP"> {t("profile")}</p>
+                                      <KeyFill />
+                                      <p className="actionP">
+                                        {t("passwordReset")}
+                                      </p>
                                     </div>
                                   </div>
                                 </li>
@@ -357,6 +377,7 @@ export default function Manager() {
           </div>
         </div>
       </div>
+      <PasswordReset resetCustomerId={userId} />
     </>
   );
 }

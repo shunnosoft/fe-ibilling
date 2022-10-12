@@ -23,6 +23,9 @@ export default function WriteModals(props) {
     name: Yup.string()
       .min(3, t("minimumContaining3letter"))
       .required(t("enterManagerName")),
+    mobile: Yup.string()
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string().required(t("enterManagerAddress")),
     email: Yup.string()
       .email(t("incorrectEmail"))
@@ -60,6 +63,7 @@ export default function WriteModals(props) {
             <Formik
               initialValues={{
                 name: manager.name || "",
+                mobile: manager.mobile || "",
                 address: manager.address || "",
                 email: manager.email || "",
                 // nid: manager.nid || "",
@@ -74,6 +78,7 @@ export default function WriteModals(props) {
               {(formik) => (
                 <Form>
                   <FtextField type="text" label={t("name")} name="name" />
+                  <FtextField type="text" label={t("mobile")} name="mobile" />
                   <FtextField type="text" label={t("address")} name="address" />
                   <FtextField type="email" label={t("email")} name="email" />
                   {/* <FtextField type="text" label="NID নম্বর" name="nid" /> */}

@@ -207,7 +207,7 @@ export default function Home() {
       tempCollection.push(val._id);
       tempCount.push(val.count);
     });
-    console.log({ tempArr, tempCollection, tempCount });
+
     setLabel(tempArr);
     setCollection(tempCollection);
     setCount(tempCount);
