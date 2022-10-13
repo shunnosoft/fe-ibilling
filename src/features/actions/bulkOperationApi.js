@@ -60,6 +60,26 @@ export const bulkStatusEdit = async (dispatch, data, setIsLoading) => {
     }
   }
 };
+
+export const bulkPackageEdit = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch(
+      "/customer/bulk-mikrotik-package-pppoe",
+      data
+    );
+    document.querySelector("#bulkPackageEdit").click();
+    dispatch(bulkUpdate(res.data.data));
+    toast.success("কাস্টমার প্যকেজ আপডেট সফল হয়েছে!");
+    setIsLoading(false);
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#bulkStatusEdit").click();
+      toast.error(err.response.data.message);
+    }
+  }
+};
 export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);

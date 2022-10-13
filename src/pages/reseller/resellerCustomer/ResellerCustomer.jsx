@@ -35,6 +35,7 @@ import PrintCustomer from "./customerPDF";
 import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { fetchMikrotik } from "../../../features/apiCalls";
+import BulkStatusEdit from "../resellerModals/bulkStatusEdit";
 
 // get specific customer
 
@@ -592,6 +593,7 @@ const ResellerCustomer = () => {
         bulkCustomer={bulkCustomer}
         modalId="customerBillingCycle"
       />
+      <BulkStatusEdit bulkCustomer={bulkCustomer} modalId="bulkStatusEdit" />
       {bulkCustomer.length > 0 && (
         <div className="bulkActionButton">
           <button
@@ -615,6 +617,16 @@ const ResellerCustomer = () => {
           >
             <i class="fas fa-edit"></i>
             <span className="button_title"> {t("editBillingCycle")} </span>
+          </button>
+          <button
+            className="bulk_action_button btn btn-info btn-floating btn-sm"
+            title={t("editStatus")}
+            data-bs-toggle="modal"
+            data-bs-target="#bulkStatusEdit"
+            type="button"
+          >
+            <i className="fas fa-edit"></i>
+            <span className="button_title"> {t("editStatus")}</span>
           </button>
         </div>
       )}
