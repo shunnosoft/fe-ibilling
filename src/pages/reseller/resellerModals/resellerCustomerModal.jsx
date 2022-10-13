@@ -5,12 +5,25 @@ import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 import { useTranslation } from "react-i18next";
 
-export default function ResellerCustomerDetails({ single }) {
+export default function ResellerCustomerDetails({ single, resellerCount }) {
   const { t } = useTranslation();
   // get all data from redux state
-  let data = useSelector((state) =>
-    state?.resellerCustomer?.resellerCustomer.find((item) => item.id === single)
+  let customer = useSelector(
+    (state) => state?.resellerCustomer?.resellerCustomer
   );
+
+  let allCustomer = useSelector(
+    (state) => state?.resellerCustomer?.allResellerCustomer
+  );
+
+  let data;
+  if (resellerCount === "singleReseller") {
+    data = customer.find((item) => item.id === single);
+  }
+
+  if (resellerCount === "allReseller") {
+    data = allCustomer.find((item) => item.id === single);
+  }
 
   return (
     <div>
@@ -82,26 +95,26 @@ export default function ResellerCustomerDetails({ single }) {
                   </h6>
                   <h6>
                     {t("automaticConnectionOff")} :{" "}
-                    <b>{single?.autoDisable ? "YES" : "NO"}</b>
+                    <b>{data?.autoDisable ? "YES" : "NO"}</b>
                   </h6>
                 </div>
                 <div>
                   <h5>PPPoE</h5>
                   <hr />
                   <h6>
-                    {t("userName")} : <b>{single?.pppoe?.name}</b>
+                    {t("userName")} : <b>{data?.pppoe?.name}</b>
                   </h6>
                   <h6>
                     <h6>
-                      {t("password ")} : <b>{single?.password}</b>
+                      {t("password ")} : <b>{data?.password}</b>
                     </h6>
-                    {t("profile")} : <b> {single?.pppoe?.profile}</b>
+                    {t("profile")} : <b> {data?.pppoe?.profile}</b>
                   </h6>
                   <h6>
-                    {t("service")} : <b>{single?.pppoe?.service}</b>
+                    {t("service")} : <b>{data?.pppoe?.service}</b>
                   </h6>
                   <h6>
-                    {t("comment")} : <b>{single?.pppoe?.comment}</b>
+                    {t("comment")} : <b>{data?.pppoe?.comment}</b>
                   </h6>
                 </div>
               </div>

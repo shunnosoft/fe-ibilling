@@ -12,7 +12,6 @@ export const collectorData = [
     name: "mobile",
     label: t("mobile"),
     type: "text",
-    disabled: true,
   },
   {
     id: 3,

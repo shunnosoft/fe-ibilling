@@ -289,6 +289,11 @@ export default function Report() {
       },
       {
         width: "10%",
+        Header: t("PPPoEName"),
+        accessor: "customer.pppoe.name",
+      },
+      {
+        width: "10%",
         Header: t("package"),
         accessor: "customer.mikrotikPackage.name",
       },
@@ -303,7 +308,7 @@ export default function Report() {
         accessor: "due",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("agent"),
         accessor: "medium",
       },
@@ -313,7 +318,7 @@ export default function Report() {
         accessor: "name",
       },
       {
-        width: "19%",
+        width: "14%",
         Header: t("note"),
         accessor: (data) => {
           return {

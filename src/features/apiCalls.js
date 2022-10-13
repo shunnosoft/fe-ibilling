@@ -468,13 +468,16 @@ export const editCollector = async (dispatch, data, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const deleteCollector = async (dispatch, ids, setIsDeleting) => {
+export const deleteCollector = async (
+  dispatch,
+  setIsDeleting,
+  ispOwnerId,
+  collectorId
+) => {
   setIsDeleting(true);
   try {
-    await apiLink.delete(
-      `ispOwner/collector/${ids.ispOwnerId}/${ids.collectorId}`
-    );
-    dispatch(deleteCollectorSuccess(ids.collectorId));
+    await apiLink.delete(`ispOwner/collector/${ispOwnerId}/${collectorId}`);
+    dispatch(deleteCollectorSuccess(collectorId));
     setIsDeleting(false);
     langMessage(
       "success",

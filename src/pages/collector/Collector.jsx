@@ -9,6 +9,7 @@ import {
   ArrowClockwise,
   Key,
   KeyFill,
+  ArchiveFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +24,11 @@ import CollectorPost from "./collectorCRUD/CollectorPost";
 
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
-import { getArea, getCollector } from "../../features/apiCalls";
+import {
+  deleteCollector,
+  getArea,
+  getCollector,
+} from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { useTranslation } from "react-i18next";
@@ -73,6 +78,10 @@ export default function Collector() {
   const [collectorId, setCollectorId] = useState();
   const handleSingleMessage = (collectorID) => {
     setCollectorId(collectorID);
+  };
+
+  const deleteSingleCollector = (collectorId) => {
+    deleteCollector(dispatch, setIsLoading, ispOwnerId, collectorId);
   };
 
   useEffect(() => {
@@ -191,6 +200,21 @@ export default function Collector() {
                       <div className="customerAction">
                         <ChatText />
                         <p className="actionP">{t("message")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+
+                {role === "ispOwner" && (
+                  <li
+                    onClick={() => {
+                      deleteSingleCollector(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item actionManager">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">{t("delete")}</p>
                       </div>
                     </div>
                   </li>
