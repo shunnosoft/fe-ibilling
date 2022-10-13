@@ -60,7 +60,6 @@ export default function Report() {
   const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state?.payment?.allBills);
-  console.log(allBills);
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
@@ -290,6 +289,11 @@ export default function Report() {
       },
       {
         width: "10%",
+        Header: t("PPPoEName"),
+        accessor: "customer.pppoe.name",
+      },
+      {
+        width: "10%",
         Header: t("package"),
         accessor: "customer.mikrotikPackage.name",
       },
@@ -304,7 +308,7 @@ export default function Report() {
         accessor: "due",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("agent"),
         accessor: "medium",
       },
@@ -314,7 +318,7 @@ export default function Report() {
         accessor: "name",
       },
       {
-        width: "19%",
+        width: "14%",
         Header: t("note"),
         accessor: (data) => {
           return {

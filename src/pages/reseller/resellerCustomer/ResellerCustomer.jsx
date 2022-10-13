@@ -572,7 +572,10 @@ const ResellerCustomer = () => {
           </div>
         </div>
       </div>
-      <ResellerCustomerDetails single={singleCustomer} />
+      <ResellerCustomerDetails
+        single={singleCustomer}
+        resellerCount={"singleReseller"}
+      />
       <CustomerReport hideReportDelete={true} single={customerReportId} />
       <ResellerCustomerEdit allCustomer={false} customerId={singleCustomer} />
       <CustomerDelete

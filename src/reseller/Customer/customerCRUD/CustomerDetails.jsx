@@ -76,26 +76,24 @@ export default function CustomerDetails({ single }) {
                   </h6>
                   <h6>
                     {t("billingCycle")} :{" "}
-                    <b>
-                      {moment(data?.billingCycle).format("DD-MM-YYYY hh:mm A")}
-                    </b>
+                    <b>{moment(data?.billingCycle).format("lll")}</b>
                   </h6>
                   <h6>
                     {t("automaticConnectionOff")} :{" "}
-                    <b>{single?.autoDisable ? "YES" : "NO"}</b>
+                    <b>{data?.autoDisable ? "YES" : "NO"}</b>
                   </h6>
                 </div>
                 <div>
                   <h5>PPPoE</h5>
                   <hr />
                   <h6>
-                    {t("userName")} : <b>{single?.pppoe?.name}</b>
+                    {t("userName")} : <b>{data?.pppoe?.name}</b>
                   </h6>
                   <h6>
                     <h6>
-                      {t("password")} : <b>{single?.password}</b>
+                      {t("password")} : <b>{data?.password}</b>
                     </h6>
-                    {t("profile")} : <b> {single?.pppoe?.profile}</b>
+                    {t("profile")} : <b> {data?.pppoe?.profile}</b>
                   </h6>
                   <h6>
                     {t("service")} : <b>{single?.pppoe?.service}</b>
