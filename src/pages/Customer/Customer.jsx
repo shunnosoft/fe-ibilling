@@ -47,6 +47,7 @@ import TransferToReseller from "./customerCRUD/TransferToReseller";
 import BulkSubAreaEdit from "./customerCRUD/bulkOpration/bulkSubAreaEdit";
 import BulkBillingCycleEdit from "./customerCRUD/bulkOpration/bulkBillingCycleEdit";
 import BulkStatusEdit from "./customerCRUD/bulkOpration/bulkStatusEdit";
+import BulkPackageEdit from "./customerCRUD/bulkOpration/bulkPackageEdit";
 import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
@@ -1346,6 +1347,7 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="autoDisableEditModal"
       />
+      {/* <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" /> */}
       <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
@@ -1407,6 +1409,16 @@ const PPPOECustomer = () => {
             <i className="fas fa-edit"></i>
             <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
+          {/* <button
+            className="bulk_action_button btn btn-primary btn-floating btn-sm"
+            title={t("package")}
+            data-bs-toggle="modal"
+            data-bs-target="#bulkPackageEdit"
+            type="button"
+          >
+            <i className="fas fa-edit"></i>
+            <span className="button_title">{t("bulkPackage")}</span>
+          </button> */}
           <button
             className="bulk_action_button btn btn-info btn-floating btn-sm"
             title={t("transferReseller")}
