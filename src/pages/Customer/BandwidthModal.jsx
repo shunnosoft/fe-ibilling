@@ -29,7 +29,6 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         const res = await apiLink(
           "customer/mikrotik/currentSession?customerId=" + customerId
         );
-        console.log(res.data);
         setBandWidth([
           parseInt(res.data.data[0].rxByte.toFixed(2) / 1024),
           ...bandwidth,
@@ -59,7 +58,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         // } else {
         //   clearInterval(interval);
         // }
-      }, 1000);
+      }, 5000);
       return () => {
         clearInterval(interval);
       };
@@ -97,7 +96,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {true ? (
+          {!bandwidth ? (
             <div className="d-flex justify-content-center">
               <TdLoader />
             </div>
