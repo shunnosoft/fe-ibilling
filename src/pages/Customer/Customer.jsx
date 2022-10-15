@@ -1338,7 +1338,9 @@ const PPPOECustomer = () => {
         modalId="bulkPromiseDateEdit"
       />
 
-      <BulkStatusEdit bulkCustomer={bulkCustomers} modalId="bulkStatusEdit" />
+      {bpSettings.hasMikrotik && (
+        <BulkStatusEdit bulkCustomer={bulkCustomers} modalId="bulkStatusEdit" />
+      )}
       <BulkCustomerDelete
         bulkCustomer={bulkCustomers}
         modalId="bulkDeleteCustomer"
@@ -1347,7 +1349,7 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="autoDisableEditModal"
       />
-      {/* <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" /> */}
+      <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
       <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
@@ -1409,16 +1411,18 @@ const PPPOECustomer = () => {
             <i className="fas fa-edit"></i>
             <span className="button_title">{t("automaticConnectionOff")}</span>
           </button>
-          {/* <button
-            className="bulk_action_button btn btn-primary btn-floating btn-sm"
-            title={t("package")}
-            data-bs-toggle="modal"
-            data-bs-target="#bulkPackageEdit"
-            type="button"
-          >
-            <i className="fas fa-edit"></i>
-            <span className="button_title">{t("bulkPackage")}</span>
-          </button> */}
+          {bpSettings.hasMikrotik && (
+            <button
+              className="bulk_action_button btn btn-warning btn-floating btn-sm"
+              title={t("package")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkPackageEdit"
+              type="button"
+            >
+              <i className="fas fa-edit"></i>
+              <span className="button_title">{t("updatePackage")}</span>
+            </button>
+          )}
           <button
             className="bulk_action_button btn btn-info btn-floating btn-sm"
             title={t("transferReseller")}

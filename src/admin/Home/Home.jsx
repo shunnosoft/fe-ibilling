@@ -14,6 +14,7 @@ import {
   PenFill,
   ThreeDots,
   CardChecklist,
+  FileEarmarkExcel,
 } from "react-bootstrap-icons";
 import { getIspOwners } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -21,6 +22,7 @@ import EditModal from "./modal/EditModal";
 import "./home.css";
 import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
+import FileUpload from "./modal/FileUpload";
 
 export default function Home() {
   // loading
@@ -69,6 +71,10 @@ export default function Home() {
   const noteModal = (noteId, companyName) => {
     setOwnerId(noteId);
     setCompanyName(companyName);
+  };
+
+  const fileModal = (ownerId) => {
+    setOwnerId(ownerId);
   };
 
   // table column
@@ -248,6 +254,22 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
+                  {!original.bpSettings.hasMikrotik && (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#fileUploadModal"
+                      onClick={() => {
+                        fileModal(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <FileEarmarkExcel />
+                          <p className="actionP">CSV File Upload</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
                   {/* <li>
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -333,6 +355,7 @@ export default function Home() {
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <Note ownerId={ownerId} companyName={companyName} />
+              <FileUpload ownerID={ownerId} />
             </FontColor>
           </div>
         </div>

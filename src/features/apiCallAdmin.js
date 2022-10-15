@@ -48,6 +48,20 @@ export const getIspOwnersStaffs = async (
 };
 
 // update owner
+export const uploadCsvFile = async (data, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    await apiLink.post("/admin/bulk-customer-import/", data);
+
+    document.querySelector("#fileUploadModal").click();
+    toast.success(`File Uploaded Successfully`);
+  } catch (err) {
+    console.log(err);
+  }
+  setIsLoading(false);
+};
+
+// update owner
 export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
   setIsLoading(true);
   try {

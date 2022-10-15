@@ -2,10 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
-import {
-  bulkPackageEdit,
-  bulkStatusEdit,
-} from "../../../../features/actions/bulkOperationApi";
+import { bulkPackageEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 import { fetchPackagefromDatabase } from "../../../../features/apiCalls";
@@ -37,7 +34,6 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
-  const [otherMikrotikUser, setOtherMikrotikUser] = useState([]);
 
   const [mikrotikPackage, setMikrotikPackage] = useState("");
 
@@ -55,6 +51,7 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
       }
     }
     setSingleMikrotik(id);
+    setMikrotikPackage("");
   };
 
   // select Mikrotik Package
@@ -69,21 +66,23 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
 
   const changePackage = (e) => {
     e.preventDefault();
-
+    let otherCusetomerCount = 0;
     let customers;
     if (singleMikrotik) {
       customers = bulkCustomer.reduce((acc, current) => {
         if (current.original.mikrotik === singleMikrotik) {
           acc.push(current);
         } else {
-          setOtherMikrotikUser(...otherMikrotikUser, current.original.name);
+          otherCusetomerCount++;
           toast.error("মাইক্রটিক এর মধ্যে এই" + current.original.name + "নেই");
         }
         return acc;
       }, []);
+    } else {
+      alert(t("selectMikrotik"));
     }
 
-    if (mikrotikPackage) {
+    if (singleMikrotik && mikrotikPackage) {
       const data = {
         customerIds: customers.map((item) => item.original.id),
         mikrotikPackage,
@@ -91,29 +90,27 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
       const confirm = window.confirm(
         t("areYouWantToUpdateStatus") +
           customers.length +
-          t("updateStatusSubArea")
+          t("updateCustomerPackage") +
+          "\n" +
+          otherCusetomerCount +
+          t("otherMtkUsers")
       );
       if (confirm) {
         bulkPackageEdit(dispatch, data, setIsLoading);
       }
+    } else {
+      alert(t("selectPackage"));
     }
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateStatus")}>
-      {/* {otherMikrotikUser && (
-        <div className="otherMikrotikUser">
-          {otherMikrotikUser?.map((customer) => (
-            <span>{customer} </span>
-          ))}
-        </div>
-      )} */}
+    <RootBulkModal modalId={modalId} header={t("updatePackage")}>
       <form onSubmit={changePackage}>
         <div className="mikrotikSection">
           {bpSettings?.hasMikrotik ? (
             <div>
               <label className="form-control-label changeLabelFontColor">
-                {t("selectMikrotik")} <span className="text-danger">*</span>
+                {t("mikrotik")} <span className="text-danger">*</span>
               </label>
               <select
                 className="form-select mw-100 mt-0"
@@ -137,7 +134,7 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
           {/* pppoe package */}
           <div>
             <label className="form-control-label changeLabelFontColor">
-              {t("selectPackage")} <span className="text-danger">*</span>
+              {t("package")} <span className="text-danger">*</span>
             </label>
             <select
               className="form-select mb-3 mw-100 mt-0"
