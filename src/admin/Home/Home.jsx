@@ -40,6 +40,9 @@ export default function Home() {
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
 
+  // mikrotik filter state
+  const [mikrotik, setMikrotik] = useState();
+
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
@@ -50,6 +53,20 @@ export default function Home() {
   if (filterStatus && filterStatus !== "All") {
     ispOwners = ispOwners.filter(
       (value) => value.bpSettings.paymentStatus === filterStatus
+    );
+  }
+
+  // mikrotik filter
+  if (mikrotik && mikrotik !== "All") {
+    let mtkStatus;
+    if (mikrotik === "true") {
+      mtkStatus = true;
+    } else if (mikrotik === "false") {
+      mtkStatus = false;
+    }
+
+    ispOwners = ispOwners.filter(
+      (value) => value.bpSettings.hasMikrotik === mtkStatus
     );
   }
 
@@ -327,6 +344,17 @@ export default function Home() {
                 </option>
                 <option value="paid">Paid</option>
                 <option value="unpaid">Unpaid</option>
+              </select>
+              <select
+                className="form-select mt-0 me-3"
+                aria-label="Default select example"
+                onChange={(event) => setMikrotik(event.target.value)}
+              >
+                <option value="All" selected>
+                  Mikrotik
+                </option>
+                <option value="true">With Mikrotik</option>
+                <option value="false">WithOut Mikrotik</option>
               </select>
               <Link to={"/admin/all-comments"}>
                 <div className="all-comment-btn">

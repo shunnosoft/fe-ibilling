@@ -108,6 +108,7 @@ import {
   getExpenditureSuccess,
 } from "./expenditureSlice";
 import { deleteReCustomer } from "./resellerCustomerAdminSlice";
+import { userLogout } from "./actions/authAsyncAction";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -1312,6 +1313,7 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
 };
 
 export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
+  console.log(data);
   setIsLoading(true);
 
   try {

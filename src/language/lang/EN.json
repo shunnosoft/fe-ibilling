@@ -122,6 +122,7 @@
   "expired": "Expired",
   "unpaid": "Unpaid",
   "payPaid": "Paid",
+  "partial": "Partial",
   "areaName": "Area Name",
   "editArea": "Edit Area",
   "editAreaName": "Edit Area Name",

@@ -335,8 +335,17 @@ const PPPOECustomer = () => {
         }
 
         // payment status filter
-        if (filterOptions.paymentStatus) {
+        if (filterOptions.paymentStatus !== "partial") {
           if (customer.paymentStatus === filterOptions.paymentStatus) {
+            isFound = true;
+          } else {
+            return false;
+          }
+        }
+
+        // payment status filter
+        if (filterOptions.paymentStatus === "partial") {
+          if (customer.monthlyFee > customer.balance && customer.balance > 0) {
             isFound = true;
           } else {
             return false;
@@ -1071,7 +1080,7 @@ const PPPOECustomer = () => {
                               selected={filterOptions.paymentStatus === "paid"}
                               value="paid"
                             >
-                              {t("payPaid")}
+                              {t("paid")}
                             </option>
                             <option
                               selected={
@@ -1080,6 +1089,14 @@ const PPPOECustomer = () => {
                               value="unpaid"
                             >
                               {t("unpaid")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.paymentStatus === "partial"
+                              }
+                              value="partial"
+                            >
+                              {t("partial")}
                             </option>
                           </select>
                           {bpSettings?.hasMikrotik && (

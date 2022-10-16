@@ -31,6 +31,10 @@ export default function Profile() {
   const [isLoadingpass, setIsLoadingpass] = useState(false);
 
   const passwordValidator = Yup.object({
+    mobile: Yup.string()
+      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     oldPassword: Yup.string().required(`${t("oldPassword")} ***`),
     newPassword: Yup.string()
       .required(`${t("newPassword")} ***`)
@@ -43,9 +47,23 @@ export default function Profile() {
       `${t("doNotMatchPassword")}`
     ),
   });
+
+  const profileValidator = Yup.object({
+    name: Yup.string().required(t("writeCustomerName")),
+    company: Yup.string().required(t("writeCompanyName")),
+    email: Yup.string().email(t("incorrectEmail")),
+    address: Yup.string(),
+    mobile: Yup.string()
+      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
+    signature: Yup.string(),
+  });
+
   const dispatch = useDispatch();
   const progileEditHandler = (data) => {
-    delete data.mobile;
+    console.log(data);
+    // delete data.mobile;
     profileUpdate(dispatch, data, ispOwnerId, setIsLoading);
   };
 
@@ -87,6 +105,7 @@ export default function Profile() {
                           signature: currentUser?.signature || "",
                           mobile: currentUser?.mobile || "",
                         }}
+                        validationSchema={profileValidator}
                         onSubmit={(values) => {
                           progileEditHandler(values);
                         }}
@@ -114,7 +133,6 @@ export default function Profile() {
                               type="text"
                               label={t("mobile")}
                               name="mobile"
-                              disabled={true}
                             />
                             <FtextField
                               type="text"

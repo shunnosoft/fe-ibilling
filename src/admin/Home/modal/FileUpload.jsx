@@ -32,13 +32,7 @@ const FileUpload = ({ ownerID }) => {
           <div className="modal-header">
             <div className="modal-title" id="exampleModalLabel">
               <div className="d-flex">
-                <h5>
-                  {/* Id: <span className="text-success"> {ispOwner?.id} </span> */}
-                </h5>
-                <h5 className="ms-5">
-                  Mobile:
-                  {/* <span className="text-success"> {ispOwner?.mobile}</span> */}
-                </h5>
+                <h5>Bulk Customer Upload</h5>
               </div>
             </div>
             <button
