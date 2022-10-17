@@ -807,12 +807,7 @@ export const fetchSingleMikrotik = async (mikrotik, id) => {
 };
 
 // DELETE single mikrotik
-export const deleteSingleMikrotik = async (
-  dispatch,
-  IDs,
-  setIsloading,
-  navigate
-) => {
+export const deleteSingleMikrotik = async (dispatch, IDs, setIsloading) => {
   setIsloading(true);
   await apiLink({
     method: "DELETE",
@@ -820,13 +815,14 @@ export const deleteSingleMikrotik = async (
   })
     .then((res) => {
       dispatch(deleteMikrotikSuccess(IDs.id));
+
       setIsloading(false);
+      document.querySelector("#deleteMikrotikModal").click();
       langMessage(
         "success",
         "মাইক্রোটিক ডিলিট সফল হয়েছে",
         "Mikorik Deleted Successfully"
       );
-      navigate("/mikrotik");
     })
     .catch((error) => {
       setIsloading(false);
@@ -1139,11 +1135,10 @@ export const deletePPPoEpackage = async (dispatch, IDs) => {
   })
     .then((res) => {
       dispatch(deletepppoePackageSuccess(pppPackageId));
-      document.querySelector("#pppoePackageEditModal").click();
       langMessage(
         "success",
         "PPPoE প্যাকেজ ডিলিট সফল হয়েছে!",
-        "Customer Deleted Successfully"
+        "PPPoE Package Deleted Successfully"
       );
     })
     .catch((err) => {

@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "./mikrotik.css";
-import { Plus, ArrowRightShort, ArrowClockwise } from "react-bootstrap-icons";
+import {
+  Plus,
+  ArrowRightShort,
+  ArrowClockwise,
+  Archive,
+  ArchiveFill,
+  PlugFill,
+} from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 // internal imports
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -16,6 +23,8 @@ import { fetchMikrotik } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
+import MikrotikDelete from "./mikrotikModals/MikrotikDelete";
+import apiLink from "../../api/apiLink";
 
 export default function Mikrotik() {
   const { t } = useTranslation();
@@ -26,11 +35,33 @@ export default function Mikrotik() {
   allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+
+  const [mikrotikId, setMikrotikId] = useState();
 
   // reload handler
   const reloadHandler = () => {
     const { ispOwner } = auth;
     fetchMikrotik(dispatch, ispOwner.id, setIsLoading);
+  };
+
+  // mikrottik Connection Check
+  const MikrotikConnectionTest = async (connectionCheckId) => {
+    setIsChecking(true);
+
+    await apiLink({
+      method: "GET",
+      url: `/mikrotik/testConnection/${auth.ispOwner.id}/${connectionCheckId}`,
+    })
+      .then(() => {
+        setIsChecking(false);
+        toast.success(`কানেকশন ঠিক আছে`);
+      })
+      .catch(() => {
+        setIsChecking(false);
+
+        toast.error(`দুঃখিত, কানেকশন ঠিক নেই!`);
+      });
   };
 
   useEffect(() => {
@@ -82,6 +113,26 @@ export default function Mikrotik() {
             >
               {t("configure")} <ArrowRightShort style={{ fontSize: "19px" }} />
             </Link>
+
+            <button
+              title={t("checkConnection")}
+              style={{ padding: "0.10rem .5rem" }}
+              className="btn btn-sm btn-primary mx-1"
+              onClick={() => MikrotikConnectionTest(original.id)}
+            >
+              <PlugFill />
+            </button>
+
+            {/* <button
+              title={t("deletekrotik")}
+              data-bs-toggle="modal"
+              data-bs-target="#deleteMikrotikModal"
+              onClick={() => setMikrotikId(original.id)}
+              style={{ padding: "0.10rem .5rem" }}
+              className="btn btn-sm btn-danger"
+            >
+              <ArchiveFill />
+            </button> */}
           </div>
         ),
       },
@@ -126,6 +177,11 @@ export default function Mikrotik() {
 
               <FourGround>
                 <div className="collectorWrapper py-2 mt-2">
+                  {isChecking && (
+                    <span className="text-danger">
+                      <Loader /> Loading ...
+                    </span>
+                  )}
                   {/* table */}
                   <Table
                     isLoading={isLoading}
@@ -139,6 +195,7 @@ export default function Mikrotik() {
           </div>
         </div>
       </div>
+      <MikrotikDelete mikrotikID={mikrotikId} />
     </>
   );
 }

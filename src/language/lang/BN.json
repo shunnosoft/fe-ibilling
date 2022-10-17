@@ -444,6 +444,7 @@
   "areYouWantToUpdateStatus": "আপনি কি ",
   "areYouWantToOnAutoDisable": "আপনি কি ",
   "areYouWantToOffAutoDisable": "আপনি কি ",
+  "areYouSureWantToDeleteMikrotik": "আপনি কি মাইক্রোটিক ডিলিট করতে চান ?",
   "updateCustomerSubArea": "টি গ্রাহকের সাব এরিয়া আপডেট করতে চান?",
   "updateStatusSubArea": "টি গ্রাহকের স্টাটাস আপডেট করতে চান?",
   "otherMtkUsers": "টি গ্রাহক অন্য মাইক্রোটিক আছে ।",
@@ -555,5 +556,6 @@
   "totalPaidCustomer": "মোট পরিশোধ গ্রাহক",
   "totalDueBill": "মোট বকেয়া বিল",
   "totalUnpaidCustomer": "মোট বকেয়া গ্রাহক",
-  "totalPaidBill": "মোট পরিশোধ"
+  "totalPaidBill": "মোট পরিশোধ",
+  "mikrotikDelete": "মাইক্রোটিক ডিলিট"
 }

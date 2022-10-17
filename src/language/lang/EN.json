@@ -438,6 +438,7 @@
   "areYouWantToUpdateStatus": "Are you want to update",
   "areYouWantToOnAutoDisable": "Are you want to on auto disable for ",
   "areYouWantToOffAutoDisable": "Are you want to off auto disable for ",
+  "areYouSureWantToDeleteMikrotik": "Are You Sure Want to Delete Mikrotik ?",
   "updateCustomerSubArea": "Customer Sub-Area ?",
   "onAutoDisable": "Customers ?",
   "offAutoDisable": "Customers ?",
@@ -554,5 +555,6 @@
   "totalPaidCustomer": "Total Paid Customer",
   "totalDueBill": "Total Due Bill",
   "totalUnpaidCustomer": "Total Unpaid Customer",
-  "totalPaidBill": "Total Paid"
+  "totalPaidBill": "Total Paid",
+  "mikrotikDelete": "Mikrotik Delete"
 }
