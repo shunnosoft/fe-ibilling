@@ -827,6 +827,7 @@ export const deleteSingleMikrotik = async (dispatch, IDs, setIsloading) => {
     .catch((error) => {
       setIsloading(false);
       toast.error(error.response?.data.message);
+      document.querySelector("#deleteMikrotikModal").click();
     });
 };
 

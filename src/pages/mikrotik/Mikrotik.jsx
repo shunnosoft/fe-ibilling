@@ -123,7 +123,7 @@ export default function Mikrotik() {
               <PlugFill />
             </button>
 
-            {/* <button
+            <button
               title={t("deletekrotik")}
               data-bs-toggle="modal"
               data-bs-target="#deleteMikrotikModal"
@@ -132,7 +132,7 @@ export default function Mikrotik() {
               className="btn btn-sm btn-danger"
             >
               <ArchiveFill />
-            </button> */}
+            </button>
           </div>
         ),
       },
