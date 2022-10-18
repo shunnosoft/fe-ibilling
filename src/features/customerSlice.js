@@ -119,6 +119,7 @@ const customerSliec = createSlice({
         state.staticCustomer = [...updatedCustomer];
       }
     },
+
     bulkUpdate: (state, { payload }) => {
       //get the user type
       const userType = payload[0].userType;

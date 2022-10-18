@@ -223,6 +223,12 @@ export default function CollectorReport() {
     [t]
   );
 
+  const customComponent = (
+    <div style={{ fontSize: "18px" }}>
+      {t("totalBill")} {addAllBills()} {t("tk")}
+    </div>
+  );
+
   return (
     <>
       <Sidebar />
@@ -317,6 +323,7 @@ export default function CollectorReport() {
                   {/* table */}
                   <div className="table-section">
                     <Table
+                      customComponent={customComponent}
                       isLoading={isLoading}
                       data={mainData}
                       columns={columns2}

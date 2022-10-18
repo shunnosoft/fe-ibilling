@@ -82,6 +82,31 @@ const resellerCustomerSlice = createSlice({
         state.resellerCustomer = updatedCustomer;
       }
     },
+
+    bulkResellerDelete: (state, { payload }) => {
+      //get the user type
+      const userType = payload[0].userType;
+      let customers;
+      //get the value from state based on userType
+      if (userType === "pppoe") {
+        customers = [...state.resellerCustomer];
+      } else if (userType === "simple-queue" || userType === "firewall-queue") {
+        customers = [...state.resellerCustomer];
+      }
+      const updatedCustomer = [];
+      //loop through existing customer
+      for (let i = 0; i < customers.length; i++) {
+        const element = customers[i];
+        const found = payload.find((item) => item.id === element.id);
+        if (!found) updatedCustomer.push(element);
+      }
+      //update the state based on userType with modified state
+      if (userType === "pppoe") {
+        state.resellerCustomer = [...updatedCustomer];
+      } else if (userType === "simple-queue" || userType === "firewall-queue") {
+        state.resellerCustomer = [...updatedCustomer];
+      }
+    },
   },
 });
 
@@ -93,5 +118,6 @@ export const {
   editAllResellerCustomerSuccess,
   bulkCustomerReturn,
   bulkUpdate,
+  bulkResellerDelete,
 } = resellerCustomerSlice.actions;
 export default resellerCustomerSlice.reducer;

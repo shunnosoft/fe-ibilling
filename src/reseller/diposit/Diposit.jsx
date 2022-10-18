@@ -35,6 +35,8 @@ export default function Diposit() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
   const balancee = useSelector((state) => state.payment.balance);
+  console.log(balancee);
+
   const allDeposit = useSelector((state) => state.payment.allDeposit);
 
   var today = new Date();

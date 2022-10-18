@@ -36,6 +36,7 @@ import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { fetchMikrotik } from "../../../features/apiCalls";
 import BulkStatusEdit from "../resellerModals/bulkStatusEdit";
+import BulkCustomerTransfer from "../resellerModals/bulkCustomerTransfer";
 
 // get specific customer
 
@@ -594,6 +595,10 @@ const ResellerCustomer = () => {
         modalId="customerBillingCycle"
       />
       <BulkStatusEdit bulkCustomer={bulkCustomer} modalId="bulkStatusEdit" />
+      <BulkCustomerTransfer
+        bulkCustomer={bulkCustomer}
+        modalId="bulkTransferToReseller"
+      />
       {bulkCustomer.length > 0 && (
         <div className="bulkActionButton">
           <button
@@ -627,6 +632,20 @@ const ResellerCustomer = () => {
           >
             <i className="fas fa-edit"></i>
             <span className="button_title"> {t("editStatus")}</span>
+          </button>
+
+          <button
+            className="bulk_action_button btn btn-primary btn-floating btn-sm"
+            title={t("transferResellerToReseller")}
+            data-bs-toggle="modal"
+            data-bs-target="#bulkTransferToReseller"
+            type="button"
+          >
+            <i className="fa-solid fa-right-left"></i>
+            <span className="button_title">
+              {" "}
+              {t("transferResellerToReseller")}{" "}
+            </span>
           </button>
         </div>
       )}

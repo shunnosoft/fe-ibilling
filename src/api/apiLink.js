@@ -6,7 +6,7 @@ import { userLogout } from "../features/actions/authAsyncAction";
 const BASE_URL = "https://netfeebd.net/api/v1/";
 
 //sohan
-// const BASE_URL = "http://192.168.0.109:3030/api/v1/";
+// const BASE_URL = "http://192.168.1.11:3030/api/v1/";
 
 // LOCAL vai
 // const BASE_URL = "http://192.168.1.26:3030/api/v1/";

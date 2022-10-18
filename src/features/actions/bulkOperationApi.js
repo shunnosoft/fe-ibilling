@@ -1,7 +1,10 @@
 import apiLink from "../../api/apiLink";
 import { bulkDelete, bulkUpdate } from "../customerSlice";
 import { toast } from "react-toastify";
-import { bulkCustomerReturn } from "../resellerCustomerAdminSlice";
+import {
+  bulkCustomerReturn,
+  bulkResellerDelete,
+} from "../resellerCustomerAdminSlice";
 
 export const bulkDeleteCustomer = async (
   dispatch,
@@ -130,7 +133,12 @@ export const bulkAutoConnectionEdit = async (dispatch, data, setIsLoading) => {
   }
 };
 
-export const bulkCustomerTransfer = async (dispatch, data, setIsLoading) => {
+export const bulkCustomerTransfer = async (
+  dispatch,
+  data,
+  setIsLoading,
+  customerType
+) => {
   try {
     setIsLoading(true);
     const res = await apiLink.patch(
@@ -138,7 +146,11 @@ export const bulkCustomerTransfer = async (dispatch, data, setIsLoading) => {
       data
     );
     document.querySelector("#bulkTransferToReseller").click();
-    dispatch(bulkDelete(res.data.data));
+    if (customerType === "resellerCustomer") {
+      dispatch(bulkResellerDelete(res.data.data));
+    } else {
+      dispatch(bulkDelete(res.data.data));
+    }
     setIsLoading(false);
     toast.success("Customer transfered successfully to reseller");
   } catch (err) {

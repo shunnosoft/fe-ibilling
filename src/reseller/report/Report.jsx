@@ -185,6 +185,12 @@ export default function Report() {
     totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
+  const customComponent = (
+    <div style={{ fontSize: "18px" }}>
+      {t("totalBill")} {addAllBills()} {t("tk")}
+    </div>
+  );
+
   const columns = useMemo(
     () => [
       {
@@ -345,6 +351,7 @@ export default function Report() {
                   {/* table */}
 
                   <Table
+                    customComponent={customComponent}
                     isLoading={isLoading}
                     columns={columns}
                     data={mainData}

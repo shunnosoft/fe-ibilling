@@ -557,5 +557,6 @@
   "totalDueBill": "মোট বকেয়া বিল",
   "totalUnpaidCustomer": "মোট বকেয়া গ্রাহক",
   "totalPaidBill": "মোট পরিশোধ",
-  "mikrotikDelete": "মাইক্রোটিক ডিলিট"
+  "mikrotikDelete": "মাইক্রোটিক ডিলিট",
+  "transferResellerToReseller": "অন্য রিসেলারকে গ্রাহক দিন"
 }

@@ -556,5 +556,6 @@
   "totalDueBill": "Total Due Bill",
   "totalUnpaidCustomer": "Total Unpaid Customer",
   "totalPaidBill": "Total Paid",
-  "mikrotikDelete": "Mikrotik Delete"
+  "mikrotikDelete": "Mikrotik Delete",
+  "transferResellerToReseller": "Customer Transfer Reseller to Reseller"
 }
