@@ -26,6 +26,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
+import DatePicker from "react-datepicker";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
@@ -159,8 +160,10 @@ export default function CollectorReport() {
 
     arr = arr.filter(
       (item) =>
-        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
     );
 
     setMainData(arr);
@@ -172,7 +175,7 @@ export default function CollectorReport() {
     mainData?.forEach((item) => {
       count = count + item.amount;
     });
-    return count.toString();
+    return FormatNumber(count);
   }, [mainData]);
 
   const onSearch = (e) => {
@@ -291,26 +294,24 @@ export default function CollectorReport() {
                         ))}
                       </select>
 
-                      <input
-                        className="form-select"
-                        type="date"
-                        id="start"
-                        name="trip-start"
-                        value={moment(dateStart).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setStartDate(e.target.value);
-                        }}
-                      />
-                      <input
-                        className="form-select mx-3"
-                        type="date"
-                        id="end"
-                        name="trip-start"
-                        value={moment(dateEnd).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setEndDate(e.target.value);
-                        }}
-                      />
+                      <div>
+                        <DatePicker
+                          className="form-control mw-100 mt-2"
+                          selected={dateStart}
+                          onChange={(date) => setStartDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <div className="mx-2">
+                        <DatePicker
+                          className="form-control mw-100 mt-2"
+                          selected={dateEnd}
+                          onChange={(date) => setEndDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
                       <button
                         className="btn btn-outline-primary w-140 mt-2"
                         type="button"

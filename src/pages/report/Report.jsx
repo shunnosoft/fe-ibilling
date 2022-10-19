@@ -28,6 +28,7 @@ import EditReport from "./modal/EditReport";
 import ReportView from "./modal/ReportView";
 import { CSVLink } from "react-csv";
 import FormatNumber from "../../components/common/NumberFormat";
+import DatePicker from "react-datepicker";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -210,8 +211,10 @@ export default function Report() {
 
     arr = arr.filter(
       (item) =>
-        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
     );
 
     setMainData(arr);
@@ -541,26 +544,24 @@ export default function Report() {
                         <option value="others"> {t("others")} </option>
                       </select>
 
-                      <input
-                        className="form-select mx-2"
-                        type="date"
-                        id="start"
-                        name="trip-start"
-                        value={moment(dateStart).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setStartDate(e.target.value);
-                        }}
-                      />
-                      <input
-                        className="form-select me-2"
-                        type="date"
-                        id="end"
-                        name="trip-start"
-                        value={moment(dateEnd).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setEndDate(e.target.value);
-                        }}
-                      />
+                      <div className="ms-2">
+                        <DatePicker
+                          className="form-control w-140 mt-2"
+                          selected={dateStart}
+                          onChange={(date) => setStartDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <div className="mx-2">
+                        <DatePicker
+                          className="form-control w-140 mt-2"
+                          selected={dateEnd}
+                          onChange={(date) => setEndDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
 
                       <div>
                         <button

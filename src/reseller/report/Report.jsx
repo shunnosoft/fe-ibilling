@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./ReportPDF";
 import Loader from "../../components/common/Loader";
+import DatePicker from "react-datepicker";
 
 export default function Report() {
   const { t } = useTranslation();
@@ -155,8 +156,10 @@ export default function Report() {
 
     arr = arr.filter(
       (item) =>
-        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
     );
 
     setMainData(arr);
@@ -168,7 +171,7 @@ export default function Report() {
     mainData.forEach((item) => {
       count = count + item.amount;
     });
-    return count.toString();
+    return FormatNumber(count);
   }, [mainData]);
   // console.log(addAllBills())
 
@@ -306,7 +309,26 @@ export default function Report() {
                         ""
                       )}
 
-                      <input
+                      <div>
+                        <DatePicker
+                          className="form-control mw-100 mt-2"
+                          selected={dateStart}
+                          onChange={(date) => setStartDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <div className="mx-2">
+                        <DatePicker
+                          className="form-control mw-100 mt-2"
+                          selected={dateEnd}
+                          onChange={(date) => setEndDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+
+                      {/* <input
                         className="form-select"
                         type="date"
                         id="start"
@@ -329,7 +351,7 @@ export default function Report() {
                         onChange={(e) => {
                           setEndDate(e.target.value);
                         }}
-                      />
+                      /> */}
                       <button
                         className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
                         type="button"
