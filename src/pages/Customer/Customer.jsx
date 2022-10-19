@@ -64,6 +64,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
 import BandwidthModal from "./BandwidthModal";
+import BulkBalanceEdit from "./customerCRUD/bulkOpration/BulkBalanceEdit";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -1346,6 +1347,11 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="customerBulkEdit"
       />
+
+      <BulkBalanceEdit
+        bulkCustomer={bulkCustomers}
+        modalId="customerBalanceEdit"
+      />
       <BulkBillingCycleEdit
         bulkCustomer={bulkCustomers}
         modalId="customerBillingCycle"
@@ -1388,6 +1394,18 @@ const PPPOECustomer = () => {
             <i className="fas fa-edit"></i>
             <span className="button_title">{t("editArea")}</span>
           </button>
+
+          <button
+            className="bulk_action_button btn btn-info btn-floating btn-sm"
+            title={t("balanceUpdate")}
+            data-bs-toggle="modal"
+            data-bs-target="#customerBalanceEdit"
+            type="button"
+          >
+            <i className="fas fa-dollar"></i>
+            <span className="button_title">{t("balanceUpdate")}</span>
+          </button>
+
           <button
             className="bulk_action_button btn btn-dark btn-floating btn-sm"
             title={t("editStatus")}

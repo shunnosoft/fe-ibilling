@@ -557,5 +557,7 @@
   "totalUnpaidCustomer": "Total Unpaid Customer",
   "totalPaidBill": "Total Paid",
   "mikrotikDelete": "Mikrotik Delete",
-  "transferResellerToReseller": "Customer Transfer Reseller to Reseller"
+  "transferResellerToReseller": "Customer Transfer Reseller to Reseller",
+  "balanceRequired": "Input Balance",
+  "updateBalance": "Update Balance"
 }

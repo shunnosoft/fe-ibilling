@@ -47,6 +47,27 @@ export const bulksubAreaEdit = async (dispatch, data, setIsLoading) => {
   }
 };
 
+export const bulkBalanceEdit = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setBalance
+) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch("/customer/bulk-customer-balance", data);
+    document.querySelector("#customerBalanceEdit").click();
+    dispatch(bulkUpdate(res.data.data));
+    toast.success("কাস্টমার ব্যলেন্স আপডেট সফল হয়েছে!");
+    setIsLoading(false);
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#customerBalanceEdit").click();
+      toast.error(err.response.data.message);
+    }
+  }
+};
 export const bulkStatusEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);
