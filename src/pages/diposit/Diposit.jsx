@@ -40,7 +40,6 @@ export default function Diposit() {
 
   // get balance from redux
   const balancee = useSelector((state) => state?.payment?.balance);
-  console.log(balancee);
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);

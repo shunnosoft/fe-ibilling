@@ -27,6 +27,7 @@ import {
   getmyDepositSucces,
   getTotalBalanceSuccess,
   updateDepositSuccess,
+  addDepositSucces,
 } from "./paymentSlice";
 import { getChartSuccess } from "./chartsSlice";
 import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
@@ -294,12 +295,13 @@ export const billCollect = async (
 
 export const addDeposit = async (dispatch, data, setLoading) => {
   setLoading(true);
-  // console.log(data, "from api calls");
 
   try {
-    await apiLink.post(`/deposit`, data);
+    const res = await apiLink.post(`/deposit`, data);
+    console.log(data);
+    console.log(res.data);
 
-    // dispatch(addDepositSuccess(res.data));
+    dispatch(addDepositSucces(res.data));
 
     langMessage(
       "success",
@@ -323,7 +325,6 @@ export const getTotalbal = async (dispatch, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.get(`bill/monthlyBill/balance`);
-    // console.log(res.data);
     dispatch(getTotalBalanceSuccess(res.data));
     setLoading(false);
   } catch (error) {

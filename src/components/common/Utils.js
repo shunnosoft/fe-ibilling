@@ -13,6 +13,8 @@ const addClass = {
 
   sent: "success",
   pending: "primary",
+  rejected: "warning",
+  accepted: "success",
   processing: "secondary",
   completed: "success",
   support: "primary",

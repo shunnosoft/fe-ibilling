@@ -559,5 +559,6 @@
   "mikrotikDelete": "Mikrotik Delete",
   "transferResellerToReseller": "Customer Transfer Reseller to Reseller",
   "balanceRequired": "Input Balance",
-  "updateBalance": "Update Balance"
+  "updateBalance": "Update Balance",
+  "partialPayment": "Partial Payment"
 }

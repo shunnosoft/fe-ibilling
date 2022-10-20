@@ -264,6 +264,7 @@ const PPPOECustomer = () => {
     const {
       status,
       paymentStatus,
+      partialPayment,
       area,
       subArea,
       mikrotik,
@@ -279,6 +280,7 @@ const PPPOECustomer = () => {
     if (
       status ||
       paymentStatus ||
+      partialPayment ||
       area ||
       subArea ||
       mikrotik ||
@@ -336,7 +338,7 @@ const PPPOECustomer = () => {
         }
 
         // payment status filter
-        if (filterOptions.paymentStatus !== "partial") {
+        if (filterOptions.paymentStatus) {
           if (customer.paymentStatus === filterOptions.paymentStatus) {
             isFound = true;
           } else {
@@ -345,7 +347,7 @@ const PPPOECustomer = () => {
         }
 
         // payment status filter
-        if (filterOptions.paymentStatus === "partial") {
+        if (filterOptions.partialPayment) {
           if (customer.monthlyFee > customer.balance && customer.balance > 0) {
             isFound = true;
           } else {
@@ -413,6 +415,7 @@ const PPPOECustomer = () => {
     setFilterOption({
       status: "",
       paymentStatus: "",
+      partialPayment: "",
       area: "",
       subArea: "",
       package: "",
@@ -1091,9 +1094,27 @@ const PPPOECustomer = () => {
                             >
                               {t("unpaid")}
                             </option>
+                          </select>
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOptions,
+                                partialPayment: e.target.value,
+                              });
+                            }}
+                          >
+                            <option
+                              selected={filterOptions.partialPayment === ""}
+                              value=""
+                              defaultValue
+                            >
+                              {t("partialPayment")}
+                            </option>
+
                             <option
                               selected={
-                                filterOptions.paymentStatus === "partial"
+                                filterOptions.partialPayment === "partial"
                               }
                               value="partial"
                             >

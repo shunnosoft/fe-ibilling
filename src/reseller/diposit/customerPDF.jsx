@@ -12,18 +12,13 @@ const PrintCustomer = React.forwardRef((props, ref) => {
     (state) => state.persistedReducer.auth?.userData
   );
 
-  // get owner users
-  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+  // get collector from redux
+  const collectors = useSelector((state) => state.collector?.collector);
 
   const getName = (userId) => {
-    const performer = ownerUsers.find((item) => item[userId]);
+    const performer = collectors.find((item) => item.user === userId);
 
-    return (
-      <div>
-        {performer &&
-          performer[userId].name + "(" + performer[userId].role + ")"}
-      </div>
-    );
+    return performer?.name;
   };
 
   return (
@@ -33,9 +28,9 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           <div className="company_logo">
             <img src="/assets/img/logo.png" alt="Company Logo" />
           </div>
-          <div className="company_name">{ispOwnerData.company}</div>
+          {/* <div className="company_name">{ispOwnerData.company}</div> */}
         </div>
-        <div className="details_side">
+        {/* <div className="details_side">
           <p>
             {t("companyName")} {ispOwnerData.company}
           </p>
@@ -44,12 +39,12 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               {t("address")} {ispOwnerData?.address}
             </p>
           )}
-        </div>
+        </div> */}
       </div>
 
       <ul className="d-flex justify-content-evenly filter_list">
         <li>
-          {t("all collector")} : {filterData.collector}
+          {t("collector")} : {filterData.collector}
         </li>
         <li>
           {t("startDate")} : {filterData.startDate}
@@ -70,13 +65,11 @@ const PrintCustomer = React.forwardRef((props, ref) => {
         <tbody>
           {currentCustomers.map((val, key) => (
             <tr key={key} id={val.id}>
-              <td className="prin_td">{val.name}</td>
+              <td className="prin_td">{getName(val.user)}</td>
               <td className="prin_td">{FormatNumber(val.amount)}</td>
-              <td className="prin_td">{val.status}</td>
+              <td className="prin_td">{badge(val.status)}</td>
 
-              <td className="prin_td">
-                {moment(val.createdAt).format("DD-MM-YYYY")}
-              </td>
+              <td className="prin_td">{moment(val.createdAt).format("lll")}</td>
             </tr>
           ))}
         </tbody>
