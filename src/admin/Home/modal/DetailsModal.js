@@ -7,6 +7,7 @@ import { Person, Telephone, TextCenter } from "react-bootstrap-icons";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
+import Table from "../../../components/table/Table";
 import { getIspOwnersStaffs } from "../../../features/apiCallAdmin";
 
 const DetailsModal = ({ ownerId }) => {
@@ -18,6 +19,7 @@ const DetailsModal = ({ ownerId }) => {
 
   // get ispOwner staffs
   const staffs = useSelector((state) => state.admin?.staffs);
+  console.log(staffs);
 
   // get single isp owner data
   const ownerData = data.find((item) => item.id === ownerId);
@@ -63,80 +65,129 @@ const DetailsModal = ({ ownerId }) => {
                 className="mb-3"
               >
                 <Tab eventKey="details" title="Details">
+                  <div class="d-flex ">
+                    <strong>
+                      <p class="h5 m-2">
+                        Firewall Customer: {staffs.firewallQueueCustomerCount}
+                      </p>
+                    </strong>
+                    <strong>
+                      <p class="h5 m-2">
+                        PPPoe Customer: {staffs.pppoeCustomerCount}
+                      </p>
+                    </strong>
+                    <strong>
+                      <p class="h5 m-2">
+                        Simple Customer: {staffs.simpleQueueCustomerCount}
+                      </p>
+                    </strong>
+                  </div>
                   <div className="profileMain">
                     <div>
                       <h5>ISP Owner</h5>
                       <hr />
-                      <h6>
-                        ISP ID: <i className="text-primary">{ownerData?.id}</i>
-                      </h6>
-                      <h6>
-                        Name: <i className="text-body">{ownerData?.name}</i>
-                      </h6>
-                      <h6>
-                        Mobile: <i className="text-body">{ownerData?.mobile}</i>
-                      </h6>
-                      <h6>
-                        Address:{" "}
-                        <i className="text-body">{ownerData?.address}</i>
-                      </h6>
-                      <h6>
-                        Email: <i className="text-body"> {ownerData?.email}</i>
-                      </h6>
-                      <h6>
-                        Status:{" "}
-                        <i className="text-body">
-                          <span class="badge bg-info">{ownerData?.status}</span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Signature:{" "}
-                        <i className="text-body">{ownerData?.signature}</i>
-                      </h6>
-                      <h6>
-                        SMS Balance:{" "}
-                        <i className="text-body">
-                          <span class="badge  bg-info">
-                            {ownerData?.smsBalance}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        SMS Rate:{" "}
-                        <i className="text-body">{ownerData?.smsRate}</i>
-                      </h6>
-                      <h6>
-                        SMS Type:{" "}
-                        <i className="text-body">{ownerData?.smsType}</i>
-                      </h6>
-                      <h6>
-                        Bill Collection Type:{" "}
-                        <i className="text-body">
-                          <span class="badge bg-info">
-                            {ownerData?.billCollectionType}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Create At:{" "}
-                        <i className="text-secondary">
-                          {moment(ownerData?.createdAt).format(
-                            "DD-MM-YYYY hh:mm A"
-                          )}
-                        </i>
-                      </h6>
+
+                      <table class="table table-bordered">
+                        <tbody>
+                          <tr>
+                            <th scope="col">ISP ID</th>
+                            <td>{ownerData?.id}</td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Name</th>
+                            <td>{ownerData?.name}</td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Mobile</th>
+                            <td>
+                              <i className="text-body">{ownerData?.mobile}</i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Address</th>
+                            <td>
+                              <i className="text-body">{ownerData?.address}</i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Email</th>
+                            <td>
+                              <i className="text-body"> {ownerData?.email}</i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Status</th>
+                            <td>
+                              <i className="text-body">
+                                <span class="badge bg-info">
+                                  {ownerData?.status}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Signature</th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.signature}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">SMS Balance</th>
+                            <td>
+                              <i className="text-body">
+                                <span class="badge  bg-info">
+                                  {ownerData?.smsBalance}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">SMS Rate</th>
+                            <td>
+                              <i className="text-body">{ownerData?.smsRate}</i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">SMS Type</th>
+                            <td>
+                              <i className="text-body">{ownerData?.smsType}</i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Bill Collection Type</th>
+                            <td>
+                              <i className="text-body">
+                                <span class="badge bg-info">
+                                  {ownerData?.billCollectionType}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Create At</th>
+                            <td>
+                              <i className="text-secondary">
+                                {moment(ownerData?.createdAt).format(
+                                  "DD-MM-YYYY hh:mm A"
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
 
                       <br />
-                      <h5>Reference</h5>
-                      <hr />
+                      <h5 class="text-primary">Reference</h5>
                       <h6>
-                        Name:{" "}
+                        <strong>Name: </strong>
                         <i className="text-body">
                           {ownerData?.reference?.name}
                         </i>
                       </h6>
                       <h6>
-                        Mobile:{" "}
+                        <strong>Mobile: </strong>
                         <i className="text-body">
                           {ownerData?.reference?.mobile}
                         </i>
@@ -146,161 +197,209 @@ const DetailsModal = ({ ownerId }) => {
                     <div>
                       <h5>BP Setting</h5>
                       <hr />
-                      <h6>
-                        Complain Management:{" "}
-                        <i className="text-body">
-                          {ownerData?.bpSettings?.complainManagement ? (
-                            <span class="badge rounded-pill bg-success">
-                              YES
-                            </span>
-                          ) : (
-                            <span class="badge rounded-pill bg-danger">NO</span>
-                          )}
-                        </i>
-                      </h6>
-                      <h6>
-                        Customer Limit:{" "}
-                        <i className="text-body">
-                          {" "}
-                          <span class="badge bg-info">
-                            {ownerData?.bpSettings?.customerLimit}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Customer Portal:{" "}
-                        <i className="text-body">
-                          {ownerData?.bpSettings?.customerPortal ? (
-                            <span class="badge rounded-pill bg-success">
-                              YES
-                            </span>
-                          ) : (
-                            <span class="badge rounded-pill bg-danger">NO</span>
-                          )}
-                        </i>
-                      </h6>
-                      <h6>
-                        Mikrotik:{" "}
-                        <i className="text-body">
-                          {ownerData?.bpSettings?.hasMikrotik ? (
-                            <span class="badge rounded-pill bg-success">
-                              YES
-                            </span>
-                          ) : (
-                            <span class="badge rounded-pill bg-danger">NO</span>
-                          )}
-                        </i>
-                      </h6>
-                      <h6>
-                        Mikrotik Length:{" "}
-                        <i className="text-primary">
-                          {ownerData?.mikrotiks.length}
-                        </i>
-                      </h6>
-                      <h6>
-                        PG:{" "}
-                        <i className="text-body">
-                          {ownerData?.bpSettings?.hasPG ? (
-                            <span class="badge rounded-pill bg-success">
-                              YES
-                            </span>
-                          ) : (
-                            <span class="badge rounded-pill bg-danger">NO</span>
-                          )}
-                        </i>
-                      </h6>
-                      <h6>
-                        Reseller:{" "}
-                        <i className="text-body">
-                          {ownerData?.bpSettings?.hasReseller ? (
-                            <span class="badge rounded-pill bg-success">
-                              YES
-                            </span>
-                          ) : (
-                            <span class="badge rounded-pill bg-danger">NO</span>
-                          )}
-                        </i>
-                      </h6>
-                      <h6>
-                        Inventory:{" "}
-                        <i className="text-body">
-                          {ownerData?.bpSettings?.inventory ? (
-                            <span class="badge rounded-pill bg-success">
-                              YES
-                            </span>
-                          ) : (
-                            <span class="badge rounded-pill bg-danger">NO</span>
-                          )}
-                        </i>
-                      </h6>
-                      <h6>
-                        Invoice Date:{" "}
-                        <i className="text-danger">
-                          {ownerData?.bpSettings?.monthlyDueDate &&
-                            moment(
-                              ownerData?.bpSettings?.monthlyDueDate
-                            ).format("DD-MM-YYYY hh:mm A")}
-                        </i>
-                      </h6>
-                      <h6>
-                        Registration Payment Status:{" "}
-                        <i className="text-body">
-                          <span
-                            class={`badge bg-${
-                              ownerData?.bpSettings?.paymentStatus === "paid"
-                                ? "success"
-                                : "danger"
-                            }`}
-                          >
-                            {ownerData?.bpSettings?.paymentStatus}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Monthly Payment Status:{" "}
-                        <i className="text-body">
-                          <span
-                            class={`badge bg-${
-                              ownerData?.bpSettings?.monthlyPaymentStatus ===
-                              "paid"
-                                ? "success"
-                                : "danger"
-                            }`}
-                          >
-                            {ownerData?.bpSettings?.monthlyPaymentStatus}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Package:
-                        <i className="text-body">
-                          <span class="badge bg-info">
-                            {ownerData?.bpSettings?.pack}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Package Type:{" "}
-                        <i className="text-body">
-                          <span class="badge bg-info">
-                            {ownerData?.bpSettings?.packType}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Package Rate:{" "}
-                        <i className="text-body">
-                          <span class="badge bg-info">
-                            {ownerData?.bpSettings?.packageRate}
-                          </span>
-                        </i>
-                      </h6>
-                      <h6>
-                        Queue Type:{" "}
-                        <i className="text-body">
-                          {ownerData?.bpSettings?.queueType}
-                        </i>
-                      </h6>
+
+                      <table class="table table-bordered">
+                        <tbody>
+                          <tr>
+                            <th scope="col">Complain Management</th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.complainManagement ? (
+                                  <span class="badge rounded-pill bg-success">
+                                    YES
+                                  </span>
+                                ) : (
+                                  <span class="badge rounded-pill bg-danger">
+                                    NO
+                                  </span>
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Customer Limit</th>
+                            <td>
+                              <i className="text-body">
+                                <span class="badge bg-info">
+                                  {ownerData?.bpSettings?.customerLimit}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Customer Portal</th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.customerPortal ? (
+                                  <span class="badge rounded-pill bg-success">
+                                    YES
+                                  </span>
+                                ) : (
+                                  <span class="badge rounded-pill bg-danger">
+                                    NO
+                                  </span>
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Mikrotik </th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.hasMikrotik ? (
+                                  <span class="badge rounded-pill bg-success">
+                                    YES
+                                  </span>
+                                ) : (
+                                  <span class="badge rounded-pill bg-danger">
+                                    NO
+                                  </span>
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Mikrotik Length </th>
+                            <td>
+                              <i className="text-primary">
+                                {ownerData?.mikrotiks.length}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">PG</th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.hasPG ? (
+                                  <span class="badge rounded-pill bg-success">
+                                    YES
+                                  </span>
+                                ) : (
+                                  <span class="badge rounded-pill bg-danger">
+                                    NO
+                                  </span>
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Reseller </th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.hasReseller ? (
+                                  <span class="badge rounded-pill bg-success">
+                                    YES
+                                  </span>
+                                ) : (
+                                  <span class="badge rounded-pill bg-danger">
+                                    NO
+                                  </span>
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Inventory </th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.inventory ? (
+                                  <span class="badge rounded-pill bg-success">
+                                    YES
+                                  </span>
+                                ) : (
+                                  <span class="badge rounded-pill bg-danger">
+                                    NO
+                                  </span>
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Invoice Date </th>
+                            <td>
+                              <i className="text-danger">
+                                {ownerData?.bpSettings?.monthlyDueDate &&
+                                  moment(
+                                    ownerData?.bpSettings?.monthlyDueDate
+                                  ).format("DD-MM-YYYY hh:mm A")}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Registration Payment Status </th>
+                            <td>
+                              {" "}
+                              <i className="text-body">
+                                <span
+                                  class={`badge bg-${
+                                    ownerData?.bpSettings?.paymentStatus ===
+                                    "paid"
+                                      ? "success"
+                                      : "danger"
+                                  }`}
+                                >
+                                  {ownerData?.bpSettings?.paymentStatus}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Monthly Payment Status </th>
+                            <td>
+                              <i className="text-body">
+                                <span
+                                  class={`badge bg-${
+                                    ownerData?.bpSettings
+                                      ?.monthlyPaymentStatus === "paid"
+                                      ? "success"
+                                      : "danger"
+                                  }`}
+                                >
+                                  {ownerData?.bpSettings?.monthlyPaymentStatus}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Package </th>
+                            <td>
+                              <i className="text-body">
+                                <span class="badge bg-info">
+                                  {ownerData?.bpSettings?.pack}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Package Type </th>
+                            <td>
+                              <i className="text-body">
+                                <span class="badge bg-info">
+                                  {ownerData?.bpSettings?.packType}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Package Rate </th>
+                            <td>
+                              <i className="text-body">
+                                <span class="badge bg-info">
+                                  {ownerData?.bpSettings?.packageRate}
+                                </span>
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="col">Queue Type </th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.queueType}
+                              </i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </Tab>
@@ -308,7 +407,7 @@ const DetailsModal = ({ ownerId }) => {
                 <Tab eventKey="staffs" title="Staffs">
                   {isLoading ? (
                     <div className="text-center">
-                      <Loader />{" "}
+                      <Loader />
                     </div>
                   ) : (
                     <div className="staffs d-flex justify-content-evenly">
@@ -343,19 +442,58 @@ const DetailsModal = ({ ownerId }) => {
                       ) : (
                         <div>Collector not found !</div>
                       )}
+                      {/* {staffs.resellers?.length > 0 ? (
+                        <div className="resellers">
+                          <h5 className="text-primary">Resellers</h5>
+                          <table class="table table-bordered">
+                            {staffs.resellers?.map((item, key) => (
+                              <tbody>
+                                <tr>
+                                  <td key={key} className="mt-3">
+                                    <Person /> {item?.name}
+                                  </td>
+                                  <td>
+                                    <Telephone /> {item?.mobile}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            ))}
+                          </table>
+                        </div>
+                      ) : (
+                        <div>Reseller not Found</div>
+                      )} */}
+                    </div>
+                  )}
+                </Tab>
+
+                {/* start */}
+
+                <Tab eventKey="Resellers" title="Resellers">
+                  {isLoading ? (
+                    <div className="text-center">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <div className="Resellers d-flex justify-content-evenly">
                       {staffs.resellers?.length > 0 ? (
                         <div className="resellers">
                           <h5 className="text-primary">Resellers</h5>
-                          {staffs.resellers?.map((item, key) => (
-                            <>
-                              <h6 key={key} className="mt-3">
-                                <Person /> {item?.name}
-                              </h6>
-                              <h6>
-                                <Telephone /> {item?.mobile}
-                              </h6>
-                            </>
-                          ))}
+                          <table class="table table-bordered">
+                            {staffs.resellerCustomerCount?.map((item, key) => (
+                              <tbody>
+                                <tr>
+                                  <td key={key} className="mt-3">
+                                    <Person /> {item?.name}
+                                  </td>
+                                  <td>
+                                    <Telephone /> {item?.mobile}
+                                  </td>
+                                  <td>{item?.customerCount}</td>
+                                </tr>
+                              </tbody>
+                            ))}
+                          </table>
                         </div>
                       ) : (
                         <div>Reseller not Found</div>
