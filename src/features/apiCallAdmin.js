@@ -30,6 +30,18 @@ export const getIspOwners = async (dispatch, setIsLoading) => {
   }
 };
 
+// get owners
+export const resetSerialNumber = async (ispOwnerId) => {
+  try {
+    const res = await apiLink.get(
+      `/admin/reset-unique-identifier/${ispOwnerId}`
+    );
+    toast.success(res.data.msg);
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
 export const getIspOwnersStaffs = async (
   ispOwnerId,
   dispatch,

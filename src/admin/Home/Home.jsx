@@ -15,8 +15,9 @@ import {
   ThreeDots,
   CardChecklist,
   FileEarmarkExcel,
+  JournalCode,
 } from "react-bootstrap-icons";
-import { getIspOwners } from "../../features/apiCallAdmin";
+import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
 import "./home.css";
@@ -83,6 +84,11 @@ export default function Home() {
   // details modal handle
   const detailsModal = (showDetailsId) => {
     setOwnerId(showDetailsId);
+  };
+
+  // Reset Customer Serial Number
+  const resetSerialNumberHandler = (ispOwnerId) => {
+    resetSerialNumber(ispOwnerId);
   };
 
   const noteModal = (noteId, companyName) => {
@@ -268,6 +274,14 @@ export default function Home() {
                       <div className="customerAction">
                         <CardChecklist />
                         <p className="actionP">Note</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li onClick={() => resetSerialNumberHandler(original.id)}>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <JournalCode />
+                        <p className="actionP">Reset Serial</p>
                       </div>
                     </div>
                   </li>
