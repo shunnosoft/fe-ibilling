@@ -27,6 +27,14 @@ const DetailsModal = ({ ownerId }) => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // reduced form resellerCustomerCount
+  const customerCount = staffs.resellerCustomerCount.reduce((acc, curr) => {
+    acc += curr.customerCount;
+    return acc;
+  }, 0);
+
+  console.log(customerCount);
+
   useEffect(() => {
     if (ownerId) getIspOwnersStaffs(ownerId, dispatch, setIsLoading);
   }, [ownerId]);
@@ -65,21 +73,25 @@ const DetailsModal = ({ ownerId }) => {
                 className="mb-3"
               >
                 <Tab eventKey="details" title="Details">
-                  <div class="d-flex ">
+                  <div class="d-flex justify-content-evenly pb-2">
                     <strong>
-                      <p class="h5 m-2">
+                      <p class="h6 m-2">
+                        PPPoE Customer: {staffs.pppoeCustomerCount}
+                      </p>
+                    </strong>
+                    <strong>
+                      <p class="h6 m-2">
                         Firewall Customer: {staffs.firewallQueueCustomerCount}
                       </p>
                     </strong>
+
                     <strong>
-                      <p class="h5 m-2">
-                        PPPoe Customer: {staffs.pppoeCustomerCount}
+                      <p class="h6 m-2">
+                        Simple Customer: {staffs.simpleQueueCustomerCount}
                       </p>
                     </strong>
                     <strong>
-                      <p class="h5 m-2">
-                        Simple Customer: {staffs.simpleQueueCustomerCount}
-                      </p>
+                      <p class="h6 m-2">Reseller Customer: {customerCount}</p>
                     </strong>
                   </div>
                   <div className="profileMain">
