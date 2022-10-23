@@ -263,7 +263,7 @@ export default function CollectorReport() {
               {/* Model finish */}
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">

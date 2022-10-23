@@ -45,7 +45,10 @@ function Invoice() {
 
   // delete invoice
   const deleteInvoiceHandler = (invoiceId) => {
-    deleteInvoice(dispatch, invoiceId, setDeleteInvoiceLoading);
+    const confirm = window.confirm(t("invoiceDelete"));
+    if (confirm) {
+      deleteInvoice(dispatch, invoiceId, setDeleteInvoiceLoading);
+    }
   };
 
   // reload handler

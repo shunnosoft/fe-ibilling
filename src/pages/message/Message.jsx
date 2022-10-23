@@ -378,7 +378,7 @@ export default function Message() {
       setisAllChecked(false);
     }
   };
-  console.log(subAreaIds);
+
   return (
     <>
       <SmsParchase></SmsParchase>
