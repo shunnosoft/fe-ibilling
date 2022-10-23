@@ -91,7 +91,11 @@ import {
   prevMonthReportSlice,
   resellerRechargeHistorySlice,
 } from "./rechargeSlice";
-import { getInvoiceListSuccess, getUnpaidInvoiceSuccess } from "./invoiceSlice";
+import {
+  getInvoiceListSuccess,
+  getUnpaidInvoiceSuccess,
+  invoiceDelete,
+} from "./invoiceSlice";
 import { showModal } from "./uiSlice";
 import {
   addPackageSuccess,
@@ -1600,7 +1604,7 @@ export const prevMonthReport = async (
 export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
   setIsloading(true);
   try {
-    const res = await apiLink(`/ispOwner/invoice/${ispOwnerId}`);
+    const res = await apiLink.get(`/ispOwner/invoice/${ispOwnerId}`);
 
     dispatch(getInvoiceListSuccess(res.data));
     setIsloading(false);
@@ -1608,6 +1612,23 @@ export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
     setIsloading(false);
     console.log("Invoice error: ", err);
   }
+};
+
+// invoice delete
+export const deleteInvoice = async (dispatch, invoiceId, setDeleteInvoice) => {
+  setDeleteInvoice(true);
+  try {
+    const res = await apiLink.delete(`/ispOwner/invoice/delete/${invoiceId}`);
+    dispatch(invoiceDelete(res.data));
+    langMessage(
+      "success",
+      "ইনভয়েস ডিলিট সফল হয়েছে",
+      "Invoice Deleted Successfully"
+    );
+  } catch (error) {
+    console.log(error.res.data.message);
+  }
+  setDeleteInvoice(false);
 };
 
 export const initiatePayment = async (invoice, setIsloading) => {

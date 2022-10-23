@@ -13,13 +13,18 @@ import "react-toastify/dist/ReactToastify.css";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 
-import { getInvoices } from "../../features/apiCalls";
+import { deleteInvoice, getInvoices } from "../../features/apiCalls";
 import { showModal } from "../../features/uiSlice";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
-import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  CurrencyDollar,
+  PrinterFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import PrintInvoice from "./invoicePDF";
 import Loader from "../../components/common/Loader";
 
@@ -27,12 +32,21 @@ function Invoice() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
   const [isLoading, setIsloading] = useState(false);
+
+  // invoice delete loading state
+  const [deleteInvoiceLoading, setDeleteInvoiceLoading] = useState(false);
+
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   const invoices = useSelector((state) => state?.invoice?.invoices);
+
+  // delete invoice
+  // const deleteInvoiceHandler = (invoiceId) => {
+  //   deleteInvoice(dispatch, invoiceId, setDeleteInvoiceLoading);
+  // };
 
   // reload handler
   const reloadHandler = () => {
@@ -53,8 +67,8 @@ function Invoice() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "16%",
-        Header: t("invoiceType"),
+        width: "13%",
+        Header: t("type"),
         accessor: "reseller.name",
         Cell: ({ row: { original } }) => (
           <td>
@@ -69,13 +83,13 @@ function Invoice() {
         ),
       },
       {
-        width: "16%",
-        Header: t("moneyAmount"),
+        width: "11%",
+        Header: t("amount"),
         accessor: "amount",
         Cell: ({ row: { original } }) => <td>{original.amount} Tk</td>,
       },
       {
-        width: "16%",
+        width: "13%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -84,12 +98,22 @@ function Invoice() {
       },
 
       {
-        width: "26%",
+        width: "18%",
         Header: t("invoiceDate"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
+      },
+      {
+        width: "18%",
+        Header: () => t("dueDate"),
+        accessor: "dueDate",
+        Cell: ({ cell: { value } }) => (
+          <span>
+            {value ? moment(value).format("MMM DD YYYY hh:mm a") : ""}
+          </span>
+        ),
       },
       {
         width: "15%",
@@ -104,19 +128,43 @@ function Invoice() {
               justifyContent: "center",
             }}
           >
-            {original.status === "unpaid" ? (
-              <span
-                style={{ cursor: "pointer" }}
-                className="badge bg-warning text-dark shadow"
-                onClick={() => {
-                  dispatch(showModal(original));
-                }}
-              >
-                Pay ৳
-              </span>
-            ) : (
-              ""
-            )}
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                {original.status === "unpaid" && (
+                  <li
+                    onClick={() => {
+                      dispatch(showModal(original));
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">Pay</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+                {/* {original.type === "smsPurchase" &&
+                  original.status &&
+                  "unpaid" && (
+                    <li onClick={deleteInvoiceHandler(original.id)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <CurrencyDollar />
+                          <p className="actionP">{t("delete")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )} */}
+              </ul>
+            </div>
           </div>
         ),
       },

@@ -42,7 +42,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           </tr>
         </thead>
         <tbody>
-          {currentCustomers.map((val, key) => (
+          {currentCustomers?.map((val, key) => (
             <tr key={key} id={val.id}>
               <td className="prin_td">
                 {val.type === "registration"
