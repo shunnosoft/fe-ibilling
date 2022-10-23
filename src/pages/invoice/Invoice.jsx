@@ -44,9 +44,9 @@ function Invoice() {
   const invoices = useSelector((state) => state?.invoice?.invoices);
 
   // delete invoice
-  // const deleteInvoiceHandler = (invoiceId) => {
-  //   deleteInvoice(dispatch, invoiceId, setDeleteInvoiceLoading);
-  // };
+  const deleteInvoiceHandler = (invoiceId) => {
+    deleteInvoice(dispatch, invoiceId, setDeleteInvoiceLoading);
+  };
 
   // reload handler
   const reloadHandler = () => {
@@ -151,10 +151,10 @@ function Invoice() {
                     </div>
                   </li>
                 )}
-                {/* {original.type === "smsPurchase" &&
+                {original.type === "smsPurchase" &&
                   original.status &&
                   "unpaid" && (
-                    <li onClick={deleteInvoiceHandler(original.id)}>
+                    <li onClick={() => deleteInvoiceHandler(original.id)}>
                       <div className="dropdown-item">
                         <div className="customerAction">
                           <CurrencyDollar />
@@ -162,7 +162,7 @@ function Invoice() {
                         </div>
                       </div>
                     </li>
-                  )} */}
+                  )}
               </ul>
             </div>
           </div>

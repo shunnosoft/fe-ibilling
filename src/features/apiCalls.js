@@ -1618,15 +1618,16 @@ export const getInvoices = async (dispatch, ispOwnerId, setIsloading) => {
 export const deleteInvoice = async (dispatch, invoiceId, setDeleteInvoice) => {
   setDeleteInvoice(true);
   try {
-    const res = await apiLink.delete(`/ispOwner/invoice/delete/${invoiceId}`);
-    dispatch(invoiceDelete(res.data));
+    const res = await apiLink.delete(`/ispOwner/delete-invoice/${invoiceId}`);
+    dispatch(invoiceDelete(invoiceId));
     langMessage(
       "success",
       "ইনভয়েস ডিলিট সফল হয়েছে",
       "Invoice Deleted Successfully"
     );
   } catch (error) {
-    console.log(error.res.data.message);
+    console.log(error.response?.data?.message);
+    toast.error(error.response?.data?.message);
   }
   setDeleteInvoice(false);
 };
