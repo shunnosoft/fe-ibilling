@@ -19,7 +19,6 @@ const DetailsModal = ({ ownerId }) => {
 
   // get ispOwner staffs
   const staffs = useSelector((state) => state.admin?.staffs);
-  console.log(staffs);
 
   // get single isp owner data
   const ownerData = data.find((item) => item.id === ownerId);
@@ -28,12 +27,10 @@ const DetailsModal = ({ ownerId }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // reduced form resellerCustomerCount
-  const customerCount = staffs.resellerCustomerCount.reduce((acc, curr) => {
+  const customerCount = staffs?.resellerCustomerCount?.reduce((acc, curr) => {
     acc += curr.customerCount;
     return acc;
   }, 0);
-
-  console.log(customerCount);
 
   useEffect(() => {
     if (ownerId) getIspOwnersStaffs(ownerId, dispatch, setIsLoading);
