@@ -561,5 +561,6 @@
   "balanceRequired": "Input Balance",
   "updateBalance": "Update Balance",
   "partialPayment": "Partial Payment",
-  "invoiceDelete": "Are you sure want to delete invoice ?"
+  "invoiceDelete": "Are you sure want to delete invoice ?",
+  "colelctorDeleteNotify": "Do You Want Delete Collector ?"
 }
