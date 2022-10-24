@@ -58,7 +58,7 @@ const PaymentHistory = () => {
                   </div>
                 ) : (
                   paymentHistories.map((item) => (
-                    <div className="forum-item">
+                    <div key={item.createdAt} className="forum-item">
                       <div className="payment_history_list">
                         <div>
                           <div className="forum-icon text-success">

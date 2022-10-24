@@ -92,7 +92,7 @@ const SupportTicket = () => {
           </div>
         ) : (
           paymentHistory.map((item, index) => (
-            <div className="support-table-data mt-2">
+            <div key={item.createdAt} className="support-table-data mt-2">
               <div className="support-count">{index + 1}. </div>
 
               <div className="support-message"> {item.message}</div>

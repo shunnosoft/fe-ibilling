@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import apiLink from "../api/apiLink";
 import PaymentModal from "./paymentModal";
+import bkashImg from "../assets/img/bkash.jpg";
 
 export default function ClientProfile() {
   const userData = useSelector(
@@ -17,11 +17,11 @@ export default function ClientProfile() {
   // }, []);
 
   return (
-    <>
+    <div className="container">
       <div className="client-info">
         <PaymentModal />
-        <div class="jumbotron">
-          <h1 class="display-5">Customer Information</h1>
+        <div className="jumbotron">
+          <h3>Customer Information</h3>
           <table className="client_info_table">
             <tr>
               <td>Name</td>
@@ -81,14 +81,16 @@ export default function ClientProfile() {
             data-bs-toggle="modal"
             data-bs-target="#billPaymentModal"
             style={{ cursor: "pointer" }}
-            className="up_down download"
+            className="up_down payment"
           >
-            <p className="text-white">Payment</p>
-
-            <h3>Bill Payment</h3>
+            {/* <p className="text-white">Payment</p> */}
+            <div className="text-center">
+              <img className="w-50" src={bkashImg} alt="" />
+              <h3>Payment</h3>
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

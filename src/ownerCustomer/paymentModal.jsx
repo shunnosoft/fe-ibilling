@@ -36,7 +36,7 @@ const PaymentModal = () => {
   };
 
   return (
-    <div className="modal fade" id="billPaymentModal" tabindex="-1">
+    <div className="modal fade" id="billPaymentModal" tabIndex="-1">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">

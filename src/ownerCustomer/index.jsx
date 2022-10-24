@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Container, Nav, Navbar } from "react-bootstrap";
 import {
   BarChart,
   CurrencyDollar,
@@ -9,11 +9,6 @@ import {
   Question,
   GearFill,
   KeyFill,
-  ThreeDotsVertical,
-  People,
-  PersonCheckFill,
-  BarChartFill,
-  Coin,
 } from "react-bootstrap-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -22,6 +17,7 @@ import "./client.css";
 import ClientProfile from "./ClientProfile";
 import Packages from "./packages";
 import PasswordReset from "./PasswordReset";
+import Payment from "./Payment";
 import PaymentHistory from "./PaymentHistory";
 import SupportTicket from "./SupportTicket";
 
@@ -37,7 +33,7 @@ const Client = () => {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
-  console.log(userData);
+
   useEffect(() => {
     const rText = localStorage.getItem("nf:textR"); //render page from local storage
     if (rText) setRenderText(rText);
@@ -88,7 +84,7 @@ const Client = () => {
         >
           <ul className="client_service_list ps-0">
             <li
-              className={renderText === "profile" && "pageActive"}
+              className={renderText === "profile" ? "pageActive" : ""}
               onClick={() => renderPageController("profile")}
             >
               <div className="menu_icon">
@@ -99,7 +95,7 @@ const Client = () => {
             <hr className="mt-0 mb-0" />
 
             <li
-              className={renderText === "packages" && "pageActive"}
+              className={renderText === "packages" ? "pageActive" : ""}
               onClick={() => renderPageController("packages")}
             >
               <div className="menu_icon">
@@ -109,7 +105,7 @@ const Client = () => {
             </li>
             <hr className="mt-0 mb-0" />
             <li
-              className={renderText === "supportPage" && "pageActive"}
+              className={renderText === "supportPage" ? "pageActive" : ""}
               onClick={() => renderPageController("supportPage")}
             >
               <div className="menu_icon">
@@ -119,16 +115,16 @@ const Client = () => {
             </li>
             <hr className="mt-0 mb-0" />
 
-            {/* <li onClick={() => renderPageController("billpay")}>
+            <li onClick={() => renderPageController("payBill")}>
               <div className="menu_icon">
                 <CurrencyDollar />
               </div>
               <div className="menu_label">Pay bill</div>
             </li>
-            <hr className="mt-0 mb-0" /> */}
+            <hr className="mt-0 mb-0" />
 
             <li
-              className={renderText === "paymentHistory" && "pageActive"}
+              className={renderText === "paymentHistory" ? "pageActive" : ""}
               onClick={() => renderPageController("paymentHistory")}
             >
               <div className="menu_icon">
@@ -139,7 +135,7 @@ const Client = () => {
             <hr className="mt-0 mb-0" />
 
             <li
-              className={renderText === "resetPassword" && "pageActive"}
+              className={renderText === "resetPassword" ? "pageActive" : ""}
               onClick={() => renderPageController("resetPassword")}
             >
               <div className="menu_icon">
@@ -194,6 +190,9 @@ const Client = () => {
                 <Nav.Link onClick={() => renderPageController("supportPage")}>
                   Support Ticket
                 </Nav.Link>
+                <Nav.Link onClick={() => renderPageController("payBill")}>
+                  Pay Bill
+                </Nav.Link>
                 <Nav.Link
                   onClick={() => renderPageController("paymentHistory")}
                 >
@@ -216,6 +215,7 @@ const Client = () => {
             {renderText === "profile" && <ClientProfile />}
             {renderText === "resetPassword" && <PasswordReset />}
             {renderText === "packages" && <Packages />}
+            {renderText === "payBill" && <Payment />}
             {renderText === "paymentHistory" && <PaymentHistory />}
             {renderText === "supportPage" && <SupportTicket />}
           </div>
@@ -232,7 +232,10 @@ const Client = () => {
                       <div className="features-absolute">
                         <div className="row mb-2">
                           {serviceData.map((item) => (
-                            <div className="col-lg-3 col-md-6 col-12 mb-3">
+                            <div
+                              key={item}
+                              className="col-lg-3 col-md-6 col-12 mb-3"
+                            >
                               <div className="card features feature-clean explore-feature p-4 px-md-3 border-0 rounded-md shadow text-center bg-dark ">
                                 <div className="icons text-primary text-center mx-auto">
                                   <i className="uil uil-home d-block rounded h3 mb-0"></i>
@@ -246,9 +249,9 @@ const Client = () => {
                                   </h5>
                                   <p className="text-muted">{item.desc}</p>
 
-                                  {/* <a href="home-internet" class="text-primary">
+                                  {/* <a href="home-internet" className="text-primary">
                                  Read More{" "}
-                                 <i class="uil uil-angle-right-b align-middle"></i>
+                                 <i className="uil uil-angle-right-b align-middle"></i>
                                </a> */}
                                 </div>
                               </div>

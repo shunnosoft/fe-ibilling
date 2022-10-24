@@ -1,7 +1,6 @@
 import moment from "moment";
 import React from "react";
 const ViewPaymentHistoryModal = ({ payment }) => {
-  console.log(payment);
   return (
     <div className="modal fade" id="viewPaymentModal" tabindex="-1">
       <div className="modal-dialog modal-dialog-centered">

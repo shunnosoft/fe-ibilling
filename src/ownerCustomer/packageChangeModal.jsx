@@ -35,19 +35,19 @@ const PackageChangeModal = () => {
   };
 
   return (
-    <div class="modal fade" id="change_package_modal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-black">Change Package</h5>
+    <div className="modal fade" id="change_package_modal" tabIndex="-1">
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title text-black">Change Package</h5>
             <button
               type="button"
-              class="btn-close"
+              className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">
+          <div className="modal-body">
             <Select
               className="w-100 mt-1 text-black"
               defaultValue={selectedPackage}
@@ -59,10 +59,10 @@ const PackageChangeModal = () => {
               id="selectMonth"
             />
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              className="btn btn-secondary"
               data-bs-dismiss="modal"
             >
               Close
@@ -70,7 +70,7 @@ const PackageChangeModal = () => {
             <button
               onClick={changePackageController}
               type="button"
-              class="btn btn-primary"
+              className="btn btn-primary"
             >
               {loading ? <Loader /> : "Submit"}
             </button>

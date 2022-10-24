@@ -61,7 +61,8 @@ ul.client_service_list li:hover {
 
 @-webkit-keyframes rotating
 
-/* Safari and Chrome */ {
+/* Safari and Chrome */
+  {
   from {
     -webkit-transform: rotate(0deg);
     -o-transform: rotate(0deg);
@@ -146,12 +147,14 @@ table.client_info_table td {
   padding: 1rem;
   margin: auto;
 }
+
 span.navHeaderCompany {
   color: #fff;
   font-weight: 700;
   font-family: cursive;
   font-size: 1.5rem;
 }
+
 .up_downLoad {
   display: flex;
   width: 100%;
@@ -210,6 +213,7 @@ span.navHeaderCompany {
   width: 80%;
   margin: 0 auto;
 }
+
 /* .package_list_card:hover {
   transform: scale(1.2);
 } */
@@ -328,6 +332,7 @@ span.navHeaderCompany {
   display: flex;
   justify-content: center;
 }
+
 .support-message-form input.form-control {
   color: #fff !important;
 }
@@ -344,9 +349,11 @@ span.navHeaderCompany {
   background-color: #1b2430;
   padding: 1rem 1rem;
 }
+
 .support-count {
   width: 4%;
 }
+
 .support-message {
   width: 60%;
 }
@@ -354,9 +361,11 @@ span.navHeaderCompany {
 .support-status {
   width: 10%;
 }
+
 .support-apply-date {
   width: 13%;
 }
+
 .support-receive-date {
   width: 13%;
 }
@@ -368,6 +377,7 @@ span.navHeaderCompany {
 .pageActive {
   background-color: #000;
 }
+
 .client_navbar {
   position: absolute !important;
   top: 0;
@@ -380,6 +390,14 @@ span.navHeaderCompany {
   color: #3eff00 !important;
 }
 
+.paymentMethod {
+  font-size: 3rem;
+  text-align: center;
+  color: #ff2323;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
 @media screen and (max-width: 580px) {
   .client_wraper {
     position: fixed;
@@ -388,39 +406,52 @@ span.navHeaderCompany {
   .client_profile {
     width: 100%;
   }
+
+  .client_dashboard_section {
+    padding: 5rem 1rem;
+  }
+
   .restForm-wraper {
     width: 95%;
     margin: 0 auto;
   }
+
   .up_downLoad {
     flex-direction: column;
   }
 
   .up_down {
     margin-bottom: 1rem;
+    width: 100%;
   }
 
   .payment_history_list {
     flex-direction: column;
   }
+
   .support-ticket-table {
     margin: auto;
     width: 100%;
   }
+
   .support-message-form {
     margin: auto;
     width: 100%;
     margin-bottom: 1rem;
   }
+
   .support-table-data {
     padding: 0.5rem 0.5rem;
   }
+
   .support-table-data {
     font-size: 16px;
   }
+
   .support-count {
     width: 4%;
   }
+
   .support-message {
     width: 37%;
   }
@@ -429,12 +460,15 @@ span.navHeaderCompany {
     width: 18%;
     margin-right: 0px;
   }
+
   .support-apply-date {
     width: 22%;
   }
+
   .support-receive-date {
     width: 20%;
   }
+
   .support-table-data {
     justify-content: space-evenly;
   }
