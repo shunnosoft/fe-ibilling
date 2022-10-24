@@ -93,7 +93,7 @@ const DetailsModal = ({ ownerId }) => {
                   </div>
                   <div className="profileMain">
                     <div>
-                      <h5>ISP Owner</h5>
+                      <h5 class="text-primary">ISP Owner</h5>
                       <hr />
 
                       <table class="table table-bordered">
@@ -178,9 +178,7 @@ const DetailsModal = ({ ownerId }) => {
                             <th scope="col">Create At</th>
                             <td>
                               <i className="text-secondary">
-                                {moment(ownerData?.createdAt).format(
-                                  "DD-MM-YYYY hh:mm A"
-                                )}
+                                {moment(ownerData?.createdAt).format("lll")}
                               </i>
                             </td>
                           </tr>
@@ -204,7 +202,7 @@ const DetailsModal = ({ ownerId }) => {
                     </div>
 
                     <div>
-                      <h5>BP Setting</h5>
+                      <h5 class="text-primary">BP Setting</h5>
                       <hr />
 
                       <table class="table table-bordered">
@@ -271,7 +269,9 @@ const DetailsModal = ({ ownerId }) => {
                             <th scope="col">Mikrotik Length </th>
                             <td>
                               <i className="text-primary">
-                                {ownerData?.mikrotiks.length}
+                                <span class="badge bg-info">
+                                  {ownerData?.mikrotiks.length}
+                                </span>
                               </i>
                             </td>
                           </tr>
@@ -330,7 +330,7 @@ const DetailsModal = ({ ownerId }) => {
                                 {ownerData?.bpSettings?.monthlyDueDate &&
                                   moment(
                                     ownerData?.bpSettings?.monthlyDueDate
-                                  ).format("DD-MM-YYYY hh:mm A")}
+                                  ).format("lll")}
                               </i>
                             </td>
                           </tr>
@@ -451,57 +451,25 @@ const DetailsModal = ({ ownerId }) => {
                       ) : (
                         <div>Collector not found !</div>
                       )}
-                      {/* {staffs.resellers?.length > 0 ? (
-                        <div className="resellers">
-                          <h5 className="text-primary">Resellers</h5>
-                          <table class="table table-bordered">
-                            {staffs.resellers?.map((item, key) => (
-                              <tbody>
-                                <tr>
-                                  <td key={key} className="mt-3">
-                                    <Person /> {item?.name}
-                                  </td>
-                                  <td>
-                                    <Telephone /> {item?.mobile}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            ))}
-                          </table>
-                        </div>
-                      ) : (
-                        <div>Reseller not Found</div>
-                      )} */}
-                    </div>
-                  )}
-                </Tab>
-
-                {/* start */}
-
-                <Tab eventKey="Resellers" title="Resellers">
-                  {isLoading ? (
-                    <div className="text-center">
-                      <Loader />
-                    </div>
-                  ) : (
-                    <div className="Resellers d-flex justify-content-evenly">
                       {staffs.resellers?.length > 0 ? (
                         <div className="resellers">
                           <h5 className="text-primary">Resellers</h5>
                           <table class="table table-bordered">
-                            {staffs.resellerCustomerCount?.map((item, key) => (
-                              <tbody>
-                                <tr>
-                                  <td key={key} className="mt-3">
-                                    <Person /> {item?.name}
-                                  </td>
-                                  <td>
-                                    <Telephone /> {item?.mobile}
-                                  </td>
-                                  <td>{item?.customerCount}</td>
-                                </tr>
-                              </tbody>
-                            ))}
+                            <tbody>
+                              {staffs.resellerCustomerCount?.map(
+                                (item, key) => (
+                                  <tr>
+                                    <td key={key} className="mt-3">
+                                      <Person /> {item?.name}
+                                    </td>
+                                    <td>
+                                      <Telephone /> {item?.mobile}
+                                    </td>
+                                    <td>{item?.customerCount}</td>
+                                  </tr>
+                                )
+                              )}
+                            </tbody>
                           </table>
                         </div>
                       ) : (
@@ -510,6 +478,8 @@ const DetailsModal = ({ ownerId }) => {
                     </div>
                   )}
                 </Tab>
+
+                {/* start */}
               </Tabs>
             </div>
           </div>
