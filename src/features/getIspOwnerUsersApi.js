@@ -48,8 +48,10 @@ export const billPayment = async (data, setLoading) => {
     const res = await apiLink.post("/customer/pg/monthlyBill", data);
     window.location.href = res.data.data;
   } catch (error) {
+    toast.error("Failed to payment");
     console.log(error);
   }
+  document.querySelector("#billPaymentModal").click();
 };
 
 export const billPaymentHistory = async (dispatch, setLoading) => {
