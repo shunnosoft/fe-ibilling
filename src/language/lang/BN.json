@@ -561,5 +561,7 @@
   "transferResellerToReseller": "অন্য রিসেলারকে গ্রাহক দিন",
   "balanceRequired": "ব্যলেন্স দিন",
   "balanceUpdate": "ব্যলেন্স আপডেট",
-  "partialPayment": "আংশিক পরিশোধ"
+  "partialPayment": "আংশিক পরিশোধ",
+  "invoiceDelete": "আপনি কি ইনভয়েস ডিলিট করতে চান ?",
+  "colelctorDeleteNotify": "আপনি কি কালেক্টরকে ডিলিট করতে চান ?"
 }

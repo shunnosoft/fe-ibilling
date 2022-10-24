@@ -44,6 +44,9 @@ export default function Home() {
   // mikrotik filter state
   const [mikrotik, setMikrotik] = useState();
 
+  // mikrotik status state
+  const [mikrotikStatus, setMikrotikStatus] = useState("");
+
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
@@ -96,8 +99,9 @@ export default function Home() {
     setCompanyName(companyName);
   };
 
-  const fileModal = (ownerId) => {
+  const fileModal = (ownerId, mtk) => {
     setOwnerId(ownerId);
+    setMikrotikStatus(mtk);
   };
 
   // table column
@@ -285,22 +289,26 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
-                  {!original.bpSettings.hasMikrotik && (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#fileUploadModal"
-                      onClick={() => {
-                        fileModal(original.id);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <FileEarmarkExcel />
-                          <p className="actionP">CSV File Upload</p>
-                        </div>
+
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#fileUploadModal"
+                    onClick={() => {
+                      if (!original.bpSettings.hasMikrotik) {
+                        fileModal(original.id, "noMikrotik");
+                      } else if (original.bpSettings.hasMikrotik) {
+                        fileModal(original.id, "mikrotik");
+                      }
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <FileEarmarkExcel />
+                        <p className="actionP">CSV File Upload</p>
                       </div>
-                    </li>
-                  )}
+                    </div>
+                  </li>
+
                   {/* <li>
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -397,7 +405,7 @@ export default function Home() {
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <Note ownerId={ownerId} companyName={companyName} />
-              <FileUpload ownerID={ownerId} />
+              <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
             </FontColor>
           </div>
         </div>

@@ -5,17 +5,27 @@ import { useDispatch } from "react-redux";
 import FormatNumber from "../../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 const RechargeModal = ({ status }) => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
+  // const authId = useSelector(
+  //   (state) => state.persistedReducer.auth.currentUser.user.id
+  // );
+  // console.log(authId);
+
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
 
   // set sms amoun
   const [smsAmount, setSmsAmount] = useState(100);
+
+  // // buy place status
+  // const [buyStatus, setBuyStatus] = useState("ispOwner");
+  // console.log(buyStatus);
 
   // set error value
   const [errMsg, setErrMsg] = useState("");
@@ -104,6 +114,21 @@ const RechargeModal = ({ status }) => {
                   onChange={handleChange}
                   onBlur={hadleRequired}
                 />
+
+                {/* <label for="exampleInputEmail1" class="form-label">
+                  {t("buyPlace")}
+                </label>
+                <select
+                  className="form-select mt-0 me-3"
+                  aria-label="Default select example"
+                  onChange={(event) => setBuyStatus(event.target.value)}
+                >
+                  <option value="ispOwner" selected>
+                    Owner
+                  </option>
+                  <option value="netFee">NetFee</option>
+                </select> */}
+
                 <div id="emailHelp" class="form-text text-danger">
                   {errMsg}
                 </div>

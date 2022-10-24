@@ -560,5 +560,7 @@
   "transferResellerToReseller": "Customer Transfer Reseller to Reseller",
   "balanceRequired": "Input Balance",
   "updateBalance": "Update Balance",
-  "partialPayment": "Partial Payment"
+  "partialPayment": "Partial Payment",
+  "invoiceDelete": "Are you sure want to delete invoice ?",
+  "colelctorDeleteNotify": "Do You Want Delete Collector ?"
 }

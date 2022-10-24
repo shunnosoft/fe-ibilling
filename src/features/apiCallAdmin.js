@@ -60,15 +60,20 @@ export const getIspOwnersStaffs = async (
 };
 
 // update owner
-export const uploadCsvFile = async (data, setIsLoading) => {
+export const uploadCsvFile = async (data, setIsLoading, mikrotikStatus) => {
   setIsLoading(true);
   try {
-    await apiLink.post("/admin/bulk-customer-import/", data);
+    if (mikrotikStatus === "noMikrotik") {
+      await apiLink.post("/admin/bulk-customer-import/", data);
+    } else if (mikrotikStatus === "mikrotik") {
+      await apiLink.post("/admin/bulk-customer-import-with-mikrotik/", data);
+    }
 
     document.querySelector("#fileUploadModal").click();
     toast.success(`File Uploaded Successfully`);
   } catch (err) {
-    console.log(err);
+    console.log(err?.response?.data?.message);
+    toast.error(err?.response?.data?.message);
   }
   setIsLoading(false);
 };

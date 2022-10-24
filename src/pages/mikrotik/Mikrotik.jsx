@@ -46,7 +46,7 @@ export default function Mikrotik() {
   };
 
   // mikrottik Connection Check
-  const MikrotikConnectionTest = async (connectionCheckId) => {
+  const MikrotikConnectionTest = async (connectionCheckId, mikrotikName) => {
     setIsChecking(true);
 
     await apiLink({
@@ -55,12 +55,12 @@ export default function Mikrotik() {
     })
       .then(() => {
         setIsChecking(false);
-        toast.success(`কানেকশন ঠিক আছে`);
+        toast.success(`${mikrotikName} এর কানেকশন ঠিক আছে`);
       })
       .catch(() => {
         setIsChecking(false);
 
-        toast.error(`দুঃখিত, কানেকশন ঠিক নেই!`);
+        toast.error(`দুঃখিত, ${mikrotikName} এর কানেকশন ঠিক নেই!`);
       });
   };
 
@@ -118,7 +118,7 @@ export default function Mikrotik() {
               title={t("checkConnection")}
               style={{ padding: "0.10rem .5rem" }}
               className="btn btn-sm btn-primary mx-1"
-              onClick={() => MikrotikConnectionTest(original.id)}
+              onClick={() => MikrotikConnectionTest(original.id, original.name)}
             >
               <PlugFill />
             </button>

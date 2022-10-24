@@ -17,17 +17,19 @@ import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 export default function CustomerModal() {
   const { t } = useTranslation();
+
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   // const packages= useSelector(state=>state.package.packages)
-  // console.log( packages)
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const area = useSelector((state) => state?.area?.area);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
@@ -41,7 +43,8 @@ export default function CustomerModal() {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
-  const [billDate, setBillDate] = useState();
+
+  const [billDate, setBillDate] = useState(new Date());
   const [connectionDate, setConnectionDate] = useState();
 
   // customer validator
@@ -108,12 +111,11 @@ export default function CustomerModal() {
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
-    // console.log(mikrotikPackageId)
+
     if (mikrotikPackageId === "0") {
       setPackageRate({ rate: 0 });
       setMikrotikPackage("");
     } else {
-      // console.log(e.target.value)
       setMikrotikPackage(mikrotikPackageId);
       const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
       setPackageRate(temp);
@@ -122,7 +124,6 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    // console.log(data);
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
@@ -259,7 +260,7 @@ export default function CustomerModal() {
                         label={t("monthFee")}
                         name="monthlyFee"
                         min={0}
-                        disabled={!mikrotikPackage}
+                        disabled={!(mikrotikPackage && userRole === "ispOwner")}
                         validation={"true"}
                         // value={packageRate?.rate}
                         // onChange={(e)=>{
@@ -399,10 +400,12 @@ export default function CustomerModal() {
                           className="form-control mw-100"
                           selected={billDate}
                           onChange={(date) => setBillDate(date)}
-                          dateFormat="dd/MM/yyyy:hh:mm"
+                          dateFormat="MMM dd yyyy hh:mm"
                           showTimeSelect
                           placeholderText={t("selectBillDate")}
-                          disabled={!mikrotikPackage}
+                          disabled={
+                            !(mikrotikPackage && userRole === "ispOwner")
+                          }
                         />
                       </div>
                       <div className="billCycle">

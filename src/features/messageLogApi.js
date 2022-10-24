@@ -8,7 +8,6 @@ export const getMessageLog = async (dispatch, setIsLoading, senderId) => {
 
   try {
     const res = await apiLink.get(`sms/sms-history/${senderId}`);
-    console.log(res.data.sms);
     dispatch(getMessageLogSlice(res.data.sms));
   } catch (error) {
     console.log(error);

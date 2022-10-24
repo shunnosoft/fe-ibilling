@@ -2,21 +2,26 @@ import React, { useState } from "react";
 import Loader from "../../../components/common/Loader";
 import { uploadCsvFile } from "../../../features/apiCallAdmin";
 
-const FileUpload = ({ ownerID }) => {
+const FileUpload = ({ ownerID, mikrotikStatus }) => {
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // set file state
   const [selectedFile, setSelectedFile] = useState();
 
+  // set file in state handler
   const handleChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
+  // handle submit
   const handleSubmit = () => {
     const formData = new FormData();
 
     formData.append("file", selectedFile);
     formData.append("ispOwner", ownerID);
 
-    uploadCsvFile(formData, setIsLoading);
+    uploadCsvFile(formData, setIsLoading, mikrotikStatus);
   };
 
   return (
