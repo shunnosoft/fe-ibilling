@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import {
   parchaseSmsSuccess,
   getParchaseHistorySuccess,
+  parchaseSmsNetFeeSuccess,
+  getInvoiceHistorySuccess,
 } from "./resellerParchaseSmsSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
@@ -38,7 +40,17 @@ export const getParchaseHistory = async (
     // console.log(res.data.smsPurchaseHistory);
     dispatch(getParchaseHistorySuccess(res.data.smsPurchaseHistory));
   } catch (error) {
-    console.log(error?.response?.data?.message);
+    toast.error(error?.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+// get sms
+export const getInvoiceHistory = async (resellerId, dispatch, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.get("/reseller/invoice/" + resellerId);
+    dispatch(getInvoiceHistorySuccess(res.data.invoices));
+  } catch (error) {
     toast.error(error?.response?.data?.message);
   }
   setIsLoading(false);
@@ -64,5 +76,24 @@ export const parchaseSms = async (data, setIsLoading, dispatch) => {
       setIsLoading(false);
       toast.error(err.response.data.message);
     }
+  }
+};
+
+export const purchaseSmsNetfee = async (data, setIsloading, dispatch) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.post(`/sms`, data);
+    console.log(res.data);
+    dispatch(parchaseSmsNetFeeSuccess(res.data.resellerSmsPurchase));
+    document.querySelector("#smsRechargeModal").click();
+    setIsloading(false);
+    langMessage(
+      "success",
+      "এসএমএস ইনভয়েস তৈরি সফল হয়েছে। কনফার্ম করতে হলে পেমেন্ট করুন।",
+      "SMS Invoice Generation is Successful. Make Payment to Confirm"
+    );
+  } catch (err) {
+    setIsloading(false);
+    console.log("SMS purchase error: ", err);
   }
 };

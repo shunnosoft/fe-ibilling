@@ -6,13 +6,24 @@ import { FourGround, FontColor } from "../../../assets/js/theme";
 import { ToastContainer } from "react-toastify";
 import RechargeModal from "./modal/RechargeModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getParchaseHistory } from "../../../features/resellerParchaseSmsApi";
+import {
+  getInvoiceHistory,
+  getParchaseHistory,
+} from "../../../features/resellerParchaseSmsApi";
 import moment from "moment";
 import Table from "../../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import Loader from "../../../components/common/Loader";
-import { ArrowClockwise } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  CurrencyDollar,
+  ThreeDots,
+} from "react-bootstrap-icons";
+import { Tab, Tabs } from "react-bootstrap";
+import { badge } from "../../../components/common/Utils";
+import FormatNumber from "../../../components/common/NumberFormat";
+import { showModal } from "../../../features/uiSlice";
 const RecehargeSMS = () => {
   const { t } = useTranslation();
   // import dispatch
@@ -26,21 +37,30 @@ const RecehargeSMS = () => {
   // get data
   const data = useSelector((state) => state?.smsHistory?.smsParchase);
 
+  // get history with netfee
+  const netfeeinvoice = useSelector(
+    (state) => state?.smsHistory?.smsParchaseNetfee
+  );
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // history loading state
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   // get accept status
   const acceptStatus = data.filter((item) => item.status === "pending");
 
   // reload handler
   const reloadHandler = () => {
-    if (data.length === 0)
-      getParchaseHistory(resellerId, dispatch, setIsLoading);
+    getParchaseHistory(resellerId, dispatch, setIsLoading);
+    getInvoiceHistory(resellerId, dispatch, setHistoryLoading);
   };
 
   // api call
   useEffect(() => {
     getParchaseHistory(resellerId, dispatch, setIsLoading);
+    getInvoiceHistory(resellerId, dispatch, setHistoryLoading);
   }, []);
 
   // table columns
@@ -80,6 +100,107 @@ const RecehargeSMS = () => {
         accessor: "createdAt",
         Cell: ({ row: { original } }) =>
           moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
+      },
+    ],
+    [t]
+  );
+
+  // parchase from netfee
+  // column
+  const historyColumn = React.useMemo(
+    () => [
+      {
+        width: "10%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        width: "11%",
+        Header: t("amount"),
+        accessor: "amount",
+        Cell: ({ row: { original } }) => <td>{original.amount} Tk</td>,
+      },
+
+      {
+        width: "18%",
+        Header: t("smsAmunt"),
+        accessor: "numberOfSms",
+        Cell: ({ cell: { value } }) => {
+          return FormatNumber(value);
+        },
+      },
+
+      {
+        width: "13%",
+        Header: t("status"),
+        accessor: "status",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
+      },
+
+      {
+        width: "18%",
+        Header: t("invoiceDate"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm a");
+        },
+      },
+      {
+        width: "15%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                {original.status === "unpaid" && (
+                  <li
+                    onClick={() => {
+                      dispatch(showModal(original));
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">Pay</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+                {/* {original.type === "smsPurchase" &&
+                  original.status &&
+                  "unpaid" && (
+                    <li onClick={() => deleteInvoiceHandler(original.id)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <CurrencyDollar />
+                          <p className="actionP">{t("delete")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )} */}
+              </ul>
+            </div>
+          </div>
+        ),
       },
     ],
     [t]
@@ -128,13 +249,30 @@ const RecehargeSMS = () => {
               </FourGround>
               <div class="card">
                 <div class="card-body">
-                  <div className="recdharge_sms">
-                    <Table
-                      isLoading={isLoading}
-                      data={data}
-                      columns={columns}
-                    />
-                  </div>
+                  <Tabs
+                    defaultActiveKey={"owner"}
+                    id="uncontrolled-tab-example"
+                    className="mb-3"
+                  >
+                    <Tab eventKey="owner" title="From IspOwner">
+                      <div className="recdharge_sms">
+                        <Table
+                          isLoading={isLoading}
+                          data={data}
+                          columns={columns}
+                        />
+                      </div>
+                    </Tab>
+                    <Tab eventKey="netFee" title="From NetFee">
+                      <div className="table-section">
+                        <Table
+                          isLoading={historyLoading}
+                          data={netfeeinvoice}
+                          columns={historyColumn}
+                        />
+                      </div>
+                    </Tab>
+                  </Tabs>
                 </div>
               </div>
             </FontColor>

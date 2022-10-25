@@ -1,21 +1,36 @@
 import React, { useState } from "react";
 import Loader from "../../../../components/common/Loader";
-import { parchaseSms } from "../../../../features/resellerParchaseSmsApi";
+import {
+  parchaseSms,
+  purchaseSmsNetfee,
+} from "../../../../features/resellerParchaseSmsApi";
 import { useDispatch } from "react-redux";
 import FormatNumber from "../../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 const RechargeModal = ({ status }) => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
+  // get auth data
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller
+  );
+
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
 
+  // buy sms in netfee loading state
+  const [loading, setLoading] = useState(false);
+
   // set sms amoun
   const [smsAmount, setSmsAmount] = useState(100);
+
+  // // buy place status
+  const [buyStatus, setBuyStatus] = useState("ispOwner");
 
   // set error value
   const [errMsg, setErrMsg] = useState("");
@@ -40,18 +55,29 @@ const RechargeModal = ({ status }) => {
   };
 
   // sms amount calculation
-  const msgPrice = smsAmount * 0.25;
+  let msgPrice = smsAmount * 0.25;
 
   // handle submit
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (status.length === 0) {
+    if (status.length === 0 || buyStatus === "netFee") {
       if (smsAmount >= 100 && smsAmount <= 10000) {
-        const data = {
-          smsAmount: smsAmount,
-        };
-        // console.log(data);
-        parchaseSms(data, setIsLoading, dispatch);
+        if (buyStatus === "ispOwner") {
+          const data = {
+            smsAmount: smsAmount,
+          };
+          parchaseSms(data, setIsLoading, dispatch);
+        } else if (buyStatus === "netFee") {
+          let sendingData = {
+            amount: msgPrice,
+            numberOfSms: Number.parseInt(smsAmount),
+            reseller: userData.id,
+            user: userData.user,
+            type: "smsPurchase",
+          };
+
+          purchaseSmsNetfee(sendingData, setLoading, dispatch);
+        }
       } else {
         setErrMsg(t("youCanBuyMin100AndMax10000"));
       }
@@ -92,29 +118,52 @@ const RechargeModal = ({ status }) => {
                 </span>
               </h5>
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">
+                <label for="exampleInputEmail1" className="form-label mb-0">
                   {t("amount")}
                 </label>
                 <input
                   value={smsAmount}
                   type="number"
-                  class="form-control"
+                  className="form-control"
                   minLength="3"
                   maxLength="5"
                   onChange={handleChange}
                   onBlur={hadleRequired}
                 />
+
                 <div id="emailHelp" class="form-text text-danger">
                   {errMsg}
                 </div>
+
+                <label
+                  for="exampleInputEmail1"
+                  className="form-label mb-0 mt-3"
+                >
+                  {t("selectPlace")}
+                </label>
+
+                <select
+                  id="max-none"
+                  className="form-select mt-0"
+                  aria-label="Default select example"
+                  onChange={(event) => setBuyStatus(event.target.value)}
+                >
+                  <option value="ispOwner" selected>
+                    Owner
+                  </option>
+                  <option value="netFee">NetFee</option>
+                </select>
               </div>
               <div className="modal-footer" style={{ border: "none" }}>
                 <button
                   type="submit"
                   className="btn btn-success"
-                  disabled={isLoading || status.length !== 0}
+                  disabled={
+                    isLoading ||
+                    (status.length !== 0 && buyStatus === "ispOwner")
+                  }
                 >
-                  {isLoading ? <Loader /> : t("submit")}
+                  {isLoading || loading ? <Loader /> : t("submit")}
                 </button>
                 <button
                   type="button"

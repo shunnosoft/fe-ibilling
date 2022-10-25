@@ -73,7 +73,7 @@ const ResellerSmsRequest = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "20%",
         Header: t("name"),
         accessor: "reseller.name",
       },
@@ -88,7 +88,7 @@ const ResellerSmsRequest = () => {
         accessor: "smsCost",
       },
       {
-        width: "15%",
+        width: "12%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ row: { original } }) => (
@@ -106,14 +106,14 @@ const ResellerSmsRequest = () => {
         ),
       },
       {
-        width: "23%",
+        width: "20%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ row: { original } }) =>
           moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
       },
       {
-        width: "10%",
+        width: "21%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 

@@ -102,6 +102,10 @@ p {
   width: 200px !important;
 }
 
+#max-none {
+  max-width: none !important;
+}
+
 /* Reload Button */
 .reloadBtn {
   background-color: #fcf2f2;

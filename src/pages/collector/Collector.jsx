@@ -81,7 +81,10 @@ export default function Collector() {
   };
 
   const deleteSingleCollector = (collectorId) => {
-    deleteCollector(dispatch, setIsLoading, ispOwnerId, collectorId);
+    const confirm = window.confirm(t("colelctorDeleteNotify"));
+    if (confirm) {
+      deleteCollector(dispatch, setIsLoading, ispOwnerId, collectorId);
+    }
   };
 
   useEffect(() => {

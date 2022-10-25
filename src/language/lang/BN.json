@@ -178,6 +178,7 @@
   "successAlertSMS": "সফলভাবে SMS পাঠানো হয়েছে।",
   "sendingProblem": "সমস্যা যায়নি",
   "smsAmount": "এসএমএস পরিমান দিন",
+  "smsAmunt": "এসএমএস পরিমান",
   "unseccessAlertSMS": "দুঃখিত, আপনার পর্যাপ্ত SMS ব্যাল্যান্স নেই। দয়া করে SMS রিচার্জ করুন।",
   "exceedSMSLimit": "মেসেজের অক্ষর লিমিট অতিক্রম করেছে ",
   "SMSboard": "মেসেজ বোর্ড",
@@ -562,5 +563,7 @@
   "balanceRequired": "ব্যলেন্স দিন",
   "balanceUpdate": "ব্যলেন্স আপডেট",
   "partialPayment": "আংশিক পরিশোধ",
-  "invoiceDelete": "আপনি কি ইনভয়েস ডিলিট করতে চান ?"
+  "invoiceDelete": "আপনি কি ইনভয়েস ডিলিট করতে চান ?",
+  "colelctorDeleteNotify": "আপনি কি কালেক্টরকে ডিলিট করতে চান ?",
+  "selectPlace": "সিলেক্ট প্লেছ"
 }
