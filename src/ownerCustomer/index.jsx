@@ -34,6 +34,8 @@ const Client = () => {
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
+  const hasPG = userData.ispOwner.bpSettings.hasPG;
+
   useEffect(() => {
     const rText = localStorage.getItem("nf:textR"); //render page from local storage
     if (rText) setRenderText(rText);
@@ -115,13 +117,17 @@ const Client = () => {
             </li>
             <hr className="mt-0 mb-0" />
 
-            <li onClick={() => renderPageController("payBill")}>
-              <div className="menu_icon">
-                <CurrencyDollar />
-              </div>
-              <div className="menu_label">Pay bill</div>
-            </li>
-            <hr className="mt-0 mb-0" />
+            {hasPG && (
+              <>
+                <li onClick={() => renderPageController("payBill")}>
+                  <div className="menu_icon">
+                    <CurrencyDollar />
+                  </div>
+                  <div className="menu_label">Pay bill</div>
+                </li>
+                <hr className="mt-0 mb-0" />
+              </>
+            )}
 
             <li
               className={renderText === "paymentHistory" ? "pageActive" : ""}
