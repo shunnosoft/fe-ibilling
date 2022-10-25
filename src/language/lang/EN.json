@@ -383,6 +383,7 @@
   "erProfile": " Profile",
   "sendingProblem": "Sending Problem",
   "smsAmount": "Type SMS Amount",
+  "smsAmunt": "SMS Amount",
   "sendingMessage": "to send message",
   "salary": "Salary",
   "updateStaff": "Update Staff",
@@ -562,5 +563,6 @@
   "updateBalance": "Update Balance",
   "partialPayment": "Partial Payment",
   "invoiceDelete": "Are you sure want to delete invoice ?",
-  "colelctorDeleteNotify": "Do You Want Delete Collector ?"
+  "colelctorDeleteNotify": "Do You Want Delete Collector ?",
+  "selectPlace": "Select Place"
 }
