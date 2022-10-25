@@ -516,10 +516,6 @@ function App() {
             {/* client page  */}
             <Route path="/*" element={<PrivateOutlet />}>
               <Route path="isp/customer" element={<ClientPage />} />
-              <Route
-                path="payment/success"
-                element={<SuccessPaymentSuccess />}
-              />
             </Route>
           </Routes>
         )}
