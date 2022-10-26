@@ -1390,7 +1390,6 @@ export const getTotalbal = async (dispatch, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.get(`bill/monthlyBill/balance`);
-    console.log(res.data);
     dispatch(getTotalBalanceSuccess(res.data));
     setLoading(false);
   } catch (error) {

@@ -433,6 +433,7 @@ export default function Home() {
                   </button>
                 </div>
               )}
+
               <div className="col-md-12 mb-3">
                 {role !== "collector" && (
                   <div className="row">
