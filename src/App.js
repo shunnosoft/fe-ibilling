@@ -101,7 +101,8 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userRole === "ispOwner") getUnpaidInvoice(dispatch, ispOwnerId);
+    if (userRole === "ispOwner" || userRole === "manager")
+      getUnpaidInvoice(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch, userRole]);
   const pathName = useLocation().pathname;
 
