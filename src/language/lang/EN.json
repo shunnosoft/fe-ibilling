@@ -564,5 +564,8 @@
   "partialPayment": "Partial Payment",
   "invoiceDelete": "Are you sure want to delete invoice ?",
   "colelctorDeleteNotify": "Do You Want Delete Collector ?",
-  "selectPlace": "Select Place"
+  "selectPlace": "Select Place",
+  "advance": "Advance",
+  "free": "Free",
+  "overDue": "Overdue"
 }

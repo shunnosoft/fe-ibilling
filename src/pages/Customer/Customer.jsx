@@ -164,6 +164,7 @@ const PPPOECustomer = () => {
   const [filterOptions, setFilterOption] = useState({
     status: "",
     paymentStatus: "",
+    partialPayment: "",
     area: "",
     subArea: "",
     package: "",
@@ -338,20 +339,57 @@ const PPPOECustomer = () => {
         }
 
         // payment status filter
-        if (filterOptions.paymentStatus) {
-          if (customer.paymentStatus === filterOptions.paymentStatus) {
+        // if (filterOptions.paymentStatus) {
+        //   console.log(filterOptions.paymentStatus);
+        //   if (customer.paymentStatus === filterOptions.paymentStatus) {
+        //     isFound = true;
+        //   } else {
+        //     return false;
+        //   }
+        // }
+
+        // payment status filter
+
+        if (customer.paymentStatus && filterOptions.paymentStatus === "free") {
+          if (customer.monthlyFee === parseInt("0")) {
             isFound = true;
           } else {
             return false;
           }
-        }
-
-        // payment status filter
-        if (filterOptions.partialPayment) {
-          if (customer.monthlyFee > customer.balance && customer.balance > 0) {
+        } else if (
+          customer.paymentStatus === "paid" &&
+          filterOptions.paymentStatus === "paid"
+        ) {
+          isFound = true;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          filterOptions.paymentStatus === "unpaid" &&
+          customer.balance == 0
+        ) {
+          isFound = true;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          filterOptions.paymentStatus === "partial"
+        ) {
+          if (
+            customer.monthlyFee > customer.balance &&
+            customer.balance > parseInt("0")
+          ) {
             isFound = true;
-          } else {
-            return false;
+          }
+        } else if (
+          customer.paymentStatus === "paid" &&
+          filterOptions.paymentStatus === "advance"
+        ) {
+          if (2 * customer.monthlyFee < customer.balance) {
+            isFound = true;
+          }
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          filterOptions.paymentStatus === "overDue"
+        ) {
+          if (customer.balance < parseInt("0")) {
+            isFound = true;
           }
         }
 
@@ -1081,6 +1119,13 @@ const PPPOECustomer = () => {
                               {t("paymentStatus")}
                             </option>
                             <option
+                              selected={filterOptions.paymentStatus === "free"}
+                              value="free"
+                              defaultValue
+                            >
+                              {t("free")}
+                            </option>
+                            <option
                               selected={filterOptions.paymentStatus === "paid"}
                               value="paid"
                             >
@@ -1094,33 +1139,32 @@ const PPPOECustomer = () => {
                             >
                               {t("unpaid")}
                             </option>
-                          </select>
-                          <select
-                            className="form-select"
-                            onChange={(e) => {
-                              setFilterOption({
-                                ...filterOptions,
-                                partialPayment: e.target.value,
-                              });
-                            }}
-                          >
-                            <option
-                              selected={filterOptions.partialPayment === ""}
-                              value=""
-                              defaultValue
-                            >
-                              {t("partialPayment")}
-                            </option>
-
                             <option
                               selected={
-                                filterOptions.partialPayment === "partial"
+                                filterOptions.paymentStatus === "partial"
                               }
                               value="partial"
                             >
-                              {t("partial")}
+                              {t("partialPayment")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.paymentStatus === "advance"
+                              }
+                              value="advance"
+                            >
+                              {t("advance")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.paymentStatus === "overDue"
+                              }
+                              value="overDue"
+                            >
+                              {t("overDue")}
                             </option>
                           </select>
+
                           {bpSettings?.hasMikrotik && (
                             //filter by mikrotik
                             <select

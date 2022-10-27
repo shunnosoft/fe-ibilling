@@ -565,5 +565,8 @@
   "partialPayment": "আংশিক পরিশোধ",
   "invoiceDelete": "আপনি কি ইনভয়েস ডিলিট করতে চান ?",
   "colelctorDeleteNotify": "আপনি কি কালেক্টরকে ডিলিট করতে চান ?",
-  "selectPlace": "সিলেক্ট প্লেছ"
+  "selectPlace": "সিলেক্ট প্লেছ",
+  "advance": "অগ্রিম",
+  "free": "ফ্রি",
+  "overDue": "ওভার ডিউ"
 }
