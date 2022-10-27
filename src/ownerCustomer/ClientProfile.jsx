@@ -15,6 +15,7 @@ export default function ClientProfile() {
   //       console.log(e.response?.data?.message);
   //     });
   // }, []);
+  const hasPG = userData.ispOwner.bpSettings.hasPG;
 
   return (
     <div className="container">
@@ -77,18 +78,20 @@ export default function ClientProfile() {
               </h3>
             )}
           </div>
-          <div
-            data-bs-toggle="modal"
-            data-bs-target="#billPaymentModal"
-            style={{ cursor: "pointer" }}
-            className="up_down payment"
-          >
-            {/* <p className="text-white">Payment</p> */}
-            <div className="text-center">
-              <img className="w-50" src={bkashImg} alt="" />
-              <h3>Payment</h3>
+          {hasPG && (
+            <div
+              data-bs-toggle="modal"
+              data-bs-target="#billPaymentModal"
+              style={{ cursor: "pointer" }}
+              className="up_down payment"
+            >
+              {/* <p className="text-white">Payment</p> */}
+              <div className="text-center">
+                <img className="w-50" src={bkashImg} alt="" />
+                <h3>Payment</h3>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

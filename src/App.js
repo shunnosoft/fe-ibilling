@@ -83,6 +83,7 @@ import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCu
 import NewCustomer from "./pages/newCustomer/NewCustomer";
 import MessageLog from "./pages/messageLog/MessageLog";
 import DueCustomer from "./pages/dueCustomer/DueCustomer";
+import SuccessPaymentSuccess from "./ownerCustomer/CustomerPaymentSuccess";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
