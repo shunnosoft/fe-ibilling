@@ -24,7 +24,7 @@ const PaymentModal = () => {
       ispOwner: userData.ispOwner.id,
       user: userData.id,
       userType: userData.userType,
-      medium: "sslcommerz",
+      medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
       paymentStatus: "pending",
       package: userData.pppoe.profile,
     };

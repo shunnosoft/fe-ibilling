@@ -1,15 +1,16 @@
 import React from "react";
-import "./success.css";
+import "../pages/success/success.css";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-export default function Success() {
+export default function SuccessPaymentSuccess() {
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser.customer
+  );
+
   return (
     <div className="customcontainer successMessage">
       <h2 className="successTitle">আপনার পেমেন্ট সফল হয়েছে </h2>
-      {/* <p className="successText">
-        বাংলাদেশের অন্যতম ISP বিলিং সফটওয়্যার নেটফির সাথে থাকার জন্য আপনাকে
-        আন্তরিক ধন্যবাদ।
-      </p> */}
       <NavLink to="/" className="successButton">
         হোম এ যান
       </NavLink>
