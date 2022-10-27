@@ -86,6 +86,11 @@ function Invoice() {
         ),
       },
       {
+        width: "15%",
+        Header: t("smsType"),
+        accessor: "smsPurchaseType",
+      },
+      {
         width: "11%",
         Header: t("amount"),
         accessor: "amount",

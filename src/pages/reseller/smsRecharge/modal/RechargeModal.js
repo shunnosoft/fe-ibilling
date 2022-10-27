@@ -29,8 +29,11 @@ const RechargeModal = ({ status }) => {
   // set sms amoun
   const [smsAmount, setSmsAmount] = useState(100);
 
-  // // buy place status
+  // buy place status
   const [buyStatus, setBuyStatus] = useState("ispOwner");
+
+  // select messge type state
+  const [messageType, setMessageType] = useState("nonMasking");
 
   // set error value
   const [errMsg, setErrMsg] = useState("");
@@ -65,6 +68,7 @@ const RechargeModal = ({ status }) => {
         if (buyStatus === "ispOwner") {
           const data = {
             smsAmount: smsAmount,
+            smsParchaseType: messageType,
           };
           parchaseSms(data, setIsLoading, dispatch);
         } else if (buyStatus === "netFee") {
@@ -74,6 +78,7 @@ const RechargeModal = ({ status }) => {
             reseller: userData.id,
             user: userData.user,
             type: "smsPurchase",
+            smsParchaseType: messageType,
           };
 
           purchaseSmsNetfee(sendingData, setLoading, dispatch);
@@ -152,6 +157,22 @@ const RechargeModal = ({ status }) => {
                     Owner
                   </option>
                   <option value="netFee">NetFee</option>
+                </select>
+
+                <label
+                  for="exampleInputEmail1"
+                  className="form-label mb-0 mt-3"
+                >
+                  {t("smsType")}
+                </label>
+                <select
+                  id="max-none"
+                  className="form-select mt-0"
+                  onChange={(event) => setMessageType(event.target.value)}
+                >
+                  <option value="nonMasking">{t("nonMasking")}</option>
+                  <option value="masking">{t("masking")}</option>
+                  <option value="fixedNumber">{t("fixedNumber")}</option>
                 </select>
               </div>
               <div className="modal-footer" style={{ border: "none" }}>

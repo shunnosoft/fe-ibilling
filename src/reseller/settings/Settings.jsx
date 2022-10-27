@@ -45,7 +45,7 @@ export default function RSettings() {
                       title={t("billConfirmSMS")}
                     >
                       <FourGround>
-                        <BillConfirmationSmsTemplate></BillConfirmationSmsTemplate>
+                        <BillConfirmationSmsTemplate />
                       </FourGround>
                     </Tab>
 

@@ -38,6 +38,8 @@ function AlertSmsTemplate() {
 
   const [alertNum, setAlertNum] = useState("");
 
+  const [sendingType, setSendingType] = useState();
+
   const itemSettingHandler = (item) => {
     if (smsTemplet.includes(item)) {
       const index = smsTemplet.indexOf(item);
@@ -71,6 +73,7 @@ function AlertSmsTemplate() {
     } else {
       setBillConfirmation("off");
     }
+    setSendingType(settings?.sms?.alertSendBy);
   }, [settings]);
 
   const radioCheckHandler = (e) => {
@@ -102,6 +105,7 @@ function AlertSmsTemplate() {
 
     let data = {
       ...settings?.sms,
+      alertSendBy: sendingType,
       alert:
         billConfirmation === "on"
           ? true
@@ -235,25 +239,53 @@ function AlertSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4>{t("alertSMStemplate")}</h4>
-          <div>
-            <input
-              name="billConfirmation"
-              type="radio"
-              checked={billConfirmation === "on"}
-              value={"on"}
-              onChange={radioCheckHandler}
-            />{" "}
-            {t("on")}
-            {"              "}
-            <input
-              name="billConfirmation"
-              type="radio"
-              checked={billConfirmation === "off"}
-              value={"off"}
-              onChange={radioCheckHandler}
-            />{" "}
-            {t("off")}
+          <div className="messageStatus d-flex justify-content-between">
+            <div className="sending-status">
+              <h4> {t("alertSMStemplate")} </h4>
+              <input
+                name="billConfirmation"
+                type="radio"
+                checked={billConfirmation === "on"}
+                value={"on"}
+                onChange={radioCheckHandler}
+              />{" "}
+              {t("on")} {"              "}
+              <input
+                name="billConfirmation"
+                type="radio"
+                checked={billConfirmation === "off"}
+                value={"off"}
+                onChange={radioCheckHandler}
+              />{" "}
+              {t("off")}
+            </div>
+            <div className="message-sending-type">
+              <h4> {t("sendingMessageType")} </h4>
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "nonMasking"}
+                value={"nonMasking"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("nonMasking")} {"              "}
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "masking"}
+                value={"masking"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("masking")} {"              "}
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "fixedNumber"}
+                value={"fixedNumber"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("fixedNumber")} {"              "}
+            </div>
           </div>
           <div className="billconfirm">
             <div className="showthesequence">

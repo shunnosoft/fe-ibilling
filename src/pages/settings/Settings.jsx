@@ -47,7 +47,7 @@ export default function Settings() {
                       title={t("billConfirmSMS")}
                     >
                       <FourGround>
-                        <BillConfirmationSmsTemplate></BillConfirmationSmsTemplate>
+                        <BillConfirmationSmsTemplate />
                       </FourGround>
                     </Tab>
 
@@ -57,7 +57,7 @@ export default function Settings() {
                       title={t("alertSMS")}
                     >
                       <FourGround>
-                        <AlertSmsTemplate></AlertSmsTemplate>
+                        <AlertSmsTemplate />
                       </FourGround>
                     </Tab>
 
@@ -77,7 +77,7 @@ export default function Settings() {
                       title={t("customerInactiveSMS")}
                     >
                       <FourGround>
-                        <CustomerInactiveSmsTemplate></CustomerInactiveSmsTemplate>
+                        <CustomerInactiveSmsTemplate />
                       </FourGround>
                     </Tab>
                     <Tab

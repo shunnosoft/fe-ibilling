@@ -11,10 +11,10 @@ function SmsParchase() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setIsloading] = useState(false);
-  // console.log(userRole, userData);
 
   const [amount, setAmount] = useState(100);
   const [count, setCount] = useState(Number(amount) / userData.smsRate);
+  const [messageType, setMessageType] = useState("nonMasking");
 
   const changeHandler = (sms) => {
     // if (sms * userData.smsRate < 100) return;
@@ -23,7 +23,6 @@ function SmsParchase() {
   };
 
   const submitHandler = (e) => {
-    // console.log(amount, count);
     if (count * userData.smsRate < 100) {
       alert(t("unsuccessSMSalertPurchageModal"));
     } else {
@@ -33,6 +32,7 @@ function SmsParchase() {
         ispOwner: userData.id,
         user: userData.user,
         type: "smsPurchase",
+        smsParchaseType: messageType,
       };
 
       purchaseSms(data, setIsloading);
@@ -80,6 +80,18 @@ function SmsParchase() {
                       value={count}
                       min={250}
                     />
+                  </div>
+
+                  <div className="numsms">
+                    <span className="smsspan"> {t("smsType")} </span>
+                    <select
+                      className="form-select"
+                      onChange={(event) => setMessageType(event.target.value)}
+                    >
+                      <option value="nonMasking">{t("nonMasking")}</option>
+                      <option value="masking">{t("masking")}</option>
+                      <option value="fixedNumber">{t("fixedNumber")}</option>
+                    </select>
                   </div>
                 </div>
                 <div className="smsbutton">

@@ -20,6 +20,9 @@ const ResellerRechargeSmsTemplate = () => {
   // SMS state
   const [rechargeSMS, setRechargeSMS] = useState(false);
 
+  // message type status
+  const [sendingType, setSendingType] = useState();
+
   // get SMS settings
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
@@ -30,58 +33,86 @@ const ResellerRechargeSmsTemplate = () => {
     e.preventDefault();
     let data = {
       ...settings.sms,
+      resellerRechargeSendBy: sendingType,
       resellerRecharge: rechargeSMS,
     };
-    setLoading(true);
+    console.log(data);
+    // setLoading(true);
 
-    // api call
-    try {
-      await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
-      setLoading(false);
-      toast.success(t("rechargeSMSToast"));
-    } catch (error) {
-      setLoading(false);
-    }
+    // // api call
+    // try {
+    //   await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
+    //   setLoading(false);
+    //   toast.success(t("rechargeSMSToast"));
+    // } catch (error) {
+    //   setLoading(false);
+    // }
   };
 
   // set reseller recharge sms setting in state
   useEffect(() => {
     setRechargeSMS(settings.sms.resellerRecharge);
+    setSendingType(settings?.sms?.resellerRechargeSendBy);
   }, [settings]);
 
   return (
-    <div className="py-5">
-      <h4> {t("resellerSMSTemplate")} </h4>
-      <div className="form-check">
-        <input
-          id="rechareRadioOn"
-          className="form-check-input"
-          name="rechargeSMS"
-          type="radio"
-          checked={rechargeSMS}
-          onChange={() => setRechargeSMS(true)}
-        />
-        <label className="form-check-label" htmlFor="rechareRadioOn">
-          {t("on")}
-        </label>
-      </div>
-      <div className="form-check">
-        <input
-          id="rechargeRadioOff"
-          className="form-check-input"
-          name="rechargeSMS"
-          type="radio"
-          checked={!rechargeSMS}
-          onChange={() => setRechargeSMS(false)}
-        />
-        <label className="form-check-label" htmlFor="rechargeRadioOff">
-          {t("off")}
-        </label>
+    <div className="py-4">
+      <div className="writeMessageSection">
+        <div className="messageStatus d-flex justify-content-between">
+          <div className="sending-status">
+            <h4> {t("SalarySMSTemplate")} </h4>
+            <input
+              id="rechareRadioOn"
+              name="rechargeSMS"
+              type="radio"
+              checked={rechargeSMS}
+              onChange={() => setRechargeSMS(true)}
+            />
+            &nbsp;
+            {t("on")} {"              "}
+            <input
+              id="rechargeRadioOff"
+              name="rechargeSMS"
+              type="radio"
+              checked={!rechargeSMS}
+              onChange={() => setRechargeSMS(false)}
+            />
+            &nbsp;
+            {t("off")} {"              "}
+          </div>
+          <div className="message-sending-type">
+            <h4> {t("sendingMessageType")} </h4>
+            <input
+              name="messageSendingType"
+              type="radio"
+              checked={sendingType === "nonMasking"}
+              value={"nonMasking"}
+              onChange={(event) => setSendingType(event.target.value)}
+            />{" "}
+            {t("nonMasking")} {"              "}
+            <input
+              name="messageSendingType"
+              type="radio"
+              checked={sendingType === "masking"}
+              value={"masking"}
+              onChange={(event) => setSendingType(event.target.value)}
+            />{" "}
+            {t("masking")} {"              "}
+            <input
+              name="messageSendingType"
+              type="radio"
+              checked={sendingType === "fixedNumber"}
+              value={"fixedNumber"}
+              onChange={(event) => setSendingType(event.target.value)}
+            />{" "}
+            {t("fixedNumber")} {"              "}
+          </div>
+        </div>
       </div>
 
       <hr />
       <button type="submit" onClick={handleSubmit} className="btn btn-success">
-        {loading ? <Loader></Loader> : t("save")}
+        {loading ? <Loader /> : t("save")}
       </button>
     </div>
   );

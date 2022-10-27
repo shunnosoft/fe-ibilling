@@ -26,6 +26,8 @@ function CustomerInactiveSmsTemplate() {
   const [billconfarmationparametres, setbillconparametres] = useState([]);
   const [matchFound, setMatchFound] = useState([]);
 
+  const [sendingType, setSendingType] = useState();
+
   const textRef = useRef();
   const formRef = useRef();
 
@@ -69,6 +71,7 @@ function CustomerInactiveSmsTemplate() {
 
     let data = {
       ...settings.sms,
+      customerInactiveSendBy: sendingType,
       customerInactive:
         billConfirmation === "on"
           ? true
@@ -138,6 +141,8 @@ function CustomerInactiveSmsTemplate() {
     } else {
       setBillConfirmation("off");
     }
+
+    setSendingType(settings?.sms?.customerInactiveSendBy);
   }, [settings]);
 
   const radioCheckHandler = (e) => {
@@ -152,25 +157,55 @@ function CustomerInactiveSmsTemplate() {
         className="settingForm"
       >
         <div className="writeMessageSection">
-          <h4> {t("customerInactiveSMSTemplate")} </h4>
-          <div>
-            <input
-              name="billConfirmation"
-              type="radio"
-              checked={billConfirmation === "on"}
-              value={"on"}
-              onChange={radioCheckHandler}
-            />{" "}
-            {t("on")} {"              "}
-            <input
-              name="billConfirmation"
-              type="radio"
-              checked={billConfirmation === "off"}
-              value={"off"}
-              onChange={radioCheckHandler}
-            />{" "}
-            {t("off")}
+          <div className="messageStatus d-flex justify-content-between">
+            <div className="sending-status">
+              <h4> {t("customerInactiveSMSTemplate")} </h4>
+              <input
+                name="billConfirmation"
+                type="radio"
+                checked={billConfirmation === "on"}
+                value={"on"}
+                onChange={radioCheckHandler}
+              />{" "}
+              {t("on")} {"              "}
+              <input
+                name="billConfirmation"
+                type="radio"
+                checked={billConfirmation === "off"}
+                value={"off"}
+                onChange={radioCheckHandler}
+              />{" "}
+              {t("off")}
+            </div>
+            <div className="message-sending-type">
+              <h4> {t("sendingMessageType")} </h4>
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "nonMasking"}
+                value={"nonMasking"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("nonMasking")} {"              "}
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "masking"}
+                value={"masking"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("masking")} {"              "}
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "fixedNumber"}
+                value={"fixedNumber"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("fixedNumber")} {"              "}
+            </div>
           </div>
+
           <div className="billconfirm">
             <div className="showthesequence">
               {matchFound.map((item, key) => {
