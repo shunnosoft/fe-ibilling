@@ -24,6 +24,7 @@ import "./home.css";
 import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
 import FileUpload from "./modal/FileUpload";
+import Permissions from "./modal/Permissions";
 
 export default function Home() {
   // loading
@@ -82,6 +83,11 @@ export default function Home() {
   // edit modal method
   const editModal = (ispOwnerId) => {
     setOwnerId(ispOwnerId);
+  };
+
+  // permisson modal method
+  const permissionModal = (permissionId) => {
+    setOwnerId(permissionId);
   };
 
   // details modal handle
@@ -235,6 +241,20 @@ export default function Home() {
                     </div>
                   </li>
 
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#clientParmissionModal"
+                    onClick={() => {
+                      permissionModal(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">Parmission</p>
+                      </div>
+                    </div>
+                  </li>
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#clientEditModal"
@@ -402,6 +422,7 @@ export default function Home() {
                 data={ispOwners}
               ></Table>
 
+              <Permissions ownerId={ownerId} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <Note ownerId={ownerId} companyName={companyName} />

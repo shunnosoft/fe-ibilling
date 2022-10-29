@@ -14,6 +14,7 @@ import arraySort from "array-sort";
 import { getCollectorBill } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
@@ -39,8 +40,6 @@ export default function CollectorReport() {
   const [mainData, setMainData] = useState(allBills);
   console.log(mainData);
   const [mainData2, setMainData2] = useState(allBills);
-
-  const [isSorted, setSorted] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -157,7 +156,7 @@ export default function CollectorReport() {
     mainData?.forEach((item) => {
       count = count + item.amount;
     });
-    return count.toString();
+    return FormatNumber(count);
   }, [mainData]);
 
   const customComponent = (
@@ -167,24 +166,6 @@ export default function CollectorReport() {
       </div>
     </div>
   );
-
-  const onSearch = (e) => {
-    const keys = ["amount", "name", "customerId", "createdAt"];
-
-    let arr = mainData2.filter((item) =>
-      keys.some((key) =>
-        item[key]
-          ? typeof item[key] === "string"
-            ? item[key]?.toString()?.toLowerCase().includes(e)
-            : item[key]?.toString().includes(e)
-          : typeof item["customer"][key] === "string"
-          ? item["customer"][key]?.toString()?.toLowerCase().includes(e)
-          : item["customer"][key]?.toString().includes(e)
-      )
-    );
-
-    setMainData(arr);
-  };
 
   const columns = React.useMemo(
     () => [
@@ -236,7 +217,7 @@ export default function CollectorReport() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     {/* filter selector */}
                     <div className="selectFilteringg">

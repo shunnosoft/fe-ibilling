@@ -565,5 +565,10 @@
   "partialPayment": "আংশিক পরিশোধ",
   "invoiceDelete": "আপনি কি ইনভয়েস ডিলিট করতে চান ?",
   "colelctorDeleteNotify": "আপনি কি কালেক্টরকে ডিলিট করতে চান ?",
-  "selectPlace": "সিলেক্ট প্লেছ"
+  "selectPlace": "সিলেক্ট প্লেছ",
+  "sendingMessageType": "মেসেস যাওয়ার ধরন",
+  "nonMasking": "নন মাস্কিং",
+  "masking": "মাস্কিং",
+  "fixedNumber": "ফিক্সড নাম্বার",
+  "smsType": "মেসেস এর ধরন"
 }

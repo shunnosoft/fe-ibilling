@@ -164,6 +164,7 @@ const PPPOECustomer = () => {
   const [filterOptions, setFilterOption] = useState({
     status: "",
     paymentStatus: "",
+    partialPayment: "",
     area: "",
     subArea: "",
     package: "",

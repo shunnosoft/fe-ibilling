@@ -564,5 +564,10 @@
   "partialPayment": "Partial Payment",
   "invoiceDelete": "Are you sure want to delete invoice ?",
   "colelctorDeleteNotify": "Do You Want Delete Collector ?",
-  "selectPlace": "Select Place"
+  "selectPlace": "Select Place",
+  "sendingMessageType": "Sending Messge Type",
+  "nonMasking": "Non Masking",
+  "masking": "Masking",
+  "fixedNumber": "Fixed Number",
+  "smsType": "Messge Type"
 }

@@ -16,13 +16,16 @@ function SalarySMSTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
   const [salarySMS, setSalarySMS] = useState(false);
+
+  const [sendingType, setSendingType] = useState();
+  console.log(sendingType);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     let data = {
       ...settings.sms,
+      staffSalarySendBy: sendingType,
       staffSalary: salarySMS,
     };
     setLoading(true);
@@ -37,46 +40,71 @@ function SalarySMSTemplate() {
 
   useEffect(() => {
     setSalarySMS(settings.sms.staffSalary);
+    setSendingType(settings?.sms?.staffSalarySendBy);
   }, [settings]);
 
   return (
     <div>
-      <div className="py-5">
-        <h4> {t("SalarySMSTemplate")} </h4>
-        <div className="form-check">
-          <input
-            id="salaryRadioOn"
-            className="form-check-input"
-            name="salarySMS"
-            type="radio"
-            checked={salarySMS}
-            onChange={() => setSalarySMS(true)}
-          />
-          <label className="form-check-label" htmlFor="salaryRadioOn">
-            {t("on")}
-          </label>
+      <div className="py-4">
+        <div className="writeMessageSection">
+          <div className="messageStatus d-flex justify-content-between">
+            <div className="sending-status">
+              <h4> {t("SalarySMSTemplate")} </h4>
+              <input
+                id="salaryRadioOn"
+                name="salarySMS"
+                type="radio"
+                checked={salarySMS}
+                onChange={() => setSalarySMS(true)}
+              />
+              &nbsp;
+              {t("on")} {"              "}
+              <input
+                id="salaryRadioOff"
+                name="salarySMS"
+                type="radio"
+                checked={!salarySMS}
+                onChange={() => setSalarySMS(false)}
+              />
+              &nbsp;
+              {t("off")} {"              "}
+            </div>
+            <div className="message-sending-type">
+              <h4> {t("sendingMessageType")} </h4>
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "nonMasking"}
+                value={"nonMasking"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("nonMasking")} {"              "}
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "masking"}
+                value={"masking"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("masking")} {"              "}
+              <input
+                name="messageSendingType"
+                type="radio"
+                checked={sendingType === "fixedNumber"}
+                value={"fixedNumber"}
+                onChange={(event) => setSendingType(event.target.value)}
+              />{" "}
+              {t("fixedNumber")} {"              "}
+            </div>
+          </div>
         </div>
-        <div className="form-check">
-          <input
-            id="salaryRadioOff"
-            className="form-check-input"
-            name="salarySMS"
-            type="radio"
-            checked={!salarySMS}
-            onChange={() => setSalarySMS(false)}
-          />
-          <label className="form-check-label" htmlFor="salaryRadioOff">
-            {t("off")}
-          </label>
-        </div>
-
         <hr />
         <button
           type="submit"
           onClick={handleSubmit}
           className="btn btn-success"
         >
-          {loading ? <Loader></Loader> : t("save")}
+          {loading ? <Loader /> : t("save")}
         </button>
       </div>
     </div>

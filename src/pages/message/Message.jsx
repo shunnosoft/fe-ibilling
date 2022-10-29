@@ -381,7 +381,7 @@ export default function Message() {
 
   return (
     <>
-      <SmsParchase></SmsParchase>
+      <SmsParchase />
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
