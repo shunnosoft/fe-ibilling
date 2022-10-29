@@ -90,7 +90,7 @@ export default function Message() {
 
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
-
+  const [sendingType, setSendingType] = useState("nonMasking");
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -104,7 +104,8 @@ export default function Message() {
     setIsrefresh(true);
     try {
       const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-      setSms(res.data.smsBalance);
+      // setSms(res.data.smsBalance);
+      setSms(res.data);
       setIsrefresh(false);
     } catch (error) {
       console.log(error.response?.data.message);
@@ -154,6 +155,7 @@ export default function Message() {
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
+      console.log(owner);
       const res = await apiLink.get(`/ispOwner/all-customer/${ispOwnerId}`);
 
       let items = [],
@@ -296,7 +298,14 @@ export default function Message() {
       }
 
       alert(` ${t("sampleSMS")}:\n${items[0]?.message}`);
-      if (owner.data.smsBalance >= totalSmsCount) {
+      if (
+        (sendingType === "nonMasking" &&
+          owner.data.smsBalance >= totalSmsCount) ||
+        (sendingType === "masking" &&
+          owner.data.maskingSmsBalance >= totalSmsCount) ||
+        (sendingType === "fixedNumber" &&
+          owner.data.fixedNumberSmsBalance >= totalSmsCount)
+      ) {
         let con = window.confirm(
           `${items.length}  ${t("getSMS")} ${totalSmsCount}  ${t("expenseSMS")}`
         );
@@ -305,6 +314,7 @@ export default function Message() {
           const res = await apiLink.post(`sms/bulk/${ispOwnerId}`, {
             items,
             totalSmsCount,
+            sendingType,
           });
 
           if (res.data.status) {
@@ -388,8 +398,33 @@ export default function Message() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <FourGround>
+              {/* <FourGround>
                 <h2 className="collectorTitle"> {t("SMSboard")} </h2>
+              </FourGround> */}
+
+              <FourGround>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <div>{t("SMSboard")}</div>
+                  </div>
+                  <div
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#smsparchase"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-envelope-plus"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2H2Zm3.708 6.208L1 11.105V5.383l4.708 2.825ZM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2-7-4.2Z" />
+                      <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z" />
+                    </svg>
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
@@ -397,11 +432,30 @@ export default function Message() {
                   <div className="profileWrapper uiChange">
                     <div className="smsbal">
                       <div className="refreshDiv">
-                        <div className="balancetext">
+                        <div className="balancetext px-2">
+                          <div className="mx-content">
+                            {t("SMSbalance")}&nbsp;
+                          </div>
+                          {sms.smsBalance}
+                        </div>
+                        <div className="balancetext px-2 mx-1">
+                          <div className="mx-content">
+                            {t("masking")} &nbsp;
+                          </div>
+
+                          {sms.maskingSmsBalance}
+                        </div>
+                        <div className="balancetext px-2 ">
+                          <div className="mx-content">
+                            {t("fixedNumber")} &nbsp;
+                          </div>
+                          {sms.fixedNumberSmsBalance}
+                        </div>
+                        {/* <div className="balancetext mx-1">
                           {t("SMSbalance")}
                           <strong className="mainsmsbalance">{sms}</strong>
-                        </div>
-                        <div title={t("refresh")} className="refreshIcon">
+                        </div> */}
+                        <div title={t("refresh")} className="refreshIcon px-2">
                           {isRefrsh ? (
                             <Loader></Loader>
                           ) : (
@@ -412,7 +466,7 @@ export default function Message() {
                         </div>
                       </div>
 
-                      {userRole === "ispOwner" && (
+                      {/* {userRole === "ispOwner" && (
                         <button
                           data-bs-toggle="modal"
                           data-bs-target="#smsparchase"
@@ -420,7 +474,42 @@ export default function Message() {
                         >
                           {t("buySMS")}
                         </button>
-                      )}
+                      )} */}
+
+                      <div
+                        className="message-sending-type"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <h4> {t("sendingMessageType")} </h4>
+                        <input
+                          name="messageSendingType"
+                          type="radio"
+                          checked={sendingType === "nonMasking"}
+                          value={"nonMasking"}
+                          onChange={(event) =>
+                            setSendingType(event.target.value)
+                          }
+                        />
+                        {t("nonMasking")}
+                        <input
+                          name="messageSendingType"
+                          type="radio"
+                          value={"masking"}
+                          onChange={(event) =>
+                            setSendingType(event.target.value)
+                          }
+                        />
+                        {t("masking")}
+                        <input
+                          name="messageSendingType"
+                          type="radio"
+                          value={"fixedNumber"}
+                          onChange={(event) =>
+                            setSendingType(event.target.value)
+                          }
+                        />
+                        {t("fixedNumber")}
+                      </div>
                     </div>
 
                     <div className="writeMessageSection">
@@ -842,6 +931,7 @@ export default function Message() {
           </div>
         </div>
       </div>
+      <SmsParchase />
     </>
   );
 }

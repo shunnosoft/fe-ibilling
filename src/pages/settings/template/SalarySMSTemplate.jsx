@@ -18,7 +18,7 @@ function SalarySMSTemplate() {
   );
   const [salarySMS, setSalarySMS] = useState(false);
 
-  const [sendingType, setSendingType] = useState();
+  const [sendingType, setSendingType] = useState("");
   console.log(sendingType);
 
   const handleSubmit = async (e) => {

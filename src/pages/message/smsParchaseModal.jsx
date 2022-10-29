@@ -10,11 +10,15 @@ function SmsParchase() {
   const { t } = useTranslation();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  console.log(userData);
   const [isLoading, setIsloading] = useState(false);
 
   const [amount, setAmount] = useState(100);
+
   const [count, setCount] = useState(Number(amount) / userData.smsRate);
-  const [messageType, setMessageType] = useState("nonMasking");
+  const [messageType, setMessageType] = useState(
+    "nonMasking" || "masking" || "fixedNumber"
+  );
 
   const changeHandler = (sms) => {
     // if (sms * userData.smsRate < 100) return;
@@ -38,6 +42,16 @@ function SmsParchase() {
       purchaseSms(data, setIsloading);
     }
   };
+
+  useEffect(() => {
+    if (messageType === "nonMasking") {
+      setAmount(userData.smsRate * count);
+    } else if (messageType === "masking") {
+      setAmount(userData.maskingSmsRate * count);
+    } else if (messageType === "fixedNumber") {
+      setAmount(userData.fixedNumberSmsRate * count);
+    }
+  }, [messageType]);
 
   return (
     <div>
@@ -85,10 +99,12 @@ function SmsParchase() {
                   <div className="numsms">
                     <span className="smsspan"> {t("smsType")} </span>
                     <select
-                      className="form-select"
+                      className="form-select "
                       onChange={(event) => setMessageType(event.target.value)}
                     >
-                      <option value="nonMasking">{t("nonMasking")}</option>
+                      <option selected value="nonMasking">
+                        {t("nonMasking")}
+                      </option>
                       <option value="masking">{t("masking")}</option>
                       <option value="fixedNumber">{t("fixedNumber")}</option>
                     </select>
