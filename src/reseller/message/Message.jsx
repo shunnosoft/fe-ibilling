@@ -20,6 +20,7 @@ import apiLink from "../../api/apiLink";
 import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { getSubAreas } from "../../features/apiCallReseller";
 import { useTranslation } from "react-i18next";
+import FormatNumber from "../../components/common/NumberFormat";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -81,9 +82,9 @@ export default function RMessage() {
   const area = useSelector((state) => state.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
-  console.log(subAreaIds);
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
+  const [sendingType, setSendingType] = useState("nonMasking");
 
   const resellerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.reseller.id
@@ -100,8 +101,7 @@ export default function RMessage() {
     setIsrefresh(true);
     try {
       const res = await apiLink.get(`/reseller/${resellerId}`);
-      console.log(res.data);
-      setSms(res.data.smsBalance);
+      setSms(res.data);
       setIsrefresh(false);
     } catch (error) {
       console.log(error.response?.data.message);
@@ -144,7 +144,6 @@ export default function RMessage() {
   // const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
-    console.log(smsReceiverType);
     let messageTemplate = upperText + "\n" + bottomText;
     const now = moment();
     try {
@@ -291,15 +290,24 @@ export default function RMessage() {
       }
 
       alert(`${t("sampleSMS")} :\n${items[0]?.message}`);
-      if (reseller.data.smsBalance >= totalSmsCount) {
+      if (
+        (sendingType === "nonMasking" &&
+          reseller.data.smsBalance >= totalSmsCount) ||
+        (sendingType === "masking" &&
+          reseller.data.maskingSmsBalance >= totalSmsCount) ||
+        (sendingType === "fixedNumber" &&
+          reseller.data.fixedNumberSmsBalance >= totalSmsCount)
+      ) {
         let con = window.confirm(
           `${items.length} ${t("getSMS")} ${totalSmsCount} ${t("expenseSMS")}`
         );
+
         if (con && items.length) {
           // post
           const res = await apiLink.post(`sms/reseller/bulk/${resellerId}`, {
             items,
             totalSmsCount,
+            sendingType,
           });
 
           if (res.data.status) {
@@ -373,10 +381,9 @@ export default function RMessage() {
       setisAllChecked(false);
     }
   };
-  console.log(subAreaIds);
   return (
     <>
-      <SmsParchase></SmsParchase>
+      <SmsParchase />
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
@@ -392,19 +399,66 @@ export default function RMessage() {
                   <div className="profileWrapper uiChange">
                     <div className="smsbal">
                       <div className="refreshDiv">
-                        <div className="balancetext">
-                          {t("SMSbalance")}
-                          <strong className="mainsmsbalance">{sms}</strong>
+                        <div className="balancetext px-3">
+                          <div className="mx-content">
+                            {t("nonMasking")}&nbsp;
+                          </div>
+                          {FormatNumber(sms?.smsBalance)}
                         </div>
-                        <div title={t("refresh")} className="refreshIcon">
+                        <div className="balancetext mx-1">
+                          <div className="mx-content">{t("masking")}&nbsp;</div>
+                          {FormatNumber(sms?.maskingSmsBalance)}
+                        </div>
+                        <div className="balancetext px-3">
+                          <div className="mx-content">
+                            {t("fixedNumber")}&nbsp;
+                          </div>
+                          {FormatNumber(sms?.fixedNumberSmsBalance)}
+                        </div>
+                        <div title={t("refresh")} className="refreshIcon px-2">
                           {isRefrsh ? (
-                            <Loader></Loader>
+                            <Loader />
                           ) : (
                             <ArrowClockwise
                               onClick={() => getResellerNow()}
                             ></ArrowClockwise>
                           )}
                         </div>
+                      </div>
+
+                      <div
+                        className="message-sending-type"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <h4> {t("sendingMessageType")} </h4>
+                        <input
+                          name="messageSendingType"
+                          type="radio"
+                          checked={sendingType === "nonMasking"}
+                          value={"nonMasking"}
+                          onChange={(event) =>
+                            setSendingType(event.target.value)
+                          }
+                        />{" "}
+                        {t("nonMasking")} {"              "}
+                        <input
+                          name="messageSendingType"
+                          type="radio"
+                          value={"masking"}
+                          onChange={(event) =>
+                            setSendingType(event.target.value)
+                          }
+                        />{" "}
+                        {t("masking")} {"              "}
+                        <input
+                          name="messageSendingType"
+                          type="radio"
+                          value={"fixedNumber"}
+                          onChange={(event) =>
+                            setSendingType(event.target.value)
+                          }
+                        />{" "}
+                        {t("fixedNumber")} {"              "}
                       </div>
 
                       {userRole === "ispOwner" && (

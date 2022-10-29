@@ -36,12 +36,12 @@ const RecehargeSMS = () => {
 
   // get data
   const data = useSelector((state) => state?.smsHistory?.smsParchase);
-
+  console.log(data);
   // get history with netfee
   const netfeeinvoice = useSelector(
     (state) => state?.smsHistory?.smsParchaseNetfee
   );
-
+  console.log(netfeeinvoice);
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -130,6 +130,11 @@ const RecehargeSMS = () => {
         Cell: ({ cell: { value } }) => {
           return FormatNumber(value);
         },
+      },
+      {
+        width: "18%",
+        Header: t("smsPurchaseType"),
+        accessor: "smsPurchaseType",
       },
 
       {

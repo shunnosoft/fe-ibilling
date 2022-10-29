@@ -55,7 +55,7 @@ export default function RSettings() {
                       title={t("alertSMS")}
                     >
                       <FourGround>
-                        <AlertSmsTemplate></AlertSmsTemplate>
+                        <AlertSmsTemplate />
                       </FourGround>
                     </Tab>
 
@@ -65,7 +65,7 @@ export default function RSettings() {
                       title={t("newCustomerSMS")}
                     >
                       <FourGround>
-                        <CreateCustomerSmsTemplate></CreateCustomerSmsTemplate>
+                        <CreateCustomerSmsTemplate />
                       </FourGround>
                     </Tab>
 
@@ -75,7 +75,7 @@ export default function RSettings() {
                       title={t("customerInactiveSMS")}
                     >
                       <FourGround>
-                        <CustomerInactiveSmsTemplate></CustomerInactiveSmsTemplate>
+                        <CustomerInactiveSmsTemplate />
                       </FourGround>
                     </Tab>
                   </Tabs>

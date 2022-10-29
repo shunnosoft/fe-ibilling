@@ -565,7 +565,7 @@
   "partialPayment": "আংশিক পরিশোধ",
   "invoiceDelete": "আপনি কি ইনভয়েস ডিলিট করতে চান ?",
   "colelctorDeleteNotify": "আপনি কি কালেক্টরকে ডিলিট করতে চান ?",
-  "selectPlace": "সিলেক্ট প্লেছ",
+  "selectPlace": "পারছেস ফ্রম",
   "sendingMessageType": "মেসেস যাওয়ার ধরন",
   "nonMasking": "নন মাস্কিং",
   "masking": "মাস্কিং",
@@ -573,5 +573,6 @@
   "smsType": "মেসেস এর ধরন",
   "advance": "অগ্রিম",
   "free": "ফ্রি",
-  "overDue": "ওভার ডিউ"
+  "overDue": "ওভার ডিউ",
+  "smsPurchaseType": "মেসেস টাইপ"
 }

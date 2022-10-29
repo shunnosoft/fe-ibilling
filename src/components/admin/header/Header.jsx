@@ -115,13 +115,13 @@ export default function Header(props) {
             <div className="headerLinks">
               {currentUser && userRole === "reseller" ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">
-                  <div
+                  {/* <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
                     {t("SMS")}
                     <strong className="mainsmsbalance">{smsBalance}</strong>
-                  </div>
+                  </div> */}
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
