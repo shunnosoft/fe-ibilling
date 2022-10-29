@@ -61,7 +61,7 @@ export const parchaseSms = async (data, setIsLoading, dispatch) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/reseller/smsPurchase", data);
-    // console.log(res.data.resellerSmsPurchase);
+    console.log(res.data.resellerSmsPurchase);
     dispatch(parchaseSmsSuccess(res.data.resellerSmsPurchase));
     setIsLoading(false);
     langMessage(
@@ -84,7 +84,7 @@ export const purchaseSmsNetfee = async (data, setIsloading, dispatch) => {
   try {
     const res = await apiLink.post(`/sms`, data);
     console.log(res.data);
-    dispatch(parchaseSmsNetFeeSuccess(res.data.resellerSmsPurchase));
+    dispatch(parchaseSmsNetFeeSuccess(res.data));
     document.querySelector("#smsRechargeModal").click();
     setIsloading(false);
     langMessage(

@@ -9,6 +9,7 @@ import FormatNumber from "../../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const RechargeModal = ({ status }) => {
   const { t } = useTranslation();
@@ -16,7 +17,7 @@ const RechargeModal = ({ status }) => {
   const dispatch = useDispatch();
 
   // get auth data
-  const userData = useSelector(
+  let userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.reseller
   );
 
@@ -27,7 +28,7 @@ const RechargeModal = ({ status }) => {
   const [loading, setLoading] = useState(false);
 
   // set sms amoun
-  const [smsAmount, setSmsAmount] = useState(100);
+  const [smsAmount, setSmsAmount] = useState();
 
   // buy place status
   const [buyStatus, setBuyStatus] = useState("ispOwner");
@@ -43,7 +44,7 @@ const RechargeModal = ({ status }) => {
     if (!smsAmount) {
       setErrMsg(t("smsAmount"));
     }
-    if (smsAmount < 100 && smsAmount > 10000) {
+    if (smsAmount < 400 && smsAmount > 10000) {
       setErrMsg(t("youCanBuyMin100AndMax10000"));
     }
   };
@@ -52,19 +53,32 @@ const RechargeModal = ({ status }) => {
   const handleChange = (event) => {
     setSmsAmount(event.target.value);
 
-    if (event.target.value >= 100 || event.target.value) {
+    if (event.target.value >= 400 || event.target.value) {
       setErrMsg("");
     }
   };
 
+  useEffect(() => {
+    setSmsAmount(400);
+  }, [messageType]);
+
   // sms amount calculation
-  let msgPrice = smsAmount * 0.25;
+  let msgPrice;
+  if (messageType === "nonMasking") {
+    msgPrice = smsAmount * userData.smsRate;
+  }
+  if (messageType === "masking") {
+    msgPrice = smsAmount * userData.maskingSmsRate;
+  }
+  if (messageType === "fixedNumber") {
+    msgPrice = smsAmount * userData.fixedNumberSmsRate;
+  }
 
   // handle submit
   const handleSubmit = (event) => {
     event.preventDefault();
     if (status.length === 0 || buyStatus === "netFee") {
-      if (smsAmount >= 100 && smsAmount <= 10000) {
+      if (smsAmount >= 400 && smsAmount <= 10000) {
         if (buyStatus === "ispOwner") {
           const data = {
             smsAmount: smsAmount,
@@ -81,6 +95,7 @@ const RechargeModal = ({ status }) => {
             smsParchaseType: messageType,
           };
 
+          console.log(sendingData);
           purchaseSmsNetfee(sendingData, setLoading, dispatch);
         }
       } else {
@@ -154,7 +169,7 @@ const RechargeModal = ({ status }) => {
                   onChange={(event) => setBuyStatus(event.target.value)}
                 >
                   <option value="ispOwner" selected>
-                    Owner
+                    Isp Owner
                   </option>
                   <option value="netFee">NetFee</option>
                 </select>

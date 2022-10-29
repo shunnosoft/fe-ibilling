@@ -106,6 +106,10 @@ p {
   max-width: none !important;
 }
 
+.mx-content {
+  width: max-content;
+}
+
 /* Reload Button */
 .reloadBtn {
   background-color: #fcf2f2;
