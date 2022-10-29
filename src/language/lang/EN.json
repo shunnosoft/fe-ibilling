@@ -569,5 +569,8 @@
   "nonMasking": "Non Masking",
   "masking": "Masking",
   "fixedNumber": "Fixed Number",
-  "smsType": "Messge Type"
+  "smsType": "Messge Type",
+  "advance": "Advance",
+  "free": "Free",
+  "overDue": "Overdue"
 }

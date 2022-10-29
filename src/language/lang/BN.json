@@ -570,5 +570,8 @@
   "nonMasking": "নন মাস্কিং",
   "masking": "মাস্কিং",
   "fixedNumber": "ফিক্সড নাম্বার",
-  "smsType": "মেসেস এর ধরন"
+  "smsType": "মেসেস এর ধরন",
+  "advance": "অগ্রিম",
+  "free": "ফ্রি",
+  "overDue": "ওভার ডিউ"
 }

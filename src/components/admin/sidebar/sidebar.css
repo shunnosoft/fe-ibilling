@@ -103,11 +103,14 @@ a {
 
 .sidebarItems:hover {
   filter: contrast(5) !important;
+  background-color: #1276a705;
 }
 .sidebarIcon {
   font-size: 18px;
   margin-right: 15px;
   margin-top: -1px;
+  /* color: var(---primaryColor) !important; */
+  color: #328eea;
 }
 .arrowRightFillStyle {
   padding-left: 20%;
