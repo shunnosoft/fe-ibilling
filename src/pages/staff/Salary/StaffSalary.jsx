@@ -1,10 +1,16 @@
 import { useEffect, useState, useMemo } from "react";
-import { ThreeDots, PenFill, ArchiveFill } from "react-bootstrap-icons";
+import {
+  ThreeDots,
+  PenFill,
+  ArchiveFill,
+  ArrowLeftShort,
+} from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // internal imports
 import useDash from "../../../assets/css/dash.module.css";
@@ -129,7 +135,29 @@ export default function StaffSalary() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between align-item-center px-5 mb-2">
-                  <span>{t("staffProfile")}</span>
+                  <div>
+                    {/* <Link to="/staff">
+                      <div className="AllMikrotik mt-1">
+                        <ArrowLeftShort className="arrowLeftSize" />
+                        <span style={{ marginLeft: "3px" }}>Back</span>
+                      </div>
+                    </Link> */}
+                    <Link to="/staff">
+                      <button
+                        className="btn"
+                        style={{
+                          backgroundColor: "#0EB96A",
+                          color: "white",
+                          padding: "1,0,1,0",
+                        }}
+                      >
+                        <ArrowLeftShort className="arrowLeftSize" />
+                        Back
+                      </button>
+                    </Link>
+                    &nbsp; &nbsp;
+                    <span>{t("staffProfile")}</span>
+                  </div>
                   <Button
                     onClick={() => setSalaryId(staff.id)}
                     data-bs-toggle="modal"

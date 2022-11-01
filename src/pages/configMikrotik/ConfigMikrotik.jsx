@@ -57,7 +57,8 @@ export default function ConfigMikrotik() {
   const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
 
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
-  const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+  let pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+  console.log(pppoePackage);
   const mtkIsLoading = useSelector((state) => state?.mikrotik?.isLoading);
 
   const [isLoading, setIsloading] = useState(false);
@@ -177,6 +178,16 @@ export default function ConfigMikrotik() {
     }
   };
 
+  // const sortedArr = [...pppoePackage].sort((a, b) => {
+  //   if (a.name.includes("M") && b.name.includes("M")) {
+  //     return parseInt(b.name) - parseInt(a.name);
+  //   } else if (a.name.includes("k") && b.name.includes("k")) {
+  //     return parseInt(b.name) - parseInt(a.name);
+  //   }
+
+  //   // return parseInt(b.name) - parseInt(a.name);
+  // });
+
   useEffect(() => {
     setAllUsers(allMikrotikUsers);
   }, [allMikrotikUsers]);
@@ -195,6 +206,11 @@ export default function ConfigMikrotik() {
         Header: t("package"),
         accessor: "name",
       },
+      // {
+      //   width: "25%",
+      //   Header: t("package"),
+      //   accessor: (row) => console.log(row),
+      // },
       {
         width: "20%",
         Header: t("rate"),

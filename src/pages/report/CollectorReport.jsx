@@ -170,29 +170,34 @@ export default function CollectorReport() {
   const columns = React.useMemo(
     () => [
       {
-        width: "15%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "20%",
+        width: "15%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "20%",
+        width: "15%",
         Header: t("customer"),
         accessor: "customer.name",
       },
       {
-        width: "20%",
+        width: "15%",
+        Header: t("mobile"),
+        accessor: "customer.mobile",
+      },
+      {
+        width: "15%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
-        width: "25%",
+        width: "20%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {

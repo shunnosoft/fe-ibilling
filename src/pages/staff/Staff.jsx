@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { ArrowClockwise, PersonPlusFill } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  PersonPlusFill,
+  PrinterFill,
+} from "react-bootstrap-icons";
 //internal import
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Footer from "../../components/admin/footer/Footer";
@@ -18,6 +22,7 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
 import StaffDelete from "./staffModal/StaffDelete";
+import ReactToPrint from "react-to-print";
 
 const Staff = () => {
   const { t } = useTranslation();
@@ -34,6 +39,7 @@ const Staff = () => {
   const [tableLoading, setTableLoading] = useState(false);
   const [staffId, setStafId] = useState(null);
   const [staffSmsId, setStafSmsId] = useState();
+  const componentRef = useRef();
 
   // delete method
   // const deleteStaff = (staffId) => {
@@ -163,6 +169,18 @@ const Staff = () => {
                     <PersonPlusFill />
                   </div>
                 )}
+                {/* <div className="addAndSettingIcon">
+                  <ReactToPrint
+                    // documentTitle={t("CustomerList")}
+                    trigger={() => (
+                      <PrinterFill
+                      // title={t("print")}
+                      // className="addcutmButton"
+                      />
+                    )}
+                    content={() => componentRef.current}
+                  />
+                </div> */}
               </div>
             </FourGround>
             <FourGround>
