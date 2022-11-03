@@ -23,6 +23,7 @@ import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
 import StaffDelete from "./staffModal/StaffDelete";
 import ReactToPrint from "react-to-print";
+import StaffPdf from "./StaffPdf";
 
 const Staff = () => {
   const { t } = useTranslation();
@@ -34,7 +35,6 @@ const Staff = () => {
   const getAllStaffs = useSelector((state) => state?.staff?.staff);
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
-
   const [isLoading, setIsLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [staffId, setStafId] = useState(null);
@@ -159,30 +159,38 @@ const Staff = () => {
                     )}
                   </div>
                 </div>
-                {(role === "ispOwner" || role === "reseller") && (
+                <div className="d-flex justify-content-between align-items-center">
                   <div
-                    title={t("addStaff")}
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#staffModal"
+                    className="addAndSettingIcon"
+                    style={{ marginLeft: ".5rem" }}
                   >
-                    <PersonPlusFill />
+                    <ReactToPrint
+                      documentTitle="Staff Report"
+                      trigger={() => (
+                        <PrinterFill
+                          // title={t("print")}
+                          className="addcutmButton"
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
                   </div>
-                )}
-                {/* <div className="addAndSettingIcon">
-                  <ReactToPrint
-                    // documentTitle={t("CustomerList")}
-                    trigger={() => (
-                      <PrinterFill
-                      // title={t("print")}
-                      // className="addcutmButton"
-                      />
+                  <div>
+                    {(role === "ispOwner" || role === "reseller") && (
+                      <div
+                        title={t("addStaff")}
+                        className="header_icon"
+                        data-bs-toggle="modal"
+                        data-bs-target="#staffModal"
+                      >
+                        <PersonPlusFill />
+                      </div>
                     )}
-                    content={() => componentRef.current}
-                  />
-                </div> */}
+                  </div>
+                </div>
               </div>
             </FourGround>
+            <div style={{ display: "none" }}></div>
             <FourGround>
               <div className="collectorWrapper mt-2 py-2">
                 <div className="addCollector">
@@ -200,6 +208,14 @@ const Staff = () => {
           <Footer />
         </div>
       </div>
+      <div className="d-none">
+        <StaffPdf
+          allStaffData={getAllStaffs}
+          // currentCustomers={Customers}
+          ref={componentRef}
+        />
+      </div>
+
       <StaffPost />
       <SingleMessage single={staffSmsId} sendCustomer="staff" />
       <StaffEdit staffId={staffId} />
