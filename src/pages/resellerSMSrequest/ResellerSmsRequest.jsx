@@ -25,12 +25,13 @@ const ResellerSmsRequest = () => {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.currentUser?.ispOwner?.id
   );
+  // console.log(ispOwnerId);
 
   // get reseller sms all data
   const data = useSelector(
     (state) => state?.resellerSmsRequest?.requestSmsHistory
   );
-
+  console.log(data);
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 

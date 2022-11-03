@@ -1,5 +1,5 @@
 // external imports
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -12,6 +12,7 @@ import {
   PersonCheckFill,
   Coin,
   CurrencyDollar,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
@@ -42,6 +43,8 @@ import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
+import ReactToPrint from "react-to-print";
+import CollectionOverviewPdf from "./CollectionOverviewPdf";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -62,6 +65,7 @@ export default function Home() {
   const ChartsData = useSelector((state) => state.chart.charts);
 
   const customerStat = useSelector((state) => state.chart.customerStat);
+  console.log(customerStat.collectorStat);
   const invoice = useSelector((state) => state.invoice.invoice);
   const [isLoading, setIsloading] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
@@ -79,7 +83,7 @@ export default function Home() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
-
+  const componentRef = useRef();
   const collectorArea = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth.currentUser?.collector.areas
@@ -1085,8 +1089,31 @@ export default function Home() {
                 />
               </div>
             </FourGround>
+            {/* print to collectorOverview start */}
+
             <FourGround>
               <div className="collectorWrapper pt-1 pb-2">
+                <div
+                  className="addAndSettingIcon"
+                  style={{
+                    marginLeft: ".5rem",
+                    textAlign: "end",
+                    paddingTop: "1rem",
+                    // background: "green",
+                  }}
+                >
+                  <ReactToPrint
+                    documentTitle="Collection Overveiw"
+                    trigger={() => (
+                      <PrinterFill
+                        // title={t("print")}
+                        className="addcutmButton"
+                        style={{ background: "#0EB96A", color: "white" }}
+                      />
+                    )}
+                    content={() => componentRef.current}
+                  />
+                </div>
                 <div className="table-section">
                   {collectorData && collectorData.length > 0 && (
                     <Table
@@ -1096,6 +1123,14 @@ export default function Home() {
                     ></Table>
                   )}
                 </div>
+              </div>
+              <div className="d-none">
+                <CollectionOverviewPdf
+                  allCollectionData={customerStat}
+                  //customerStat
+                  // currentCustomers={Customers}
+                  ref={componentRef}
+                />
               </div>
             </FourGround>
           </div>

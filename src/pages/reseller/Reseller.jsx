@@ -70,6 +70,7 @@ export default function Reseller() {
 
   // get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
+  console.log(reseller);
 
   // reseller id state
   const [resellerId, setResellerId] = useState("");
