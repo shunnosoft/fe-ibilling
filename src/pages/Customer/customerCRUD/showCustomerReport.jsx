@@ -219,43 +219,47 @@ export default function CustomerReport(props) {
                                     ispOwnerData={ispOwnerData}
                                   />
                                 </div>
-                                {permission?.billPrint ||
-                                role !== "collector" ? (
-                                  <div>
-                                    <ReactToPrint
-                                      documentTitle={t("billIvoice")}
-                                      trigger={() => (
-                                        <div
-                                          title={t("printInvoiceBill")}
-                                          style={{ cursor: "pointer" }}
-                                        >
-                                          <PrinterFill />
-                                        </div>
-                                      )}
-                                      content={() => billRefwithOutNote.current}
-                                    />
-                                  </div>
-                                ) : (
-                                  ""
-                                )}
-                                {!props?.hideReportDelete &&
-                                  (permission?.billDelete ||
+                                <div className="d-flex">
+                                  {permission?.billPrint ||
                                   role !== "collector" ? (
-                                    <div title={t("deleteReport")}>
-                                      <button
-                                        className="border-0 bg-transparent"
-                                        onClick={() => deletReport(val.id)}
-                                        disabled={props?.hideReportDelete}
-                                      >
-                                        <TrashFill
-                                          color="#dc3545"
-                                          style={{ cursor: "pointer" }}
-                                        />
-                                      </button>
+                                    <div className="mx-2">
+                                      <ReactToPrint
+                                        documentTitle={t("billIvoice")}
+                                        trigger={() => (
+                                          <div
+                                            title={t("printInvoiceBill")}
+                                            style={{ cursor: "pointer" }}
+                                          >
+                                            <PrinterFill />
+                                          </div>
+                                        )}
+                                        content={() =>
+                                          billRefwithOutNote.current
+                                        }
+                                      />
                                     </div>
                                   ) : (
                                     ""
-                                  ))}
+                                  )}
+                                  {!props?.hideReportDelete &&
+                                    (permission?.billDelete ||
+                                    role !== "collector" ? (
+                                      <div title={t("deleteReport")}>
+                                        <button
+                                          className="border-0 bg-transparent"
+                                          onClick={() => deletReport(val.id)}
+                                          disabled={props?.hideReportDelete}
+                                        >
+                                          <TrashFill
+                                            color="#dc3545"
+                                            style={{ cursor: "pointer" }}
+                                          />
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      ""
+                                    ))}
+                                </div>
                               </td>
                             )}
                           </tr>

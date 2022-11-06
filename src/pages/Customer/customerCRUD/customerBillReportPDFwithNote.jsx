@@ -1,96 +1,216 @@
 import React from "react";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import Table from "react-bootstrap/Table";
 const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { billingData, ispOwnerData, customerData, paymentDate } = props;
   return (
     <>
       <div ref={ref}>
-        <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
-          <div className="logo_side">
-            <div className="company_logo">
-              <img src="/assets/img/logo.png" alt="Company Logo" />
-            </div>
-            <div className="company_name">{ispOwnerData.company}</div>
-          </div>
-          <div className="details_side">
+        <div className="text-center mb-1">{t("officeCopy")}</div>
+        <div
+          className="text-center bg-primary text-white fw-bold p-1"
+          style={{ borderRadius: "1.1rem" }}
+        >
+          <h2>{ispOwnerData.company}</h2>
+          {ispOwnerData.address && (
             <p>
-              {t("companyName")}
-              {ispOwnerData.company}
+              {t("address")} : {ispOwnerData?.address}
             </p>
+          )}
+        </div>
+
+        <div className="container">
+          <div className="d-flex justify-content-between p-1 m-1">
+            <div>
+              <p>
+                {t("name")} :
+                <strong style={{ marginLeft: "2.7rem" }}>
+                  {customerData.name}
+                </strong>
+              </p>
+              <p>
+                {customerData.mobile && (
+                  <span>
+                    {t("mobile")} :
+                    <strong style={{ marginLeft: ".7rem" }}>
+                      {customerData.mobile}
+                    </strong>
+                  </span>
+                )}
+              </p>
+              <p>
+                {customerData.address && (
+                  <span>
+                    {t("address")} : {customerData.address}
+                  </span>
+                )}
+              </p>
+            </div>
+            <div>
+              <p>
+                {t("package")}:
+                <strong style={{ marginLeft: "4rem" }}>
+                  {" "}
+                  {customerData.userType === "simple-queue" ||
+                  customerData.userType === "firewall-queue"
+                    ? customerData.queue.package
+                    : customerData.pppoe.profile}
+                </strong>
+              </p>
+              <p>
+                {t("paidDate")}:
+                <strong style={{ marginLeft: ".7rem" }}>
+                  {moment(paymentDate).format("MMM-DD-YYYY")}
+                </strong>
+              </p>
+            </div>
+          </div>
+
+          <Table bordered className="text-center ">
+            <tbody>
+              <tr>
+                <th>{t("billDhoron")}</th>
+                <td>
+                  {billingData?.billType == "bill"
+                    ? t("bill")
+                    : t("connectionFee")}
+                </td>
+              </tr>
+              <tr>
+                <th>{t("amount")}</th>
+                <td> {billingData?.amount}</td>
+              </tr>
+              <tr>
+                <th>Due</th>
+                <td>Not available</td>
+              </tr>
+              <tr>
+                <th>{t("medium")}</th>
+                <td>{billingData?.medium}</td>
+              </tr>
+            </tbody>
+          </Table>
+
+          <div
+            className="d-flex justify-content-between h4"
+            style={{ marginTop: "1.8rem" }}
+          >
+            <div>
+              <hr />
+              <p>{t("Proprietor")}</p>
+            </div>
+
+            <div>
+              <hr />
+              <p>{t("customer")}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* hhhhhhhhhhhhhhhhhhh */}
+        <div style={{ marginTop: "2rem" }}>
+          <hr />
+        </div>
+        <div style={{ marginTop: "1.3rem" }}>
+          <div className="text-center mb-1 ">{t("customerCopy")}</div>
+          <div
+            className="text-center bg-primary text-white fw-bold p-1 "
+            style={{ borderRadius: "1.1rem" }}
+          >
+            <h2>{ispOwnerData.company}</h2>
             {ispOwnerData.address && (
               <p>
                 {t("address")} : {ispOwnerData?.address}
               </p>
             )}
           </div>
-        </div>
 
-        <div className="container mt-3 mb-5">
-          <table>
-            <tbody>
-              <tr>
-                <td>{t("customerData")}</td>
-              </tr>
-              <tr>
-                <td className="font-weight-bold">
-                  {t("name")} : {customerData.name}
+          <div className="container">
+            <div className="d-flex justify-content-between p-1 m-1">
+              <div className="text-justify">
+                <p>
+                  {t("name")} :
+                  <strong style={{ marginLeft: "2.7rem" }}>
+                    {customerData.name}
+                  </strong>
+                </p>
+                <p>
                   {customerData.mobile && (
-                    <>
-                      <br />
-                      {t("mobile")} : {customerData.mobile}
-                    </>
+                    <span>
+                      {t("mobile")} :
+                      <strong style={{ marginLeft: ".7rem" }}>
+                        {customerData.mobile}
+                      </strong>
+                    </span>
                   )}
+                </p>
+                <p>
                   {customerData.address && (
-                    <>
-                      <br />
+                    <span>
                       {t("address")} : {customerData.address}
-                    </>
+                    </span>
                   )}
-                  <br />
-                  {`PPPOE ${t("name")}: ${customerData.pppoe.name}`}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table className="table table-bordered mt-2">
-            <tbody>
-              <tr>
-                <th>{t("billType")}</th>
-                <th>{t("billDhoron")}</th>
-                <th>{t("package")}</th>
-                <th>{t("amount")}</th>
-                <th>{t("medium")}</th>
-                <th style={{ width: "30%" }}>{t("paidDate")}</th>
-              </tr>
+                </p>
+              </div>
+              <div>
+                <p>
+                  {t("package")}:
+                  <strong style={{ marginLeft: "4rem" }}>
+                    {" "}
+                    {customerData.userType === "simple-queue" ||
+                    customerData.userType === "firewall-queue"
+                      ? customerData.queue.package
+                      : customerData.pppoe.profile}
+                  </strong>
+                </p>
+                <p>
+                  {t("paidDate")}:
+                  <strong style={{ marginLeft: ".7rem" }}>
+                    {moment(paymentDate).format("MMM-DD-YYYY")}
+                  </strong>
+                </p>
+              </div>
+            </div>
 
-              <tr>
-                <td>{customerData?.billPayType}</td>
-                <td>
-                  {billingData?.billType == "bill"
-                    ? t("bill")
-                    : t("connectionFee")}
-                </td>
+            <Table bordered className="text-center">
+              <tbody>
+                <tr>
+                  <th>{t("billDhoron")}</th>
+                  <td>
+                    {billingData?.billType == "bill"
+                      ? t("bill")
+                      : t("connectionFee")}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{t("amount")}</th>
+                  <td> {billingData?.amount}</td>
+                </tr>
+                <tr>
+                  <th>Due</th>
+                  <td>Not available</td>
+                </tr>
+                <tr>
+                  <th>{t("medium")}</th>
+                  <td>{billingData?.medium}</td>
+                </tr>
+              </tbody>
+            </Table>
 
-                <td>
-                  {customerData.userType === "simple-queue" ||
-                  customerData.userType === "firewall-queue"
-                    ? customerData.queue.package
-                    : customerData.pppoe.profile}
-                </td>
-                <td>{billingData?.amount}</td>
-                <td>{billingData?.medium}</td>
-                <td>{moment(paymentDate).format("MMM-DD-YYYY")}</td>
-              </tr>
-            </tbody>
-          </table>
+            <div
+              className="d-flex justify-content-between h4"
+              style={{ marginTop: "1.8rem" }}
+            >
+              <div>
+                <hr />
+                <p>{t("Proprietor")}</p>
+              </div>
 
-          <div className="page-footer">
-            <div className="signature_container">
-              <div className="p-3 signature_wraper">
-                <div className="signamture_field">{t("Proprietor")}</div>
-                <div className="signamture_field">{t("customer")}</div>
+              <div>
+                <hr />
+                <p>{t("customer")}</p>
               </div>
             </div>
           </div>

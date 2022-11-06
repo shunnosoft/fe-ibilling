@@ -573,5 +573,7 @@
   "advance": "Advance",
   "free": "Free",
   "overDue": "Overdue",
-  "smsPurchaseType": "Message Type"
+  "smsPurchaseType": "Message Type",
+  "officeCopy": "Office Copy",
+  "customerCopy": "Customer Copy"
 }

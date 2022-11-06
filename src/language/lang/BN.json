@@ -574,5 +574,7 @@
   "advance": "অগ্রিম",
   "free": "ফ্রি",
   "overDue": "ওভার ডিউ",
-  "smsPurchaseType": "মেসেস টাইপ"
+  "smsPurchaseType": "মেসেস টাইপ",
+  "officeCopy": "অফিস কপি",
+  "customerCopy": "গ্রাহক কপি"
 }
