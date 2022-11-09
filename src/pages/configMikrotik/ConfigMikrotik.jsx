@@ -58,7 +58,6 @@ export default function ConfigMikrotik() {
 
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
   let pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
-  console.log(pppoePackage);
   const mtkIsLoading = useSelector((state) => state?.mikrotik?.isLoading);
 
   const [isLoading, setIsloading] = useState(false);
