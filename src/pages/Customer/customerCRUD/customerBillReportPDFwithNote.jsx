@@ -52,7 +52,6 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
               <p>
                 {t("package")}:
                 <strong style={{ marginLeft: "4rem" }}>
-                  {" "}
                   {customerData.userType === "simple-queue" ||
                   customerData.userType === "firewall-queue"
                     ? customerData.queue.package
@@ -156,9 +155,8 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
               </div>
               <div>
                 <p>
-                  {t("package")}:
+                  <span>{t("package")}:</span>
                   <strong style={{ marginLeft: "4rem" }}>
-                    {" "}
                     {customerData.userType === "simple-queue" ||
                     customerData.userType === "firewall-queue"
                       ? customerData.queue.package

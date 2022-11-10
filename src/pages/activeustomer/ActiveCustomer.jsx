@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
-import { ArrowClockwise, WifiOff, Wifi } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  WifiOff,
+  Wifi,
+  ThreeDots,
+  PersonFill,
+  Server,
+} from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 // internal imports
@@ -16,6 +23,7 @@ import { fetchMikrotik, fetchpppoeUser } from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import BandwidthModal from "../Customer/BandwidthModal";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -23,17 +31,29 @@ export default function ConfigMikrotik() {
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+  console.log(allMikrotikUsers);
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
+  // console.log(ispOwnerData);
 
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-
+  // console.log(ispOwnerId);
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
+  // customer id state
+  const [customerId, setCustomerId] = useState("");
+  //bandwidth modal state
+  const [bandWidthModal, setBandWidthModal] = useState(false);
 
   // customer loading state
   const [mtkLoading, setMtkLoading] = useState(false);
@@ -43,6 +63,7 @@ export default function ConfigMikrotik() {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  // console.log(allUsers);
 
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
@@ -50,6 +71,10 @@ export default function ConfigMikrotik() {
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
     setMikrotikId(event.target.value);
+  };
+  const bandwidthModalController = (customerID) => {
+    setCustomerId(customerID);
+    setBandWidthModal(true);
   };
 
   // customer filter state
@@ -127,7 +152,7 @@ export default function ConfigMikrotik() {
         accessor: "profile",
       },
       {
-        width: "12%",
+        width: "9%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -143,7 +168,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "12%",
+        width: "9%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -159,9 +184,46 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "25%",
+        width: "20%",
         Header: "Last Link Up Time",
         accessor: "lastLinkUpTime",
+      },
+      {
+        width: "25%",
+        Header: t("action"),
+        // accessor: "lastLinkUpTime",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                {(role === "ispOwner" || role === "manager") &&
+                  ispOwnerData.bpSettings.hasMikrotik && (
+                    <li onClick={() => bandwidthModalController(original.id)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Server />
+                          <p className="actionP">{t("bandwidth")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
+              </ul>
+            </div>
+          </div>
+        ),
       },
     ],
     [t]
@@ -237,6 +299,11 @@ export default function ConfigMikrotik() {
                       data={allUsers}
                     ></Table>
                   </div>
+                  <BandwidthModal
+                    setModalShow={setBandWidthModal}
+                    modalShow={bandWidthModal}
+                    customerId={customerId}
+                  />
                 </div>
               </FourGround>
               <Footer />
