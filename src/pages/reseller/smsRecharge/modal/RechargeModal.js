@@ -92,10 +92,9 @@ const RechargeModal = ({ status }) => {
             reseller: userData.id,
             user: userData.user,
             type: "smsPurchase",
-            smsParchaseType: messageType,
+            smsPurchaseType: messageType,
           };
 
-          console.log(sendingData);
           purchaseSmsNetfee(sendingData, setLoading, dispatch);
         }
       } else {

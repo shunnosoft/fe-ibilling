@@ -21,17 +21,15 @@ function BillConfirmationSmsTemplate() {
 
   const dispatch = useDispatch();
   const [fontValue, setFontValue] = useState("");
-  console.log({ fontValue });
   const [bottomText, setBottomText] = useState("");
-  console.log({ bottomText });
 
   const [upperText, setUpperText] = useState("");
-  // console.log(upperText);
 
   const [billConfirmation, setBillConfirmation] = useState("");
   const [billconfarmationparametres, setbillconparametres] = useState([]);
   const [matchFound, setMatchFound] = useState([]);
   const [sendingType, setSendingType] = useState();
+
   const [inputValue, setInputValue] = useState("");
 
   const textRef = useRef();
@@ -89,7 +87,6 @@ function BillConfirmationSmsTemplate() {
         billConfirmation: fontValue + upperText + "\n" + bottomText,
       },
     };
-    console.log(data);
     setLoading(true);
     try {
       const res = await apiLink.patch(
@@ -166,12 +163,11 @@ function BillConfirmationSmsTemplate() {
       separateValue.forEach((value, index) => {
         if (index > 2) {
           temText += value + "\n";
-          console.log({ temText, value });
         }
       });
       setBottomText(temText);
     }
-  }, [settings]);
+  }, [inputValue]);
 
   const radioCheckHandler = (e) => {
     setBillConfirmation(e.target.value);
@@ -214,7 +210,7 @@ function BillConfirmationSmsTemplate() {
                   onChange={(event) => setFontValue(event.target.value)}
                   class="form-control"
                   type="text"
-                  placeholder="Write Something"
+                  placeholder="Title"
                 />
               </div>
             </div>
