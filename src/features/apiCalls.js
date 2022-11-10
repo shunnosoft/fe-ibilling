@@ -1654,9 +1654,7 @@ export const purchaseSms = async (data, setIsloading) => {
       "এসএমএস ইনভয়েস তৈরি সফল হয়েছে। কনফার্ম করতে হলে পেমেন্ট করুন।",
       "SMS Invoice Generation is Successful. Make Payment to Confirm"
     );
-    setTimeout(() => {
-      window.location.href = "/invoice";
-    }, 5000);
+    window.location.href = "/invoice";
   } catch (err) {
     setIsloading(false);
     console.log("SMS purchase error: ", err);

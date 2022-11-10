@@ -72,7 +72,6 @@ function BillConfirmationSmsTemplate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     let data = {
       ...settings.sms,
       billConfirmationSendBy: sendingType,
@@ -94,6 +93,8 @@ function BillConfirmationSmsTemplate() {
         data
       );
       dispatch(smsSettingUpdateIsp(res.data));
+      setBottomText("");
+      setFontValue("");
       setLoading(false);
       toast.success(t("billConfirmationSaveSuccess"));
     } catch (error) {
@@ -161,7 +162,7 @@ function BillConfirmationSmsTemplate() {
       setFontValue(separateValue[0] || "");
       let temText = bottomText;
       separateValue.forEach((value, index) => {
-        if (index > 2) {
+        if (index > 0 && value !== "") {
           temText += value + "\n";
         }
       });

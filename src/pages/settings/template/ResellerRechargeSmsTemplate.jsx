@@ -36,17 +36,16 @@ const ResellerRechargeSmsTemplate = () => {
       resellerRechargeSendBy: sendingType,
       resellerRecharge: rechargeSMS,
     };
-    console.log(data);
-    // setLoading(true);
+    setLoading(true);
 
-    // // api call
-    // try {
-    //   await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
-    //   setLoading(false);
-    //   toast.success(t("rechargeSMSToast"));
-    // } catch (error) {
-    //   setLoading(false);
-    // }
+    // api call
+    try {
+      await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
+      setLoading(false);
+      toast.success(t("rechargeSMSToast"));
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   // set reseller recharge sms setting in state

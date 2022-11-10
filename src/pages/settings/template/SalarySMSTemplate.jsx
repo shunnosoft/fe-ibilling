@@ -18,14 +18,13 @@ function SalarySMSTemplate() {
   );
   const [salarySMS, setSalarySMS] = useState(false);
 
-  const [sendingType, setSendingType] = useState("");
-  console.log(sendingType);
+  const [salarySendingType, setSalarySendingType] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     let data = {
       ...settings.sms,
-      staffSalarySendBy: sendingType,
+      staffSalarySendBy: salarySendingType,
       staffSalary: salarySMS,
     };
     setLoading(true);
@@ -40,7 +39,7 @@ function SalarySMSTemplate() {
 
   useEffect(() => {
     setSalarySMS(settings.sms.staffSalary);
-    setSendingType(settings?.sms?.staffSalarySendBy);
+    setSalarySendingType(settings?.sms?.staffSalarySendBy);
   }, [settings]);
 
   return (
@@ -72,27 +71,27 @@ function SalarySMSTemplate() {
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
               <input
-                name="messageSendingType"
+                name="salarySmsSendingType"
                 type="radio"
-                checked={sendingType === "nonMasking"}
+                checked={salarySendingType === "nonMasking"}
                 value={"nonMasking"}
-                onChange={(event) => setSendingType(event.target.value)}
+                onChange={(event) => setSalarySendingType(event.target.value)}
               />{" "}
               {t("nonMasking")} {"              "}
               <input
-                name="messageSendingType"
+                name="salarySmsSendingType"
                 type="radio"
-                checked={sendingType === "masking"}
+                checked={salarySendingType === "masking"}
                 value={"masking"}
-                onChange={(event) => setSendingType(event.target.value)}
+                onChange={(event) => setSalarySendingType(event.target.value)}
               />{" "}
               {t("masking")} {"              "}
               <input
-                name="messageSendingType"
+                name="salarySmsSendingType"
                 type="radio"
-                checked={sendingType === "fixedNumber"}
+                checked={salarySendingType === "fixedNumber"}
                 value={"fixedNumber"}
-                onChange={(event) => setSendingType(event.target.value)}
+                onChange={(event) => setSalarySendingType(event.target.value)}
               />{" "}
               {t("fixedNumber")} {"              "}
             </div>

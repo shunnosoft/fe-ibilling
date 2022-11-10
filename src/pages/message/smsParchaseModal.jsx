@@ -10,7 +10,6 @@ function SmsParchase() {
   const { t } = useTranslation();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  console.log(userData);
   const [isLoading, setIsloading] = useState(false);
 
   const [amount, setAmount] = useState(100);
@@ -36,7 +35,7 @@ function SmsParchase() {
         ispOwner: userData.id,
         user: userData.user,
         type: "smsPurchase",
-        smsParchaseType: messageType,
+        smsPurchaseType: messageType,
       };
 
       purchaseSms(data, setIsloading);

@@ -325,9 +325,7 @@ export default function CustomerEdit(props) {
                         validation={"true"}
                       />
 
-                      {bpSettings?.hasMikrotik ? (
-                        ""
-                      ) : (
+                      {!bpSettings?.hasMikrotik && (
                         <FtextField
                           type="number"
                           label={t("balance")}
