@@ -18,8 +18,10 @@ function AlertSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+  console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
+  const [fontValue, setFontValue] = useState("");
   const [upperText, setUpperText] = useState("");
   const [numberOfDay, setnumberOfDay] = useState();
   const [days, setDays] = useState([]);
@@ -116,7 +118,7 @@ function AlertSmsTemplate() {
       template: {
         ...settings?.sms?.template,
         alert: newUpperText + "\n" + bottomText,
-        [alertNum]: newUpperText + "\n" + bottomText,
+        [alertNum]: fontValue + newUpperText + "\n" + bottomText,
       },
     };
     // if (!alertNum) {
@@ -206,17 +208,18 @@ function AlertSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
     let temp4 = messageBoxStr.split("\n");
+    console.log(temp4);
     temp4.splice(-1);
 
-    let temp5 = "";
-    temp4.map((i) => {
-      if (i !== "") {
-        temp5 = temp5 + i + "\n";
-      }
-      return temp5;
-    });
+    // let temp5 = "";
+    // temp4.map((i) => {
+    //   if (i !== "") {
+    //     temp5 = temp5 + i + "\n";
+    //   }
+    //   return temp5;
+    // });
 
-    setBottomText(temp5);
+    // setBottomText(temp5);
 
     var theText = "";
     temp.map((i) => {
@@ -224,6 +227,18 @@ function AlertSmsTemplate() {
     });
 
     setUpperText(theText);
+
+    if (temp4.length > 0) {
+      setFontValue(temp4[0] || "");
+
+      let temptxt = "";
+      temp4.map((value, index) => {
+        if (index > 0 && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
   };
 
   return (
@@ -286,6 +301,7 @@ function AlertSmsTemplate() {
 
           <div className="billconfirm">
             <div className="showthesequence">
+              <p className="endingText">{fontValue}</p>
               {smsTemplet.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}
@@ -300,7 +316,7 @@ function AlertSmsTemplate() {
                 justifyContent: "space-between",
                 flexDirection: "row",
                 width: "100%",
-                marginTop: "20px",
+                marginTop: "10px",
               }}
               className="displayFlexx"
             >
@@ -408,6 +424,16 @@ function AlertSmsTemplate() {
                     );
                   })}
               </select>
+
+              <div className="mt-3">
+                <input
+                  value={fontValue}
+                  onChange={(event) => setFontValue(event.target.value)}
+                  class="form-control"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
             </div>
             <div style={{ marginBotton: "20px" }} className="displayFlex">
               <input

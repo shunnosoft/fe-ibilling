@@ -31,7 +31,6 @@ function BillConfirmationSmsTemplate() {
   const [sendingType, setSendingType] = useState();
 
   const [inputValue, setInputValue] = useState("");
-
   const textRef = useRef();
   const formRef = useRef();
 
