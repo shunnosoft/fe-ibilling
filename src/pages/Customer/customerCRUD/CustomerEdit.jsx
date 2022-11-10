@@ -282,7 +282,7 @@ export default function CustomerEdit(props) {
                             className="form-select mw-100 mt-0"
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
-                            disabled
+
                             value={data?.mikrotik || ""}
                           >
                             <option value={mikrotikName?.id || ""}>
