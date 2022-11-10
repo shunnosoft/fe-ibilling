@@ -20,13 +20,17 @@ function BillConfirmationSmsTemplate() {
   );
 
   const dispatch = useDispatch();
+  const [fontValue, setFontValue] = useState("");
   const [bottomText, setBottomText] = useState("");
+
   const [upperText, setUpperText] = useState("");
 
   const [billConfirmation, setBillConfirmation] = useState("");
   const [billconfarmationparametres, setbillconparametres] = useState([]);
   const [matchFound, setMatchFound] = useState([]);
   const [sendingType, setSendingType] = useState();
+
+  const [inputValue, setInputValue] = useState("");
 
   const textRef = useRef();
   const formRef = useRef();
@@ -80,10 +84,9 @@ function BillConfirmationSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        billConfirmation: upperText + "\n" + bottomText,
+        billConfirmation: fontValue + upperText + "\n" + bottomText,
       },
     };
-    console.log(data);
     setLoading(true);
     try {
       const res = await apiLink.patch(
@@ -132,7 +135,7 @@ function BillConfirmationSmsTemplate() {
       .replace("NOTE: BILL_NOTE", "")
       .replace("DUE: BILL_DUE", "");
 
-    setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
+    setInputValue(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
 
     fixedvalues.map((i) => {
       if (settings?.sms?.template?.billConfirmation?.includes(i)) {
@@ -151,6 +154,20 @@ function BillConfirmationSmsTemplate() {
 
     setSendingType(settings?.sms?.billConfirmationSendBy);
   }, [settings]);
+
+  useEffect(() => {
+    let separateValue = inputValue.split(/\n/);
+    if (separateValue.length > 0) {
+      setFontValue(separateValue[0] || "");
+      let temText = bottomText;
+      separateValue.forEach((value, index) => {
+        if (index > 2) {
+          temText += value + "\n";
+        }
+      });
+      setBottomText(temText);
+    }
+  }, [inputValue]);
 
   const radioCheckHandler = (e) => {
     setBillConfirmation(e.target.value);
@@ -183,6 +200,19 @@ function BillConfirmationSmsTemplate() {
                 onChange={radioCheckHandler}
               />{" "}
               {t("off")}
+              <div className="">
+                {/* <label className="templatelabel" htmlFor="20">
+                    {"ID: CUSTOMER_ID"}
+                  </label> */}
+                <input
+                  // style={{ width: "90%" }}
+                  value={fontValue}
+                  onChange={(event) => setFontValue(event.target.value)}
+                  class="form-control"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
@@ -215,12 +245,14 @@ function BillConfirmationSmsTemplate() {
 
           <div className="billconfirm">
             <div className="showthesequence">
+              <p className="endingText">{fontValue}</p>
               {matchFound.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}
 
               <p className="endingtext">{bottomText}</p>
             </div>
+
             <div className="d-flex">
               <div className="displayFlexx">
                 <div className="radioselect">
@@ -238,6 +270,7 @@ function BillConfirmationSmsTemplate() {
                     {"USER: USERNAME"}
                   </label>
                 </div>
+
                 <div className="radioselect">
                   <input
                     id="2"
@@ -379,7 +412,7 @@ function BillConfirmationSmsTemplate() {
             // onClick={handleSendMessage}
             className="btn btn-success"
           >
-            {loading ? <Loader></Loader> : t("save")}
+            {loading ? <Loader /> : t("save")}
           </button>
         </div>
       </form>
