@@ -59,7 +59,7 @@ const ResellerRechargeSmsTemplate = () => {
       <div className="writeMessageSection">
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
-            <h4> {t("SalarySMSTemplate")} </h4>
+            <h4> {t("resellerRechargeTemplate")} </h4>
             <input
               id="rechareRadioOn"
               name="rechargeSMS"

@@ -91,7 +91,10 @@ export default function Message() {
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
   const [sendingType, setSendingType] = useState("nonMasking");
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const maskingId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.ispOwner.maskingId
+  );
+  console.log(maskingId);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -155,8 +158,8 @@ export default function Message() {
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-      console.log(owner);
       const res = await apiLink.get(`/ispOwner/all-customer/${ispOwnerId}`);
+      console.log(owner);
 
       let items = [],
         totalSmsCount = 0;
@@ -297,6 +300,13 @@ export default function Message() {
         return;
       }
 
+      if (sendingType === "masking") {
+        if (maskingId === "") {
+          toast.error(t("maskingIdNotFound"));
+          return;
+        }
+      }
+
       alert(` ${t("sampleSMS")}:\n${items[0]?.message}`);
       if (
         (sendingType === "nonMasking" &&
@@ -314,7 +324,7 @@ export default function Message() {
           const res = await apiLink.post(`sms/bulk/${ispOwnerId}`, {
             items,
             totalSmsCount,
-            sendingType,
+            sendBy: sendingType,
           });
 
           if (res.data.status) {
@@ -490,7 +500,7 @@ export default function Message() {
                             setSendingType(event.target.value)
                           }
                         />
-                        {t("nonMasking")}
+                        {t("nonMasking")}&nbsp;
                         <input
                           name="messageSendingType"
                           type="radio"
@@ -499,7 +509,7 @@ export default function Message() {
                             setSendingType(event.target.value)
                           }
                         />
-                        {t("masking")}
+                        {t("masking")}&nbsp;
                         <input
                           name="messageSendingType"
                           type="radio"

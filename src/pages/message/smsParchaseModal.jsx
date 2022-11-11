@@ -18,7 +18,7 @@ function SmsParchase() {
   const [messageType, setMessageType] = useState(
     "nonMasking" || "masking" || "fixedNumber"
   );
-  console.log(messageType);
+
   const changeHandler = (sms) => {
     // if (sms * userData.smsRate < 100) return;
     setAmount(sms * userData.smsRate);

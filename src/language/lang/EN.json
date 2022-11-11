@@ -575,5 +575,7 @@
   "overDue": "Overdue",
   "smsPurchaseType": "Message Type",
   "officeCopy": "Office Copy",
-  "customerCopy": "Customer Copy"
+  "customerCopy": "Customer Copy",
+  "maskingIdNotFound": "Masking Id not Found!",
+  "resellerRechargeTemplate": "Reseller Recharge"
 }

@@ -93,6 +93,9 @@ export default function RMessage() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  const maskingId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller.maskingId
+  );
   const dispatch = useDispatch();
   const mobileNumRef = useRef();
   const smsRef = useRef();
@@ -289,6 +292,13 @@ export default function RMessage() {
         return;
       }
 
+      if (sendingType === "masking") {
+        if (maskingId === "") {
+          toast.error(t("maskingIdNotFound"));
+          return;
+        }
+      }
+
       alert(`${t("sampleSMS")} :\n${items[0]?.message}`);
       if (
         (sendingType === "nonMasking" &&
@@ -307,7 +317,7 @@ export default function RMessage() {
           const res = await apiLink.post(`sms/reseller/bulk/${resellerId}`, {
             items,
             totalSmsCount,
-            sendingType,
+            sendBy: sendingType,
           });
 
           if (res.data.status) {
