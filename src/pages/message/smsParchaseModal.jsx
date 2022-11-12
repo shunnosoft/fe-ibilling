@@ -19,10 +19,16 @@ function SmsParchase() {
     "nonMasking" || "masking" || "fixedNumber"
   );
 
-  const changeHandler = (sms) => {
-    // if (sms * userData.smsRate < 100) return;
-    setAmount(sms * userData.smsRate);
-    setCount(sms);
+  const changeHandler = (numOfSms) => {
+    if (messageType === "nonMasking") {
+      setAmount(userData.smsRate * numOfSms);
+    } else if (messageType === "masking") {
+      setAmount(userData.maskingSmsRate * numOfSms);
+    } else if (messageType === "fixedNumber") {
+      setAmount(userData.fixedNumberSmsRate * numOfSms);
+    }
+
+    setCount(numOfSms);
   };
 
   const submitHandler = (e) => {
