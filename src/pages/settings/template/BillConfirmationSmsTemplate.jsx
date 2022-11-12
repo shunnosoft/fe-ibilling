@@ -156,7 +156,9 @@ function BillConfirmationSmsTemplate() {
   }, [settings]);
 
   useEffect(() => {
-    let separateValue = inputValue.split(/\n/);
+    let separateValue = [];
+
+    if (inputValue) separateValue = inputValue.split(/\n/);
     if (separateValue.length > 0) {
       setFontValue(separateValue[0] || "");
       let temText = bottomText;
