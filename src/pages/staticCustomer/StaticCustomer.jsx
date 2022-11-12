@@ -409,14 +409,59 @@ export default function Customer() {
             return false;
           }
         }
+        // //payment status filter
+        // if (filterOptions.paymentStatus) {
+        //   if (customer.paymentStatus === filterOptions.paymentStatus) {
+        //     isFound = true;
+        //   } else {
+        //     return false;
+        //   }
+        // }
+
         //payment status filter
-        if (filterOptions.paymentStatus) {
-          if (customer.paymentStatus === filterOptions.paymentStatus) {
+        if (customer.paymentStatus && filterOptions.paymentStatus === "free") {
+          if (customer.monthlyFee === parseInt("0")) {
             isFound = true;
           } else {
             return false;
           }
+        } else if (
+          customer.paymentStatus === "paid" &&
+          filterOptions.paymentStatus === "paid"
+        ) {
+          isFound = true;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          filterOptions.paymentStatus === "unpaid" &&
+          customer.balance == 0
+        ) {
+          isFound = true;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          filterOptions.paymentStatus === "partial"
+        ) {
+          if (
+            customer.monthlyFee > customer.balance &&
+            customer.balance > parseInt("0")
+          ) {
+            isFound = true;
+          }
+        } else if (
+          customer.paymentStatus === "paid" &&
+          filterOptions.paymentStatus === "advance"
+        ) {
+          if (2 * customer.monthlyFee < customer.balance) {
+            isFound = true;
+          }
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          filterOptions.paymentStatus === "overdue"
+        ) {
+          if (customer.balance < parseInt("0")) {
+            isFound = true;
+          }
         }
+
         //filter by mikrotik
         if (filterOptions.mikrotik) {
           if (customer.mikrotik === filterOptions.mikrotik) {
@@ -1059,6 +1104,12 @@ export default function Customer() {
                               {t("paymentStatus")}
                             </option>
                             <option
+                              selected={filterOptions.paymentStatus === "free"}
+                              value="free"
+                            >
+                              {t("free")}
+                            </option>
+                            <option
                               selected={filterOptions.paymentStatus === "paid"}
                               value="paid"
                             >
@@ -1071,6 +1122,30 @@ export default function Customer() {
                               value="unpaid"
                             >
                               {t("unpaid")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.paymentStatus === "partial"
+                              }
+                              value="partial"
+                            >
+                              {t("partial")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.paymentStatus === "advance"
+                              }
+                              value="advance"
+                            >
+                              {t("advance")}
+                            </option>
+                            <option
+                              selected={
+                                filterOptions.paymentStatus === "overdue"
+                              }
+                              value="overdue"
+                            >
+                              {t("overDue")}
                             </option>
                           </select>
                           {bpSettings?.hasMikrotik && (

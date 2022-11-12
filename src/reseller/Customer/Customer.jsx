@@ -104,6 +104,8 @@ export default function Customer() {
 
   useEffect(() => {
     let tempCustomers = cus;
+    let isFound = false;
+    let filteredArr = [];
 
     if (subAreaId) {
       tempCustomers = tempCustomers.filter(
@@ -117,10 +119,55 @@ export default function Customer() {
       );
     }
 
+    // if (paymentStatus) {
+    //   tempCustomers = tempCustomers.filter(
+    //     (customer) => customer.paymentStatus === paymentStatus
+    //   );
+    // }
+
     if (paymentStatus) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.paymentStatus === paymentStatus
-      );
+      tempCustomers = tempCustomers.filter((customer) => {
+        if (customer.paymentStatus && paymentStatus === "free") {
+          if (customer.monthlyFee === parseInt("0")) {
+            return customer;
+          }
+        } else if (
+          customer.paymentStatus === "paid" &&
+          paymentStatus === "paid"
+        ) {
+          return customer;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          paymentStatus === "unpaid" &&
+          customer.balance == 0
+        ) {
+          return customer;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          paymentStatus === "partial"
+        ) {
+          if (
+            customer.monthlyFee > customer.balance &&
+            customer.balance > parseInt("0")
+          ) {
+            return customer;
+          }
+        } else if (
+          customer.paymentStatus === "paid" &&
+          paymentStatus === "advance"
+        ) {
+          if (2 * customer.monthlyFee < customer.balance) {
+            return customer;
+          }
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          paymentStatus === "overdue"
+        ) {
+          if (customer.balance < parseInt("0")) {
+            return customer;
+          }
+        }
+      });
     }
 
     setCustomers(tempCustomers);
@@ -590,8 +637,12 @@ export default function Customer() {
                             <option value="" defaultValue>
                               {t("paymentStatus")}
                             </option>
+                            <option value="free">{t("free")}</option>
                             <option value="paid"> {t("paid")} </option>
                             <option value="unpaid"> {t("unpaid")} </option>
+                            <option value="partial"> {t("partial")} </option>
+                            <option value="advance"> {t("advance")} </option>
+                            <option value="overdue"> {t("overDue")} </option>
                           </select>
                         </div>
 
