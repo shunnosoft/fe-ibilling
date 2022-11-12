@@ -128,13 +128,13 @@ function CustomerInactiveSmsTemplate() {
 
     // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
 
-    let temp = messageBoxStr.split("\n");
+    let temp = messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
 
-    if (temp.length > 0) {
+    if (temp?.length > 0) {
       setFontText(temp[0] || "");
 
       let temptxt = "";
-      temp.map((value, index) => {
+      temp?.map((value, index) => {
         if (index > 1 && value !== "") {
           temptxt += value + "\n";
         }

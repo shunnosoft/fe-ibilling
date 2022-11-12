@@ -133,13 +133,13 @@ function BillConfirmationSmsTemplate() {
       .replace("DUE: BILL_DUE", "");
     console.log({ messageBoxStr });
 
-    let temp = messageBoxStr.split("\n");
+    let temp = messageBoxStr?.split("\n");
 
-    if (temp.length > 0) {
+    if (temp?.length > 0) {
       setFontText(temp[0] || "");
 
       let temptxt = "";
-      temp.map((value, index) => {
+      temp?.map((value, index) => {
         if (index > 1 && value !== "") {
           temptxt += value + "\n";
         }

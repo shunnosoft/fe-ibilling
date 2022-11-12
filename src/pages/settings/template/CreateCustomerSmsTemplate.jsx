@@ -127,16 +127,15 @@ function CreateCustomerSmsTemplate() {
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
-    console.log(messageBoxStr);
 
     // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
-    let temp = messageBoxStr.split("\n");
+    let temp = messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
 
-    if (temp.length > 0) {
+    if (temp?.length > 0) {
       setFontText(temp[0] || "");
 
       let temptxt = "";
-      temp.map((value, index) => {
+      temp?.map((value, index) => {
         if (index && value !== "") {
           temptxt += value + "\n";
         }
