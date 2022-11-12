@@ -360,7 +360,7 @@ export default function Expenditure() {
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
                 <div className="d-flex">
-                  <div>{t("expense")}</div>
+                  <div>{t("expens")}</div>
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader></Loader>
