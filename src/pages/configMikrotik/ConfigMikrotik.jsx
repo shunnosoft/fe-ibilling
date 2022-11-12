@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../collector/collector.css";
 import "./configmikrotik.css";
 import {
@@ -14,6 +14,7 @@ import {
   WifiOff,
   Wifi,
   Check2Circle,
+  FileExcelFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
@@ -43,6 +44,7 @@ import { useLayoutEffect } from "react";
 import Table from "../../components/table/Table";
 import CustomerSync from "./configMikrotikModals/CustomerSync";
 import { useTranslation } from "react-i18next";
+import { CSVLink } from "react-csv";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -55,6 +57,11 @@ export default function ConfigMikrotik() {
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
 
   const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
 
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
   let pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
@@ -355,6 +362,38 @@ export default function ConfigMikrotik() {
     ],
     [t]
   );
+
+  //export customer data
+  let customerForCsVTableInfo = useMemo(
+    () =>
+      allUsers.map((customer) => {
+        return {
+          name: customer?.name,
+          package: customer?.profile,
+          status: customer?.running ? "Active" : "In Active",
+          rxByte: customer?.rxByte
+            ? (customer?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+            : "",
+          txByte: customer?.txByte
+            ? (customer?.txByte / 1024 / 1024).toFixed(2) + " MB"
+            : "",
+          lastLinkUpTime: customer?.lastLinkUpTime,
+          lastLoggedOut: customer?.lastLoggedOut,
+        };
+      }),
+    [allUsers]
+  );
+
+  // csv table header
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "status", key: "status" },
+    { label: "Rx Byte", key: "rxByte" },
+    { label: "Tx Byte", key: "txByte" },
+    { label: "Last Link UP Time", key: "lastLinkUpTime" },
+    { label: "Last Logged Out", key: "lastLoggedOut" },
+  ];
   return (
     <>
       <Sidebar />
@@ -373,6 +412,18 @@ export default function ConfigMikrotik() {
                   </div>
 
                   <div className="mx-auto"> {t("mikrotikConfiguration")} </div>
+                  {whatYouWantToShow === "showAllMikrotikUser" && (
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={customerForCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={customerForCsVTableInfoHeader}
+                        title={t("mikrotikCustomerCsvDownload")}
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+                  )}
                 </div>
               </FourGround>
 

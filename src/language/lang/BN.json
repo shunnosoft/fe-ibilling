@@ -578,5 +578,6 @@
   "officeCopy": "অফিস কপি",
   "customerCopy": "গ্রাহক কপি",
   "maskingIdNotFound": "মাস্কিং আইডি পাওয়া যাই নি!",
-  "resellerRechargeTemplate": "রিসেলার রিচার্জ"
+  "resellerRechargeTemplate": "রিসেলার রিচার্জ",
+  "mikrotikCustomerCsvDownload": "মাইক্রোটিক গ্রাহক CSV ফাইল ডাউনলোড"
 }
