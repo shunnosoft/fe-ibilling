@@ -20,7 +20,9 @@ function BillConfirmationSmsTemplate() {
   );
 
   const dispatch = useDispatch();
-  const [fontValue, setFontValue] = useState("");
+  const textRef = useRef();
+  const formRef = useRef();
+  const [fontText, setFontText] = useState("");
   const [bottomText, setBottomText] = useState("");
 
   const [upperText, setUpperText] = useState("");
@@ -31,8 +33,6 @@ function BillConfirmationSmsTemplate() {
   const [sendingType, setSendingType] = useState();
 
   const [inputValue, setInputValue] = useState("");
-  const textRef = useRef();
-  const formRef = useRef();
 
   const itemSettingHandler = (item) => {
     if (billconfarmationparametres.includes(item)) {
@@ -43,7 +43,6 @@ function BillConfirmationSmsTemplate() {
     } else {
       billconfarmationparametres.push(item);
     }
-
     if (matchFound.includes(item)) {
       const index = matchFound.indexOf(item);
       if (index > -1) {
@@ -59,11 +58,10 @@ function BillConfirmationSmsTemplate() {
 
     setMatchFound(matchFound);
 
-    var theText = "";
+    let theText = "";
     matchFound.map((i) => {
       return (theText = theText + "\n" + i);
     });
-
     setUpperText(theText);
 
     setbillconparametres(billconfarmationparametres);
@@ -82,7 +80,7 @@ function BillConfirmationSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        billConfirmation: fontValue + upperText + "\n" + bottomText,
+        billConfirmation: fontText + upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -92,8 +90,7 @@ function BillConfirmationSmsTemplate() {
         data
       );
       dispatch(smsSettingUpdateIsp(res.data));
-      setBottomText("");
-      setFontValue("");
+
       setLoading(false);
       toast.success(t("billConfirmationSaveSuccess"));
     } catch (error) {
@@ -112,8 +109,9 @@ function BillConfirmationSmsTemplate() {
     setUpperText(theText);
     setTotalText(upperText + bottomText);
   }, [matchFound, bottomText, upperText]);
+
   useEffect(() => {
-    const fixedvalues = [
+    const fixedValues = [
       "USER: USERNAME",
       "ID: CUSTOMER_ID",
       "NAME: CUSTOMER_NAME",
@@ -123,8 +121,7 @@ function BillConfirmationSmsTemplate() {
       "NOTE: BILL_NOTE",
       "DUE: BILL_DUE",
     ];
-    var found = [];
-
+    let found = [];
     let messageBoxStr = settings?.sms?.template?.billConfirmation
       ?.replace("USER: USERNAME", "")
       .replace("ID: CUSTOMER_ID", "")
@@ -134,10 +131,10 @@ function BillConfirmationSmsTemplate() {
       .replace("MONTH: BILL_MONTH", "")
       .replace("NOTE: BILL_NOTE", "")
       .replace("DUE: BILL_DUE", "");
+    console.log({ messageBoxStr });
 
-    setInputValue(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
-
-    fixedvalues.map((i) => {
+    setInputValue(messageBoxStr ? messageBoxStr?.trim() : "");
+    fixedValues.map((i) => {
       if (settings?.sms?.template?.billConfirmation?.includes(i)) {
         found.push(i);
       }
@@ -157,19 +154,18 @@ function BillConfirmationSmsTemplate() {
 
   useEffect(() => {
     let separateValue = [];
-
     if (inputValue) separateValue = inputValue.split(/\n/);
     if (separateValue.length > 0) {
-      setFontValue(separateValue[0] || "");
-      let temText = bottomText;
+      let temText = "";
       separateValue.forEach((value, index) => {
         if (index > 0 && value !== "") {
           temText += value + "\n";
         }
       });
+      setFontText(separateValue[0] || "");
       setBottomText(temText);
     }
-  }, [inputValue]);
+  }, [settings, inputValue]);
 
   const radioCheckHandler = (e) => {
     setBillConfirmation(e.target.value);
@@ -208,8 +204,8 @@ function BillConfirmationSmsTemplate() {
                   </label> */}
                 <input
                   // style={{ width: "90%" }}
-                  value={fontValue}
-                  onChange={(event) => setFontValue(event.target.value)}
+                  value={fontText}
+                  onChange={(event) => setFontText(event.target.value)}
                   class="form-control"
                   type="text"
                   placeholder="Title"
@@ -247,7 +243,7 @@ function BillConfirmationSmsTemplate() {
 
           <div className="billconfirm">
             <div className="showthesequence">
-              <p className="endingText">{fontValue}</p>
+              <p className="endingText">{fontText}</p>
               {matchFound.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}

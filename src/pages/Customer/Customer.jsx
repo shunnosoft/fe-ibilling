@@ -736,7 +736,7 @@ const PPPOECustomer = () => {
                   ) : (
                     ""
                   ))}
-                {role === "ispOwner" && ispOwnerData.bpSettings.hasReseller && (
+                {role === "ispOwner" && ispOwnerData?.bpSettings?.hasReseller && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#transferToReseller"
@@ -753,7 +753,7 @@ const PPPOECustomer = () => {
                   </li>
                 )}
                 {(role === "ispOwner" || role === "manager") &&
-                  ispOwnerData.bpSettings.hasMikrotik && (
+                  ispOwnerData.bpSettings?.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
                       <div className="dropdown-item">
                         <div className="customerAction">

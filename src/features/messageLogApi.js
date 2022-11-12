@@ -31,7 +31,6 @@ export const getMaskingMessageLog = async (
     const res = await apiLink.get(
       `sms/sms-history/masking-and-fixed-number/${senderId}?sendBy=masking`
     );
-    console.log(res.data.sms);
     dispatch(getMaskingMessageLogSlice(res.data.sms));
   } catch (error) {
     console.log(error);
@@ -49,7 +48,7 @@ export const getFixedNumberMessageLog = async (
 
   try {
     const res = await apiLink.get(
-      `sms/sms-history/masking-and-fixed-number/${senderId}?sendBy=fixedNumber`
+      `sms/sms-history/masking-and-fixed-number/${senderId}?sendBy=fixed_number`
     );
     dispatch(getFixedNumberMessageLogSlice(res.data.sms));
   } catch (error) {

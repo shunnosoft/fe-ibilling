@@ -48,6 +48,7 @@ export default function Report() {
 
   const allCollector = useSelector((state) => state?.collector?.collector);
   const manager = useSelector((state) => state?.manager?.manager);
+  console.log({ manager });
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -68,6 +69,7 @@ export default function Report() {
   const [mainData, setMainData] = useState(allBills);
 
   const [collectors, setCollectors] = useState([]);
+  console.log(collectors);
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");
