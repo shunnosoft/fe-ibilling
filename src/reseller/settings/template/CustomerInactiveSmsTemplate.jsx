@@ -22,7 +22,7 @@ function CustomerInactiveSmsTemplate() {
     (state) => state.persistedReducer.auth.currentUser.reseller?.settings
   );
   const dispatch = useDispatch();
-  // const [frontText, setFrontText] = useState("");
+  const [frontText, setFrontText] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
 
@@ -83,7 +83,7 @@ function CustomerInactiveSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        customerInactive: upperText + "\n" + bottomText,
+        customerInactive: frontText + upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -128,20 +128,20 @@ function CustomerInactiveSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
 
-    setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
-    // let temp = messageBoxStr.split("\n");
+    // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
+    let temp = messageBoxStr !== "undefined" ? messageBoxStr.split("\n") : "";
 
-    // if (temp.length > 0) {
-    //   setFrontText(temp[0] || "");
+    if (temp.length > 0) {
+      setFrontText(temp[0] || "");
 
-    //   let temptxt = "";
-    //   temp.map((value, index) => {
-    //     if (index > 1 && value !== "") {
-    //       temptxt += value + "\n";
-    //     }
-    //   });
-    //   setBottomText(temptxt);
-    // }
+      let temptxt = "";
+      temp.map((value, index) => {
+        if (index && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
 
     fixedvalues.map((i) => {
       if (settings?.sms?.template?.customerInactive?.includes(i)) {
@@ -192,7 +192,7 @@ function CustomerInactiveSmsTemplate() {
                 onChange={radioCheckHandler}
               />{" "}
               {t("off")}
-              {/* <div className="">
+              <div className="">
                 <input
                   value={frontText}
                   onChange={(event) => setFrontText(event.target.value)}
@@ -200,7 +200,7 @@ function CustomerInactiveSmsTemplate() {
                   type="text"
                   placeholder="Title"
                 />
-              </div> */}
+              </div>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
@@ -232,7 +232,7 @@ function CustomerInactiveSmsTemplate() {
           </div>
           <div className="billconfirm">
             <div className="showthesequence">
-              {/* <p className="endingText">{frontText}</p> */}
+              <p className="endingText">{frontText}</p>
               {matchFound.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}
