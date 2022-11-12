@@ -31,7 +31,7 @@ const RechargeModal = ({ status }) => {
   const [smsAmount, setSmsAmount] = useState();
 
   // buy place status
-  const [buyStatus, setBuyStatus] = useState("ispOwner");
+  const [buyStatus, setBuyStatus] = useState("netFee");
 
   // select messge type state
   const [messageType, setMessageType] = useState("nonMasking");
@@ -81,13 +81,13 @@ const RechargeModal = ({ status }) => {
       if (smsAmount >= 400 && smsAmount <= 10000) {
         if (buyStatus === "ispOwner") {
           const data = {
-            smsAmount: smsAmount,
+            smsAmount: Math.ceil(smsAmount),
             smsParchaseType: messageType,
           };
           parchaseSms(data, setIsLoading, dispatch);
         } else if (buyStatus === "netFee") {
           let sendingData = {
-            amount: msgPrice,
+            amount: Math.ceil(msgPrice),
             numberOfSms: Number.parseInt(smsAmount),
             reseller: userData.id,
             user: userData.user,
@@ -131,8 +131,8 @@ const RechargeModal = ({ status }) => {
               <h5>
                 {t("moneyAmount")} :
                 <span class="badge bg-info">
-                  {smsAmount >= 100 && smsAmount <= 10000
-                    ? FormatNumber(msgPrice)
+                  {smsAmount >= 400 && smsAmount <= 10000
+                    ? Math.ceil(msgPrice)
                     : ""}
                 </span>
               </h5>

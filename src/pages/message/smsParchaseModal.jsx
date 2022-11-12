@@ -36,15 +36,16 @@ function SmsParchase() {
       alert(t("unsuccessSMSalertPurchageModal"));
     } else {
       let data = {
-        amount,
+        amount: Math.ceil(amount),
         numberOfSms: Number.parseInt(count),
         ispOwner: userData.id,
         user: userData.user,
         type: "smsPurchase",
         smsPurchaseType: messageType,
       };
+      console.log(data);
 
-      purchaseSms(data, setIsloading);
+      // purchaseSms(data, setIsloading);
     }
   };
 
@@ -86,7 +87,7 @@ function SmsParchase() {
                   <div className="amountsms">
                     <span className="kroymullo"> {t("purchagePrice")} </span>
                     <span className="price">
-                      <strong> {amount} Tk</strong>
+                      <strong> {Math.ceil(amount)} Tk</strong>
                     </span>
                   </div>
 
