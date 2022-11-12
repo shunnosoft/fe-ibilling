@@ -19,6 +19,7 @@ function CustomerInactiveSmsTemplate() {
     (state) => state.persistedReducer.auth.userData?.settings
   );
   const dispatch = useDispatch();
+  const [fontText, setFontText] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
 
@@ -80,7 +81,7 @@ function CustomerInactiveSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        customerInactive: upperText + "\n" + bottomText,
+        customerInactive: fontText + upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -125,8 +126,21 @@ function CustomerInactiveSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
 
-    setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
+    // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
 
+    let temp = messageBoxStr.split("\n");
+
+    if (temp.length > 0) {
+      setFontText(temp[0] || "");
+
+      let temptxt = "";
+      temp.map((value, index) => {
+        if (index > 1 && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
     fixedvalues.map((i) => {
       if (settings?.sms?.template?.customerInactive?.includes(i)) {
         found.push(i);
@@ -174,8 +188,17 @@ function CustomerInactiveSmsTemplate() {
                 checked={billConfirmation === "off"}
                 value={"off"}
                 onChange={radioCheckHandler}
-              />{" "}
+              />
               {t("off")}
+              <div className="">
+                <input
+                  value={fontText}
+                  onChange={(event) => setFontText(event.target.value)}
+                  class="form-control"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
@@ -208,6 +231,7 @@ function CustomerInactiveSmsTemplate() {
 
           <div className="billconfirm">
             <div className="showthesequence">
+              <p className="endingText">{fontText}</p>
               {matchFound.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}

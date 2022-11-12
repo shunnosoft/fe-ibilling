@@ -22,6 +22,7 @@ function AlertSmsTemplate() {
     (state) => state.persistedReducer.auth.currentUser.reseller?.settings
   );
   const dispatch = useDispatch();
+
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
   const [numberOfDay, setnumberOfDay] = useState();
@@ -429,6 +430,7 @@ function AlertSmsTemplate() {
                   })}
               </select>
             </div>
+
             <div style={{ marginBotton: "20px" }} className="displayFlex">
               <input
                 type="checkbox"

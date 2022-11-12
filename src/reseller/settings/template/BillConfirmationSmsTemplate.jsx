@@ -24,6 +24,7 @@ function BillConfirmationSmsTemplate() {
 
   // console.log(settings);
   const dispatch = useDispatch();
+  const [fontText, setFontText] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
 
@@ -84,7 +85,7 @@ function BillConfirmationSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        billConfirmation: upperText + "\n" + bottomText,
+        billConfirmation: fontText + upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -135,7 +136,20 @@ function BillConfirmationSmsTemplate() {
       .replace("NOTE: BILL_NOTE", "")
       .replace("DUE: BILL_DUE", "");
 
-    setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
+    // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
+    let temp = messageBoxStr.split("\n");
+
+    if (temp.length > 0) {
+      setFontText(temp[0] || "");
+
+      let temptxt = "";
+      temp.map((value, index) => {
+        if (index > 1 && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
 
     fixedvalues.map((i) => {
       if (settings?.sms?.template?.billConfirmation?.includes(i)) {
@@ -186,6 +200,19 @@ function BillConfirmationSmsTemplate() {
                 onChange={radioCheckHandler}
               />{" "}
               {t("off")}
+              <div className="">
+                {/* <label className="templatelabel" htmlFor="20">
+                    {"ID: CUSTOMER_ID"}
+                  </label> */}
+                <input
+                  // style={{ width: "90%" }}
+                  value={fontText}
+                  onChange={(event) => setFontText(event.target.value)}
+                  class="form-control"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
@@ -217,6 +244,7 @@ function BillConfirmationSmsTemplate() {
           </div>
           <div className="billconfirm">
             <div className="showthesequence">
+              <p className="endingText">{fontText}</p>
               {matchFound.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}
