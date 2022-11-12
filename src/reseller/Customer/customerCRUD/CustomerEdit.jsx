@@ -271,7 +271,7 @@ export default function CustomerEdit({ single }) {
                                 // getPackageByte(val.name) && (
                                 <option
                                   selected={val.id === packageRate?.id}
-                                  disabled={val.rate >= findPackage?.rate}
+                                  disabled={val.rate <= findPackage?.rate}
                                   key={key}
                                   value={val.id || ""}
                                 >

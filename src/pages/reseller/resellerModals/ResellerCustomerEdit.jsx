@@ -204,7 +204,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
                         <option
                           selected={item.id === data?.mikrotikPackage}
                           key={key}
-                          disabled={item.rate <= findPackage?.rate}
+                          disabled={item.rate >= findPackage?.rate}
                           value={item.id || ""}
                         >
                           {item.name}
