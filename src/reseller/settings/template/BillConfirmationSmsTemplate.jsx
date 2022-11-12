@@ -137,7 +137,7 @@ function BillConfirmationSmsTemplate() {
       .replace("DUE: BILL_DUE", "");
 
     // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
-    let temp = messageBoxStr.split("\n");
+    let temp = messageBoxStr !== "undefined" ? messageBoxStr.split("\n") : "";
 
     if (temp.length > 0) {
       setFontText(temp[0] || "");

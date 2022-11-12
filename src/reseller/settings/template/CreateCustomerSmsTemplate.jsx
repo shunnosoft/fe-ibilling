@@ -129,7 +129,8 @@ function CreateCustomerSmsTemplate() {
       .replace("LAST DATE: BILL_DATE", "");
 
     // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
-    let splitArray = messageBoxStr.split("\n");
+    let splitArray =
+      messageBoxStr !== "undefined" ? messageBoxStr.split("\n") : "";
 
     if (splitArray.length > 0) {
       setFontText(splitArray[0] || "");
