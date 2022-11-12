@@ -467,7 +467,7 @@ export default function Message() {
                         </div> */}
                         <div title={t("refresh")} className="refreshIcon px-2">
                           {isRefrsh ? (
-                            <Loader></Loader>
+                            <Loader />
                           ) : (
                             <ArrowClockwise
                               onClick={() => getIspownerwitSMS()}
@@ -499,8 +499,8 @@ export default function Message() {
                           onChange={(event) =>
                             setSendingType(event.target.value)
                           }
-                        />
-                        {t("nonMasking")}&nbsp;
+                        />{" "}
+                        {t("nonMasking")}&nbsp; &nbsp;
                         <input
                           name="messageSendingType"
                           type="radio"
@@ -508,8 +508,8 @@ export default function Message() {
                           onChange={(event) =>
                             setSendingType(event.target.value)
                           }
-                        />
-                        {t("masking")}&nbsp;
+                        />{" "}
+                        {t("masking")}&nbsp; &nbsp;
                         <input
                           name="messageSendingType"
                           type="radio"
@@ -517,7 +517,7 @@ export default function Message() {
                           onChange={(event) =>
                             setSendingType(event.target.value)
                           }
-                        />
+                        />{" "}
                         {t("fixedNumber")}
                       </div>
                     </div>

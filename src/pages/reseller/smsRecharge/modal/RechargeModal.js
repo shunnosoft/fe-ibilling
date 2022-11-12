@@ -167,10 +167,10 @@ const RechargeModal = ({ status }) => {
                   aria-label="Default select example"
                   onChange={(event) => setBuyStatus(event.target.value)}
                 >
-                  <option value="ispOwner" selected>
-                    Isp Owner
+                  <option value="netFee" selected>
+                    NetFee
                   </option>
-                  <option value="netFee">NetFee</option>
+                  <option value="ispOwner">Isp Owner</option>
                 </select>
 
                 <label
