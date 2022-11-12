@@ -22,6 +22,7 @@ function CreateCustomerSmsTemplate() {
     (state) => state.persistedReducer.auth.currentUser.reseller?.settings
   );
   const dispatch = useDispatch();
+  const [fontText, setFontText] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
 
@@ -82,7 +83,7 @@ function CreateCustomerSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        createCustomer: upperText + "\n" + bottomText,
+        createCustomer: fontText + upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -127,7 +128,20 @@ function CreateCustomerSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
 
-    setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
+    // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
+    let splitArray = messageBoxStr.split("\n");
+
+    if (splitArray.length > 0) {
+      setFontText(splitArray[0] || "");
+
+      let temptxt = "";
+      splitArray.map((value, index) => {
+        if (index && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
 
     fixedvalues.map((i) => {
       if (settings?.sms?.template?.createCustomer?.includes(i)) {
@@ -178,6 +192,19 @@ function CreateCustomerSmsTemplate() {
                 onChange={radioCheckHandler}
               />{" "}
               {t("off")}
+              <div className="">
+                {/* <label className="templatelabel" htmlFor="20">
+                    {"ID: CUSTOMER_ID"}
+                  </label> */}
+                <input
+                  // style={{ width: "90%" }}
+                  value={fontText}
+                  onChange={(event) => setFontText(event.target.value)}
+                  class="form-control"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
@@ -209,6 +236,7 @@ function CreateCustomerSmsTemplate() {
           </div>
           <div className="billconfirm">
             <div className="showthesequence">
+              <p className="endingText">{fontText}</p>
               {matchFound.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}

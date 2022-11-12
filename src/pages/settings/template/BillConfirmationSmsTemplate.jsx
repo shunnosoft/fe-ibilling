@@ -133,7 +133,20 @@ function BillConfirmationSmsTemplate() {
       .replace("DUE: BILL_DUE", "");
     console.log({ messageBoxStr });
 
-    setInputValue(messageBoxStr ? messageBoxStr?.trim() : "");
+    let temp = messageBoxStr.split("\n");
+
+    if (temp.length > 0) {
+      setFontText(temp[0] || "");
+
+      let temptxt = "";
+      temp.map((value, index) => {
+        if (index > 1 && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
+
     fixedValues.map((i) => {
       if (settings?.sms?.template?.billConfirmation?.includes(i)) {
         found.push(i);
@@ -151,21 +164,6 @@ function BillConfirmationSmsTemplate() {
 
     setSendingType(settings?.sms?.billConfirmationSendBy);
   }, [settings]);
-
-  useEffect(() => {
-    let separateValue = [];
-    if (inputValue) separateValue = inputValue.split(/\n/);
-    if (separateValue.length > 0) {
-      let temText = "";
-      separateValue.forEach((value, index) => {
-        if (index > 0 && value !== "") {
-          temText += value + "\n";
-        }
-      });
-      setFontText(separateValue[0] || "");
-      setBottomText(temText);
-    }
-  }, [settings, inputValue]);
 
   const radioCheckHandler = (e) => {
     setBillConfirmation(e.target.value);

@@ -208,7 +208,6 @@ function AlertSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
     let temp4 = messageBoxStr.split("\n");
-    console.log(temp4);
     temp4.splice(-1);
 
     // let temp5 = "";
@@ -233,7 +232,7 @@ function AlertSmsTemplate() {
 
       let temptxt = "";
       temp4.map((value, index) => {
-        if (index > 0 && value !== "") {
+        if (index > 1 && value !== "") {
           temptxt += value + "\n";
         }
       });
