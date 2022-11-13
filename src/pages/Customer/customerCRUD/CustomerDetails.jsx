@@ -34,7 +34,7 @@ export default function CustomerDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {data?.name} - {t("profile")}
+                {data?.name} - {t("profil")}
               </h5>
               <button
                 type="button"
@@ -90,6 +90,13 @@ export default function CustomerDetails({ single }) {
                   <h6>
                     {t("promiseDate")} :{" "}
                     {moment(data?.promiseDate).format("MMM DD YYYY hh:mm A")}
+                  </h6>
+                  <h6>
+                    {t("connectionDate")} :{" "}
+                    {data?.connectionDate &&
+                      moment(data?.connectionDate).format(
+                        "MMM DD YYYY hh:mm A"
+                      )}
                   </h6>
                   {bpSettings?.hasMikrotik && (
                     <h6>
