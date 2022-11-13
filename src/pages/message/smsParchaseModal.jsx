@@ -19,10 +19,16 @@ function SmsParchase() {
     "nonMasking" || "masking" || "fixedNumber"
   );
 
-  const changeHandler = (sms) => {
-    // if (sms * userData.smsRate < 100) return;
-    setAmount(sms * userData.smsRate);
-    setCount(sms);
+  const changeHandler = (numOfSms) => {
+    if (messageType === "nonMasking") {
+      setAmount(userData.smsRate * numOfSms);
+    } else if (messageType === "masking") {
+      setAmount(userData.maskingSmsRate * numOfSms);
+    } else if (messageType === "fixedNumber") {
+      setAmount(userData.fixedNumberSmsRate * numOfSms);
+    }
+
+    setCount(numOfSms);
   };
 
   const submitHandler = (e) => {
@@ -30,15 +36,16 @@ function SmsParchase() {
       alert(t("unsuccessSMSalertPurchageModal"));
     } else {
       let data = {
-        amount,
+        amount: Math.ceil(amount),
         numberOfSms: Number.parseInt(count),
         ispOwner: userData.id,
         user: userData.user,
         type: "smsPurchase",
         smsPurchaseType: messageType,
       };
+      console.log(data);
 
-      purchaseSms(data, setIsloading);
+      // purchaseSms(data, setIsloading);
     }
   };
 
@@ -80,7 +87,7 @@ function SmsParchase() {
                   <div className="amountsms">
                     <span className="kroymullo"> {t("purchagePrice")} </span>
                     <span className="price">
-                      <strong> {amount} Tk</strong>
+                      <strong> {Math.ceil(amount)} Tk</strong>
                     </span>
                   </div>
 
