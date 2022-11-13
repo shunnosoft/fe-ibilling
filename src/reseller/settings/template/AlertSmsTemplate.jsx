@@ -21,8 +21,9 @@ function AlertSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.currentUser.reseller?.settings
   );
+  console.log(settings);
   const dispatch = useDispatch();
-
+  const [fontValue, setFontValue] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
   const [numberOfDay, setnumberOfDay] = useState();
@@ -117,20 +118,22 @@ function AlertSmsTemplate() {
       template: {
         ...settings?.sms?.template,
         alert: upperText + "\n" + bottomText,
-        [alertNum]: upperText + "\n" + bottomText,
+        [alertNum]: fontValue + upperText + "\n" + bottomText,
       },
     };
     // if (!alertNum) {
     //   toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
     //   return 0;
     // }
-    setLoading(true);
 
     try {
+      setLoading(true);
       const res = await apiLink.patch(
         `/reseller/settings/sms/${resellerId}`,
         data
       );
+      setUpperText("");
+      setBottomText("");
       // console.log(res.data);
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
@@ -207,14 +210,16 @@ function AlertSmsTemplate() {
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
+    let temp4 = messageBoxStr.split("\n");
+    console.log(temp4);
 
-    if (e.target.value) {
-      setBottomText(
-        messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
-      );
-    } else {
-      setBottomText("");
-    }
+    // if (e.target.value) {
+    //   setBottomText(
+    //     messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
+    //   );
+    // } else {
+    //   setBottomText("");
+    // }
 
     // fixedvalues.map((i) => {
     //   if (e.target.value.includes(i)) {
@@ -224,12 +229,24 @@ function AlertSmsTemplate() {
     // });
     // setMatchFound(found);
 
-    var theText = "";
+    let theText = "";
     temp.map((i) => {
       return (theText = theText + "\n" + i);
     });
 
     setUpperText(theText);
+
+    if (temp4.length > 0) {
+      setFontValue(temp4[0] || "");
+
+      let temptxt = "";
+      temp4.map((value, index) => {
+        if (index > 2 && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
   };
   return (
     <div>
@@ -290,6 +307,7 @@ function AlertSmsTemplate() {
           </div>
           <div className="billconfirm">
             <div className="showthesequence">
+              <p className="endingText">{fontValue}</p>
               {smsTemplet.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}
@@ -429,6 +447,15 @@ function AlertSmsTemplate() {
                     );
                   })}
               </select>
+              <div className="mt-3">
+                <input
+                  value={fontValue}
+                  onChange={(event) => setFontValue(event.target.value)}
+                  class="form-control"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
             </div>
 
             <div style={{ marginBotton: "20px" }} className="displayFlex">
