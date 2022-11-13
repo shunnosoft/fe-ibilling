@@ -340,7 +340,6 @@ const PPPOECustomer = () => {
 
         // payment status filter
         // if (filterOptions.paymentStatus) {
-        //   console.log(filterOptions.paymentStatus);
         //   if (customer.paymentStatus === filterOptions.paymentStatus) {
         //     isFound = true;
         //   } else {
@@ -350,26 +349,24 @@ const PPPOECustomer = () => {
 
         // payment status filter
 
-        if (customer.paymentStatus && filterOptions.paymentStatus === "free") {
+        if (filterOptions.paymentStatus === "free") {
           if (customer.monthlyFee === parseInt("0")) {
             isFound = true;
-          } else {
-            return false;
           }
         } else if (
-          customer.paymentStatus === "paid" &&
-          filterOptions.paymentStatus === "paid"
+          filterOptions.paymentStatus === "paid" &&
+          customer.paymentStatus === "paid"
         ) {
           isFound = true;
         } else if (
-          customer.paymentStatus === "unpaid" &&
           filterOptions.paymentStatus === "unpaid" &&
+          customer.paymentStatus === "unpaid" &&
           customer.balance == 0
         ) {
           isFound = true;
         } else if (
-          customer.paymentStatus === "unpaid" &&
-          filterOptions.paymentStatus === "partial"
+          filterOptions.paymentStatus === "partial" &&
+          customer.paymentStatus === "unpaid"
         ) {
           if (
             customer.monthlyFee > customer.balance &&
@@ -378,19 +375,21 @@ const PPPOECustomer = () => {
             isFound = true;
           }
         } else if (
-          customer.paymentStatus === "paid" &&
-          filterOptions.paymentStatus === "advance"
+          filterOptions.paymentStatus === "advance" &&
+          customer.paymentStatus === "paid"
         ) {
           if (2 * customer.monthlyFee < customer.balance) {
             isFound = true;
           }
         } else if (
-          customer.paymentStatus === "unpaid" &&
-          filterOptions.paymentStatus === "overDue"
+          filterOptions.paymentStatus === "overDue" &&
+          customer.paymentStatus === "unpaid"
         ) {
           if (customer.balance < parseInt("0")) {
             isFound = true;
           }
+        } else {
+          isFound = false;
         }
 
         // filter by mikrotik
