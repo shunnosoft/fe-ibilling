@@ -71,6 +71,9 @@ const SingleMessage = ({ single, sendCustomer }) => {
   // get message form textare field
   const [messageLength, setMessageLength] = useState("");
 
+  // sending type
+  const [sendingType, setSendingType] = useState("nonMasking");
+
   // set error value
   const [errMsg, setErrMsg] = useState("");
 
@@ -99,15 +102,18 @@ const SingleMessage = ({ single, sendCustomer }) => {
     if (messageLength) {
       // send data for api body
       const sendingData = {
-        items: {
-          app: "netfee",
-          type: "other",
-          senderId: cureentAuth?.id,
-          message: messageLength,
-          mobile: data?.mobile,
-          count: smsCount(messageLength),
-        },
+        items: [
+          {
+            app: "netfee",
+            type: "other",
+            senderId: cureentAuth?.id,
+            message: messageLength,
+            mobile: data?.mobile,
+            count: smsCount(messageLength),
+          },
+        ],
         totalSmsCount: smsCount(messageLength),
+        sendBy: sendingType,
       };
 
       try {
@@ -216,6 +222,35 @@ const SingleMessage = ({ single, sendCustomer }) => {
                 ></textarea>
                 <div id="emailHelp" className="form-text text-danger">
                   {errMsg}
+                </div>
+
+                <div
+                  className="message-sending-type mt-3"
+                  style={{ fontWeight: "normal" }}
+                >
+                  <h4 className="mb-0"> {t("sendingMessageType")} </h4>
+                  <input
+                    name="messageSendingType"
+                    type="radio"
+                    checked={sendingType === "nonMasking"}
+                    value={"nonMasking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />{" "}
+                  {t("nonMasking")}&nbsp; &nbsp;
+                  <input
+                    name="messageSendingType"
+                    type="radio"
+                    value={"masking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />{" "}
+                  {t("masking")}&nbsp; &nbsp;
+                  <input
+                    name="messageSendingType"
+                    type="radio"
+                    value={"fixedNumber"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />{" "}
+                  {t("fixedNumber")}
                 </div>
               </div>
               <div className="modal-footer" style={{ border: "none" }}>

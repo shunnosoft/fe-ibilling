@@ -62,7 +62,6 @@ export default function Profile() {
 
   const dispatch = useDispatch();
   const progileEditHandler = (data) => {
-    console.log(data);
     // delete data.mobile;
     profileUpdate(dispatch, data, ispOwnerId, setIsLoading);
   };

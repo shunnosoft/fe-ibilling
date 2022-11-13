@@ -834,6 +834,7 @@ const PPPOECustomer = () => {
       pppoeCustomers.map((customer) => {
         return {
           name: customer.name,
+          pppoeName: customer.pppoe.name,
           customerAddress: customer.address,
           createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
           package: customer?.pppoe?.profile,
@@ -852,6 +853,7 @@ const PPPOECustomer = () => {
   // csv table header
   const customerForCsVTableInfoHeader = [
     { label: "name_of_client", key: "name" },
+    { label: "PPPoE_Name", key: "pppoeName" },
     { label: "address_of_client", key: "customerAddress" },
     { label: "activation_date", key: "createdAt" },
     { label: "bandwidth_allocation MB", key: "package" },
