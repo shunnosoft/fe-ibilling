@@ -352,6 +352,8 @@ const PPPOECustomer = () => {
         if (filterOptions.paymentStatus === "free") {
           if (customer.monthlyFee === parseInt("0")) {
             isFound = true;
+          } else {
+            return false;
           }
         } else if (
           filterOptions.paymentStatus === "paid" &&
@@ -373,6 +375,8 @@ const PPPOECustomer = () => {
             customer.balance > parseInt("0")
           ) {
             isFound = true;
+          } else {
+            return false;
           }
         } else if (
           filterOptions.paymentStatus === "advance" &&
@@ -380,6 +384,8 @@ const PPPOECustomer = () => {
         ) {
           if (2 * customer.monthlyFee < customer.balance) {
             isFound = true;
+          } else {
+            return false;
           }
         } else if (
           filterOptions.paymentStatus === "overDue" &&
@@ -387,6 +393,8 @@ const PPPOECustomer = () => {
         ) {
           if (customer.balance < parseInt("0")) {
             isFound = true;
+          } else {
+            return false;
           }
         } else {
           isFound = false;
