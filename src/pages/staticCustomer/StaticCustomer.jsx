@@ -419,7 +419,7 @@ export default function Customer() {
         // }
 
         //payment status filter
-        if (customer.paymentStatus && filterOptions.paymentStatus === "free") {
+        if (filterOptions.paymentStatus === "free") {
           if (customer.monthlyFee === parseInt("0")) {
             isFound = true;
           } else {
@@ -445,6 +445,8 @@ export default function Customer() {
             customer.balance > parseInt("0")
           ) {
             isFound = true;
+          } else {
+            return false;
           }
         } else if (
           customer.paymentStatus === "paid" &&
@@ -452,6 +454,8 @@ export default function Customer() {
         ) {
           if (2 * customer.monthlyFee < customer.balance) {
             isFound = true;
+          } else {
+            return false;
           }
         } else if (
           customer.paymentStatus === "unpaid" &&
@@ -459,7 +463,11 @@ export default function Customer() {
         ) {
           if (customer.balance < parseInt("0")) {
             isFound = true;
+          } else {
+            return false;
           }
+        } else {
+          isFound = false;
         }
 
         //filter by mikrotik
