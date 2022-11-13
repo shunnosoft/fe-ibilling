@@ -273,7 +273,7 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
     setIsLoading(false);
 
     button.style.display = "initial";
-    langMessage("error", "ম্যানেজার আপডেট সফল হয়নি", "Manager Update Failed");
+    toast.error(error?.response?.data?.message);
   }
 };
 
