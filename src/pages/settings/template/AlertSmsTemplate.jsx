@@ -125,6 +125,7 @@ function AlertSmsTemplate() {
     //   return 0;
     // }
     setLoading(true);
+
     try {
       const res = await apiLink.patch(
         `/ispOwner/settings/sms/${ispOwnerId}`,

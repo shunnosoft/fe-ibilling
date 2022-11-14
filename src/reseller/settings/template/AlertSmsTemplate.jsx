@@ -19,12 +19,11 @@ function AlertSmsTemplate() {
     (state) => state.persistedReducer.auth.currentUser.reseller.id
   );
   const settings = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.reseller?.settings
+    (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
   const dispatch = useDispatch();
-  const [fontValue, setFontValue] = useState("");
   const [bottomText, setBottomText] = useState("");
+  const [fontValue, setFontValue] = useState("");
   const [upperText, setUpperText] = useState("");
   const [numberOfDay, setnumberOfDay] = useState();
   const [days, setDays] = useState([]);
@@ -33,14 +32,14 @@ function AlertSmsTemplate() {
   // const [billconfarmationparametres, setbillconparametres] = useState([]);
   // const [matchFound, setMatchFound] = useState([]);
 
+  const [sendingType, setSendingType] = useState();
+
   const textRef = useRef();
   const formRef = useRef();
 
   const [smsTemplet, setTemplet] = useState([]);
 
   const [alertNum, setAlertNum] = useState("");
-
-  const [sendingType, setSendingType] = useState();
 
   const itemSettingHandler = (item) => {
     if (smsTemplet.includes(item)) {
@@ -49,7 +48,7 @@ function AlertSmsTemplate() {
         smsTemplet.splice(index, 1);
       }
     } else {
-      if (totalText.length + item.length > 334) {
+      if ((upperText + "\n" + bottomText).length + item.length > 334) {
         toast.error(t("exceedSMSLimit"));
         return;
       } else {
@@ -75,6 +74,7 @@ function AlertSmsTemplate() {
     } else {
       setBillConfirmation("off");
     }
+
     setSendingType(settings?.sms?.alertSendBy);
   }, [settings]);
 
@@ -104,7 +104,9 @@ function AlertSmsTemplate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const temp = upperText.split("\n");
+    temp.length = smsTemplet.length + 1;
+    const newUpperText = temp.join("\n");
     let data = {
       ...settings?.sms,
       alertSendBy: sendingType,
@@ -117,24 +119,21 @@ function AlertSmsTemplate() {
       alertDays: days,
       template: {
         ...settings?.sms?.template,
-        alert: upperText + "\n" + bottomText,
-        [alertNum]: fontValue + upperText + "\n" + bottomText,
+        alert: newUpperText + "\n" + bottomText,
+        [alertNum]: fontValue + newUpperText + "\n" + bottomText,
       },
     };
     // if (!alertNum) {
     //   toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
     //   return 0;
     // }
+    setLoading(true);
 
     try {
-      setLoading(true);
       const res = await apiLink.patch(
         `/reseller/settings/sms/${resellerId}`,
         data
       );
-      setUpperText("");
-      setBottomText("");
-      // console.log(res.data);
       dispatch(smsSettingUpdateIsp(res.data));
       setLoading(false);
       toast.success(t("alertSMStemplateSaveAlert"));
@@ -186,7 +185,6 @@ function AlertSmsTemplate() {
       .replace("গ্রাহকঃ NAME", "")
       .replace("বিলঃ AMOUNT", "")
       .replace("তারিখঃ DATE", "");
-
     let temp = temp2.split("\n");
     temp.splice(-2);
     const temp9 = temp;
@@ -201,8 +199,9 @@ function AlertSmsTemplate() {
     );
     setTemplet(temp10);
     setAlertNum(temp2.split("\n").splice(-1)[0]);
-
-    setTemplet(temp);
+    if (!e.target.value) {
+      setTemplet(temp);
+    }
 
     let messageBoxStr = e.target.value
       ?.replace("USER: USERNAME", "")
@@ -211,25 +210,18 @@ function AlertSmsTemplate() {
       .replace("BILL: AMOUNT", "")
       .replace("LAST DATE: BILL_DATE", "");
     let temp4 = messageBoxStr.split("\n");
-    console.log(temp4);
-
-    // if (e.target.value) {
-    //   setBottomText(
-    //     messageBoxStr.split("\n")[messageBoxStr.split("\n").length - 2]
-    //   );
-    // } else {
-    //   setBottomText("");
-    // }
-
-    // fixedvalues.map((i) => {
-    //   if (e.target.value.includes(i)) {
-    //     found.push(i);
+    temp4.splice(-1);
+    // let temp5 = "";
+    // temp4.map((i) => {
+    //   if (i !== "") {
+    //     temp5 = temp5 + i + "\n";
     //   }
-    //   return found;
+    //   return temp5;
     // });
-    // setMatchFound(found);
 
-    let theText = "";
+    // setBottomText(temp5);
+
+    var theText = "";
     temp.map((i) => {
       return (theText = theText + "\n" + i);
     });
@@ -241,13 +233,14 @@ function AlertSmsTemplate() {
 
       let temptxt = "";
       temp4.map((value, index) => {
-        if (index > 2 && value !== "") {
+        if (index > 1 && value !== "") {
           temptxt += value + "\n";
         }
       });
       setBottomText(temptxt);
     }
   };
+
   return (
     <div>
       <form
@@ -305,6 +298,7 @@ function AlertSmsTemplate() {
               {t("fixedNumber")} {"              "}
             </div>
           </div>
+
           <div className="billconfirm">
             <div className="showthesequence">
               <p className="endingText">{fontValue}</p>
@@ -314,6 +308,7 @@ function AlertSmsTemplate() {
 
               <p className="endingtext">{bottomText}</p>
             </div>
+
             <div
               style={{
                 display: "flex",
@@ -321,7 +316,7 @@ function AlertSmsTemplate() {
                 justifyContent: "space-between",
                 flexDirection: "row",
                 width: "100%",
-                marginTop: "20px",
+                marginTop: "10px",
               }}
               className="displayFlexx"
             >
@@ -404,24 +399,6 @@ function AlertSmsTemplate() {
               </div>
 
               {/* //working */}
-              {/* <div className="templateSelect">
-                <select
-                  style={{
-                    width: "150px",
-                    border: "2px solid grey",
-                    fontWeight: "600",
-                    borderRadius: "5px",
-                  }}
-                  onChange={(e) => dayTempletHandler(e)}
-                  name=""
-                  id=""
-                >
-                  <option value="">Please Select</option>
-                  {smstempletDay.slice(0, numberOfDay).map((item) => {
-                    return <option value={item.value}>{item.name}</option>;
-                  })}
-                </select>
-              </div> */}
             </div>
             <div className="templateSelect">
               <select
@@ -436,17 +413,18 @@ function AlertSmsTemplate() {
                 name=""
                 id=""
               >
-                <option value="">{t("selectTemplate")}</option>
+                <option value=""> {t("selectTemplate")} </option>
                 {smstempletDay
                   .filter((s, i) => days.includes(i + 1))
-                  .map((item, i) => {
+                  .map((item, index) => {
                     return (
-                      <option key={i} value={item.value}>
+                      <option key={index} value={item.value}>
                         {item.name}
                       </option>
                     );
                   })}
               </select>
+
               <div className="mt-3">
                 <input
                   value={fontValue}
@@ -457,7 +435,6 @@ function AlertSmsTemplate() {
                 />
               </div>
             </div>
-
             <div style={{ marginBotton: "20px" }} className="displayFlex">
               <input
                 type="checkbox"
@@ -530,8 +507,9 @@ function AlertSmsTemplate() {
               />
               <label className="mx-3">{t("billDueSevenDay")}</label>
             </div>
-            <p style={{ marginTop: "20px" }}>{t("dueToFinishBillCycle")}</p>
+            <p style={{ marginTop: "20px" }}> {t("dueToFinishBillCycle")} </p>
           </div>
+
           <div className="smsCount">
             <span className="smsLength">
               {t("letter")} {(smsTemplet + bottomText).length}
