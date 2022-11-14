@@ -10,12 +10,16 @@ import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllSupportTickets } from "../../features/supportTicketApi";
+import {
+  editSupportTicketsApi,
+  getAllSupportTickets,
+} from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
 import { PenFill, ThreeDots } from "react-bootstrap-icons";
 
 const SupportTicket = () => {
   const { t } = useTranslation();
+
   // declare state
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
@@ -48,8 +52,10 @@ const SupportTicket = () => {
     setSupportTicketStatusValue(value);
   };
 
-  const handleSubmit = () => {
-    //
+  const SupportTicketStatusSubmit = (e) => {
+    e.preventDefault();
+
+    editSupportTicketsApi(dispatch, supportTicketStatusValue, supportTicketId);
   };
   const columns = useMemo(
     () => [
@@ -201,7 +207,11 @@ const SupportTicket = () => {
               >
                 Cancle
               </button>
-              <button type="button" class="btn btn-primary">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onClick={SupportTicketStatusSubmit}
+              >
                 Save
               </button>
             </div>

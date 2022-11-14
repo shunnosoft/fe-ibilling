@@ -348,56 +348,57 @@ const PPPOECustomer = () => {
         // }
 
         // payment status filter
-
-        if (filterOptions.paymentStatus === "free") {
-          if (customer.monthlyFee === parseInt("0")) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        } else if (
-          filterOptions.paymentStatus === "paid" &&
-          customer.paymentStatus === "paid"
-        ) {
-          isFound = true;
-        } else if (
-          filterOptions.paymentStatus === "unpaid" &&
-          customer.paymentStatus === "unpaid" &&
-          customer.balance == 0
-        ) {
-          isFound = true;
-        } else if (
-          filterOptions.paymentStatus === "partial" &&
-          customer.paymentStatus === "unpaid"
-        ) {
-          if (
-            customer.monthlyFee > customer.balance &&
-            customer.balance > parseInt("0")
+        if (filterOptions.paymentStatus) {
+          if (filterOptions.paymentStatus === "free") {
+            if (customer.monthlyFee === parseInt("0")) {
+              isFound = true;
+            } else {
+              return false;
+            }
+          } else if (
+            filterOptions.paymentStatus === "paid" &&
+            customer.paymentStatus === "paid"
           ) {
             isFound = true;
-          } else {
-            return false;
-          }
-        } else if (
-          filterOptions.paymentStatus === "advance" &&
-          customer.paymentStatus === "paid"
-        ) {
-          if (2 * customer.monthlyFee < customer.balance) {
+          } else if (
+            filterOptions.paymentStatus === "unpaid" &&
+            customer.paymentStatus === "unpaid" &&
+            customer.balance == 0
+          ) {
             isFound = true;
+          } else if (
+            filterOptions.paymentStatus === "partial" &&
+            customer.paymentStatus === "unpaid"
+          ) {
+            if (
+              customer.monthlyFee > customer.balance &&
+              customer.balance > parseInt("0")
+            ) {
+              isFound = true;
+            } else {
+              return false;
+            }
+          } else if (
+            filterOptions.paymentStatus === "advance" &&
+            customer.paymentStatus === "paid"
+          ) {
+            if (2 * customer.monthlyFee < customer.balance) {
+              isFound = true;
+            } else {
+              return false;
+            }
+          } else if (
+            filterOptions.paymentStatus === "overDue" &&
+            customer.paymentStatus === "unpaid"
+          ) {
+            if (customer.balance < parseInt("0")) {
+              isFound = true;
+            } else {
+              return false;
+            }
           } else {
-            return false;
+            isFound = false;
           }
-        } else if (
-          filterOptions.paymentStatus === "overDue" &&
-          customer.paymentStatus === "unpaid"
-        ) {
-          if (customer.balance < parseInt("0")) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        } else {
-          isFound = false;
         }
 
         // filter by mikrotik

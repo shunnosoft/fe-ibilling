@@ -9,10 +9,21 @@ export const supportTicketSlice = createSlice({
     getSupportTickets: (state, action) => {
       state.supportTickets = action.payload;
     },
+    editSupportTickets: (state, action) => {
+      let filteredData = state.supportTickets.find(
+        (singleTicket) => singleTicket.id === action.payload.id
+      );
+
+      state.supportTickets = {
+        ...filteredData,
+        status: action.payload.data,
+      };
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { getSupportTickets } = supportTicketSlice.actions;
+export const { getSupportTickets, editSupportTickets } =
+  supportTicketSlice.actions;
 
 export default supportTicketSlice.reducer;
