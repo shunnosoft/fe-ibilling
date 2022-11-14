@@ -47,6 +47,10 @@ const SupportTicket = () => {
     let value = e.target.value;
     setSupportTicketStatusValue(value);
   };
+
+  const handleSubmit = () => {
+    //
+  };
   const columns = useMemo(
     () => [
       {
