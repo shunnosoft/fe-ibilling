@@ -529,6 +529,32 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
+                        <NavLink
+                          key={10}
+                          to={userRole === "ispOwner" && "/support/ticket"}
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname ===
+                                (userRole === "ispOwner" && "/support/ticket")
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">
+                                {<PersonDash />}
+                              </div>
+                              <span className="sidebarLinksName">
+                                {t("supportTicket")}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
                       </Accordion.Body>
                     </Accordion.Item>
                     {/* স্টাফ */}
@@ -879,6 +905,34 @@ export default function Sidebar() {
                                   className="sidebarItems"
                                   id={
                                     window.location.pathname === "/message/log"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<EnvelopeOpen />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("messageLog")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          )}
+                          {userRole === "reseller" && (
+                            <NavLink
+                              key={339}
+                              to={"/reseller/message/log"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    "/reseller/message/log"
                                       ? "active"
                                       : ""
                                   }

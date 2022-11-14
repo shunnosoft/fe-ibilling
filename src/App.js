@@ -27,6 +27,7 @@ import RDiposit from "./reseller/diposit/Diposit";
 import RReport from "./reseller/report/Report";
 import RProfile from "./reseller/profile/Profile";
 import RCollectorReport from "./reseller/report/CollectorReport";
+import ResellerMessageLog from "./reseller/messageLog/MessageLog";
 
 // for admin
 import AdminDashboard from "./admin/dashboard/AdminDashboard";
@@ -84,6 +85,7 @@ import NewCustomer from "./pages/newCustomer/NewCustomer";
 import MessageLog from "./pages/messageLog/MessageLog";
 import DueCustomer from "./pages/dueCustomer/DueCustomer";
 import SuccessPaymentSuccess from "./ownerCustomer/CustomerPaymentSuccess";
+import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -177,6 +179,10 @@ function App() {
             <Route path="/*" element={<PrivateOutlet />}>
               <Route path="message" element={<RMessage />} />
               <Route path="settings" element={<RSettings />} />
+              <Route
+                path="reseller/message/log"
+                element={<ResellerMessageLog />}
+              />
               <Route
                 path="reseller/activeCustomer"
                 element={<RActiveCustomer />}
@@ -392,6 +398,16 @@ function App() {
               element={
                 user && userRole === "ispOwner" ? (
                   <MessageLog />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+            <Route
+              path="/support/ticket"
+              element={
+                user && userRole === "ispOwner" ? (
+                  <CustomerSupportTicket />
                 ) : (
                   <Navigate to={"/home"} />
                 )
