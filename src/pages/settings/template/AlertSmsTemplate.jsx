@@ -18,7 +18,6 @@ function AlertSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [fontValue, setFontValue] = useState("");
@@ -126,8 +125,6 @@ function AlertSmsTemplate() {
     //   return 0;
     // }
     setLoading(true);
-    console.log(data);
-    return;
     try {
       const res = await apiLink.patch(
         `/ispOwner/settings/sms/${ispOwnerId}`,
@@ -210,7 +207,6 @@ function AlertSmsTemplate() {
       .replace("LAST DATE: BILL_DATE", "");
     let temp4 = messageBoxStr.split("\n");
     temp4.splice(-1);
-    console.log(temp4);
     // let temp5 = "";
     // temp4.map((i) => {
     //   if (i !== "") {
