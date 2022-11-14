@@ -87,47 +87,47 @@ const SupportTicket = () => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
-      {
-        width: "6%",
-        Header: () => <div className="text-center">{t("action")}</div>,
-        id: "option",
+      // {
+      //   width: "6%",
+      //   Header: () => <div className="text-center">{t("action")}</div>,
+      //   id: "option",
 
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div className="dropdown">
-              <ThreeDots
-                className="dropdown-toggle ActionDots"
-                id="areaDropdown"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />
-              <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() => {
-                    getSupportId(original?.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        ),
-      },
+      //   Cell: ({ row: { original } }) => (
+      //     <div
+      //       style={{
+      //         display: "flex",
+      //         alignItems: "center",
+      //         justifyContent: "center",
+      //       }}
+      //     >
+      //       <div className="dropdown">
+      //         <ThreeDots
+      //           className="dropdown-toggle ActionDots"
+      //           id="areaDropdown"
+      //           type="button"
+      //           data-bs-toggle="dropdown"
+      //           aria-expanded="false"
+      //         />
+      //         <ul className="dropdown-menu" aria-labelledby="customerDrop">
+      //           <li
+      //             data-bs-toggle="modal"
+      //             data-bs-target="#exampleModal"
+      //             onClick={() => {
+      //               getSupportId(original?.id);
+      //             }}
+      //           >
+      //             <div className="dropdown-item">
+      //               <div className="customerAction">
+      //                 <PenFill />
+      //                 <p className="actionP">{t("edit")}</p>
+      //               </div>
+      //             </div>
+      //           </li>
+      //         </ul>
+      //       </div>
+      //     </div>
+      //   ),
+      // },
     ],
     [t]
   );
