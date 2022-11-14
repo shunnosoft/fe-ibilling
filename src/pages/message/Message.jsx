@@ -92,9 +92,8 @@ export default function Message() {
   const [smsReceiverType, setsmsReceiverType] = useState("");
   const [sendingType, setSendingType] = useState("nonMasking");
   const maskingId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.ispOwner.maskingId
+    (state) => state.persistedReducer.auth.currentUser.ispOwner?.maskingId
   );
-  console.log(maskingId);
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -159,7 +158,6 @@ export default function Message() {
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
       const res = await apiLink.get(`/ispOwner/all-customer/${ispOwnerId}`);
-      console.log(owner);
 
       let items = [],
         totalSmsCount = 0;
@@ -444,7 +442,7 @@ export default function Message() {
                       <div className="refreshDiv">
                         <div className="balancetext px-2">
                           <div className="mx-content">
-                            {t("SMSbalance")}&nbsp;
+                            {t("nonMasking")}&nbsp;
                           </div>
                           {sms.smsBalance}
                         </div>

@@ -578,5 +578,6 @@
   "customerCopy": "Customer Copy",
   "maskingIdNotFound": "Masking Id not Found!",
   "resellerRechargeTemplate": "Reseller Recharge",
-  "mikrotikCustomerCsvDownload": "Mikrotik Customer Csv File Download"
+  "mikrotikCustomerCsvDownload": "Mikrotik Customer Csv File Download",
+  "supportTicket": "Support Ticket"
 }

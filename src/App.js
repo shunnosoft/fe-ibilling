@@ -98,6 +98,12 @@ function App() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
   // const hasReseller= true
   const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
   const dispatch = useDispatch();
@@ -394,10 +400,22 @@ function App() {
               }
             />
             <Route
-              path="/message/log"
+              path="message/log"
               element={
-                user && userRole === "ispOwner" ? (
+                user &&
+                (userRole === "ispOwner" ||
+                  (userRole === "manager" && permission?.readMessageLog)) ? (
                   <MessageLog />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+            <Route
+              path="due/customer"
+              element={
+                user && (userRole === "ispOwner" || userRole === "manager") ? (
+                  <DueCustomer />
                 ) : (
                   <Navigate to={"/home"} />
                 )
@@ -443,10 +461,7 @@ function App() {
               <Route path="area" element={<Area />} />
               {/* <Route path="bill" element={<Bill />} /> */}
               <Route path="diposit" element={<Diposit />} />
-              <Route
-                path="due/customer"
-                element={userRole === "ispOwner" && <DueCustomer />}
-              />
+
               <Route path="invoice" element={<Invoice />} />
               <Route
                 path="recharge"

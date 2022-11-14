@@ -1,23 +1,4 @@
 export const managerPermission = (permission) => {
-  //   accounts: true
-  // billEdit: false
-  // billPosting: false
-  // collectorAdd: false
-  // collectorEdit: false
-  // customerActivate: false
-  // customerAdd: false
-  // customerDeactivate: false
-  // customerDelete: false
-  // customerEdit: false
-  // fileExport: true
-  // inventory: true
-  // monthlyFeeEdit: false
-  // print: true
-  // sendSMS: false
-  // viewCollectorReport: false
-  // viewCustomerList: true
-  // viewTotalReport: true
-  // webLogin: true
   const permissionEng = [
     {
       id: 1,
@@ -90,6 +71,12 @@ export const managerPermission = (permission) => {
       value: "viewCollectorReport",
       label: "View Collector Report",
       isChecked: permission?.viewCollectorReport,
+    },
+    {
+      id: 14,
+      value: "readMessageLog",
+      label: "See Message Log",
+      isChecked: permission?.readMessageLog,
     },
   ];
 
@@ -165,6 +152,12 @@ export const managerPermission = (permission) => {
       value: "viewCollectorReport",
       label: "কালেক্টর রিপোর্ট দেখবে",
       isChecked: permission?.viewCollectorReport,
+    },
+    {
+      id: 14,
+      value: "readMessageLog",
+      label: "চেক মেসেস লগ",
+      isChecked: permission?.readMessageLog,
     },
   ];
   if (localStorage.getItem("netFee:lang") === "bn") return permissionBangla;

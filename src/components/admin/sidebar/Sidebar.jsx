@@ -48,6 +48,11 @@ export default function Sidebar() {
   const getIspOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData
   );
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
   // const hasReseller= true
   // addSidebar
   const addSidebar = () => {
@@ -503,58 +508,62 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
-                        <NavLink
-                          key={10}
-                          to={userRole === "ispOwner" && "/due/customer"}
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname ===
-                                (userRole === "ispOwner" && "/due/customer")
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">
-                                {<PersonDash />}
-                              </div>
-                              <span className="sidebarLinksName">
-                                {t("dueCustomer")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
-                        <NavLink
-                          key={10}
-                          to={userRole === "ispOwner" && "/support/ticket"}
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname ===
-                                (userRole === "ispOwner" && "/support/ticket")
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">
-                                {<PersonDash />}
-                              </div>
-                              <span className="sidebarLinksName">
-                                {t("supportTicket")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
+                        {(userRole === "ispOwner" ||
+                          userRole === "manager") && (
+                          <NavLink
+                            key={10}
+                            to={"/due/customer"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/due/customer"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<PersonDash />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("dueCustomer")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+                        {userRole === "ispOwner" && (
+                          <NavLink
+                            key={10}
+                            to={userRole === "ispOwner" && "/support/ticket"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  (userRole === "ispOwner" && "/support/ticket")
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<PersonDash />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("supportTicket")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
                       </Accordion.Body>
                     </Accordion.Item>
                     {/* স্টাফ */}
@@ -892,7 +901,9 @@ export default function Sidebar() {
                           ) : (
                             ""
                           )}
-                          {userRole === "ispOwner" && (
+                          {(userRole === "ispOwner" ||
+                            (userRole === "manager" &&
+                              permission?.readMessageLog)) && (
                             <NavLink
                               key={338}
                               to={"/message/log"}
