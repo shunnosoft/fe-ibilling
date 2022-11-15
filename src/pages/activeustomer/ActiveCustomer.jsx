@@ -36,18 +36,17 @@ export default function ConfigMikrotik() {
 
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
-  console.log(allMikrotikUsers);
+
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
-  // console.log(ispOwnerData);
 
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-  // console.log(ispOwnerId);
+
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
   // customer id state
@@ -63,7 +62,6 @@ export default function ConfigMikrotik() {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
-  // console.log(allUsers);
 
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
@@ -128,7 +126,7 @@ export default function ConfigMikrotik() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -142,9 +140,14 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "20%",
+        width: "13%",
         Header: t("name"),
         accessor: "name",
+      },
+      {
+        width: "13%",
+        Header: t("PPPoEName"),
+        accessor: "pppoe.name",
       },
       {
         width: "12%",
@@ -184,12 +187,12 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "20%",
+        width: "18%",
         Header: "Last Link Up Time",
         accessor: "lastLinkUpTime",
       },
       {
-        width: "25%",
+        width: "9%",
         Header: t("action"),
         // accessor: "lastLinkUpTime",
         Cell: ({ row: { original } }) => (

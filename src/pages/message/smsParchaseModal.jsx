@@ -43,9 +43,8 @@ function SmsParchase() {
         type: "smsPurchase",
         smsPurchaseType: messageType,
       };
-      console.log(data);
 
-      // purchaseSms(data, setIsloading);
+      purchaseSms(data, setIsloading);
     }
   };
 

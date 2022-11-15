@@ -1077,48 +1077,50 @@ export default function Home() {
             </FourGround>
             {/* print to collectorOverview start */}
 
-            <FourGround>
-              <div className="collectorWrapper pt-1 pb-2">
-                <div
-                  className="addAndSettingIcon"
-                  style={{
-                    marginLeft: ".5rem",
-                    textAlign: "end",
-                    paddingTop: "1rem",
-                    // background: "green",
-                  }}
-                >
-                  <ReactToPrint
-                    documentTitle="Collection Overveiw"
-                    trigger={() => (
-                      <PrinterFill
-                        // title={t("print")}
-                        className="addcutmButton"
-                        style={{ background: "#0EB96A", color: "white" }}
-                      />
+            {role === "ispOwner" && (
+              <FourGround>
+                <div className="collectorWrapper pt-1 pb-2">
+                  <div
+                    className="addAndSettingIcon"
+                    style={{
+                      marginLeft: ".5rem",
+                      textAlign: "end",
+                      paddingTop: "1rem",
+                      // background: "green",
+                    }}
+                  >
+                    <ReactToPrint
+                      documentTitle="Collection Overveiw"
+                      trigger={() => (
+                        <PrinterFill
+                          // title={t("print")}
+                          className="addcutmButton"
+                          style={{ background: "#0EB96A", color: "white" }}
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
+                  </div>
+                  <div className="table-section">
+                    {collectorData && collectorData.length > 0 && (
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={collectorData}
+                      ></Table>
                     )}
-                    content={() => componentRef.current}
+                  </div>
+                </div>
+                <div className="d-none">
+                  <CollectionOverviewPdf
+                    allCollectionData={customerStat}
+                    //customerStat
+                    // currentCustomers={Customers}
+                    ref={componentRef}
                   />
                 </div>
-                <div className="table-section">
-                  {collectorData && collectorData.length > 0 && (
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={collectorData}
-                    ></Table>
-                  )}
-                </div>
-              </div>
-              <div className="d-none">
-                <CollectionOverviewPdf
-                  allCollectionData={customerStat}
-                  //customerStat
-                  // currentCustomers={Customers}
-                  ref={componentRef}
-                />
-              </div>
-            </FourGround>
+              </FourGround>
+            )}
           </div>
           <Footer />
         </FontColor>

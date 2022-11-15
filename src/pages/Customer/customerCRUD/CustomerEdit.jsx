@@ -34,10 +34,11 @@ export default function CustomerEdit(props) {
 
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  console.log(Getmikrotik);
 
   // get bp setting
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // get all role
@@ -282,7 +283,7 @@ export default function CustomerEdit(props) {
                             className="form-select mw-100 mt-0"
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
-
+                            disabled
                             value={data?.mikrotik || ""}
                           >
                             <option value={mikrotikName?.id || ""}>
@@ -305,6 +306,7 @@ export default function CustomerEdit(props) {
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
+                          disabled={role === "collector"}
                         >
                           {ppPackage?.map((val, key) => (
                             <option
