@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editSupportTicketsApi } from "../../features/supportTicketApi";
+import { editSupportTicketsApi } from "../../../features/supportTicketApi";
 
 const SupportTicketEdit = ({ ticketEditId }) => {
   console.log(ticketEditId);

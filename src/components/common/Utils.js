@@ -29,6 +29,7 @@ const addClass = {
   bill: "success",
   bulk: "primary",
   alert: "warning",
+  processed: "warning",
 };
 
 export const badge = (item) => {

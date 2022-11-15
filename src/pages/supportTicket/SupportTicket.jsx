@@ -17,7 +17,9 @@ import {
 } from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
-import SupportTicketEdit from "./SupportTicketEdit";
+import SupportTicketEdit from "./modal/SupportTicketEdit";
+import SupportTicketDelete from "./modal/SupportTicketDelete";
+import { badge } from "../../components/common/Utils";
 
 const SupportTicket = () => {
   const { t } = useTranslation();
@@ -52,10 +54,6 @@ const SupportTicket = () => {
     setDeleteTicketId(ticketId);
   };
 
-  const SupportTicketDeleteSubmit = (e) => {
-    e.preventDefault();
-    deleteSupportTicketsApi(dispatch, deleteTicketId);
-  };
   const columns = useMemo(
     () => [
       {
@@ -76,6 +74,9 @@ const SupportTicket = () => {
         width: "8%",
         Header: t("status"),
         accessor: "status",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
       },
 
       {
@@ -173,9 +174,9 @@ const SupportTicket = () => {
                   </div>
                 </div>
               </FourGround>
-              <FourGround>
+              {/* <FourGround>
                 <div className="collectorWrapper mt-2 py-2"></div>
-              </FourGround>
+              </FourGround> */}
               <Footer />
             </FontColor>
           </div>
@@ -187,49 +188,8 @@ const SupportTicket = () => {
       {/* Edit Modal End */}
 
       {/* Delete Modal Start */}
-      <div
-        class="modal fade"
-        id="deleteModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                Support Ticket Delete
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <p>Do you want to delete support ticket ?</p>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cancle
-              </button>
-              <button
-                type="button"
-                class="btn btn-danger"
-                data-bs-dismiss="modal"
-                onClick={SupportTicketDeleteSubmit}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+
+      <SupportTicketDelete supportTicketDeleteID={deleteTicketId} />
 
       {/* Delete Modal end */}
     </>
