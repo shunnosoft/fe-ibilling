@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 export const supportTicketSlice = createSlice({
   name: "supportTicket",
@@ -10,20 +10,28 @@ export const supportTicketSlice = createSlice({
       state.supportTickets = action.payload;
     },
     editSupportTickets: (state, action) => {
-      let filteredData = state.supportTickets.find(
-        (singleTicket) => singleTicket.id === action.payload.id
+      console.log(action.payload.supportTicket);
+      let index = state.supportTickets.findIndex(
+        (singleTicket) => singleTicket.id === action.payload.supportTicket.id
       );
-
-      state.supportTickets = {
-        ...filteredData,
-        status: action.payload.data,
+      console.log(index);
+      console.log(current(state.supportTickets[index]));
+      state.supportTickets[index] = {
+        ...state.supportTickets[index],
+        status: action.payload.supportTicket.status,
       };
+    },
+
+    deleteSupportTickets: (state, action) => {
+      state.supportTickets = state.supportTickets.filter(
+        (ticket) => ticket.id !== action.payload
+      );
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { getSupportTickets, editSupportTickets } =
+export const { getSupportTickets, editSupportTickets, deleteSupportTickets } =
   supportTicketSlice.actions;
 
 export default supportTicketSlice.reducer;
