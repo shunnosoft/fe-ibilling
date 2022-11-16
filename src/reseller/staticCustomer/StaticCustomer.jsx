@@ -4,20 +4,15 @@ import moment from "moment";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
-  PersonPlusFill,
   Wallet,
   ThreeDots,
-  ArchiveFill,
-  PenFill,
   PersonFill,
-  CashStack,
   PrinterFill,
   ArrowClockwise,
   ChatText,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";

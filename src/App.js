@@ -86,6 +86,7 @@ import MessageLog from "./pages/messageLog/MessageLog";
 import DueCustomer from "./pages/dueCustomer/DueCustomer";
 import SuccessPaymentSuccess from "./ownerCustomer/CustomerPaymentSuccess";
 import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
+import Stock from "./pages/Inventory/Stock";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -444,6 +445,7 @@ function App() {
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
               <Route path="expenditure" element={<Expenditure />} />
+              <Route path="stock" element={<Stock />} />
               <Route path="staff" element={<Staff />} />
               <Route path="staff/:staffId" element={<StaffSalary />} />
 

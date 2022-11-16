@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 // internal
 import { FontColor, FourGround } from "../../../assets/js/theme";

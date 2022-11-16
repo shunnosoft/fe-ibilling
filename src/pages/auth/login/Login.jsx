@@ -4,7 +4,6 @@ import { NavLink } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 // internal imports
 import { Background, FourGround } from "../../../assets/js/theme";

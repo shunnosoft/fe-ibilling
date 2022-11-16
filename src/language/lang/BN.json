@@ -580,5 +580,17 @@
   "maskingIdNotFound": "মাস্কিং আইডি পাওয়া যাই নি!",
   "resellerRechargeTemplate": "রিসেলার রিচার্জ",
   "mikrotikCustomerCsvDownload": "মাইক্রোটিক গ্রাহক CSV ফাইল ডাউনলোড",
-  "supportTicket": "সাপোর্ট টিকিট"
+  "supportTicket": "সাপোর্ট টিকিট",
+  "inventory":"ইনভেন্টরি",
+  "stock":"স্টক",
+  "addProduct":"এড প্রোডাক্ট",
+  "description":"বিবরণ",
+  "purchaseAmount":"ক্রয় মূল্য",
+  "sellAmount":"বিক্রয় মূল্য",
+  "quantity":"পরিমাণ"
+
+  
+
+
+
 }

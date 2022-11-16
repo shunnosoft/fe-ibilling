@@ -29,6 +29,9 @@ import {
   EjectFill,
   EnvelopeOpen,
   PersonDash,
+  Shop,
+  Basket2Fill,
+  CartFill,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -962,72 +965,133 @@ export default function Sidebar() {
                       </Accordion.Item>
                     )}
                     {/* একাউন্টস */}
-                    {userRole === "ispOwner" || userRole === "manager" ? (
-                      <Accordion.Item eventKey="5">
-                        <Accordion.Header
-                          onClick={() => handleActiveAccordian("5")}
-                        >
-                          <div className="sidebarIcon">{<WalletFill />}</div>
-                          <span className="sidebarLinksName">
-                            {t("account")}
-                          </span>
-                        </Accordion.Header>
-                        <Accordion.Body>
-                          <NavLink
-                            key={309}
-                            to={"/expenditure"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
+                    {(userRole === "ispOwner" || userRole === "manager") && (
+                      <>
+                        <Accordion.Item eventKey="5">
+                          <Accordion.Header
+                            onClick={() => handleActiveAccordian("5")}
                           >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/expenditure"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<CashCoin />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("cost")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
+                            <div className="sidebarIcon">{<WalletFill />}</div>
+                            <span className="sidebarLinksName">
+                              {t("account")}
+                            </span>
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            <NavLink
+                              key={309}
+                              to={"/expenditure"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname === "/expenditure"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<CashCoin />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("cost")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
 
-                          <NavLink
-                            key={300}
-                            to={"/invoice"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
+                            <NavLink
+                              key={300}
+                              to={"/invoice"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname === "/invoice"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<ReceiptCutoff />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("invoice")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          </Accordion.Body>
+                        </Accordion.Item>
+                        <Accordion.Item eventKey="6">
+                          <Accordion.Header
+                            onClick={() => handleActiveAccordian("6")}
                           >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/invoice"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<ReceiptCutoff />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("invoice")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    ) : (
-                      ""
+                            <div className="sidebarIcon">{<CartFill />}</div>
+                            <span className="sidebarLinksName">
+                              {t("inventory")}
+                            </span>
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            <NavLink
+                              key={309}
+                              to={"/stock"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname === "/stock"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">{<Shop />}</div>
+                                  <span className="sidebarLinksName">
+                                    {t("stock")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+
+                            {/* <NavLink
+                              key={300}
+                              to={"/invoice"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname === "/invoice"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<ReceiptCutoff />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("invoice")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink> */}
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      </>
                     )}
                   </Accordion>
                 </div>

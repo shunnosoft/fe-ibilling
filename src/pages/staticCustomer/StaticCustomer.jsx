@@ -23,7 +23,6 @@ import {
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
 import ReactToPrint from "react-to-print";
 
 // internal imports
