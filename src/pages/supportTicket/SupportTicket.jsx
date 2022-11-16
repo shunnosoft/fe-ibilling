@@ -10,16 +10,13 @@ import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  deleteSupportTicketsApi,
-  editSupportTicketsApi,
-  getAllSupportTickets,
-} from "../../features/supportTicketApi";
+import { getAllSupportTickets } from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import SupportTicketEdit from "./modal/SupportTicketEdit";
 import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
+import apiLink from "../../api/apiLink";
 
 const SupportTicket = () => {
   const { t } = useTranslation();
@@ -28,19 +25,24 @@ const SupportTicket = () => {
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
-  console.log(supportTickets);
 
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-
   // declare state
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
   const [deleteTicketId, setDeleteTicketId] = useState("");
+  const [allCollector, setAllCollector] = useState([]);
+  console.log(allCollector);
 
   useEffect(() => {
     getAllSupportTickets(dispatch, ispOwner, setIsLoading);
+  }, []);
+
+  useEffect(async () => {
+    const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
+    setAllCollector([...res.data]);
   }, []);
 
   // handle edit function
@@ -64,6 +66,16 @@ const SupportTicket = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
 
+      {
+        width: "8%",
+        Header: "Id",
+        accessor: "customer.customerId",
+      },
+      {
+        width: "11%",
+        Header: "Name",
+        accessor: "customer.name",
+      },
       {
         width: "11%",
         Header: " Support Message",
@@ -184,7 +196,10 @@ const SupportTicket = () => {
       </div>
 
       {/* Edit Modal Start */}
-      <SupportTicketEdit ticketEditId={supportTicketId} />
+      <SupportTicketEdit
+        ticketEditId={supportTicketId}
+        allCollector={allCollector}
+      />
       {/* Edit Modal End */}
 
       {/* Delete Modal Start */}

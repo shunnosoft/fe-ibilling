@@ -38,7 +38,7 @@ const SupportTicketDelete = ({ supportTicketDeleteID }) => {
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              Cancle
+              cancel
             </button>
             <button
               type="button"
