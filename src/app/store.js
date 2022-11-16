@@ -27,6 +27,7 @@ import getIspOwnerUsersSlice from "../features/getIspOwnerUsersSlice";
 import finalClientSlice from "../features/finalClientSlice";
 import messageLogSlice from "../features/messageLogSlice";
 import supportTicketSlice from "../features/supportTicketSlice";
+import hotspotSlice from "../features/hotspotSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -66,6 +67,7 @@ const store = configureStore({
     client: finalClientSlice,
     messageLog: messageLogSlice,
     supportTicket: supportTicketSlice,
+    hotspotPackage: hotspotSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

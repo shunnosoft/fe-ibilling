@@ -45,6 +45,9 @@ import Table from "../../components/table/Table";
 import CustomerSync from "./configMikrotikModals/CustomerSync";
 import { useTranslation } from "react-i18next";
 import { CSVLink } from "react-csv";
+import { getHotspotPackage } from "../../features/hotspotApi";
+import { Tab, Tabs } from "react-bootstrap";
+import Hotspot from "./configMikrotikModals/hotspot/Hotspot";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -74,6 +77,7 @@ export default function ConfigMikrotik() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [singlePackage, setSinglePackage] = useState("");
+
   const [customerType, setCustomerType] = useState();
   const [whatYouWantToShow, setWhatYouWantToShow] = useState(
     "showMikrotikPackage"
@@ -212,11 +216,6 @@ export default function ConfigMikrotik() {
         Header: t("package"),
         accessor: "name",
       },
-      // {
-      //   width: "25%",
-      //   Header: t("package"),
-      //   accessor: (row) => console.log(row),
-      // },
       {
         width: "20%",
         Header: t("rate"),
@@ -428,186 +427,199 @@ export default function ConfigMikrotik() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="addNewCollector showMikrotikUpperSection mx-auto">
-                      <div className="LeftSideMikrotik justify-content-center">
-                        {/* <p>মাইক্রোটিক কনফিগারেশন</p> */}
+                <Tabs
+                  defaultActiveKey={"pppoe"}
+                  id="uncontrolled-tab-example"
+                  className="mb-3"
+                >
+                  <Tab eventKey="pppoe" title={t("PPPoE")}>
+                    <div className="collectorWrapper mt-2 py-2">
+                      <div className="addCollector">
+                        <div className="addNewCollector showMikrotikUpperSection mx-auto">
+                          <div className="LeftSideMikrotik justify-content-center">
+                            {/* <p>মাইক্রোটিক কনফিগারেশন</p> */}
 
-                        {isChecking ? (
-                          <div className="CheckingClass">
-                            <Loader />{" "}
-                            <h6 style={{ paddingTop: "2px" }}>
-                              {t("checkConnection")}
-                            </h6>{" "}
+                            {isChecking ? (
+                              <div className="CheckingClass">
+                                <Loader />{" "}
+                                <h6 style={{ paddingTop: "2px" }}>
+                                  {t("checkConnection")}
+                                </h6>{" "}
+                              </div>
+                            ) : (
+                              ""
+                            )}
+                            <div className="addAndSettingIcon">
+                              <button
+                                title={t("checkConnection")}
+                                className="btn btn-outline-primary me-2"
+                                onClick={MikrotikConnectionTest}
+                              >
+                                {t("checkConnection")}{" "}
+                                <PlugFill className="rotating" />
+                              </button>
+                              <button
+                                title={t("editMkrotik")}
+                                data-bs-toggle="modal"
+                                data-bs-target="#configMikrotikModal"
+                                className="btn btn-outline-primary me-2  "
+                              >
+                                {t("edit")} <PencilFill />
+                              </button>
+
+                              {mtkIsLoading ? (
+                                <span>
+                                  <Loader />
+                                </span>
+                              ) : (
+                                <button
+                                  disabled={pppoePackage.some(
+                                    (i) =>
+                                      i.rate === 0 &&
+                                      i.name !== "default-encryption" &&
+                                      i.name !== "default"
+                                  )}
+                                  onClick={syncPackage}
+                                  title={t("packageSync")}
+                                  className="btn btn-outline-primary me-2 "
+                                >
+                                  {t("packageSync")} <BagCheckFill />
+                                </button>
+                              )}
+
+                              {mtkIsLoading ? (
+                                <span>
+                                  <Loader />
+                                </span>
+                              ) : (
+                                <button
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#SyncCustomer"
+                                  onClick={() => {
+                                    setInActiveCustomer(false);
+                                    setCustomerType("PPPoE");
+                                  }}
+                                  title={t("PPPoECustomerSync")}
+                                  className="btn btn-outline-primary me-2 "
+                                >
+                                  {t("PPPoECustomerSync")} <PersonCheckFill />
+                                </button>
+                              )}
+
+                              {mtkIsLoading ? (
+                                <span>
+                                  <Loader />
+                                </span>
+                              ) : (
+                                <button
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#SyncCustomer"
+                                  onClick={() => {
+                                    setInActiveCustomer(false);
+                                    setCustomerType("static");
+                                  }}
+                                  title={t("staticCustomerSync")}
+                                  className="btn btn-outline-primary me-2 "
+                                >
+                                  {t("staticCustomerSync")} <PersonLinesFill />
+                                </button>
+                              )}
+                            </div>
                           </div>
+
+                          <div className="d-flex mt-3">
+                            <div className="mikrotikDetails me-5">
+                              <p>
+                                {t("name")} : <b>{singleMik?.name || "..."}</b>
+                              </p>
+                              <p>
+                                {t("ip")} : <b>{singleMik?.host || "..."}</b>
+                              </p>
+                              <p>
+                                {t("userName")} :{" "}
+                                <b>{singleMik?.username || "..."}</b>
+                              </p>
+                              <p>
+                                {t("port")} : <b>{singleMik?.port || "..."}</b>
+                              </p>
+                            </div>
+                            <div className="rightSideMikrotik ms-5">
+                              <h4> {t("select")} </h4>
+                              <select
+                                id="selectMikrotikOption"
+                                className="form-select mt-0"
+                                onChange={(event) =>
+                                  setWhatYouWantToShow(event.target.value)
+                                }
+                              >
+                                <option value="showMikrotikPackage">
+                                  {t("PPPoEPackage")}
+                                </option>
+                                <option value="showAllMikrotikUser">
+                                  {t("sokolCustomer")}
+                                </option>
+                              </select>
+                            </div>
+
+                            {whatYouWantToShow === "showAllMikrotikUser" && (
+                              <div className="rightSideMikrotik ms-5">
+                                <h4> {t("status")} </h4>
+                                <select
+                                  id="selectMikrotikOption"
+                                  onChange={filterIt}
+                                  className="form-select mt-0"
+                                >
+                                  <option value={"allCustomer"}>
+                                    {t("sokolCustomer")}
+                                  </option>
+                                  <option value={"false"}>{t("active")}</option>
+                                  <option value={"true"}>
+                                    {t("in active")}
+                                  </option>
+                                </select>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* PPPoE Package */}
+                        {whatYouWantToShow === "showMikrotikPackage" ? (
+                          <>
+                            <h2 style={{ width: "100%", textAlign: "center" }}>
+                              {t("package")}
+                            </h2>
+                            <Table
+                              isLoading={isLoading}
+                              columns={columns1}
+                              data={pppoePackage}
+                            ></Table>
+                          </>
                         ) : (
                           ""
                         )}
-                        <div className="addAndSettingIcon">
-                          <button
-                            title={t("checkConnection")}
-                            className="btn btn-outline-primary me-2"
-                            onClick={MikrotikConnectionTest}
-                          >
-                            {t("checkConnection")}{" "}
-                            <PlugFill className="rotating" />
-                          </button>
-                          <button
-                            title={t("editMkrotik")}
-                            data-bs-toggle="modal"
-                            data-bs-target="#configMikrotikModal"
-                            className="btn btn-outline-primary me-2  "
-                          >
-                            {t("edit")} <PencilFill />
-                          </button>
 
-                          {mtkIsLoading ? (
-                            <span>
-                              <Loader />
-                            </span>
-                          ) : (
-                            <button
-                              disabled={pppoePackage.some(
-                                (i) =>
-                                  i.rate === 0 &&
-                                  i.name !== "default-encryption" &&
-                                  i.name !== "default"
-                              )}
-                              onClick={syncPackage}
-                              title={t("packageSync")}
-                              className="btn btn-outline-primary me-2 "
-                            >
-                              {t("packageSync")} <BagCheckFill />
-                            </button>
-                          )}
-
-                          {mtkIsLoading ? (
-                            <span>
-                              <Loader />
-                            </span>
-                          ) : (
-                            <button
-                              data-bs-toggle="modal"
-                              data-bs-target="#SyncCustomer"
-                              onClick={() => {
-                                setInActiveCustomer(false);
-                                setCustomerType("PPPoE");
-                              }}
-                              title={t("PPPoECustomerSync")}
-                              className="btn btn-outline-primary me-2 "
-                            >
-                              {t("PPPoECustomerSync")} <PersonCheckFill />
-                            </button>
-                          )}
-
-                          {mtkIsLoading ? (
-                            <span>
-                              <Loader />
-                            </span>
-                          ) : (
-                            <button
-                              data-bs-toggle="modal"
-                              data-bs-target="#SyncCustomer"
-                              onClick={() => {
-                                setInActiveCustomer(false);
-                                setCustomerType("static");
-                              }}
-                              title={t("staticCustomerSync")}
-                              className="btn btn-outline-primary me-2 "
-                            >
-                              {t("staticCustomerSync")} <PersonLinesFill />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="d-flex mt-3">
-                        <div className="mikrotikDetails me-5">
-                          <p>
-                            {t("name")} : <b>{singleMik?.name || "..."}</b>
-                          </p>
-                          <p>
-                            {t("ip")} : <b>{singleMik?.host || "..."}</b>
-                          </p>
-                          <p>
-                            {t("userName")} :{" "}
-                            <b>{singleMik?.username || "..."}</b>
-                          </p>
-                          <p>
-                            {t("port")} : <b>{singleMik?.port || "..."}</b>
-                          </p>
-                        </div>
-                        <div className="rightSideMikrotik ms-5">
-                          <h4> {t("select")} </h4>
-                          <select
-                            id="selectMikrotikOption"
-                            className="form-select mt-0"
-                            onChange={(event) =>
-                              setWhatYouWantToShow(event.target.value)
-                            }
-                          >
-                            <option value="showMikrotikPackage">
-                              {t("PPPoEPackage")}
-                            </option>
-                            <option value="showAllMikrotikUser">
-                              {t("sokolCustomer")}
-                            </option>
-                          </select>
-                        </div>
-
-                        {whatYouWantToShow === "showAllMikrotikUser" && (
-                          <div className="rightSideMikrotik ms-5">
-                            <h4> {t("status")} </h4>
-                            <select
-                              id="selectMikrotikOption"
-                              onChange={filterIt}
-                              className="form-select mt-0"
-                            >
-                              <option value={"allCustomer"}>
-                                {t("sokolCustomer")}
-                              </option>
-                              <option value={"false"}>{t("active")}</option>
-                              <option value={"true"}>{t("in active")}</option>
-                            </select>
-                          </div>
+                        {/* Active PPPoE users */}
+                        {whatYouWantToShow === "showAllMikrotikUser" ? (
+                          <>
+                            <h2 style={{ width: "100%", textAlign: "center" }}>
+                              {t("customer")}
+                            </h2>
+                            <Table
+                              isLoading={userLoading}
+                              columns={columns}
+                              data={allUsers}
+                            ></Table>
+                          </>
+                        ) : (
+                          ""
                         )}
                       </div>
                     </div>
-
-                    {/* PPPoE Package */}
-                    {whatYouWantToShow === "showMikrotikPackage" ? (
-                      <>
-                        <h2 style={{ width: "100%", textAlign: "center" }}>
-                          {t("package")}
-                        </h2>
-                        <Table
-                          isLoading={isLoading}
-                          columns={columns1}
-                          data={pppoePackage}
-                        ></Table>
-                      </>
-                    ) : (
-                      ""
-                    )}
-
-                    {/* Active PPPoE users */}
-                    {whatYouWantToShow === "showAllMikrotikUser" ? (
-                      <>
-                        <h2 style={{ width: "100%", textAlign: "center" }}>
-                          {t("customer")}
-                        </h2>
-                        <Table
-                          isLoading={userLoading}
-                          columns={columns}
-                          data={allUsers}
-                        ></Table>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
+                  </Tab>
+                  <Tab eventKey="hotspot" title={t("hotspot")}>
+                    <Hotspot />
+                  </Tab>
+                </Tabs>
               </FourGround>
               <Footer />
             </FontColor>
