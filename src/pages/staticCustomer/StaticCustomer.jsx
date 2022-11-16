@@ -419,58 +419,6 @@ export default function Customer() {
         // }
 
         //payment status filter
-        // if (customer.paymentStatus) {
-        //   if (filterOptions.paymentStatus === "free") {
-        //     if (customer.monthlyFee === parseInt("0")) {
-        //       isFound = true;
-        //     } else {
-        //       return false;
-        //     }
-        //   } else if (
-        //     customer.paymentStatus === "paid" &&
-        //     filterOptions.paymentStatus === "paid"
-        //   ) {
-        //     isFound = true;
-        //   } else if (
-        //     customer.paymentStatus === "unpaid" &&
-        //     filterOptions.paymentStatus === "unpaid" &&
-        //     customer.balance == 0
-        //   ) {
-        //     isFound = true;
-        //   } else if (
-        //     customer.paymentStatus === "unpaid" &&
-        //     filterOptions.paymentStatus === "partial"
-        //   ) {
-        //     if (
-        //       customer.monthlyFee > customer.balance &&
-        //       customer.balance > parseInt("0")
-        //     ) {
-        //       isFound = true;
-        //     } else {
-        //       return false;
-        //     }
-        //   } else if (
-        //     customer.paymentStatus === "paid" &&
-        //     filterOptions.paymentStatus === "advance"
-        //   ) {
-        //     if (2 * customer.monthlyFee < customer.balance) {
-        //       isFound = true;
-        //     } else {
-        //       return false;
-        //     }
-        //   } else if (
-        //     customer.paymentStatus === "unpaid" &&
-        //     filterOptions.paymentStatus === "overdue"
-        //   ) {
-        //     if (customer.balance < parseInt("0")) {
-        //       isFound = true;
-        //     } else {
-        //       return false;
-        //     }
-        //   } else {
-        //     isFound = false;
-        //   }
-        // }
 
         if (filterOptions.paymentStatus) {
           if (filterOptions.paymentStatus === "free") {

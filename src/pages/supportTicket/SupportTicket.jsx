@@ -10,53 +10,52 @@ import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  editSupportTicketsApi,
-  getAllSupportTickets,
-} from "../../features/supportTicketApi";
+import { getAllSupportTickets } from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
-import { PenFill, ThreeDots } from "react-bootstrap-icons";
+import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
+import SupportTicketEdit from "./modal/SupportTicketEdit";
+import SupportTicketDelete from "./modal/SupportTicketDelete";
+import { badge } from "../../components/common/Utils";
+import apiLink from "../../api/apiLink";
 
 const SupportTicket = () => {
   const { t } = useTranslation();
-
-  // declare state
-  const [isLoading, setIsLoading] = useState(false);
-  const [supportTicketId, setSupportTicketId] = useState("");
-  const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
-  console.log(supportTicketStatusValue);
-
+  const dispatch = useDispatch();
   // storing data form redux
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
-  console.log(supportTickets);
 
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-
-  const dispatch = useDispatch();
+  // declare state
+  const [isLoading, setIsLoading] = useState(false);
+  const [supportTicketId, setSupportTicketId] = useState("");
+  const [deleteTicketId, setDeleteTicketId] = useState("");
+  const [allCollector, setAllCollector] = useState([]);
+  console.log(allCollector);
 
   useEffect(() => {
-    console.log("first");
     getAllSupportTickets(dispatch, ispOwner, setIsLoading);
   }, []);
 
-  const getSupportId = (id) => {
-    setSupportTicketId(id);
+  useEffect(async () => {
+    const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
+    setAllCollector([...res.data]);
+  }, []);
+
+  // handle edit function
+  const handlesupportTicketEditId = (ticketId) => {
+    setSupportTicketId(ticketId);
+    console.log(ticketId);
   };
 
-  const handleSupportTicketStatus = (e) => {
-    let value = e.target.value;
-    setSupportTicketStatusValue(value);
+  // handle delete function
+  const handlesupportTicketDeleteId = (ticketId) => {
+    setDeleteTicketId(ticketId);
   };
 
-  const SupportTicketStatusSubmit = (e) => {
-    e.preventDefault();
-
-    editSupportTicketsApi(dispatch, supportTicketStatusValue, supportTicketId);
-  };
   const columns = useMemo(
     () => [
       {
@@ -68,6 +67,16 @@ const SupportTicket = () => {
       },
 
       {
+        width: "8%",
+        Header: "Id",
+        accessor: "customer.customerId",
+      },
+      {
+        width: "11%",
+        Header: "Name",
+        accessor: "customer.name",
+      },
+      {
         width: "11%",
         Header: " Support Message",
         accessor: "message",
@@ -77,6 +86,9 @@ const SupportTicket = () => {
         width: "8%",
         Header: t("status"),
         accessor: "status",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
       },
 
       {
@@ -87,47 +99,63 @@ const SupportTicket = () => {
           return moment(value).format("MMM DD YYYY hh:mm a");
         },
       },
-      // {
-      //   width: "6%",
-      //   Header: () => <div className="text-center">{t("action")}</div>,
-      //   id: "option",
+      {
+        width: "6%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
 
-      //   Cell: ({ row: { original } }) => (
-      //     <div
-      //       style={{
-      //         display: "flex",
-      //         alignItems: "center",
-      //         justifyContent: "center",
-      //       }}
-      //     >
-      //       <div className="dropdown">
-      //         <ThreeDots
-      //           className="dropdown-toggle ActionDots"
-      //           id="areaDropdown"
-      //           type="button"
-      //           data-bs-toggle="dropdown"
-      //           aria-expanded="false"
-      //         />
-      //         <ul className="dropdown-menu" aria-labelledby="customerDrop">
-      //           <li
-      //             data-bs-toggle="modal"
-      //             data-bs-target="#exampleModal"
-      //             onClick={() => {
-      //               getSupportId(original?.id);
-      //             }}
-      //           >
-      //             <div className="dropdown-item">
-      //               <div className="customerAction">
-      //                 <PenFill />
-      //                 <p className="actionP">{t("edit")}</p>
-      //               </div>
-      //             </div>
-      //           </li>
-      //         </ul>
-      //       </div>
-      //     </div>
-      //   ),
-      // },
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#editModal"
+                  onClick={() => {
+                    console.log(original);
+                    handlesupportTicketEditId(original?.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModal"
+                  onClick={() => {
+                    console.log(original);
+                    handlesupportTicketDeleteId(original?.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">{t("delete")}</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
     ],
     [t]
   );
@@ -158,66 +186,27 @@ const SupportTicket = () => {
                   </div>
                 </div>
               </FourGround>
-              <FourGround>
+              {/* <FourGround>
                 <div className="collectorWrapper mt-2 py-2"></div>
-              </FourGround>
+              </FourGround> */}
               <Footer />
             </FontColor>
           </div>
         </div>
       </div>
 
-      <div
-        class="modal fade"
-        id="exampleModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                Support Status
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <select
-                class="form-select"
-                aria-label="Default select example"
-                onChange={handleSupportTicketStatus}
-              >
-                <option selected>Status</option>
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cancle
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                onClick={SupportTicketStatusSubmit}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Edit Modal Start */}
+      <SupportTicketEdit
+        ticketEditId={supportTicketId}
+        allCollector={allCollector}
+      />
+      {/* Edit Modal End */}
+
+      {/* Delete Modal Start */}
+
+      <SupportTicketDelete supportTicketDeleteID={deleteTicketId} />
+
+      {/* Delete Modal end */}
     </>
   );
 };
