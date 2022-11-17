@@ -103,8 +103,6 @@ export default function Customer() {
 
   useEffect(() => {
     let tempCustomers = cus;
-    let isFound = false;
-    let filteredArr = [];
 
     if (subAreaId) {
       tempCustomers = tempCustomers.filter(

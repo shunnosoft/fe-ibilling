@@ -1,12 +1,15 @@
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editSupportTicketsApi } from "../../features/supportTicketApi";
+import { editSupportTicketsApi } from "../../../features/supportTicketApi";
 
-const SupportTicketEdit = ({ ticketEditId }) => {
-  console.log(ticketEditId);
+const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   const dispatch = useDispatch();
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
+  const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
+
+  // storing data form redux
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
@@ -14,18 +17,23 @@ const SupportTicketEdit = ({ ticketEditId }) => {
   const singleTicket = supportTickets.find(
     (ticket) => ticket.id === ticketEditId
   );
-  console.log(singleTicket);
 
+  // all handler here
   const handleSupportTicketStatusEdit = (e) => {
     let statusValue = e.target.value;
     setSupportTicketStatusValue(statusValue);
   };
+  const handleCollectorId = (e) => {
+    let value = e.target.value;
+    setSupportTicketCollectorId(value);
+  };
+
   const supportTicketStatusSubmit = (e) => {
     e.preventDefault();
     const data = {
       status: supportTicketStatusValue,
+      collector: supportTicketCollectorId,
     };
-
     editSupportTicketsApi(dispatch, data, ticketEditId);
   };
 
@@ -51,6 +59,7 @@ const SupportTicketEdit = ({ ticketEditId }) => {
             ></button>
           </div>
           <div class="modal-body">
+            <h4>Status</h4>
             <select
               style={{ width: "100%" }}
               class="form-select mw-100"
@@ -64,17 +73,25 @@ const SupportTicketEdit = ({ ticketEditId }) => {
                 Pending
               </option>
               <option
-                selected={singleTicket?.status === "processed"}
-                value="processed"
+                selected={singleTicket?.status === "processing"}
+                value="processing"
               >
                 Processing
               </option>
               <option
-                selected={singleTicket?.status === "complete"}
-                value="complete"
+                selected={singleTicket?.status === "completed"}
+                value="completed"
               >
                 Completed
               </option>
+            </select>
+            <div style={{ margin: "2.5rem" }}></div>
+            <h4>Assign Collector</h4>
+            <select class="form-select mw-100" onChange={handleCollectorId}>
+              <option selected>Select Collector</option>
+              {allCollector.map((collector) => {
+                return <option value={collector.id}>{collector.name}</option>;
+              })}
             </select>
           </div>
           <div class="modal-footer">
@@ -83,7 +100,7 @@ const SupportTicketEdit = ({ ticketEditId }) => {
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              Cancle
+              cancel
             </button>
             <button
               type="button"

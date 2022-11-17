@@ -70,6 +70,7 @@ import StaticCustomer from "./pages/staticCustomer/StaticCustomer";
 import PackageSetting from "./pages/staticCustomer/PakageSetting";
 import ResellerSmsRequest from "./pages/resellerSMSrequest/ResellerSmsRequest";
 import StaticActiveCustomer from "./pages/staticActiveCustomer/StaticActiveCustomer";
+import HotspotCustomer from "./pages/hotspot/HotspotCustomer";
 import RMessage from "./reseller/message/Message";
 import RSettings from "./reseller/settings/Settings";
 import RActiveCustomer from "./reseller/activeustomer/ActiveCustomer";
@@ -357,6 +358,19 @@ function App() {
                 )
               }
             />
+
+            {/* Hotspot Customer  */}
+            <Route
+              path="/hotspot/customer"
+              element={
+                userRole === "ispOwner" ? (
+                  <HotspotCustomer />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
             <Route
               path="/packageSetting"
               element={
@@ -422,13 +436,14 @@ function App() {
                 )
               }
             />
+
             <Route
               path="/support/ticket"
               element={
-                user && userRole === "ispOwner" ? (
+                userRole === "ispOwner" ? (
                   <CustomerSupportTicket />
                 ) : (
-                  <Navigate to={"/home"} />
+                  userRole === "collector" && <CustomerSupportTicket />
                 )
               }
             />

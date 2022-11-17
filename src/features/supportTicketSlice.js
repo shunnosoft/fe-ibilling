@@ -9,17 +9,18 @@ export const supportTicketSlice = createSlice({
     getSupportTickets: (state, action) => {
       state.supportTickets = action.payload;
     },
+    getAllCustomer: (state, action) => {
+      state.supportTickets = action.payload;
+    },
     editSupportTickets: (state, action) => {
-      console.log(action.payload.supportTicket);
+      console.log(action.payload);
       let index = state.supportTickets.findIndex(
-        (singleTicket) => singleTicket.id === action.payload.supportTicket.id
+        (singleTicket) => singleTicket.id === action.payload.id
       );
-      console.log(index);
-      console.log(current(state.supportTickets[index]));
-      state.supportTickets[index] = {
-        ...state.supportTickets[index],
-        status: action.payload.supportTicket.status,
-      };
+      state.supportTickets[index] = action.payload;
+      // state.supportTickets[
+      //   state.supportTickets.findIndex((item) => item.id === action.payload.id)
+      // ] = action.payload;
     },
 
     deleteSupportTickets: (state, action) => {
@@ -31,7 +32,11 @@ export const supportTicketSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { getSupportTickets, editSupportTickets, deleteSupportTickets } =
-  supportTicketSlice.actions;
+export const {
+  getSupportTickets,
+  getAllCustomer,
+  editSupportTickets,
+  deleteSupportTickets,
+} = supportTicketSlice.actions;
 
 export default supportTicketSlice.reducer;

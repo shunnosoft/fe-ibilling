@@ -29,6 +29,8 @@ import messageLogSlice from "../features/messageLogSlice";
 import supportTicketSlice from "../features/supportTicketSlice";
 import productSlice from "../features/inventorySlice";
 
+import hotspotSlice from "../features/hotspotSlice";
+// import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
   version: 1,
@@ -68,6 +70,7 @@ const store = configureStore({
     messageLog: messageLogSlice,
     supportTicket: supportTicketSlice,
     products: productSlice,
+    hotspotPackage: hotspotSlice,
   },
 
   middleware: (getDefaultMiddleware) =>
