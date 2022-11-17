@@ -67,7 +67,7 @@ const store = configureStore({
     client: finalClientSlice,
     messageLog: messageLogSlice,
     supportTicket: supportTicketSlice,
-    hotspotPackage: hotspotSlice,
+    hotspot: hotspotSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

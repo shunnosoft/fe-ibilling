@@ -8,6 +8,9 @@ import useDash from "../../assets/css/dash.module.css";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import AddCustomer from "./customerOperation/AddCustomer";
+import { useEffect } from "react";
+import { useState } from "react";
+import { getHotspotCustomer } from "../../features/hotspotApi";
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -19,6 +22,18 @@ const HotspotCustomer = () => {
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get ispOwner Id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // loading state
+  const [getCustomerLoading, setGetCustomerLoading] = useState(false);
+
+  useEffect(() => {
+    getHotspotCustomer(dispatch, ispOwnerId, setGetCustomerLoading);
+  }, []);
 
   return (
     <>
