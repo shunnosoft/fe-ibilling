@@ -330,7 +330,18 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                           className="form-check-label"
                           for="flexCheckChecked"
                         >
-                          Has Microtik
+                          Has Mikrotik
+                        </label>
+                      </div>
+                      <div className="form-check mt-4">
+                        <Field
+                          className="form-check-input"
+                          type="checkbox"
+                          id="inventory"
+                          name="inventory"
+                        />
+                        <label className="form-check-label" for="inventory">
+                          Has Inventory
                         </label>
                       </div>
                     </div>

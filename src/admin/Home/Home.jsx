@@ -25,6 +25,7 @@ import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
 import FileUpload from "./modal/FileUpload";
 import Permissions from "./modal/Permissions";
+import AddProprietorModal from "./modal/AddProprietorModal";
 
 export default function Home() {
   // loading
@@ -217,7 +218,7 @@ export default function Home() {
         Cell: ({ row: { original } }) => {
           return (
             <div className="text-center">
-              <>
+              <div className="dropdown">
                 <ThreeDots
                   className="dropdown-toggle ActionDots"
                   id="areaDropdown"
@@ -301,6 +302,20 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#inventoryAddModal"
+                    onClick={() => {
+                      setOwnerId(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CardChecklist />
+                        <p className="actionP">Add Inventory</p>
+                      </div>
+                    </div>
+                  </li>
                   <li onClick={() => resetSerialNumberHandler(original.id)}>
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -353,7 +368,7 @@ export default function Home() {
                     </div>
                   </li> */}
                 </ul>
-              </>
+              </div>
             </div>
           );
         },
@@ -425,6 +440,7 @@ export default function Home() {
               <Permissions ownerId={ownerId} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
+              <AddProprietorModal ownerId={ownerId} />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
             </FontColor>

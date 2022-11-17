@@ -16,9 +16,11 @@ import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import {
   ArrowClockwise,
+  Cart2,
   CartPlus,
   PersonPlusFill,
   PrinterFill,
+  ThreeDots,
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import { getProductApi } from "../../features/actions/inventoryAction";
@@ -54,6 +56,66 @@ function Stock() {
       id: "row",
       accessor: (row) => Number(row.id + 1),
       Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+    },
+    {
+      width: "10%",
+      Header: t("name"),
+      accessor: "name",
+    },
+    {
+      width: "10%",
+      Header: t("description"),
+      accessor: "description",
+    },
+    {
+      width: "10%",
+      Header: t("purchaseAmount"),
+      accessor: "purchaseAmount",
+    },
+    {
+      width: "10%",
+      Header: t("sellAmount"),
+      accessor: "sellAmount",
+    },
+    {
+      width: "10%",
+      Header: t("quantity"),
+      accessor: "quantity",
+    },
+    {
+      width: "15%",
+      Header: () => <div className="text-center">{t("action")}</div>,
+      id: "option",
+
+      Cell: ({ row: { original } }) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div className="dropdown">
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              <li>
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <Cart2 />
+                    <p className="actionP">Sell Product</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      ),
     },
   ];
 
@@ -112,7 +174,7 @@ function Stock() {
                     <Table
                       isLoading={isLoading}
                       data={products}
-                      columns={[]}
+                      columns={column}
                     ></Table>
                   </div>
                 </div>

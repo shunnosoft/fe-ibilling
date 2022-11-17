@@ -5,6 +5,7 @@ import { Form, Formik } from "formik";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import * as Yup from "yup";
+import { createProductApi } from "../../../features/actions/inventoryAction";
 
 export default function ProductPostModal() {
   //import hooks
@@ -12,7 +13,6 @@ export default function ProductPostModal() {
   const dispatch = useDispatch();
 
   //get data from redux store
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -22,7 +22,15 @@ export default function ProductPostModal() {
   const [productDescription, setProductDescription] = useState("");
 
   const submitHandler = (data) => {
-    console.log(data);
+    if (!productDescription) {
+      return alert("Please enter product description");
+    }
+    const productData = {
+      ...data,
+      description: productDescription,
+      ispOwner,
+    };
+    createProductApi(dispatch, productData, setIsLoading);
   };
 
   //validator
