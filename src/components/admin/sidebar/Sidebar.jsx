@@ -103,7 +103,6 @@ export default function Sidebar() {
       localStorage.setItem("active-key", key);
     }
   };
-
   return (
     <TitleColor>
       <div>
@@ -1101,7 +1100,8 @@ export default function Sidebar() {
                             </span>
                           </Accordion.Header>
                           <Accordion.Body>
-                            {userRole === "ispOwner" && (
+                            {(userRole === "ispOwner" ||
+                              userRole === "collector") && (
                               <NavLink
                                 key={11}
                                 to={"/support/ticket"}

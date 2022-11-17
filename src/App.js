@@ -88,6 +88,7 @@ import DueCustomer from "./pages/dueCustomer/DueCustomer";
 import SuccessPaymentSuccess from "./ownerCustomer/CustomerPaymentSuccess";
 import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 import Stock from "./pages/Inventory/Stock";
+import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -440,10 +441,14 @@ function App() {
             <Route
               path="/support/ticket"
               element={
-                userRole === "ispOwner" ? (
-                  <CustomerSupportTicket />
+                user ? (
+                  userRole === "ispOwner" ? (
+                    <CustomerSupportTicket />
+                  ) : (
+                    userRole === "collector" && <CollectorSupportTicket />
+                  )
                 ) : (
-                  userRole === "collector" && <CustomerSupportTicket />
+                  <Navigate to={"/home"} />
                 )
               }
             />
