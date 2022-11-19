@@ -580,5 +580,14 @@
   "maskingIdNotFound": "Masking Id not Found!",
   "resellerRechargeTemplate": "Reseller Recharge",
   "mikrotikCustomerCsvDownload": "Mikrotik Customer Csv File Download",
-  "supportTicket": "Support Ticket"
+  "supportTicket": "Support Ticket",
+  "support":"Support",
+  "inventory":"Inventory",
+  "stock":"Stock",
+  "addProduct":"Add Product",
+  "description":"Description",
+  "purchaseAmount":"Purchase Amount",
+  "sellAmount":"Sell Amount",
+  "quantity":"Quantity"
+
 }

@@ -7,7 +7,6 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";

@@ -28,6 +28,10 @@ export const supportTicketSlice = createSlice({
         (ticket) => ticket.id !== action.payload
       );
     },
+
+    getCollectorSupportTickets: (state, action) => {
+      state.supportTickets = action.payload;
+    },
   },
 });
 
@@ -37,6 +41,7 @@ export const {
   getAllCustomer,
   editSupportTickets,
   deleteSupportTickets,
+  getCollectorSupportTickets,
 } = supportTicketSlice.actions;
 
 export default supportTicketSlice.reducer;

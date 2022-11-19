@@ -17,7 +17,6 @@ export const bulkDeleteCustomer = async (
     const res = await apiLink.delete(`/customer/bulk/?mikrotik=${mikrotik}`, {
       data,
     });
-    console.log(res);
     dispatch(bulkDelete(res.data.data));
     document.querySelector("#bulkDeleteCustomer").click();
     setIsLoading(false);

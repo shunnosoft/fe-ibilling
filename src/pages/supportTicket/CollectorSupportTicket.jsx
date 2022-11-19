@@ -10,7 +10,10 @@ import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllSupportTickets } from "../../features/supportTicketApi";
+import {
+  getAllSupportTickets,
+  getCollectorApi,
+} from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import SupportTicketEdit from "./modal/SupportTicketEdit";
@@ -18,7 +21,7 @@ import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
 import apiLink from "../../api/apiLink";
 
-const SupportTicket = () => {
+const CollectorSupportTicket = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   // storing data form redux
@@ -29,6 +32,13 @@ const SupportTicket = () => {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+  //   const ispOwner = useSelector(
+  //     (state) => state.persistedReducer.auth.currentUser.collector.ispOwner
+  //   );
+  const collectorId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.collector.id
+  );
+  console.log(collectorId);
 
   // declare state
   const [isLoading, setIsLoading] = useState(false);
@@ -37,13 +47,13 @@ const SupportTicket = () => {
   const [allCollector, setAllCollector] = useState([]);
 
   useEffect(() => {
-    getAllSupportTickets(dispatch, ispOwner, setIsLoading);
+    getCollectorApi(dispatch, ispOwner, collectorId, setIsLoading);
   }, []);
 
-  useEffect(async () => {
-    const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
-    setAllCollector([...res.data]);
-  }, []);
+  //   useEffect(async () => {
+  //     const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
+  //     setAllCollector([...res.data]);
+  //   }, []);
 
   // handle edit function
   const handlesupportTicketEditId = (ticketId) => {
@@ -196,19 +206,19 @@ const SupportTicket = () => {
       </div>
 
       {/* Edit Modal Start */}
-      <SupportTicketEdit
+      {/* <SupportTicketEdit
         ticketEditId={supportTicketId}
         allCollector={allCollector}
-      />
+      /> */}
       {/* Edit Modal End */}
 
       {/* Delete Modal Start */}
 
-      <SupportTicketDelete supportTicketDeleteID={deleteTicketId} />
+      {/* <SupportTicketDelete supportTicketDeleteID={deleteTicketId} /> */}
 
       {/* Delete Modal end */}
     </>
   );
 };
 
-export default SupportTicket;
+export default CollectorSupportTicket;

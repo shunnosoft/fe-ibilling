@@ -4,6 +4,7 @@ import {
   deleteSupportTickets,
   editSupportTickets,
   getAllCustomer,
+  getCollectorSupportTickets,
   getSupportTickets,
 } from "./supportTicketSlice";
 
@@ -42,13 +43,21 @@ export const deleteSupportTicketsApi = async (dispatch, ticketId) => {
   }
 };
 
-// export const getCollectorApi = async (dispatch, ispOwnerId, setIsLoading) => {
-//   try {
-//     setIsLoading(true);
-//     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
-//     dispatch(getAllCustomer(res.data));
-//   } catch (error) {
-//     toast.error(error.response?.data.message);
-//   }
-//   setIsLoading(false);
-// };
+export const getCollectorApi = async (
+  dispatch,
+  ispOwnerId,
+  collectorId,
+  setIsLoading
+) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.get(
+      `customer/supportTickets/${ispOwnerId}/${collectorId}`
+    );
+    console.log(res.data);
+    dispatch(getCollectorSupportTickets(res.data.supportTickets));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};

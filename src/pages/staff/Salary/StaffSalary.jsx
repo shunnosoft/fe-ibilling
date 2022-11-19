@@ -6,7 +6,6 @@ import {
   ArrowLeftShort,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";

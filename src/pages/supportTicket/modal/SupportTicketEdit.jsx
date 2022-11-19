@@ -8,6 +8,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   const dispatch = useDispatch();
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
   const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
+  console.log(supportTicketStatusValue);
 
   // storing data form redux
   const supportTickets = useSelector(
@@ -17,7 +18,8 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   const singleTicket = supportTickets.find(
     (ticket) => ticket.id === ticketEditId
   );
-
+  console.log(singleTicket);
+  // console.log(singleTicket.status);
   // all handler here
   const handleSupportTicketStatusEdit = (e) => {
     let statusValue = e.target.value;
@@ -30,13 +32,18 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
 
   const supportTicketStatusSubmit = (e) => {
     e.preventDefault();
+
     const data = {
       status: supportTicketStatusValue,
       collector: supportTicketCollectorId,
     };
     editSupportTicketsApi(dispatch, data, ticketEditId);
   };
-
+  useEffect(() => {
+    if (singleTicket) {
+      setSupportTicketStatusValue(singleTicket.status);
+    }
+  }, [singleTicket]);
   return (
     <div
       class="modal fade"
@@ -59,7 +66,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
             ></button>
           </div>
           <div class="modal-body">
-            <h4>Status</h4>
+            <label>Status</label>
             <select
               style={{ width: "100%" }}
               class="form-select mw-100"
@@ -86,9 +93,13 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
               </option>
             </select>
             <div style={{ margin: "2.5rem" }}></div>
-            <h4>Assign Collector</h4>
-            <select class="form-select mw-100" onChange={handleCollectorId}>
-              <option selected>Select Collector</option>
+            <label>Assign Collector</label>
+            <select
+              class="form-select mw-100"
+              required
+              onChange={handleCollectorId}
+            >
+              <option>Select Collector</option>
               {allCollector.map((collector) => {
                 return <option value={collector.id}>{collector.name}</option>;
               })}
@@ -102,14 +113,26 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
             >
               cancel
             </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-              onClick={supportTicketStatusSubmit}
-            >
-              Save
-            </button>
+            {singleTicket?.status === "completed" ? (
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={supportTicketStatusSubmit}
+                disabled
+              >
+                Save
+              </button>
+            ) : (
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={supportTicketStatusSubmit}
+              >
+                Save
+              </button>
+            )}
           </div>
         </div>
       </div>
