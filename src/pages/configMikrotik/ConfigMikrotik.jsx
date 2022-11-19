@@ -47,7 +47,7 @@ import { useTranslation } from "react-i18next";
 import { CSVLink } from "react-csv";
 import { getHotspotPackage } from "../../features/hotspotApi";
 import { Tab, Tabs } from "react-bootstrap";
-import Hotspot from "./configMikrotikModals/hotspot/Hotspot";
+import Hotspot from "./hotspot/Hotspot";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import { BagCheckFill, Check2Circle } from "react-bootstrap-icons";
+import moment from "moment";
+import Table from "../../../components/table/Table";
+import Loader from "../../../components/common/Loader";
 import {
+  getHotspotCustomer,
   getHotspotPackage,
   syncHotspotCustomer,
   syncHotspotPackage,
-} from "../../../../features/hotspotApi";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-import Loader from "../../../../components/common/Loader";
-import { BagCheckFill, Check2Circle } from "react-bootstrap-icons";
-import moment from "moment";
-import Table from "../../../../components/table/Table";
+} from "../../../features/hotspotApi";
 
 const Hotspot = () => {
   const { t } = useTranslation();
@@ -20,10 +22,10 @@ const Hotspot = () => {
   const { ispOwner, mikrotikId } = useParams();
 
   // get hotspot package
-  const hotsPackage = useSelector((state) => state.hotspot.package);
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
 
   // get hotspot customer
-  const hotspotCustomer = useSelector((state) => state.hotspot.hotspotCustomer);
+  const hotspotCustomer = useSelector((state) => state.hotspot?.customer);
 
   // loading state
   const [hotspotPackageLoading, setHotspotPackageLoading] = useState(false);
@@ -33,6 +35,9 @@ const Hotspot = () => {
 
   // section show state
   const [showSection, setShowSection] = useState("hotspotPackage");
+
+  // mikrotik package
+  const [mikrotikPackage, setMikrotikPackage] = useState();
 
   // hotspot package sync handler
   const hotspotPackageHandle = () => {
@@ -56,19 +61,9 @@ const Hotspot = () => {
   };
 
   useEffect(() => {
-    syncHotspotPackage(
-      dispatch,
-      ispOwner,
-      mikrotikId,
-      setHotspotPackageLoading
-    );
+    getHotspotPackage(dispatch, ispOwner, setHotspotPackageLoading);
 
-    syncHotspotCustomer(
-      dispatch,
-      ispOwner,
-      mikrotikId,
-      setHotspotCustomerLoading
-    );
+    getHotspotCustomer(dispatch, ispOwner, setHotspotCustomerLoading);
   }, []);
 
   const packageColumn = React.useMemo(

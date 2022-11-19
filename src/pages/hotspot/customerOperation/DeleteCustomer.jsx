@@ -1,23 +1,22 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
-import { deleteACustomer } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import { deleteHotspotCustomer } from "../../../features/hotspotApi";
 
-const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
+const DeleteCustomer = ({ customerId, mikrotikCheck, setMikrotikCheck }) => {
   const { t } = useTranslation();
   // get all customer
-  const customers = useSelector((state) => state?.customer?.customer);
+  const customers = useSelector((state) => state?.hotspot?.customer);
 
   // find deletable customer
-  const singleData = customers.find((item) => item.id === single);
-  console.log(singleData);
+  const singleData = customers.find((item) => item.id === customerId);
 
   // import dispatch
   const dispatch = useDispatch();
 
   // loading state
-  const [isLoading, setIsloading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -32,23 +31,21 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
       checkCondition = window.confirm(t("deleteMikrotik"));
     }
 
-    // send data for api
-    const data = {
-      ispID: ispOwnerId,
-      customerID: customerId,
-      mikrotik: mikrotikCheck,
-    };
-
     // api call
     if (checkCondition) {
-      deleteACustomer(dispatch, data, setIsloading);
+      deleteHotspotCustomer(
+        dispatch,
+        customerId,
+        mikrotikCheck,
+        setDeleteLoading
+      );
     }
   };
 
   return (
     <div
       className="modal fade"
-      id="customerDelete"
+      id="hotsportCustomerDelete"
       tabIndex="-1"
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
@@ -93,18 +90,18 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
-                disabled={isLoading}
+                disabled={deleteLoading}
               >
                 {t("cancel")}
               </button>
               <button
                 onClick={() => {
-                  deleteCustomer(single);
+                  deleteCustomer(customerId);
                 }}
                 className="btn btn-success"
-                disabled={isLoading}
+                disabled={deleteLoading}
               >
-                {isLoading ? <Loader /> : t("delete")}
+                {deleteLoading ? <Loader /> : t("delete")}
               </button>
             </div>
           </div>
@@ -114,4 +111,4 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   );
 };
 
-export default CustomerDelete;
+export default DeleteCustomer;

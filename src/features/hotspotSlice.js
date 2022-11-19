@@ -21,6 +21,16 @@ export const hotspotSlice = createSlice({
     addCustomerSuccess: (state, { payload }) => {
       state.customer.push(payload);
     },
+    editCustomerSuccess: (state, action) => {
+      state.customer[
+        state.customer.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
+    },
+
+    deleteCustomerSuccess: (state, { payload }) => {
+      state.customer = state.customer.filter((item) => item.id !== payload);
+    },
+
     getCustomerSuccess: (state, { payload }) => {
       state.customer = payload;
     },
@@ -31,6 +41,8 @@ export const {
   getSyncPackageSuccess,
   getPackageSuccess,
   addCustomerSuccess,
+  editCustomerSuccess,
+  deleteCustomerSuccess,
   getHotspotCustomerSuccess,
   getCustomerSuccess,
 } = hotspotSlice.actions;

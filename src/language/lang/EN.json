@@ -409,6 +409,7 @@
   "PPPoEPackage": "PPPoE Package",
   "mountly": "Mountly",
   "subAreaName": "Sub Area Name",
+  "selectSubarea": "Select Sub Area",
   "ofSubArea": "Sub Areas",
   "doYouWantDeleteSubArea": "Do you want to delete your Sub Area ?",
   "haveSubAreasCustomers": "You can't delete Sub Area cause contain customers",

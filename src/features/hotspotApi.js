@@ -6,6 +6,8 @@ import {
   getHotspotCustomerSuccess,
   getPackageSuccess,
   getSyncPackageSuccess,
+  editCustomerSuccess,
+  deleteCustomerSuccess,
 } from "./hotspotSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
@@ -63,6 +65,7 @@ export const getHotspotPackage = async (
   setHotspotPackageLoading(true);
   try {
     const res = await apiLink.get(`hotspot/package/${ispOwner}`);
+    console.log(res.data.hotspotPackages);
     dispatch(getPackageSuccess(res.data.hotspotPackages));
   } catch (err) {
     console.log(err.response?.data);
@@ -101,8 +104,10 @@ export const syncHotspotCustomer = async (
 export const addHotspotCustomer = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.post(`hotspot`, data);
-    dispatch(addCustomerSuccess(res.data.updatedCustomers));
+    const res = await apiLink.post(`hotspot/`, data);
+    console.log(res.data);
+    dispatch(addCustomerSuccess(res.data.newCustomer));
+    document.querySelector("#AddHotspotCustomer").click();
 
     langMessage(
       "success",
@@ -115,6 +120,84 @@ export const addHotspotCustomer = async (dispatch, data, setIsLoading) => {
   }
   setIsLoading(false);
 };
+
+// edit hotspot customer
+export const editHotspotCustomer = async (
+  dispatch,
+  data,
+  customerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(`hotspot/${customerId}`, data);
+    dispatch(editCustomerSuccess(res.data.customer));
+    document.querySelector("#EditHotspotCustomer").click();
+    langMessage(
+      "success",
+      "গ্রাহক এডিট সফল হয়েছে!",
+      "Customer Edited Successfully"
+    );
+  } catch (err) {
+    console.log(err.response?.data);
+    toast.error(err.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// delete hotspot customer
+export const deleteHotspotCustomer = async (
+  dispatch,
+  customerId,
+  mikrotikCheck,
+  setDeleteLoading
+) => {
+  setDeleteLoading(true);
+  try {
+    await apiLink.delete(
+      `hotspot/${customerId}?removeFromMikrotik=${mikrotikCheck}`
+    );
+    dispatch(deleteCustomerSuccess(customerId));
+    document.querySelector("#hotsportCustomerDelete").click();
+
+    langMessage(
+      "success",
+      "গ্রাহক ডিলিট সফল হয়েছে!",
+      "Customer Deleted Successfully"
+    );
+  } catch (err) {
+    console.log(err.response?.data);
+    toast.error(err.response?.data?.message);
+  }
+  setDeleteLoading(false);
+};
+
+// bill collect
+export const billCollect = async (
+  dispatch,
+  billData,
+  setLoading,
+  resetForm = null
+) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.post("/hotspot/bill/monthlyBill", billData);
+    dispatch(editCustomerSuccess(res.data.customer));
+    langMessage(
+      "success",
+      "বিল গ্রহণ সফল হয়েছে।",
+      "Bill Acceptance is Successful."
+    );
+    document.querySelector("#customerRecharge").click();
+    resetForm();
+  } catch (error) {
+    document.querySelector("#customerRecharge").click();
+    toast.error(error.response?.data.message);
+  }
+  setLoading(true);
+};
+
+// get hotspot customer
 export const getHotspotCustomer = async (
   dispatch,
   ispOwnerId,
