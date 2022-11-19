@@ -190,6 +190,7 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
 export const editCustomer = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
+  console.log(reseller);
   try {
     const res = await apiLink.patch(
       `/reseller/customer/${reseller}/${singleCustomerID}`,

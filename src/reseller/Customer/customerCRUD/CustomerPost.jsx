@@ -185,47 +185,52 @@ export default function CustomerModal() {
               >
                 {(formik) => (
                   <Form>
-                    <div className="mikrotikSection">
+                    <div className="mikrotikSection d-flex ">
                       {/* pppoe package */}
                       {(userRole === "ispOwner" ||
                         userRole === "collector" ||
                         userRole === "manager") && (
                         <>
-                          <p className="comstomerFieldsTitle">
-                            {t("selectMikrotik")}
-                          </p>
-                          <select
-                            className="form-select mw-100"
-                            aria-label="Default select example"
-                            onChange={selectMikrotik}
-                          >
-                            <option value="">...</option>
-                            {Getmikrotik?.length === undefined
-                              ? ""
-                              : Getmikrotik?.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              {t("selectMikrotik")}
+                            </p>
+                            <select
+                              style={{ width: "60rem" }}
+                              className="form-select "
+                              aria-label="Default select example"
+                              onChange={selectMikrotik}
+                            >
+                              <option value="">...</option>
+                              {Getmikrotik?.length === undefined
+                                ? ""
+                                : Getmikrotik?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                          </div>
 
-                          <p className="comstomerFieldsTitle">
-                            {t("selectPPPoEPackage")}
-                          </p>
-                          <select
-                            className="form-select mb-3"
-                            aria-label="Default select example"
-                            onChange={selectMikrotikPackage}
-                          >
-                            <option value="">...</option>
-                            {ppPackage.length === undefined
-                              ? ""
-                              : ppPackage?.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
+                          <div>
+                            <p className="comstomerFieldsTitle">
+                              {t("selectPPPoEPackage")}
+                            </p>
+                            <select
+                              className="form-select mb-3 mw-100"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="">...</option>
+                              {ppPackage.length === undefined
+                                ? ""
+                                : ppPackage?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                          </div>
                         </>
                       )}
 

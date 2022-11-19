@@ -20,6 +20,7 @@ import SupportTicketEdit from "./modal/SupportTicketEdit";
 import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
 import apiLink from "../../api/apiLink";
+import CollectorSupportTicketEdit from "./CollectorSupportTicketEdit";
 
 const CollectorSupportTicket = () => {
   const { t } = useTranslation();
@@ -206,6 +207,7 @@ const CollectorSupportTicket = () => {
       </div>
 
       {/* Edit Modal Start */}
+      {/* <CollectorSupportTicketEdit /> */}
       {/* <SupportTicketEdit
         ticketEditId={supportTicketId}
         allCollector={allCollector}

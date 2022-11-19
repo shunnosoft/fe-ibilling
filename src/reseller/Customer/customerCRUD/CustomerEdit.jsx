@@ -162,7 +162,7 @@ export default function CustomerEdit({ single }) {
       ispOwner: ispOwnerId,
       mikrotik: data?.mikrotik,
       mikrotikPackage: packageRate?.id,
-      monthlyFee,
+      monthlyFee: data.monthlyFee,
       // billPayType: "prepaid",
 
       reseller: resellerId,
@@ -221,7 +221,7 @@ export default function CustomerEdit({ single }) {
                   email: data?.email || "",
                   nid: data?.nid || "",
                   Pcomment: data?.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || data?.monthlyFee || "",
+                  monthlyFee: packageRate?.rate,
                   Pname: data?.pppoe?.name || "",
                   Pprofile: packageRate?.name || data?.pppoe?.profile || "",
                   Ppassword: data?.pppoe?.password || "",
@@ -290,6 +290,19 @@ export default function CustomerEdit({ single }) {
                         min={packageRate?.rate || data?.monthlyFee}
                         disabled={!permission?.monthlyFeeEdit}
                       />
+                      {/* <div>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          // onChange={selectMikrotik}
+                          disabled
+                          value={data?.monthlyFee || ""}
+                        >
+                          <option value={data?.monthlyFee || ""}>
+                            {data?.monthlyFee || ""}
+                          </option>
+                        </select>
+                      </div> */}
                     </div>
 
                     <div className="pppoeSection2">
