@@ -26,9 +26,13 @@ export default function CustomerModal() {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
+  const area = useSelector(
+    (state) => state.persistedReducer.auth?.userData.areas
+  );
 
   // get are from redux
-  const area = useSelector((state) => state?.area?.area);
+  // const area = useSelector((state) => state?.area?.area);
+  // console.log(area);
 
   // get reseller from redux
   const reseller = useSelector(
@@ -113,7 +117,7 @@ export default function CustomerModal() {
       paymentStatus: "unpaid",
       ispOwner: userData.ispOwner,
       subArea: subAreaId,
-      reseller: userData.id,
+      reseller: userData.reseller,
 
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
@@ -185,47 +189,53 @@ export default function CustomerModal() {
               >
                 {(formik) => (
                   <Form>
-                    <div className="mikrotikSection">
+                    <div className="mikrotikSection ">
                       {/* pppoe package */}
                       {(userRole === "ispOwner" ||
                         userRole === "collector" ||
                         userRole === "manager") && (
                         <>
-                          <p className="comstomerFieldsTitle">
-                            {t("selectMikrotik")}
-                          </p>
-                          <select
-                            className="form-select mw-100"
-                            aria-label="Default select example"
-                            onChange={selectMikrotik}
-                          >
-                            <option value="">...</option>
-                            {Getmikrotik?.length === undefined
-                              ? ""
-                              : Getmikrotik?.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
+                          <div>
+                            <span className="comstomerFieldsTitle">
+                              {t("selectMikrotik")}
+                            </span>
+                            <select
+                              style={{ marginTop: "-2rem" }}
+                              className="form-select "
+                              aria-label="Default select example"
+                              onChange={selectMikrotik}
+                            >
+                              <option value="">...</option>
+                              {Getmikrotik?.length === undefined
+                                ? ""
+                                : Getmikrotik?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                          </div>
 
-                          <p className="comstomerFieldsTitle">
-                            {t("selectPPPoEPackage")}
-                          </p>
-                          <select
-                            className="form-select mb-3"
-                            aria-label="Default select example"
-                            onChange={selectMikrotikPackage}
-                          >
-                            <option value="">...</option>
-                            {ppPackage.length === undefined
-                              ? ""
-                              : ppPackage?.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
+                          <div>
+                            <p style={{ marginBottom: "0rem" }}>
+                              {t("selectPPPoEPackage")}
+                            </p>
+                            <select
+                              style={{ width: "22rem" }}
+                              className="form-select mb-3 mw-100"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="">...</option>
+                              {ppPackage.length === undefined
+                                ? ""
+                                : ppPackage?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                          </div>
                         </>
                       )}
 

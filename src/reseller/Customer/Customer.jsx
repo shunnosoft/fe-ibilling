@@ -61,7 +61,7 @@ export default function Customer() {
   const resellerId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
-
+  console.log(resellerId);
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -80,6 +80,7 @@ export default function Customer() {
 
   // const currentCustomers = Customers
   const subAreas = useSelector((state) => state?.area?.area);
+  console.log(subAreas);
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );

@@ -25,9 +25,9 @@ export default function CustomerEdit({ single }) {
     (state) => state.persistedReducer.auth?.userData?.ispOwner
   );
   const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+    (state) => state.persistedReducer.auth?.userData?.reseller
   );
-
+  // console.log(resellerId);
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
@@ -47,7 +47,11 @@ export default function CustomerEdit({ single }) {
     (state) => state?.mikrotik?.pppoePackage
   );
 
-  const area = useSelector((state) => state?.area?.area);
+  // const area = useSelector((state) => state?.area?.area);
+  // get area from redux
+  const area = useSelector(
+    (state) => state.persistedReducer.auth?.userData.areas
+  );
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   const [ppPackage, setppPackage] = useState([]);
 
@@ -162,7 +166,7 @@ export default function CustomerEdit({ single }) {
       ispOwner: ispOwnerId,
       mikrotik: data?.mikrotik,
       mikrotikPackage: packageRate?.id,
-      monthlyFee,
+      monthlyFee: data.monthlyFee,
       // billPayType: "prepaid",
 
       reseller: resellerId,
@@ -221,7 +225,7 @@ export default function CustomerEdit({ single }) {
                   email: data?.email || "",
                   nid: data?.nid || "",
                   Pcomment: data?.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || data?.monthlyFee || "",
+                  monthlyFee: packageRate?.rate,
                   Pname: data?.pppoe?.name || "",
                   Pprofile: packageRate?.name || data?.pppoe?.profile || "",
                   Ppassword: data?.pppoe?.password || "",
@@ -290,6 +294,19 @@ export default function CustomerEdit({ single }) {
                         min={packageRate?.rate || data?.monthlyFee}
                         disabled={!permission?.monthlyFeeEdit}
                       />
+                      {/* <div>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          // onChange={selectMikrotik}
+                          disabled
+                          value={data?.monthlyFee || ""}
+                        >
+                          <option value={data?.monthlyFee || ""}>
+                            {data?.monthlyFee || ""}
+                          </option>
+                        </select>
+                      </div> */}
                     </div>
 
                     <div className="pppoeSection2">
