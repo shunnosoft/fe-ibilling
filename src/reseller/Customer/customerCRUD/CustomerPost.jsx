@@ -26,9 +26,13 @@ export default function CustomerModal() {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
+  const area = useSelector(
+    (state) => state.persistedReducer.auth?.userData.areas
+  );
 
   // get are from redux
-  const area = useSelector((state) => state?.area?.area);
+  // const area = useSelector((state) => state?.area?.area);
+  // console.log(area);
 
   // get reseller from redux
   const reseller = useSelector(
@@ -113,7 +117,7 @@ export default function CustomerModal() {
       paymentStatus: "unpaid",
       ispOwner: userData.ispOwner,
       subArea: subAreaId,
-      reseller: userData.id,
+      reseller: userData.reseller,
 
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
@@ -185,18 +189,18 @@ export default function CustomerModal() {
               >
                 {(formik) => (
                   <Form>
-                    <div className="mikrotikSection d-flex ">
+                    <div className="mikrotikSection ">
                       {/* pppoe package */}
                       {(userRole === "ispOwner" ||
                         userRole === "collector" ||
                         userRole === "manager") && (
                         <>
                           <div>
-                            <p className="comstomerFieldsTitle">
+                            <span className="comstomerFieldsTitle">
                               {t("selectMikrotik")}
-                            </p>
+                            </span>
                             <select
-                              style={{ width: "60rem" }}
+                              style={{ marginTop: "-2rem" }}
                               className="form-select "
                               aria-label="Default select example"
                               onChange={selectMikrotik}
@@ -213,10 +217,11 @@ export default function CustomerModal() {
                           </div>
 
                           <div>
-                            <p className="comstomerFieldsTitle">
+                            <p style={{ marginBottom: "0rem" }}>
                               {t("selectPPPoEPackage")}
                             </p>
                             <select
+                              style={{ width: "22rem" }}
                               className="form-select mb-3 mw-100"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}

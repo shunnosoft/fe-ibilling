@@ -167,7 +167,7 @@ export const getCustomer = async (dispatch, reseller, setIsloading) => {
   }
 };
 
-export const addCustomer = async (dispatch, data, setIsloading) => {
+export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/reseller/customer", data);
@@ -179,6 +179,7 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
       "Customer Added Successfully"
     );
     document.querySelector("#customerModal").click();
+    resetForm();
   } catch (err) {
     if (err.response) {
       setIsloading(false);

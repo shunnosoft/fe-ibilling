@@ -350,7 +350,7 @@ const PPPOECustomer = () => {
         // payment status filter
         if (filterOptions.paymentStatus) {
           if (filterOptions.paymentStatus === "free") {
-            if (customer.monthlyFee === parseInt("0")) {
+            if (customer.monthlyFee === 0) {
               isFound = true;
             } else {
               return false;
@@ -372,7 +372,7 @@ const PPPOECustomer = () => {
           ) {
             if (
               customer.monthlyFee > customer.balance &&
-              customer.balance > parseInt("0")
+              customer.balance > 0
             ) {
               isFound = true;
             } else {
@@ -382,7 +382,7 @@ const PPPOECustomer = () => {
             filterOptions.paymentStatus === "advance" &&
             customer.paymentStatus === "paid"
           ) {
-            if (2 * customer.monthlyFee < customer.balance) {
+            if (customer.monthlyFee < customer.balance) {
               isFound = true;
             } else {
               return false;
@@ -391,7 +391,7 @@ const PPPOECustomer = () => {
             filterOptions.paymentStatus === "overDue" &&
             customer.paymentStatus === "unpaid"
           ) {
-            if (customer.balance < parseInt("0")) {
+            if (customer.balance < 0) {
               isFound = true;
             } else {
               return false;
