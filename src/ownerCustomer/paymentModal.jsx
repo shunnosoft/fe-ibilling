@@ -10,6 +10,7 @@ const PaymentModal = () => {
   );
   const [paymentAmount, setPaymentAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  const [agreement, setAgreement] = useState(false);
 
   useEffect(() => {
     setPaymentAmount(userData?.monthlyFee);
@@ -56,6 +57,19 @@ const PaymentModal = () => {
               type="number"
               value={paymentAmount}
             />
+
+            <div class="form-check mt-4">
+              <input
+                onChange={(e) => setAgreement(e.target.checked)}
+                min={userData.monthlyFee}
+                className="form-check-input "
+                type="checkbox"
+                id="agreement"
+              />
+              <label htmlFor="agreement">
+                Do you agree our terms and conditions?
+              </label>
+            </div>
           </div>
           <div className="modal-footer">
             <button
@@ -69,6 +83,7 @@ const PaymentModal = () => {
               onClick={billPaymentController}
               type="button"
               className="btn btn-primary"
+              disabled={!agreement}
             >
               {loading ? <Loader /> : "Pay"}
             </button>
