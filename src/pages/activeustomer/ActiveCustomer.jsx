@@ -31,6 +31,7 @@ export default function ConfigMikrotik() {
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
@@ -49,8 +50,10 @@ export default function ConfigMikrotik() {
 
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
+
   // customer id state
   const [customerId, setCustomerId] = useState("");
+
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
 

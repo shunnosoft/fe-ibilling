@@ -3,16 +3,24 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { BagCheckFill, Check2Circle } from "react-bootstrap-icons";
+import {
+  ArchiveFill,
+  BagCheckFill,
+  Check2Circle,
+  PenFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import moment from "moment";
 import Table from "../../../components/table/Table";
 import Loader from "../../../components/common/Loader";
 import {
   getHotspotCustomer,
   getHotspotPackage,
-  syncHotspotCustomer,
+  hotspotPackageDelete,
   syncHotspotPackage,
 } from "../../../features/hotspotApi";
+import EditHotspotPackage from "./hotspotOperations/EditHotspotPackage";
+import HotspotCustomerSync from "./hotspotOperations/HotspotCustomerSync";
 
 const Hotspot = () => {
   const { t } = useTranslation();
@@ -30,6 +38,9 @@ const Hotspot = () => {
   // loading state
   const [hotspotPackageLoading, setHotspotPackageLoading] = useState(false);
 
+  // delete loading
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   // hotspot Customer loading state
   const [hotspotCustomerLoading, setHotspotCustomerLoading] = useState(false);
 
@@ -37,7 +48,13 @@ const Hotspot = () => {
   const [showSection, setShowSection] = useState("hotspotPackage");
 
   // mikrotik package
-  const [mikrotikPackage, setMikrotikPackage] = useState();
+  const [mtkPackage, setMtkPackage] = useState([]);
+
+  // mikrotik customer
+  const [mikrotikCustomer, setMikrotikCustomer] = useState([]);
+
+  // edit package state
+  const [editPackageId, setEditPackageId] = useState();
 
   // hotspot package sync handler
   const hotspotPackageHandle = () => {
@@ -50,22 +67,53 @@ const Hotspot = () => {
     );
   };
 
-  const hotspotCustomerHandle = () => {
-    syncHotspotCustomer(
-      dispatch,
-      ispOwner,
-      mikrotikId,
-      setHotspotCustomerLoading,
-      "showToast"
-    );
-  };
+  // sync hotspot customer handler
+  // const hotspotCustomerHandle = () => {
+  //   syncHotspotCustomer(
+  //     dispatch,
+  //     ispOwner,
+  //     mikrotikId,
+  //     setHotspotCustomerLoading,
+  //     "showToast"
+  //   );
+  // };
 
   useEffect(() => {
+    // get hotspot package api call
     getHotspotPackage(dispatch, ispOwner, setHotspotPackageLoading);
 
+    // get hotspot customer api call
     getHotspotCustomer(dispatch, ispOwner, setHotspotCustomerLoading);
   }, []);
 
+  // filter mikrotik package & customer
+  useEffect(() => {
+    // filter miktrotik package
+    if (hotsPackage) {
+      const filterHotspotPackage = hotsPackage.filter(
+        (item) => item.mikrotik === mikrotikId
+      );
+      setMtkPackage(filterHotspotPackage);
+    }
+
+    // filter mikrotik customer
+    if (hotspotCustomer) {
+      const filterMikrotikCustomer = hotspotCustomer.filter(
+        (item) => item.mikrotik === mikrotikId
+      );
+      setMikrotikCustomer(filterMikrotikCustomer);
+    }
+  }, [hotsPackage, hotspotCustomer]);
+
+  // delete hotspot package
+  const deleteHotapotPackage = (mikrotikId, packageId) => {
+    const confirm = window.confirm(t("areYourSureWantToDelete"));
+    if (confirm) {
+      hotspotPackageDelete(dispatch, mikrotikId, packageId, setDeleteLoading);
+    }
+  };
+
+  // package column
   const packageColumn = React.useMemo(
     () => [
       {
@@ -94,67 +142,62 @@ const Hotspot = () => {
         },
       },
 
-      //   {
-      //     width: "20%",
-      //     Header: () => <div className="text-center">{t("action")}</div>,
-      //     id: "option",
+      {
+        width: "20%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
 
-      //     Cell: ({ row: { original } }) => (
-      //       <div
-      //         style={{
-      //           display: "flex",
-      //           alignItems: "center",
-      //           justifyContent: "center",
-      //         }}
-      //       >
-      //         <div className="dropdown">
-      //           <ThreeDots
-      //             className="dropdown-toggle ActionDots"
-      //             id="areaDropdown"
-      //             type="button"
-      //             data-bs-toggle="dropdown"
-      //             aria-expanded="false"
-      //           />
-      //           <ul
-      //             className="dropdown-menu"
-      //             aria-labelledby="pppoePackageDropdown"
-      //           >
-      //             <li
-      //               data-bs-toggle="modal"
-      //               data-bs-target="#pppoePackageEditModal"
-      //               onClick={() => {
-      //                 getSpecificPPPoEPackage(original.id);
-      //               }}
-      //             >
-      //               <div className="dropdown-item">
-      //                 <div className="customerAction">
-      //                   <PenFill />
-      //                   <p className="actionP">{t("edit")}</p>
-      //                 </div>
-      //               </div>
-      //             </li>
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="pppoePackageDropdown"
+              >
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#hotspotPackageEdit"
+                  onClick={() => {
+                    setEditPackageId(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
+                  </div>
+                </li>
 
-      //             <li
-      //               onClick={() => {
-      //                 deleteSinglePPPoEpackage(original.mikrotik, original.id);
-      //               }}
-      //             >
-      //               <div className="dropdown-item actionManager">
-      //                 <div className="customerAction">
-      //                   <ArchiveFill />
-      //                   <p className="actionP">{t("delete")}</p>
-      //                 </div>
-      //               </div>
-      //             </li>
-      //           </ul>
-      //         </div>
-      //       </div>
-      //     ),
-      //   },
+                <li
+                  onClick={() => {
+                    deleteHotapotPackage(original.mikrotik, original.id);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">{t("delete")}</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
     ],
     [t]
   );
 
+  // customer column
   const customerColumn = React.useMemo(
     () => [
       {
@@ -193,53 +236,56 @@ const Hotspot = () => {
   );
 
   return (
-    <div className="collectorWrapper mt-2 py-2">
-      <div className="addCollector">
-        <div className="addNewCollector showMikrotikUpperSection mx-auto">
-          <div className="LeftSideMikrotik justify-content-center">
-            <div className="addAndSettingIcon">
-              {hotspotPackageLoading ? (
-                <span>
-                  <Loader />
-                </span>
-              ) : (
-                <button
-                  onClick={hotspotPackageHandle}
-                  title={t("hotspotpackageSync")}
-                  className="btn btn-outline-primary me-2 "
-                >
-                  {t("hotspotpackageSync")} <BagCheckFill />
-                </button>
-              )}
-              {hotspotCustomerLoading ? (
-                <span>
-                  <Loader />
-                </span>
-              ) : (
-                <button
-                  onClick={hotspotCustomerHandle}
-                  title={t("hotspotpackageSync")}
-                  className="btn btn-outline-primary me-2 "
-                >
-                  {t("hotspotCustomerSync")} <BagCheckFill />
-                </button>
-              )}
+    <>
+      <div className="collectorWrapper mt-2 py-2">
+        <div className="addCollector">
+          <div className="addNewCollector showMikrotikUpperSection mx-auto">
+            <div className="LeftSideMikrotik justify-content-center">
+              <div className="addAndSettingIcon">
+                {hotspotPackageLoading ? (
+                  <span>
+                    <Loader />
+                  </span>
+                ) : (
+                  <button
+                    onClick={hotspotPackageHandle}
+                    title={t("hotspotpackageSync")}
+                    className="btn btn-outline-primary me-2 "
+                  >
+                    {t("hotspotpackageSync")} <BagCheckFill />
+                  </button>
+                )}
+                {hotspotCustomerLoading ? (
+                  <span>
+                    <Loader />
+                  </span>
+                ) : (
+                  <button
+                    // onClick={hotspotCustomerHandle}
+                    data-bs-toggle="modal"
+                    data-bs-target="#hotspotCustomerSync"
+                    title={t("hotspotpackageSync")}
+                    className="btn btn-outline-primary me-2 "
+                  >
+                    {t("hotspotCustomerSync")} <BagCheckFill />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="rightSideMikrotik ms-5">
+              <h4> {t("select")} </h4>
+              <select
+                id="selectMikrotikOption"
+                className="form-select mt-0"
+                onChange={(event) => setShowSection(event.target.value)}
+              >
+                <option value="hotspotPackage">{t("hotspotPackage")}</option>
+                <option value="hotsPotCustomer">{t("sokolCustomer")}</option>
+              </select>
             </div>
           </div>
-          <div className="rightSideMikrotik ms-5">
-            <h4> {t("select")} </h4>
-            <select
-              id="selectMikrotikOption"
-              className="form-select mt-0"
-              onChange={(event) => setShowSection(event.target.value)}
-            >
-              <option value="hotspotPackage">{t("hotspotPackage")}</option>
-              <option value="hotsPotCustomer">{t("sokolCustomer")}</option>
-            </select>
-          </div>
-        </div>
 
-        {/* <div className="d-flex mt-3">
+          {/* <div className="d-flex mt-3">
                         <div className="mikrotikDetails me-5">
                           <p>
                             {t("name")} : <b>{singleMik?.name || "..."}</b>
@@ -291,22 +337,25 @@ const Hotspot = () => {
                         )}
                       </div> */}
 
-        {showSection === "hotspotPackage" && (
-          <Table
-            isLoading={hotspotPackageLoading}
-            columns={packageColumn}
-            data={hotsPackage}
-          ></Table>
-        )}
-        {showSection === "hotsPotCustomer" && (
-          <Table
-            isLoading={hotspotPackageLoading}
-            columns={customerColumn}
-            data={hotspotCustomer}
-          ></Table>
-        )}
+          {showSection === "hotspotPackage" && (
+            <Table
+              isLoading={hotspotPackageLoading}
+              columns={packageColumn}
+              data={mtkPackage}
+            ></Table>
+          )}
+          {showSection === "hotsPotCustomer" && (
+            <Table
+              isLoading={hotspotPackageLoading}
+              columns={customerColumn}
+              data={mikrotikCustomer}
+            ></Table>
+          )}
+        </div>
       </div>
-    </div>
+      <EditHotspotPackage packageId={editPackageId} />
+      <HotspotCustomerSync ispOwnerId={ispOwner} mikrotikId={mikrotikId} />
+    </>
   );
 };
 

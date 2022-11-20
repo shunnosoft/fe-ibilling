@@ -89,6 +89,7 @@ import SuccessPaymentSuccess from "./ownerCustomer/CustomerPaymentSuccess";
 import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 import Stock from "./pages/Inventory/Stock";
 import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
+import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -366,6 +367,18 @@ function App() {
               element={
                 userRole === "ispOwner" ? (
                   <HotspotCustomer />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            {/* Hotspot Customer  */}
+            <Route
+              path="/active/hotspot/customer"
+              element={
+                userRole === "ispOwner" ? (
+                  <ActiveHotspotCustomer />
                 ) : (
                   <Navigate to={"/home"} />
                 )

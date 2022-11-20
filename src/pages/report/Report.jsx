@@ -69,7 +69,6 @@ export default function Report() {
   const [mainData, setMainData] = useState(allBills);
 
   const [collectors, setCollectors] = useState([]);
-  console.log(collectors);
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");

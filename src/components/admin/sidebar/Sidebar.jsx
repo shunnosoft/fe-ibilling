@@ -455,6 +455,30 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
+                        <NavLink
+                          key={121}
+                          to={"/active/hotspot/customer"}
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname ===
+                                "/active/hotspot/customer"
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">{<People />}</div>
+                              <span className="sidebarLinksName">
+                                {t("activeHotspot")}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
                       </Accordion.Body>
 
                       {/* রিপোর্ট */}
