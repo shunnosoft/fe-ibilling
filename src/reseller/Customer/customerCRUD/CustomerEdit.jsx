@@ -241,9 +241,9 @@ export default function CustomerEdit({ single }) {
                     <div className="mikrotikSection">
                       {Getmikrotik.length > 0 && (
                         <div>
-                          <p className="comstomerFieldsTitle">
+                          <label className="comstomerFieldsTitle">
                             {t("selectMikrotik")}
-                          </p>
+                          </label>
                           <select
                             className="form-select"
                             aria-label="Default select example"
@@ -259,10 +259,11 @@ export default function CustomerEdit({ single }) {
                       )}
                       {/* pppoe package */}
                       <div>
-                        <p className="comstomerFieldsTitle">
+                        <label className="comstomerFieldsTitle">
                           {t("selectPackage")}
-                        </p>
+                        </label>
                         <select
+                          style={{ width: "22rem" }}
                           className="form-select mb-3"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
@@ -310,21 +311,57 @@ export default function CustomerEdit({ single }) {
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField
-                        type="text"
-                        label={t("PPPoEName")}
-                        name="Pname"
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("password")}
-                        name="Ppassword"
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("comment")}
-                        name="Pcomment"
-                      />
+                      {/* PPPoE Name start */}
+                      {role === "collector" ? (
+                        <FtextField
+                          type="text"
+                          label={t("PPPoEName")}
+                          name="Pname"
+                          disabled
+                        />
+                      ) : (
+                        <FtextField
+                          type="text"
+                          label={t("PPPoEName")}
+                          name="Pname"
+                        />
+                      )}
+                      {/* PPPoE Name End */}
+
+                      {/* Password Start */}
+
+                      {role === "collector" ? (
+                        <FtextField
+                          type="text"
+                          label={t("password")}
+                          name="Ppassword"
+                          disabled
+                        />
+                      ) : (
+                        <FtextField
+                          type="text"
+                          label={t("password")}
+                          name="Ppassword"
+                        />
+                      )}
+                      {/* Password end */}
+
+                      {/* Comment start */}
+                      {role === "collector" ? (
+                        <FtextField
+                          type="text"
+                          label={t("comment")}
+                          name="Pcomment"
+                          disabled
+                        />
+                      ) : (
+                        <FtextField
+                          type="text"
+                          label={t("comment")}
+                          name="Pcomment"
+                        />
+                      )}
+                      {/* Comment start */}
                     </div>
 
                     <div className="displayGrid3">
@@ -375,22 +412,39 @@ export default function CustomerEdit({ single }) {
                           {t("billingCycle")}
                         </p>
 
-                        <div className="timeDate">
-                          <input
-                            value={billDate}
-                            onChange={(e) => setBillDate(e.target.value)}
-                            type="date"
-                            min={moment().format("YYYY-MM-DD")}
-                            disabled
-                          />
-                          <input
-                            className="billTime"
-                            value={billTime}
-                            onChange={(e) => setBilltime(e.target.value)}
-                            type="time"
-                            disabled
-                          />
-                        </div>
+                        {role === "collector" ? (
+                          <div className="timeDate">
+                            <input
+                              value={billDate}
+                              onChange={(e) => setBillDate(e.target.value)}
+                              type="date"
+                              min={moment().format("YYYY-MM-DD")}
+                              disabled
+                            />
+                            <input
+                              className="billTime"
+                              value={billTime}
+                              onChange={(e) => setBilltime(e.target.value)}
+                              type="time"
+                              disabled
+                            />
+                          </div>
+                        ) : (
+                          <div className="timeDate">
+                            <input
+                              value={billDate}
+                              onChange={(e) => setBillDate(e.target.value)}
+                              type="date"
+                              min={moment().format("YYYY-MM-DD")}
+                            />
+                            <input
+                              className="billTime"
+                              value={billTime}
+                              onChange={(e) => setBilltime(e.target.value)}
+                              type="time"
+                            />
+                          </div>
+                        )}
                       </div>
                       {Getmikrotik.length > 0 && (
                         <div className="autoDisable">

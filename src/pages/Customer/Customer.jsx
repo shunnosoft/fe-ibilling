@@ -329,7 +329,7 @@ const PPPOECustomer = () => {
           }
         }
 
-        // status filter active/inactive
+        // status filter active/incative
         if (filterOptions.status) {
           if (customer.status === filterOptions.status) {
             isFound = true;
@@ -347,13 +347,6 @@ const PPPOECustomer = () => {
         //   }
         // }
 
-        if (
-          customer.paymentStatus === "unpaid" &&
-          customer.balance == customer.monthlyFee
-        ) {
-          console.log(customer);
-        }
-
         // payment status filter
         if (filterOptions.paymentStatus) {
           if (filterOptions.paymentStatus === "free") {
@@ -364,8 +357,7 @@ const PPPOECustomer = () => {
             }
           } else if (
             filterOptions.paymentStatus === "paid" &&
-            customer.paymentStatus === "paid" &&
-            customer.balance <= customer.monthlyFee
+            customer.paymentStatus === "paid"
           ) {
             isFound = true;
           } else if (
@@ -375,20 +367,11 @@ const PPPOECustomer = () => {
           ) {
             isFound = true;
           } else if (
-            filterOptions.paymentStatus === "overDue" &&
-            customer.paymentStatus === "unpaid"
-          ) {
-            if (customer.balance < 0) {
-              isFound = true;
-            } else {
-              return false;
-            }
-          } else if (
             filterOptions.paymentStatus === "partial" &&
             customer.paymentStatus === "unpaid"
           ) {
             if (
-              // customer.balance < customer.monthlyFee &&
+              customer.monthlyFee > customer.balance &&
               customer.balance > 0
             ) {
               isFound = true;
@@ -399,11 +382,22 @@ const PPPOECustomer = () => {
             filterOptions.paymentStatus === "advance" &&
             customer.paymentStatus === "paid"
           ) {
-            if (customer.balance > customer.monthlyFee) {
+            if (customer.monthlyFee < customer.balance) {
               isFound = true;
             } else {
               return false;
             }
+          } else if (
+            filterOptions.paymentStatus === "overDue" &&
+            customer.paymentStatus === "unpaid"
+          ) {
+            if (customer.balance < 0) {
+              isFound = true;
+            } else {
+              return false;
+            }
+          } else {
+            isFound = false;
           }
         }
 

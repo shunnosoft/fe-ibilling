@@ -20,7 +20,8 @@ import SupportTicketEdit from "./modal/SupportTicketEdit";
 import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
 import apiLink from "../../api/apiLink";
-import CollectorSupportTicketEdit from "./CollectorSupportTicketEdit";
+import CollectorSupportTicketEdit from "./modal/CollectorSupportTicketEdit";
+import CollectorSupportTicketDelete from "./modal/CollectorSupportTicketDelete";
 
 const CollectorSupportTicket = () => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ const CollectorSupportTicket = () => {
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
-  console.log(supportTickets);
+  // console.log(supportTickets);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -39,13 +40,13 @@ const CollectorSupportTicket = () => {
   const collectorId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.collector.id
   );
-  console.log(collectorId);
+  // console.log(collectorId);
 
   // declare state
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
   const [deleteTicketId, setDeleteTicketId] = useState("");
-  const [allCollector, setAllCollector] = useState([]);
+  // const [allCollector, setAllCollector] = useState([]);
 
   useEffect(() => {
     getCollectorApi(dispatch, ispOwner, collectorId, setIsLoading);
@@ -59,7 +60,7 @@ const CollectorSupportTicket = () => {
   // handle edit function
   const handlesupportTicketEditId = (ticketId) => {
     setSupportTicketId(ticketId);
-    console.log(ticketId);
+    // console.log(ticketId);
   };
 
   // handle delete function
@@ -136,7 +137,7 @@ const CollectorSupportTicket = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#editModal"
                   onClick={() => {
-                    console.log(original);
+                    // console.log(original);
                     handlesupportTicketEditId(original?.id);
                   }}
                 >
@@ -207,7 +208,7 @@ const CollectorSupportTicket = () => {
       </div>
 
       {/* Edit Modal Start */}
-      {/* <CollectorSupportTicketEdit /> */}
+      <CollectorSupportTicketEdit supportTicketId={supportTicketId} />
       {/* <SupportTicketEdit
         ticketEditId={supportTicketId}
         allCollector={allCollector}
@@ -216,7 +217,9 @@ const CollectorSupportTicket = () => {
 
       {/* Delete Modal Start */}
 
-      {/* <SupportTicketDelete supportTicketDeleteID={deleteTicketId} /> */}
+      <CollectorSupportTicketDelete
+        collectorSupportTicketDeleteID={deleteTicketId}
+      />
 
       {/* Delete Modal end */}
     </>

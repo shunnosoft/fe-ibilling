@@ -22,8 +22,20 @@ export const supportTicketSlice = createSlice({
       //   state.supportTickets.findIndex((item) => item.id === action.payload.id)
       // ] = action.payload;
     },
+    editCollectorSupportTickets: (state, action) => {
+      console.log(action.payload);
+      let index = state.supportTickets.findIndex(
+        (singleTicket) => singleTicket.id === action.payload.id
+      );
+      state.supportTickets[index] = action.payload;
+    },
 
     deleteSupportTickets: (state, action) => {
+      state.supportTickets = state.supportTickets.filter(
+        (ticket) => ticket.id !== action.payload
+      );
+    },
+    deleteCollectorSupportTicket: (state, action) => {
       state.supportTickets = state.supportTickets.filter(
         (ticket) => ticket.id !== action.payload
       );
@@ -42,6 +54,8 @@ export const {
   editSupportTickets,
   deleteSupportTickets,
   getCollectorSupportTickets,
+  editCollectorSupportTickets,
+  deleteCollectorSupportTicket,
 } = supportTicketSlice.actions;
 
 export default supportTicketSlice.reducer;

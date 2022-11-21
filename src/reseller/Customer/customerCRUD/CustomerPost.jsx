@@ -200,7 +200,7 @@ export default function CustomerModal() {
                               {t("selectMikrotik")}
                             </span>
                             <select
-                              style={{ marginTop: "-2rem" }}
+                              style={{ marginTop: "-rem" }}
                               className="form-select "
                               aria-label="Default select example"
                               onChange={selectMikrotik}
@@ -402,21 +402,40 @@ export default function CustomerModal() {
                             type="time"
                           />
                         </div> */}
-                      <div className="billCycle">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("billingCycle")}{" "}
-                        </label>
+                      {userRole === "collector" ? (
+                        <div className="billCycle">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billingCycle")}{" "}
+                          </label>
 
-                        <DatePicker
-                          className="form-control mw-100"
-                          selected={billDate}
-                          onChange={(date) => setBillDate(date)}
-                          dateFormat="dd/MM/yyyy:hh:mm"
-                          showTimeSelect
-                          maxDate={billDate}
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={billDate}
+                            onChange={(date) => setBillDate(date)}
+                            dateFormat="dd/MM/yyyy:hh:mm"
+                            showTimeSelect
+                            maxDate={billDate}
+                            placeholderText={t("selectBillDate")}
+                            disabled
+                          />
+                        </div>
+                      ) : (
+                        <div className="billCycle">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billingCycle")}{" "}
+                          </label>
+
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={billDate}
+                            onChange={(date) => setBillDate(date)}
+                            dateFormat="dd/MM/yyyy:hh:mm"
+                            showTimeSelect
+                            maxDate={billDate}
+                            placeholderText={t("selectBillDate")}
+                          />
+                        </div>
+                      )}
                       {Getmikrotik.length > 0 && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>
