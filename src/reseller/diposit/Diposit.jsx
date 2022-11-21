@@ -449,7 +449,7 @@ export default function Diposit() {
                         onChange={(e) => setCollectorIds(e.target.value)}
                       >
                         <option value="all" defaultValue>
-                          {t("all collector")}{" "}
+                          {t("all collector")}
                         </option>
                         {collectors?.map((c, key) => (
                           <option key={key} value={c.user}>

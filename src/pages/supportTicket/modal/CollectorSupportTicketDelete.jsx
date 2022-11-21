@@ -1,12 +1,12 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { supportTicketsDeleteApi } from "../../../features/supportTicketApi";
+import { collectorSupportTicketsDeleteApi } from "../../../features/supportTicketApi";
 
-const SupportTicketDelete = ({ supportTicketDeleteID }) => {
+const CollectorSupportTicketDelete = ({ collectorSupportTicketDeleteID }) => {
   const dispatch = useDispatch();
   const SupportTicketDeleteSubmit = (e) => {
     e.preventDefault();
-    supportTicketsDeleteApi(dispatch, supportTicketDeleteID);
+    collectorSupportTicketsDeleteApi(dispatch, collectorSupportTicketDeleteID);
   };
   return (
     <div
@@ -55,4 +55,4 @@ const SupportTicketDelete = ({ supportTicketDeleteID }) => {
   );
 };
 
-export default SupportTicketDelete;
+export default CollectorSupportTicketDelete;

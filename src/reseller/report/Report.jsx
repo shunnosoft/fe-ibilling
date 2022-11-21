@@ -58,7 +58,6 @@ export default function Report() {
   const [customerPerPage, setCustomerPerPage] = useState(50);
   const lastIndex = currentPage * customerPerPage;
   const firstIndex = lastIndex - customerPerPage;
-
   const dispatch = useDispatch();
 
   const paginate = (pageNumber) => {
@@ -197,24 +196,22 @@ export default function Report() {
   const columns = useMemo(
     () => [
       {
-        width: "15%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        width: "20%",
+        width: "12%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "20%",
+        width: "22%",
         Header: t("customer"),
         accessor: "customer.name",
       },
       {
         width: "20%",
+        Header: t("PPPoEName"),
+        accessor: "customer.pppoe.name",
+      },
+      {
+        width: "15%",
         Header: t("bill"),
         accessor: "amount",
       },
