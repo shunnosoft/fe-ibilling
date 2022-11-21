@@ -96,6 +96,9 @@ export default function Diposit() {
   // reseller state -- Reseller
   const [resellerData, setResellerData] = useState([]);
 
+  // collector state -- collector
+  const [collectorData, setCollectorData] = useState([]);
+
   // collector id state -- Reseller
   const [collectorIds, setCollectorIds] = useState("all");
 
@@ -104,17 +107,19 @@ export default function Diposit() {
     depositAcceptReject(dispatch, status, id, setAccLoading);
   };
 
-  // filter handler -- Reseller
+  // filter handler -- Reseller / Collector
   const onClickFilter = () => {
-    let filterData = allDeposit;
+    let filterData = userRole === "reseller" ? allDeposit : ownDeposits;
 
-    if (collectorIds !== "all") {
-      filterData = filterData.filter((bill) => bill.user === collectorIds);
-    } else {
-      filterData = filterData;
+    if (userRole === "reseller") {
+      if (collectorIds !== "all") {
+        filterData = filterData.filter((bill) => bill.user === collectorIds);
+      } else {
+        filterData = filterData;
+      }
     }
 
-    // date filter -- Reseller
+    // date filter -- Reseller / Collector
     filterData = filterData.filter(
       (value) =>
         new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() >=
@@ -123,7 +128,11 @@ export default function Diposit() {
           new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
     );
 
-    setResellerData(filterData);
+    if (userRole === "reseller") {
+      setResellerData(filterData);
+    } else {
+      setCollectorData(filterData);
+    }
   };
 
   // find specific collector for PDF filter data -- Reseller
@@ -171,27 +180,35 @@ export default function Diposit() {
     }
   };
 
-  // set data to state -- Reseller
+  // set data to state -- Reseller / Collector
   useEffect(() => {
-    // for Reseller
     if (userRole === "reseller") {
-      setResellerData(allDeposit);
-
-      // initial filter -- Reseller
-      let initialFilter = allDeposit;
-
-      // date filter -- Reseller
-      initialFilter = initialFilter.filter(
-        (value) =>
-          new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() >=
-            new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-          new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() <=
-            new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-      );
-
-      setResellerData(initialFilter);
+      // for Reseller
+      if (allDeposit) setResellerData(allDeposit);
+    } else {
+      // for collector
+      if (ownDeposits) setCollectorData(ownDeposits);
     }
-  }, [allDeposit]);
+
+    // initial filter -- Reseller
+    let initialFilter = userRole === "reseller" ? allDeposit : ownDeposits;
+
+    // date filter -- Reseller / Collector
+    initialFilter = initialFilter.filter(
+      (value) =>
+        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
+    );
+    if (userRole === "reseller") {
+      // for reseller
+      setResellerData(initialFilter);
+    } else {
+      // for collector
+      setCollectorData(initialFilter);
+    }
+  }, [allDeposit, ownDeposits]);
 
   // api call -- Collector
   useEffect(() => {
@@ -520,11 +537,40 @@ export default function Diposit() {
                         )}
                       </Formik>
                     </div>
+
+                    <div className="selectFilteringg">
+                      <div>
+                        <DatePicker
+                          className="form-control mw-100 mt-2"
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <div className="mx-2">
+                        <DatePicker
+                          className="form-control mw-100 mt-2"
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <button
+                        className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
+                        type="button"
+                        onClick={onClickFilter}
+                      >
+                        {t("filter")}
+                      </button>
+                    </div>
+
                     <div className="tableSection">
                       <Table
                         isLoading={isLoading}
                         customComponent={customComponent}
-                        data={ownDeposits}
+                        data={collectorData}
                         columns={collectorColumn}
                       ></Table>
                     </div>

@@ -581,13 +581,15 @@
   "resellerRechargeTemplate": "Reseller Recharge",
   "mikrotikCustomerCsvDownload": "Mikrotik Customer Csv File Download",
   "supportTicket": "Support Ticket",
-  "support":"Support",
-  "inventory":"Inventory",
-  "stock":"Stock",
-  "addProduct":"Add Product",
-  "description":"Description",
-  "purchaseAmount":"Purchase Amount",
-  "sellAmount":"Sell Amount",
-  "quantity":"Quantity"
-
+  "support": "Support",
+  "inventory": "Inventory",
+  "stock": "Stock",
+  "addProduct": "Add Product",
+  "description": "Description",
+  "purchaseAmount": "Purchase Amount",
+  "sellAmount": "Sell Amount",
+  "quantity": "Quantity",
+  "customerSync": "Customer Sync",
+  "hotspot": "Hotspot",
+  "activeHotspot": "Active Hotspot"
 }

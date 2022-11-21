@@ -949,32 +949,31 @@ const PPPOECustomer = () => {
                       justifyContent: "center",
                     }}
                   >
-                    {permission?.viewCustomerList && (
+                    {((permission?.viewCustomerList && role === "manager") ||
+                      role === "ispOwner") && (
                       <>
-                        {role !== "collector" && (
-                          <>
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={customerForCsVTableInfo}
-                                filename={ispOwnerData.company}
-                                headers={customerForCsVTableInfoHeader}
-                                title="Customer Report"
-                              >
-                                <FileExcelFill className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={customerForCsV}
-                                filename={ispOwnerData.company}
-                                headers={headers}
-                                title={t("downloadBTRCreport")}
-                              >
-                                <FileExcelFill className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-                          </>
-                        )}
+                        <>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={customerForCsVTableInfo}
+                              filename={ispOwnerData.company}
+                              headers={customerForCsVTableInfoHeader}
+                              title="Customer Report"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={customerForCsV}
+                              filename={ispOwnerData.company}
+                              headers={headers}
+                              title={t("downloadBTRCreport")}
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
+                        </>
 
                         <div className="addAndSettingIcon">
                           <PrinterFill
