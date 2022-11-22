@@ -101,6 +101,9 @@ export default function CustomerReport(props) {
                       <th style={{ width: "10%" }} scope="col">
                         {t("package")}
                       </th>
+                      <th style={{ width: "10%" }} scope="col">
+                        {t("balance")}
+                      </th>
 
                       <th style={{ width: "10%" }} scope="col">
                         {t("bill")}
@@ -127,9 +130,11 @@ export default function CustomerReport(props) {
                       <TdLoader colspan={5} />
                     ) : customerReport.length > 0 ? (
                       customerReport.map((val, index) => {
+                        console.log(val);
                         return (
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>
+                            <td>{FormatNumber(val.customer.balance)}</td>
                             <td>{FormatNumber(val.amount)}</td>
                             <td>
                               {moment(val.createdAt).format(
