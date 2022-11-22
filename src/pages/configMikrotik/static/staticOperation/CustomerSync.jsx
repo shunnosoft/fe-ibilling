@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../../../components/common/Loader";
-import { fetchMikrotikSyncUser } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
 
-const CustomerSync = ({
-  mikrotikId,
-  ispOwner,
-  inActiveCustomer,
-  setInActiveCustomer,
-}) => {
+import { useTranslation } from "react-i18next";
+import Loader from "../../../../components/common/Loader";
+import { syncMikrotikStaticUser } from "../../../../features/apiCalls";
+
+const CustomerSync = ({ mikrotikId, ispOwner }) => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
+
+  // inactive customer check
+  const [inActiveCustomer, setInActiveCustomer] = useState(false);
 
   // Sync Customer
   const syncCostomer = () => {
@@ -26,13 +25,13 @@ const CustomerSync = ({
       inActiveCustomer: inActiveCustomer,
     };
 
-    fetchMikrotikSyncUser(dispatch, data, setIsloading);
+    syncMikrotikStaticUser(dispatch, data, setIsloading, setInActiveCustomer);
   };
 
   return (
     <div
       className="modal fade"
-      id="SyncCustomer"
+      id="staticCustomerSync"
       tabIndex="-1"
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
@@ -45,7 +44,7 @@ const CustomerSync = ({
               className="modal-title"
               id="customerModalDetails"
             >
-              {t("PPPoECustomerSync")}
+              {t("staticCustomerSync")}
             </h5>
             <button
               type="button"

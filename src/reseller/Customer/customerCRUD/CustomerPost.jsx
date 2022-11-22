@@ -11,6 +11,7 @@ import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
   fetchpppoePackage,
+  getSubAreas,
 } from "../../../features/apiCallReseller";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
@@ -26,12 +27,13 @@ export default function CustomerModal() {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
-  const area = useSelector(
-    (state) => state.persistedReducer.auth?.userData.areas
-  );
+
+  // const area = useSelector(
+  //   (state) => state.persistedReducer.auth?.userData.areas
+  // );
 
   // get are from redux
-  // const area = useSelector((state) => state?.area?.area);
+  const area = useSelector((state) => state?.area?.area);
   // console.log(area);
 
   // get reseller from redux
@@ -117,7 +119,7 @@ export default function CustomerModal() {
       paymentStatus: "unpaid",
       ispOwner: userData.ispOwner,
       subArea: subAreaId,
-      reseller: userData.reseller,
+      reseller: userData?.id,
 
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",

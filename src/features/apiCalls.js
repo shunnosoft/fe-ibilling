@@ -540,7 +540,6 @@ export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/static-customer/${ispOwner}`);
-    // console.log(res.data);
     dispatch(getStaticCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
@@ -702,7 +701,12 @@ export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
 };
 
 // get Mikrotik Sync user
-export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
+export const syncMikrotikStaticUser = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setInActiveCustomer
+) => {
   setIsLoading(true);
   await apiLink({
     method: "GET",
@@ -711,12 +715,13 @@ export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
     .then((res) => {
       dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
       setIsLoading(false);
-      document.querySelector("#SyncCustomer").click();
+      document.querySelector("#staticCustomerSync").click();
       langMessage(
         "success",
         "মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে",
         "Static Customer Sync form Mikrotik is Successful"
       );
+      setInActiveCustomer(false);
     })
     .catch((error) => {
       setIsLoading(false);

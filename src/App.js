@@ -478,7 +478,7 @@ function App() {
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
               <Route path="expenditure" element={<Expenditure />} />
-              <Route path="stock" element={<Stock />} />
+              {/* <Route path="stock" element={<Stock />} /> */}
               <Route path="staff" element={<Staff />} />
               <Route path="staff/:staffId" element={<StaffSalary />} />
 

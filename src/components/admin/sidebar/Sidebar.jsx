@@ -431,31 +431,33 @@ export default function Sidebar() {
                         ) : (
                           ""
                         )}
-
-                        <NavLink
-                          key={120}
-                          to={"/hotspot/customer"}
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname === "/hotspot/customer"
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">{<People />}</div>
-                              <span className="sidebarLinksName">
-                                {t("hotspot")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
-                        <NavLink
+                        {userRole === "ispOwner" && bpSettings?.hasMikrotik && (
+                          <NavLink
+                            key={120}
+                            to={"/hotspot/customer"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/hotspot/customer"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("hotspot")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+                        {/* <NavLink
                           key={121}
                           to={"/active/hotspot/customer"}
                           className={(navInfo) =>
@@ -478,7 +480,7 @@ export default function Sidebar() {
                               </span>
                             </li>
                           </FontColor>
-                        </NavLink>
+                        </NavLink> */}
                       </Accordion.Body>
 
                       {/* রিপোর্ট */}
@@ -1049,7 +1051,7 @@ export default function Sidebar() {
                             </NavLink>
                           </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="6">
+                        {/* <Accordion.Item eventKey="6">
                           <Accordion.Header
                             onClick={() => handleActiveAccordian("6")}
                           >
@@ -1083,7 +1085,7 @@ export default function Sidebar() {
                               </FontColor>
                             </NavLink>
 
-                            {/* <NavLink
+                            <NavLink
                               key={300}
                               to={"/invoice"}
                               className={(navInfo) =>
@@ -1107,9 +1109,9 @@ export default function Sidebar() {
                                   </span>
                                 </li>
                               </FontColor>
-                            </NavLink> */}
+                            </NavLink>
                           </Accordion.Body>
-                        </Accordion.Item>
+                        </Accordion.Item> */}
                       </>
                     )}
                     {(userRole === "ispOwner" || userRole === "collector") && (

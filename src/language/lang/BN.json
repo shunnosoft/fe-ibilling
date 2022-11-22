@@ -582,17 +582,15 @@
   "resellerRechargeTemplate": "রিসেলার রিচার্জ",
   "mikrotikCustomerCsvDownload": "মাইক্রোটিক গ্রাহক CSV ফাইল ডাউনলোড",
   "supportTicket": "সাপোর্ট টিকিট",
-  "support":"সাপোর্ট",
-  "inventory":"ইনভেন্টরি",
-  "stock":"স্টক",
-  "addProduct":"এড প্রোডাক্ট",
-  "description":"বিবরণ",
-  "purchaseAmount":"ক্রয় মূল্য",
-  "sellAmount":"বিক্রয় মূল্য",
-  "quantity":"পরিমাণ"
-
-  
-
-
-
+  "support": "সাপোর্ট",
+  "inventory": "ইনভেন্টরি",
+  "stock": "স্টক",
+  "addProduct": "এড প্রোডাক্ট",
+  "description": "বিবরণ",
+  "purchaseAmount": "ক্রয় মূল্য",
+  "sellAmount": "বিক্রয় মূল্য",
+  "quantity": "পরিমাণ",
+  "customerSync": "গ্রাহক সিঙ্ক",
+  "hotspot": "হটস্পট",
+  "activeHotpot": "এক্টিভ হটস্পট"
 }

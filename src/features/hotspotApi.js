@@ -54,8 +54,8 @@ export const syncHotspotPackage = async (
       );
     }
   } catch (err) {
-    console.log(err.response.data);
-    toast.error(err.response.data.message);
+    console.log(err.response?.data);
+    toast.error(err.response?.data?.message);
   }
   setHotspotPackageLoading(false);
 };
