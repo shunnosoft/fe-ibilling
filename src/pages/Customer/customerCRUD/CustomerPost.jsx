@@ -30,6 +30,11 @@ export default function CustomerModal() {
   const area = useSelector((state) => state?.area?.area);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
+  // generate Customer Id
+  const genCustomerId = useSelector(
+    (state) => state.persistedReducer.auth.userData.bpSettings.genCustomerId
+  );
+  console.log(genCustomerId);
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
@@ -135,9 +140,18 @@ export default function CustomerModal() {
       return alert(t("selectBillDate"));
     }
 
-    const { Pname, Ppassword, Pprofile, Pcomment, balance, ...rest } = data;
+    const {
+      customerId,
+      Pname,
+      Ppassword,
+      Pprofile,
+      Pcomment,
+      balance,
+      ...rest
+    } = data;
     const mainData = {
       // customerId: "randon123",
+
       paymentStatus: "unpaid",
       subArea: subArea2,
       ispOwner: ispOwnerId,
@@ -160,6 +174,10 @@ export default function CustomerModal() {
     if (!bpSettings?.hasMikrotik) {
       delete mainData.mikrotik;
     }
+    if (genCustomerId) {
+      mainData.pppoe = customerId;
+    }
+    console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -189,6 +207,7 @@ export default function CustomerModal() {
               {/* model body here */}
               <Formik
                 initialValues={{
+                  customerId: "",
                   name: "",
                   mobile: "",
                   address: "",
@@ -210,6 +229,15 @@ export default function CustomerModal() {
                 {(formik) => (
                   <Form>
                     <div className="mikrotikSection">
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label="Customer Id"
+                          name="customerId"
+                          validation={"true"}
+                        />
+                      )}
+
                       {bpSettings?.hasMikrotik ? (
                         <div>
                           <label className="form-control-label changeLabelFontColor">

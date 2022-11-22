@@ -130,7 +130,6 @@ export default function CustomerReport(props) {
                       <TdLoader colspan={5} />
                     ) : customerReport.length > 0 ? (
                       customerReport.map((val, index) => {
-                        console.log(val);
                         return (
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>

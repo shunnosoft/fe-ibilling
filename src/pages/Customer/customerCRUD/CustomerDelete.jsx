@@ -11,7 +11,6 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
 
   // find deletable customer
   const singleData = customers.find((item) => item.id === single);
-  console.log(singleData);
 
   // import dispatch
   const dispatch = useDispatch();

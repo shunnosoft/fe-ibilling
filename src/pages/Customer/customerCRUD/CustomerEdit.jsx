@@ -10,6 +10,7 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import {
   editCustomer,
+  fetchMikrotik,
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
@@ -34,7 +35,6 @@ export default function CustomerEdit(props) {
 
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  console.log(Getmikrotik);
 
   // get bp setting
   const bpSettings = useSelector(
@@ -54,6 +54,10 @@ export default function CustomerEdit(props) {
     bpSettings?.hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
+  );
+  // generate Customer Id
+  const genCustomerId = useSelector(
+    (state) => state.persistedReducer.auth.userData.bpSettings.genCustomerId
   );
 
   const [packageRate, setPackageRate] = useState("");
@@ -75,6 +79,8 @@ export default function CustomerEdit(props) {
   const [promiseDate, setPromiseDate] = useState(null);
 
   const [packageId, setPackageId] = useState("");
+  //component states
+  const [loading, setLoading] = useState(false);
 
   // fix max promise date
   let mxDate = new Date(data?.billingCycle);
@@ -104,6 +110,10 @@ export default function CustomerEdit(props) {
     if (data) setPromiseDate(new Date(data.promiseDate));
     // findout area id by sub area id
   }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
+
+  useEffect(() => {
+    fetchMikrotik(dispatch, ispOwnerId, setLoading);
+  }, [ispOwnerId]);
 
   useEffect(() => {
     area.map((a) => {
@@ -180,7 +190,8 @@ export default function CustomerEdit(props) {
       return alert(t("selectBillDate"));
     }
 
-    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
+    const { customerId, Pname, Ppassword, Pprofile, Pcomment, ...rest } =
+      formValue;
     const mainData = {
       singleCustomerID: data?.id,
       subArea: subArea2,
@@ -207,6 +218,9 @@ export default function CustomerEdit(props) {
       mainData === null
     ) {
       delete mainData.balance;
+    }
+    if (genCustomerId) {
+      mainData.customerId = customerId;
     }
     editCustomer(dispatch, mainData, setIsloading);
   };
@@ -251,6 +265,7 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
+                  customerId: "",
                   name: data?.name || "",
                   mobile: data?.mobile || "",
                   address: data?.address || "",
@@ -273,6 +288,15 @@ export default function CustomerEdit(props) {
                 {() => (
                   <Form>
                     <div className="mikrotikSection">
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label="Customer Id"
+                          name="customerId"
+                          validation={"true"}
+                        />
+                      )}
+
                       {bpSettings?.hasMikrotik ? (
                         <div>
                           <label className="form-control-label changeLabelFontColor">
