@@ -51,7 +51,7 @@ export const supportTicketsEditApi = async (dispatch, data, ticketId) => {
     );
     console.log(response.data);
     dispatch(editSupportTickets(response.data.supportTicket));
-    toast.success(response.data.message);
+    toast.success("Support Ticket Edit Success");
   } catch (error) {
     toast.error(error.response?.data.message);
   }
@@ -68,9 +68,8 @@ export const collectorSupportTicketsEditApi = async (
       `customer/supportTicket/${ticketId}`,
       data
     );
-    console.log(response.data);
     dispatch(editSupportTickets(response.data.supportTicket));
-    toast.success(response.data.message);
+    toast.success("Support Ticket Edit Success");
   } catch (error) {
     toast.error(error.response?.data.message);
   }

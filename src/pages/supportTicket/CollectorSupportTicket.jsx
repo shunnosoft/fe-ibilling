@@ -21,7 +21,7 @@ import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
 import apiLink from "../../api/apiLink";
 import CollectorSupportTicketEdit from "./modal/CollectorSupportTicketEdit";
-import CollectorSupportTicketDelete from "./modal/CollectorSupportTicketDelete";
+// import CollectorSupportTicketDelete from "./modal/CollectorSupportTicketDelete";
 
 const CollectorSupportTicket = () => {
   const { t } = useTranslation();
@@ -148,7 +148,7 @@ const CollectorSupportTicket = () => {
                     </div>
                   </div>
                 </li>
-                <li
+                {/* <li
                   data-bs-toggle="modal"
                   data-bs-target="#deleteModal"
                   onClick={() => {
@@ -162,7 +162,7 @@ const CollectorSupportTicket = () => {
                       <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -216,10 +216,10 @@ const CollectorSupportTicket = () => {
       {/* Edit Modal End */}
 
       {/* Delete Modal Start */}
-
+      {/* 
       <CollectorSupportTicketDelete
         collectorSupportTicketDeleteID={deleteTicketId}
-      />
+      /> */}
 
       {/* Delete Modal end */}
     </>
