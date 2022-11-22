@@ -27,6 +27,7 @@ export default function CustomerModal() {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
+
   // const area = useSelector(
   //   (state) => state.persistedReducer.auth?.userData.areas
   // );
@@ -118,7 +119,7 @@ export default function CustomerModal() {
       paymentStatus: "unpaid",
       ispOwner: userData.ispOwner,
       subArea: subAreaId,
-      reseller: userData.reseller,
+      reseller: userData?.id,
 
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",

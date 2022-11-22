@@ -55,9 +55,6 @@ const PPPoE = () => {
   // inactive customer state
   const [inActiveCustomer, setInActiveCustomer] = useState(false);
 
-  // customer type state
-  const [customerType, setCustomerType] = useState();
-
   // package loading
   const [packageLoading, setPackageLoading] = useState(false);
 
@@ -421,7 +418,6 @@ const PPPoE = () => {
                 data-bs-target="#SyncCustomer"
                 onClick={() => {
                   setInActiveCustomer(false);
-                  setCustomerType("PPPoE");
                 }}
                 title={t("PPPoECustomerSync")}
                 className="btn btn-outline-primary"
@@ -453,7 +449,6 @@ const PPPoE = () => {
       <CustomerSync
         mikrotikId={mikrotikId}
         ispOwner={ispOwner}
-        customerType={customerType}
         inActiveCustomer={inActiveCustomer}
         setInActiveCustomer={setInActiveCustomer}
       />

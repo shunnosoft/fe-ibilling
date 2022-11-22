@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import CustomerSync from "../configMikrotikModals/CustomerSync";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { PersonLinesFill } from "react-bootstrap-icons";
+import CustomerSync from "./staticOperation/CustomerSync";
+import { useEffect } from "react";
+import { getStaticCustomer } from "../../../features/apiCalls";
+import { useDispatch } from "react-redux";
+import Table from "../../../components/table/Table";
+import moment from "moment";
 
 const Static = () => {
-  const { ispOwner, mikrotikId } = useParams();
   const { t } = useTranslation();
+
+  // get dispatch
+  const dispatch = useDispatch();
+
+  const { ispOwner, mikrotikId } = useParams();
 
   // get all mikrotik
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -15,11 +24,63 @@ const Static = () => {
   // mikrotik
   const configMikrotik = mikrotik.find((item) => item.id === mikrotikId);
 
-  // inactive customer state
-  const [inActiveCustomer, setInActiveCustomer] = useState(false);
+  // get static customer
+  const customer = useSelector((state) => state?.customer?.staticCustomer);
 
-  // customer type state
-  const [customerType, setCustomerType] = useState();
+  // customer state
+  const [staticCustomer, setStatiCustomer] = useState(customer);
+
+  // customer loading
+  const [customerLoading, setCustomerLoading] = useState(false);
+
+  useEffect(() => {
+    // filter mikrotik customer
+    if (customer) {
+      const filterCustomer = customer.filter(
+        (item) => item.mikrotik === mikrotikId
+      );
+      setStatiCustomer(filterCustomer);
+    }
+  }, [customer]);
+
+  useEffect(() => {
+    getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
+  }, []);
+
+  // customer column
+  const columns = React.useMemo(
+    () => [
+      {
+        width: "10%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        width: "25%",
+        Header: t("name"),
+        accessor: "name",
+      },
+      {
+        width: "30%",
+        Header: t("ip"),
+        accessor: (field) =>
+          field.userType === "firewall-queue"
+            ? field.queue.address
+            : field.queue.target,
+      },
+      {
+        width: "30%",
+        Header: t("createdAt"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm A");
+        },
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
@@ -59,11 +120,7 @@ const Static = () => {
               {/* static customer sync button */}
               <button
                 data-bs-toggle="modal"
-                data-bs-target="#SyncCustomer"
-                onClick={() => {
-                  setInActiveCustomer(false);
-                  setCustomerType("static");
-                }}
+                data-bs-target="#staticCustomerSync"
                 title={t("staticCustomerSync")}
                 className="btn btn-outline-primary me-2 "
               >
@@ -71,15 +128,14 @@ const Static = () => {
               </button>
             </div>
           </div>
+          <Table
+            isLoading={customerLoading}
+            columns={columns}
+            data={staticCustomer}
+          ></Table>
         </div>
       </div>
-      <CustomerSync
-        mikrotikId={mikrotikId}
-        ispOwner={ispOwner}
-        customerType={customerType}
-        inActiveCustomer={inActiveCustomer}
-        setInActiveCustomer={setInActiveCustomer}
-      />
+      <CustomerSync mikrotikId={mikrotikId} ispOwner={ispOwner} />
     </>
   );
 };
