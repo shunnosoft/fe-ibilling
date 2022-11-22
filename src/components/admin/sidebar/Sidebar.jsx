@@ -1051,7 +1051,7 @@ export default function Sidebar() {
                             </NavLink>
                           </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="6">
+                        {/* <Accordion.Item eventKey="6">
                           <Accordion.Header
                             onClick={() => handleActiveAccordian("6")}
                           >
@@ -1085,7 +1085,7 @@ export default function Sidebar() {
                               </FontColor>
                             </NavLink>
 
-                            {/* <NavLink
+                            <NavLink
                               key={300}
                               to={"/invoice"}
                               className={(navInfo) =>
@@ -1109,9 +1109,9 @@ export default function Sidebar() {
                                   </span>
                                 </li>
                               </FontColor>
-                            </NavLink> */}
+                            </NavLink>
                           </Accordion.Body>
-                        </Accordion.Item>
+                        </Accordion.Item> */}
                       </>
                     )}
                     {(userRole === "ispOwner" || userRole === "collector") && (
