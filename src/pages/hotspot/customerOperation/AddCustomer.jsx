@@ -397,7 +397,7 @@ const AddCustomer = () => {
                           className="form-control mw-100"
                           selected={billDate}
                           onChange={(date) => setBillDate(date)}
-                          dateFormat="MMM dd yyyy hh"
+                          dateFormat="MMM dd yyyy hh:mm"
                           showTimeSelect
                           placeholderText={t("selectBillDate")}
                           disabled={!(packageId && userRole === "ispOwner")}

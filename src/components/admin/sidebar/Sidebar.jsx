@@ -431,7 +431,7 @@ export default function Sidebar() {
                         ) : (
                           ""
                         )}
-                        {userRole === "ispOwner" && (
+                        {userRole === "ispOwner" && bpSettings?.hasMikrotik && (
                           <NavLink
                             key={120}
                             to={"/hotspot/customer"}

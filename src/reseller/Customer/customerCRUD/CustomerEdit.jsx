@@ -47,11 +47,12 @@ export default function CustomerEdit({ single }) {
     (state) => state?.mikrotik?.pppoePackage
   );
 
-  // const area = useSelector((state) => state?.area?.area);
   // get area from redux
-  const area = useSelector(
-    (state) => state.persistedReducer.auth?.userData.areas
-  );
+  const area = useSelector((state) => state?.area?.area);
+
+  // const area = useSelector(
+  //   (state) => state.persistedReducer.auth?.userData.areas
+  // );
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   const [ppPackage, setppPackage] = useState([]);
 
