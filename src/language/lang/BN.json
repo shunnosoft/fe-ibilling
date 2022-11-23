@@ -592,5 +592,6 @@
   "quantity": "পরিমাণ",
   "customerSync": "গ্রাহক সিঙ্ক",
   "hotspot": "হটস্পট",
-  "activeHotpot": "এক্টিভ হটস্পট"
+  "activeHotpot": "এক্টিভ হটস্পট",
+  "writeCustomeriD": "কাস্টমার আইডি দিন"
 }

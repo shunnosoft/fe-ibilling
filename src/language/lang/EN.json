@@ -591,5 +591,6 @@
   "quantity": "Quantity",
   "customerSync": "Customer Sync",
   "hotspot": "Hotspot",
-  "activeHotspot": "Active Hotspot"
+  "activeHotspot": "Active Hotspot",
+  "writeCustomerId": "Write Customer Id"
 }

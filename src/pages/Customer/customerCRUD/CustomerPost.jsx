@@ -54,6 +54,7 @@ export default function CustomerModal() {
 
   // customer validator
   const customerValidator = Yup.object({
+    // customerId: Yup.string(),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
@@ -130,6 +131,7 @@ export default function CustomerModal() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
+
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
@@ -149,9 +151,14 @@ export default function CustomerModal() {
       balance,
       ...rest
     } = data;
-    const mainData = {
-      // customerId: "randon123",
 
+    if (!genCustomerId) {
+      if (!customerId) {
+        return alert(t("writeCustomerId"));
+      }
+    }
+
+    const mainData = {
       paymentStatus: "unpaid",
       subArea: subArea2,
       ispOwner: ispOwnerId,
@@ -174,8 +181,8 @@ export default function CustomerModal() {
     if (!bpSettings?.hasMikrotik) {
       delete mainData.mikrotik;
     }
-    if (genCustomerId) {
-      mainData.pppoe = customerId;
+    if (!genCustomerId) {
+      mainData.customerId = customerId;
     }
     console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
@@ -229,15 +236,6 @@ export default function CustomerModal() {
                 {(formik) => (
                   <Form>
                     <div className="mikrotikSection">
-                      {!genCustomerId && (
-                        <FtextField
-                          type="text"
-                          label="Customer Id"
-                          name="customerId"
-                          validation={"true"}
-                        />
-                      )}
-
                       {bpSettings?.hasMikrotik ? (
                         <div>
                           <label className="form-control-label changeLabelFontColor">
@@ -311,6 +309,14 @@ export default function CustomerModal() {
                     </div>
 
                     <div className="pppoeSection2">
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label="Customer Id"
+                          name="customerId"
+                          validation={"true"}
+                        />
+                      )}
                       <FtextField
                         type="text"
                         label={t("PPPoEName")}

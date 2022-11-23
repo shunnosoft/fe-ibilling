@@ -57,7 +57,7 @@ export default function CustomerEdit(props) {
   );
   // generate Customer Id
   const genCustomerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.bpSettings.genCustomerId
+    (state) => state.persistedReducer.auth.userData?.bpSettings?.genCustomerId
   );
 
   const [packageRate, setPackageRate] = useState("");
@@ -131,6 +131,7 @@ export default function CustomerEdit(props) {
 
   // customer validator
   const customerValidator = Yup.object({
+    // customerId: Yup.string().required(t("writeCustomerId")),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
@@ -192,6 +193,11 @@ export default function CustomerEdit(props) {
 
     const { customerId, Pname, Ppassword, Pprofile, Pcomment, ...rest } =
       formValue;
+    if (!genCustomerId) {
+      if (!customerId) {
+        return alert(t("writeCustomerId"));
+      }
+    }
     const mainData = {
       singleCustomerID: data?.id,
       subArea: subArea2,
@@ -219,9 +225,10 @@ export default function CustomerEdit(props) {
     ) {
       delete mainData.balance;
     }
-    if (genCustomerId) {
+    if (!genCustomerId) {
       mainData.customerId = customerId;
     }
+    console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -265,7 +272,7 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  customerId: "",
+                  customerId: data?.customerId,
                   name: data?.name || "",
                   mobile: data?.mobile || "",
                   address: data?.address || "",
@@ -288,15 +295,6 @@ export default function CustomerEdit(props) {
                 {() => (
                   <Form>
                     <div className="mikrotikSection">
-                      {!genCustomerId && (
-                        <FtextField
-                          type="text"
-                          label="Customer Id"
-                          name="customerId"
-                          validation={"true"}
-                        />
-                      )}
-
                       {bpSettings?.hasMikrotik ? (
                         <div>
                           <label className="form-control-label changeLabelFontColor">
@@ -361,6 +359,13 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeSection2">
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label="Customer Id"
+                          name="customerId"
+                        />
+                      )}
                       <FtextField
                         type="text"
                         label={`PPPoE ${t("name")}`}
