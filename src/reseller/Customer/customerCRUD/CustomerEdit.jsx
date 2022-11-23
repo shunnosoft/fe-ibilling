@@ -24,15 +24,18 @@ export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.ispOwner
   );
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.reseller
+
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
-  // console.log(resellerId);
+
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
-
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions

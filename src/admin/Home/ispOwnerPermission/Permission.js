@@ -10,13 +10,13 @@ export const ispOwnerPermission = (perm) => {
       id: 2,
       value: "updateCustomerBalance",
       label: "Update Customer Balance",
-      isChecked: perm?.updateCustomerBalance,
+      isChecked: perm?.updateCutomerBalance,
     },
     {
       id: 3,
-      value: "mikrotkDelete",
+      value: "mikrotikDelete",
       label: "Mikrotik Delete",
-      isChecked: perm?.mikrotkDelete,
+      isChecked: perm?.mikrotikDelete,
     },
   ];
   return permission;

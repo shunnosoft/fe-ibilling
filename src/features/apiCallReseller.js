@@ -197,7 +197,6 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
       `/reseller/customer/${reseller}/${singleCustomerID}`,
       sendingData
     );
-    console.log(res.data);
     dispatch(editCustomerSuccess(res.data));
     setIsloading(false);
     langMessage(
@@ -300,8 +299,6 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 
   try {
     const res = await apiLink.post(`/deposit`, data);
-    console.log(data);
-    console.log(res.data);
 
     dispatch(addDepositSucces(res.data));
 

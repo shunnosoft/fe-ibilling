@@ -228,7 +228,6 @@ export default function CustomerEdit(props) {
     if (!genCustomerId) {
       mainData.customerId = customerId;
     }
-    console.log(mainData);
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {

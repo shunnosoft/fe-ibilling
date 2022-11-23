@@ -23,9 +23,18 @@ export default function CustomerModal() {
   // import dispatch
   const dispatch = useDispatch();
 
+  // get user role from redux
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+
   // get user data from redux
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
+  );
+
+  const resellerId = useSelector((state) =>
+    userRole === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   // const area = useSelector(
@@ -40,9 +49,6 @@ export default function CustomerModal() {
   const reseller = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
-
-  // get user role from redux
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
 
   //sub area id state
   const [subAreaId, setsubAreaId] = useState("");
@@ -93,9 +99,9 @@ export default function CustomerModal() {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && userData.id) {
+    if (id && resellerId) {
       const IDs = {
-        reseller: userData.id,
+        reseller: resellerId,
         mikrotikId: id,
       };
       fetchpppoePackage(dispatch, IDs);
@@ -119,11 +125,9 @@ export default function CustomerModal() {
       paymentStatus: "unpaid",
       ispOwner: userData.ispOwner,
       subArea: subAreaId,
-      reseller: userData?.id,
-
+      reseller: resellerId,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
-
       billingCycle: billDate.toISOString(),
       pppoe: {
         name: Pname,

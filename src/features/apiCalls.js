@@ -1337,6 +1337,30 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
   }
 };
 
+export const resellerProfileUpdate = async (
+  dispatch,
+  data,
+  resellerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.patch(`/reseller/${resellerId}`, data);
+    // console.log(res.data);
+    dispatch(updateProfile(res.data));
+    setIsLoading(false);
+    langMessage(
+      "success",
+      "প্রোফাইল আপডেট সফল হয়েছে",
+      "Profile Updated Successfully"
+    );
+  } catch (error) {
+    setIsLoading(false);
+    toast.error(error.response?.data.message);
+  }
+};
+
 //Bill
 
 export const billCollect = async (
@@ -1370,11 +1394,9 @@ export const billCollect = async (
 
 export const addDeposit = async (dispatch, data, setLoading) => {
   setLoading(true);
-  console.log(data);
 
   try {
     const res = await apiLink.post(`/deposit`, data);
-    console.log(res.data);
     dispatch(addDepositSucces(res.data));
 
     setLoading(false);
@@ -1436,12 +1458,10 @@ export const depositAcceptReject = async (
   id,
   setAccLoading
 ) => {
-  console.log(status, id);
   setAccLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
     dispatch(updateDepositSuccess(res.data));
-    console.log(res.data);
     setAccLoading(false);
     if (res.data.status === "accepted") {
       langMessage(
@@ -1480,12 +1500,10 @@ export const editBillReport = async (
   reportId,
   data
 ) => {
-  console.log({ reportId }, { data });
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`/bill/monthlyBill/${reportId}`, data);
     dispatch(editBillReportSuccess(res.data));
-    console.log(res.data);
     document.getElementById("reportEditModal").click();
     langMessage("success", "নোট এডিট সফল হয়েছে", "Note Edited Successfully");
   } catch (error) {

@@ -34,7 +34,6 @@ export default function CustomerModal() {
   const genCustomerId = useSelector(
     (state) => state.persistedReducer.auth.userData.bpSettings.genCustomerId
   );
-  console.log(genCustomerId);
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
@@ -184,7 +183,6 @@ export default function CustomerModal() {
     if (!genCustomerId) {
       mainData.customerId = customerId;
     }
-    console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -314,6 +312,7 @@ export default function CustomerModal() {
                           type="text"
                           label="Customer Id"
                           name="customerId"
+                          disabled={!mikrotikPackage}
                           validation={"true"}
                         />
                       )}

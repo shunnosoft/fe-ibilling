@@ -11,7 +11,11 @@ import { FtextField } from "../../components/common/FtextField";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
-import { passwordUpdate, profileUpdate } from "../../features/apiCalls";
+import {
+  passwordUpdate,
+  profileUpdate,
+  resellerProfileUpdate,
+} from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { useState } from "react";
@@ -19,9 +23,17 @@ import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const { t } = useTranslation();
-  // const role = useSelector(state=>state.persistedReducer.auth.currentUser?.user.role);
+  const role = useSelector(
+    (state) => state.persistedReducer.auth.currentUser?.user.role
+  );
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.userData
+  );
+
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   const ispOwnerId = useSelector(
@@ -46,7 +58,7 @@ export default function Profile() {
   const dispatch = useDispatch();
   const progileEditHandler = (data) => {
     delete data.mobile;
-    profileUpdate(dispatch, data, ispOwnerId, setIsLoading);
+    resellerProfileUpdate(dispatch, data, resellerId, setIsLoading);
   };
 
   //   change password handler
@@ -103,6 +115,7 @@ export default function Profile() {
                               type="text"
                               label={t("company")}
                               name="company"
+                              disabled
                             />
 
                             <FtextField

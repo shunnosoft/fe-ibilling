@@ -58,9 +58,13 @@ export default function Customer() {
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const dispatch = useDispatch();
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
+
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
