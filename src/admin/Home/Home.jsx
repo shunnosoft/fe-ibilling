@@ -236,7 +236,7 @@ export default function Home() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PersonFill />
-                        <p className="actionP">Detail</p>
+                        <p className="actionP">Details</p>
                       </div>
                     </div>
                   </li>
@@ -251,7 +251,7 @@ export default function Home() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PenFill />
-                        <p className="actionP">Permission</p>
+                        <p className="actionP">Permissions</p>
                       </div>
                     </div>
                   </li>

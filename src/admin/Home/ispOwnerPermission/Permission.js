@@ -10,7 +10,7 @@ export const ispOwnerPermission = (perm) => {
       id: 2,
       value: "updateCustomerBalance",
       label: "Update Customer Balance",
-      isChecked: perm?.updateCutomerBalance,
+      isChecked: perm?.updateCustomerBalance,
     },
     {
       id: 3,
