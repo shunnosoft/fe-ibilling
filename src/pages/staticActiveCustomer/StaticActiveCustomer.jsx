@@ -34,8 +34,6 @@ const StaticActiveCustomer = () => {
     (state) => state?.customer?.staticActiveCustomer
   );
 
-  console.log(staticActiveCustomer);
-
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
