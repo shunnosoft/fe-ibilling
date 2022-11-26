@@ -12,6 +12,7 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import {
+  collectorProfileUpdate,
   passwordUpdate,
   profileUpdate,
   resellerProfileUpdate,
@@ -36,9 +37,6 @@ export default function Profile() {
       : state.persistedReducer.auth?.userData?.reseller
   );
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingpass, setIsLoadingpass] = useState(false);
 
@@ -58,7 +56,18 @@ export default function Profile() {
   const dispatch = useDispatch();
   const progileEditHandler = (data) => {
     delete data.mobile;
-    resellerProfileUpdate(dispatch, data, resellerId, setIsLoading);
+    if (role === "reseller") {
+      resellerProfileUpdate(dispatch, data, resellerId, setIsLoading);
+    }
+    if (role === "collector") {
+      collectorProfileUpdate(
+        dispatch,
+        data,
+        resellerId,
+        currentUser?.id,
+        setIsLoading
+      );
+    }
   };
 
   //   change password handler
@@ -69,14 +78,8 @@ export default function Profile() {
   return (
     <>
       <Sidebar />
-      <ToastContainer
-        className="bg-green"
-        toastStyle={{
-          backgroundColor: "#677078",
-          color: "white",
-          fontWeight: "500",
-        }}
-      />
+      <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -96,7 +99,6 @@ export default function Profile() {
                           company: currentUser?.company || "",
                           email: currentUser?.email || "",
                           address: currentUser?.address || "",
-                          signature: currentUser?.signature || "",
                           mobile: currentUser?.mobile || "",
                         }}
                         onSubmit={(values) => {
@@ -134,11 +136,7 @@ export default function Profile() {
                               label={t("address")}
                               name="address"
                             />
-                            <FtextField
-                              type="text"
-                              label={t("signature")}
-                              name="signature"
-                            />
+
                             <button
                               type="submit"
                               className="btn btn-success mt-2"

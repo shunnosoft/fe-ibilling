@@ -1361,8 +1361,34 @@ export const resellerProfileUpdate = async (
   }
 };
 
-//Bill
+export const collectorProfileUpdate = async (
+  dispatch,
+  data,
+  resellerId,
+  collectorId,
+  setIsLoading
+) => {
+  setIsLoading(true);
 
+  try {
+    const res = await apiLink.patch(
+      `/reseller/collector/${resellerId}/${collectorId}`,
+      data
+    );
+    dispatch(updateProfile(res.data));
+    setIsLoading(false);
+    langMessage(
+      "success",
+      "প্রোফাইল আপডেট সফল হয়েছে",
+      "Profile Updated Successfully"
+    );
+  } catch (error) {
+    setIsLoading(false);
+    toast.error(error.response?.data.message);
+  }
+};
+
+//Bill
 export const billCollect = async (
   dispatch,
   billData,
