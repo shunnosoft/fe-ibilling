@@ -1471,16 +1471,18 @@ const PPPOECustomer = () => {
             <span className="button_title">{t("editArea")}</span>
           </button>
 
-          <button
-            className="bulk_action_button btn btn-info btn-floating btn-sm"
-            title={t("balanceUpdate")}
-            data-bs-toggle="modal"
-            data-bs-target="#customerBalanceEdit"
-            type="button"
-          >
-            <i className="fas fa-dollar"></i>
-            <span className="button_title">{t("balanceUpdate")}</span>
-          </button>
+          {bpSettings.updateCustomerBalance && (
+            <button
+              className="bulk_action_button btn btn-info btn-floating btn-sm"
+              title={t("balanceUpdate")}
+              data-bs-toggle="modal"
+              data-bs-target="#customerBalanceEdit"
+              type="button"
+            >
+              <i className="fas fa-dollar"></i>
+              <span className="button_title">{t("balanceUpdate")}</span>
+            </button>
+          )}
 
           <button
             className="bulk_action_button btn btn-dark btn-floating btn-sm"
