@@ -231,8 +231,13 @@ export default function RstaticCustomer() {
         getStaticCustomerApi(dispatch, userData?.reseller.id, setIsloading);
       getSubAreas(dispatch, resellerId);
     } else if (role === "collector") {
+      getSubAreas(dispatch, userData?.collector?.reseller);
       if (cus.length === 0)
-        getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
+        getStaticCustomerApi(
+          dispatch,
+          userData?.collector?.reseller,
+          setIsloading
+        );
     }
   }, [dispatch, resellerId, userData, role]);
 

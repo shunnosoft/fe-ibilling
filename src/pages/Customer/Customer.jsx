@@ -912,7 +912,17 @@ const PPPOECustomer = () => {
         : t("sokolCustomer"),
     };
   }
-  const tableData = useMemo(() => pppoeCustomers, [pppoeCustomers]);
+
+  const sortingCustomer = useMemo(() => {
+    return [...pppoeCustomers].sort((a, b) => {
+      a = parseInt(a.customerId.replace(/[^0-9]/g, ""));
+      b = parseInt(b.customerId.replace(/[^0-9]/g, ""));
+
+      return a - b;
+    });
+  }, [pppoeCustomers]);
+
+  const tableData = useMemo(() => sortingCustomer, [pppoeCustomers]);
   return (
     <>
       <Sidebar />

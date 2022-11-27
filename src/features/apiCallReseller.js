@@ -299,23 +299,16 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 
   try {
     const res = await apiLink.post(`/deposit`, data);
-
     dispatch(addDepositSucces(res.data));
-
     langMessage(
       "success",
       "ডিপোজিট প্রদান সফল হয়েছে!",
       "Deposit Payment Successfully"
     );
   } catch (error) {
-    setLoading(false);
     toast.error(error.response?.data.message);
-    // if (error.response.status === 400) {
-    //   toast.success("ডিপোজিট অলরেডি পেন্ডিং এ আছে");
-    // } else {
-
-    // }
   }
+  setLoading(false);
 };
 
 //balance
