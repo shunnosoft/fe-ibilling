@@ -182,7 +182,7 @@ export default function Area() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <Table
                     isLoading={isLoading}
                     columns={columns}
