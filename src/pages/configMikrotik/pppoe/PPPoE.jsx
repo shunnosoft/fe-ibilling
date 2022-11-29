@@ -399,12 +399,12 @@ const PPPoE = () => {
                 </>
               )}
               <button
-                disabled={pppoePackage.some(
-                  (i) =>
-                    i.rate === 0 &&
-                    i.name !== "default-encryption" &&
-                    i.name !== "default"
-                )}
+                // disabled={pppoePackage.some(
+                //   (i) =>
+                //     i.rate === 0 &&
+                //     i.name !== "default-encryption" &&
+                //     i.name !== "default"
+                // )}
                 onClick={syncPackage}
                 title={t("packageSync")}
                 className="btn btn-outline-primary mb-1"
