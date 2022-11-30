@@ -779,10 +779,22 @@ const PPPOECustomer = () => {
     ],
     [t]
   );
+
+  const sortingCustomer = useMemo(() => {
+    return [...pppoeCustomers].sort((a, b) => {
+      a = parseInt(a.customerId.replace(/[^0-9]/g, ""));
+      b = parseInt(b.customerId.replace(/[^0-9]/g, ""));
+
+      return a - b;
+    });
+  }, [pppoeCustomers]);
+
+  const tableData = useMemo(() => sortingCustomer, [pppoeCustomers]);
+
   //export customer data
   let customerForCsV = useMemo(
     () =>
-      pppoeCustomers.map((customer) => {
+      tableData.map((customer) => {
         return {
           companyName: ispOwnerData.company,
           home: "Home",
@@ -832,7 +844,7 @@ const PPPOECustomer = () => {
   //export customer data
   let customerForCsVTableInfo = useMemo(
     () =>
-      pppoeCustomers.map((customer) => {
+      tableData.map((customer) => {
         return {
           name: customer.name,
           pppoeName: customer.pppoe.name,
@@ -913,16 +925,6 @@ const PPPOECustomer = () => {
     };
   }
 
-  const sortingCustomer = useMemo(() => {
-    return [...pppoeCustomers].sort((a, b) => {
-      a = parseInt(a.customerId.replace(/[^0-9]/g, ""));
-      b = parseInt(b.customerId.replace(/[^0-9]/g, ""));
-
-      return a - b;
-    });
-  }, [pppoeCustomers]);
-
-  const tableData = useMemo(() => sortingCustomer, [pppoeCustomers]);
   return (
     <>
       <Sidebar />
@@ -946,13 +948,7 @@ const PPPOECustomer = () => {
                   </div>
                   {/* customer page header area  */}
 
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+                  <div className="d-flex align-items-center justify-content-center">
                     {((permission?.viewCustomerList && role === "manager") ||
                       role === "ispOwner") && (
                       <>
@@ -1387,7 +1383,7 @@ const PPPOECustomer = () => {
                   <div style={{ display: "none" }}>
                     <PrintCustomer
                       filterData={filterData}
-                      currentCustomers={pppoeCustomers}
+                      currentCustomers={tableData}
                       ref={componentRef}
                       printOptions={printOption}
                     />
