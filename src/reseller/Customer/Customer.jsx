@@ -57,11 +57,10 @@ export default function Customer() {
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
-  // get mikrotik from redux
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData.bpSettings
+  // get ispOwner data from redux
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData
   );
-  console.log(bpSettings);
 
   const dispatch = useDispatch();
 
@@ -124,12 +123,6 @@ export default function Customer() {
         (customer) => customer.status === status
       );
     }
-
-    // if (paymentStatus) {
-    //   tempCustomers = tempCustomers.filter(
-    //     (customer) => customer.paymentStatus === paymentStatus
-    //   );
-    // }
 
     if (paymentStatus) {
       tempCustomers = tempCustomers.filter((customer) => {
@@ -221,7 +214,7 @@ export default function Customer() {
   };
 
   useEffect(() => {
-    if (!bpSettings.hasMikrotik) {
+    if (!ispOwnerData.bpSettings?.hasMikrotik) {
       withMtkPackage(dispatch, resellerId);
     }
     getSubAreas(dispatch, resellerId);
@@ -547,7 +540,7 @@ export default function Customer() {
                   <div className="addAndSettingIcon">
                     <CSVLink
                       data={customerForCsVTableInfo}
-                      filename={"ispOwnerData.company"}
+                      filename={ispOwnerData.company}
                       headers={customerForCsVTableInfoHeader}
                       title="Customer Report"
                     >

@@ -408,20 +408,11 @@ export default function Customer() {
             return false;
           }
         }
-        // //payment status filter
-        // if (filterOptions.paymentStatus) {
-        //   if (customer.paymentStatus === filterOptions.paymentStatus) {
-        //     isFound = true;
-        //   } else {
-        //     return false;
-        //   }
-        // }
 
-        //payment status filter
-
+        // payment status filter
         if (filterOptions.paymentStatus) {
           if (filterOptions.paymentStatus === "free") {
-            if (customer.monthlyFee === parseInt("0")) {
+            if (customer.monthlyFee === 0) {
               isFound = true;
             } else {
               return false;
@@ -443,17 +434,20 @@ export default function Customer() {
           ) {
             if (
               customer.monthlyFee > customer.balance &&
-              customer.balance > parseInt("0")
+              customer.balance > 0
             ) {
               isFound = true;
             } else {
               return false;
             }
           } else if (
-            filterOptions.paymentStatus === "advance" &&
-            customer.paymentStatus === "paid"
+            filterOptions.paymentStatus === "advance"
+            // && customer.paymentStatus === "paid"
           ) {
-            if (2 * customer.monthlyFee < customer.balance) {
+            if (
+              customer.monthlyFee <= customer.balance &&
+              customer.monthlyFee > 0
+            ) {
               isFound = true;
             } else {
               return false;
@@ -462,7 +456,7 @@ export default function Customer() {
             filterOptions.paymentStatus === "overDue" &&
             customer.paymentStatus === "unpaid"
           ) {
-            if (customer.balance < parseInt("0")) {
+            if (customer.balance < 0) {
               isFound = true;
             } else {
               return false;

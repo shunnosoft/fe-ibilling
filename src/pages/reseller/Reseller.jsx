@@ -164,6 +164,9 @@ export default function Reseller() {
         width: "14%",
         Header: t("rechargeBalance"),
         accessor: "rechargeBalance",
+        Cell: ({ cell: { value } }) => {
+          return Math.floor(value);
+        },
       },
       {
         width: "7%",

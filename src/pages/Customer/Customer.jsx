@@ -339,15 +339,6 @@ const PPPOECustomer = () => {
         }
 
         // payment status filter
-        // if (filterOptions.paymentStatus) {
-        //   if (customer.paymentStatus === filterOptions.paymentStatus) {
-        //     isFound = true;
-        //   } else {
-        //     return false;
-        //   }
-        // }
-
-        // payment status filter
         if (filterOptions.paymentStatus) {
           if (filterOptions.paymentStatus === "free") {
             if (customer.monthlyFee === 0) {
