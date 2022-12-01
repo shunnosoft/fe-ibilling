@@ -379,10 +379,13 @@ const PPPOECustomer = () => {
               return false;
             }
           } else if (
-            filterOptions.paymentStatus === "advance" &&
-            customer.paymentStatus === "paid"
+            filterOptions.paymentStatus === "advance"
+            // && customer.paymentStatus === "paid"
           ) {
-            if (customer.monthlyFee < customer.balance) {
+            if (
+              customer.monthlyFee <= customer.balance &&
+              customer.monthlyFee > 0
+            ) {
               isFound = true;
             } else {
               return false;
@@ -744,22 +747,23 @@ const PPPOECustomer = () => {
                   ) : (
                     ""
                   ))}
-                {role === "ispOwner" && ispOwnerData?.bpSettings?.hasReseller && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#transferToReseller"
-                    onClick={() => {
-                      getSpecificCustomer(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <ArrowRightSquareFill />
-                        <p className="actionP">{t("transferReseller")}</p>
+                {role === "ispOwner" &&
+                  ispOwnerData?.bpSettings?.hasReseller && (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#transferToReseller"
+                      onClick={() => {
+                        getSpecificCustomer(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ArrowRightSquareFill />
+                          <p className="actionP">{t("transferReseller")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                )}
+                    </li>
+                  )}
                 {(role === "ispOwner" || role === "manager") &&
                   ispOwnerData.bpSettings?.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
