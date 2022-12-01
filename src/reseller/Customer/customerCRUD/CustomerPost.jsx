@@ -43,7 +43,6 @@ export default function CustomerModal() {
 
   // get are from redux
   const area = useSelector((state) => state?.area?.area);
-  // console.log(area);
 
   // get reseller from redux
   const reseller = useSelector(
@@ -58,8 +57,6 @@ export default function CustomerModal() {
 
   // get mikrotik package from redux
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
-
-  // const packages = useSelector((state) => state.package.packages);
 
   // package rate sate
   const [packageRate, setPackageRate] = useState("");
@@ -119,6 +116,14 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
+    if (!mikrotikPackage) {
+      return alert(t("selectPackage"));
+    }
+
+    if (!subAreaId) {
+      return alert(t("selectArea"));
+    }
+
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
@@ -140,6 +145,9 @@ export default function CustomerModal() {
     };
 
     if (Getmikrotik.length > 0) {
+      if (!singleMikrotik) {
+        return alert(t("selectMikrotik"));
+      }
       mainData.mikrotik = singleMikrotik;
       mainData.autoDisable = autoDisable;
     }
@@ -202,12 +210,11 @@ export default function CustomerModal() {
                         userRole === "manager") && (
                         <>
                           <div>
-                            <span className="comstomerFieldsTitle">
+                            <label className="form-control-label changeLabelFontColor">
                               {t("selectMikrotik")}
-                            </span>
+                            </label>
                             <select
-                              style={{ marginTop: "-rem" }}
-                              className="form-select "
+                              className="form-select mw-100 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotik}
                             >
@@ -248,11 +255,11 @@ export default function CustomerModal() {
                       {userRole === "reseller" && Getmikrotik.length > 0 && (
                         <>
                           <div>
-                            <p className="comstomerFieldsTitle">
+                            <label className="form-control-label changeLabelFontColor">
                               {t("selectMikrotik")}
-                            </p>
+                            </label>
                             <select
-                              className="form-select mw-100"
+                              className="form-select mw-100 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotik}
                             >
@@ -272,11 +279,11 @@ export default function CustomerModal() {
                             </select>
                           </div>
                           <div>
-                            <p className="comstomerFieldsTitle">
-                              {t("selectPPPoEPackage")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}
+                            </label>
                             <select
-                              className="form-select mb-3 mw-100"
+                              className="form-select mb-3 mw-100 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -301,11 +308,11 @@ export default function CustomerModal() {
                       {userRole === "reseller" && Getmikrotik.length == 0 && (
                         <>
                           <div>
-                            <p className="comstomerFieldsTitle">
+                            <label className="form-control-label changeLabelFontColor">
                               {t("selectPPPoEPackage")}
-                            </p>
+                            </label>
                             <select
-                              className="form-select mb-3 mw-100"
+                              className="form-select mb-3 mt-0 mw-100"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -354,9 +361,11 @@ export default function CustomerModal() {
 
                     <div className="displayGrid3">
                       <div>
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={(e) => selectArea(e.target.value)}
                         >
@@ -372,10 +381,10 @@ export default function CustomerModal() {
                       </div>
 
                       <FtextField type="text" label={t("NIDno")} name="nid" />
+                      <FtextField type="text" label={t("name")} name="name" />
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label={t("name")} name="name" />
                       <FtextField
                         type="text"
                         label={t("mobile")}
@@ -386,28 +395,9 @@ export default function CustomerModal() {
                         label={t("address")}
                         name="address"
                       />
+                      <FtextField type="text" label={t("email")} name="email" />
                     </div>
                     <div className="newDisplay">
-                      <FtextField type="text" label={t("email")} name="email" />
-
-                      {/* <p className="customerFieldsTitle">
-                          {t("billingCycle")}
-                        </p> */}
-
-                      {/* <div className="timeDate">
-                          <input
-                            value={billDate}
-                            onChange={(e) => setBillDate(e.target.value)}
-                            type="date"
-                            min={moment().format("YYYY-MM-DD")}
-                          />
-                          <input
-                            className="billTime"
-                            value={billTime}
-                            onChange={(e) => setBilltime(e.target.value)}
-                            type="time"
-                          />
-                        </div> */}
                       {userRole === "collector" ? (
                         <div className="billCycle">
                           <label className="form-control-label changeLabelFontColor">

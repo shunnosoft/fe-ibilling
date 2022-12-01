@@ -57,6 +57,12 @@ export default function Customer() {
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
+  // get mikrotik from redux
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData.bpSettings
+  );
+  console.log(bpSettings);
+
   const dispatch = useDispatch();
 
   const resellerId = useSelector((state) =>
@@ -215,7 +221,9 @@ export default function Customer() {
   };
 
   useEffect(() => {
-    withMtkPackage(dispatch, resellerId);
+    if (!bpSettings.hasMikrotik) {
+      withMtkPackage(dispatch, resellerId);
+    }
     getSubAreas(dispatch, resellerId);
 
     if (role === "collector") {
