@@ -30,6 +30,7 @@ export default function CustomerReport(props) {
   );
 
   const [customerReport, setCustomerReport] = useState([]);
+  console.log(customerReport);
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -102,7 +103,7 @@ export default function CustomerReport(props) {
                         {t("package")}
                       </th>
                       <th style={{ width: "10%" }} scope="col">
-                        {t("balance")}
+                        {t("due")}
                       </th>
 
                       <th style={{ width: "10%" }} scope="col">
@@ -133,7 +134,7 @@ export default function CustomerReport(props) {
                         return (
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>
-                            <td>{FormatNumber(val.customer.balance)}</td>
+                            <td>{FormatNumber(val.due)}</td>
                             <td>{FormatNumber(val.amount)}</td>
                             <td>
                               {moment(val.createdAt).format(
@@ -145,13 +146,26 @@ export default function CustomerReport(props) {
                             <td>{val.name}</td>
 
                             <td>
-                              <p>{val.note}</p>
+                              <p>
+                                {val.note && val.note.slice(0, 20)}
+                                <span>
+                                  {val?.note && val?.note?.length > 20 && "..."}
+                                </span>
+                              </p>
                               {val.start && val.end && (
                                 <span className="badge bg-secondary">
                                   {moment(val.start).format("MMM/DD/YY")}--
                                   {moment(val.end).format("MMM/DD/YY")}
                                 </span>
                               )}
+                              <p>
+                                {val?.month && val.month.slice(0, 20)}
+                                <span>
+                                  {val?.month &&
+                                    val?.month?.length > 20 &&
+                                    "..."}
+                                </span>
+                              </p>
                             </td>
                             {/* conditional rendering because print component doesnot perform with conditon  */}
                             {val.start && val.end ? (

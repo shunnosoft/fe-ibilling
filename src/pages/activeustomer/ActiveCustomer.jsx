@@ -63,8 +63,15 @@ export default function ConfigMikrotik() {
   // set initialy mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
 
+  // running status state
+  const [runningStatus, setRunningStatus] = useState("");
+
+  // status filter
+  const [status, setStatus] = useState(null);
+
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  // console.log(allUsers);
 
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
@@ -83,14 +90,71 @@ export default function ConfigMikrotik() {
     let temp;
     if (e.target.value === "allCustomer") {
       setAllUsers(allMikrotikUsers);
-    } else if (e.target.value === "true") {
+    } else if (e.target.value === "online") {
       temp = allMikrotikUsers.filter((item) => item.running == true);
       setAllUsers(temp);
-    } else if (e.target.value === "false") {
+    } else if (e.target.value === "offline") {
       temp = allMikrotikUsers.filter((item) => item.running != true);
       setAllUsers(temp);
     }
   };
+
+  const statusFilterHandler = (status) => {
+    let statusFilter = [...allMikrotikUsers];
+    if (status && status !== "allCustomer") {
+      statusFilter = allMikrotikUsers.filter((item) => {
+        if (item.status === "active" && status === "active") {
+          console.log("active");
+          return true;
+        }
+        if (item.status === "inactive" && status === "inactive") {
+          console.log("inactive");
+          return true;
+        }
+        if (
+          status === "other" &&
+          item.status !== "active" &&
+          item.status !== "inactive" &&
+          item.running !== true
+        ) {
+          console.log("other");
+          return true;
+        }
+      });
+    }
+    setAllUsers(statusFilter);
+  };
+
+  // const filter = allMikrotikUsers.filter((item) => {
+  //   if (item.status === "active") {
+  //   } else if (item.status === "inactive") {
+  //   } else {
+  //     console.log(item);
+  //   }
+  // });
+
+  // if (runningStatus) {
+  //   let filterCustomer;
+
+  //   if (runningStatus === "allCustomer") {
+  //     setAllUsers(allMikrotikUsers);
+  //   }
+
+  //   if (runningStatus === "online") {
+  //     filterCustomer = allMikrotikUsers.filter((item) => item.running == true);
+  //     setAllUsers(filterCustomer);
+  //   }
+  //   if (runningStatus === "offline") {
+  //     filterCustomer = allMikrotikUsers.filter((item) => item.running != true);
+  //     setAllUsers(filterCustomer);
+  //   }
+  // }
+
+  // if (status && status !== "allCustomer") {
+  //   allMikrotikUsers = allMikrotikUsers.filter(
+  //     (item) => item.status === status
+  //   );
+  // }
 
   // initialize id
   const IDs = {
@@ -235,6 +299,8 @@ export default function ConfigMikrotik() {
     [t]
   );
 
+  // console.log(filter);
+
   return (
     <>
       <Sidebar />
@@ -284,17 +350,30 @@ export default function ConfigMikrotik() {
                         onChange={filterIt}
                         className="form-select mt-0"
                       >
-                        <option
-                          selected={loading === true}
-                          value={"allCustomer"}
-                        >
+                        <option value="allCustomer">
                           {t("sokolCustomer")}
                         </option>
-                        <option value={"true"}>{t("online")}</option>
-                        <option value={"false"}>{t("ofline")}</option>
+                        <option value="online">{t("online")}</option>
+                        <option value="offline">{t("offline")}</option>
                       </select>
                     </div>
-                    {/* )} */}
+                    <div className="mikrotik-filter ms-4">
+                      <h6 className="mb-0"> {t("status")} </h6>
+                      <select
+                        id="selectMikrotikOption"
+                        onChange={(event) =>
+                          statusFilterHandler(event.target.value)
+                        }
+                        className="form-select mt-0"
+                      >
+                        <option value="allCustomer">
+                          {t("sokolCustomer")}
+                        </option>
+                        <option value="active">{t("active")}</option>
+                        <option value="inactive">{t("in active")}</option>
+                        <option value="other">{t("other")}</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* Active PPPoE users */}

@@ -887,10 +887,10 @@ export const fetchpppoeUser = async (
     if (userType === "user") {
       customers.forEach((i) => {
         let match = false;
+        // console.log(i);
         interfaaceList.forEach((j) => {
           if (j.name === "<pppoe-" + i.pppoe.name + ">") {
             match = true;
-
             temp.push({
               ...j,
               ...i.pppoe,
@@ -1398,6 +1398,7 @@ export const billCollect = async (
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/monthlyBill", billData);
+    console.log(res.data);
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
     } else {

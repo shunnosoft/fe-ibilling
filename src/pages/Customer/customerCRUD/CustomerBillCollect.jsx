@@ -117,6 +117,8 @@ export default function CustomerBillCollect({ single }) {
       sendingData.month = monthValues.join(",");
     }
 
+    console.log(sendingData);
+
     billCollect(dispatch, sendingData, setLoading, resetForm);
     setAmount(data.amount);
   };
