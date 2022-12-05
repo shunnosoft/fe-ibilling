@@ -295,12 +295,12 @@ export default function Customer() {
         accessor: "customerId",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: "PPPoE",
         accessor: "pppoe.name",
       },
@@ -311,7 +311,7 @@ export default function Customer() {
       },
 
       {
-        width: "9%",
+        width: "8%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -327,6 +327,11 @@ export default function Customer() {
         },
       },
       {
+        width: "9%",
+        Header: t("package"),
+        accessor: "pppoe.profile",
+      },
+      {
         width: "10%",
         Header: t("month"),
         accessor: "monthlyFee",
@@ -337,8 +342,8 @@ export default function Customer() {
         accessor: "balance",
       },
       {
-        width: "12%",
-        Header: t("billCycle"),
+        width: "11%",
+        Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");

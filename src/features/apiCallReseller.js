@@ -280,12 +280,13 @@ export const billCollect = async (
     const res = await apiLink.post("/reseller/monthlyBill", billData);
     dispatch(updateBalance(res.data));
     setLoading(false);
-    document.querySelector("#collectCustomerBillModal").click();
     langMessage(
       "success",
       "রিচার্জ সফল হয়েছে",
       "Bill Acceptance is Successful."
     );
+
+    document.querySelector("#collectCustomerBillModal").click();
     resetForm();
   } catch (error) {
     setLoading(false);

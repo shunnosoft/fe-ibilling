@@ -488,6 +488,7 @@ const PPPOECustomer = () => {
   }, [pppoeCustomers]);
 
   const bandwidthModalController = (customerID) => {
+    console.log(customerID);
     setCustomerId(customerID);
     setBandWidthModal(true);
   };
@@ -623,13 +624,7 @@ const PPPOECustomer = () => {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"

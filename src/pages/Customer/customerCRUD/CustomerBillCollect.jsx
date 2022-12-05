@@ -117,8 +117,6 @@ export default function CustomerBillCollect({ single }) {
       sendingData.month = monthValues.join(",");
     }
 
-    console.log(sendingData);
-
     billCollect(dispatch, sendingData, setLoading, resetForm);
     setAmount(data.amount);
   };
@@ -207,42 +205,46 @@ export default function CustomerBillCollect({ single }) {
                       </select>
                     </div>
                   </div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="w-50">
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("billType")}
+                      </label>
+                      <select
+                        className="form-select mt-0 mw-100"
+                        onChange={(e) => setBillType(e.target.value)}
+                      >
+                        <option value="bill"> {t("bill")} </option>
+                        {permission?.connectionFee || role !== "collector" ? (
+                          <option value="connectionFee">
+                            {t("connectionFee")}
+                          </option>
+                        ) : (
+                          ""
+                        )}
+                      </select>
+                    </div>
 
-                  <label className="form-control-label changeLabelFontColor">
-                    {t("billType")}
-                  </label>
-                  <select
-                    className="form-select mt-0 mw-100"
-                    onChange={(e) => setBillType(e.target.value)}
-                  >
-                    <option value="bill"> {t("bill")} </option>
-                    {permission?.connectionFee || role !== "collector" ? (
-                      <option value="connectionFee">
-                        {t("connectionFee")}
-                      </option>
-                    ) : (
-                      ""
-                    )}
-                  </select>
-
-                  <div className="mb-2 mt-3 text-right">
-                    <input
-                      type="checkbox"
-                      className="form-check-input me-1"
-                      id="addNOte"
-                      checked={noteCheck}
-                      onChange={(e) => setNoteCheck(e.target.checked)}
-                    />
-                    <label
-                      className="form-check-label changeLabelFontColor"
-                      htmlFor="addNOte"
-                    >
-                      {t("noteAndDate")}
-                    </label>
+                    <div className="mt-3">
+                      <input
+                        type="checkbox"
+                        className="form-check-input me-1"
+                        id="addNOte"
+                        checked={noteCheck}
+                        onChange={(e) => setNoteCheck(e.target.checked)}
+                      />
+                      <label
+                        className="form-check-label changeLabelFontColor"
+                        htmlFor="addNOte"
+                      >
+                        {t("noteAndDate")}
+                      </label>
+                    </div>
                   </div>
+
                   {noteCheck && (
                     <>
-                      <div className=" mb-1">
+                      <div className="mt-3">
                         <div className="d-flex">
                           <div className="me-2">
                             <label className="form-control-label changeLabelFontColor">
@@ -271,7 +273,7 @@ export default function CustomerBillCollect({ single }) {
                           </div>
                         </div>
                       </div>
-                      <div className="month">
+                      <div className="month pt-2">
                         <label
                           className="form-check-label changeLabelFontColor"
                           htmlFor="selectMonth"
