@@ -456,7 +456,7 @@ export default function RstaticCustomer() {
               {/* Model finish */}
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="displexFlexSys">
                       {/* filter selector */}

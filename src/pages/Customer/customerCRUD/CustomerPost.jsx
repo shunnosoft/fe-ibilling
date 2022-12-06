@@ -49,7 +49,7 @@ export default function CustomerModal() {
   const dispatch = useDispatch();
 
   const [billDate, setBillDate] = useState(new Date());
-  const [connectionDate, setConnectionDate] = useState();
+  const [connectionDate, setConnectionDate] = useState(new Date());
 
   // customer validator
   const customerValidator = Yup.object({
@@ -286,14 +286,6 @@ export default function CustomerModal() {
                         min={0}
                         disabled={!(mikrotikPackage && userRole === "ispOwner")}
                         validation={"true"}
-                        // value={packageRate?.rate}
-                        // onChange={(e)=>{
-                        //   setPackageRate((preval)=>{
-                        //     return {
-                        //       ...preval,rate:e.target.value
-                        //     }
-                        //   })
-                        // }}
                       />
                       {bpSettings?.hasMikrotik ? (
                         ""
@@ -450,7 +442,8 @@ export default function CustomerModal() {
                             className="form-control mw-100"
                             selected={connectionDate}
                             onChange={(date) => setConnectionDate(date)}
-                            dateFormat="MM/dd/yyyy"
+                            dateFormat="MMM dd yyyy"
+                            maxDate={new Date()}
                             placeholderText={t("selectDate")}
                             disabled={!mikrotikPackage}
                           />
