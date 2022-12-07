@@ -60,10 +60,6 @@ export default function Report() {
   const firstIndex = lastIndex - customerPerPage;
   const dispatch = useDispatch();
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   // reload handler
   const reloadHandler = () => {
     getAllBills(dispatch, userData.id, setisLoading);
@@ -242,7 +238,7 @@ export default function Report() {
                   <div>{t("billReport")}</div>
                   <div className="reloadBtn">
                     {isLoading ? (
-                      <Loader></Loader>
+                      <Loader />
                     ) : (
                       <ArrowClockwise
                         onClick={() => reloadHandler()}
@@ -325,30 +321,6 @@ export default function Report() {
                         />
                       </div>
 
-                      {/* <input
-                        className="form-select"
-                        type="date"
-                        id="start"
-                        name="trip-start"
-                        value={moment(dateStart).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setStartDate(e.target.value);
-                        }}
-                        // value="2018-07-22"
-
-                        // min="2018-01-01"
-                        // max="2018-12-31"
-                      />
-                      <input
-                        className="form-select mx-3"
-                        type="date"
-                        id="end"
-                        name="trip-start"
-                        value={moment(dateEnd).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setEndDate(e.target.value);
-                        }}
-                      /> */}
                       <button
                         className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
                         type="button"

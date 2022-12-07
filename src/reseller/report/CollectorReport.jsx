@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -10,6 +10,7 @@ import {
   ArrowDownUp,
   PenFill,
   PersonFill,
+  PrinterFill,
   ThreeDots,
   Wallet,
 } from "react-bootstrap-icons";
@@ -27,9 +28,12 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import DatePicker from "react-datepicker";
+import PrintReport from "./CollectorReportPDF";
+import ReactToPrint from "react-to-print";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
+  const componentRef = useRef();
   //   const allArea = useSelector(state => state.area.area);
   const [allArea, setAreas] = useState([]);
   const collectorArea = useSelector(
@@ -154,7 +158,7 @@ export default function CollectorReport() {
 
     if (subAreaIds.length) {
       arr = allBills?.filter((bill) =>
-        subAreaIds.includes(bill.customer.subArea)
+        subAreaIds?.includes(bill?.customer?.subArea)
       );
     }
 
@@ -177,24 +181,6 @@ export default function CollectorReport() {
     });
     return FormatNumber(count);
   }, [mainData]);
-
-  const onSearch = (e) => {
-    const keys = ["amount", "name", "customerId", "createdAt"];
-
-    let arr = mainData2.filter((item) =>
-      keys.some((key) =>
-        item[key]
-          ? typeof item[key] === "string"
-            ? item[key]?.toString()?.toLowerCase().includes(e)
-            : item[key]?.toString().includes(e)
-          : typeof item["customer"][key] === "string"
-          ? item["customer"][key]?.toString()?.toLowerCase().includes(e)
-          : item["customer"][key]?.toString().includes(e)
-      )
-    );
-
-    setMainData(arr);
-  };
 
   const columns2 = React.useMemo(
     () => [
@@ -232,6 +218,18 @@ export default function CollectorReport() {
     </div>
   );
 
+  // const areaName = singleArea?.subAreas?.find((item) => item.id === subAreaIds);
+
+  // const filterData = {
+  //   area: areaName?.name ? areaName.name : t("all"),
+  //   subArea: singleArea?.subAreas?.name
+  //     ? singleArea?.subAreas.name
+  //     : t("allSubArea"),
+  //   startDate: moment(dateStart).format("YYYY-MM-DD"),
+  //   endDate: moment(dateEnd).format("YYYY-MM-DD"),
+  //   totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
+  // };
+
   return (
     <>
       <Sidebar />
@@ -255,6 +253,29 @@ export default function CollectorReport() {
                       )}
                     </div>
                   </div>
+
+                  <ReactToPrint
+                    documentTitle={t("billReport")}
+                    trigger={() => (
+                      <button
+                        className="header_icon border-0"
+                        type="button"
+                        title={t("downloadPdf")}
+                      >
+                        <PrinterFill />
+                      </button>
+                    )}
+                    content={() => componentRef.current}
+                  />
+                  {/* print report */}
+                  <div style={{ display: "none" }}>
+                    <PrintReport
+                      // filterData={filterData}
+                      currentCustomers={mainData}
+                      ref={componentRef}
+                    />
+                  </div>
+                  {/* print report end*/}
                 </div>
               </FourGround>
 

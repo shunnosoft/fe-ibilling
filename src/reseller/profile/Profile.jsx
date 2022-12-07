@@ -117,7 +117,7 @@ export default function Profile() {
                               type="text"
                               label={t("company")}
                               name="company"
-                              disabled
+                              disabled={role === "collector"}
                             />
 
                             <FtextField

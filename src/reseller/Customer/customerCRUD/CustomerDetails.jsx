@@ -79,6 +79,10 @@ export default function CustomerDetails({ single }) {
                     <b>{moment(data?.billingCycle).format("lll")}</b>
                   </h6>
                   <h6>
+                    {t("promiseDate")} :{" "}
+                    <b>{moment(data?.promiseDate).format("lll")}</b>
+                  </h6>
+                  <h6>
                     {t("automaticConnectionOff")} :{" "}
                     <b>{data?.autoDisable ? "YES" : "NO"}</b>
                   </h6>

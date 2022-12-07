@@ -41,7 +41,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           {t("status")} : {filterData.status}
         </li>
         <li>
-          {t("payment")} : {filterData.payment}
+          {t("paymentStatus")} : {filterData.payment}
         </li>
       </ul>
       <table className="table table-striped ">
@@ -51,7 +51,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
             <th scope="col">{t("name")}</th>
             <th scope="col">{t("mobile")}</th>
             <th scope="col">{t("status")}</th>
-            <th scope="col">{t("payment")}</th>
+            <th scope="col">{t("paymentStatus")}</th>
             <th scope="col">{t("package")}</th>
             <th scope="col">{t("monthFee")}</th>
             <th scope="col">{t("balance")}</th>

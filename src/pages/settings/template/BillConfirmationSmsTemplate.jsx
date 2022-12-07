@@ -131,7 +131,6 @@ function BillConfirmationSmsTemplate() {
       .replace("MONTH: BILL_MONTH", "")
       .replace("NOTE: BILL_NOTE", "")
       .replace("DUE: BILL_DUE", "");
-    console.log({ messageBoxStr });
 
     let temp = messageBoxStr?.split("\n");
 
