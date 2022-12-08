@@ -446,7 +446,6 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
       method: "GET",
       url: `/mikrotik/ppp/package/${IDs.mikrotikId}`,
     });
-    console.log(res.data);
     dispatch(getpppoePackageSuccess(res.data));
   } catch (error) {
     console.log(error.response);
