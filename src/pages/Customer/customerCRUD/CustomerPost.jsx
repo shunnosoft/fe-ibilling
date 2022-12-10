@@ -32,7 +32,7 @@ export default function CustomerModal() {
 
   // generate Customer Id
   const genCustomerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.bpSettings.genCustomerId
+    (state) => state.persistedReducer.auth.userData.bpSettings?.genCustomerId
   );
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
@@ -60,6 +60,10 @@ export default function CustomerModal() {
       .min(11, t("write11DigitMobileNumber"))
       .max(11, t("over11DigitMobileNumber"))
       .required(t("writeMobileNumber")),
+    referenceMobile: Yup.string()
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
@@ -224,6 +228,8 @@ export default function CustomerModal() {
                   Ppassword: "",
                   Pcomment: "",
                   balance: "",
+                  referenceName: "",
+                  referenceMobile: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -302,7 +308,7 @@ export default function CustomerModal() {
                       {!genCustomerId && (
                         <FtextField
                           type="text"
-                          label="Customer Id"
+                          label={t("customerId")}
                           name="customerId"
                           disabled={!mikrotikPackage}
                           validation={"true"}
@@ -407,7 +413,7 @@ export default function CustomerModal() {
                         disabled={!mikrotikPackage}
                       />
                     </div>
-                    <div className="newDisplay">
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("email")}
@@ -449,6 +455,20 @@ export default function CustomerModal() {
                           />
                         </div>
                       </div>
+                    </div>
+                    <div className="displayGrid3">
+                      <FtextField
+                        type="text"
+                        label={t("referenceName")}
+                        name="referenceName"
+                        disabled={!mikrotikPackage}
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("referenceMobile")}
+                        name="referenceMobile"
+                        disabled={!mikrotikPackage}
+                      />
                       {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>

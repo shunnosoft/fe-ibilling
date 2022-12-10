@@ -30,7 +30,6 @@ export default function CustomerReport(props) {
   );
 
   const [customerReport, setCustomerReport] = useState([]);
-  console.log(customerReport);
 
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -100,18 +99,27 @@ export default function CustomerReport(props) {
                 <table className="table table-striped text-center">
                   <thead>
                     <tr className="spetialSortingRow">
-                      <th style={{ width: "10%" }} scope="col">
+                      <th style={{ width: "8%" }} scope="col">
                         {t("package")}
                       </th>
-                      <th style={{ width: "10%" }} scope="col">
-                        {t("due")}
-                      </th>
-
-                      <th style={{ width: "10%" }} scope="col">
+                      <th style={{ width: "7%" }} scope="col">
                         {t("bill")}
                       </th>
-                      <th style={{ width: "30%" }} scope="col">
+                      <th style={{ width: "7%" }} scope="col">
+                        {t("due")}
+                      </th>
+                      <th style={{ width: "10%" }} scope="col">
+                        {t("previousBalance")}
+                      </th>
+
+                      <th style={{ width: "16%" }} scope="col">
                         {t("date")}
+                      </th>
+                      <th style={{ width: "16%" }} scope="col">
+                        {t("billingCycle")}
+                      </th>
+                      <th style={{ width: "16%" }} scope="col">
+                        {t("promiseDate")}
                       </th>
                       <th style={{ width: "7%" }} scope="col">
                         {t("medium")}
@@ -119,7 +127,7 @@ export default function CustomerReport(props) {
                       <th style={{ width: "15%" }} scope="col">
                         {t("collector")}
                       </th>
-                      <th style={{ width: "40%" }} scope="col">
+                      <th style={{ width: "25%" }} scope="col">
                         {t("note")}
                       </th>
                       <th style={{ width: "8%" }} scope="col">
@@ -135,10 +143,21 @@ export default function CustomerReport(props) {
                         return (
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>
-                            <td>{FormatNumber(val.due)}</td>
                             <td>{FormatNumber(val.amount)}</td>
+                            <td>{FormatNumber(val.due)}</td>
+                            <td>{FormatNumber(val?.prevState?.balance)}</td>
                             <td>
                               {moment(val.createdAt).format(
+                                "MMM DD YYYY hh:mm a"
+                              )}
+                            </td>
+                            <td>
+                              {moment(val.prevState?.billingCycle).format(
+                                "MMM DD YYYY hh:mm a"
+                              )}
+                            </td>
+                            <td>
+                              {moment(val.prevState?.promiseDate).format(
                                 "MMM DD YYYY hh:mm a"
                               )}
                             </td>

@@ -5,9 +5,21 @@ import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
 export default function CustomerDetails({ single }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
 
@@ -17,6 +29,13 @@ export default function CustomerDetails({ single }) {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
+
+  const performer = ownerUsers.find((item) => item[data?.createdBy]);
+
+  useEffect(() => {
+    getOwnerUsers(dispatch, ispOwnerId);
+  }, []);
+
   return (
     <div>
       <div
@@ -66,7 +85,7 @@ export default function CustomerDetails({ single }) {
                   </h6>
                   <h6>
                     {t("createdAt")} :{" "}
-                    {moment(data?.createdAt).format("DD-MM-YYYY hh:mm A")}
+                    {moment(data?.createdAt).format("MMM DD YYYY hh:mm A")}
                   </h6>
                   <h6>
                     {t("NIDno")} : {data?.nid}
@@ -106,22 +125,43 @@ export default function CustomerDetails({ single }) {
                   )}
                 </div>
                 <div>
-                  <h5>PPPoE</h5>
-                  <hr />
-                  <h6>
-                    {t("userName")} : {data?.pppoe?.name}
-                  </h6>
-                  <h6>
-                    {t("password")} : {data?.pppoe?.password}
-                    <br />
-                    {t("profile")} : {data?.pppoe?.profile}
-                  </h6>
-                  <h6>
-                    {t("service")} : {data?.pppoe?.service}
-                  </h6>
-                  <h6>
-                    {t("comment")} : {data?.pppoe?.comment}
-                  </h6>
+                  <div className="pppoe">
+                    <h5>PPPoE</h5>
+                    <hr />
+                    <h6>
+                      {t("userName")} : {data?.pppoe?.name}
+                    </h6>
+                    <h6>
+                      {t("password")} : {data?.pppoe?.password}
+                      <br />
+                      {t("profile")} : {data?.pppoe?.profile}
+                    </h6>
+                    <h6>
+                      {t("service")} : {data?.pppoe?.service}
+                    </h6>
+                    <h6>
+                      {t("comment")} : {data?.pppoe?.comment}
+                    </h6>
+                    <hr />
+                  </div>
+                  <div className="reference">
+                    <h5>{t("reference")}</h5>
+                    <hr />
+                    <h6>
+                      {t("referenceName")} : {data?.referenceName}
+                    </h6>
+                    <h6>
+                      {t("referenceMobile")} : {data?.referenceMobile}
+                    </h6>
+                    <h6>
+                      {t("createdBy")} :{" "}
+                      {performer && performer[data?.createdBy].name}
+                    </h6>
+                    <h6>
+                      {t("role")} :{" "}
+                      {performer && performer[data?.createdBy].role}
+                    </h6>
+                  </div>
                 </div>
               </div>
             </div>
