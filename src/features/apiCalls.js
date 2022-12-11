@@ -113,6 +113,7 @@ import {
 } from "./expenditureSlice";
 import { deleteReCustomer } from "./resellerCustomerAdminSlice";
 import { userLogout } from "./actions/authAsyncAction";
+import { createNote, getNotesSuccess } from "./customerNoteSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -507,6 +508,29 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
     console.log(error.message);
   }
   setIsloading(false);
+};
+
+export const addCustomerNote = async (dispatch, setIsLoading, data) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`/ispOwner/addNote`, data);
+    dispatch(createNote(res.data));
+    langMessage("success", "নোট সংযুক্ত সফল হয়েছে", "Note Added Successfully");
+  } catch (error) {
+    console.log(error.message);
+  }
+  setIsLoading(false);
+};
+
+export const getCustomerNotes = async (dispatch, setIsLoading, customerId) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/ispOwner/getNotes/${customerId}`);
+    dispatch(getNotesSuccess(res.data));
+  } catch (error) {
+    console.log(error.message);
+  }
+  setIsLoading(false);
 };
 
 // get due Customers

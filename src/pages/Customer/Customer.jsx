@@ -65,6 +65,7 @@ import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit
 import Footer from "../../components/admin/footer/Footer";
 import BandwidthModal from "./BandwidthModal";
 import BulkBalanceEdit from "./customerCRUD/bulkOpration/BulkBalanceEdit";
+import CustomerNote from "./customerCRUD/CustomerNote";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -132,6 +133,9 @@ const PPPOECustomer = () => {
 
   // customer id state
   const [customerId, setCustomerId] = useState("");
+
+  // set customer id in state for note
+  const [customerNoteId, setCustomerNoteId] = useState();
 
   // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
@@ -693,6 +697,20 @@ const PPPOECustomer = () => {
                     <div className="customerAction">
                       <CashStack />
                       <p className="actionP">{t("report")}</p>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerNote"
+                  onClick={() => {
+                    setCustomerNoteId(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("note")}</p>
                     </div>
                   </div>
                 </li>
@@ -1400,6 +1418,9 @@ const PPPOECustomer = () => {
 
       {/* customer report modal  */}
       <CustomerReport single={customerData} />
+
+      {/* customer note modal */}
+      <CustomerNote customerId={customerNoteId} />
 
       {/* customer delete modal  */}
       <CustomerDelete

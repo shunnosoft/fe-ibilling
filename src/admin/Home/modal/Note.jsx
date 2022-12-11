@@ -107,7 +107,6 @@ const Note = ({ ownerId, companyName }) => {
         ispOwner: ownerId,
       };
       addComment(data, setIsloading, dispatch);
-      console.log(data);
       setName("");
       setCommentType("");
       setStatus("");

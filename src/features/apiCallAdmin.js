@@ -158,7 +158,6 @@ export const addComment = async (data, setIsloading, dispatch) => {
   try {
     setIsloading(true);
     const res = await apiLink.post(`admin/comment/`, data);
-    console.log(res.data);
     toast.success("Note Added");
     setIsloading(false);
     dispatch(addCommentSuccess(res.data.comment));

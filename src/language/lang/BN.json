@@ -596,5 +596,7 @@
   "customerSync": "গ্রাহক সিঙ্ক",
   "hotspot": "হটস্পট",
   "activeHotpot": "এক্টিভ হটস্পট",
-  "writeCustomeriD": "কাস্টমার আইডি দিন"
+  "writeCustomeriD": "কাস্টমার আইডি দিন",
+  "dataNotAvailable": "কোন ডাটা পাওয়া যায় নি!",
+  "noteFieldRequired": "নোট লিখুন!"
 }

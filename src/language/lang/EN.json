@@ -595,5 +595,7 @@
   "customerSync": "Customer Sync",
   "hotspot": "Hotspot",
   "activeHotspot": "Active Hotspot",
-  "writeCustomerId": "Write Customer Id"
+  "writeCustomerId": "Write Customer Id",
+  "dataNotAvailable": "Data Not Found!",
+  "noteFieldRequired": "Note Field is Required!"
 }
