@@ -106,6 +106,7 @@ import {
 import {
   addExpenditureSectorsSuccess,
   addExpenditureSuccess,
+  deleteExpenditureSuccess,
   editExpenditureSectorsSuccess,
   editExpenditureSuccess,
   getExpenditureSectorsSuccess,
@@ -2002,6 +2003,22 @@ export const editExpenditure = async (dispatch, data, setLoading) => {
   } catch (error) {
     langMessage("error", "খরচ আপডেট ব্যর্থ হয়েছে", "Expenditure Update Failed");
     setLoading(false);
+  }
+};
+
+export const deleteExpenditure = async (dispatch, expenditureId) => {
+  try {
+    const res = await apiLink.delete(`/staff/expenditure/${expenditureId}`);
+    dispatch(deleteExpenditureSuccess(expenditureId));
+    langMessage(
+      "success",
+      "খরচ ডিলিট সফল হয়েছে",
+      "Expenditure Deleted Successfully"
+    );
+  } catch (error) {
+    console.log(error.response);
+    toast.error(error.response.message);
+    // langMessage("error", "খরচ ডিলিট ব্যর্থ হয়েছে", "Expenditure Delete Failed");
   }
 };
 

@@ -295,7 +295,7 @@ export default function CustomerBillCollect({ single }) {
                       <div class="form-floating mt-3">
                         <textarea
                           cols={200}
-                          class="form-control shadow-none"
+                          className="form-control shadow-none"
                           placeholder={t("writeNote")}
                           id="noteField"
                           onChange={(e) => setNote(e.target.value)}

@@ -8,8 +8,9 @@ import { toast, ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import Loader from "../../../components/common/Loader";
 import { addCustomerNote, getCustomerNotes } from "../../../features/apiCalls";
+import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
-const CustomerNote = ({ customerId }) => {
+const CustomerNote = ({ customerId, customerName }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -17,6 +18,9 @@ const CustomerNote = ({ customerId }) => {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   // get notes from redux
   const notes = useSelector((state) => state.customerNotes?.customerNote);
@@ -32,6 +36,16 @@ const CustomerNote = ({ customerId }) => {
 
   // get customer loading
   const [getCustomerLoading, setGetCustomerLoading] = useState();
+
+  // find action performer
+
+  const performerName = (performerId) => {
+    if (performerId) {
+      const performer = ownerUsers.find((item) => item[performerId]);
+      const name = performer[performerId].name;
+      return name;
+    }
+  };
 
   // set note in state
   const handleChange = (event) => {
@@ -61,7 +75,10 @@ const CustomerNote = ({ customerId }) => {
   };
 
   useEffect(() => {
-    getCustomerNotes(dispatch, setGetCustomerLoading, customerId);
+    if (customerId) {
+      getCustomerNotes(dispatch, setGetCustomerLoading, customerId);
+      getOwnerUsers(dispatch, ispOwner);
+    }
   }, [customerId]);
 
   return (
@@ -77,8 +94,8 @@ const CustomerNote = ({ customerId }) => {
         <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {/* Write some note for {companyName} */}
+              <h5 className="modal-title text-primary" id="exampleModalLabel">
+                {customerName}
               </h5>
               <div className="d-flex">
                 <button
@@ -114,13 +131,26 @@ const CustomerNote = ({ customerId }) => {
                     {notes.map((data, key) => (
                       <>
                         <div className="comment-show">
-                          <div className="d-flex">
+                          <div className="">
+                            <h5 className="mb-0">
+                              <b>{performerName(data?.addedBy)}</b>
+                            </h5>
+
+                            <small className="text-secondary">
+                              <i>
+                                {moment(data.createdAt).format(
+                                  "MMM DD YYYY hh:mm A"
+                                )}
+                              </i>
+                            </small>
+                          </div>
+                          {/* <div className="d-flex">
                             <h5 className="mb-1">
                               {moment(data.createdAt).format(
                                 "MMM DD YYYY hh:mm:ss A"
                               )}
                             </h5>
-                          </div>
+                          </div> */}
                           <p className="">{data?.note}</p>
                         </div>
                         <br />

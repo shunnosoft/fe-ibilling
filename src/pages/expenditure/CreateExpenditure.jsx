@@ -62,7 +62,7 @@ export default function CreateExpenditure() {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-lg">
+        <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
@@ -90,71 +90,48 @@ export default function CreateExpenditure() {
               >
                 {() => (
                   <Form>
-                    <div style={{ marginBottom: "20px" }}>
-                      <select
-                        style={{
-                          width: "300px",
-                          marginTop: "10px",
-                          border: "2px solid skyblue",
-                          height: "40px",
-                          borderRadius: "5px",
-                        }}
-                        name=""
-                        id=""
-                        onChange={handleSelect}
-                      >
-                        <option value=""> {t("selectExpenseSector")} </option>
-                        {expSectors?.map((exp, key) => {
-                          return (
-                            <option
-                              selected={pourpose === exp.id}
-                              key={key}
-                              value={exp.id}
-                            >
-                              {exp.name}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                    <div className="newexp">
-                      {/* <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
+                    <div className="d-flex">
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("expenditureSectorsName")}
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          name=""
+                          id=""
+                          onChange={handleSelect}
+                        >
+                          <option value=""> {t("selectExpenseSector")} </option>
+                          {expSectors?.map((exp, key) => {
+                            return (
+                              <option
+                                selected={pourpose === exp.id}
+                                key={key}
+                                value={exp.id}
+                              >
+                                {exp.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="newexp ms-2">
                         <FtextField
-                          type="text"
-                          label="নতুন খাত  যুক্ত করুন"
-                          name="newExp"
-                          style={{ marginRight: "100px" }}
-                        ></FtextField>
-                        <Plus
-                          style={{ marginLeft: "3px", marginTop: "6px" }}
-                          className="addcutmButton"
-                        ></Plus>
-                      </div> */}
-                      <FtextField
-                        style={{ marginRight: "10px" }}
-                        type="number"
-                        label={t("amount")}
-                        name="amount"
-                      ></FtextField>
+                          type="number"
+                          label={t("amount")}
+                          name="amount"
+                        />
+                      </div>
                     </div>
 
                     <div>
-                      <h6> {t("expenseDetails")} </h6>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("expenseDetails")}
+                      </label>
                       <textarea
+                        className="form-control shadow-none"
                         name="description"
                         ref={desRef}
-                        style={{
-                          width: "100%",
-                          height: "100px",
-                          border: "2px solid skyblue",
-                          paddingLeft: "5px",
-                        }}
                       ></textarea>
                     </div>
                     <div className="modal-footer">

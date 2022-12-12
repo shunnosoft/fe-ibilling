@@ -18,6 +18,11 @@ const expenditureSlice = createSlice({
         state.allExpenditures.findIndex((item) => item.id === payload.id)
       ] = payload;
     },
+    deleteExpenditureSuccess: (state, { payload }) => {
+      state.allExpenditures = state.allExpenditures.filter(
+        (item) => item.id !== payload
+      );
+    },
     getExpenditureSectorsSuccess: (state, { payload }) => {
       state.expenditurePourposes = payload;
     },
@@ -36,6 +41,7 @@ export const {
   getExpenditureSuccess,
   addExpenditureSuccess,
   editExpenditureSuccess,
+  deleteExpenditureSuccess,
   editExpenditureSectorsSuccess,
   getExpenditureSectorsSuccess,
   addExpenditureSectorsSuccess,

@@ -137,6 +137,9 @@ const PPPOECustomer = () => {
   // set customer id in state for note
   const [customerNoteId, setCustomerNoteId] = useState();
 
+  // set customer name state
+  const [customerName, setCustomerName] = useState("");
+
   // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
 
@@ -705,6 +708,7 @@ const PPPOECustomer = () => {
                   data-bs-target="#customerNote"
                   onClick={() => {
                     setCustomerNoteId(original.id);
+                    setCustomerName(original?.name);
                   }}
                 >
                   <div className="dropdown-item">
@@ -1420,7 +1424,7 @@ const PPPOECustomer = () => {
       <CustomerReport single={customerData} />
 
       {/* customer note modal */}
-      <CustomerNote customerId={customerNoteId} />
+      <CustomerNote customerId={customerNoteId} customerName={customerName} />
 
       {/* customer delete modal  */}
       <CustomerDelete
