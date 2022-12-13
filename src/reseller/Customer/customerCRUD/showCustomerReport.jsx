@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 export default function CustomerReport({ single }) {
   const { t } = useTranslation();
   const [customerReport, setCustomerReport] = useState([]);
-  console.log(customerReport);
+
   useEffect(() => {
     const getCustoemrReport = async () => {
       try {

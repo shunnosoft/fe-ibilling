@@ -13,7 +13,6 @@ export default function EditExpenditure({ singleExp }) {
   const [isLoading, setIsLoading] = useState(false);
   const [pourpose, setPourpose] = useState("");
   const [des, setDes] = useState(singleExp.description);
-  console.log(des);
   const expSectors = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );

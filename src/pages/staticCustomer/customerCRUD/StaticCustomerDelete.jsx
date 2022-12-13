@@ -8,6 +8,8 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
+  const customer = useSelector((state) => state?.customer?.staticCustomer);
+  const singleData = customer?.find((item) => item.id === single);
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
@@ -31,7 +33,6 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
       customerID: customerId,
       mikrotik: mikrotikCheck,
     };
-
     // api call
     if (checkCondition) {
       deleteStaticCustomerApi(dispatch, data, setIsloading);
@@ -65,7 +66,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
           </div>
           <div className="modal-body">
             <h5>
-              {single?.name} {t("customerDelete")}
+              {singleData?.name} {t("customerDelete")}
             </h5>
 
             <div class="form-check mt-4">
@@ -92,7 +93,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               </button>
               <button
                 onClick={() => {
-                  deleteStaticCustomer(single.id);
+                  deleteStaticCustomer(singleData?.id);
                 }}
                 className="btn btn-success"
                 disabled={isLoading}

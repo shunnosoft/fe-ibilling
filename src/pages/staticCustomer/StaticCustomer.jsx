@@ -159,8 +159,8 @@ export default function Customer() {
   // cutomer delete
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
-    const singleData = cus?.find((item) => item.id === customerId);
-    setSingleData(singleData);
+    // const singleData = cus?.find((item) => item.id === customerId);
+    setSingleData(customerId);
   };
 
   let customerForCsV = Customers.map((customer) => {

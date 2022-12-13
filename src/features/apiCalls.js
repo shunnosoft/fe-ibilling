@@ -687,17 +687,16 @@ export const deleteStaticCustomerApi = async (
     dispatch(deleteStaticCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
     document.querySelector("#staticCustomerDelete").click();
-    setIsLoading(false);
+
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
   } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.response.data.message);
   }
+  setIsLoading(false);
 };
 
 //Mikrotik
