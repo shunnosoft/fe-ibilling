@@ -1248,9 +1248,7 @@ const PPPOECustomer = () => {
                                 return (
                                   <option
                                     key={i}
-                                    selected={
-                                      filterOptions.package === `${m.id}`
-                                    }
+                                    selected={filterOptions.package === m.id}
                                     value={m.id}
                                   >
                                     {m.name}

@@ -1988,19 +1988,30 @@ export const addExpenditure = async (dispatch, data, setLoading, resetForm) => {
   }
 };
 
-export const editExpenditure = async (dispatch, data, setLoading) => {
+export const editExpenditure = async (
+  dispatch,
+  data,
+  expenditureId,
+  setLoading
+) => {
   setLoading(true);
   try {
-    const res = await apiLink.patch(`/staff/expenditure`, data);
+    const res = await apiLink.patch(
+      `/staff/expenditure/${expenditureId}`,
+      data
+    );
+    console.log(res.data);
     dispatch(editExpenditureSuccess(res.data));
     langMessage(
       "success",
       "খরচ আপডেট সফল হয়েছে",
       "Expenditure Updated Successfully"
     );
+    document.querySelector("#editExpenditure").click();
     setLoading(false);
   } catch (error) {
-    langMessage("error", "খরচ আপডেট ব্যর্থ হয়েছে", "Expenditure Update Failed");
+    toast.error(error.response?.data?.message);
+    // langMessage("error", "খরচ আপডেট ব্যর্থ হয়েছে", "Expenditure Update Failed");
     setLoading(false);
   }
 };
@@ -2074,8 +2085,8 @@ export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
     document.querySelector("#editPurpose").click();
     langMessage(
       "success",
-      "খরচ খাত সফলভাবে যুক্ত হয়েছে",
-      "Expenditure Type Added Successfully"
+      "খরচ খাত সফলভাবে আপডেট হয়েছে",
+      "Expenditure Type Updated Successfully"
     );
   } catch (error) {
     setIsloading(false);

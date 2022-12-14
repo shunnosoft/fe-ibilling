@@ -9,38 +9,44 @@ import { useDispatch, useSelector } from "react-redux";
 import { editExpenditure } from "../../features/apiCalls";
 export default function EditExpenditure({ singleExp }) {
   const { t } = useTranslation();
-  // console.log(singleExp);
-  const [isLoading, setIsLoading] = useState(false);
-  const [pourpose, setPourpose] = useState("");
-  const [des, setDes] = useState(singleExp.description);
+  const dispatch = useDispatch();
+
+  // get expenditure purpose
   const expSectors = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );
-  const dispatch = useDispatch();
 
-  const desRef = useRef();
+  // form validation
   const collectorValidator = Yup.object({
     amount: Yup.number().required("***"),
     newExp: Yup.string(),
     description: Yup.string(),
   });
 
-  useEffect(() => {
-    setPourpose(singleExp.expenditurePurpose);
-  }, [singleExp]);
-  const handleSelect = (e) => {
-    setPourpose(e.target.value);
-  };
-  const expenditureHandler = async (formdata, resetForm) => {
-    if (pourpose !== "") {
-      const data = {
-        ...singleExp,
-        amount: formdata.amount,
-        description: desRef.current.value,
-        expenditurePurpose: pourpose,
-      };
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
-      await editExpenditure(dispatch, data, setIsLoading, resetForm);
+  // purpose state
+  const [purpose, setPurpose] = useState("");
+
+  // description state
+  const [description, setDescription] = useState(singleExp.description);
+
+  // set data for state
+  useEffect(() => {
+    setPurpose(singleExp.expenditurePurpose);
+    setDescription(singleExp?.description);
+  }, [singleExp]);
+
+  const expenditureHandler = (formdata, resetForm) => {
+    if (purpose) {
+      const data = {
+        amount: formdata.amount,
+        description,
+        expenditurePurpose: purpose,
+      };
+      console.log(data);
+      editExpenditure(dispatch, data, singleExp?.id, setIsLoading, resetForm);
     }
   };
   return (
@@ -89,13 +95,13 @@ export default function EditExpenditure({ singleExp }) {
                           className="form-select mw-100 mt-0"
                           name=""
                           id=""
-                          onChange={handleSelect}
+                          onChange={(e) => setPurpose(e.target.value)}
                         >
                           <option value=""> {t("selectExpenseSector")} </option>
                           {expSectors?.map((exp, key) => {
                             return (
                               <option
-                                selected={pourpose === exp.id}
+                                selected={purpose === exp.id}
                                 key={key}
                                 value={exp.id}
                               >
@@ -121,9 +127,8 @@ export default function EditExpenditure({ singleExp }) {
                       <textarea
                         className="form-control shadow-none"
                         name="description"
-                        ref={desRef}
-                        value={des}
-                        onChange={(e) => setDes(e.target.value)}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                       ></textarea>
                     </div>
                     <div className="modal-footer">
