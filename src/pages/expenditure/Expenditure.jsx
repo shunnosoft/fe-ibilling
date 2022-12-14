@@ -207,7 +207,7 @@ export default function Expenditure() {
                   </div>
                 </div>
               </li>
-              {role === "ispOwner" &&
+              {/* {role === "ispOwner" &&
                 new Date(original.createdAt).getMonth() ===
                   new Date().getMonth() && (
                   <li
@@ -222,7 +222,7 @@ export default function Expenditure() {
                       </div>
                     </div>
                   </li>
-                )}
+                )} */}
             </ul>
           </div>
         ),
