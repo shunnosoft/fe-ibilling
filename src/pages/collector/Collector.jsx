@@ -5,9 +5,7 @@ import {
   PersonFill,
   PenFill,
   ChatText,
-  Plus,
   ArrowClockwise,
-  Key,
   KeyFill,
   ArchiveFill,
 } from "react-bootstrap-icons";
@@ -104,9 +102,6 @@ export default function Collector() {
     }
   }, [collSearch, collector]);
 
-  const searchHandler = (e) => {
-    setCollSearch(e.toString().toLowerCase());
-  };
   const columns = React.useMemo(
     () => [
       {
