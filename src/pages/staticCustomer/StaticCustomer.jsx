@@ -20,6 +20,7 @@ import {
   PrinterFill,
   ArrowClockwise,
   CurrencyDollar,
+  KeyFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -55,6 +56,7 @@ import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -62,6 +64,8 @@ export default function Customer() {
   const [Customers1, setCustomers1] = useState([]);
   const [Customers2, setCustomers2] = useState([]);
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
+  // user id state
+  const [userId, setUserId] = useState();
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector((state) => state?.customer?.staticCustomer);
 
@@ -778,6 +782,23 @@ export default function Customer() {
                 ) : (
                   ""
                 )}
+
+                {role === "ispOwner" && original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPassword"
+                    onClick={() => {
+                      setUserId(original.user);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <KeyFill />
+                        <p className="actionP">{t("passwordReset")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -939,6 +960,9 @@ export default function Customer() {
                 single={singleCustomer}
                 sendCustomer="staticCustomer"
               />
+
+              {/* password reset modal */}
+              <PasswordReset resetCustomerId={userId} />
               {/* bulk Modal */}
 
               <BulkSubAreaEdit

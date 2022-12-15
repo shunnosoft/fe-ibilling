@@ -148,13 +148,17 @@ export default function AddStaticCustomer() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    // console.log(data);
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
     }
-    const { balance, ipAddress, queueName, target, ...rest } = data;
+    const { balance, ipAddress, queueName, target, customerId, ...rest } = data;
+    if (!bpSettings.genCustomerId) {
+      if (!customerId) {
+        return alert(t("writeCustomerId"));
+      }
+    }
     const mainData = {
       paymentStatus: "unpaid",
       subArea: subArea2,
@@ -170,6 +174,9 @@ export default function AddStaticCustomer() {
     };
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
+    }
+    if (!bpSettings.genCustomerId) {
+      mainData.customerId = customerId;
     }
     let sendingData = { ...mainData };
     if (userType === "firewall-queue") {
@@ -189,7 +196,6 @@ export default function AddStaticCustomer() {
         maxLimit: `${maxUpLimit}/${maxDownLimit}`,
       };
     }
-    console.log(sendingData);
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
   };
 
@@ -230,6 +236,7 @@ export default function AddStaticCustomer() {
                   target: "",
                   referenceName: "",
                   referenceMobile: "",
+                  customerId: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -488,6 +495,17 @@ export default function AddStaticCustomer() {
                           name="referenceMobile"
                           disabled={!mikrotikPackage}
                         />
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        {!bpSettings.genCustomerId && (
+                          <FtextField
+                            type="text"
+                            label={t("customerId")}
+                            name="customerId"
+                            disabled={!mikrotikPackage}
+                            validation={"true"}
+                          />
+                        )}
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         {bpSettings?.hasMikrotik && (

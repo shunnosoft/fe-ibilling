@@ -477,23 +477,24 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
-                      {(role === "manager" || role === "ispOwner") && (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("promiseDate")}
-                          </label>
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={promiseDate}
-                            onChange={(date) => setPromiseDate(date)}
-                            dateFormat="MMM dd yyyy hh:mm a"
-                            placeholderText={t("selectDate")}
-                            minDate={new Date(data?.billingCycle)}
-                            maxDate={mxDate}
-                            showTimeSelect
-                          />
-                        </div>
-                      )}
+                      {bpSettings.promiseDate &&
+                        (role === "manager" || role === "ispOwner") && (
+                          <div>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("promiseDate")}
+                            </label>
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={promiseDate}
+                              onChange={(date) => setPromiseDate(date)}
+                              dateFormat="MMM dd yyyy hh:mm a"
+                              placeholderText={t("selectDate")}
+                              minDate={new Date(data?.billingCycle)}
+                              maxDate={mxDate}
+                              showTimeSelect
+                            />
+                          </div>
+                        )}
                     </div>
                     <div className="newDisplay">
                       <div>

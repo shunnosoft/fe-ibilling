@@ -7,6 +7,7 @@ import {
   ChatText,
   CurrencyDollar,
   FileExcelFill,
+  KeyFill,
   PenFill,
   PersonFill,
   PersonPlusFill,
@@ -66,6 +67,7 @@ import Footer from "../../components/admin/footer/Footer";
 import BandwidthModal from "./BandwidthModal";
 import BulkBalanceEdit from "./customerCRUD/bulkOpration/BulkBalanceEdit";
 import CustomerNote from "./customerCRUD/CustomerNote";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -133,6 +135,9 @@ const PPPOECustomer = () => {
 
   // customer id state
   const [customerId, setCustomerId] = useState("");
+
+  // user id state
+  const [userId, setUserId] = useState();
 
   // set customer id in state for note
   const [customerNoteId, setCustomerNoteId] = useState();
@@ -783,6 +788,23 @@ const PPPOECustomer = () => {
                       </div>
                     </li>
                   )}
+
+                {role === "ispOwner" && original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPassword"
+                    onClick={() => {
+                      setUserId(original.user);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <KeyFill />
+                        <p className="actionP">{t("passwordReset")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -1437,6 +1459,9 @@ const PPPOECustomer = () => {
       {/* transferReseller modal */}
       <TransferToReseller customerId={customerId} />
 
+      {/* password reset modal */}
+      <PasswordReset resetCustomerId={userId} />
+
       {/* bulk Modal */}
       <BulkSubAreaEdit
         bulkCustomer={bulkCustomers}
@@ -1493,13 +1518,13 @@ const PPPOECustomer = () => {
           {bpSettings.updateCustomerBalance && (
             <button
               className="bulk_action_button btn btn-info btn-floating btn-sm"
-              title={t("balanceUpdate")}
+              title={t("editBalance")}
               data-bs-toggle="modal"
               data-bs-target="#customerBalanceEdit"
               type="button"
             >
               <i className="fas fa-dollar"></i>
-              <span className="button_title">{t("balanceUpdate")}</span>
+              <span className="button_title">{t("editBalance")}</span>
             </button>
           )}
 

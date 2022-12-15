@@ -199,7 +199,12 @@ export default function StaticCustomerEdit({ single }) {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    const { ipAddress, queueName, target, ...rest } = data;
+    const { customerId, ipAddress, queueName, target, ...rest } = data;
+    if (!bpSettings.genCustomerId) {
+      if (!customerId) {
+        return alert(t("writeCustomerId"));
+      }
+    }
     const mainData = {
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
@@ -222,6 +227,10 @@ export default function StaticCustomerEdit({ single }) {
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
     }
+    if (!bpSettings.genCustomerId) {
+      mainData.customerId = customerId;
+    }
+
     let sendingData = { ...mainData };
     if (userType === "firewall-queue") {
       sendingData.userType = "firewall-queue";
@@ -247,6 +256,7 @@ export default function StaticCustomerEdit({ single }) {
     } else if (status === "inactive") {
       sendingData.status = status;
     }
+
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
   return (
@@ -283,6 +293,7 @@ export default function StaticCustomerEdit({ single }) {
                   ipAddress: customer?.queue.address || "",
                   queueName: customer?.queue.name || "",
                   target: customer?.queue.target || "",
+                  customerId: customer?.customerId,
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -294,11 +305,11 @@ export default function StaticCustomerEdit({ single }) {
                   <Form>
                     <div className="static_customer_edit_modal">
                       <div className="static_edit_item">
-                        <p className="comstomerFieldsTitle">
-                          {t("selectMikrotik")}
-                        </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectMikrotik")}{" "}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectMikrotik}
                           disabled
@@ -318,9 +329,11 @@ export default function StaticCustomerEdit({ single }) {
                         </select>
                       </div>
                       <div className="static_edit_item">
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}{" "}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
@@ -339,12 +352,12 @@ export default function StaticCustomerEdit({ single }) {
                         </select>
                       </div>
                       <div className="static_edit_item">
-                        <p>
+                        <label className="form-control-label changeLabelFontColor">
                           {area ? area.name + " এর - " : ""}{" "}
                           {t("selectSubArea")}
-                        </p>
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaId"
@@ -352,10 +365,6 @@ export default function StaticCustomerEdit({ single }) {
                           <option value="">...</option>
                           {area?.subAreas
                             ? area.subAreas.map((val, key) => {
-                                // console.log({
-                                //   value: val.id,
-                                //   customer: customer?.subArea,
-                                // });
                                 return (
                                   <option
                                     selected={val.id === customer?.subArea}
@@ -403,9 +412,9 @@ export default function StaticCustomerEdit({ single }) {
                       {userType === "firewall-queue" && (
                         <div className="static_edit_item">
                           <>
-                            <p className="comstomerFieldsTitle">
-                              {t("selectPackage")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}{" "}
+                            </label>
                             <select
                               name="firewallPackage"
                               className="form-select mw-100"
@@ -434,14 +443,17 @@ export default function StaticCustomerEdit({ single }) {
                       )}
 
                       {userType === "simple-queue" && (
-                        <div className="static_edit_item">
+                        <div
+                          className="static_edit_item"
+                          style={{ marginTop: "-12px" }}
+                        >
                           <>
-                            <p className="comstomerFieldsTitle">
-                              {t("uploadPackge")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("uploadPackge")}{" "}
+                            </label>
                             <select
                               name="upPackage"
-                              className="form-select mw-100 "
+                              className="form-select mw-100 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -519,7 +531,7 @@ export default function StaticCustomerEdit({ single }) {
                       <div className="static_edit_item">
                         <FtextField type="text" label={t("name")} name="name" />
                       </div>
-                      <div className="static_edit_item">
+                      <div className="static_edit_item mb0">
                         <FtextField
                           type="text"
                           label={t("mobile")}
@@ -544,7 +556,10 @@ export default function StaticCustomerEdit({ single }) {
                           name="email"
                         />
                       </div>
-                      <div className="static_edit_item">
+                      <div
+                        className="static_edit_item"
+                        style={{ marginTop: "-12px" }}
+                      >
                         <label className="form-control-label changeLabelFontColor">
                           {t("billingCycle")}{" "}
                         </label>
@@ -558,7 +573,10 @@ export default function StaticCustomerEdit({ single }) {
                         />
                       </div>
                       {(role === "manager" || role === "ispOwner") && (
-                        <div className="static_edit_item">
+                        <div
+                          className="static_edit_item"
+                          style={{ marginTop: "-12px" }}
+                        >
                           <label className="form-control-label changeLabelFontColor">
                             {t("promiseDate")}
                           </label>
@@ -574,6 +592,16 @@ export default function StaticCustomerEdit({ single }) {
                           />
                         </div>
                       )}
+
+                      <div className="static_edit_item">
+                        {!bpSettings.genCustomerId && (
+                          <FtextField
+                            type="text"
+                            label="Customer Id"
+                            name="customerId"
+                          />
+                        )}
+                      </div>
 
                       <div className="static_edit_item">
                         <p> {t("status")} </p>
