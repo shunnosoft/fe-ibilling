@@ -30,10 +30,13 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
           "customer/mikrotik/currentSession?customerId=" + customerId
         );
         setBandWidth([
-          parseInt(res.data.data[0].rxByte.toFixed(2) / 1024),
+          parseInt(res.data.data[0].rxByte.toFixed(2) / 1024 / 1024),
           ...bandwidth,
         ]);
-        setTx([parseInt(res.data.data[0].txByte.toFixed(2) / 1024), ...tx]);
+        setTx([
+          parseInt(res.data.data[0].txByte.toFixed(2) / 1024 / 1024),
+          ...tx,
+        ]);
 
         setTime([Date.now(), ...time]);
         // callCount++;
@@ -118,7 +121,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
                     {bandwidth.map((item, key) => (
                       <p key={key}>
                         {FormatNumber(item)}
-                        <span className="text-secondary"> kbps</span>
+                        <span className="text-secondary"> mbps</span>
                       </p>
                     ))}
                   </div>
@@ -127,7 +130,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
                     {tx.map((item, key) => (
                       <p key={key}>
                         {FormatNumber(item)}
-                        <span className="text-secondary"> kbps</span>
+                        <span className="text-secondary"> mbps</span>
                       </p>
                     ))}
                   </div>

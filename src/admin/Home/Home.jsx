@@ -16,6 +16,7 @@ import {
   CardChecklist,
   FileEarmarkExcel,
   JournalCode,
+  CreditCard2Front,
 } from "react-bootstrap-icons";
 import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -25,6 +26,7 @@ import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
 import FileUpload from "./modal/FileUpload";
 import Permissions from "./modal/Permissions";
+import Invoices from "../invoiceList/Invoices";
 
 export default function Home() {
   // loading
@@ -35,6 +37,9 @@ export default function Home() {
 
   // set owner at local state
   const [ownerId, setOwnerId] = useState();
+
+  // invoice id state
+  const [invoiceId, setInvoiceId] = useState();
 
   // set owner name
   const [companyName, setCompanyName] = useState();
@@ -250,7 +255,7 @@ export default function Home() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <PenFill />
+                        <CreditCard2Front />
                         <p className="actionP">Permissions</p>
                       </div>
                     </div>
@@ -287,6 +292,20 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
+                  {/* <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#ispOwnerInvoice"
+                    onClick={() => {
+                      setInvoiceId(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PersonFill />
+                        <p className="actionP">Invoice</p>
+                      </div>
+                    </div>
+                  </li> */}
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#clientNoteModal"
@@ -425,6 +444,7 @@ export default function Home() {
               <Permissions ownerId={ownerId} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
+              <Invoices ownerId={ownerId} />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
             </FontColor>

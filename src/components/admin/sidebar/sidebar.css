@@ -50,7 +50,8 @@ a {
 } */
 #active {
   box-shadow: 6px 0px 0px #297fd4 inset;
-  filter: contrast(5);
+  /* filter: contrast(5); */
+  color: #297fd4;
 }
 .removeSidebar {
   display: none;

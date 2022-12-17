@@ -1,109 +1,97 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-// import { Check, X, ThreeDots } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
-// import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
-// import * as Yup from "yup";
-
-// internal import
-// import { FtextField } from "../../components/common/FtextField";
 import "./diposit.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import { useCallback, useEffect } from "react";
-import {
-  rechargeHistoryfunc,
-  // getMyDeposit,
-} from "../../features/apiCalls";
+import { fetchReseller, rechargeHistoryfunc } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import DatePicker from "react-datepicker";
 import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
-// import Loader from "../../components/common/Loader";
-import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import { PenFill, ThreeDots } from "react-bootstrap-icons";
 import CommentEdit from "./modal/CommentEdit";
+import FormatNumber from "../../components/common/NumberFormat";
 
-export default function RechargeHistoryofReseller() {
+const Recharge = () => {
   const { t } = useTranslation();
+
+  // import dispatch
+  const dispatch = useDispatch();
+
+  // get user role
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user data
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get recharge history
+  let rechargeHistory = useSelector((state) => state.recharge.rechargeHistory);
+
+  // get all resellers
+  const resellers = useSelector((state) => state.reseller.reseller);
+
+  // recharge data state
+  const [rechargeData, setRechargeData] = useState([]);
+
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-  const rechargeHistory = useSelector(
-    (state) => state.recharge.rechargeHistory
-  );
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
+
+  // date start state
   const [dateStart, setStartDate] = useState(firstDay);
+
+  // date end filter
   const [dateEnd, setEndDate] = useState(today);
 
-  const collectors = useSelector((state) => state.reseller.reseller);
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-  const [cusSearch, setCusSearch] = useState("");
+  // reseller data loading state
+  const [resellerLoading, setResellerLoading] = useState(false);
+
+  // recharge history loading
+  const [rechargeLoading, setRechargeLoading] = useState(false);
+
+  // reseller id state
+  const [resellerId, setResellerId] = useState();
+
+  // recharge id state
   const [rechargeId, setRechargeId] = useState();
 
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  // data filter
+  const onClickFilter = () => {
+    let filterData = [...rechargeHistory];
 
-  const [collectorIds, setCollectorIds] = useState([]);
-  const [mainData, setMainData] = useState(rechargeHistory);
+    if (resellerId) {
+      filterData = filterData.filter(
+        (item) => item.reseller?.id === resellerId
+      );
+    }
 
-  const [mainData2, setMainData2] = useState(rechargeHistory);
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  // const [depositAccepted, setDepositAccepet] = useState("")
-
-  // const [isLoading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-
-  //todo
-  const getTotalRecharge = useCallback(() => {
-    const initialValue = 0;
-    const sumWithInitial = mainData.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
+    filterData = filterData.filter(
+      (item) =>
+        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
+        Date.parse(item.createdAt) <= Date.parse(dateEnd)
     );
-    return sumWithInitial.toString();
-  }, [mainData]);
+
+    setRechargeData(filterData);
+  };
 
   useEffect(() => {
-    const keys = ["amount", "createdAt", "reseller+name"];
-    setMainData(
-      mainData2.filter((item) =>
-        keys.some((key) =>
-          key.split("+")[1]
-            ? typeof item[key.split("+")[0]][key.split("+")[1]] === "string"
-              ? item[key.split("+")[0]][key.split("+")[1]]
-                  ?.toString()
-                  ?.toLowerCase()
-                  .includes(cusSearch)
-              : item[key.split("+")[0]][key.split("+")[1]]
-                  ?.toString()
-                  .includes(cusSearch)
-            : typeof item[key] === "string"
-            ? item[key] === "createdAt"
-              ? moment(item[key]).format("YYYY-MM-DD").includes(cusSearch)
-              : item[key]
-                  .toString()
-                  .toString()
-                  .toLowerCase()
-                  .includes(cusSearch)
-            : item[key].toString().includes(cusSearch)
-        )
-      )
-    );
-  }, [cusSearch, mainData2]);
+    // set recharge data to state
+    setRechargeData(rechargeHistory);
 
-  useEffect(() => {
-    userRole === "reseller"
-      ? rechargeHistoryfuncR(dispatch, userData.id)
-      : rechargeHistoryfunc(dispatch, ispOwner);
-  }, [dispatch, ispOwner, userRole, userData]);
-
-  useEffect(() => {
+    // initial filter
     var initialToday = new Date();
     var initialFirst = new Date(
       initialToday.getFullYear(),
@@ -113,7 +101,7 @@ export default function RechargeHistoryofReseller() {
 
     initialFirst.setHours(0, 0, 0, 0);
     initialToday.setHours(23, 59, 59, 999);
-    setMainData(
+    setRechargeData(
       rechargeHistory.filter(
         (item) =>
           Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
@@ -122,34 +110,39 @@ export default function RechargeHistoryofReseller() {
     );
   }, [rechargeHistory]);
 
-  const onChangeReseller = (userId) => {
-    if (userId) {
-      setCollectorIds([userId]);
-    } else {
-      let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.id));
-      setCollectorIds(collectorUserIdsArr);
-    }
-  };
+  useEffect(() => {
+    // api calls
+    rechargeHistoryfunc(dispatch, ispOwnerId, setRechargeLoading);
+    fetchReseller(dispatch, ispOwnerId, setResellerLoading);
+  }, []);
 
-  const onClickFilter = () => {
-    // let arr = getNames();
-    let arr = rechargeHistory;
-    if (collectorIds.length) {
-      arr = rechargeHistory.filter((recharge) =>
-        collectorIds.includes(recharge.reseller.id)
-      );
-    }
-    arr = arr.filter(
-      (item) =>
-        Date.parse(item.createdAt) >= Date.parse(dateStart) &&
-        Date.parse(item.createdAt) <= Date.parse(dateEnd)
+  // total amount calculation
+  const getTotalRecharge = useCallback(() => {
+    const initialValue = 0;
+    const sumWithInitial = rechargeData.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
     );
-    setMainData(arr);
-    setMainData2(arr);
-  };
+    return sumWithInitial;
+  }, [rechargeData]);
 
-  const columns2 = React.useMemo(
+  // send to table header
+  const customComponent = (
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
+      {userRole === "ispOwner" ? (
+        <div>
+          {t("totalRecharge")} {FormatNumber(getTotalRecharge())} {t("tk")}
+        </div>
+      ) : (
+        <div style={{ marginRight: "10px" }}>
+          {t("totalRecharge")} {FormatNumber(getTotalRecharge())} {t("tk")}
+        </div>
+      )}
+    </div>
+  );
+
+  // table column
+  const columns = React.useMemo(
     () => [
       {
         width: "10%",
@@ -229,19 +222,7 @@ export default function RechargeHistoryofReseller() {
     ],
     [t]
   );
-  const customComponent = (
-    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {userRole === "ispOwner" ? (
-        <div>
-          {t("totalRecharge")} {getTotalRecharge()} {t("tk")}
-        </div>
-      ) : (
-        <div style={{ marginRight: "10px" }}>
-          {t("totalRecharge")} {getTotalRecharge()} {t("tk")}
-        </div>
-      )}
-    </div>
-  );
+
   return (
     <>
       <Sidebar />
@@ -254,78 +235,64 @@ export default function RechargeHistoryofReseller() {
                 <h2 className="collectorTitle"> {t("rechargeHistory")} </h2>
               </FourGround>
 
-              {userRole !== "collector" ? (
+              {userRole !== "collector" && (
                 <FourGround>
                   <div className="collectorWrapper py-2">
                     <div className="selectFilteringg">
                       {userRole === "ispOwner" && (
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeReseller(e.target.value)}
+                          onChange={(e) => setResellerId(e.target.value)}
                         >
                           <option value="" defaultValue>
                             {t("allReseller")}
                           </option>
-                          {collectors?.map((c, key) => (
-                            <option key={key} value={c.id}>
-                              {c.name}
+                          {resellers?.map((item, key) => (
+                            <option key={key} value={item.id}>
+                              {item.name}
                             </option>
                           ))}
                         </select>
                       )}
 
-                      <input
-                        className="form-select mx-2"
-                        type="date"
-                        id="start"
-                        name="trip-start"
-                        value={moment(dateStart).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setStartDate(e.target.value);
-                        }}
-                        // value="2018-07-22"
-
-                        // min="2018-01-01"
-                        // max="2018-12-31"
-                      />
-                      <input
-                        className="form-select"
-                        type="date"
-                        id="end"
-                        name="trip-start"
-                        value={moment(dateEnd).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setEndDate(e.target.value);
-                        }}
-
-                        // value="2018-07-22"
-
-                        // min="2018-01-01"
-                        // max="2018-12-31"
-                      />
-                      {/* <div className="submitdiv d-grid gap-2"> */}
+                      <div className="ms-2">
+                        <DatePicker
+                          className="form-control mt-2"
+                          selected={dateStart}
+                          onChange={(date) => setStartDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
+                      <div className="mx-2">
+                        <DatePicker
+                          className="form-control mt-2"
+                          selected={dateEnd}
+                          onChange={(date) => setEndDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectBillDate")}
+                        />
+                      </div>
                       <button
-                        className="btn btn-outline-primary w-140 mt-2 ms-2"
+                        className="btn btn-outline-primary w-140 mt-2"
                         type="button"
                         onClick={onClickFilter}
                       >
                         {t("filter")}
                       </button>
-                      {/* </div> */}
                     </div>
 
                     {/* table */}
                     <div className="table-section">
                       <Table
                         customComponent={customComponent}
-                        data={mainData}
-                        columns={columns2}
+                        data={rechargeData}
+                        columns={columns}
+                        isLoading={resellerLoading}
                       ></Table>
                     </div>
                   </div>
                 </FourGround>
-              ) : (
-                ""
               )}
 
               <Footer />
@@ -336,4 +303,6 @@ export default function RechargeHistoryofReseller() {
       <CommentEdit rechargeId={rechargeId} />
     </>
   );
-}
+};
+
+export default Recharge;

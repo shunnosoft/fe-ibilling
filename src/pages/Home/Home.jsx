@@ -1077,50 +1077,50 @@ export default function Home() {
             </FourGround>
             {/* print to collectorOverview start */}
 
-            {role === "ispOwner" && (
-              <FourGround>
-                <div className="collectorWrapper pt-1 pb-2">
-                  <div
-                    className="addAndSettingIcon"
-                    style={{
-                      marginLeft: ".5rem",
-                      textAlign: "end",
-                      paddingTop: "1rem",
-                      // background: "green",
-                    }}
-                  >
-                    <ReactToPrint
-                      documentTitle="Collection Overveiw"
-                      trigger={() => (
-                        <PrinterFill
-                          // title={t("print")}
-                          className="addcutmButton"
-                          style={{ background: "#0EB96A", color: "white" }}
-                        />
-                      )}
-                      content={() => componentRef.current}
-                    />
-                  </div>
-                  <div className="table-section">
-                    {collectorData && collectorData.length > 0 && (
+            {role === "ispOwner" &&
+              collectorData &&
+              collectorData.length > 0 && (
+                <FourGround>
+                  <div className="collectorWrapper pt-1 pb-2">
+                    <div
+                      className="addAndSettingIcon"
+                      style={{
+                        marginLeft: ".5rem",
+                        textAlign: "end",
+                        paddingTop: "1rem",
+                        // background: "green",
+                      }}
+                    >
+                      <ReactToPrint
+                        documentTitle="Collection Overveiw"
+                        trigger={() => (
+                          <PrinterFill
+                            // title={t("print")}
+                            className="addcutmButton"
+                            style={{ background: "#0EB96A", color: "white" }}
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
+                    <div className="table-section">
                       <Table
                         isLoading={isLoading}
                         columns={columns}
                         data={collectorData}
                       ></Table>
-                    )}
+                    </div>
                   </div>
-                </div>
-                <div className="d-none">
-                  <CollectionOverviewPdf
-                    allCollectionData={customerStat}
-                    //customerStat
-                    // currentCustomers={Customers}
-                    ref={componentRef}
-                  />
-                </div>
-              </FourGround>
-            )}
+                  <div className="d-none">
+                    <CollectionOverviewPdf
+                      allCollectionData={customerStat}
+                      //customerStat
+                      // currentCustomers={Customers}
+                      ref={componentRef}
+                    />
+                  </div>
+                </FourGround>
+              )}
           </div>
           <Footer />
         </FontColor>

@@ -1613,13 +1613,19 @@ export const recharge = async (
   }
 };
 
-export const rechargeHistoryfunc = async (dispatch, ispOwnerId) => {
+export const rechargeHistoryfunc = async (
+  dispatch,
+  ispOwnerId,
+  setRechargeLoading
+) => {
+  setRechargeLoading(true);
   try {
     const res = await apiLink.get(`/ispOwner/recharge/${ispOwnerId}`);
     dispatch(getAllRechargeHistory(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }
+  setRechargeLoading(false);
 };
 
 export const rechargeHistoryEdit = async (

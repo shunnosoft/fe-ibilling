@@ -161,7 +161,12 @@ export default function CustomerEdit({ single }) {
   const customerHandler = async (formValue) => {
     const { Pname, Ppassword, Pprofile, Pcomment, monthlyFee, ...rest } =
       formValue;
-    if (Number(monthlyFee) < Number(packageRate.rate)) {
+    if (
+      mikrotikPackage === data?.mikrotikPackage &&
+      data?.monthlyFee === monthlyFee
+    ) {
+      //
+    } else if (Number(monthlyFee) < Number(packageRate.rate)) {
       return alert(t("billCannotBeReduced"));
     }
     const mainData = {
@@ -227,7 +232,10 @@ export default function CustomerEdit({ single }) {
                   email: data?.email || "",
                   nid: data?.nid || "",
                   Pcomment: data?.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate,
+                  monthlyFee:
+                    mikrotikPackage === data?.mikrotikPackage
+                      ? data?.monthlyFee
+                      : packageRate?.rate,
                   Pname: data?.pppoe?.name || "",
                   Pprofile: packageRate?.name || data?.pppoe?.profile || "",
                   Ppassword: data?.pppoe?.password || "",
