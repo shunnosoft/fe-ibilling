@@ -114,20 +114,20 @@ export const editIspOwnerInvoice = async (
   invoiceId,
   data,
   setIsloading,
-  dispatch
+  dispatch,
+  setInvoiceEditId
 ) => {
   try {
     const res = await apiLink.patch("admin/invoice/" + invoiceId, data);
     dispatch(editInvoiceSuccess(res.data));
     setIsloading(false);
-    document.querySelector("#InvoiceEditModal").click();
-    document.querySelector("#InvoiceEditModalSuper").click();
     toast.success("Invoice Edit Success!");
+    setInvoiceEditId("");
   } catch (err) {
     console.log(err.response);
     if (err.response) {
       setIsloading(false);
-      toast.error(err.response);
+      toast.error(err.response.data.message);
     }
   }
 };

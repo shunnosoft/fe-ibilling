@@ -343,7 +343,7 @@ export default function ConfigMikrotik() {
                           {t("sokolCustomer")}
                         </option>
                         <option value="online">{t("online")}</option>
-                        <option value="offline">{t("offline")}</option>
+                        <option value="offline">{t("ofline")}</option>
                       </select>
                     </div>
                     {/* {status === "offline" && (

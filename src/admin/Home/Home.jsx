@@ -275,7 +275,7 @@ export default function Home() {
                     </div>
                   </li>
 
-                  <li>
+                  {/* <li>
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PersonBoundingBox />
@@ -291,21 +291,22 @@ export default function Home() {
                         </Link>
                       </div>
                     </div>
-                  </li>
-                  {/* <li
+                  </li> */}
+                  <li
                     data-bs-toggle="modal"
                     data-bs-target="#ispOwnerInvoice"
                     onClick={() => {
-                      setInvoiceId(original.id);
+                      setInvoiceId(original?.id);
+                      setCompanyName(original?.company);
                     }}
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <PersonFill />
+                        <PersonBoundingBox />
                         <p className="actionP">Invoice</p>
                       </div>
                     </div>
-                  </li> */}
+                  </li>
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#clientNoteModal"
@@ -444,7 +445,7 @@ export default function Home() {
               <Permissions ownerId={ownerId} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
-              <Invoices ownerId={ownerId} />
+              <Invoices invoiceId={invoiceId} companyName={companyName} />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
             </FontColor>
