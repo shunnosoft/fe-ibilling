@@ -241,7 +241,8 @@ export default function Header(props) {
                       <li className="profileList">
                         <NavLink
                           to={
-                            userRole === "reseller"
+                            userRole === "reseller" ||
+                            currentUser?.collector?.reseller
                               ? "/reseller/profile"
                               : "/profile"
                           }

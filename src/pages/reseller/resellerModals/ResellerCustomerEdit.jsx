@@ -6,7 +6,11 @@ import ReactDatePicker from "react-datepicker";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
-import { fetchMikrotik, fetchpppoePackage } from "../../../features/apiCalls";
+import {
+  fetchMikrotik,
+  fetchPackagefromDatabase,
+  fetchpppoePackage,
+} from "../../../features/apiCalls";
 import { editResellerCustomer } from "../../../features/resellerCustomerAdminApi";
 import { useTranslation } from "react-i18next";
 import { useRef } from "react";
@@ -27,6 +31,9 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
 
   // initial fix package rate
   const [fixPackageRate, setFixPackageRate] = useState();
+
+  // package loading
+  const [packageLoading, setPackageLoading] = useState(false);
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -100,7 +107,13 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
       };
 
       // get package api call
-      fetchpppoePackage(dispatch, IDs, singleMikrotik?.name);
+      // fetchpppoePackage(dispatch, IDs, singleMikrotik?.name);
+      fetchPackagefromDatabase(
+        dispatch,
+        IDs,
+        setPackageLoading,
+        singleMikrotik?.name
+      );
     }
   }, [singleMikrotik?.id]);
 

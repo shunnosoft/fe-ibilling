@@ -48,7 +48,6 @@ export default function Report() {
 
   const allCollector = useSelector((state) => state?.collector?.collector);
   const manager = useSelector((state) => state?.manager?.manager);
-  console.log({ manager });
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -69,7 +68,6 @@ export default function Report() {
   const [mainData, setMainData] = useState(allBills);
 
   const [collectors, setCollectors] = useState([]);
-  console.log(collectors);
   const [collectorIds, setCollectorIds] = useState([]);
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");
@@ -331,23 +329,15 @@ export default function Report() {
             note: data.note,
             start: data.start,
             end: data.end,
+            month: data.month,
           };
         },
         Cell: ({ cell: { value } }) => {
           return (
             <>
               <p>
-                {value.note && value.note.slice(0, 20)}
-                <span
-                  className="see_more"
-                  data-bs-toggle="modal"
-                  data-bs-target="#reportView"
-                  onClick={() => {
-                    setViewId(value?.id);
-                  }}
-                >
-                  {value.note && "...See More"}
-                </span>
+                {value.note && value.note.slice(0, 15)}{" "}
+                <span>{value?.note && value?.note?.length > 15 && "..."}</span>
               </p>
               {value?.start && value?.end && (
                 <span className="badge bg-secondary">
@@ -355,6 +345,22 @@ export default function Report() {
                   {moment(value.end).format("DD/MM/YY")}
                 </span>
               )}
+              <p>
+                {value?.month && value.month.slice(0, 15)}{" "}
+                <span>
+                  {value?.month && value?.month?.length > 15 && "..."}
+                </span>
+              </p>
+              <span
+                className="see_more"
+                data-bs-toggle="modal"
+                data-bs-target="#reportView"
+                onClick={() => {
+                  setViewId(value?.id);
+                }}
+              >
+                ...See More
+              </span>
             </>
           );
         },

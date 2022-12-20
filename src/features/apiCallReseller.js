@@ -167,7 +167,7 @@ export const getCustomer = async (dispatch, reseller, setIsloading) => {
   }
 };
 
-export const addCustomer = async (dispatch, data, setIsloading) => {
+export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/reseller/customer", data);
@@ -179,6 +179,7 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
       "Customer Added Successfully"
     );
     document.querySelector("#customerModal").click();
+    resetForm();
   } catch (err) {
     if (err.response) {
       setIsloading(false);
@@ -190,12 +191,12 @@ export const addCustomer = async (dispatch, data, setIsloading) => {
 export const editCustomer = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
+  console.log(reseller);
   try {
     const res = await apiLink.patch(
       `/reseller/customer/${reseller}/${singleCustomerID}`,
       sendingData
     );
-    console.log(res.data);
     dispatch(editCustomerSuccess(res.data));
     setIsloading(false);
     langMessage(
@@ -279,12 +280,13 @@ export const billCollect = async (
     const res = await apiLink.post("/reseller/monthlyBill", billData);
     dispatch(updateBalance(res.data));
     setLoading(false);
-    document.querySelector("#collectCustomerBillModal").click();
     langMessage(
       "success",
       "রিচার্জ সফল হয়েছে",
       "Bill Acceptance is Successful."
     );
+
+    document.querySelector("#collectCustomerBillModal").click();
     resetForm();
   } catch (error) {
     setLoading(false);
@@ -298,25 +300,16 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 
   try {
     const res = await apiLink.post(`/deposit`, data);
-    console.log(data);
-    console.log(res.data);
-
     dispatch(addDepositSucces(res.data));
-
     langMessage(
       "success",
       "ডিপোজিট প্রদান সফল হয়েছে!",
       "Deposit Payment Successfully"
     );
   } catch (error) {
-    setLoading(false);
     toast.error(error.response?.data.message);
-    // if (error.response.status === 400) {
-    //   toast.success("ডিপোজিট অলরেডি পেন্ডিং এ আছে");
-    // } else {
-
-    // }
   }
+  setLoading(false);
 };
 
 //balance

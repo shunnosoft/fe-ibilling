@@ -9,45 +9,44 @@ import { useDispatch, useSelector } from "react-redux";
 import { editExpenditure } from "../../features/apiCalls";
 export default function EditExpenditure({ singleExp }) {
   const { t } = useTranslation();
-  // console.log(singleExp);
-  const [isLoading, setIsLoading] = useState(false);
-  const [pourpose, setPourpose] = useState("");
-  const [des, setDes] = useState(singleExp.description);
+  const dispatch = useDispatch();
+
+  // get expenditure purpose
   const expSectors = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );
-  const dispatch = useDispatch();
 
-  const desRef = useRef();
+  // form validation
   const collectorValidator = Yup.object({
     amount: Yup.number().required("***"),
     newExp: Yup.string(),
     description: Yup.string(),
   });
 
-  useEffect(() => {
-    setPourpose(singleExp.expenditurePurpose);
-  }, [singleExp]);
-  const handleSelect = (e) => {
-    // console.log(e.target.value);
-    setPourpose(e.target.value);
-  };
-  const expenditureHandler = async (formdata, resetForm) => {
-    if (pourpose !== "") {
-      const data = {
-        ...singleExp,
-        amount: formdata.amount,
-        description: desRef.current.value,
-        expenditurePurpose: pourpose,
-      };
-      //   userRole === "ispOwner"
-      //     ? (data.ispOwner = userData.id)
-      //     : userRole === "reseller"
-      //     ? (data.reseller = userData.id)
-      //     : (data.staff = userData.id);
-      // console.log(data);
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
-      await editExpenditure(dispatch, data, setIsLoading, resetForm);
+  // purpose state
+  const [purpose, setPurpose] = useState("");
+
+  // description state
+  const [description, setDescription] = useState(singleExp.description);
+
+  // set data for state
+  useEffect(() => {
+    setPurpose(singleExp.expenditurePurpose);
+    setDescription(singleExp?.description);
+  }, [singleExp]);
+
+  const expenditureHandler = (formdata, resetForm) => {
+    if (purpose) {
+      const data = {
+        amount: formdata.amount,
+        description,
+        expenditurePurpose: purpose,
+      };
+      console.log(data);
+      editExpenditure(dispatch, data, singleExp?.id, setIsLoading, resetForm);
     }
   };
   return (
@@ -59,7 +58,7 @@ export default function EditExpenditure({ singleExp }) {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-lg">
+        <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
@@ -87,73 +86,49 @@ export default function EditExpenditure({ singleExp }) {
               >
                 {() => (
                   <Form>
-                    <div style={{ marginBottom: "20px" }}>
-                      <select
-                        style={{
-                          width: "300px",
-                          marginTop: "10px",
-                          border: "2px solid skyblue",
-                          height: "40px",
-                          borderRadius: "5px",
-                        }}
-                        name=""
-                        id=""
-                        onChange={handleSelect}
-                      >
-                        <option value=""> {t("selectExpenseSector")} </option>
-                        {expSectors?.map((exp, key) => {
-                          return (
-                            <option
-                              selected={pourpose === exp.id}
-                              key={key}
-                              value={exp.id}
-                            >
-                              {exp.name}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                    <div className="newexp">
-                      {/* <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
+                    <div className="d-flex">
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("expenditureSectorsName")}
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          name=""
+                          id=""
+                          onChange={(e) => setPurpose(e.target.value)}
+                        >
+                          <option value=""> {t("selectExpenseSector")} </option>
+                          {expSectors?.map((exp, key) => {
+                            return (
+                              <option
+                                selected={purpose === exp.id}
+                                key={key}
+                                value={exp.id}
+                              >
+                                {exp.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="newexp ms-2">
                         <FtextField
-                          type="text"
-                          label="নতুন খাত  যুক্ত করুন"
-                          name="newExp"
-                          style={{ marginRight: "100px" }}
+                          type="number"
+                          label={t("amount")}
+                          name="amount"
                         ></FtextField>
-                        <Plus
-                          style={{ marginLeft: "3px", marginTop: "6px" }}
-                          className="addcutmButton"
-                        ></Plus>
-                      </div> */}
-                      <FtextField
-                        style={{ marginRight: "10px" }}
-                        type="number"
-                        label={t("amount")}
-                        name="amount"
-                      ></FtextField>
+                      </div>
                     </div>
 
                     <div>
-                      <h6> {t("expenseDetails")} </h6>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("expenseDetails")}
+                      </label>
                       <textarea
+                        className="form-control shadow-none"
                         name="description"
-                        ref={desRef}
-                        value={des}
-                        onChange={(e) => setDes(e.target.value)}
-                        style={{
-                          width: "100%",
-                          height: "100px",
-                          border: "2px solid skyblue",
-                          paddingLeft: "5px",
-                        }}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                       ></textarea>
                     </div>
                     <div className="modal-footer">

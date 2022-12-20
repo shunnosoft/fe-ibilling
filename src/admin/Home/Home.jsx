@@ -16,6 +16,7 @@ import {
   CardChecklist,
   FileEarmarkExcel,
   JournalCode,
+  CreditCard2Front,
 } from "react-bootstrap-icons";
 import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -25,7 +26,11 @@ import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
 import FileUpload from "./modal/FileUpload";
 import Permissions from "./modal/Permissions";
+<<<<<<< HEAD
 import AddProprietorModal from "./modal/AddProprietorModal";
+=======
+import Invoices from "../invoiceList/Invoices";
+>>>>>>> 6ff057a3a04dc240b771d8730fb5db92f2dbe3c9
 
 export default function Home() {
   // loading
@@ -36,6 +41,9 @@ export default function Home() {
 
   // set owner at local state
   const [ownerId, setOwnerId] = useState();
+
+  // invoice id state
+  const [invoiceId, setInvoiceId] = useState();
 
   // set owner name
   const [companyName, setCompanyName] = useState();
@@ -237,7 +245,7 @@ export default function Home() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PersonFill />
-                        <p className="actionP">Detail</p>
+                        <p className="actionP">Details</p>
                       </div>
                     </div>
                   </li>
@@ -251,8 +259,8 @@ export default function Home() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <PenFill />
-                        <p className="actionP">Parmission</p>
+                        <CreditCard2Front />
+                        <p className="actionP">Permissions</p>
                       </div>
                     </div>
                   </li>
@@ -271,7 +279,7 @@ export default function Home() {
                     </div>
                   </li>
 
-                  <li>
+                  {/* <li>
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <PersonBoundingBox />
@@ -285,6 +293,21 @@ export default function Home() {
                         >
                           <p className="actionP text-white">Invoice</p>
                         </Link>
+                      </div>
+                    </div>
+                  </li> */}
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#ispOwnerInvoice"
+                    onClick={() => {
+                      setInvoiceId(original?.id);
+                      setCompanyName(original?.company);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PersonBoundingBox />
+                        <p className="actionP">Invoice</p>
                       </div>
                     </div>
                   </li>
@@ -440,7 +463,11 @@ export default function Home() {
               <Permissions ownerId={ownerId} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
+<<<<<<< HEAD
               <AddProprietorModal ownerId={ownerId} />
+=======
+              <Invoices invoiceId={invoiceId} companyName={companyName} />
+>>>>>>> 6ff057a3a04dc240b771d8730fb5db92f2dbe3c9
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
             </FontColor>

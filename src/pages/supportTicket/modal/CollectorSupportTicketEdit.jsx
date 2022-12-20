@@ -1,49 +1,39 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { supportTicketsEditApi } from "../../../features/supportTicketApi";
+import { collectorSupportTicketsEditApi } from "../../../features/supportTicketApi";
 
-const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
+const CollectorSupportTicketEdit = ({ supportTicketId }) => {
   const dispatch = useDispatch();
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
-  const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
-  console.log(supportTicketStatusValue);
+  //   const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
 
   // storing data form redux
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
-
-  const singleTicket = supportTickets.find(
-    (ticket) => ticket.id === ticketEditId
+  //collector id from redux
+  const collectorId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.collector.id
   );
-  console.log(singleTicket);
-  // console.log(singleTicket.status);
-  // all handler here
+  // single ticket
+  const singleTicket = supportTickets.find(
+    (ticket) => ticket.id === supportTicketId
+  );
+  // handle form
   const handleSupportTicketStatusEdit = (e) => {
     let statusValue = e.target.value;
     setSupportTicketStatusValue(statusValue);
   };
-  const handleCollectorId = (e) => {
-    let value = e.target.value;
-    setSupportTicketCollectorId(value);
-  };
 
-  const supportTicketStatusSubmit = (e) => {
+  const collectorSupportTicketStatusSubmit = (e) => {
     e.preventDefault();
 
     const data = {
       status: supportTicketStatusValue,
-      collector: supportTicketCollectorId,
+      collector: collectorId,
     };
-    supportTicketsEditApi(dispatch, data, ticketEditId);
+    collectorSupportTicketsEditApi(dispatch, data, supportTicketId);
   };
-  useEffect(() => {
-    if (singleTicket) {
-      setSupportTicketStatusValue(singleTicket.status);
-    }
-  }, [singleTicket]);
   return (
     <div
       class="modal fade"
@@ -92,18 +82,6 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
                 Completed
               </option>
             </select>
-            <div style={{ margin: "2.5rem" }}></div>
-            <label>Assign Collector</label>
-            <select
-              class="form-select mw-100"
-              required
-              onChange={handleCollectorId}
-            >
-              <option>Select Collector</option>
-              {allCollector.map((collector) => {
-                return <option value={collector.id}>{collector.name}</option>;
-              })}
-            </select>
           </div>
           <div class="modal-footer">
             <button
@@ -118,7 +96,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={supportTicketStatusSubmit}
+                onClick={collectorSupportTicketStatusSubmit}
                 disabled
               >
                 Save
@@ -128,7 +106,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={supportTicketStatusSubmit}
+                onClick={collectorSupportTicketStatusSubmit}
               >
                 Save
               </button>
@@ -140,4 +118,4 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   );
 };
 
-export default SupportTicketEdit;
+export default CollectorSupportTicketEdit;

@@ -20,6 +20,7 @@ const addClass = {
   support: "primary",
   feature: "info",
   migration: "warning",
+  auth: "info",
 
   registration: "danger",
   monthlyServiceCharge: "primary",

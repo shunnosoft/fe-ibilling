@@ -70,7 +70,6 @@ export default function Reseller() {
 
   // get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
-  console.log(reseller);
 
   // reseller id state
   const [resellerId, setResellerId] = useState("");
@@ -164,6 +163,9 @@ export default function Reseller() {
         width: "14%",
         Header: t("rechargeBalance"),
         accessor: "rechargeBalance",
+        Cell: ({ cell: { value } }) => {
+          return Math.floor(value);
+        },
       },
       {
         width: "7%",

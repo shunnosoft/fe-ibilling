@@ -13,12 +13,13 @@ import { getSubAreasApi } from "../../../features/actions/customerApiCall";
 import { fetchMikrotik, getArea } from "../../../features/apiCalls";
 import {
   addHotspotCustomer,
+  editHotspotCustomer,
   getHotspotPackage,
   syncHotspotPackage,
 } from "../../../features/hotspotApi";
 import Loader from "../../../components/common/Loader";
 
-const AddCustomer = () => {
+const EditCustomer = ({ customerId }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -42,6 +43,12 @@ const AddCustomer = () => {
     hotspotComment: Yup.string(),
     // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
+
+  // get hotspot customer
+  const customer = useSelector((state) => state.hotspot.customer);
+
+  // find editable data
+  const editCustomer = customer.find((item) => item.id === customerId);
 
   // get role
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
@@ -71,10 +78,10 @@ const AddCustomer = () => {
   const [billDate, setBillDate] = useState(new Date());
 
   // connection date state
-  const [connectionDate, setConnectionDate] = useState();
+  const [promiseDate, setPromiseDate] = useState();
 
   // mikrotik id state
-  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+  const [mikrotikId, setMikrotikId] = useState();
 
   // package id state
   const [packageId, setPackageId] = useState();
@@ -98,8 +105,10 @@ const AddCustomer = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // get mikrotik api call
     fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
 
+    // get hotspot package api call
     getHotspotPackage(dispatch, ispOwnerId, setHotspotPackageLoading);
 
     // get area api
@@ -107,12 +116,40 @@ const AddCustomer = () => {
 
     // get sub area api
     getSubAreasApi(dispatch, ispOwnerId);
-  }, []);
+
+    // set mikrotikId into state
+    setMikrotikId(editCustomer?.mikrotik);
+
+    // set billing cycle
+    if (editCustomer) setBillDate(new Date(editCustomer?.billingCycle));
+
+    // set connection Date
+    if (editCustomer) setPromiseDate(new Date(editCustomer?.promiseDate));
+
+    // set package id
+    if (editCustomer) setPackageId(editCustomer?.hotspotPackage);
+
+    // set sub area id
+    if (editCustomer) setSubAreaId(editCustomer?.subArea);
+  }, [editCustomer]);
+
+  useEffect(() => {
+    area.map((item) => {
+      item.subAreas.map((subarea) => {
+        if (subarea.id === editCustomer?.subArea) {
+          setAreaId(item.id);
+          selectArea(item.id);
+        }
+      });
+    });
+  }, [area, editCustomer]);
 
   // package handler
-  const selectPackage = (data) => {
-    setPackageId(data);
-    const filterPackageRate = hotspotPackage.find((item) => item.id === data);
+  const selectPackage = (event) => {
+    setPackageId(event.target.value);
+    const filterPackageRate = hotspotPackage.find(
+      (item) => item.id === packageId
+    );
     setPackageRate(filterPackageRate);
   };
 
@@ -152,7 +189,7 @@ const AddCustomer = () => {
       mobile: data?.mobile,
       billPayType: "prepaid",
       autoDisable: false,
-      connectionDate: connectionDate?.toISOString(),
+      promiseDate: promiseDate?.toISOString(),
       billingCycle: billDate?.toISOString(),
       balance: 0,
       monthlyFee: data?.monthlyFee,
@@ -162,17 +199,16 @@ const AddCustomer = () => {
         name: data.hotspotName,
         password: data.hotspotPassword,
         comment: data.hotspotComment,
-        profile: packageRate?.name,
+        profile: data.hotspotProfile,
       },
     };
-    console.log(sendingData);
-    addHotspotCustomer(dispatch, sendingData, setIsLoading);
+    editHotspotCustomer(dispatch, sendingData, customerId, setIsLoading);
   };
 
   return (
     <div
       className="modal fade modal-dialog-scrollable "
-      id="AddHotspotCustomer"
+      id="EditHotspotCustomer"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -195,17 +231,19 @@ const AddCustomer = () => {
               {/* model body here */}
               <Formik
                 initialValues={{
-                  name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  monthlyFee: packageRate?.rate || 0,
-                  hotspotName: "",
-                  // hotspotProfile: packageRate?.name || "",
-                  hotspotPassword: "",
-                  hotspotComment: "",
-                  balance: "",
+                  name: editCustomer?.name || "",
+                  mobile: editCustomer?.mobile || "",
+                  address: editCustomer?.address || "",
+                  email: editCustomer?.email || "",
+                  nid: editCustomer?.nid || "",
+                  monthlyFee:
+                    editCustomer?.monthlyFee || packageRate?.rate || 0,
+                  hotspotName: editCustomer?.hotspot.name || "",
+                  hotspotProfile:
+                    editCustomer?.hotspot.profile || packageRate?.name || "",
+                  hotspotPassword: editCustomer?.hotspot.password || "",
+                  hotspotComment: editCustomer?.hotspot.comment || "",
+                  balance: editCustomer?.balance || 0,
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => handleSubmit(values)}
@@ -230,7 +268,11 @@ const AddCustomer = () => {
                             <option value="">...</option>
                             {mikrotik.length &&
                               mikrotik?.map((val, key) => (
-                                <option key={key} value={val.id}>
+                                <option
+                                  key={key}
+                                  value={val.id}
+                                  selected={editCustomer?.mikrotik === val.id}
+                                >
                                   {val.name}
                                 </option>
                               ))}
@@ -247,16 +289,20 @@ const AddCustomer = () => {
                         <select
                           className="form-select mb-3 mw-100 mt-0"
                           aria-label="Default select example"
-                          onChange={(event) =>
-                            selectPackage(event.target.value)
-                          }
+                          onChange={(event) => selectPackage(event)}
                         >
                           <option value="">...</option>
                           {hotspotPackage &&
                             hotspotPackage?.map((val, key) => (
                               <>
                                 {val.mikrotik === mikrotikId && (
-                                  <option key={key} value={val.id}>
+                                  <option
+                                    key={key}
+                                    value={val.id}
+                                    selected={
+                                      editCustomer?.hotspotPackage === val.id
+                                    }
+                                  >
                                     {val.name}
                                   </option>
                                 )}
@@ -319,7 +365,11 @@ const AddCustomer = () => {
                           <option value="">...</option>
                           {area.length &&
                             area?.map((val, key) => (
-                              <option key={key} value={val.id}>
+                              <option
+                                key={key}
+                                value={val.id}
+                                selected={val.id === areaId}
+                              >
                                 {val.name}
                               </option>
                             ))}
@@ -342,7 +392,11 @@ const AddCustomer = () => {
                           <option value="">...</option>
                           {subArea?.subAreas &&
                             subArea.subAreas.map((val, key) => (
-                              <option key={key} value={val.id}>
+                              <option
+                                key={key}
+                                value={val.id}
+                                selected={val.id === editCustomer.subArea}
+                              >
                                 {val.name}
                               </option>
                             ))}
@@ -403,15 +457,16 @@ const AddCustomer = () => {
                           disabled={!(packageId && userRole === "ispOwner")}
                         />
                       </div>
+
                       <div className="billCycle">
                         <div>
                           <label className="form-control-label changeLabelFontColor">
-                            {t("connectionDate")}
+                            {t("promiseDate")}
                           </label>
                           <ReactDatePicker
                             className="form-control mw-100"
-                            selected={connectionDate}
-                            onChange={(date) => setConnectionDate(date)}
+                            selected={promiseDate}
+                            onChange={(date) => setPromiseDate(date)}
                             dateFormat="MM/dd/yyyy"
                             placeholderText={t("selectDate")}
                             disabled={!packageId}
@@ -448,4 +503,4 @@ const AddCustomer = () => {
   );
 };
 
-export default AddCustomer;
+export default EditCustomer;

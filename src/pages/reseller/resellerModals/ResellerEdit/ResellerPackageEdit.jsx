@@ -62,7 +62,6 @@ export const PackageBasedEdit = ({
   packageRateType,
   packageCommisson,
 }) => {
-  console.log(mikroTikPackagesId);
   return (
     <>
       {mikrotikpakages?.mikrotiks?.map((item) => (

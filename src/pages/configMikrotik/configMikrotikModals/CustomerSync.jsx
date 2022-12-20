@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
-import {
-  fetchMikrotikSyncUser,
-  syncMikrotikStaticUser,
-} from "../../../features/apiCalls";
+import { fetchMikrotikSyncUser } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 
 const CustomerSync = ({
   mikrotikId,
   ispOwner,
-  customerType,
   inActiveCustomer,
   setInActiveCustomer,
 }) => {
@@ -30,12 +26,7 @@ const CustomerSync = ({
       inActiveCustomer: inActiveCustomer,
     };
 
-    if (customerType === "PPPoE") {
-      fetchMikrotikSyncUser(dispatch, data, setIsloading);
-    }
-    if (customerType === "static") {
-      syncMikrotikStaticUser(dispatch, data, setIsloading);
-    }
+    fetchMikrotikSyncUser(dispatch, data, setIsloading);
   };
 
   return (
@@ -54,9 +45,7 @@ const CustomerSync = ({
               className="modal-title"
               id="customerModalDetails"
             >
-              {customerType === "PPPoE"
-                ? t("PPPoECustomerSync")
-                : t("staticCustomerSync")}
+              {t("PPPoECustomerSync")}
             </h5>
             <button
               type="button"

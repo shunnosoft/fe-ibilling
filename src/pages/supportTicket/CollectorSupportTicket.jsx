@@ -10,45 +10,57 @@ import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllSupportTickets } from "../../features/supportTicketApi";
+import {
+  getAllSupportTickets,
+  getCollectorApi,
+} from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import SupportTicketEdit from "./modal/SupportTicketEdit";
 import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
 import apiLink from "../../api/apiLink";
+import CollectorSupportTicketEdit from "./modal/CollectorSupportTicketEdit";
+// import CollectorSupportTicketDelete from "./modal/CollectorSupportTicketDelete";
 
-const SupportTicket = () => {
+const CollectorSupportTicket = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   // storing data form redux
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
-  console.log(supportTickets);
+  // console.log(supportTickets);
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+  //   const ispOwner = useSelector(
+  //     (state) => state.persistedReducer.auth.currentUser.collector.ispOwner
+  //   );
+  const collectorId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.collector.id
+  );
+  // console.log(collectorId);
 
   // declare state
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
   const [deleteTicketId, setDeleteTicketId] = useState("");
-  const [allCollector, setAllCollector] = useState([]);
+  // const [allCollector, setAllCollector] = useState([]);
 
   useEffect(() => {
-    getAllSupportTickets(dispatch, ispOwner, setIsLoading);
+    getCollectorApi(dispatch, ispOwner, collectorId, setIsLoading);
   }, []);
 
-  useEffect(async () => {
-    const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
-    setAllCollector([...res.data]);
-  }, []);
+  //   useEffect(async () => {
+  //     const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
+  //     setAllCollector([...res.data]);
+  //   }, []);
 
   // handle edit function
   const handlesupportTicketEditId = (ticketId) => {
     setSupportTicketId(ticketId);
-    console.log(ticketId);
+    // console.log(ticketId);
   };
 
   // handle delete function
@@ -125,7 +137,7 @@ const SupportTicket = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#editModal"
                   onClick={() => {
-                    console.log(original);
+                    // console.log(original);
                     handlesupportTicketEditId(original?.id);
                   }}
                 >
@@ -136,7 +148,7 @@ const SupportTicket = () => {
                     </div>
                   </div>
                 </li>
-                <li
+                {/* <li
                   data-bs-toggle="modal"
                   data-bs-target="#deleteModal"
                   onClick={() => {
@@ -150,7 +162,7 @@ const SupportTicket = () => {
                       <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -196,19 +208,22 @@ const SupportTicket = () => {
       </div>
 
       {/* Edit Modal Start */}
-      <SupportTicketEdit
+      <CollectorSupportTicketEdit supportTicketId={supportTicketId} />
+      {/* <SupportTicketEdit
         ticketEditId={supportTicketId}
         allCollector={allCollector}
-      />
+      /> */}
       {/* Edit Modal End */}
 
       {/* Delete Modal Start */}
-
-      <SupportTicketDelete supportTicketDeleteID={deleteTicketId} />
+      {/* 
+      <CollectorSupportTicketDelete
+        collectorSupportTicketDeleteID={deleteTicketId}
+      /> */}
 
       {/* Delete Modal end */}
     </>
   );
 };
 
-export default SupportTicket;
+export default CollectorSupportTicket;

@@ -47,7 +47,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           {t("status")} : {filterData.status}
         </li>
         <li>
-          {t("payment")} {filterData.payment}
+          {t("paymentStatus")} {filterData.payment}
         </li>
       </ul>
       <table className="table table-striped ">

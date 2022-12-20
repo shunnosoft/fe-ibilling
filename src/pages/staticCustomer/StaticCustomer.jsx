@@ -20,6 +20,7 @@ import {
   PrinterFill,
   ArrowClockwise,
   CurrencyDollar,
+  KeyFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -55,6 +56,7 @@ import { useTranslation } from "react-i18next";
 import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -62,6 +64,8 @@ export default function Customer() {
   const [Customers1, setCustomers1] = useState([]);
   const [Customers2, setCustomers2] = useState([]);
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
+  // user id state
+  const [userId, setUserId] = useState();
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector((state) => state?.customer?.staticCustomer);
 
@@ -159,8 +163,8 @@ export default function Customer() {
   // cutomer delete
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
-    const singleData = cus?.find((item) => item.id === customerId);
-    setSingleData(singleData);
+    // const singleData = cus?.find((item) => item.id === customerId);
+    setSingleData(customerId);
   };
 
   let customerForCsV = Customers.map((customer) => {
@@ -408,20 +412,11 @@ export default function Customer() {
             return false;
           }
         }
-        // //payment status filter
-        // if (filterOptions.paymentStatus) {
-        //   if (customer.paymentStatus === filterOptions.paymentStatus) {
-        //     isFound = true;
-        //   } else {
-        //     return false;
-        //   }
-        // }
 
-        //payment status filter
-
+        // payment status filter
         if (filterOptions.paymentStatus) {
           if (filterOptions.paymentStatus === "free") {
-            if (customer.monthlyFee === parseInt("0")) {
+            if (customer.monthlyFee === 0) {
               isFound = true;
             } else {
               return false;
@@ -443,17 +438,20 @@ export default function Customer() {
           ) {
             if (
               customer.monthlyFee > customer.balance &&
-              customer.balance > parseInt("0")
+              customer.balance > 0
             ) {
               isFound = true;
             } else {
               return false;
             }
           } else if (
-            filterOptions.paymentStatus === "advance" &&
-            customer.paymentStatus === "paid"
+            filterOptions.paymentStatus === "advance"
+            // && customer.paymentStatus === "paid"
           ) {
-            if (2 * customer.monthlyFee < customer.balance) {
+            if (
+              customer.monthlyFee <= customer.balance &&
+              customer.monthlyFee > 0
+            ) {
               isFound = true;
             } else {
               return false;
@@ -462,7 +460,7 @@ export default function Customer() {
             filterOptions.paymentStatus === "overDue" &&
             customer.paymentStatus === "unpaid"
           ) {
-            if (customer.balance < parseInt("0")) {
+            if (customer.balance < 0) {
               isFound = true;
             } else {
               return false;
@@ -784,6 +782,23 @@ export default function Customer() {
                 ) : (
                   ""
                 )}
+
+                {role === "ispOwner" && original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPassword"
+                    onClick={() => {
+                      setUserId(original.user);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <KeyFill />
+                        <p className="actionP">{t("passwordReset")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -945,6 +960,9 @@ export default function Customer() {
                 single={singleCustomer}
                 sendCustomer="staticCustomer"
               />
+
+              {/* password reset modal */}
+              <PasswordReset resetCustomerId={userId} />
               {/* bulk Modal */}
 
               <BulkSubAreaEdit

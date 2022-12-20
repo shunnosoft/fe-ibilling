@@ -57,9 +57,17 @@ export default function Customer() {
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
+  // get ispOwner data from redux
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData
+  );
+
   const dispatch = useDispatch();
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   const [isLoading, setIsloading] = useState(false);
@@ -115,12 +123,6 @@ export default function Customer() {
         (customer) => customer.status === status
       );
     }
-
-    // if (paymentStatus) {
-    //   tempCustomers = tempCustomers.filter(
-    //     (customer) => customer.paymentStatus === paymentStatus
-    //   );
-    // }
 
     if (paymentStatus) {
       tempCustomers = tempCustomers.filter((customer) => {
@@ -212,7 +214,9 @@ export default function Customer() {
   };
 
   useEffect(() => {
-    withMtkPackage(dispatch, resellerId);
+    if (!ispOwnerData.bpSettings?.hasMikrotik) {
+      withMtkPackage(dispatch, resellerId);
+    }
     getSubAreas(dispatch, resellerId);
 
     if (role === "collector") {
@@ -291,12 +295,12 @@ export default function Customer() {
         accessor: "customerId",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: "PPPoE",
         accessor: "pppoe.name",
       },
@@ -307,7 +311,7 @@ export default function Customer() {
       },
 
       {
-        width: "9%",
+        width: "8%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -323,6 +327,11 @@ export default function Customer() {
         },
       },
       {
+        width: "9%",
+        Header: t("package"),
+        accessor: "pppoe.profile",
+      },
+      {
         width: "10%",
         Header: t("month"),
         accessor: "monthlyFee",
@@ -333,8 +342,8 @@ export default function Customer() {
         accessor: "balance",
       },
       {
-        width: "12%",
-        Header: t("billCycle"),
+        width: "11%",
+        Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
@@ -536,7 +545,7 @@ export default function Customer() {
                   <div className="addAndSettingIcon">
                     <CSVLink
                       data={customerForCsVTableInfo}
-                      filename={"ispOwnerData.company"}
+                      filename={ispOwnerData.company}
                       headers={customerForCsVTableInfoHeader}
                       title="Customer Report"
                     >

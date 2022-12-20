@@ -106,6 +106,7 @@ import {
 import {
   addExpenditureSectorsSuccess,
   addExpenditureSuccess,
+  deleteExpenditureSuccess,
   editExpenditureSectorsSuccess,
   editExpenditureSuccess,
   getExpenditureSectorsSuccess,
@@ -113,6 +114,7 @@ import {
 } from "./expenditureSlice";
 import { deleteReCustomer } from "./resellerCustomerAdminSlice";
 import { userLogout } from "./actions/authAsyncAction";
+import { createNote, getNotesSuccess } from "./customerNoteSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -509,6 +511,29 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(false);
 };
 
+export const addCustomerNote = async (dispatch, setIsLoading, data) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`/ispOwner/addNote`, data);
+    dispatch(createNote(res.data));
+    langMessage("success", "নোট সংযুক্ত সফল হয়েছে", "Note Added Successfully");
+  } catch (error) {
+    console.log(error.message);
+  }
+  setIsLoading(false);
+};
+
+export const getCustomerNotes = async (dispatch, setIsLoading, customerId) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/ispOwner/getNotes/${customerId}`);
+    dispatch(getNotesSuccess(res.data));
+  } catch (error) {
+    console.log(error.message);
+  }
+  setIsLoading(false);
+};
+
 // get due Customers
 export const getDueCustomer = async (
   dispatch,
@@ -540,7 +565,6 @@ export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/static-customer/${ispOwner}`);
-    // console.log(res.data);
     dispatch(getStaticCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
@@ -663,17 +687,16 @@ export const deleteStaticCustomerApi = async (
     dispatch(deleteStaticCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
     document.querySelector("#staticCustomerDelete").click();
-    setIsLoading(false);
+
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
   } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.response.data.message);
   }
+  setIsLoading(false);
 };
 
 //Mikrotik
@@ -702,7 +725,12 @@ export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
 };
 
 // get Mikrotik Sync user
-export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
+export const syncMikrotikStaticUser = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setInActiveCustomer
+) => {
   setIsLoading(true);
   await apiLink({
     method: "GET",
@@ -711,12 +739,13 @@ export const syncMikrotikStaticUser = async (dispatch, data, setIsLoading) => {
     .then((res) => {
       dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
       setIsLoading(false);
-      document.querySelector("#SyncCustomer").click();
+      document.querySelector("#staticCustomerSync").click();
       langMessage(
         "success",
         "মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে",
         "Static Customer Sync form Mikrotik is Successful"
       );
+      setInActiveCustomer(false);
     })
     .catch((error) => {
       setIsLoading(false);
@@ -882,10 +911,10 @@ export const fetchpppoeUser = async (
     if (userType === "user") {
       customers.forEach((i) => {
         let match = false;
+        // console.log(i);
         interfaaceList.forEach((j) => {
           if (j.name === "<pppoe-" + i.pppoe.name + ">") {
             match = true;
-
             temp.push({
               ...j,
               ...i.pppoe,
@@ -1332,8 +1361,58 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
   }
 };
 
-//Bill
+export const resellerProfileUpdate = async (
+  dispatch,
+  data,
+  resellerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
 
+  try {
+    const res = await apiLink.patch(`/reseller/${resellerId}`, data);
+    // console.log(res.data);
+    dispatch(updateProfile(res.data));
+    setIsLoading(false);
+    langMessage(
+      "success",
+      "প্রোফাইল আপডেট সফল হয়েছে",
+      "Profile Updated Successfully"
+    );
+  } catch (error) {
+    setIsLoading(false);
+    toast.error(error.response?.data.message);
+  }
+};
+
+export const collectorProfileUpdate = async (
+  dispatch,
+  data,
+  resellerId,
+  collectorId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.patch(
+      `/reseller/collector/${resellerId}/${collectorId}`,
+      data
+    );
+    dispatch(updateProfile(res.data));
+    setIsLoading(false);
+    langMessage(
+      "success",
+      "প্রোফাইল আপডেট সফল হয়েছে",
+      "Profile Updated Successfully"
+    );
+  } catch (error) {
+    setIsLoading(false);
+    toast.error(error.response?.data.message);
+  }
+};
+
+//Bill
 export const billCollect = async (
   dispatch,
   billData,
@@ -1343,6 +1422,7 @@ export const billCollect = async (
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/monthlyBill", billData);
+    console.log(res.data);
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
     } else {
@@ -1365,11 +1445,9 @@ export const billCollect = async (
 
 export const addDeposit = async (dispatch, data, setLoading) => {
   setLoading(true);
-  console.log(data);
 
   try {
     const res = await apiLink.post(`/deposit`, data);
-    console.log(res.data);
     dispatch(addDepositSucces(res.data));
 
     setLoading(false);
@@ -1431,12 +1509,10 @@ export const depositAcceptReject = async (
   id,
   setAccLoading
 ) => {
-  console.log(status, id);
   setAccLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
     dispatch(updateDepositSuccess(res.data));
-    console.log(res.data);
     setAccLoading(false);
     if (res.data.status === "accepted") {
       langMessage(
@@ -1475,12 +1551,10 @@ export const editBillReport = async (
   reportId,
   data
 ) => {
-  console.log({ reportId }, { data });
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`/bill/monthlyBill/${reportId}`, data);
     dispatch(editBillReportSuccess(res.data));
-    console.log(res.data);
     document.getElementById("reportEditModal").click();
     langMessage("success", "নোট এডিট সফল হয়েছে", "Note Edited Successfully");
   } catch (error) {
@@ -1539,13 +1613,19 @@ export const recharge = async (
   }
 };
 
-export const rechargeHistoryfunc = async (dispatch, ispOwnerId) => {
+export const rechargeHistoryfunc = async (
+  dispatch,
+  ispOwnerId,
+  setRechargeLoading
+) => {
+  setRechargeLoading(true);
   try {
     const res = await apiLink.get(`/ispOwner/recharge/${ispOwnerId}`);
     dispatch(getAllRechargeHistory(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }
+  setRechargeLoading(false);
 };
 
 export const rechargeHistoryEdit = async (
@@ -1914,20 +1994,47 @@ export const addExpenditure = async (dispatch, data, setLoading, resetForm) => {
   }
 };
 
-export const editExpenditure = async (dispatch, data, setLoading) => {
+export const editExpenditure = async (
+  dispatch,
+  data,
+  expenditureId,
+  setLoading
+) => {
   setLoading(true);
   try {
-    const res = await apiLink.patch(`/staff/expenditure`, data);
+    const res = await apiLink.patch(
+      `/staff/expenditure/${expenditureId}`,
+      data
+    );
+    console.log(res.data);
     dispatch(editExpenditureSuccess(res.data));
     langMessage(
       "success",
       "খরচ আপডেট সফল হয়েছে",
       "Expenditure Updated Successfully"
     );
+    document.querySelector("#editExpenditure").click();
     setLoading(false);
   } catch (error) {
-    langMessage("error", "খরচ আপডেট ব্যর্থ হয়েছে", "Expenditure Update Failed");
+    toast.error(error.response?.data?.message);
+    // langMessage("error", "খরচ আপডেট ব্যর্থ হয়েছে", "Expenditure Update Failed");
     setLoading(false);
+  }
+};
+
+export const deleteExpenditure = async (dispatch, expenditureId) => {
+  try {
+    const res = await apiLink.delete(`/staff/expenditure/${expenditureId}`);
+    dispatch(deleteExpenditureSuccess(expenditureId));
+    langMessage(
+      "success",
+      "খরচ ডিলিট সফল হয়েছে",
+      "Expenditure Deleted Successfully"
+    );
+  } catch (error) {
+    console.log(error.response);
+    toast.error(error.response.message);
+    // langMessage("error", "খরচ ডিলিট ব্যর্থ হয়েছে", "Expenditure Delete Failed");
   }
 };
 
@@ -1984,8 +2091,8 @@ export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
     document.querySelector("#editPurpose").click();
     langMessage(
       "success",
-      "খরচ খাত সফলভাবে যুক্ত হয়েছে",
-      "Expenditure Type Added Successfully"
+      "খরচ খাত সফলভাবে আপডেট হয়েছে",
+      "Expenditure Type Updated Successfully"
     );
   } catch (error) {
     setIsloading(false);

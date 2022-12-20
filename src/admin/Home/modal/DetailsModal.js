@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import Table from "../../../components/table/Table";
+import { getSubAreasApi } from "../../../features/actions/customerApiCall";
 import { getIspOwnersStaffs } from "../../../features/apiCallAdmin";
 
 const DetailsModal = ({ ownerId }) => {
@@ -23,6 +24,9 @@ const DetailsModal = ({ ownerId }) => {
   // get single isp owner data
   const ownerData = data.find((item) => item.id === ownerId);
 
+  // get all subareas
+  const subAreas = useSelector((state) => state.area?.subArea);
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,7 +37,10 @@ const DetailsModal = ({ ownerId }) => {
   }, 0);
 
   useEffect(() => {
-    if (ownerId) getIspOwnersStaffs(ownerId, dispatch, setIsLoading);
+    if (ownerId) {
+      getIspOwnersStaffs(ownerId, dispatch, setIsLoading);
+      getSubAreasApi(dispatch, ownerId);
+    }
   }, [ownerId]);
 
   return (
@@ -477,6 +484,29 @@ const DetailsModal = ({ ownerId }) => {
                       )}
                     </div>
                   )}
+                </Tab>
+
+                <Tab eventKey="subAreas" title="Sub Areas">
+                  <h4 type="button" class="btn btn-primary">
+                    Total Sub Area{" "}
+                    <span class="badge bg-secondary">{subAreas.length}</span>
+                  </h4>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Sub Area Name</th>
+                        <th>Sub Area Id</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {subAreas.map((item, key) => (
+                        <tr key={key}>
+                          <th scope="col">{item?.name}</th>
+                          <td>{item?.id}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </Tab>
 
                 {/* start */}

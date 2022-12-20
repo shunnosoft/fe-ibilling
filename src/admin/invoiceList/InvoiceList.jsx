@@ -20,8 +20,6 @@ const InvoiceList = () => {
   // get owner id in params
   const { ispOwnerId } = useParams();
 
-  console.log(ispOwnerId);
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   // set invoice id

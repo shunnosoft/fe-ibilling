@@ -7,6 +7,7 @@ import {
   ChatText,
   CurrencyDollar,
   FileExcelFill,
+  KeyFill,
   PenFill,
   PersonFill,
   PersonPlusFill,
@@ -65,6 +66,8 @@ import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit
 import Footer from "../../components/admin/footer/Footer";
 import BandwidthModal from "./BandwidthModal";
 import BulkBalanceEdit from "./customerCRUD/bulkOpration/BulkBalanceEdit";
+import CustomerNote from "./customerCRUD/CustomerNote";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -132,6 +135,15 @@ const PPPOECustomer = () => {
 
   // customer id state
   const [customerId, setCustomerId] = useState("");
+
+  // user id state
+  const [userId, setUserId] = useState();
+
+  // set customer id in state for note
+  const [customerNoteId, setCustomerNoteId] = useState();
+
+  // set customer name state
+  const [customerName, setCustomerName] = useState("");
 
   // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
@@ -339,18 +351,9 @@ const PPPOECustomer = () => {
         }
 
         // payment status filter
-        // if (filterOptions.paymentStatus) {
-        //   if (customer.paymentStatus === filterOptions.paymentStatus) {
-        //     isFound = true;
-        //   } else {
-        //     return false;
-        //   }
-        // }
-
-        // payment status filter
         if (filterOptions.paymentStatus) {
           if (filterOptions.paymentStatus === "free") {
-            if (customer.monthlyFee === parseInt("0")) {
+            if (customer.monthlyFee === 0) {
               isFound = true;
             } else {
               return false;
@@ -372,17 +375,20 @@ const PPPOECustomer = () => {
           ) {
             if (
               customer.monthlyFee > customer.balance &&
-              customer.balance > parseInt("0")
+              customer.balance > 0
             ) {
               isFound = true;
             } else {
               return false;
             }
           } else if (
-            filterOptions.paymentStatus === "advance" &&
-            customer.paymentStatus === "paid"
+            filterOptions.paymentStatus === "advance"
+            // && customer.paymentStatus === "paid"
           ) {
-            if (2 * customer.monthlyFee < customer.balance) {
+            if (
+              customer.monthlyFee <= customer.balance &&
+              customer.monthlyFee > 0
+            ) {
               isFound = true;
             } else {
               return false;
@@ -391,7 +397,7 @@ const PPPOECustomer = () => {
             filterOptions.paymentStatus === "overDue" &&
             customer.paymentStatus === "unpaid"
           ) {
-            if (customer.balance < parseInt("0")) {
+            if (customer.balance < 0) {
               isFound = true;
             } else {
               return false;
@@ -494,6 +500,7 @@ const PPPOECustomer = () => {
   }, [pppoeCustomers]);
 
   const bandwidthModalController = (customerID) => {
+    console.log(customerID);
     setCustomerId(customerID);
     setBandWidthModal(true);
   };
@@ -629,13 +636,7 @@ const PPPOECustomer = () => {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -707,6 +708,21 @@ const PPPOECustomer = () => {
                     </div>
                   </div>
                 </li>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerNote"
+                  onClick={() => {
+                    setCustomerNoteId(original.id);
+                    setCustomerName(original?.name);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("note")}</p>
+                    </div>
+                  </div>
+                </li>
 
                 {(permission?.customerDelete || role === "ispOwner") && (
                   <li
@@ -744,22 +760,23 @@ const PPPOECustomer = () => {
                   ) : (
                     ""
                   ))}
-                {role === "ispOwner" && ispOwnerData?.bpSettings?.hasReseller && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#transferToReseller"
-                    onClick={() => {
-                      getSpecificCustomer(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <ArrowRightSquareFill />
-                        <p className="actionP">{t("transferReseller")}</p>
+                {role === "ispOwner" &&
+                  ispOwnerData?.bpSettings?.hasReseller && (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#transferToReseller"
+                      onClick={() => {
+                        getSpecificCustomer(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ArrowRightSquareFill />
+                          <p className="actionP">{t("transferReseller")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                )}
+                    </li>
+                  )}
                 {(role === "ispOwner" || role === "manager") &&
                   ispOwnerData.bpSettings?.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
@@ -771,6 +788,23 @@ const PPPOECustomer = () => {
                       </div>
                     </li>
                   )}
+
+                {role === "ispOwner" && original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPassword"
+                    onClick={() => {
+                      setUserId(original.user);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <KeyFill />
+                        <p className="actionP">{t("passwordReset")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -779,10 +813,22 @@ const PPPOECustomer = () => {
     ],
     [t]
   );
+
+  const sortingCustomer = useMemo(() => {
+    return [...pppoeCustomers].sort((a, b) => {
+      a = parseInt(a.customerId.replace(/[^0-9]/g, ""));
+      b = parseInt(b.customerId.replace(/[^0-9]/g, ""));
+
+      return a - b;
+    });
+  }, [pppoeCustomers]);
+
+  const tableData = useMemo(() => sortingCustomer, [pppoeCustomers]);
+
   //export customer data
   let customerForCsV = useMemo(
     () =>
-      pppoeCustomers.map((customer) => {
+      tableData.map((customer) => {
         return {
           companyName: ispOwnerData.company,
           home: "Home",
@@ -832,7 +878,7 @@ const PPPOECustomer = () => {
   //export customer data
   let customerForCsVTableInfo = useMemo(
     () =>
-      pppoeCustomers.map((customer) => {
+      tableData.map((customer) => {
         return {
           name: customer.name,
           pppoeName: customer.pppoe.name,
@@ -912,7 +958,7 @@ const PPPOECustomer = () => {
         : t("sokolCustomer"),
     };
   }
-  const tableData = useMemo(() => pppoeCustomers, [pppoeCustomers]);
+
   return (
     <>
       <Sidebar />
@@ -936,39 +982,32 @@ const PPPOECustomer = () => {
                   </div>
                   {/* customer page header area  */}
 
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {permission?.viewCustomerList && (
+                  <div className="d-flex align-items-center justify-content-center">
+                    {((permission?.viewCustomerList && role === "manager") ||
+                      role === "ispOwner") && (
                       <>
-                        {role !== "collector" && (
-                          <>
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={customerForCsVTableInfo}
-                                filename={ispOwnerData.company}
-                                headers={customerForCsVTableInfoHeader}
-                                title="Customer Report"
-                              >
-                                <FileExcelFill className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={customerForCsV}
-                                filename={ispOwnerData.company}
-                                headers={headers}
-                                title={t("downloadBTRCreport")}
-                              >
-                                <FileExcelFill className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-                          </>
-                        )}
+                        <>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={customerForCsVTableInfo}
+                              filename={ispOwnerData.company}
+                              headers={customerForCsVTableInfoHeader}
+                              title="Customer Report"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={customerForCsV}
+                              filename={ispOwnerData.company}
+                              headers={headers}
+                              title={t("downloadBTRCreport")}
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
+                        </>
 
                         <div className="addAndSettingIcon">
                           <PrinterFill
@@ -1231,9 +1270,7 @@ const PPPOECustomer = () => {
                                 return (
                                   <option
                                     key={i}
-                                    selected={
-                                      filterOptions.package === `${m.id}`
-                                    }
+                                    selected={filterOptions.package === m.id}
                                     value={m.id}
                                   >
                                     {m.name}
@@ -1378,7 +1415,7 @@ const PPPOECustomer = () => {
                   <div style={{ display: "none" }}>
                     <PrintCustomer
                       filterData={filterData}
-                      currentCustomers={pppoeCustomers}
+                      currentCustomers={tableData}
                       ref={componentRef}
                       printOptions={printOption}
                     />
@@ -1406,6 +1443,9 @@ const PPPOECustomer = () => {
       {/* customer report modal  */}
       <CustomerReport single={customerData} />
 
+      {/* customer note modal */}
+      <CustomerNote customerId={customerNoteId} customerName={customerName} />
+
       {/* customer delete modal  */}
       <CustomerDelete
         single={customerId}
@@ -1418,6 +1458,9 @@ const PPPOECustomer = () => {
 
       {/* transferReseller modal */}
       <TransferToReseller customerId={customerId} />
+
+      {/* password reset modal */}
+      <PasswordReset resetCustomerId={userId} />
 
       {/* bulk Modal */}
       <BulkSubAreaEdit
@@ -1472,16 +1515,18 @@ const PPPOECustomer = () => {
             <span className="button_title">{t("editArea")}</span>
           </button>
 
-          <button
-            className="bulk_action_button btn btn-info btn-floating btn-sm"
-            title={t("balanceUpdate")}
-            data-bs-toggle="modal"
-            data-bs-target="#customerBalanceEdit"
-            type="button"
-          >
-            <i className="fas fa-dollar"></i>
-            <span className="button_title">{t("balanceUpdate")}</span>
-          </button>
+          {bpSettings.updateCustomerBalance && (
+            <button
+              className="bulk_action_button btn btn-info btn-floating btn-sm"
+              title={t("editBalance")}
+              data-bs-toggle="modal"
+              data-bs-target="#customerBalanceEdit"
+              type="button"
+            >
+              <i className="fas fa-dollar"></i>
+              <span className="button_title">{t("editBalance")}</span>
+            </button>
+          )}
 
           <button
             className="bulk_action_button btn btn-dark btn-floating btn-sm"

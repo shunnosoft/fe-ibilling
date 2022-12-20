@@ -1,7 +1,5 @@
 import React from "react";
-import { Form, Formik } from "formik";
 import { ispOwnerPermission } from "../ispOwnerPermission/Permission";
-import { FtextField } from "../../../components/common/FtextField";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -48,6 +46,7 @@ const Permissions = ({ ownerId }) => {
       ...ownerData?.bpSettings,
       ...temp,
     };
+
     const sendingData = {
       ...ownerData,
       bpSettings: updatePermission,
@@ -89,7 +88,7 @@ const Permissions = ({ ownerId }) => {
           <div className="modal-body">
             {/* model body here */}
 
-            <div className="collectorInputs">
+            <div style={{ display: "inline-block" }}>
               {permissions?.map((val, key) => (
                 <div className="CheckboxContainer" key={key}>
                   <input

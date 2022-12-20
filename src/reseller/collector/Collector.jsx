@@ -87,9 +87,6 @@ export default function Collector() {
     }
   }, [collSearch, collector]);
 
-  const searchHandler = (e) => {
-    setCollSearch(e.toString().toLowerCase());
-  };
   const columns = React.useMemo(
     () => [
       {

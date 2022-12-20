@@ -31,6 +31,12 @@ export default function Mikrotik() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
 
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.bpSettings
+  );
+  console.log(permission);
+
   let allmikrotiks = [];
   allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
@@ -123,16 +129,18 @@ export default function Mikrotik() {
               <PlugFill />
             </button>
 
-            <button
-              title={t("deletekrotik")}
-              data-bs-toggle="modal"
-              data-bs-target="#deleteMikrotikModal"
-              onClick={() => setMikrotikId(original.id)}
-              style={{ padding: "0.10rem .5rem" }}
-              className="btn btn-sm btn-danger"
-            >
-              <ArchiveFill />
-            </button>
+            {permission?.mikrotikDelete && (
+              <button
+                title={t("deletekrotik")}
+                data-bs-toggle="modal"
+                data-bs-target="#deleteMikrotikModal"
+                onClick={() => setMikrotikId(original.id)}
+                style={{ padding: "0.10rem .5rem" }}
+                className="btn btn-sm btn-danger"
+              >
+                <ArchiveFill />
+              </button>
+            )}
           </div>
         ),
       },

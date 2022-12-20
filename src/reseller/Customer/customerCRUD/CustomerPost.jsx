@@ -11,6 +11,7 @@ import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
   fetchpppoePackage,
+  getSubAreas,
 } from "../../../features/apiCallReseller";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
@@ -22,10 +23,23 @@ export default function CustomerModal() {
   // import dispatch
   const dispatch = useDispatch();
 
+  // get user role from redux
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+
   // get user data from redux
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
+
+  const resellerId = useSelector((state) =>
+    userRole === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
+  );
+
+  // const area = useSelector(
+  //   (state) => state.persistedReducer.auth?.userData.areas
+  // );
 
   // get are from redux
   const area = useSelector((state) => state?.area?.area);
@@ -35,9 +49,6 @@ export default function CustomerModal() {
     (state) => state.persistedReducer.auth?.userData
   );
 
-  // get user role from redux
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
-
   //sub area id state
   const [subAreaId, setsubAreaId] = useState("");
 
@@ -46,8 +57,6 @@ export default function CustomerModal() {
 
   // get mikrotik package from redux
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
-
-  // const packages = useSelector((state) => state.package.packages);
 
   // package rate sate
   const [packageRate, setPackageRate] = useState("");
@@ -87,9 +96,9 @@ export default function CustomerModal() {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && userData.id) {
+    if (id && resellerId) {
       const IDs = {
-        reseller: userData.id,
+        reseller: resellerId,
         mikrotikId: id,
       };
       fetchpppoePackage(dispatch, IDs);
@@ -107,17 +116,23 @@ export default function CustomerModal() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
+    if (!mikrotikPackage) {
+      return alert(t("selectPackage"));
+    }
+
+    if (!subAreaId) {
+      return alert(t("selectArea"));
+    }
+
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
     const mainData = {
       // customerId: "randon123",
       paymentStatus: "unpaid",
       ispOwner: userData.ispOwner,
       subArea: subAreaId,
-      reseller: userData.id,
-
+      reseller: resellerId,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
-
       billingCycle: billDate.toISOString(),
       pppoe: {
         name: Pname,
@@ -130,6 +145,9 @@ export default function CustomerModal() {
     };
 
     if (Getmikrotik.length > 0) {
+      if (!singleMikrotik) {
+        return alert(t("selectMikrotik"));
+      }
       mainData.mikrotik = singleMikrotik;
       mainData.autoDisable = autoDisable;
     }
@@ -185,58 +203,63 @@ export default function CustomerModal() {
               >
                 {(formik) => (
                   <Form>
-                    <div className="mikrotikSection">
+                    <div className="mikrotikSection ">
                       {/* pppoe package */}
                       {(userRole === "ispOwner" ||
                         userRole === "collector" ||
                         userRole === "manager") && (
                         <>
-                          <p className="comstomerFieldsTitle">
-                            {t("selectMikrotik")}
-                          </p>
-                          <select
-                            className="form-select mw-100"
-                            aria-label="Default select example"
-                            onChange={selectMikrotik}
-                          >
-                            <option value="">...</option>
-                            {Getmikrotik?.length === undefined
-                              ? ""
-                              : Getmikrotik?.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
+                          <div>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectMikrotik")}
+                            </label>
+                            <select
+                              className="form-select mw-100 mt-0"
+                              aria-label="Default select example"
+                              onChange={selectMikrotik}
+                            >
+                              <option value="">...</option>
+                              {Getmikrotik?.length === undefined
+                                ? ""
+                                : Getmikrotik?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                          </div>
 
-                          <p className="comstomerFieldsTitle">
-                            {t("selectPPPoEPackage")}
-                          </p>
-                          <select
-                            className="form-select mb-3"
-                            aria-label="Default select example"
-                            onChange={selectMikrotikPackage}
-                          >
-                            <option value="">...</option>
-                            {ppPackage.length === undefined
-                              ? ""
-                              : ppPackage?.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
+                          <div>
+                            <p style={{ marginBottom: "0rem" }}>
+                              {t("selectPPPoEPackage")}
+                            </p>
+                            <select
+                              style={{ width: "22rem" }}
+                              className="form-select mb-3 mw-100"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="">...</option>
+                              {ppPackage.length === undefined
+                                ? ""
+                                : ppPackage?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                          </div>
                         </>
                       )}
 
                       {userRole === "reseller" && Getmikrotik.length > 0 && (
                         <>
                           <div>
-                            <p className="comstomerFieldsTitle">
+                            <label className="form-control-label changeLabelFontColor">
                               {t("selectMikrotik")}
-                            </p>
+                            </label>
                             <select
-                              className="form-select mw-100"
+                              className="form-select mw-100 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotik}
                             >
@@ -256,11 +279,11 @@ export default function CustomerModal() {
                             </select>
                           </div>
                           <div>
-                            <p className="comstomerFieldsTitle">
-                              {t("selectPPPoEPackage")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}
+                            </label>
                             <select
-                              className="form-select mb-3 mw-100"
+                              className="form-select mb-3 mw-100 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -285,11 +308,11 @@ export default function CustomerModal() {
                       {userRole === "reseller" && Getmikrotik.length == 0 && (
                         <>
                           <div>
-                            <p className="comstomerFieldsTitle">
+                            <label className="form-control-label changeLabelFontColor">
                               {t("selectPPPoEPackage")}
-                            </p>
+                            </label>
                             <select
-                              className="form-select mb-3 mw-100"
+                              className="form-select mb-3 mt-0 mw-100"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -338,9 +361,11 @@ export default function CustomerModal() {
 
                     <div className="displayGrid3">
                       <div>
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={(e) => selectArea(e.target.value)}
                         >
@@ -356,10 +381,10 @@ export default function CustomerModal() {
                       </div>
 
                       <FtextField type="text" label={t("NIDno")} name="nid" />
+                      <FtextField type="text" label={t("name")} name="name" />
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label={t("name")} name="name" />
                       <FtextField
                         type="text"
                         label={t("mobile")}
@@ -370,43 +395,43 @@ export default function CustomerModal() {
                         label={t("address")}
                         name="address"
                       />
+                      <FtextField type="text" label={t("email")} name="email" />
                     </div>
                     <div className="newDisplay">
-                      <FtextField type="text" label={t("email")} name="email" />
+                      {userRole === "collector" ? (
+                        <div className="billCycle">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billingCycle")}{" "}
+                          </label>
 
-                      {/* <p className="customerFieldsTitle">
-                          {t("billingCycle")}
-                        </p> */}
-
-                      {/* <div className="timeDate">
-                          <input
-                            value={billDate}
-                            onChange={(e) => setBillDate(e.target.value)}
-                            type="date"
-                            min={moment().format("YYYY-MM-DD")}
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={billDate}
+                            onChange={(date) => setBillDate(date)}
+                            dateFormat="dd/MM/yyyy:hh:mm"
+                            showTimeSelect
+                            maxDate={billDate}
+                            placeholderText={t("selectBillDate")}
+                            disabled
                           />
-                          <input
-                            className="billTime"
-                            value={billTime}
-                            onChange={(e) => setBilltime(e.target.value)}
-                            type="time"
-                          />
-                        </div> */}
-                      <div className="billCycle">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("billingCycle")}{" "}
-                        </label>
+                        </div>
+                      ) : (
+                        <div className="billCycle">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billingCycle")}{" "}
+                          </label>
 
-                        <DatePicker
-                          className="form-control mw-100"
-                          selected={billDate}
-                          onChange={(date) => setBillDate(date)}
-                          dateFormat="dd/MM/yyyy:hh:mm"
-                          showTimeSelect
-                          maxDate={billDate}
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={billDate}
+                            onChange={(date) => setBillDate(date)}
+                            dateFormat="dd/MM/yyyy:hh:mm"
+                            showTimeSelect
+                            maxDate={billDate}
+                            placeholderText={t("selectBillDate")}
+                          />
+                        </div>
+                      )}
                       {Getmikrotik.length > 0 && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>

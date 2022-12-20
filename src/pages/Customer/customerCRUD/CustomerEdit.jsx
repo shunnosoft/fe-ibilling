@@ -10,6 +10,7 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import {
   editCustomer,
+  fetchMikrotik,
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
 import { useEffect } from "react";
@@ -54,6 +55,10 @@ export default function CustomerEdit(props) {
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
+  // generate Customer Id
+  const genCustomerId = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings?.genCustomerId
+  );
 
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -74,6 +79,8 @@ export default function CustomerEdit(props) {
   const [promiseDate, setPromiseDate] = useState(null);
 
   const [packageId, setPackageId] = useState("");
+  //component states
+  const [loading, setLoading] = useState(false);
 
   // fix max promise date
   let mxDate = new Date(data?.billingCycle);
@@ -105,6 +112,10 @@ export default function CustomerEdit(props) {
   }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
 
   useEffect(() => {
+    fetchMikrotik(dispatch, ispOwnerId, setLoading);
+  }, [ispOwnerId]);
+
+  useEffect(() => {
     area.map((a) => {
       a.subAreas.map((sub) => {
         if (sub.id === data?.subArea) {
@@ -120,6 +131,7 @@ export default function CustomerEdit(props) {
 
   // customer validator
   const customerValidator = Yup.object({
+    // customerId: Yup.string().required(t("writeCustomerId")),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
@@ -179,7 +191,13 @@ export default function CustomerEdit(props) {
       return alert(t("selectBillDate"));
     }
 
-    const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = formValue;
+    const { customerId, Pname, Ppassword, Pprofile, Pcomment, ...rest } =
+      formValue;
+    if (!genCustomerId) {
+      if (!customerId) {
+        return alert(t("writeCustomerId"));
+      }
+    }
     const mainData = {
       singleCustomerID: data?.id,
       subArea: subArea2,
@@ -206,6 +224,9 @@ export default function CustomerEdit(props) {
       mainData === null
     ) {
       delete mainData.balance;
+    }
+    if (!genCustomerId) {
+      mainData.customerId = customerId;
     }
     editCustomer(dispatch, mainData, setIsloading);
   };
@@ -250,6 +271,7 @@ export default function CustomerEdit(props) {
               {/* model body here */}
               <Formik
                 initialValues={{
+                  customerId: data?.customerId,
                   name: data?.name || "",
                   mobile: data?.mobile || "",
                   address: data?.address || "",
@@ -336,6 +358,13 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeSection2">
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label="Customer Id"
+                          name="customerId"
+                        />
+                      )}
                       <FtextField
                         type="text"
                         label={`PPPoE ${t("name")}`}
@@ -448,23 +477,24 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
-                      {(role === "manager" || role === "ispOwner") && (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("promiseDate")}
-                          </label>
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={promiseDate}
-                            onChange={(date) => setPromiseDate(date)}
-                            dateFormat="MMM dd yyyy hh:mm a"
-                            placeholderText={t("selectDate")}
-                            minDate={new Date(data?.billingCycle)}
-                            maxDate={mxDate}
-                            showTimeSelect
-                          />
-                        </div>
-                      )}
+                      {bpSettings.promiseDate &&
+                        (role === "manager" || role === "ispOwner") && (
+                          <div>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("promiseDate")}
+                            </label>
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={promiseDate}
+                              onChange={(date) => setPromiseDate(date)}
+                              dateFormat="MMM dd yyyy hh:mm a"
+                              placeholderText={t("selectDate")}
+                              minDate={new Date(data?.billingCycle)}
+                              maxDate={mxDate}
+                              showTimeSelect
+                            />
+                          </div>
+                        )}
                     </div>
                     <div className="newDisplay">
                       <div>

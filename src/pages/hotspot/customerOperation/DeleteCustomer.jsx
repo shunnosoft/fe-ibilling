@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
-import { deleteStaticCustomerApi } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import { deleteHotspotCustomer } from "../../../features/hotspotApi";
 
-const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
+const DeleteCustomer = ({ customerId, mikrotikCheck, setMikrotikCheck }) => {
   const { t } = useTranslation();
+  // get all customer
+  const customers = useSelector((state) => state?.hotspot?.customer);
+
+  // find deletable customer
+  const singleData = customers.find((item) => item.id === customerId);
+
   // import dispatch
   const dispatch = useDispatch();
-  const customer = useSelector((state) => state?.customer?.staticCustomer);
-  const singleData = customer?.find((item) => item.id === single);
 
   // loading state
-  const [isLoading, setIsloading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -20,29 +24,28 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   );
 
   // DELETE handler
-  const deleteStaticCustomer = (customerId) => {
+  const deleteCustomer = (customerId) => {
     let checkCondition = true;
 
     if (mikrotikCheck) {
       checkCondition = window.confirm(t("deleteMikrotik"));
     }
 
-    // send data for api
-    const data = {
-      ispID: ispOwnerId,
-      customerID: customerId,
-      mikrotik: mikrotikCheck,
-    };
     // api call
     if (checkCondition) {
-      deleteStaticCustomerApi(dispatch, data, setIsloading);
+      deleteHotspotCustomer(
+        dispatch,
+        customerId,
+        mikrotikCheck,
+        setDeleteLoading
+      );
     }
   };
 
   return (
     <div
       className="modal fade"
-      id="staticCustomerDelete"
+      id="hotsportCustomerDelete"
       tabIndex="-1"
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
@@ -66,7 +69,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
           </div>
           <div className="modal-body">
             <h5>
-              {singleData?.name} {t("customerDelete")}
+              {singleData?.name} {t("deleteCustomer")}{" "}
             </h5>
 
             <div class="form-check mt-4">
@@ -77,7 +80,7 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 id="flexCheckDefault"
                 onChange={(event) => setMikrotikCheck(event.target.checked)}
               />
-              <label class="form-check-label" for="flexCheckDefault">
+              <label class="form-check-label" htmlFor="flexCheckDefault">
                 <small className="text-secondary">{t("deleteMikrotik")}</small>
               </label>
             </div>
@@ -87,18 +90,18 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
-                disabled={isLoading}
+                disabled={deleteLoading}
               >
                 {t("cancel")}
               </button>
               <button
                 onClick={() => {
-                  deleteStaticCustomer(singleData?.id);
+                  deleteCustomer(customerId);
                 }}
                 className="btn btn-success"
-                disabled={isLoading}
+                disabled={deleteLoading}
               >
-                {isLoading ? <Loader /> : t("delete")}
+                {deleteLoading ? <Loader /> : t("delete")}
               </button>
             </div>
           </div>
@@ -108,4 +111,4 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   );
 };
 
-export default StaticCustomerDelete;
+export default DeleteCustomer;

@@ -14,10 +14,22 @@ export const ispOwnerPermission = (perm) => {
     },
     {
       id: 3,
-      value: "mikrotkDelete",
+      value: "mikrotikDelete",
       label: "Mikrotik Delete",
-      isChecked: perm?.mikrotkDelete,
+      isChecked: perm?.mikrotikDelete,
     },
+    // {
+    //   id: 4,
+    //   value: "promiseDate",
+    //   label: "Promise Date",
+    //   isChecked: perm?.promiseDate,
+    // },
+    // {
+    //   id: 5,
+    //   value: "expenditureDelete",
+    //   label: "Expenditure Delete",
+    //   isChecked: perm?.expenditureDelete,
+    // },
   ];
   return permission;
 };

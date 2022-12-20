@@ -130,9 +130,9 @@ function CreateCustomerSmsTemplate() {
 
     // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
     let splitArray =
-      messageBoxStr !== "undefined" ? messageBoxStr.split("\n") : "";
+      messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
 
-    if (splitArray.length > 0) {
+    if (splitArray?.length > 0) {
       setFontText(splitArray[0] || "");
 
       let temptxt = "";

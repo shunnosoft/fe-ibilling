@@ -1,22 +1,41 @@
-import React from "react";
+import React, { useEffect } from "react";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 import { useTranslation } from "react-i18next";
+import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
 export default function CustomerDetails({ single }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
   // get all customer
   const customer = useSelector((state) => state?.customer?.staticCustomer);
 
   // find editable data
   const data = customer.find((item) => item.id === single);
 
+  // get bp settings from redux
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
+
+  // find create customer performer
+  const performer = ownerUsers.find((item) => item[data?.createdBy]);
+
+  useEffect(() => {
+    getOwnerUsers(dispatch, ispOwnerId);
+  }, []);
   return (
     <div>
       <div
@@ -99,17 +118,38 @@ export default function CustomerDetails({ single }) {
                   )}
                 </div>
                 <div>
-                  <h5> {t("staticCustomer")} </h5>
-                  <hr />
-                  <h6>
-                    {t("userName")}: {data?.queue?.name}
-                  </h6>
-                  <h6>
-                    {t("ip")}: {data?.queue?.target}
-                  </h6>
-                  <h6>
-                    {t("comment")}: {data?.queue?.comment}
-                  </h6>
+                  <div className="static">
+                    <h5> {t("staticCustomer")} </h5>
+                    <hr />
+                    <h6>
+                      {t("userName")}: {data?.queue?.name}
+                    </h6>
+                    <h6>
+                      {t("ip")}: {data?.queue?.target}
+                    </h6>
+                    <h6>
+                      {t("comment")}: {data?.queue?.comment}
+                    </h6>
+                    <hr />
+                  </div>
+                  <div className="reference">
+                    <h5>{t("reference")}</h5>
+                    <hr />
+                    <h6>
+                      {t("referenceName")} : {data?.referenceName}
+                    </h6>
+                    <h6>
+                      {t("referenceMobile")} : {data?.referenceMobile}
+                    </h6>
+                    <h6>
+                      {t("createdBy")} :{" "}
+                      {performer && performer[data?.createdBy].name}
+                    </h6>
+                    <h6>
+                      {t("role")} :{" "}
+                      {performer && performer[data?.createdBy].role}
+                    </h6>
+                  </div>
                 </div>
               </div>
             </div>

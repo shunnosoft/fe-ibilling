@@ -4,9 +4,11 @@ import {
   deleteSupportTickets,
   editSupportTickets,
   getAllCustomer,
+  getCollectorSupportTickets,
   getSupportTickets,
 } from "./supportTicketSlice";
 
+//get supportTickets api
 export const getAllSupportTickets = async (dispatch, id, setIsLoading) => {
   setIsLoading(true);
   try {
@@ -19,7 +21,29 @@ export const getAllSupportTickets = async (dispatch, id, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const editSupportTicketsApi = async (dispatch, data, ticketId) => {
+//get collector api
+
+export const getCollectorApi = async (
+  dispatch,
+  ispOwnerId,
+  collectorId,
+  setIsLoading
+) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.get(
+      `customer/supportTickets/${ispOwnerId}/${collectorId}`
+    );
+    // console.log(res.data);
+    dispatch(getCollectorSupportTickets(res.data.supportTickets));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+//Support Tickets Edit Api
+export const supportTicketsEditApi = async (dispatch, data, ticketId) => {
   try {
     const response = await apiLink.patch(
       `customer/supportTicket/${ticketId}`,
@@ -27,12 +51,32 @@ export const editSupportTicketsApi = async (dispatch, data, ticketId) => {
     );
     console.log(response.data);
     dispatch(editSupportTickets(response.data.supportTicket));
-    toast.success(response.data.message);
+    toast.success("Support Ticket Edit Success");
   } catch (error) {
     toast.error(error.response?.data.message);
   }
 };
-export const deleteSupportTicketsApi = async (dispatch, ticketId) => {
+
+//Collector Support Tickets Edit Api
+export const collectorSupportTicketsEditApi = async (
+  dispatch,
+  data,
+  ticketId
+) => {
+  try {
+    const response = await apiLink.patch(
+      `customer/supportTicket/${ticketId}`,
+      data
+    );
+    dispatch(editSupportTickets(response.data.supportTicket));
+    toast.success("Support Ticket Edit Success");
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+};
+
+// Support Tickets Delete Api
+export const supportTicketsDeleteApi = async (dispatch, ticketId) => {
   try {
     const response = await apiLink.delete(`customer/supportTicket/${ticketId}`);
     dispatch(deleteSupportTickets(ticketId));
@@ -41,14 +85,13 @@ export const deleteSupportTicketsApi = async (dispatch, ticketId) => {
     toast.error(error.response?.data.message);
   }
 };
-
-// export const getCollectorApi = async (dispatch, ispOwnerId, setIsLoading) => {
-//   try {
-//     setIsLoading(true);
-//     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
-//     dispatch(getAllCustomer(res.data));
-//   } catch (error) {
-//     toast.error(error.response?.data.message);
-//   }
-//   setIsLoading(false);
-// };
+//Collector Support Tickets Delete Api
+export const collectorSupportTicketsDeleteApi = async (dispatch, ticketId) => {
+  try {
+    const response = await apiLink.delete(`customer/supportTicket/${ticketId}`);
+    dispatch(deleteSupportTickets(ticketId));
+    toast.success(response.data.message);
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+};

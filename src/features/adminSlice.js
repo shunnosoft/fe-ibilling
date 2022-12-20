@@ -30,7 +30,6 @@ const adminSlice = createSlice({
       state.singleComment = payload;
     },
     addCommentSuccess: (state, { payload }) => {
-      console.log(current(state));
       state.singleComment.results.push(payload);
     },
 

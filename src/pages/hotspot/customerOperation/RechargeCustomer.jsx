@@ -1,21 +1,20 @@
-import { useState } from "react";
 import { Form, Formik } from "formik";
-import { useSelector } from "react-redux";
+import React from "react";
 import * as Yup from "yup";
-//internal imports
-import { FtextField } from "../../../components/common/FtextField";
-import "../../Customer/customer.css";
-import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCalls";
-import Loader from "../../../components/common/Loader";
-import DatePicker from "react-datepicker";
+import { useState } from "react";
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
+import ReactDatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { FtextField } from "../../../components/common/FtextField";
+import makeAnimated from "react-select/animated";
+import Loader from "../../../components/common/Loader";
+import { billCollect } from "../../../features/hotspotApi";
 const animatedComponents = makeAnimated();
 
-export default function CustomerBillCollect({ single }) {
+const RechargeCustomer = ({ customerId }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const options = [
     { value: "January", label: t("january") },
@@ -32,11 +31,24 @@ export default function CustomerBillCollect({ single }) {
     { value: "December", label: t("december") },
   ];
 
-  // get all customer
-  const customer = useSelector((state) => state?.customer?.customer);
+  const BillValidatoin = Yup.object({
+    amount: Yup.number()
+      .min(0, t("billNotAcceptable"))
+      .integer(t("decimalNumberNotAcceptable")),
+  });
 
-  // find editable data
-  const data = customer.find((item) => item.id === single);
+  // user data
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // current user
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser
+  );
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
@@ -46,39 +58,38 @@ export default function CustomerBillCollect({ single }) {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
-  const [billType, setBillType] = useState("bill");
+  // get hotspot customer
+  const customer = useSelector((state) => state.hotspot.customer);
+
+  // find recharge customer
+  const data = customer.find((item) => item.id === customerId);
+
+  // note state
+  const [note, setNote] = useState();
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // amount state
   const [amount, setAmount] = useState(null);
-  // const [defaultAmount, setDefault] = useState(single.monthlyFee);
 
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
-
-  const currentUserId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
-  );
-  const dispatch = useDispatch();
-  const [isLoading, setLoading] = useState(false);
-
-  //billing date
-  const [startDate, setStartDate] = useState(false);
-  const [endDate, setEndDate] = useState(false);
-  const [medium, setMedium] = useState("cash");
-  const [noteCheck, setNoteCheck] = useState(false);
-  const [note, setNote] = useState("");
+  // month state
   const [selectedMonth, setSelectedMonth] = useState(null);
 
-  const BillValidatoin = Yup.object({
-    amount: Yup.number()
-      .min(0, t("billNotAcceptable"))
-      .integer(t("decimalNumberNotAcceptable")),
-  });
+  // start date state
+  const [startDate, setStartDate] = useState(false);
+
+  // end date state
+  const [endDate, setEndDate] = useState(false);
+
+  // note check state
+  const [noteCheck, setNoteCheck] = useState(false);
+
+  // medium state
+  const [medium, setMedium] = useState("cash");
+
+  // bil type state
+  const [billType, setBillType] = useState("bill");
 
   //form resetFunction
   const resetForm = () => {
@@ -89,20 +100,19 @@ export default function CustomerBillCollect({ single }) {
     setSelectedMonth(null);
   };
 
-  // bill amount
   const customerBillHandler = (formValue) => {
     const sendingData = {
       amount: formValue.amount,
       name: userData.name,
       collectedBy: currentUser?.user.role,
       billType: billType,
-      customer: data?.id,
+      hotspotCustomer: data?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,
-      collectorId: currentUserId, //when collector is logged in
+      collectorId: userData.id, //when collector is logged in
       userType: data?.userType,
       medium,
-      package: data.pppoe.profile,
+      package: data.hotspot.profile,
     };
     if (note) sendingData.note = note;
 
@@ -117,14 +127,15 @@ export default function CustomerBillCollect({ single }) {
       sendingData.month = monthValues.join(",");
     }
 
-    billCollect(dispatch, sendingData, setLoading, resetForm);
+    // recharge api call
+    billCollect(dispatch, sendingData, setIsLoading, resetForm);
     setAmount(data.amount);
   };
 
   return (
     <div
       className="modal fade"
-      id="collectCustomerBillModal"
+      id="customerRecharge"
       tabIndex="-1"
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
@@ -165,7 +176,7 @@ export default function CustomerBillCollect({ single }) {
                 <Form>
                   <div className="d-flex flex-wrap">
                     <h5 className="me-3 text-secondary">
-                      {t("PPPoEName")} {data?.pppoe?.name}
+                      {t("hotspotName")} {data?.hotspot?.name}
                     </h5>
                     <h5 className="text-secondary">
                       {t("ID")} {data?.customerId}
@@ -205,52 +216,48 @@ export default function CustomerBillCollect({ single }) {
                       </select>
                     </div>
                   </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="w-50">
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("billType")}
-                      </label>
-                      <select
-                        className="form-select mt-0 mw-100"
-                        onChange={(e) => setBillType(e.target.value)}
-                      >
-                        <option value="bill"> {t("bill")} </option>
-                        {permission?.connectionFee || role !== "collector" ? (
-                          <option value="connectionFee">
-                            {t("connectionFee")}
-                          </option>
-                        ) : (
-                          ""
-                        )}
-                      </select>
-                    </div>
 
-                    <div className="mt-3">
-                      <input
-                        type="checkbox"
-                        className="form-check-input me-1"
-                        id="addNOte"
-                        checked={noteCheck}
-                        onChange={(e) => setNoteCheck(e.target.checked)}
-                      />
-                      <label
-                        className="form-check-label changeLabelFontColor"
-                        htmlFor="addNOte"
-                      >
-                        {t("noteAndDate")}
-                      </label>
-                    </div>
+                  <label className="form-control-label changeLabelFontColor">
+                    {t("billType")}
+                  </label>
+                  <select
+                    className="form-select mt-0 mw-100"
+                    onChange={(e) => setBillType(e.target.value)}
+                  >
+                    <option value="bill"> {t("bill")} </option>
+                    {permission?.connectionFee || role !== "collector" ? (
+                      <option value="connectionFee">
+                        {t("connectionFee")}
+                      </option>
+                    ) : (
+                      ""
+                    )}
+                  </select>
+
+                  <div className="mb-2 mt-3 text-right">
+                    <input
+                      type="checkbox"
+                      className="form-check-input me-1"
+                      id="addNOte"
+                      checked={noteCheck}
+                      onChange={(e) => setNoteCheck(e.target.checked)}
+                    />
+                    <label
+                      className="form-check-label changeLabelFontColor"
+                      htmlFor="addNOte"
+                    >
+                      {t("noteAndDate")}
+                    </label>
                   </div>
-
                   {noteCheck && (
                     <>
-                      <div className="mt-3">
+                      <div className=" mb-1">
                         <div className="d-flex">
                           <div className="me-2">
                             <label className="form-control-label changeLabelFontColor">
                               {t("startDate")}
                             </label>
-                            <DatePicker
+                            <ReactDatePicker
                               className="form-control mw-100"
                               selected={startDate}
                               onChange={(date) => setStartDate(date)}
@@ -263,7 +270,7 @@ export default function CustomerBillCollect({ single }) {
                               {t("endDate")}
                             </label>
 
-                            <DatePicker
+                            <ReactDatePicker
                               className="form-control mw-100"
                               selected={endDate}
                               onChange={(date) => setEndDate(date)}
@@ -273,7 +280,7 @@ export default function CustomerBillCollect({ single }) {
                           </div>
                         </div>
                       </div>
-                      <div className="month pt-2">
+                      <div className="month">
                         <label
                           className="form-check-label changeLabelFontColor"
                           htmlFor="selectMonth"
@@ -295,7 +302,7 @@ export default function CustomerBillCollect({ single }) {
                       <div class="form-floating mt-3">
                         <textarea
                           cols={200}
-                          className="form-control shadow-none"
+                          class="form-control shadow-none"
                           placeholder={t("writeNote")}
                           id="noteField"
                           onChange={(e) => setNote(e.target.value)}
@@ -317,4 +324,6 @@ export default function CustomerBillCollect({ single }) {
       </div>
     </div>
   );
-}
+};
+
+export default RechargeCustomer;

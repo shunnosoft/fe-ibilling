@@ -30,6 +30,7 @@ import supportTicketSlice from "../features/supportTicketSlice";
 import productSlice from "../features/inventorySlice";
 
 import hotspotSlice from "../features/hotspotSlice";
+import customerNoteSlice from "../features/customerNoteSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -69,8 +70,9 @@ const store = configureStore({
     client: finalClientSlice,
     messageLog: messageLogSlice,
     supportTicket: supportTicketSlice,
+    hotspot: hotspotSlice,
     products: productSlice,
-    hotspotPackage: hotspotSlice,
+    customerNotes: customerNoteSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

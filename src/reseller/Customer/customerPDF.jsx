@@ -14,13 +14,13 @@ const PrintCustomer = React.forwardRef((props, ref) => {
 
   return (
     <div ref={ref}>
-      <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
-        <div className="logo_side">
+      <div className="page_header letter_header d-flex justify-content-end align-items-center pb-3 ">
+        {/* <div className="logo_side">
           <div className="company_logo">
             <img src="/assets/img/logo.png" alt="Company Logo" />
           </div>
           <div className="company_name">{ispOwnerData.company}</div>
-        </div>
+        </div> */}
         <div className="details_side">
           <p>
             {t("companyName")} {ispOwnerData.company}
@@ -41,7 +41,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           {t("status")} : {filterData.status}
         </li>
         <li>
-          {t("payment")} : {filterData.payment}
+          {t("paymentStatus")} : {filterData.payment}
         </li>
       </ul>
       <table className="table table-striped ">

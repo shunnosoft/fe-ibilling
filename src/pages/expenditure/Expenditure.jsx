@@ -6,6 +6,7 @@ import {
   Tools,
   PrinterFill,
   ArrowClockwise,
+  ArchiveFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +20,7 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 
 import {
+  deleteExpenditure,
   getAllExpenditure,
   getExpenditureSectors,
 } from "../../features/apiCalls";
@@ -39,6 +41,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 export default function Expenditure() {
   const { t } = useTranslation();
   const [isLoading, setIsloading] = useState(false);
+  const [expenditureLoading, setExpenditureLoading] = useState(false);
   const componentRef = useRef();
   const dispatch = useDispatch();
   const ispOwnerId = useSelector(
@@ -77,8 +80,6 @@ export default function Expenditure() {
     expenditurePurpose: "",
   });
 
-  console.log(filterOptions);
-
   //set the expenditurePurpose name to expenditure
   useLayoutEffect(() => {
     const temp = [];
@@ -98,16 +99,25 @@ export default function Expenditure() {
     setFilterState(temp);
   }, [expenditures, expenditurePurpose]);
 
+  // delete expenditure
+  const deleteExpenditureHandler = (expenditureId) => {
+    console.log(expenditureId);
+    const confirm = window.confirm(t("areYouSureWantToDelete"));
+    if (confirm) {
+      deleteExpenditure(dispatch, expenditureId);
+    }
+  };
+
   // reload handler
   const reloadHandler = () => {
-    getAllExpenditure(dispatch, ispOwnerId, setIsloading);
+    getAllExpenditure(dispatch, ispOwnerId, setExpenditureLoading);
     getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   };
 
   useEffect(() => {
     getOwnerUsers(dispatch, ispOwnerId);
     if (expenditures.length === 0)
-      getAllExpenditure(dispatch, ispOwnerId, setIsloading);
+      getAllExpenditure(dispatch, ispOwnerId, setExpenditureLoading);
     if (expenditurePurpose.length === 0)
       getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   }, [ispOwnerId, dispatch]);
@@ -197,6 +207,22 @@ export default function Expenditure() {
                   </div>
                 </div>
               </li>
+              {/* {role === "ispOwner" &&
+                new Date(original.createdAt).getMonth() ===
+                  new Date().getMonth() && (
+                  <li
+                    onClick={() => {
+                      deleteExpenditureHandler(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">{t("delete")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )} */}
             </ul>
           </div>
         ),
@@ -360,7 +386,7 @@ export default function Expenditure() {
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-5">
                 <div className="d-flex">
-                  <div>{t("expens")}</div>
+                  <div>{t("expense")}</div>
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader></Loader>
@@ -509,7 +535,7 @@ export default function Expenditure() {
                         </div>
                         <div className="table-section">
                           <Table
-                            isLoading={isLoading}
+                            isLoading={expenditureLoading}
                             customComponent={customComponent}
                             data={allExpenditures.reverse()}
                             columns={columns}

@@ -129,9 +129,9 @@ function CustomerInactiveSmsTemplate() {
       .replace("LAST DATE: BILL_DATE", "");
 
     // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
-    let temp = messageBoxStr !== "undefined" ? messageBoxStr.split("\n") : "";
+    let temp = messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
 
-    if (temp.length > 0) {
+    if (temp?.length > 0) {
       setFrontText(temp[0] || "");
 
       let temptxt = "";

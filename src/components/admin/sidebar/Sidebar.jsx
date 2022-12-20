@@ -103,7 +103,6 @@ export default function Sidebar() {
       localStorage.setItem("active-key", key);
     }
   };
-
   return (
     <TitleColor>
       <div>
@@ -432,10 +431,35 @@ export default function Sidebar() {
                         ) : (
                           ""
                         )}
-
-                        <NavLink
-                          key={120}
-                          to={"/hotspot/customer"}
+                        {userRole === "ispOwner" && bpSettings?.hasMikrotik && (
+                          <NavLink
+                            key={120}
+                            to={"/hotspot/customer"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/hotspot/customer"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("hotspot")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+                        {/* <NavLink
+                          key={121}
+                          to={"/active/hotspot/customer"}
                           className={(navInfo) =>
                             navInfo.isActive ? activeClass.active : ""
                           }
@@ -444,18 +468,19 @@ export default function Sidebar() {
                             <li
                               className="sidebarItems"
                               id={
-                                window.location.pathname === "/hotspot/customer"
+                                window.location.pathname ===
+                                "/active/hotspot/customer"
                                   ? "active"
                                   : ""
                               }
                             >
                               <div className="sidebarIcon">{<People />}</div>
                               <span className="sidebarLinksName">
-                                {t("hotspot")}
+                                {t("activeHotspot")}
                               </span>
                             </li>
                           </FontColor>
-                        </NavLink>
+                        </NavLink> */}
                       </Accordion.Body>
 
                       {/* রিপোর্ট */}
@@ -1026,7 +1051,7 @@ export default function Sidebar() {
                             </NavLink>
                           </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="6">
+                        {/* <Accordion.Item eventKey="6">
                           <Accordion.Header
                             onClick={() => handleActiveAccordian("6")}
                           >
@@ -1060,7 +1085,7 @@ export default function Sidebar() {
                               </FontColor>
                             </NavLink>
 
-                            {/* <NavLink
+                            <NavLink
                               key={300}
                               to={"/invoice"}
                               className={(navInfo) =>
@@ -1084,53 +1109,57 @@ export default function Sidebar() {
                                   </span>
                                 </li>
                               </FontColor>
-                            </NavLink> */}
+                            </NavLink>
                           </Accordion.Body>
-                        </Accordion.Item>
+                        </Accordion.Item> */}
                       </>
                     )}
-                    {(userRole === "ispOwner" || userRole === "collector") && (
-                      <>
-                        <Accordion.Item eventKey="7">
-                          <Accordion.Header
-                            onClick={() => handleActiveAccordian("7")}
-                          >
-                            <div className="sidebarIcon">{<WalletFill />}</div>
-                            <span className="sidebarLinksName">
-                              {t("support")}
-                            </span>
-                          </Accordion.Header>
-                          <Accordion.Body>
-                            {userRole === "ispOwner" && (
-                              <NavLink
-                                key={11}
-                                to={"/support/ticket"}
-                                className={(navInfo) =>
-                                  navInfo.isActive ? activeClass.active : ""
-                                }
-                              >
-                                <FontColor>
-                                  <li
-                                    className="sidebarItems"
-                                    id={
-                                      window.location.pathname ===
-                                        "/support/ticket" && "active"
-                                    }
-                                  >
-                                    <div className="sidebarIcon">
-                                      {<PersonDash />}
-                                    </div>
-                                    <span className="sidebarLinksName">
-                                      {t("supportTicket")}
-                                    </span>
-                                  </li>
-                                </FontColor>
-                              </NavLink>
-                            )}
-                          </Accordion.Body>
-                        </Accordion.Item>
-                      </>
-                    )}
+                    {(userRole === "ispOwner" || userRole === "collector") &&
+                      !user.collector?.reseller && (
+                        <>
+                          <Accordion.Item eventKey="7">
+                            <Accordion.Header
+                              onClick={() => handleActiveAccordian("7")}
+                            >
+                              <div className="sidebarIcon">
+                                {<WalletFill />}
+                              </div>
+                              <span className="sidebarLinksName">
+                                {t("support")}
+                              </span>
+                            </Accordion.Header>
+                            <Accordion.Body>
+                              {(userRole === "ispOwner" ||
+                                userRole === "collector") && (
+                                <NavLink
+                                  key={11}
+                                  to={"/support/ticket"}
+                                  className={(navInfo) =>
+                                    navInfo.isActive ? activeClass.active : ""
+                                  }
+                                >
+                                  <FontColor>
+                                    <li
+                                      className="sidebarItems"
+                                      id={
+                                        window.location.pathname ===
+                                          "/support/ticket" && "active"
+                                      }
+                                    >
+                                      <div className="sidebarIcon">
+                                        {<PersonDash />}
+                                      </div>
+                                      <span className="sidebarLinksName">
+                                        {t("supportTicket")}
+                                      </span>
+                                    </li>
+                                  </FontColor>
+                                </NavLink>
+                              )}
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        </>
+                      )}
                   </Accordion>
                 </div>
               </ul>

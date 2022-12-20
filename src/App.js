@@ -88,6 +88,8 @@ import DueCustomer from "./pages/dueCustomer/DueCustomer";
 import SuccessPaymentSuccess from "./ownerCustomer/CustomerPaymentSuccess";
 import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 import Stock from "./pages/Inventory/Stock";
+import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
+import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -371,6 +373,18 @@ function App() {
               }
             />
 
+            {/* Hotspot Customer  */}
+            <Route
+              path="/active/hotspot/customer"
+              element={
+                userRole === "ispOwner" ? (
+                  <ActiveHotspotCustomer />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
             <Route
               path="/packageSetting"
               element={
@@ -440,10 +454,14 @@ function App() {
             <Route
               path="/support/ticket"
               element={
-                userRole === "ispOwner" ? (
-                  <CustomerSupportTicket />
+                user ? (
+                  userRole === "ispOwner" ? (
+                    <CustomerSupportTicket />
+                  ) : (
+                    userRole === "collector" && <CollectorSupportTicket />
+                  )
                 ) : (
-                  userRole === "collector" && <CustomerSupportTicket />
+                  <Navigate to={"/home"} />
                 )
               }
             />
@@ -460,7 +478,7 @@ function App() {
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
               <Route path="expenditure" element={<Expenditure />} />
-              <Route path="stock" element={<Stock />} />
+              {/* <Route path="stock" element={<Stock />} /> */}
               <Route path="staff" element={<Staff />} />
               <Route path="staff/:staffId" element={<StaffSalary />} />
 

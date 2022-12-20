@@ -30,6 +30,10 @@ export default function CustomerModal() {
   const area = useSelector((state) => state?.area?.area);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
+  // generate Customer Id
+  const genCustomerId = useSelector(
+    (state) => state.persistedReducer.auth.userData.bpSettings?.genCustomerId
+  );
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
@@ -45,16 +49,21 @@ export default function CustomerModal() {
   const dispatch = useDispatch();
 
   const [billDate, setBillDate] = useState(new Date());
-  const [connectionDate, setConnectionDate] = useState();
+  const [connectionDate, setConnectionDate] = useState(new Date());
 
   // customer validator
   const customerValidator = Yup.object({
+    // customerId: Yup.string(),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
       .min(11, t("write11DigitMobileNumber"))
       .max(11, t("over11DigitMobileNumber"))
       .required(t("writeMobileNumber")),
+    referenceMobile: Yup.string()
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
@@ -125,6 +134,7 @@ export default function CustomerModal() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
+
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
@@ -135,9 +145,23 @@ export default function CustomerModal() {
       return alert(t("selectBillDate"));
     }
 
-    const { Pname, Ppassword, Pprofile, Pcomment, balance, ...rest } = data;
+    const {
+      customerId,
+      Pname,
+      Ppassword,
+      Pprofile,
+      Pcomment,
+      balance,
+      ...rest
+    } = data;
+
+    if (!genCustomerId) {
+      if (!customerId) {
+        return alert(t("writeCustomerId"));
+      }
+    }
+
     const mainData = {
-      // customerId: "randon123",
       paymentStatus: "unpaid",
       subArea: subArea2,
       ispOwner: ispOwnerId,
@@ -159,6 +183,9 @@ export default function CustomerModal() {
     };
     if (!bpSettings?.hasMikrotik) {
       delete mainData.mikrotik;
+    }
+    if (!genCustomerId) {
+      mainData.customerId = customerId;
     }
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
@@ -189,6 +216,7 @@ export default function CustomerModal() {
               {/* model body here */}
               <Formik
                 initialValues={{
+                  customerId: "",
                   name: "",
                   mobile: "",
                   address: "",
@@ -200,6 +228,8 @@ export default function CustomerModal() {
                   Ppassword: "",
                   Pcomment: "",
                   balance: "",
+                  referenceName: "",
+                  referenceMobile: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -262,14 +292,6 @@ export default function CustomerModal() {
                         min={0}
                         disabled={!(mikrotikPackage && userRole === "ispOwner")}
                         validation={"true"}
-                        // value={packageRate?.rate}
-                        // onChange={(e)=>{
-                        //   setPackageRate((preval)=>{
-                        //     return {
-                        //       ...preval,rate:e.target.value
-                        //     }
-                        //   })
-                        // }}
                       />
                       {bpSettings?.hasMikrotik ? (
                         ""
@@ -283,6 +305,15 @@ export default function CustomerModal() {
                     </div>
 
                     <div className="pppoeSection2">
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label={t("customerId")}
+                          name="customerId"
+                          disabled={!mikrotikPackage}
+                          validation={"true"}
+                        />
+                      )}
                       <FtextField
                         type="text"
                         label={t("PPPoEName")}
@@ -382,7 +413,7 @@ export default function CustomerModal() {
                         disabled={!mikrotikPackage}
                       />
                     </div>
-                    <div className="newDisplay">
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("email")}
@@ -417,12 +448,27 @@ export default function CustomerModal() {
                             className="form-control mw-100"
                             selected={connectionDate}
                             onChange={(date) => setConnectionDate(date)}
-                            dateFormat="MM/dd/yyyy"
+                            dateFormat="MMM dd yyyy"
+                            maxDate={new Date()}
                             placeholderText={t("selectDate")}
                             disabled={!mikrotikPackage}
                           />
                         </div>
                       </div>
+                    </div>
+                    <div className="displayGrid3">
+                      <FtextField
+                        type="text"
+                        label={t("referenceName")}
+                        name="referenceName"
+                        disabled={!mikrotikPackage}
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("referenceMobile")}
+                        name="referenceMobile"
+                        disabled={!mikrotikPackage}
+                      />
                       {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>

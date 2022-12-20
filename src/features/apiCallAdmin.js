@@ -114,20 +114,20 @@ export const editIspOwnerInvoice = async (
   invoiceId,
   data,
   setIsloading,
-  dispatch
+  dispatch,
+  setInvoiceEditId
 ) => {
   try {
     const res = await apiLink.patch("admin/invoice/" + invoiceId, data);
     dispatch(editInvoiceSuccess(res.data));
     setIsloading(false);
-    document.querySelector("#InvoiceEditModal").click();
-    document.querySelector("#InvoiceEditModalSuper").click();
     toast.success("Invoice Edit Success!");
+    setInvoiceEditId("");
   } catch (err) {
     console.log(err.response);
     if (err.response) {
       setIsloading(false);
-      toast.error(err.response);
+      toast.error(err.response.data.message);
     }
   }
 };
@@ -158,7 +158,6 @@ export const addComment = async (data, setIsloading, dispatch) => {
   try {
     setIsloading(true);
     const res = await apiLink.post(`admin/comment/`, data);
-    console.log(res.data);
     toast.success("Note Added");
     setIsloading(false);
     dispatch(addCommentSuccess(res.data.comment));

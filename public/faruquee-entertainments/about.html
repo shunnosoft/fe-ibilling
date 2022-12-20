@@ -132,7 +132,8 @@
 
       <div class="text-center">
         <img src="/assets/img/ssl2.png" height="200px" width="100%" /> <br />
-        <input type="checkbox" name="agree" /> I read and agree to the
+        <input type="checkbox" name="agree" id="agree" /> I read and agree to
+        the
         <a href="/faruquee-entertainments/terms-conditions.html"
           >Terms & Conditions</a
         >,<a href="/faruquee-entertainments/privacy_.html"> Privacy Policy</a>
@@ -143,6 +144,7 @@
         <br />
         <a
           class="btn btn-primary btn-lg"
+          id="paybill"
           href="https://netfeebd.com/isp/customer"
           >Pay Bill</a
         >
@@ -168,5 +170,27 @@
 
       <!-- <img src="/assets/img/ssl2.png" height="200px" width="90%" /> -->
     </div>
+
+    <script>
+      var checkbox = document.getElementById("agree");
+      var paybill = document.getElementById("paybill");
+
+      paybill.style.visibility = "hidden";
+
+      window.addEventListener("load", function (event) {
+        if (checkbox.checked) {
+          paybill.style.visibility = "visible";
+        } else {
+          paybill.style.visibility = "hidden";
+        }
+      });
+      checkbox.addEventListener("change", function (event) {
+        if (event.target.checked) {
+          paybill.style.visibility = "visible";
+        } else {
+          paybill.style.visibility = "hidden";
+        }
+      });
+    </script>
   </body>
 </html>

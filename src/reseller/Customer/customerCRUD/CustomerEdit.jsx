@@ -24,15 +24,18 @@ export default function CustomerEdit({ single }) {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.ispOwner
   );
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
-
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
@@ -47,7 +50,12 @@ export default function CustomerEdit({ single }) {
     (state) => state?.mikrotik?.pppoePackage
   );
 
+  // get area from redux
   const area = useSelector((state) => state?.area?.area);
+
+  // const area = useSelector(
+  //   (state) => state.persistedReducer.auth?.userData.areas
+  // );
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
   const [ppPackage, setppPackage] = useState([]);
 
@@ -153,7 +161,12 @@ export default function CustomerEdit({ single }) {
   const customerHandler = async (formValue) => {
     const { Pname, Ppassword, Pprofile, Pcomment, monthlyFee, ...rest } =
       formValue;
-    if (Number(monthlyFee) < Number(packageRate.rate)) {
+    if (
+      mikrotikPackage === data?.mikrotikPackage &&
+      data?.monthlyFee === monthlyFee
+    ) {
+      //
+    } else if (Number(monthlyFee) < Number(packageRate.rate)) {
       return alert(t("billCannotBeReduced"));
     }
     const mainData = {
@@ -163,8 +176,6 @@ export default function CustomerEdit({ single }) {
       mikrotik: data?.mikrotik,
       mikrotikPackage: packageRate?.id,
       monthlyFee,
-      // billPayType: "prepaid",
-
       reseller: resellerId,
       billingCycle: moment(billDate + " " + billTime).format(
         "YYYY-MM-DDTHH:mm:ss.ms[Z]"
@@ -221,7 +232,10 @@ export default function CustomerEdit({ single }) {
                   email: data?.email || "",
                   nid: data?.nid || "",
                   Pcomment: data?.pppoe?.comment || "",
-                  monthlyFee: packageRate?.rate || data?.monthlyFee || "",
+                  monthlyFee:
+                    mikrotikPackage === data?.mikrotikPackage
+                      ? data?.monthlyFee
+                      : packageRate?.rate,
                   Pname: data?.pppoe?.name || "",
                   Pprofile: packageRate?.name || data?.pppoe?.profile || "",
                   Ppassword: data?.pppoe?.password || "",
@@ -237,11 +251,11 @@ export default function CustomerEdit({ single }) {
                     <div className="mikrotikSection">
                       {Getmikrotik.length > 0 && (
                         <div>
-                          <p className="comstomerFieldsTitle">
+                          <label className="form-control-label changeLabelFontColor">
                             {t("selectMikrotik")}
-                          </p>
+                          </label>
                           <select
-                            className="form-select"
+                            className="form-select mw-100 mt-0"
                             aria-label="Default select example"
                             // onChange={selectMikrotik}
                             disabled
@@ -255,31 +269,27 @@ export default function CustomerEdit({ single }) {
                       )}
                       {/* pppoe package */}
                       <div>
-                        <p className="comstomerFieldsTitle">
+                        <label className="form-control-label changeLabelFontColor">
                           {t("selectPackage")}
-                        </p>
+                        </label>
                         <select
-                          className="form-select mb-3"
+                          className="form-select mb-3 mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                           value={mikrotikPackage}
                           disabled={!permission?.customerMikrotikPackageEdit}
                         >
                           {ppPackage &&
-                            ppPackage?.map(
-                              (val, key) => (
-                                // getPackageByte(val.name) && (
-                                <option
-                                  selected={val.id === packageRate?.id}
-                                  disabled={val.rate <= findPackage?.rate}
-                                  key={key}
-                                  value={val.id || ""}
-                                >
-                                  {val.name}
-                                </option>
-                              )
-                              // )
-                            )}
+                            ppPackage?.map((val, key) => (
+                              <option
+                                selected={val.id === packageRate?.id}
+                                disabled={val.rate <= findPackage?.rate}
+                                key={key}
+                                value={val.id || ""}
+                              >
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
 
@@ -293,28 +303,66 @@ export default function CustomerEdit({ single }) {
                     </div>
 
                     <div className="pppoeSection2">
-                      <FtextField
-                        type="text"
-                        label={t("PPPoEName")}
-                        name="Pname"
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("password")}
-                        name="Ppassword"
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("comment")}
-                        name="Pcomment"
-                      />
+                      {/* PPPoE Name start */}
+                      {role === "collector" ? (
+                        <FtextField
+                          type="text"
+                          label={t("PPPoEName")}
+                          name="Pname"
+                          disabled
+                        />
+                      ) : (
+                        <FtextField
+                          type="text"
+                          label={t("PPPoEName")}
+                          name="Pname"
+                        />
+                      )}
+                      {/* PPPoE Name End */}
+
+                      {/* Password Start */}
+
+                      {role === "collector" ? (
+                        <FtextField
+                          type="text"
+                          label={t("password")}
+                          name="Ppassword"
+                          disabled
+                        />
+                      ) : (
+                        <FtextField
+                          type="text"
+                          label={t("password")}
+                          name="Ppassword"
+                        />
+                      )}
+                      {/* Password end */}
+
+                      {/* Comment start */}
+                      {role === "collector" ? (
+                        <FtextField
+                          type="text"
+                          label={t("comment")}
+                          name="Pcomment"
+                          disabled
+                        />
+                      ) : (
+                        <FtextField
+                          type="text"
+                          label={t("comment")}
+                          name="Pcomment"
+                        />
+                      )}
+                      {/* Comment start */}
                     </div>
 
                     <div className="displayGrid3">
                       <div>
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}
+                        </label>
                         <select
-                          className="form-select"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
@@ -332,10 +380,10 @@ export default function CustomerEdit({ single }) {
                       </div>
 
                       <FtextField type="text" label={t("NIDno")} name="nid" />
+                      <FtextField type="text" label={t("name")} name="name" />
                     </div>
 
                     <div className="displayGrid3">
-                      <FtextField type="text" label={t("name")} name="name" />
                       <FtextField
                         disabled={
                           !collectorPermission?.customerMobileEdit &&
@@ -350,30 +398,47 @@ export default function CustomerEdit({ single }) {
                         label={t("address")}
                         name="address"
                       />
+                      <FtextField type="text" label={t("email")} name="email" />
                     </div>
                     <div className="newDisplay">
-                      <FtextField type="text" label={t("email")} name="email" />
                       <div className="billCycle">
                         <p className="customerFieldsTitle">
                           {t("billingCycle")}
                         </p>
 
-                        <div className="timeDate">
-                          <input
-                            value={billDate}
-                            onChange={(e) => setBillDate(e.target.value)}
-                            type="date"
-                            min={moment().format("YYYY-MM-DD")}
-                            disabled
-                          />
-                          <input
-                            className="billTime"
-                            value={billTime}
-                            onChange={(e) => setBilltime(e.target.value)}
-                            type="time"
-                            disabled
-                          />
-                        </div>
+                        {role === "collector" ? (
+                          <div className="timeDate">
+                            <input
+                              value={billDate}
+                              onChange={(e) => setBillDate(e.target.value)}
+                              type="date"
+                              min={moment().format("YYYY-MM-DD")}
+                              disabled
+                            />
+                            <input
+                              className="billTime"
+                              value={billTime}
+                              onChange={(e) => setBilltime(e.target.value)}
+                              type="time"
+                              disabled
+                            />
+                          </div>
+                        ) : (
+                          <div className="timeDate">
+                            <input
+                              value={billDate}
+                              onChange={(e) => setBillDate(e.target.value)}
+                              type="date"
+                              min={moment().format("YYYY-MM-DD")}
+                            />
+                            <input
+                              className="billTime"
+                              value={billTime}
+                              onChange={(e) => setBilltime(e.target.value)}
+                              type="time"
+                            />
+                          </div>
+                        )}
                       </div>
                       {Getmikrotik.length > 0 && (
                         <div className="autoDisable">
@@ -386,70 +451,69 @@ export default function CustomerEdit({ single }) {
                           />
                         </div>
                       )}
-                    </div>
-
-                    <div className="pppoeStatus">
-                      <p> {t("status")} </p>
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="staus"
-                          value={"active"}
-                          id="changeToActive"
-                          onChange={(e) => setStatus(e.target.value)}
-                          checked={status === "active"}
-                          disabled={
-                            permission?.customerStatusEdit
-                              ? !permission?.customerStatusEdit
-                              : !collectorPermission?.customerActivate
-                          }
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="changeToActive"
-                        >
-                          {t("active")}
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          id="inlineRadio2"
-                          value={"inactive"}
-                          onChange={(e) => setStatus(e.target.value)}
-                          checked={status === "inactive"}
-                          disabled={
-                            permission?.customerStatusEdit
-                              ? !permission?.customerStatusEdit
-                              : !collectorPermission?.customerDeactivate
-                          }
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="inlineRadio2"
-                        >
-                          {t("in active")}
-                        </label>
-                      </div>
-                      {data?.status === "expired" && (
+                      <div className="pppoeStatus">
+                        <p className="p-0 mt-2">{t("status")}</p>
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="staus"
+                            value={"active"}
+                            id="changeToActive"
+                            onChange={(e) => setStatus(e.target.value)}
+                            checked={status === "active"}
+                            disabled={
+                              permission?.customerStatusEdit
+                                ? !permission?.customerStatusEdit
+                                : !collectorPermission?.customerActivate
+                            }
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="changeToActive"
+                          >
+                            {t("active")}
+                          </label>
+                        </div>
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
                             type="radio"
                             id="inlineRadio2"
-                            disabled
-                            checked={status === "expired"}
+                            value={"inactive"}
+                            onChange={(e) => setStatus(e.target.value)}
+                            checked={status === "inactive"}
+                            disabled={
+                              permission?.customerStatusEdit
+                                ? !permission?.customerStatusEdit
+                                : !collectorPermission?.customerDeactivate
+                            }
                           />
                           <label
                             className="form-check-label"
                             htmlFor="inlineRadio2"
                           >
-                            {t("expired")}
+                            {t("in active")}
                           </label>
                         </div>
-                      )}
+                        {data?.status === "expired" && (
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              id="inlineRadio2"
+                              disabled
+                              checked={status === "expired"}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="inlineRadio2"
+                            >
+                              {t("expired")}
+                            </label>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

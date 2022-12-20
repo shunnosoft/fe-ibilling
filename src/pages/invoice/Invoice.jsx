@@ -71,7 +71,6 @@ function Invoice() {
       {
         width: "13%",
         Header: t("type"),
-        accessor: "reseller.name",
         Cell: ({ row: { original } }) => (
           <td>
             {original.type === "registration"
@@ -87,7 +86,8 @@ function Invoice() {
       {
         width: "15%",
         Header: t("smsType"),
-        accessor: "smsPurchaseType",
+        Cell: ({ row: { original } }) =>
+          original?.type === "smsPurchase" ? original?.smsPurchaseType : "",
       },
       {
         width: "11%",

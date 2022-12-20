@@ -52,7 +52,7 @@ export default function AddStaticCustomer() {
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
-  const [billDate, setBillDate] = useState();
+  const [billDate, setBillDate] = useState(new Date());
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
@@ -64,6 +64,10 @@ export default function AddStaticCustomer() {
       .min(11, t("write11DigitMobileNumber"))
       .max(11, t("over11DigitMobileNumber"))
       .required(t("writeMobileNumber")),
+    referenceMobile: Yup.string()
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
@@ -144,13 +148,17 @@ export default function AddStaticCustomer() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    // console.log(data);
     const subArea2 = document.getElementById("subAreaId").value;
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
     }
-    const { balance, ipAddress, queueName, target, ...rest } = data;
+    const { balance, ipAddress, queueName, target, customerId, ...rest } = data;
+    if (!bpSettings.genCustomerId) {
+      if (!customerId) {
+        return alert(t("writeCustomerId"));
+      }
+    }
     const mainData = {
       paymentStatus: "unpaid",
       subArea: subArea2,
@@ -159,13 +167,16 @@ export default function AddStaticCustomer() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: billDate.toISOString(),
+      billingCycle: billDate?.toISOString(),
       balance: -balance,
       ...rest,
       monthlyFee,
     };
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
+    }
+    if (!bpSettings.genCustomerId) {
+      mainData.customerId = customerId;
     }
     let sendingData = { ...mainData };
     if (userType === "firewall-queue") {
@@ -223,6 +234,9 @@ export default function AddStaticCustomer() {
                   ipAddress: "",
                   queueName: "",
                   target: "",
+                  referenceName: "",
+                  referenceMobile: "",
+                  customerId: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -233,11 +247,11 @@ export default function AddStaticCustomer() {
                   <Form>
                     <div className="row">
                       <div className="col-lg-4 col-md-4 col-xs-6">
-                        <p className="comstomerFieldsTitle">
-                          {t("selectMikrotik")}
-                        </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectMikrotik")}{" "}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectMikrotik}
                         >
@@ -252,9 +266,11 @@ export default function AddStaticCustomer() {
                         </select>
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}{" "}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectSubArea}
                         >
@@ -268,13 +284,14 @@ export default function AddStaticCustomer() {
                               ))}
                         </select>
                       </div>
+
                       <div className="col-lg-4 col-md-4 col-xs-6">
-                        <p>
+                        <label className="form-control-label changeLabelFontColor">
                           {subArea ? subArea.name + " এর - " : ""}{" "}
-                          {t("selectSubArea")}
-                        </p>
+                          {t("selectSubArea")}{" "}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaId"
@@ -322,12 +339,12 @@ export default function AddStaticCustomer() {
                       {userType === "firewall-queue" && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <>
-                            <p className="comstomerFieldsTitle">
-                              {t("selectPackage")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}{" "}
+                            </label>
                             <select
                               name="firewallPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-100 mb-3 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -349,12 +366,12 @@ export default function AddStaticCustomer() {
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         {userType === "simple-queue" && (
                           <>
-                            <p className="comstomerFieldsTitle">
-                              {t("uploadPackge")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("uploadPackge")}{" "}
+                            </label>
                             <select
                               name="upPackage"
-                              className="form-select mw-100"
+                              className="form-select mw-100 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -372,155 +389,153 @@ export default function AddStaticCustomer() {
                           </>
                         )}
                       </div>
-                      <div className="row">
-                        {userType === "simple-queue" && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("downloadPackge")}
-                            </label>
-                            <select
-                              name="downPackage"
-                              className="form-select mw-100 mb-3"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value={"0"}>...</option>
-                              {ppPackage &&
-                                ppPackage?.map(
-                                  (val, key) =>
-                                    val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
-                                        {val.name}
-                                      </option>
-                                    )
-                                )}
-                            </select>
-                          </div>
-                        )}
+                    </div>
+
+                    <div className="row">
+                      {userType === "simple-queue" && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("downloadPackge")}
+                          </label>
+                          <select
+                            name="downPackage"
+                            className="form-select mw-100 mb-3 mt-0"
+                            aria-label="Default select example"
+                            onChange={selectMikrotikPackage}
+                          >
+                            <option value={"0"}>...</option>
+                            {ppPackage &&
+                              ppPackage?.map(
+                                (val, key) =>
+                                  val.packageType === "queue" && (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  )
+                              )}
+                          </select>
+                        </div>
+                      )}
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField
+                          type="number"
+                          label={t("monthFee")}
+                          name="monthlyFee"
+                          min={0}
+                          value={monthlyFee}
+                          onChange={(e) => setMonthlyFee(e.target.value)}
+                        />
+                      </div>
+                      {!bpSettings?.hasMikrotik && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="number"
-                            label={t("monthFee")}
-                            name="monthlyFee"
-                            min={0}
-                            value={monthlyFee}
-                            onChange={(e) => setMonthlyFee(e.target.value)}
+                            label={t("prevDue")}
+                            name="balance"
                           />
                         </div>
-                        {!bpSettings?.hasMikrotik && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
-                            <FtextField
-                              type="number"
-                              label={t("prevDue")}
-                              name="balance"
+                      )}
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField type="text" label={t("NIDno")} name="nid" />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField type="text" label={t("name")} name="name" />
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField
+                          type="text"
+                          label={t("mobile")}
+                          name="mobile"
+                        />
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField
+                          type="text"
+                          label={t("address")}
+                          name="address"
+                        />
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField
+                          type="text"
+                          label={t("email")}
+                          name="email"
+                        />
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div className="billCycle">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billingCycle")}{" "}
+                          </label>
+
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={billDate}
+                            onChange={(date) => setBillDate(date)}
+                            dateFormat="MMM dd yyyy hh:mm"
+                            showTimeSelect
+                            placeholderText={t("selectBillDate")}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField
+                          type="text"
+                          label={t("referenceName")}
+                          name="referenceName"
+                          disabled={!mikrotikPackage}
+                        />
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <FtextField
+                          type="text"
+                          label={t("referenceMobile")}
+                          name="referenceMobile"
+                          disabled={!mikrotikPackage}
+                        />
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        {!bpSettings.genCustomerId && (
+                          <FtextField
+                            type="text"
+                            label={t("customerId")}
+                            name="customerId"
+                            disabled={!mikrotikPackage}
+                            validation={"true"}
+                          />
+                        )}
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        {bpSettings?.hasMikrotik && (
+                          <div className="autoDisable">
+                            <label> {t("automaticConnectionOff")} </label>
+                            <input
+                              type="checkBox"
+                              checked={autoDisable}
+                              onChange={(e) => setAutoDisable(e.target.checked)}
                             />
                           </div>
                         )}
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label={t("NIDno")}
-                            name="nid"
-                          />
-                        </div>
                       </div>
-                      <div className="row">
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label={t("name")}
-                            name="name"
-                          />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label={t("mobile")}
-                            name="mobile"
-                          />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label={t("address")}
-                            name="address"
-                          />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <FtextField
-                            type="text"
-                            label={t("email")}
-                            name="email"
-                          />
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          {/* <p className="customerFieldsTitle">
-                            {t("billingCycle")}
-                          </p>
-
-                          <div className="timeDate">
-                            <input
-                              value={billDate}
-                              onChange={(e) => setBillDate(e.target.value)}
-                              type="date"
-                            />
-                            <input
-                              className="billTime"
-                              value={billTime}
-                              onChange={(e) => setBilltime(e.target.value)}
-                              type="time"
-                            />
-                          </div> */}
-                          <div className="billCycle">
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("billingCycle")}{" "}
-                            </label>
-
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={billDate}
-                              onChange={(date) => setBillDate(date)}
-                              dateFormat="dd/MM/yyyy:hh:mm"
-                              showTimeSelect
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          {bpSettings?.hasMikrotik && (
-                            <div className="autoDisable">
-                              <label> {t("automaticConnectionOff")} </label>
-                              <input
-                                type="checkBox"
-                                checked={autoDisable}
-                                onChange={(e) =>
-                                  setAutoDisable(e.target.checked)
-                                }
-                              />
-                            </div>
-                          )}
-                        </div>
-                        <div
-                          className="modal-footer"
-                          style={{ border: "none" }}
-                        >
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                            disabled={isLoading}
-                          >
-                            {t("cancel")}
-                          </button>
-                          <button
-                            type="submit"
-                            className="btn btn-success"
-                            disabled={isLoading}
-                          >
-                            {isLoading ? <Loader /> : t("save")}
-                          </button>
-                        </div>
-                      </div>
+                    </div>
+                    <div className="modal-footer" style={{ border: "none" }}>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        disabled={isLoading}
+                      >
+                        {t("cancel")}
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? <Loader /> : t("save")}
+                      </button>
                     </div>
                   </Form>
                 )}
