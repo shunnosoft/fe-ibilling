@@ -26,11 +26,8 @@ import DetailsModal from "./modal/DetailsModal";
 import Note from "./modal/Note";
 import FileUpload from "./modal/FileUpload";
 import Permissions from "./modal/Permissions";
-<<<<<<< HEAD
 import AddProprietorModal from "./modal/AddProprietorModal";
-=======
 import Invoices from "../invoiceList/Invoices";
->>>>>>> 6ff057a3a04dc240b771d8730fb5db92f2dbe3c9
 
 export default function Home() {
   // loading
@@ -325,7 +322,7 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
-                  <li
+                  {/* <li
                     data-bs-toggle="modal"
                     data-bs-target="#inventoryAddModal"
                     onClick={() => {
@@ -338,7 +335,7 @@ export default function Home() {
                         <p className="actionP">Add Inventory</p>
                       </div>
                     </div>
-                  </li>
+                  </li> */}
                   <li onClick={() => resetSerialNumberHandler(original.id)}>
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -463,11 +460,8 @@ export default function Home() {
               <Permissions ownerId={ownerId} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
-<<<<<<< HEAD
-              <AddProprietorModal ownerId={ownerId} />
-=======
+              {/* <AddProprietorModal ownerId={ownerId} /> */}
               <Invoices invoiceId={invoiceId} companyName={companyName} />
->>>>>>> 6ff057a3a04dc240b771d8730fb5db92f2dbe3c9
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
             </FontColor>

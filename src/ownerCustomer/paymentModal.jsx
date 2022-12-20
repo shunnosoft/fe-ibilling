@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useBkash } from "react-bkash";
 import Loader from "../components/common/Loader";
 import { billPayment } from "../features/getIspOwnerUsersApi";
+import apiLink from "../api/apiLink";
 
 const PaymentModal = () => {
   const userData = useSelector(
@@ -35,6 +37,72 @@ const PaymentModal = () => {
     }
     billPayment(data, setLoading);
   };
+
+  const bKash = window.bkash;
+
+  useEffect(() => {
+    let paymentID = "";
+    if (userData) {
+      bKash.init({
+        paymentMode: "checkout", //fixed value ‘checkout’
+        paymentRequest: {
+          amount: paymentAmount,
+          merchantInvoiceNumber: Date.now(),
+          intent: "sale",
+          ispOwnerId: userData.ispOwner.id,
+        },
+        createRequest: async function (request) {
+          try {
+            const { data } = await apiLink.post(`bkash/createPayment`, request);
+            if (data?.paymentID) {
+              paymentID = data.paymentID;
+              bKash.create().onSuccess(data);
+            } else {
+              bKash.create().onError();
+              // window.location.href = "/payment/failed";
+            }
+          } catch (error) {
+            bKash.create().onError();
+            // window.location.href = "/payment/failed";
+            console.log(error);
+          }
+        },
+        executeRequestOnAuthorization: async function () {
+          const billData = {
+            amount: paymentAmount,
+            name: userData.name,
+            billType: "bill",
+            customer: userData.id,
+            ispOwner: userData.ispOwner.id,
+            user: userData.id,
+            userType: userData.userType,
+            medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
+            paymentStatus: "pending",
+            package: userData.pppoe.profile,
+          };
+          try {
+            const { data } = await apiLink.post(
+              `bkash/executePayment/${paymentID}`,
+              billData
+            );
+            if (data.bill.paymentStatus === "paid") {
+              window.location.href = "/payment/success";
+            } else {
+              window.location.href = "/payment/failed";
+              bKash.execute().onError();
+            }
+          } catch (error) {
+            bKash.execute().onError();
+            window.location.href = "/payment/failed";
+            console.log(error);
+          }
+        },
+      });
+    }
+  }, [userData, paymentAmount]);
+
+  const gatewayType =
+    userData?.ispOwner?.bpSettings?.paymentGateway?.gatewayType;
 
   return (
     <div className="modal fade" id="billPaymentModal" tabIndex="-1">
@@ -80,7 +148,10 @@ const PaymentModal = () => {
               Cancel
             </button>
             <button
-              onClick={billPaymentController}
+              id={gatewayType === "bKash" ? "bKash_button" : ""}
+              onClick={
+                gatewayType !== "bKash" ? billPaymentController : () => {}
+              }
               type="button"
               className="btn btn-primary"
               disabled={!agreement}

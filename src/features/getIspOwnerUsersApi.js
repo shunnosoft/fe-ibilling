@@ -7,7 +7,6 @@ import {
 } from "./finalClientSlice";
 import { getOwnerUserSuccess } from "./getIspOwnerUsersSlice";
 import { getpackageSuccess } from "./packageSlice";
-
 // get isp owner all user
 export const getOwnerUsers = async (dispatch, ispOwnerId) => {
   try {
@@ -47,7 +46,6 @@ export const billPayment = async (data, setLoading) => {
   try {
     setLoading(true);
     const res = await apiLink.post("/customer/pg/monthlyBill", data);
-    console.log(res.data);
     window.location.href = res.data.data;
   } catch (error) {
     toast.error("Failed to payment");

@@ -333,7 +333,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                           Has Mikrotik
                         </label>
                       </div>
-                      <div className="form-check mt-4">
+                      {/* <div className="form-check mt-4">
                         <Field
                           className="form-check-input"
                           type="checkbox"
@@ -343,7 +343,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         <label className="form-check-label" for="inventory">
                           Has Inventory
                         </label>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>
