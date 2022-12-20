@@ -46,6 +46,7 @@ export const billPayment = async (data, setLoading) => {
   try {
     setLoading(true);
     const res = await apiLink.post("/customer/pg/monthlyBill", data);
+    console.log(res.data);
     window.location.href = res.data.data;
   } catch (error) {
     toast.error("Failed to payment");

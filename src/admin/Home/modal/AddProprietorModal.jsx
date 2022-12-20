@@ -26,6 +26,8 @@ const AddProprietorModal = ({ ownerId }) => {
     refAddress: "",
     refRelation: "",
     remarks: "",
+    storeName: "",
+    storeType: "netFee",
   });
 
   const createProprietor = async () => {
@@ -51,7 +53,6 @@ const AddProprietorModal = ({ ownerId }) => {
   };
 
   const onChangeHandler = (e) => {
-    console.log(e.target.name);
     setProprietorData({
       ...proprietorData,
       [e.target.name]: e.target.value,
@@ -67,13 +68,14 @@ const AddProprietorModal = ({ ownerId }) => {
         email: ispOwner.email,
         nid: ispOwner.nid,
         address: ispOwner.address,
+        storeName: ispOwner.company,
       });
     }
   }, [ispOwner]);
 
   return (
     <div
-      className="modal fade modal-dialog-scrollable "
+      className="modal fade modal-dialog-scrollabel "
       id="inventoryAddModal"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
@@ -106,7 +108,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 <h6>প্রোপ্রাইটরের তথ্য</h6>
                 <hr />
                 <div className="form-group">
-                  <lable>প্রোপ্রাইটরের নাম</lable>
+                  <label>প্রোপ্রাইটরের নাম</label>
                   <input
                     onChange={onChangeHandler}
                     type="text"
@@ -115,9 +117,19 @@ const AddProprietorModal = ({ ownerId }) => {
                     value={proprietorData.name}
                   ></input>
                 </div>
+                <div className="form-group">
+                  <label>স্টোর নাম</label>
+                  <input
+                    onChange={onChangeHandler}
+                    type="text"
+                    className="form-control"
+                    name="storeName"
+                    value={proprietorData.name}
+                  ></input>
+                </div>
 
                 <div className="form-group">
-                  <lable>মোবাইল</lable>
+                  <label>মোবাইল</label>
                   <input
                     type="mobile"
                     className="form-control"
@@ -128,7 +140,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 </div>
 
                 <div className="form-group">
-                  <lable>ইমেল</lable>
+                  <label>ইমেল</label>
                   <input
                     type="text"
                     className="form-control"
@@ -138,7 +150,7 @@ const AddProprietorModal = ({ ownerId }) => {
                   ></input>
                 </div>
                 <div className="form-group">
-                  <lable>পিতার নাম</lable>
+                  <label>পিতার নাম</label>
                   <input
                     type="fatherName"
                     className="form-control"
@@ -149,7 +161,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 </div>
 
                 <div className="form-group">
-                  <lable>ঠিকানা</lable>
+                  <label>ঠিকানা</label>
                   <input
                     type="text"
                     className="form-control"
@@ -160,7 +172,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 </div>
 
                 <div className="form-group">
-                  <lable>জাতীয় পরিচয়পত্রের নম্বর</lable>
+                  <label>জাতীয় পরিচয়পত্রের নম্বর</label>
                   <input
                     type="text"
                     className="form-control"
@@ -174,7 +186,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 <h6>রেফারেন্সের তথ্য</h6>
                 <hr />
                 <div className="form-group">
-                  <lable>রেফারেন্স নাম</lable>
+                  <label>রেফারেন্স নাম</label>
                   <input
                     onChange={onChangeHandler}
                     value={proprietorData.refName}
@@ -185,7 +197,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 </div>
 
                 <div className="form-group">
-                  <lable>রেফারেন্স মোবাইল</lable>
+                  <label>রেফারেন্স মোবাইল</label>
                   <input
                     type="mobile"
                     className="form-control"
@@ -196,7 +208,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 </div>
 
                 <div className="form-group">
-                  <lable>রেফারেন্স ঠিকানা</lable>
+                  <label>রেফারেন্স ঠিকানা</label>
                   <input
                     type="text"
                     className="form-control"
@@ -207,7 +219,7 @@ const AddProprietorModal = ({ ownerId }) => {
                 </div>
 
                 <div className="form-group">
-                  <lable>রেফারেন্স জাতীয় পরিচয়পত্রের নম্বর</lable>
+                  <label>রেফারেন্স জাতীয় পরিচয়পত্রের নম্বর</label>
                   <input
                     type="text"
                     className="form-control"
@@ -217,7 +229,7 @@ const AddProprietorModal = ({ ownerId }) => {
                   ></input>
                 </div>
                 <div className="form-group">
-                  <lable>রেফারেন্স সম্পর্ক</lable>
+                  <label>রেফারেন্স সম্পর্ক</label>
                   <input
                     type="text"
                     className="form-control"
@@ -227,7 +239,7 @@ const AddProprietorModal = ({ ownerId }) => {
                   ></input>
                 </div>
                 <div className="form-group">
-                  <lable>নোট</lable>
+                  <label>নোট</label>
                   <input
                     type="text"
                     className="form-control"

@@ -34,7 +34,6 @@ export default function CustomerEdit(props) {
 
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  console.log(Getmikrotik);
 
   // get bp setting
   const bpSettings = useSelector(
