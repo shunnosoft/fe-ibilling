@@ -24,6 +24,7 @@ import { fetchMikrotik, fetchpppoeUser } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import BandwidthModal from "../Customer/BandwidthModal";
+import moment from "moment/moment";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -161,7 +162,13 @@ export default function ConfigMikrotik() {
 
   // reload handler
   const reloadHandler = () => {
-    fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
+    fetchpppoeUser(
+      dispatch,
+      IDs,
+      singleMik?.name,
+      setMtkLoading,
+      "mikrotikUser"
+    );
     fetchMikrotik(dispatch, ispOwnerId, setIsloading);
   };
 
@@ -190,7 +197,7 @@ export default function ConfigMikrotik() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "10%",
+        width: "7%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -204,7 +211,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "13%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
@@ -215,11 +222,16 @@ export default function ConfigMikrotik() {
       },
       {
         width: "12%",
-        Header: t("package"),
-        accessor: "profile",
+        Header: t("ip"),
+        accessor: "ip",
       },
       {
-        width: "9%",
+        width: "12%",
+        Header: t("package"),
+        accessor: "pppoe.profile",
+      },
+      {
+        width: "8%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -235,26 +247,37 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "9%",
+        width: "8%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {original?.txByte
-              ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
-              : ""}
+          <div>
+            {original?.txByte &&
+              (original?.txByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
       {
-        width: "17%",
+        width: "15%",
         Header: "Last Link Up Time",
         accessor: "lastLinkUpTime",
       },
+      // {
+      //   width: "15%",
+      //   Header: "Down Time",
+      //   accessor: (data) => {
+      //     if (!data.running) {
+      //       console.log(data.lastLinkDownTime);
+      //       return moment(data.lastLinkDownTime).startOf("hour").fromNow();
+      //     }
+      //   },
+      // },
+      // {
+      //   width: "15%",
+      //   Header: "Down Time",
+      //   accessor: "lastLinkUpTime",
+      //   Cell:(upTime)=>
+      // },
       // {
       //   width: "9%",
       //   Header: () => <div className="text-center">{t("action")}</div>,

@@ -905,22 +905,34 @@ export const fetchpppoeUser = async (
 
     const customers = res.data?.customers;
     const pppsecretUsers = res.data?.pppsecretUsers;
-    const interfaaceList = res.data?.interfaceList;
+    let interfaaceList = res.data?.interfaceList;
+    let activepppSecretUsers = res.data?.activepppSecretUsers;
+
     const temp = [];
+    interfaaceList = interfaaceList.map((interfaceItem) => {
+      const ipAddress = activepppSecretUsers.find(
+        (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
+      );
+      if (ipAddress) {
+        interfaceItem = {
+          ...interfaceItem,
+          ip: ipAddress.address,
+        };
+      }
+      return interfaceItem;
+    });
 
     if (userType === "user") {
       customers.forEach((i) => {
-        let match = false;
-        // console.log(i);
-        interfaaceList.forEach((j) => {
-          if (j.name === "<pppoe-" + i.pppoe.name + ">") {
-            match = true;
-            temp.push({
-              ...j,
-              ...i.pppoe,
-            });
-          }
-        });
+        const match = interfaaceList.find(
+          (item) => item.name === "<pppoe-" + i.pppoe.name + ">"
+        );
+        if (match) {
+          temp.push({
+            ...match,
+            ...i,
+          });
+        }
         if (!match) temp.push(i);
       });
     }
