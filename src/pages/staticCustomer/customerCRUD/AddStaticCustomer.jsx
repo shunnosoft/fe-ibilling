@@ -16,6 +16,8 @@ import DatePicker from "react-datepicker";
 
 export default function AddStaticCustomer() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
   // get user bp setting
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
@@ -44,7 +46,6 @@ export default function AddStaticCustomer() {
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
-  const dispatch = useDispatch();
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
@@ -174,6 +175,7 @@ export default function AddStaticCustomer() {
     };
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
+      delete mainData.autoDisable;
     }
     if (!bpSettings.genCustomerId) {
       mainData.customerId = customerId;
@@ -246,25 +248,27 @@ export default function AddStaticCustomer() {
                 {(formik) => (
                   <Form>
                     <div className="row">
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectMikrotik")}{" "}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={selectMikrotik}
-                        >
-                          <option value="">...</option>
-                          {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-                      </div>
+                      {bpSettings?.hasMikrotik && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectMikrotik")}{" "}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            onChange={selectMikrotik}
+                          >
+                            <option value="">...</option>
+                            {Getmikrotik.length === undefined
+                              ? ""
+                              : Getmikrotik.map((val, key) => (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                          </select>
+                        </div>
+                      )}
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <label className="form-control-label changeLabelFontColor">
                           {t("selectArea")}{" "}
@@ -336,14 +340,72 @@ export default function AddStaticCustomer() {
                           </>
                         )}
                       </div>
-                      {userType === "firewall-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
-                          <>
+                      {bpSettings?.hasMikrotik &&
+                        userType === "firewall-queue" && (
+                          <div className="col-lg-4 col-md-4 col-xs-6">
+                            <>
+                              <label className="form-control-label changeLabelFontColor">
+                                {t("selectPackage")}{" "}
+                              </label>
+                              <select
+                                name="firewallPackage"
+                                className="form-select mw-100 mb-3 mt-0"
+                                aria-label="Default select example"
+                                onChange={selectMikrotikPackage}
+                              >
+                                <option value={"0"}>...</option>
+                                {ppPackage &&
+                                  ppPackage?.map(
+                                    (val, key) =>
+                                      val.packageType === "queue" && (
+                                        <option key={key} value={val.id}>
+                                          {val.name}
+                                        </option>
+                                      )
+                                  )}
+                              </select>
+                            </>
+                          </div>
+                        )}
+
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        {bpSettings?.hasMikrotik &&
+                          userType === "simple-queue" && (
+                            <>
+                              <label className="form-control-label changeLabelFontColor">
+                                {t("uploadPackge")}{" "}
+                              </label>
+                              <select
+                                name="upPackage"
+                                className="form-select mw-100 mt-0"
+                                aria-label="Default select example"
+                                onChange={selectMikrotikPackage}
+                              >
+                                <option value={"0"}>...</option>
+                                {ppPackage &&
+                                  ppPackage?.map(
+                                    (val, key) =>
+                                      val.packageType === "queue" && (
+                                        <option key={key} value={val.id}>
+                                          {val.name}
+                                        </option>
+                                      )
+                                  )}
+                              </select>
+                            </>
+                          )}
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      {bpSettings?.hasMikrotik &&
+                        userType === "simple-queue" && (
+                          <div className="col-lg-4 col-md-4 col-xs-6">
                             <label className="form-control-label changeLabelFontColor">
-                              {t("selectPackage")}{" "}
+                              {t("downloadPackge")}
                             </label>
                             <select
-                              name="firewallPackage"
+                              name="downPackage"
                               className="form-select mw-100 mb-3 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
@@ -359,40 +421,10 @@ export default function AddStaticCustomer() {
                                     )
                                 )}
                             </select>
-                          </>
-                        </div>
-                      )}
-
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {userType === "simple-queue" && (
-                          <>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("uploadPackge")}{" "}
-                            </label>
-                            <select
-                              name="upPackage"
-                              className="form-select mw-100 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value={"0"}>...</option>
-                              {ppPackage &&
-                                ppPackage?.map(
-                                  (val, key) =>
-                                    val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
-                                        {val.name}
-                                      </option>
-                                    )
-                                )}
-                            </select>
-                          </>
+                          </div>
                         )}
-                      </div>
-                    </div>
 
-                    <div className="row">
-                      {userType === "simple-queue" && (
+                      {!bpSettings?.hasMikrotik && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <label className="form-control-label changeLabelFontColor">
                             {t("downloadPackge")}
@@ -405,14 +437,11 @@ export default function AddStaticCustomer() {
                           >
                             <option value={"0"}>...</option>
                             {ppPackage &&
-                              ppPackage?.map(
-                                (val, key) =>
-                                  val.packageType === "queue" && (
-                                    <option key={key} value={val.id}>
-                                      {val.name}
-                                    </option>
-                                  )
-                              )}
+                              ppPackage?.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))}
                           </select>
                         </div>
                       )}

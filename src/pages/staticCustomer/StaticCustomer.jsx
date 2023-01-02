@@ -21,6 +21,7 @@ import {
   ArrowClockwise,
   CurrencyDollar,
   KeyFill,
+  CardChecklist,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -57,6 +58,7 @@ import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAu
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import CustomerNote from "./customerCRUD/CustomerNote";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -81,6 +83,12 @@ export default function Customer() {
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
+
+  // set customer id in state for note
+  const [customerNoteId, setCustomerNoteId] = useState();
+
+  // set customer name state
+  const [customerName, setCustomerName] = useState("");
 
   const [filterOptions, setFilterOption] = useState({
     status: "",
@@ -744,6 +752,22 @@ export default function Customer() {
                   </div>
                 </li>
 
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerNote"
+                  onClick={() => {
+                    setCustomerNoteId(original.id);
+                    setCustomerName(original?.name);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CardChecklist />
+                      <p className="actionP">{t("note")}</p>
+                    </div>
+                  </div>
+                </li>
+
                 {role === "ispOwner" || permission.customerDelete ? (
                   <li
                     data-bs-toggle="modal"
@@ -874,7 +898,7 @@ export default function Customer() {
                     }}
                   >
                     <>
-                      {role === "ispOwner" && (
+                      {role === "ispOwner" && bpSettings?.hasMikrotik && (
                         <div className="settingbtn me-2">
                           <Link
                             to={`/packageSetting`}
@@ -951,6 +975,11 @@ export default function Customer() {
               <CustomerBillCollect single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
+              {/* customer note modal */}
+              <CustomerNote
+                customerId={customerNoteId}
+                customerName={customerName}
+              />
               <CustomerDelete
                 single={singleData}
                 mikrotikCheck={mikrotikCheck}

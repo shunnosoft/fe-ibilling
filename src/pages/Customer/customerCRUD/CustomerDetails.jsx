@@ -23,13 +23,15 @@ export default function CustomerDetails({ single }) {
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
 
-  // find editable data
+  // find single customer data
   const data = customer.find((item) => item.id === single);
 
+  // get bpSettings
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
 
+  // find performer
   const performer = ownerUsers.find((item) => item[data?.createdBy]);
 
   useEffect(() => {

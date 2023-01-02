@@ -5,7 +5,6 @@ import {
   Plus,
   ArrowRightShort,
   ArrowClockwise,
-  Archive,
   ArchiveFill,
   PlugFill,
 } from "react-bootstrap-icons";
@@ -35,7 +34,6 @@ export default function Mikrotik() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth.userData.bpSettings
   );
-  console.log(permission);
 
   let allmikrotiks = [];
   allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);

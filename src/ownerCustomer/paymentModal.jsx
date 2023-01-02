@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useBkash } from "react-bkash";
 import Loader from "../components/common/Loader";
 import { billPayment } from "../features/getIspOwnerUsersApi";
 import apiLink from "../api/apiLink";

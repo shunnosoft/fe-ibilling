@@ -1,21 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../collector/collector.css";
 import "./configmikrotik.css";
-import {
-  PlugFill,
-  PencilFill,
-  ArrowLeftShort,
-  ThreeDots,
-  PenFill,
-  ArchiveFill,
-  PersonCheckFill,
-  BagCheckFill,
-  PersonLinesFill,
-  WifiOff,
-  Wifi,
-  Check2Circle,
-  FileExcelFill,
-} from "react-bootstrap-icons";
+import { PlugFill, PencilFill, ArrowLeftShort } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
 
@@ -26,10 +12,9 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
-import PPPoEpackageEditModal from "./configMikrotikModals/PPPoEpackageEditModal";
 
 import Loader from "../../components/common/Loader";
-import { fetchReseller, fetchMikrotik } from "../../features/apiCalls";
+import { fetchMikrotik } from "../../features/apiCalls";
 import apiLink from "../../api/apiLink";
 import { useTranslation } from "react-i18next";
 import { Tab, Tabs } from "react-bootstrap";

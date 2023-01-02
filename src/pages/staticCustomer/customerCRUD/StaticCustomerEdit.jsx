@@ -226,6 +226,7 @@ export default function StaticCustomerEdit({ single }) {
 
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
+      delete mainData.autoDisable;
     }
     if (!bpSettings.genCustomerId) {
       mainData.customerId = customerId;
@@ -256,7 +257,6 @@ export default function StaticCustomerEdit({ single }) {
     } else if (status === "inactive") {
       sendingData.status = status;
     }
-
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
   return (
@@ -272,7 +272,7 @@ export default function StaticCustomerEdit({ single }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {t("updateCustomer")}
+                {customer?.name} {t("updateCustomer")}
               </h5>
               <button
                 type="button"
@@ -304,30 +304,32 @@ export default function StaticCustomerEdit({ single }) {
                 {(formik) => (
                   <Form>
                     <div className="static_customer_edit_modal">
-                      <div className="static_edit_item">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectMikrotik")}{" "}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={selectMikrotik}
-                          disabled
-                        >
-                          <option value="">...</option>
-                          {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option
-                                  selected={val.id === customer?.mikrotik}
-                                  key={key}
-                                  value={val.id}
-                                >
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-                      </div>
+                      {bpSettings?.hasMikrotik && (
+                        <div className="static_edit_item">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectMikrotik")}{" "}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            onChange={selectMikrotik}
+                            disabled
+                          >
+                            <option value="">...</option>
+                            {Getmikrotik.length === undefined
+                              ? ""
+                              : Getmikrotik.map((val, key) => (
+                                  <option
+                                    selected={val.id === customer?.mikrotik}
+                                    key={key}
+                                    value={val.id}
+                                  >
+                                    {val.name}
+                                  </option>
+                                ))}
+                          </select>
+                        </div>
+                      )}
                       <div className="static_edit_item">
                         <label className="form-control-label changeLabelFontColor">
                           {t("selectArea")}{" "}
@@ -409,15 +411,86 @@ export default function StaticCustomerEdit({ single }) {
                           </>
                         </div>
                       )}
-                      {userType === "firewall-queue" && (
-                        <div className="static_edit_item">
-                          <>
+                      {bpSettings?.hasMikrotik &&
+                        userType === "firewall-queue" && (
+                          <div className="static_edit_item">
+                            <>
+                              <label className="form-control-label changeLabelFontColor">
+                                {t("selectPackage")}{" "}
+                              </label>
+                              <select
+                                name="firewallPackage"
+                                className="form-select mw-100"
+                                aria-label="Default select example"
+                                onChange={selectMikrotikPackage}
+                              >
+                                <option value={"0"}>...</option>
+                                {ppPackage &&
+                                  ppPackage?.map(
+                                    (val, key) =>
+                                      val.packageType === "queue" && (
+                                        <option
+                                          selected={
+                                            val.id === customer?.mikrotikPackage
+                                          }
+                                          key={key}
+                                          value={val.id}
+                                        >
+                                          {val.name}
+                                        </option>
+                                      )
+                                  )}
+                              </select>
+                            </>
+                          </div>
+                        )}
+
+                      {bpSettings?.hasMikrotik &&
+                        userType === "simple-queue" && (
+                          <div
+                            className="static_edit_item"
+                            style={{ marginTop: "-12px" }}
+                          >
+                            <>
+                              <label className="form-control-label changeLabelFontColor">
+                                {t("uploadPackge")}{" "}
+                              </label>
+                              <select
+                                name="upPackage"
+                                className="form-select mw-100 mt-0"
+                                aria-label="Default select example"
+                                onChange={selectMikrotikPackage}
+                              >
+                                <option value={"0"}>...</option>
+                                {ppPackage &&
+                                  ppPackage?.map(
+                                    (val, key) =>
+                                      val.packageType === "queue" && (
+                                        <option
+                                          selected={
+                                            val.id === customer?.mikrotikPackage
+                                          }
+                                          key={key}
+                                          value={val.id}
+                                        >
+                                          {val.name}
+                                        </option>
+                                      )
+                                  )}
+                              </select>
+                            </>
+                          </div>
+                        )}
+
+                      {bpSettings?.hasMikrotik &&
+                        userType === "simple-queue" && (
+                          <div className="static_edit_item">
                             <label className="form-control-label changeLabelFontColor">
-                              {t("selectPackage")}{" "}
+                              {t("downloadPackge")}
                             </label>
                             <select
-                              name="firewallPackage"
-                              className="form-select mw-100"
+                              name="downPackage"
+                              className="form-select mw-100 mt-0 mb-3"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -438,47 +511,10 @@ export default function StaticCustomerEdit({ single }) {
                                     )
                                 )}
                             </select>
-                          </>
-                        </div>
-                      )}
+                          </div>
+                        )}
 
-                      {userType === "simple-queue" && (
-                        <div
-                          className="static_edit_item"
-                          style={{ marginTop: "-12px" }}
-                        >
-                          <>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("uploadPackge")}{" "}
-                            </label>
-                            <select
-                              name="upPackage"
-                              className="form-select mw-100 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value={"0"}>...</option>
-                              {ppPackage &&
-                                ppPackage?.map(
-                                  (val, key) =>
-                                    val.packageType === "queue" && (
-                                      <option
-                                        selected={
-                                          val.id === customer?.mikrotikPackage
-                                        }
-                                        key={key}
-                                        value={val.id}
-                                      >
-                                        {val.name}
-                                      </option>
-                                    )
-                                )}
-                            </select>
-                          </>
-                        </div>
-                      )}
-
-                      {userType === "simple-queue" && (
+                      {!bpSettings?.hasMikrotik && (
                         <div className="static_edit_item">
                           <label className="form-control-label changeLabelFontColor">
                             {t("downloadPackge")}
@@ -491,23 +527,21 @@ export default function StaticCustomerEdit({ single }) {
                           >
                             <option value={"0"}>...</option>
                             {ppPackage &&
-                              ppPackage?.map(
-                                (val, key) =>
-                                  val.packageType === "queue" && (
-                                    <option
-                                      selected={
-                                        val.id === customer?.mikrotikPackage
-                                      }
-                                      key={key}
-                                      value={val.id}
-                                    >
-                                      {val.name}
-                                    </option>
-                                  )
-                              )}
+                              ppPackage?.map((val, key) => (
+                                <option
+                                  selected={
+                                    val.id === customer?.mikrotikPackage
+                                  }
+                                  key={key}
+                                  value={val.id}
+                                >
+                                  {val.name}
+                                </option>
+                              ))}
                           </select>
                         </div>
                       )}
+
                       <div className="static_edit_item">
                         <FtextField
                           type="number"

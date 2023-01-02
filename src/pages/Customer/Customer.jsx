@@ -3,6 +3,7 @@ import {
   ArchiveFill,
   ArrowClockwise,
   ArrowRightSquareFill,
+  CardChecklist,
   CashStack,
   ChatText,
   CurrencyDollar,
@@ -718,7 +719,7 @@ const PPPOECustomer = () => {
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <CashStack />
+                      <CardChecklist />
                       <p className="actionP">{t("note")}</p>
                     </div>
                   </div>
