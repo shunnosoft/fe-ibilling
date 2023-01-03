@@ -10,17 +10,28 @@ import { NavLink } from "react-router-dom";
 import "./register.css";
 import { initialValues, TextField } from "./TextField";
 import { asyncRegister } from "../../../features/actions/authAsyncAction";
-import allpakage from "./pakageData";
+// import allpakage from "./pakageData";
 import Loader from "../../../components/common/Loader";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getNetfeeSettings } from "../../../features/netfeeSettingsApi";
+import { useSelector } from "react-redux";
 
 export default function Register() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const allpakage = useSelector(
+    (state) => state.netfeeSettings?.netfeeSettings
+  );
   // const [packValue, setPackValue] = useState("");
-  const discount = 50;
+  const discount = allpakage[0]?.discount;
+
+  const [settingsLoading, setSettingsLoading] = useState(false);
   const [pakage, setPakage] = useState(allpakage[0]);
-  const [subpakage, setsubPakage] = useState(allpakage[0]["subPakage"]);
+  const [subpakage, setsubPakage] = useState(allpakage[0]?.subPackage);
   const [singlePakage, setSinglePakage] = useState([
     // allpakage[0]["subPakage"][0],
     "Standard",
@@ -51,6 +62,16 @@ export default function Register() {
       .max(11, t("over11DigitMobileNumber")),
   });
 
+  // get netfee settings api call
+  useEffect(() => {
+    getNetfeeSettings(dispatch, setSettingsLoading);
+  }, []);
+
+  useEffect(() => {
+    setsubPakage(allpakage[0]?.subPackage);
+    setPakage(allpakage[0]);
+  }, [allpakage]);
+
   const submitHandle = (values) => {
     // const selector = document.getElementById("selector");
 
@@ -61,7 +82,7 @@ export default function Register() {
     userData = {
       ...rest,
       pack: singlePakage[0].subPackageName,
-      packType: pakage.packageName,
+      packType: pakage?.packageName,
       reference: {
         name: refName || "তৌকির হোসেন",
         mobile: refMobile || "01321141785",
@@ -70,6 +91,7 @@ export default function Register() {
 
     // send user data to async function
 
+    console.log(userData);
     asyncRegister(userData, setLoading);
   };
 
