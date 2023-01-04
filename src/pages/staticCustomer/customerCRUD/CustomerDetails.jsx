@@ -110,6 +110,13 @@ export default function CustomerDetails({ single }) {
                     {t("promiseDate")}:{" "}
                     {moment(data?.promiseDate).format("MMM DD YYYY hh:mm A")}
                   </h6>
+                  <h6>
+                    {t("connectionDate")} :{" "}
+                    {data?.connectionDate &&
+                      moment(data?.connectionDate).format(
+                        "MMM DD YYYY hh:mm A"
+                      )}
+                  </h6>
                   {bpSettings?.hasMikrotik && (
                     <h6>
                       {t("automaticConnectionOff")}:{" "}

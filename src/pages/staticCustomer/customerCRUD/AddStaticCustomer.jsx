@@ -54,6 +54,7 @@ export default function AddStaticCustomer() {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const [billDate, setBillDate] = useState(new Date());
+  const [connectionDate, setConnectionDate] = useState(new Date());
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
@@ -169,6 +170,7 @@ export default function AddStaticCustomer() {
       billPayType: "prepaid",
       autoDisable: autoDisable,
       billingCycle: billDate?.toISOString(),
+      connectionDate: connectionDate?.toISOString(),
       balance: -balance,
       ...rest,
       monthlyFee,
@@ -508,6 +510,20 @@ export default function AddStaticCustomer() {
                             placeholderText={t("selectBillDate")}
                           />
                         </div>
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("connectionDate")}
+                        </label>
+                        <DatePicker
+                          className="form-control mw-100"
+                          selected={connectionDate}
+                          onChange={(date) => setConnectionDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          maxDate={new Date()}
+                          placeholderText={t("selectDate")}
+                          disabled={!mikrotikPackage}
+                        />
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <FtextField

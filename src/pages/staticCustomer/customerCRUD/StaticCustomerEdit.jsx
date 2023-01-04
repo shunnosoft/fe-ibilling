@@ -66,6 +66,7 @@ export default function StaticCustomerEdit({ single }) {
   const [qDisable, setQdisable] = useState();
   const [status, setStatus] = useState("");
   const [promiseDate, setPromiseDate] = useState(null);
+  const [connectionDate, setConnectionDate] = useState("");
 
   // fix promise date
   let mxDate = new Date(customer?.billingCycle);
@@ -110,6 +111,9 @@ export default function StaticCustomerEdit({ single }) {
     if (customer) {
       setBillDate(new Date(customer?.billingCycle));
       setPromiseDate(new Date(customer.promiseDate));
+      setConnectionDate(
+        customer?.connectionDate ? new Date(customer?.connectionDate) : null
+      );
     }
   }, [customer]);
 
@@ -626,6 +630,18 @@ export default function StaticCustomerEdit({ single }) {
                           />
                         </div>
                       )}
+                      <div className="static_edit_item">
+                        <label className="form-control-label changeLabelFontColor mt-0">
+                          {t("connectionDate")}
+                        </label>
+                        <DatePicker
+                          className="form-control mw-100"
+                          selected={connectionDate}
+                          onChange={(date) => setConnectionDate(date)}
+                          dateFormat="MMM dd yyyy"
+                          placeholderText={t("selectDate")}
+                        />
+                      </div>
 
                       <div className="static_edit_item">
                         {!bpSettings.genCustomerId && (
