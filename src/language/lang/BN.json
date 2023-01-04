@@ -599,5 +599,6 @@
   "activeHotpot": "এক্টিভ হটস্পট",
   "writeCustomeriD": "কাস্টমার আইডি দিন",
   "dataNotAvailable": "কোন ডাটা পাওয়া যায় নি!",
-  "noteFieldRequired": "নোট লিখুন!"
+  "noteFieldRequired": "নোট লিখুন!",
+  "rechargeAmountMustBeUptoOrEqualMonthlyFee": "রিচার্জের পরিমান অবশ্যই মাসিক বিল এর সমান বা বেশি হতে হবে !"
 }

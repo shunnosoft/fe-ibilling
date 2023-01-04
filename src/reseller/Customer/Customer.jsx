@@ -6,7 +6,6 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
-  Wallet,
   ThreeDots,
   ArchiveFill,
   PenFill,
@@ -16,6 +15,7 @@ import {
   ArrowClockwise,
   FileExcelFill,
   ChatText,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -396,7 +396,7 @@ export default function Customer() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <Wallet />
+                        <CurrencyDollar />
                         <p className="actionP">{t("useMemoRecharge")}</p>
                       </div>
                     </div>

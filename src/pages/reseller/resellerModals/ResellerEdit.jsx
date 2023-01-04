@@ -56,6 +56,7 @@ export default function ResellerEdit({ resellerId }) {
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
   const [commissionType, setCommissionType] = useState("");
   const [packageRateType, setPackageRateType] = useState("");
+  console.log({ packageRateType });
   const [packageCommisson, setPackageCommission] = useState([]);
   const [clonePackageCommission, setClonePackageCommission] = useState([]);
 

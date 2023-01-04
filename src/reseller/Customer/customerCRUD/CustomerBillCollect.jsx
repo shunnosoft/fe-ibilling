@@ -12,6 +12,7 @@ import DatePicker from "react-datepicker";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 const animatedComponents = makeAnimated();
 
 const options = [
@@ -42,6 +43,7 @@ export default function CustomerBillCollect({ single }) {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -80,6 +82,10 @@ export default function CustomerBillCollect({ single }) {
 
   // bill amount
   const customerBillHandler = (formValue) => {
+    if (data?.monthlyFee > formValue.amount + data?.balance) {
+      toast.error(t("rechargeAmountMustBeUptoOrEqualMonthlyFee"));
+      return;
+    }
     const sendingData = {
       amount: formValue.amount,
       collectedBy: currentUser?.user.role,
