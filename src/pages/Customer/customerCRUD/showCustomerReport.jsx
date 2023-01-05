@@ -15,9 +15,12 @@ import { useTranslation } from "react-i18next";
 
 export default function CustomerReport(props) {
   const { single } = props;
+  const dispatch = useDispatch();
+
   const { t } = useTranslation();
   const billRefwithNote = useRef();
   const billRefwithOutNote = useRef();
+
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -33,7 +36,6 @@ export default function CustomerReport(props) {
 
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
   useEffect(() => {
     const getCustoemrReport = async () => {
       setIsLoading(true);
@@ -106,6 +108,9 @@ export default function CustomerReport(props) {
                         {t("bill")}
                       </th>
                       <th style={{ width: "7%" }} scope="col">
+                        {t("discount")}
+                      </th>
+                      <th style={{ width: "7%" }} scope="col">
                         {t("due")}
                       </th>
                       <th style={{ width: "10%" }} scope="col">
@@ -144,6 +149,7 @@ export default function CustomerReport(props) {
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>
                             <td>{FormatNumber(val.amount)}</td>
+                            <td>{FormatNumber(val?.discount)}</td>
                             <td>{FormatNumber(val.due)}</td>
                             <td>{FormatNumber(val?.prevState?.balance)}</td>
                             <td>

@@ -600,5 +600,8 @@
   "writeCustomerId": "Write Customer Id",
   "dataNotAvailable": "Data Not Found!",
   "noteFieldRequired": "Note Field is Required!",
-  "rechargeAmountMustBeUptoOrEqualMonthlyFee": "Recharge amount must be equal or up to monthly fee!"
+  "rechargeAmountMustBeUptoOrEqualMonthlyFee": "Recharge amount must be equal or up to monthly fee!",
+  "discountMustBeLessThanMonthlyFee": "Discount must be less than monthly fee",
+  "discount": "Discount",
+  "withoutDiscount": "Without Discount"
 }

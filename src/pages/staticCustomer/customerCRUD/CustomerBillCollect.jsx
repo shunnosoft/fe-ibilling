@@ -41,6 +41,10 @@ export default function CustomerBillCollect({ single }) {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -58,6 +62,7 @@ export default function CustomerBillCollect({ single }) {
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [discount, setDiscount] = useState("0");
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -71,12 +76,19 @@ export default function CustomerBillCollect({ single }) {
     setNote("");
     setNoteCheck(false);
     setSelectedMonth(null);
+    setDiscount("");
   };
 
   // bill amount
   const customerBillHandler = (formValue) => {
+    if (data?.monthlyFee < Number(discount)) {
+      setLoading(false);
+      return alert(t("discountMustBeLessThanMonthlyFee"));
+    }
+
     const sendingData = {
       amount: formValue.amount,
+      discount: Number(discount),
       collectedBy: currentUser?.user.role,
       billType: billType,
       name: userData.name,
@@ -190,20 +202,36 @@ export default function CustomerBillCollect({ single }) {
                           </select>
                         </div>
                       </div>
-
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("billType")}
-                      </label>
-                      <select
-                        className="form-select mt-0 mw-100"
-                        onChange={(e) => setBillType(e.target.value)}
-                      >
-                        <option value="bill"> {t("bill")} </option>
-                        <option value="connectionFee">
-                          {t("connectionFee")}
-                        </option>
-                      </select>
-                      <div className="mb-2 mt-3">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="w-50 me-2 mb-3">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billType")}
+                          </label>
+                          <select
+                            className="form-select mt-0 mw-100"
+                            onChange={(e) => setBillType(e.target.value)}
+                          >
+                            <option value="bill"> {t("bill")} </option>
+                            <option value="connectionFee">
+                              {t("connectionFee")}
+                            </option>
+                          </select>
+                        </div>
+                        {role === "ispOwner" && (
+                          <div className="w-50">
+                            <FtextField
+                              type="number"
+                              name="discount"
+                              label={t("discount")}
+                              value={discount}
+                              onChange={(event) =>
+                                setDiscount(event.target.value)
+                              }
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div className="form-check">
                         <input
                           type="checkbox"
                           className="form-check-input me-1"

@@ -73,6 +73,7 @@ export default function CustomerBillCollect({ single }) {
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [discount, setDiscount] = useState("0");
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -87,12 +88,18 @@ export default function CustomerBillCollect({ single }) {
     setNote("");
     setNoteCheck(false);
     setSelectedMonth(null);
+    setDiscount("");
   };
 
   // bill amount
   const customerBillHandler = (formValue) => {
+    if (data?.monthlyFee < Number(discount)) {
+      setLoading(false);
+      return alert(t("discountMustBeLessThanMonthlyFee"));
+    }
     const sendingData = {
       amount: formValue.amount,
+      discount: Number(discount),
       name: userData.name,
       collectedBy: currentUser?.user.role,
       billType: billType,
@@ -206,7 +213,7 @@ export default function CustomerBillCollect({ single }) {
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center">
-                    <div className="w-50">
+                    <div className="w-50 me-2 mb-3">
                       <label className="form-control-label changeLabelFontColor">
                         {t("billType")}
                       </label>
@@ -225,21 +232,32 @@ export default function CustomerBillCollect({ single }) {
                       </select>
                     </div>
 
-                    <div className="mt-3">
-                      <input
-                        type="checkbox"
-                        className="form-check-input me-1"
-                        id="addNOte"
-                        checked={noteCheck}
-                        onChange={(e) => setNoteCheck(e.target.checked)}
-                      />
-                      <label
-                        className="form-check-label changeLabelFontColor"
-                        htmlFor="addNOte"
-                      >
-                        {t("noteAndDate")}
-                      </label>
-                    </div>
+                    {role === "ispOwner" && (
+                      <div className="w-50">
+                        <FtextField
+                          type="number"
+                          name="discount"
+                          label={t("discount")}
+                          value={discount}
+                          onChange={(event) => setDiscount(event.target.value)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input me-1"
+                      id="addNOte"
+                      checked={noteCheck}
+                      onChange={(e) => setNoteCheck(e.target.checked)}
+                    />
+                    <label
+                      className="form-check-label changeLabelFontColor"
+                      htmlFor="addNOte"
+                    >
+                      {t("noteAndDate")}
+                    </label>
                   </div>
 
                   {noteCheck && (

@@ -126,6 +126,9 @@ export default function CustomerReport({ single }) {
                       <th style={{ width: "10%" }} scope="col">
                         {t("bill")}
                       </th>
+                      <th style={{ width: "7%" }} scope="col">
+                        {t("discount")}
+                      </th>
                       <th style={{ width: "19%" }} scope="col">
                         {t("date")}
                       </th>
@@ -143,73 +146,7 @@ export default function CustomerReport({ single }) {
                       </th>
                     </tr>
                   </thead>
-                  {/* <tbody>
-                    {customerReport?.map((val, index) => {
-                      return (
-                        <tr className="spetialSortingRow" key={index}>
-                          <td>{val.package}</td>
-                          <td>{FormatNumber(val.amount)}</td>
-                          <td>
-                            {moment(val.createdAt).format(
-                              "MMM-DD-YYYY hh:mm:ss A"
-                            )}
-                          </td>
 
-                          <td>{val.medium}</td>
-                          <td>{val.name}</td>
-                          <td>
-                            <p>{val.note}</p>
-                            {val.start && val.end && (
-                              <span className="badge bg-secondary">
-                                {moment(val.start).format("MMM/DD/YY")}--
-                                {moment(val.end).format("MMM/DD/YY")}
-                              </span>
-                            )}
-                          </td>
-
-                          <td className="text-center">
-                            <div style={{ display: "none" }}>
-                              <BillCollectInvoice
-                                ref={billRef}
-                                customerData={single}
-                                billingData={{
-                                  amount: val.amount,
-                                  billType: val.billType,
-                                  paymentDate: val.createdAt,
-                                }}
-                                ispOwnerData={ispOwnerData}
-                              />
-                            </div>
-                            <div>
-                              <ReactToPrint
-                                documentTitle="বিল ইনভয়েস"
-                                trigger={() => (
-                                  <div
-                                    title="প্রিন্ট বিল ইনভয়েস"
-                                    style={{ cursor: "pointer" }}
-                                  >
-                                    <PrinterFill />
-                                  </div>
-                                )}
-                                content={() => billRef.current}
-                              />
-                            </div>
-                            <div title="ডিলিট রিপোর্ট">
-                              <button
-                                className="border-0 bg-transparent"
-                                onClick={() => deletReport(val.id)}
-                              >
-                                <TrashFill
-                                  color="#dc3545"
-                                  style={{ cursor: "pointer" }}
-                                />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody> */}
                   <tbody>
                     {isLoading ? (
                       <TdLoader colspan={5} />
@@ -219,6 +156,7 @@ export default function CustomerReport({ single }) {
                           <tr className="spetialSortingRow" key={index}>
                             <td>{userPackage?.name}</td>
                             <td>{FormatNumber(val.amount)}</td>
+                            <td>{FormatNumber(val?.discount)}</td>
                             <td>
                               {moment(val.createdAt).format(
                                 "MMM-DD-YYYY hh:mm:ss A"

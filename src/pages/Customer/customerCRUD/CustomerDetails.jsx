@@ -55,7 +55,7 @@ export default function CustomerDetails({ single }) {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {data?.name} - {t("profil")}
+                {data?.name} - {t("profile")}
               </h5>
               <button
                 type="button"

@@ -477,7 +477,10 @@ export default function Home() {
                       <h2>
                         {t("totalCollection")} <br />
                         <CurrencyDollar />{" "}
-                        {FormatNumber(customerStat.totalMonthlyCollection)}
+                        {FormatNumber(
+                          customerStat.totalMonthlyCollection -
+                            customerStat.totalMonthlyDiscount
+                        )}
                       </h2>
                     </div>
                   </div>
@@ -572,14 +575,31 @@ export default function Home() {
                   </div>
                   <div className="chartSection">
                     <p style={{ fontSize: "16px" }}>{t("total collection")}</p>
-                    <h2>৳ {FormatNumber(totalCollection)}</h2>
+                    <h2>
+                      ৳{" "}
+                      {FormatNumber(
+                        customerStat.totalMonthlyCollection -
+                          customerStat.totalMonthlyDiscount
+                      )}
+                    </h2>
 
-                    <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                    <p style={{ fontSize: "15px", marginBottom: "0px" }}>
+                      {t("discount")}:{" "}
+                      {FormatNumber(customerStat.totalMonthlyDiscount)}
+                    </p>
+
+                    <p style={{ fontSize: "13px", marginBottom: "0px" }}>
+                      {t("withoutDiscount")}:{" "}
+                      {FormatNumber(customerStat.totalMonthlyCollection)}
+                    </p>
+
+                    <p style={{ fontSize: "13px" }}>
                       {t("today collection")}:{" "}
                       {FormatNumber(
                         calculationOfBillStat() +
                           customerStat.totalManagerCollectionToday +
-                          customerStat.ispOwnerBillCollectionToday
+                          (customerStat.ispOwnerBillCollectionToday -
+                            customerStat.ispOwnerBillDiscountToday)
                       )}
                     </p>
                   </div>
@@ -610,14 +630,16 @@ export default function Home() {
                             <h2>
                               ৳{" "}
                               {FormatNumber(
-                                customerStat.ispOwnerBillCollection
+                                customerStat.ispOwnerBillCollection -
+                                  customerStat.totalMonthlyDiscount
                               )}
                             </h2>
 
                             <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                               {t("today")}:{" "}
                               {FormatNumber(
-                                customerStat.ispOwnerBillCollectionToday
+                                customerStat.ispOwnerBillCollectionToday -
+                                  customerStat.ispOwnerBillDiscountToday
                               )}
                             </p>
                           </div>
@@ -684,6 +706,7 @@ export default function Home() {
                               ৳{" "}
                               {FormatNumber(
                                 totalCollection -
+                                  customerStat.totalMonthlyDiscount -
                                   (customerStat.totalExpenditure +
                                     customerStat.totalSalary)
                               )}

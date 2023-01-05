@@ -601,5 +601,8 @@
   "writeCustomeriD": "কাস্টমার আইডি দিন",
   "dataNotAvailable": "কোন ডাটা পাওয়া যায় নি!",
   "noteFieldRequired": "নোট লিখুন!",
-  "rechargeAmountMustBeUptoOrEqualMonthlyFee": "রিচার্জের পরিমান অবশ্যই মাসিক বিল এর সমান বা বেশি হতে হবে !"
+  "rechargeAmountMustBeUptoOrEqualMonthlyFee": "রিচার্জের পরিমান অবশ্যই মাসিক বিল এর সমান বা বেশি হতে হবে !",
+  "discountMustBeLessThanMonthlyFee": "ডিসকাউন্ট অবশ্যয় মাসিক বিল থেকে ছোট হতে হবে",
+  "discount": "ডিসকাউন্ট",
+  "beforeDiscount": "ডিসকাউন্ট বিহীন"
 }
