@@ -209,6 +209,10 @@ export default function StaticCustomerEdit({ single }) {
         return alert(t("writeCustomerId"));
       }
     }
+    if (!mikrotikPackage) {
+      setIsloading(false);
+      return alert(t("selectDownloadPackage"));
+    }
     const mainData = {
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
@@ -428,7 +432,7 @@ export default function StaticCustomerEdit({ single }) {
                                 aria-label="Default select example"
                                 onChange={selectMikrotikPackage}
                               >
-                                <option value={"0"}>...</option>
+                                {/* <option value={"0"}>...</option> */}
                                 {ppPackage &&
                                   ppPackage?.map(
                                     (val, key) =>
@@ -465,7 +469,7 @@ export default function StaticCustomerEdit({ single }) {
                                 aria-label="Default select example"
                                 onChange={selectMikrotikPackage}
                               >
-                                <option value={"0"}>...</option>
+                                {/* <option value={"0"}>...</option> */}
                                 {ppPackage &&
                                   ppPackage?.map(
                                     (val, key) =>
@@ -498,7 +502,7 @@ export default function StaticCustomerEdit({ single }) {
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
-                              <option value={"0"}>...</option>
+                              {/* <option value={"0"}>...</option> */}
                               {ppPackage &&
                                 ppPackage?.map(
                                   (val, key) =>
@@ -529,7 +533,7 @@ export default function StaticCustomerEdit({ single }) {
                             aria-label="Default select example"
                             onChange={selectMikrotikPackage}
                           >
-                            <option value={"0"}>...</option>
+                            {/* <option value={"0"}>...</option> */}
                             {ppPackage &&
                               ppPackage?.map((val, key) => (
                                 <option

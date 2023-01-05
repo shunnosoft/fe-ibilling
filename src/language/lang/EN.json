@@ -299,6 +299,7 @@
   "selectPackage": "Select Package",
   "uploadPackge": "Upload Package",
   "downloadPackge": "Download Package",
+  "selectDownloadPackage": "Select Download Package",
   "downloadPdf": "Download Pdf",
   "monthFee": "Month Fee",
   "prevDue": "Previous Due",

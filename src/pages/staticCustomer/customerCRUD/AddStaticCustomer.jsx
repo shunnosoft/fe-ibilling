@@ -155,6 +155,10 @@ export default function AddStaticCustomer() {
       setIsloading(false);
       return alert(t("selectSubArea"));
     }
+    if (!mikrotikPackage) {
+      setIsloading(false);
+      return alert(t("selectDownloadPackage"));
+    }
     const { balance, ipAddress, queueName, target, customerId, ...rest } = data;
     if (!bpSettings.genCustomerId) {
       if (!customerId) {

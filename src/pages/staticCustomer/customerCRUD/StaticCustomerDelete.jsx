@@ -11,6 +11,11 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   const customer = useSelector((state) => state?.customer?.staticCustomer);
   const singleData = customer?.find((item) => item.id === single);
 
+  // get user bp setting
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
+
   // loading state
   const [isLoading, setIsloading] = useState(false);
 
@@ -69,18 +74,24 @@ const StaticCustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
               {singleData?.name} {t("customerDelete")}
             </h5>
 
-            <div class="form-check mt-4">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                checked={mikrotikCheck}
-                id="flexCheckDefault"
-                onChange={(event) => setMikrotikCheck(event.target.checked)}
-              />
-              <label class="form-check-label" for="flexCheckDefault">
-                <small className="text-secondary">{t("deleteMikrotik")}</small>
-              </label>
-            </div>
+            {bpSettings?.hasMikrotik && (
+              <>
+                <div class="form-check mt-4">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    checked={mikrotikCheck}
+                    id="flexCheckDefault"
+                    onChange={(event) => setMikrotikCheck(event.target.checked)}
+                  />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    <small className="text-secondary">
+                      {t("deleteMikrotik")}
+                    </small>
+                  </label>
+                </div>
+              </>
+            )}
 
             <div className="modal-footer" style={{ border: "none" }}>
               <button
