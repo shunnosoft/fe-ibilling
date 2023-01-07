@@ -78,6 +78,59 @@ export const managerPermission = (permission) => {
       label: "See Message Log",
       isChecked: permission?.readMessageLog,
     },
+    // {
+    //   id: 15,
+    //   value: "bulkAreaEdit",
+    //   label: "Bulk Area Edit",
+    //   isChecked: permission?.bulkAreaEdit,
+    // },
+    // {
+    //   id: 16,
+    //   value: "bulkStatusEdit",
+    //   label: "Bulk Status Edit",
+    //   isChecked: permission?.bulkStatusEdit,
+    // },
+    // {
+    //   id: 17,
+    //   value: "bulkBillingCycleEdit",
+    //   label: "Bulk BillingCycle Edit",
+    //   isChecked: permission?.bulkBillingCycleEdit,
+    // },
+    // {
+    //   id: 18,
+    //   value: "bulkPromiseDateEdit",
+    //   label: "Bulk Promise Date Edit",
+    //   isChecked: permission?.bulkPromiseDateEdit,
+    // },
+    // {
+    //   id: 19,
+    //   value: "bulkAutoDisableEdit",
+    //   label: "Bulk Auto Disable Edit",
+    //   isChecked: permission?.bulkAutoDisableEdit,
+    // },
+    // {
+    //   id: 20,
+    //   value: "bulkPackageEdit",
+    //   label: "Bulk Package Edit",
+    //   isChecked: permission?.bulkPackageEdit,
+    // },
+    // {
+    //   id: 21,
+    //   value: "bulkTransferToReseller",
+    //   label: "Bulk Customer Transfer To Reseller",
+    //   isChecked: permission?.bulkTransferToReseller,
+    // },
+    // {
+    //   id: 22,
+    //   value: "bulkCustomerDelete",
+    //   label: "Bulk Customer Delete",
+    //   isChecked: permission?.bulkCustomerDelete,
+    // },
+    //   id: 22,
+    //   value: "updateCustomerBalance",
+    //   label: "Update Customer Balance",
+    //   isChecked: permission?.updateCustomerBalance,
+    // },
   ];
 
   const permissionBangla = [
@@ -159,7 +212,62 @@ export const managerPermission = (permission) => {
       label: "চেক মেসেস লগ",
       isChecked: permission?.readMessageLog,
     },
+    // {
+    //   id: 15,
+    //   value: "bulkAreaEdit",
+    //   label: "বাল্ক এরিয়া এডিট",
+    //   isChecked: permission?.bulkAreaEdit,
+    // },
+    // {
+    //   id: 16,
+    //   value: "bulkStatusEdit",
+    //   label: "বাল্ক স্ট্যাটাস এডিট",
+    //   isChecked: permission?.bulkStatusEdit,
+    // },
+    // {
+    //   id: 17,
+    //   value: "bulkBillingCycleEdit",
+    //   label: "বাল্ক বিলিং সাইকেল এডিট",
+    //   isChecked: permission?.bulkBillingCycleEdit,
+    // },
+    // {
+    //   id: 18,
+    //   value: "bulkPromiseDateEdit",
+    //   label: "বাল্ক প্রমিজ ডেট এডিট",
+    //   isChecked: permission?.bulkPromiseDateEdit,
+    // },
+    // {
+    //   id: 19,
+    //   value: "bulkAutoDisableEdit",
+    //   label: "বাল্ক আটো ডিজেবল এডিট",
+    //   isChecked: permission?.bulkAutoDisableEdit,
+    // },
+    // {
+    //   id: 20,
+    //   value: "bulkPackageEdit",
+    //   label: "বাল্ক প্যকেজ এডিট",
+    //   isChecked: permission?.bulkPackageEdit,
+    // },
+    // {
+    //   id: 21,
+    //   value: "bulkTransferToReseller",
+    //   label: "বাল্ক রিসেলার গ্রাহক ট্রান্সফার",
+    //   isChecked: permission?.bulkTransferToReseller,
+    // },
+    // {
+    //   id: 22,
+    //   value: "bulkCustomerDelete",
+    //   label: "বাল্ক গ্রাহক ডিলিট",
+    //   isChecked: permission?.bulkCustomerDelete,
+    // },
+    // {
+    //   id: 23,
+    //   value: "updateCustomerBalance",
+    //   label: "গ্রাহক ব্যালেন্স এডিট",
+    //   isChecked: permission?.updateCustomerBalance,
+    // },
   ];
+
   if (localStorage.getItem("netFee:lang") === "bn") return permissionBangla;
   return permissionEng;
 };

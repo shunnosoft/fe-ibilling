@@ -54,6 +54,7 @@ export default function Manager() {
   const [permissions, setPermissions] = useState(
     managerPermission(manager?.permissions)
   );
+  console.log(manager?.permissions);
 
   useEffect(() => {
     if (manager) setPermissions(managerPermission(manager.permissions));

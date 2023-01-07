@@ -98,7 +98,7 @@ export default function CustomerReport({ single }) {
         aria-labelledby="customerModalDetails"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-lg">
+        <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h5
@@ -117,22 +117,34 @@ export default function CustomerReport({ single }) {
             </div>
             <div className="modal-body">
               <div className="table-responsive-lg">
-                <table className="table table-striped ">
+                <table className="table table-striped text-center">
                   <thead>
-                    <tr className="spetialSortingRow text-center">
-                      <th style={{ width: "10%" }} scope="col">
+                    <tr className="spetialSortingRow">
+                      <th style={{ width: "8%" }} scope="col">
                         {t("package")}
                       </th>
-                      <th style={{ width: "10%" }} scope="col">
+                      <th style={{ width: "7%" }} scope="col">
                         {t("bill")}
                       </th>
                       <th style={{ width: "7%" }} scope="col">
                         {t("discount")}
                       </th>
-                      <th style={{ width: "19%" }} scope="col">
+                      <th style={{ width: "7%" }} scope="col">
+                        {t("due")}
+                      </th>
+                      <th style={{ width: "10%" }} scope="col">
+                        {t("previousBalance")}
+                      </th>
+                      <th style={{ width: "16%" }} scope="col">
                         {t("date")}
                       </th>
-                      <th style={{ width: "8%" }} scope="col">
+                      <th style={{ width: "16%" }} scope="col">
+                        {t("billingCycle")}
+                      </th>
+                      <th style={{ width: "16%" }} scope="col">
+                        {t("promiseDate")}
+                      </th>
+                      <th style={{ width: "7%" }} scope="col">
                         {t("medium")}
                       </th>
                       <th style={{ width: "15%" }} scope="col">
@@ -141,7 +153,7 @@ export default function CustomerReport({ single }) {
                       <th style={{ width: "25%" }} scope="col">
                         {t("note")}
                       </th>
-                      <th style={{ width: "10%" }} scope="col">
+                      <th style={{ width: "8%" }} scope="col">
                         {t("action")}
                       </th>
                     </tr>
@@ -157,9 +169,21 @@ export default function CustomerReport({ single }) {
                             <td>{userPackage?.name}</td>
                             <td>{FormatNumber(val.amount)}</td>
                             <td>{FormatNumber(val?.discount)}</td>
+                            <td>{FormatNumber(val.due)}</td>
+                            <td>{FormatNumber(val?.prevState?.balance)}</td>
                             <td>
                               {moment(val.createdAt).format(
-                                "MMM-DD-YYYY hh:mm:ss A"
+                                "MMM DD YYYY hh:mm a"
+                              )}
+                            </td>
+                            <td>
+                              {moment(val.prevState?.billingCycle).format(
+                                "MMM DD YYYY hh:mm a"
+                              )}
+                            </td>
+                            <td>
+                              {moment(val.prevState?.promiseDate).format(
+                                "MMM DD YYYY hh:mm a"
                               )}
                             </td>
 
