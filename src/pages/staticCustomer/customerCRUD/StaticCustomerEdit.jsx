@@ -648,7 +648,7 @@ export default function StaticCustomerEdit({ single }) {
                       </div>
 
                       <div className="static_edit_item">
-                        {!bpSettings.genCustomerId && (
+                        {!bpSettings?.genCustomerId && (
                           <FtextField
                             type="text"
                             label="Customer Id"

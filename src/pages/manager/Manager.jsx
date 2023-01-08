@@ -47,6 +47,11 @@ export default function Manager() {
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
   );
 
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   useEffect(() => {
     getManger(dispatch, ispOwnerId);
   }, [ispOwnerId]);
@@ -54,10 +59,10 @@ export default function Manager() {
   const [permissions, setPermissions] = useState(
     managerPermission(manager?.permissions)
   );
-  console.log(manager?.permissions);
 
   useEffect(() => {
-    if (manager) setPermissions(managerPermission(manager.permissions));
+    if (manager)
+      setPermissions(managerPermission(manager.permissions, bpSettings));
   }, [manager]);
 
   const managerValidate = Yup.object({
@@ -342,21 +347,30 @@ export default function Manager() {
                           <hr />
 
                           {permissions.map((val, key) => (
-                            <div className="CheckboxContainer" key={key}>
-                              <input
-                                type="checkbox"
-                                className="CheckBox"
-                                name={val.value}
-                                checked={val.isChecked}
-                                onChange={handleChange}
-                                id={val.value + key}
-                              />
-                              <label
-                                htmlFor={val.value + key}
-                                className="checkboxLabel"
-                              >
-                                {val.label}
-                              </label>
+                            <div
+                              className={!val?.disabled && "CheckboxContainer"}
+                              key={key}
+                            >
+                              {!val?.disabled && (
+                                <>
+                                  <input
+                                    type="checkbox"
+                                    className="CheckBox"
+                                    name={val.value}
+                                    checked={val.isChecked}
+                                    onChange={handleChange}
+                                    id={val.value + key}
+                                    disabled={val?.disabled}
+                                  />
+
+                                  <label
+                                    htmlFor={val.value + key}
+                                    className="checkboxLabel"
+                                  >
+                                    {val.label}
+                                  </label>
+                                </>
+                              )}
                             </div>
                           ))}
                           <button

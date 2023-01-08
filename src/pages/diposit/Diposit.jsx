@@ -66,6 +66,21 @@ export default function Diposit() {
   // get own deposit from redux
   let ownDeposits = useSelector((state) => state?.payment?.myDeposit);
 
+  // // initial own deposit filter
+  // useEffect(() => {
+  //   // let initialOwnDeposit = [...ownDeposits];
+  //   // date filter
+  //   ownDeposits = ownDeposits.filter(
+  //     (original) =>
+  //       new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
+  //         new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
+  //       new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
+  //         new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
+  //   );
+
+  //   // setOwnDepositData(initialOwnDeposit);
+  // }, []);
+
   // get all collector form redux
   const allCollector = useSelector((state) => state?.collector?.collector);
 
@@ -224,6 +239,7 @@ export default function Diposit() {
       setMainData(allDeposit);
     }
   }, [allDeposit, collectorDeposite, ownDeposits]);
+
   // filter section
   const onClickFilter = () => {
     let arr = [...allDeposit, ...collectorDeposite];
@@ -247,8 +263,22 @@ export default function Diposit() {
     setMainData(arr);
   };
 
+  // initial filter for main deposit
+  useEffect(() => {
+    let initialAllDeposit = [...allDeposit, ...collectorDeposite];
+    initialAllDeposit = initialAllDeposit.filter(
+      (original) =>
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
+    );
+    setMainData(initialAllDeposit);
+  }, [allDeposit, collectorDeposite]);
+
+  // own deposit filter
   const ownDepositDateFilter = () => {
-    let ownDepositFilter = [...ownDepositData];
+    let ownDepositFilter = [...ownDeposits];
     // date filter
     ownDepositFilter = ownDepositFilter.filter(
       (original) =>

@@ -20,6 +20,8 @@ const Permissions = ({ ownerId }) => {
   // permission state
   const [permissions, setPermissions] = useState([]);
 
+  console.log(ownerData?.bpSettings);
+
   // set permission in state
   useEffect(() => {
     if (ownerData) {

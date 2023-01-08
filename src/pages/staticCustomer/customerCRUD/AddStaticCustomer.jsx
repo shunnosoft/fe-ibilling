@@ -546,7 +546,7 @@ export default function AddStaticCustomer() {
                         />
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
-                        {!bpSettings.genCustomerId && (
+                        {!bpSettings?.genCustomerId && (
                           <FtextField
                             type="text"
                             label={t("customerId")}

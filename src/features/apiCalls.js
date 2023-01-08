@@ -1460,7 +1460,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
   try {
     const res = await apiLink.post(`/deposit`, data);
     dispatch(addDepositSucces(res.data));
-
+    console.log(res.data);
     setLoading(false);
     langMessage(
       "success",

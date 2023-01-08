@@ -604,5 +604,5 @@
   "rechargeAmountMustBeUptoOrEqualMonthlyFee": "রিচার্জের পরিমান অবশ্যই মাসিক বিল এর সমান বা বেশি হতে হবে !",
   "discountMustBeLessThanMonthlyFee": "ডিসকাউন্ট অবশ্যয় মাসিক বিল থেকে ছোট হতে হবে",
   "discount": "ডিসকাউন্ট",
-  "beforeDiscount": "ডিসকাউন্ট বিহীন"
+  "withoutDiscount": "ডিসকাউন্ট বিহীন"
 }

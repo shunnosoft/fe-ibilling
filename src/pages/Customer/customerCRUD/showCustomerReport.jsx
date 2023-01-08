@@ -32,6 +32,11 @@ export default function CustomerReport(props) {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   const [customerReport, setCustomerReport] = useState([]);
 
   // const [canDelete, setDelete] = useState(true);
@@ -230,23 +235,24 @@ export default function CustomerReport(props) {
                                 ) : (
                                   ""
                                 )}
-                                {!props?.hideReportDelete &&
-                                  (permission?.billDelete ||
-                                  role !== "collector" ? (
-                                    <div title={t("deleteReport")}>
-                                      <button
-                                        className="border-0 bg-transparent"
-                                        onClick={() => deletReport(val.id)}
-                                      >
-                                        <TrashFill
-                                          color="#dc3545"
-                                          style={{ cursor: "pointer" }}
-                                        />
-                                      </button>
-                                    </div>
-                                  ) : (
-                                    ""
-                                  ))}
+                                {(role === "ispOwner" &&
+                                  bpSettings?.reportDelete) ||
+                                (role === "manager" &&
+                                  permission?.reportDelete) ? (
+                                  <div title={t("deleteReport")}>
+                                    <button
+                                      className="border-0 bg-transparent"
+                                      onClick={() => deletReport(val.id)}
+                                    >
+                                      <TrashFill
+                                        color="#dc3545"
+                                        style={{ cursor: "pointer" }}
+                                      />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
                               </td>
                             ) : (
                               <td className="text-center">
@@ -285,24 +291,25 @@ export default function CustomerReport(props) {
                                   ) : (
                                     ""
                                   )}
-                                  {!props?.hideReportDelete &&
-                                    (permission?.billDelete ||
-                                    role !== "collector" ? (
-                                      <div title={t("deleteReport")}>
-                                        <button
-                                          className="border-0 bg-transparent"
-                                          onClick={() => deletReport(val.id)}
-                                          disabled={props?.hideReportDelete}
-                                        >
-                                          <TrashFill
-                                            color="#dc3545"
-                                            style={{ cursor: "pointer" }}
-                                          />
-                                        </button>
-                                      </div>
-                                    ) : (
-                                      ""
-                                    ))}
+                                  {(role === "ispOwner" &&
+                                    bpSettings?.reportDelete) ||
+                                  (role === "manager" &&
+                                    permission?.reportDelete) ? (
+                                    <div title={t("deleteReport")}>
+                                      <button
+                                        className="border-0 bg-transparent"
+                                        onClick={() => deletReport(val.id)}
+                                        disabled={props?.hideReportDelete}
+                                      >
+                                        <TrashFill
+                                          color="#dc3545"
+                                          style={{ cursor: "pointer" }}
+                                        />
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
                                 </div>
                               </td>
                             )}

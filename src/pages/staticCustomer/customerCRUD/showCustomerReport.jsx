@@ -236,8 +236,10 @@ export default function CustomerReport({ single }) {
                                 ) : (
                                   ""
                                 )}
-                                {permission?.billDelete ||
-                                role !== "collector" ? (
+                                {(role === "ispOwner" &&
+                                  bpSettings?.reportDelete) ||
+                                (role === "manager" &&
+                                  permission?.reportDelete) ? (
                                   <div title={t("deleteReport")}>
                                     <button
                                       className="border-0 bg-transparent"
@@ -287,8 +289,10 @@ export default function CustomerReport({ single }) {
                                 ) : (
                                   ""
                                 )}
-                                {permission?.billDelete ||
-                                role !== "collector" ? (
+                                {(role === "ispOwner" &&
+                                  bpSettings?.reportDelete) ||
+                                (role === "manager" &&
+                                  permission?.reportDelete) ? (
                                   <div title={t("deleteReport")}>
                                     <button
                                       className="border-0 bg-transparent"
