@@ -80,10 +80,6 @@ export default function ConfigMikrotik() {
   const mikrotiSelectionHandler = (event) => {
     setMikrotikId(event.target.value);
   };
-  const bandwidthModalController = (customerID) => {
-    setCustomerId(customerID);
-    setBandWidthModal(true);
-  };
 
   // customer filter state
   const filterIt = (e) => {
@@ -162,13 +158,7 @@ export default function ConfigMikrotik() {
 
   // reload handler
   const reloadHandler = () => {
-    fetchpppoeUser(
-      dispatch,
-      IDs,
-      singleMik?.name,
-      setMtkLoading,
-      "mikrotikUser"
-    );
+    fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
     fetchMikrotik(dispatch, ispOwnerId, setIsloading);
   };
 
