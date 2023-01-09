@@ -1,5 +1,5 @@
 // external imports
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -545,6 +545,10 @@ export default function Home() {
                     </p>
                     <p style={{ fontSize: "13px", paddingTop: "0px" }}>
                       {t("expired")}: {FormatNumber(customerStat.expired)}
+                    </p>
+                    <p style={{ fontSize: "13px", paddingTop: "0px" }}>
+                      {t("freeCustomer")}:{" "}
+                      {FormatNumber(customerStat.freeCustomer)}
                     </p>
                   </div>
                 </div>
