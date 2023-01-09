@@ -294,7 +294,10 @@ export default function CustomerReport(props) {
                                   {(role === "ispOwner" &&
                                     bpSettings?.reportDelete) ||
                                   (role === "manager" &&
-                                    permission?.reportDelete) ? (
+                                    permission?.reportDelete) ||
+                                  (role === "collector" &&
+                                    bpSettings?.reportDelete &&
+                                    permission?.billDelete) ? (
                                     <div title={t("deleteReport")}>
                                       <button
                                         className="border-0 bg-transparent"

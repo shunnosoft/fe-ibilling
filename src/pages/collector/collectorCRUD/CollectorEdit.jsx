@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 // internal importsp
 import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
-import { editCollector } from "../../../features/apiCalls";
+import { editCollector, getManger } from "../../../features/apiCalls";
 import { collectorPermission } from "./collectorPermission";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,24 @@ export default function CollectorEdit({ collectorId }) {
   const dispatch = useDispatch();
   const collector = useSelector((state) => state?.collector?.collector);
 
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get permission
+  const managerPermission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
+  // get bp settings
+  const ispOwnerPermission = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
+  // get ispOwner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
+  );
+
   const single = collector.find((val) => val.id === collectorId);
   const area = useSelector((state) => state?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
@@ -31,7 +49,14 @@ export default function CollectorEdit({ collectorId }) {
   useEffect(() => {
     if (single) {
       setAllowedAreas(single?.areas);
-      setPermissions(collectorPermission(single.permissions));
+      setPermissions(
+        collectorPermission(
+          single.permissions,
+          role,
+          ispOwnerPermission,
+          managerPermission
+        )
+      );
     }
   }, [single, collector]);
 
@@ -201,21 +226,28 @@ export default function CollectorEdit({ collectorId }) {
                     <b className="mt-2"> {t("changePermission")} </b>
                     <div className="AllAreaClass">
                       {permissions.map((val, key) => (
-                        <div className="CheckboxContainer" key={key}>
-                          <input
-                            type="checkbox"
-                            className="CheckBox"
-                            name={val.value}
-                            checked={val.isChecked}
-                            onChange={handleChange}
-                            id={val.value + key}
-                          />
-                          <label
-                            htmlFor={val.value + key}
-                            className="checkboxLabel"
-                          >
-                            {val.label}
-                          </label>
+                        <div
+                          className={!val?.disabled && "CheckboxContainer"}
+                          key={key}
+                        >
+                          {!val.disabled && (
+                            <>
+                              <input
+                                type="checkbox"
+                                className="CheckBox"
+                                name={val.value}
+                                checked={val.isChecked}
+                                onChange={handleChange}
+                                id={val.value + key}
+                              />
+                              <label
+                                htmlFor={val.value + key}
+                                className="checkboxLabel"
+                              >
+                                {val.label}
+                              </label>
+                            </>
+                          )}
                         </div>
                       ))}
                     </div>

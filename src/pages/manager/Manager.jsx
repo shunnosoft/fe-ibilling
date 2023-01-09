@@ -43,6 +43,7 @@ export default function Manager() {
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState();
   const manager = useSelector((state) => state.manager?.manager);
+
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
   );
@@ -360,7 +361,7 @@ export default function Manager() {
                                     checked={val.isChecked}
                                     onChange={handleChange}
                                     id={val.value + key}
-                                    disabled={val?.disabled}
+                                    // disabled={val?.disabled}
                                   />
 
                                   <label
