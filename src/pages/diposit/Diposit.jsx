@@ -66,21 +66,6 @@ export default function Diposit() {
   // get own deposit from redux
   let ownDeposits = useSelector((state) => state?.payment?.myDeposit);
 
-  // // initial own deposit filter
-  // useEffect(() => {
-  //   // let initialOwnDeposit = [...ownDeposits];
-  //   // date filter
-  //   ownDeposits = ownDeposits.filter(
-  //     (original) =>
-  //       new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
-  //         new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
-  //       new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
-  //         new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
-  //   );
-
-  //   // setOwnDepositData(initialOwnDeposit);
-  // }, []);
-
   // get all collector form redux
   const allCollector = useSelector((state) => state?.collector?.collector);
 
@@ -232,13 +217,27 @@ export default function Diposit() {
   }, []);
 
   useEffect(() => {
-    setOwnDepositData(ownDeposits);
     if (userRole === "ispOwner" && allDeposit && collectorDeposite) {
       return setMainData([...allDeposit, ...collectorDeposite]);
     } else {
       setMainData(allDeposit);
     }
-  }, [allDeposit, collectorDeposite, ownDeposits]);
+  }, [allDeposit, collectorDeposite]);
+
+  // initial own deposit filter
+  useEffect(() => {
+    let ownDepositFilter = [...ownDeposits];
+    // date filter
+    ownDepositFilter = ownDepositFilter.filter(
+      (original) =>
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
+    );
+
+    setOwnDepositData(ownDepositFilter);
+  }, [ownDeposits]);
 
   // filter section
   const onClickFilter = () => {

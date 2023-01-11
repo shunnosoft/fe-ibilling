@@ -568,16 +568,17 @@ const PPPOECustomer = () => {
       {
         width: "9%",
         Header: t("name"),
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{ cursor: "move" }}
-            data-toggle="tooltip"
-            data-placement="top"
-            title={original.address}
-          >
-            {original.name}
-          </div>
-        ),
+        accessor: "name",
+        // Cell: ({ row: { original } }) => (
+        //   <div
+        //     style={{ cursor: "move" }}
+        //     data-toggle="tooltip"
+        //     data-placement="top"
+        //     title={original.address}
+        //   >
+        //     {original.name}
+        //   </div>
+        // ),
       },
       {
         width: "9%",

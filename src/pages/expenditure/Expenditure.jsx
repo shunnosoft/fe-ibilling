@@ -99,14 +99,33 @@ export default function Expenditure() {
     setFilterState(temp);
   }, [expenditures, expenditurePurpose]);
 
-  // delete expenditure
-  const deleteExpenditureHandler = (expenditureId) => {
-    console.log(expenditureId);
-    const confirm = window.confirm(t("areYouSureWantToDelete"));
-    if (confirm) {
-      deleteExpenditure(dispatch, expenditureId);
-    }
-  };
+  useEffect(() => {
+    var initialToday = new Date();
+    var initialFirst = new Date(
+      initialToday.getFullYear(),
+      initialToday.getMonth(),
+      1
+    );
+
+    initialFirst.setHours(0, 0, 0, 0);
+    initialToday.setHours(23, 59, 59, 999);
+    setAllExpenditure(
+      expenditures.filter(
+        (item) =>
+          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+          Date.parse(item.createdAt) <= Date.parse(initialToday)
+      )
+    );
+  }, [expenditures]);
+
+  // // delete expenditure
+  // const deleteExpenditureHandler = (expenditureId) => {
+  //   console.log(expenditureId);
+  //   const confirm = window.confirm(t("areYouSureWantToDelete"));
+  //   if (confirm) {
+  //     deleteExpenditure(dispatch, expenditureId);
+  //   }
+  // };
 
   // reload handler
   const reloadHandler = () => {
