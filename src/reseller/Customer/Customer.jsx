@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 // import { Link } from "react-router-dom";
@@ -48,6 +48,7 @@ import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import BulkBillingCycleEdit from "./bulkOpration/bulkBillingCycleEdit";
 import BulkStatusEdit from "./bulkOpration/bulkStatusEdit";
 import BulkSubAreaEdit from "./bulkOpration/bulkSubAreaEdit";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -232,33 +233,6 @@ export default function Customer() {
     }
   }, [dispatch, resellerId, userData, role]);
 
-  //get possible total monthly fee
-  const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
-  const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
-  const [totalDue, setTotalDue] = useState(0);
-  const [hasDue, setDue] = useState(false);
-
-  useEffect(() => {
-    if (cus) {
-      let totalMonthlyFee = 0;
-      let totalDue = 0;
-      let advanceFee = 0;
-      for (let i = 0; i < cus.length; i++) {
-        totalMonthlyFee += cus[i].monthlyFee;
-        if (cus[i].balance < 0) {
-          totalDue += Math.abs(cus[i].balance);
-        }
-        if (cus[i].balance > 0) {
-          advanceFee += cus[i].balance;
-        }
-      }
-      if (totalDue > 0) setDue(true);
-      setTotalMonthlyFee(totalMonthlyFee - advanceFee);
-      setTotalDue(totalDue);
-      setTotalFeeWithDue(totalMonthlyFee + totalDue - advanceFee);
-    }
-  }, [cus]);
-
   const [subAreaIds, setSubArea] = useState([]);
 
   useEffect(() => {
@@ -271,6 +245,41 @@ export default function Customer() {
 
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
+
+  //total monthly fee and due calculation
+  const dueMonthlyFee = useMemo(() => {
+    let dueAmount = 0;
+    let totalSumDue = 0;
+    let totalMonthlyFee = 0;
+
+    Customers.map((item) => {
+      if (item.paymentStatus === "unpaid") {
+        // filter due ammount
+        dueAmount = item.monthlyFee - item.balance;
+
+        // total sum due
+        totalSumDue += dueAmount;
+      }
+
+      // sum of all monthly fee
+      totalMonthlyFee += item.monthlyFee;
+    });
+
+    return { totalSumDue, totalMonthlyFee };
+  }, [Customers]);
+
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+      {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
+      {/* {t("collection")}&nbsp;{" "} */}
+      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
+        {t("tk")} */}
+    </div>
+  );
 
   const columns = React.useMemo(
     () => [
@@ -673,6 +682,7 @@ export default function Customer() {
                     </div>
                     <div className="table-section">
                       <Table
+                        customComponent={customComponent}
                         isLoading={isLoading}
                         columns={columns}
                         data={Customers}

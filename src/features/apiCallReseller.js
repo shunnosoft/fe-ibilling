@@ -84,6 +84,7 @@ export const getCollector = async (dispatch, resellerId, setIsLoading) => {
     setIsLoading(true);
     const res = await apiLink.get(`/reseller/collector/${resellerId}`);
     dispatch(getCollectorSuccess(res.data));
+    console.log(res.data);
   } catch (error) {
     toast.error(error.response?.data.message);
   }

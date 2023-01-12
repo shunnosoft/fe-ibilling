@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import useDash from "../../assets/css/dash.module.css";
@@ -40,6 +40,7 @@ import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import FormatNumber from "../../components/common/NumberFormat";
 export default function RstaticCustomer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
@@ -162,34 +163,6 @@ export default function RstaticCustomer() {
     payment: paymentStatus ? paymentStatus : t("sokolCustomer"),
   };
 
-  //possible total monthly fee state
-  const [totalMonthlyFee, setTotalMonthlyFee] = useState(0);
-  const [totalFeeWithDue, setTotalFeeWithDue] = useState(0);
-  const [totalDue, setTotalDue] = useState(0);
-  const [hasDue, setDue] = useState(false);
-
-  //get possible total monthly fee
-  useEffect(() => {
-    if (cus) {
-      let totalMonthlyFee = 0;
-      let totalDue = 0;
-      let advanceFee = 0;
-      for (let i = 0; i < cus.length; i++) {
-        totalMonthlyFee += cus[i].monthlyFee;
-        if (cus[i].balance < 0) {
-          totalDue += Math.abs(cus[i].balance);
-        }
-        if (cus[i].balance > 0) {
-          advanceFee += cus[i].balance;
-        }
-      }
-      if (totalDue > 0) setDue(true);
-      setTotalMonthlyFee(totalMonthlyFee - advanceFee);
-      setTotalDue(totalDue);
-      setTotalFeeWithDue(totalMonthlyFee + totalDue - advanceFee);
-    }
-  }, [cus]);
-
   // get specific customer
   const getSpecificCustomer = (id) => {
     setSingleCustomer(id);
@@ -250,6 +223,41 @@ export default function RstaticCustomer() {
       setCustomers(cus);
     }
   }, [cus, subAreaIds]);
+
+  //total monthly fee and due calculation
+  const dueMonthlyFee = useMemo(() => {
+    let dueAmount = 0;
+    let totalSumDue = 0;
+    let totalMonthlyFee = 0;
+
+    Customers.map((item) => {
+      if (item.paymentStatus === "unpaid") {
+        // filter due ammount
+        dueAmount = item.monthlyFee - item.balance;
+
+        // total sum due
+        totalSumDue += dueAmount;
+      }
+
+      // sum of all monthly fee
+      totalMonthlyFee += item.monthlyFee;
+    });
+
+    return { totalSumDue, totalMonthlyFee };
+  }, [Customers]);
+
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+      {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
+      {/* {t("collection")}&nbsp;{" "} */}
+      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
+          {t("tk")} */}
+    </div>
+  );
 
   const columns = React.useMemo(
     () => [
@@ -413,22 +421,6 @@ export default function RstaticCustomer() {
                     </div>
                   </div>
 
-                  <div className="h6 d-flex justify-content-center align-items-start">
-                    <p>
-                      {t("totalPossibilityBill")} : {totalMonthlyFee}
-                    </p>
-                    {hasDue && (
-                      <>
-                        <p>
-                          {t("totalPrevDue")} : {totalDue}
-                        </p>
-                        <p>
-                          {t("totalPossibilityBillWithDue")} : {totalFeeWithDue}
-                        </p>
-                      </>
-                    )}
-                  </div>
-
                   <div className="addAndSettingIcon">
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
@@ -523,6 +515,7 @@ export default function RstaticCustomer() {
                   </div>
                   <div className="table-section">
                     <Table
+                      customComponent={customComponent}
                       isLoading={isLoading}
                       columns={columns}
                       data={Customers}

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
+import { easeQuadIn } from "d3-ease";
 import "chart.js/auto";
 import {
   People,
@@ -9,6 +10,7 @@ import {
   BarChartFill,
   PersonCheckFill,
   Coin,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
 // internal imports
 // import "./home.css";
@@ -26,6 +28,11 @@ import { FetchAreaSuccess } from "../../features/areaSlice";
 // import { managerFetchSuccess } from "../../features/managerSlice";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useTranslation } from "react-i18next";
+import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
+import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
+import ReactDatePicker from "react-datepicker";
+import Loader from "../../components/common/Loader";
+import { Accordion } from "react-bootstrap";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -37,16 +44,13 @@ export default function Home() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
   const allCollector = useSelector((state) => state.collector.collector);
-  const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
   const ChartsData = useSelector((state) => state.chart.charts);
   const customerStat = useSelector((state) => state.chart.customerStat);
-
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
-  const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState([]);
@@ -58,6 +62,7 @@ export default function Home() {
   const [currentCollector, setCurrentCollector] = useState("");
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
+  const [filterDate, setFilterDate] = useState(date);
 
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -103,21 +108,6 @@ export default function Home() {
   }, [dispatch, userData, role, ispOwnerId]);
 
   useEffect(() => {
-    let collectors = [];
-
-    allCollector.map((item) =>
-      collectors.push({ name: item.name, user: item.user, id: item.id })
-    );
-
-    if (collectors.length === allCollector.length) {
-      const { user, name, id } = manager;
-      collectors.unshift({ name, user, id });
-    }
-
-    setCollectors(collectors);
-  }, [allCollector, manager, dispatch, ispOwnerId, resellerId]);
-
-  useEffect(() => {
     //for all roles
     if (role === "collector") {
       getChartsReseller(
@@ -135,10 +125,18 @@ export default function Home() {
         userData.collector.id
       );
     } else {
+      getCollector(dispatch, userData?.reseller.id, setIsLoading);
       getChartsReseller(dispatch, resellerId, Year, Month);
-      getDashboardCardData(dispatch, setIsLoading, ispOwnerId, resellerId);
+      getDashboardCardData(
+        dispatch,
+        setIsLoading,
+        ispOwnerId,
+        resellerId,
+        null,
+        filterDate
+      );
     }
-  }, [dispatch, resellerId, role, userData, Month, Year]);
+  }, []);
 
   useEffect(() => {
     let tempArr = [],
@@ -166,7 +164,6 @@ export default function Home() {
         userData?.user
       );
     } else {
-      getCollector(dispatch, userData?.reseller.id);
       getChartsReseller(
         dispatch,
         userData?.reseller.id,
@@ -188,6 +185,45 @@ export default function Home() {
     }
   });
 
+  const collectionPercentage = customerStat
+    ? Math.round(
+        (customerStat.totalMonthlyCollection /
+          customerStat.totalProbableAmount) *
+          100
+      )
+    : 0;
+
+  const dashboardFilterController = () => {
+    //for all roles
+    if (role === "collector") {
+      getChartsReseller(
+        dispatch,
+        userData.collector.reseller,
+        Year,
+        Month,
+        userData?.collector.user
+      );
+      getDashboardCardData(
+        dispatch,
+        setIsLoading,
+        ispOwnerId,
+        userData.collector.reseller,
+        userData.collector.id
+      );
+    } else {
+      getCollector(dispatch, userData?.reseller.id, setIsLoading);
+      getChartsReseller(dispatch, resellerId, Year, Month);
+      getDashboardCardData(
+        dispatch,
+        setIsLoading,
+        ispOwnerId,
+        resellerId,
+        null,
+        filterDate
+      );
+    }
+  };
+
   return (
     <div className="container homeWrapper">
       <ToastContainer position="top-right" theme="colored" />
@@ -195,7 +231,79 @@ export default function Home() {
         <div className="home">
           {/* card section */}
           <div className="row">
-            <h2 className="dashboardTitle"> {t("dashboard")} </h2>
+            {role === "reseller" && (
+              <>
+                <div className="col-md-12 mb-3">
+                  <div className="row">
+                    <div className="col-md-3 d-flex justify-content-end align-items-center">
+                      <h2>
+                        {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
+                        {FormatNumber(customerStat.totalProbableAmount)}{" "}
+                      </h2>
+                    </div>
+                    <div className="col-md-6">
+                      <div
+                        style={{ width: 200, height: 200, margin: "0 auto" }}
+                      >
+                        <AnimatedProgressProvider
+                          valueStart={0}
+                          valueEnd={Math.round(collectionPercentage)}
+                          duration={1}
+                          easingFunction={easeQuadIn}
+                        >
+                          {(value) => {
+                            const roundedValue = isNaN(value)
+                              ? collectionPercentage
+                              : Math.round(value);
+                            return (
+                              <CircularProgressbar
+                                value={roundedValue}
+                                text={`${
+                                  isNaN(roundedValue) ? 0 : roundedValue
+                                }%`}
+                                styles={buildStyles({
+                                  pathTransition: "none",
+                                })}
+                              />
+                            );
+                          }}
+                        </AnimatedProgressProvider>
+                      </div>
+                    </div>
+                    <div className="col-md-3 d-flex justify-content-start align-items-center">
+                      <h2>
+                        {t("totalCollection")} <br />
+                        <CurrencyDollar />{" "}
+                        {FormatNumber(customerStat.totalMonthlyCollection)}
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-end">
+                    <div>
+                      <ReactDatePicker
+                        selected={filterDate}
+                        className="form-control shadow-none"
+                        onChange={(date) => setFilterDate(date)}
+                        dateFormat="MMM/yyyy"
+                        showMonthYearPicker
+                        showFullMonthYearPicker
+                        endDate={"2014/04/08"}
+                        placeholderText={t("filterDashboard")}
+                        maxDate={new Date()}
+                        minDate={new Date(userData.reseller.createdAt)}
+                      />
+                    </div>
+                    <button
+                      className="btn btn-primary w-140 ms-1"
+                      onClick={dashboardFilterController}
+                    >
+                      {isLoading ? <Loader /> : t("filter")}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
             <div className="col-md-3" key={1}>
               <div id="card1" className="dataCard">
                 <ThreeDotsVertical className="ThreeDots" />
@@ -207,8 +315,7 @@ export default function Home() {
                   <h2>{FormatNumber(customerStat.total)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("new customer")} :{" "}
-                    {FormatNumber(customerStat.newCustomer)}
+                    {t("new customer")} {FormatNumber(customerStat.newCustomer)}
                   </p>
                 </div>
               </div>
@@ -256,10 +363,14 @@ export default function Home() {
                 </div>
                 <div className="chartSection">
                   <p style={{ fontSize: "18px" }}> {t("total collection")} </p>
-                  <h2>৳ {FormatNumber(totalCollection)}</h2>
+                  <h2>৳ {FormatNumber(customerStat.totalMonthlyCollection)}</h2>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("today collection")} {FormatNumber(todayCollection)}
+                    {t("today collection")}{" "}
+                    {FormatNumber(
+                      customerStat.totalResellerCollectionToday +
+                        customerStat.totalCollectorCollectionToday
+                    )}
                   </p>
                 </div>
               </div>
@@ -268,6 +379,120 @@ export default function Home() {
 
           {/* chart section */}
           {/* <h2 className="dashboardTitle mt-2">কালেকশন</h2> */}
+
+          <Accordion alwaysOpen>
+            {role === "reseller" && (
+              <Accordion.Item eventKey="2">
+                <Accordion.Header className="shadow-none">
+                  <h4 className="mb-0">{t("roleCollector")}</h4>
+                </Accordion.Header>
+                <Accordion.Body>
+                  <div className="row ">
+                    <div className="col-md-3">
+                      <div id="card9" className="dataCard">
+                        <ThreeDotsVertical className="ThreeDots" />
+                        <div className="cardIcon">
+                          <CurrencyDollar />
+                        </div>
+                        <div className="chartSection">
+                          <p style={{ fontSize: "16px" }}>
+                            {t("totalCollection")}
+                          </p>
+                          <h2>
+                            ৳{" "}
+                            {FormatNumber(
+                              customerStat.totalBillCollectionByCollector
+                            )}
+                          </h2>
+
+                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                            {t("todayTotalCollectionByCollector")}:{" "}
+                            {FormatNumber(
+                              customerStat.totalCollectorCollectionToday
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-3" key={2}>
+                      <div id="card10" className="dataCard">
+                        <ThreeDotsVertical className="ThreeDots" />
+                        <div className="cardIcon">
+                          <PersonCheckFill />
+                        </div>
+                        <div className="chartSection">
+                          <p style={{ fontSize: "16px" }}>
+                            {t("totalManagerDeposite")}
+                          </p>
+                          <h2>
+                            ৳{" "}
+                            {FormatNumber(
+                              customerStat.totalDepositByCollectors
+                            )}
+                          </h2>
+
+                          {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                        {t("todayTotalCollectorDeposite")}:{" "}
+                        {FormatNumber(customerStat.inactive)}
+                      </p> */}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div id="card13" className="dataCard">
+                        <ThreeDotsVertical className="ThreeDots" />
+                        <div className="cardIcon">
+                          <CurrencyDollar />
+                        </div>
+                        <div className="chartSection">
+                          <p style={{ fontSize: "16px" }}>
+                            {t("managersBalance")}
+                          </p>
+                          <h2>৳ {customerStat.totalBalanceByCollectors}</h2>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <div className="col-md-3">
+                  <div id="card13" className="dataCard">
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <CurrencyDollar />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>{t("totalProfit")}</p>
+                      <h2>
+                        ৳{" "}
+                        {FormatNumber(
+                          totalCollection - customerStat.totalExpenditure
+                        )}
+                      </h2>
+                    </div>
+                  </div>
+                </div> */}
+
+                    {/* <div className="col-md-3">
+                  <div id="card12" className="dataCard">
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <CurrencyDollar />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>{t("totalDue")}</p>
+                      <h2>{FormatNumber(customerStat.dueAmount)}</h2>
+
+                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                        {t("new customer")}:{" "}
+                        {FormatNumber(customerStat.dueAmount)}
+                      </p>
+                    </div>
+                  </div>
+                </div> */}
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+            )}
+          </Accordion>
+
           <br />
           <FourGround>
             <div className="ChartsHeadernew">
@@ -301,7 +526,7 @@ export default function Home() {
                     onChange={(e) => setCurrentCollector(e.target.value)}
                   >
                     <option value=""> {t("all collector")} </option>
-                    {collectors?.map((c, key) => (
+                    {allCollector?.map((c, key) => (
                       <option key={key} value={c.user}>
                         {c.name}
                       </option>

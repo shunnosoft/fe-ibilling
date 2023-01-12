@@ -63,7 +63,6 @@ export default function Home() {
   const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const ChartsData = useSelector((state) => state.chart.charts);
-
   const customerStat = useSelector((state) => state.chart.customerStat);
   const invoice = useSelector((state) => state.invoice.invoice);
   const [isLoading, setIsloading] = useState(false);
@@ -703,15 +702,36 @@ export default function Home() {
                             <CurrencyDollar />
                           </div>
                           <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>{t("balance")}</p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.totalMonthlyCollection -
+                                  customerStat.totalMonthlyDiscount -
+                                  (customerStat.totalExpenditure +
+                                    customerStat.totalSalary)
+                              )}
+                            </h2>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card5" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
                             <p style={{ fontSize: "16px" }}>
                               {t("ownBalance")}
                             </p>
                             <h2>
                               ৳{" "}
                               {FormatNumber(
-                                totalCollection -
-                                  customerStat.totalMonthlyDiscount -
-                                  (customerStat.totalExpenditure +
+                                customerStat.ispOwnerBillCollection -
+                                  customerStat.totalMonthlyDiscount +
+                                  customerStat.totalManagerDeposit -
+                                  (customerStat.ispOwnerExpenditure -
                                     customerStat.totalSalary)
                               )}
                             </h2>
