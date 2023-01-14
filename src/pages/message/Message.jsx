@@ -651,6 +651,17 @@ export default function Message() {
                                     <input
                                       type="checkbox"
                                       className="getValueUsingClass"
+                                      value={"4"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">
+                                      {t("billDueFourDay")}
+                                    </label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
                                       value={"5"}
                                       onChange={(e) => {
                                         daySettingHandler(e.target.value);
@@ -658,6 +669,17 @@ export default function Message() {
                                     />
                                     <label className="mx-3">
                                       {t("billDueFiveDay")}
+                                    </label>
+                                    <input
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={"6"}
+                                      onChange={(e) => {
+                                        daySettingHandler(e.target.value);
+                                      }}
+                                    />
+                                    <label className="mx-3">
+                                      {t("billDueSixDay")}
                                     </label>
                                     <input
                                       type="checkbox"
