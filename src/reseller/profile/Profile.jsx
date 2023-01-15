@@ -39,6 +39,8 @@ export default function Profile() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingpass, setIsLoadingpass] = useState(false);
+  const [startRedirect, setStartRedirect] = useState(false);
+  const [redirectTime, setRedirectTime] = useState(10);
 
   const passwordValidator = Yup.object({
     oldPassword: Yup.string().required(` ${t("oldPassword")} ***`),
@@ -54,145 +56,192 @@ export default function Profile() {
     ),
   });
   const dispatch = useDispatch();
-  const progileEditHandler = (data) => {
-    delete data.mobile;
+  const profileEditHandler = (data) => {
     if (role === "reseller") {
-      resellerProfileUpdate(dispatch, data, resellerId, setIsLoading);
-    }
-    if (role === "collector") {
-      collectorProfileUpdate(
+      const sendingData = {
         dispatch,
         data,
         resellerId,
-        currentUser?.id,
-        setIsLoading
-      );
+        setIsLoading,
+        setRedirectTime,
+        setStartRedirect,
+        mobile: currentUser.mobile,
+      };
+
+      resellerProfileUpdate(sendingData);
+    }
+    if (role === "collector") {
+      const sendingData = {
+        dispatch,
+        data,
+        resellerId,
+        collectorId: currentUser?.id,
+        setIsLoading,
+        setRedirectTime,
+        setStartRedirect,
+        mobile: currentUser.mobile,
+      };
+      collectorProfileUpdate(sendingData);
     }
   };
 
   //   change password handler
   const changePasswordHandler = (data) => {
     delete data.confrimPassword;
-    passwordUpdate(data, setIsLoadingpass);
+    const sendingData = {
+      data,
+      setIsLoadingpass,
+      setRedirectTime,
+      setStartRedirect,
+    };
+
+    passwordUpdate(sendingData);
   };
+
+  const styles = {
+    width: "100%",
+    height: "100vh",
+    overflow: "hidden",
+    position: "fixed",
+    top: 0,
+    bottom: 0,
+    zIndex: "5",
+  };
+
   return (
     <>
-      <Sidebar />
+      {startRedirect && (
+        <div style={styles}>
+          <h3
+            className="text-secondary text-center"
+            style={{ marginTop: "10rem" }}
+          >
+            you are being logging out in {redirectTime} seconds...
+          </h3>
+        </div>
+      )}
+
+      {!startRedirect && <Sidebar />}
       <ToastContainer position="top-right" theme="colored" />
 
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
-            <FontColor>
-              <FourGround>
-                <h2 className="collectorTitle"> {t("profile")} </h2>
-              </FourGround>
+            {!startRedirect && (
+              <FontColor>
+                <FourGround>
+                  <h2 className="collectorTitle"> {t("profile")} </h2>
+                </FourGround>
 
-              <FourGround>
-                <div className="collectorWrapper">
-                  <div className="profileWrapper">
-                    <div className="profileUpdate">
-                      <h5 className="mb-4"> {t("updateProfile")}</h5>
-                      <Formik
-                        initialValues={{
-                          name: currentUser?.name || "",
-                          company: currentUser?.company || "",
-                          email: currentUser?.email || "",
-                          address: currentUser?.address || "",
-                          mobile: currentUser?.mobile || "",
-                        }}
-                        onSubmit={(values) => {
-                          progileEditHandler(values);
-                        }}
-                        enableReinitialize
-                      >
-                        {() => (
-                          <Form>
-                            <FtextField
-                              type="text"
-                              label={t("name")}
-                              name="name"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("company")}
-                              name="company"
-                              disabled={role === "collector"}
-                            />
+                <FourGround>
+                  <div className="collectorWrapper">
+                    <div className="profileWrapper">
+                      <div className="profileUpdate">
+                        <h5 className="mb-4"> {t("updateProfile")}</h5>
+                        <Formik
+                          initialValues={{
+                            name: currentUser?.name || "",
+                            company: currentUser?.company || "",
+                            email: currentUser?.email || "",
+                            address: currentUser?.address || "",
+                            mobile: currentUser?.mobile || "",
+                          }}
+                          onSubmit={(values) => {
+                            profileEditHandler(values);
+                          }}
+                          enableReinitialize
+                        >
+                          {() => (
+                            <Form>
+                              <FtextField
+                                type="text"
+                                label={t("name")}
+                                name="name"
+                              />
+                              <FtextField
+                                type="text"
+                                label={t("company")}
+                                name="company"
+                                disabled={role === "collector"}
+                              />
 
-                            <FtextField
-                              type="email"
-                              label={t("email")}
-                              name="email"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("mobile")}
-                              name="mobile"
-                              disabled={true}
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("address")}
-                              name="address"
-                            />
+                              <FtextField
+                                type="email"
+                                label={t("email")}
+                                name="email"
+                              />
+                              <FtextField
+                                type="text"
+                                label={t("mobile")}
+                                name="mobile"
+                              />
+                              <FtextField
+                                type="text"
+                                label={t("address")}
+                                name="address"
+                              />
 
-                            <button
-                              type="submit"
-                              className="btn btn-success mt-2"
-                            >
-                              {isLoading ? <Loader /> : t("update")}
-                            </button>
-                          </Form>
-                        )}
-                      </Formik>
-                    </div>
-                    <div className="passwordUpdate">
-                      <h5 className="mb-4 marginTop20">
-                        {t("changePassword")}
-                      </h5>
-                      <Formik
-                        initialValues={{
-                          oldPassword: "",
-                          newPassword: "",
-                        }}
-                        validationSchema={passwordValidator}
-                        onSubmit={(values) => {
-                          changePasswordHandler(values);
-                        }}
-                      >
-                        {() => (
-                          <Form>
-                            <FtextField
-                              type="password"
-                              name="oldPassword"
-                              label={t("oldPassword")}
-                            />
-                            <FtextField
-                              type="password"
-                              name="newPassword"
-                              label={t("newPassword")}
-                            />
-                            <FtextField
-                              type="password"
-                              name="confrimPassword"
-                              label={t("againNewPassword")}
-                            />
-                            <button
-                              type="submit"
-                              className="btn btn-success mt-2"
-                            >
-                              {isLoadingpass ? <Loader /> : t("updatePassword")}
-                            </button>
-                          </Form>
-                        )}
-                      </Formik>
+                              <button
+                                type="submit"
+                                className="btn btn-success mt-2"
+                              >
+                                {isLoading ? <Loader /> : t("update")}
+                              </button>
+                            </Form>
+                          )}
+                        </Formik>
+                      </div>
+                      <div className="passwordUpdate">
+                        <h5 className="mb-4 marginTop20">
+                          {t("changePassword")}
+                        </h5>
+                        <Formik
+                          initialValues={{
+                            oldPassword: "",
+                            newPassword: "",
+                          }}
+                          validationSchema={passwordValidator}
+                          onSubmit={(values) => {
+                            changePasswordHandler(values);
+                          }}
+                        >
+                          {() => (
+                            <Form>
+                              <FtextField
+                                type="password"
+                                name="oldPassword"
+                                label={t("oldPassword")}
+                              />
+                              <FtextField
+                                type="password"
+                                name="newPassword"
+                                label={t("newPassword")}
+                              />
+                              <FtextField
+                                type="password"
+                                name="confrimPassword"
+                                label={t("againNewPassword")}
+                              />
+                              <button
+                                type="submit"
+                                className="btn btn-success mt-2"
+                              >
+                                {isLoadingpass ? (
+                                  <Loader />
+                                ) : (
+                                  t("updatePassword")
+                                )}
+                              </button>
+                            </Form>
+                          )}
+                        </Formik>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </FourGround>
-              <Footer />
-            </FontColor>
+                </FourGround>
+                <Footer />
+              </FontColor>
+            )}
           </div>
         </div>
       </div>

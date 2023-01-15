@@ -3,10 +3,10 @@ import jwt_decode from "jwt-decode";
 import { userLogout } from "../features/actions/authAsyncAction";
 
 // PRODUCTION
-const BASE_URL = "https://netfeebd.net/api/v1/";
+// const BASE_URL = "https://netfeebd.net/api/v1/";
 
 //nahid
-// const BASE_URL = "http://192.168.1.16:3030/api/v1/";
+const BASE_URL = "http://192.168.1.16:3030/api/v1/";
 
 // LOCAL vai
 // const BASE_URL = "http://192.168.1.33:3030/api/v1/";
@@ -61,6 +61,20 @@ apiLink.interceptors.request.use(
     const TOKEN = await JSON.parse(localStorage.getItem("netFeeToken"));
     let currentDate = new Date();
     const decodedToken = jwt_decode(TOKEN);
+
+    const recentUser = localStorage.getItem("nfAUsr");
+
+    if (recentUser) {
+      // auth update logout
+      const user = JSON.parse(recentUser);
+      const tokenUser = JSON.parse(localStorage.getItem("tokenUsr"));
+      const tokenUserUpdateTime = new Date(tokenUser.updatedAt).getTime();
+      const getUserUpdateTimeFormApiCall = new Date(user.updatedAt).getTime();
+
+      if (tokenUserUpdateTime < getUserUpdateTimeFormApiCall) {
+        userLogout();
+      }
+    }
 
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
       // await refreshToken();

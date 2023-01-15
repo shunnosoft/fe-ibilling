@@ -1,9 +1,10 @@
-import { publicRequest } from "../../api/apiLink";
+import apiLink, { publicRequest } from "../../api/apiLink";
 import { toast } from "react-toastify";
 import {
   logInSuccess,
   // logOut,
 } from "../../features/authSlice";
+import { getUser } from "../userSlice";
 // import { clearCustomer } from "../customerSlice";
 // import { clearArea } from "../areaSlice";
 // import { clearManager } from "../managerSlice";
@@ -52,6 +53,13 @@ export const asyncLogin = async (dispatch, loginData) => {
     toast.error(error.response?.data.message);
   }
 };
+
+export const getUserApi = async (dispatch, userId) => {
+  const { data } = await apiLink("users/" + userId);
+  localStorage.setItem("nfAUsr", JSON.stringify(data));
+  dispatch(getUser(data));
+};
+
 // export const asyncLogin = async (dispatch, loginData) => {
 //   // display loader
 
@@ -89,7 +97,7 @@ export const asyncLogin = async (dispatch, loginData) => {
 export const userLogout = async () => {
   localStorage.removeItem("persist:root");
   localStorage.removeItem("netFeeToken");
-  localStorage.removeItem("nf:textR")
+  localStorage.removeItem("nf:textR");
   // localStorage.clear();
   window.location.reload();
 };

@@ -90,6 +90,7 @@ import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 import Stock from "./pages/Inventory/Stock";
 import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
 import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
+import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -108,6 +109,9 @@ function App() {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
+  //get most update user form api call
+  const usr = useSelector((state) => state.user.user);
+
   // const hasReseller= true
   const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
   const dispatch = useDispatch();
@@ -119,6 +123,12 @@ function App() {
   const pathName = useLocation().pathname;
 
   useEffect(() => {
+    const userId = user?.user?.id;
+
+    if (userId) {
+      getUserApi(dispatch, userId);
+    }
+
     if (userRole === "ispOwner") {
       getUpdatedUserData(dispatch, "ispOwner", user?.ispOwner?.id);
     }
@@ -132,7 +142,6 @@ function App() {
       getUpdatedUserData(dispatch, "collector", user?.collector?.id);
     }
   }, []);
-
   return (
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
