@@ -53,6 +53,8 @@ export default function CustomerReport({ single }) {
                   <thead>
                     <tr className="spetialSortingRow">
                       <th scope="col"> {t("bill")} </th>
+                      <th scope="col"> {t("ispOwner")} </th>
+                      <th scope="col"> {t("reseller")} </th>
                       <th scope="col"> {t("date")} </th>
                       <th scope="col"> {t("medium")} </th>
                       <th scope="col"> {t("collector")} </th>
@@ -63,6 +65,8 @@ export default function CustomerReport({ single }) {
                     {customerReport?.map((val, index) => (
                       <tr className="spetialSortingRow" key={index}>
                         <td>{FormatNumber(val.amount)}</td>
+                        <td>{FormatNumber(val?.ispOwnerCommission)}</td>
+                        <td>{FormatNumber(val?.resellerCommission)}</td>
                         <td>
                           {moment(val.createdAt).format(
                             "DD-MM-YYYY hh:mm:ss A"

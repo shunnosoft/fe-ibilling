@@ -90,6 +90,7 @@ import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 import Stock from "./pages/Inventory/Stock";
 import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
 import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
+import Setting from "./reseller/setting/Setting";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -199,6 +200,7 @@ function App() {
               />
 
               <Route path="reseller/profile" element={<RProfile />} />
+              <Route path="reseller/setting" element={<Setting />} />
               <Route path="reseller/home" element={<RDashboard />} />
               <Route path="reseller/collector" element={<RCollector />} />
               <Route path="expenditure" element={<Expenditure />} />

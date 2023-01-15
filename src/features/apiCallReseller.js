@@ -168,6 +168,17 @@ export const getCustomer = async (dispatch, reseller, setIsloading) => {
   }
 };
 
+export const getResellerData = async (ispOwnerId, resellerId, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/reseller/data/${ispOwnerId}/${resellerId}`);
+    console.log(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
 export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {

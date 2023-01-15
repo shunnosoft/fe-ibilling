@@ -56,7 +56,6 @@ export default function ResellerEdit({ resellerId }) {
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
   const [commissionType, setCommissionType] = useState("");
   const [packageRateType, setPackageRateType] = useState("");
-  console.log({ packageRateType });
   const [packageCommisson, setPackageCommission] = useState([]);
   const [clonePackageCommission, setClonePackageCommission] = useState([]);
 
@@ -207,6 +206,7 @@ export default function ResellerEdit({ resellerId }) {
         toast.error("Please select a package");
         return;
       }
+      console.log(sendingData);
       editReseller(dispatch, sendingData, setIsLoading);
     }
   };

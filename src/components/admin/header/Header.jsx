@@ -254,6 +254,19 @@ export default function Header(props) {
                           {t("profile")}
                         </NavLink>
                       </li>
+                      {/* {userRole === "reseller" && (
+                        <li className="profileList">
+                          <NavLink
+                            to={userRole === "reseller" && "/reseller/setting"}
+                            className="dropdown-item"
+                          >
+                            <span className="dropdownIcon">
+                              <PersonFill />
+                            </span>
+                            {t("setting")}
+                          </NavLink>
+                        </li>
+                      )} */}
 
                       {/* {userRole === "ispOwner" || userRole === "manager" ? (
                         <Link to="/activity">

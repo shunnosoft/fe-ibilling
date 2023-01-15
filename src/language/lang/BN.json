@@ -606,5 +606,6 @@
   "discount": "ডিসকাউন্ট",
   "withoutDiscount": "ডিসকাউন্ট বিহীন",
   "dueDate": "ডিউ তারিখ",
-  "paidAt": "পরিশোধ তারিখ"
+  "paidAt": "পরিশোধ তারিখ",
+  "ispOwner": "মালিক"
 }
