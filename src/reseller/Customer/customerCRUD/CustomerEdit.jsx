@@ -283,7 +283,7 @@ export default function CustomerEdit({ single }) {
                             ppPackage?.map((val, key) => (
                               <option
                                 selected={val.id === packageRate?.id}
-                                disabled={val.rate <= findPackage?.rate}
+                                disabled={val.rate < findPackage?.rate}
                                 key={key}
                                 value={val.id || ""}
                               >
