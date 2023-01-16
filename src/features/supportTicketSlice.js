@@ -12,6 +12,11 @@ export const supportTicketSlice = createSlice({
     getAllCustomer: (state, action) => {
       state.supportTickets = action.payload;
     },
+
+    createSupportTicket: (state, { payload }) => {
+      state.supportTickets = [payload, ...state.supportTickets];
+    },
+
     editSupportTickets: (state, action) => {
       console.log(action.payload);
       let index = state.supportTickets.findIndex(
@@ -51,6 +56,7 @@ export const supportTicketSlice = createSlice({
 export const {
   getSupportTickets,
   getAllCustomer,
+  createSupportTicket,
   editSupportTickets,
   deleteSupportTickets,
   getCollectorSupportTickets,

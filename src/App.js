@@ -464,7 +464,7 @@ function App() {
               path="/support/ticket"
               element={
                 user ? (
-                  userRole === "ispOwner" ? (
+                  userRole === "ispOwner" || userRole === "manager" ? (
                     <CustomerSupportTicket />
                   ) : (
                     userRole === "collector" && <CollectorSupportTicket />

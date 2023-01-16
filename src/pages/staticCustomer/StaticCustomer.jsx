@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
-  Wallet,
   ThreeDots,
   ArchiveFill,
   PenFill,
@@ -22,6 +21,7 @@ import {
   CurrencyDollar,
   KeyFill,
   CardChecklist,
+  Newspaper,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -38,6 +38,8 @@ import {
   getPackagewithoutmikrotik,
   fetchMikrotik,
   getArea,
+  getCollector,
+  getManger,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -59,30 +61,50 @@ import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CustomerNote from "./customerCRUD/CustomerNote";
+import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 
 export default function Customer() {
+  //call hooks
   const { t } = useTranslation();
-  const [mikrotikPac, setMikrotikPac] = useState([]);
-  const [Customers1, setCustomers1] = useState([]);
-  const [Customers2, setCustomers2] = useState([]);
+  const dispatch = useDispatch();
+
+  //get data from redux store
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
   // user id state
   const [userId, setUserId] = useState();
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector((state) => state?.customer?.staticCustomer);
+  const collectors = useSelector((state) => state?.collector?.collector);
+  const manager = useSelector((state) => state.manager?.manager);
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
-  const dispatch = useDispatch();
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData.permissions
+  );
+  const allareas = useSelector((state) => state?.area?.area);
+  const collectorArea = useSelector((state) =>
+    role === "collector"
+      ? state.persistedReducer.auth?.currentUser?.collector?.areas
+      : []
+  );
 
+  //declare local state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
   const [cusSearch, setCusSearch] = useState("");
+
+  const [mikrotikPac, setMikrotikPac] = useState([]);
+  const [Customers1, setCustomers1] = useState([]);
+  const [Customers2, setCustomers2] = useState([]);
 
   // set customer id in state for note
   const [customerNoteId, setCustomerNoteId] = useState();
@@ -107,22 +129,7 @@ export default function Customer() {
   const [singleCustomer, setSingleCustomer] = useState("");
   const [singleData, setSingleData] = useState();
 
-  // const currentCustomers = Customers;
-  const allareas = useSelector((state) => state?.area?.area);
-  const collectorArea = useSelector((state) =>
-    role === "collector"
-      ? state.persistedReducer.auth?.currentUser?.collector?.areas
-      : []
-  );
-
   const [allArea, setAreas] = useState([]);
-
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData.permissions
-  );
 
   useEffect(() => {
     if (role === "collector") {
@@ -345,6 +352,11 @@ export default function Customer() {
   useEffect(() => {
     if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setIsloading);
     if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
+    if (role !== "collector") {
+      if (collectors.length === 0)
+        getCollector(dispatch, ispOwner, setIsloading);
+      getManger(dispatch, ispOwner);
+    }
   }, []);
 
   //Filter function
@@ -768,45 +780,55 @@ export default function Customer() {
                   </div>
                 </li>
 
-                {role === "ispOwner" || permission.customerDelete ? (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#staticCustomerDelete"
-                    onClick={() => {
-                      customerDelete(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <ArchiveFill />
-                        <p className="actionP">{t("delete")}</p>
+                {role === "ispOwner" ||
+                  (permission.customerDelete && (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#staticCustomerDelete"
+                      onClick={() => {
+                        customerDelete(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ArchiveFill />
+                          <p className="actionP">{t("delete")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ) : (
-                  ""
-                )}
+                    </li>
+                  ))}
 
                 {original.mobile &&
-                (role === "ispOwner" || permission.sendSMS) ? (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
-                    onClick={() => {
-                      getSpecificCustomer(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <ChatText />
-                        <p className="actionP">{t("message")}</p>
+                  (role === "ispOwner" || permission.sendSMS) && (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#customerMessageModal"
+                      onClick={() => {
+                        getSpecificCustomer(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ChatText />
+                          <p className="actionP">{t("message")}</p>
+                        </div>
                       </div>
+                    </li>
+                  )}
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#createSupportTicket"
+                  onClick={() => {
+                    getSpecificCustomer(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <Newspaper />
+                      <p className="actionP">{t("supportTicket")}</p>
                     </div>
-                  </li>
-                ) : (
-                  ""
-                )}
-
+                  </div>
+                </li>
                 {role === "ispOwner" && original.mobile && (
                   <li
                     data-bs-toggle="modal"
@@ -1019,6 +1041,13 @@ export default function Customer() {
               <BulkAutoConnectionEdit
                 bulkCustomer={bulkCustomer}
                 modalId="autoDisableEditModal"
+              />
+              <CreateSupportTicket
+                collectors={collectors}
+                manager={manager}
+                customer={singleCustomer}
+                ispOwner={ispOwner}
+                reseller=""
               />
               {/* bulk Modal end */}
 

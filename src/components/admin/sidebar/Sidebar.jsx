@@ -46,7 +46,7 @@ export default function Sidebar() {
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
   const getIspOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData
@@ -1116,7 +1116,9 @@ export default function Sidebar() {
                         </Accordion.Item> */}
                       </>
                     )}
-                    {(userRole === "ispOwner" || userRole === "collector") &&
+                    {(userRole === "ispOwner" ||
+                      userRole === "collector" ||
+                      userRole === "manager") &&
                       !user.collector?.reseller && (
                         <>
                           <Accordion.Item eventKey="7">
@@ -1131,33 +1133,30 @@ export default function Sidebar() {
                               </span>
                             </Accordion.Header>
                             <Accordion.Body>
-                              {(userRole === "ispOwner" ||
-                                userRole === "collector") && (
-                                <NavLink
-                                  key={11}
-                                  to={"/support/ticket"}
-                                  className={(navInfo) =>
-                                    navInfo.isActive ? activeClass.active : ""
-                                  }
-                                >
-                                  <FontColor>
-                                    <li
-                                      className="sidebarItems"
-                                      id={
-                                        window.location.pathname ===
-                                          "/support/ticket" && "active"
-                                      }
-                                    >
-                                      <div className="sidebarIcon">
-                                        {<PersonDash />}
-                                      </div>
-                                      <span className="sidebarLinksName">
-                                        {t("supportTicket")}
-                                      </span>
-                                    </li>
-                                  </FontColor>
-                                </NavLink>
-                              )}
+                              <NavLink
+                                key={11}
+                                to={"/support/ticket"}
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
+                                }
+                              >
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                        "/support/ticket" && "active"
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<PersonDash />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("supportTicket")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
                             </Accordion.Body>
                           </Accordion.Item>
                         </>
