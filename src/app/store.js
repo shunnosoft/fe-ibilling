@@ -32,6 +32,7 @@ import productSlice from "../features/inventorySlice";
 import hotspotSlice from "../features/hotspotSlice";
 import customerNoteSlice from "../features/customerNoteSlice";
 import netfeeSettingsSlice from "../features/netfeeSettinsSlice";
+import resellerDataSlice from "../features/resellerDataSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -75,6 +76,7 @@ const store = configureStore({
     products: productSlice,
     customerNotes: customerNoteSlice,
     netfeeSettings: netfeeSettingsSlice,
+    resellerData: resellerDataSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

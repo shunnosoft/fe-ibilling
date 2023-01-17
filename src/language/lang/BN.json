@@ -607,5 +607,8 @@
   "withoutDiscount": "ডিসকাউন্ট বিহীন",
   "dueDate": "ডিউ তারিখ",
   "paidAt": "পরিশোধ তারিখ",
-  "ispOwner": "মালিক"
+  "ispOwner": "মালিক",
+  "own": "নিজস্ব",
+  "isp": "আইএসপি ",
+  "summary": "সামারি"
 }

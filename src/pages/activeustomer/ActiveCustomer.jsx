@@ -72,6 +72,7 @@ export default function ConfigMikrotik() {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  console.log(allUsers);
 
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
@@ -180,7 +181,7 @@ export default function ConfigMikrotik() {
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "6%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -248,9 +249,14 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "15%",
-        Header: "Last Link Up Time",
+        width: "12%",
+        Header: "Last Link Up",
         accessor: "lastLinkUpTime",
+      },
+      {
+        width: "12%",
+        Header: "Last Logout",
+        accessor: "lastLogoutTime",
       },
       // {
       //   width: "15%",

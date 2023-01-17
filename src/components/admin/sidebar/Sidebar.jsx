@@ -457,6 +457,33 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
                         )}
+
+                        {userRole === "reseller" && (
+                          <NavLink
+                            key={120}
+                            to={userRole === "reseller" && "/reseller/summary"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/reseller/summary"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("summary")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
                         {/* <NavLink
                           key={121}
                           to={"/active/hotspot/customer"}

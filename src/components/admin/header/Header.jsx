@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { useSelector } from "react-redux";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   ArrowClockwise,
   BoxArrowLeft,
-  PersonBoundingBox,
   PersonFill,
 } from "react-bootstrap-icons";
 
@@ -254,19 +253,6 @@ export default function Header(props) {
                           {t("profile")}
                         </NavLink>
                       </li>
-                      {/* {userRole === "reseller" && (
-                        <li className="profileList">
-                          <NavLink
-                            to={userRole === "reseller" && "/reseller/setting"}
-                            className="dropdown-item"
-                          >
-                            <span className="dropdownIcon">
-                              <PersonFill />
-                            </span>
-                            {t("setting")}
-                          </NavLink>
-                        </li>
-                      )} */}
 
                       {/* {userRole === "ispOwner" || userRole === "manager" ? (
                         <Link to="/activity">

@@ -606,5 +606,8 @@
   "withoutDiscount": "Without Discount",
   "dueDate": "Due Date",
   "paidAt": "Paid Date",
-  "ispOwner": "Isp Owner"
+  "ispOwner": "Isp Owner",
+  "own": "Own",
+  "isp": "ISP",
+  "summary": "Summary"
 }

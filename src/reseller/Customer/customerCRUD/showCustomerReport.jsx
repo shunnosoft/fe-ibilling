@@ -1,5 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import apiLink from "../../../api/apiLink";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
@@ -7,6 +8,9 @@ import { useTranslation } from "react-i18next";
 export default function CustomerReport({ single }) {
   const { t } = useTranslation();
   const [customerReport, setCustomerReport] = useState([]);
+
+  // get user role
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
 
   useEffect(() => {
     const getCustoemrReport = async () => {
@@ -53,8 +57,12 @@ export default function CustomerReport({ single }) {
                   <thead>
                     <tr className="spetialSortingRow">
                       <th scope="col"> {t("bill")} </th>
-                      <th scope="col"> {t("ispOwner")} </th>
-                      <th scope="col"> {t("reseller")} </th>
+                      {userRole === "reseller" && (
+                        <>
+                          <th scope="col"> {t("isp")} </th>
+                          <th scope="col"> {t("reseller")} </th>
+                        </>
+                      )}
                       <th scope="col"> {t("date")} </th>
                       <th scope="col"> {t("medium")} </th>
                       <th scope="col"> {t("collector")} </th>
@@ -65,8 +73,12 @@ export default function CustomerReport({ single }) {
                     {customerReport?.map((val, index) => (
                       <tr className="spetialSortingRow" key={index}>
                         <td>{FormatNumber(val.amount)}</td>
-                        <td>{FormatNumber(val?.ispOwnerCommission)}</td>
-                        <td>{FormatNumber(val?.resellerCommission)}</td>
+                        {userRole === "reseller" && (
+                          <>
+                            <td>{FormatNumber(val?.ispOwnerCommission)}</td>
+                            <td>{FormatNumber(val?.resellerCommission)}</td>
+                          </>
+                        )}
                         <td>
                           {moment(val.createdAt).format(
                             "DD-MM-YYYY hh:mm:ss A"

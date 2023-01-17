@@ -903,10 +903,23 @@ export const fetchpppoeUser = async (
       url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
 
-    const customers = res.data?.customers;
+    let customers = res.data?.customers;
     const pppsecretUsers = res.data?.pppsecretUsers;
     let interfaaceList = res.data?.interfaceList;
     let activepppSecretUsers = res.data?.activepppSecretUsers;
+
+    customers = customers.map((customerItem) => {
+      const lastLogout = pppsecretUsers.find(
+        (j) => j?.name === customerItem.pppoe?.name
+      );
+      if (lastLogout) {
+        customerItem = {
+          ...customerItem,
+          lastLogoutTime: lastLogout.lastLoggedOut,
+        };
+      }
+      return customerItem;
+    });
 
     const temp = [];
     interfaaceList = interfaaceList.map((interfaceItem) => {
@@ -959,6 +972,7 @@ export const fetchpppoeUser = async (
     setIsLoading(false);
   } catch (error) {
     setIsLoading(false);
+    console.log(error);
 
     dispatch(mtkIsLoading(false));
     langMessage(
