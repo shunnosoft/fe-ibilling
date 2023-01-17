@@ -74,7 +74,7 @@ export default function Sidebar() {
   //     .getElementById("toggleSubBilling")
   //     .classList.toggle("hideSubBilling");
   // };
-
+  console.log(getIspOwnerData?.bpSettings?.hasMikrotik);
   const [activeKey, setActiveKey] = useState();
   const location = window.location.pathname;
 
@@ -107,7 +107,7 @@ export default function Sidebar() {
   const hasCustomerType = bpSettings?.customerType
     ? bpSettings.customerType
     : [];
-
+  console.log(hasCustomerType);
   return (
     <TitleColor>
       <div>
@@ -292,7 +292,7 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
                         )}
-                        {hasCustomerType.includes("static") && (
+                        {hasCustomerType.includes("pppoe") && (
                           <>
                             {getIspOwnerData?.bpSettings?.hasMikrotik && (
                               <NavLink
@@ -330,7 +330,10 @@ export default function Sidebar() {
                                 </FontColor>
                               </NavLink>
                             )}
-
+                          </>
+                        )}
+                        {hasCustomerType.includes("static") && (
+                          <>
                             <NavLink
                               key={60}
                               to={
@@ -386,7 +389,7 @@ export default function Sidebar() {
                             {getIspOwnerData?.bpSettings?.hasMikrotik &&
                             (userRole === "ispOwner" ||
                               userRole === "manager" ||
-                              // userRole === "reseller" ||
+                              userRole === "reseller" ||
                               (userRole === "collector" &&
                                 !user.collector.reseller)) ? (
                               <NavLink
@@ -428,7 +431,6 @@ export default function Sidebar() {
                             )}
                           </>
                         )}
-
                         {userRole === "ispOwner" &&
                           bpSettings?.hasMikrotik &&
                           hasCustomerType.includes("hotspot") && (
