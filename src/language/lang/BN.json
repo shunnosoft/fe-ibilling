@@ -610,5 +610,7 @@
   "ispOwner": "মালিক",
   "own": "নিজস্ব",
   "isp": "আইএসপি ",
-  "summary": "সামারি"
+  "summary": "সামারি",
+  "customerType": "গ্রাহক ধরন",
+  "pleaseSelectCustomerType": "গ্রাহক ধরন সিলেক্ট করুন"
 }

@@ -1,3 +1,4 @@
+import moment from "moment/moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -47,6 +48,10 @@ const Client = () => {
   };
   const [isMenuOpen, setMenuOpen] = useState(false);
 
+  const diffFormBillDate = moment(userData.billingCycle).diff(
+    new Date(),
+    "days"
+  );
   const serviceData = [
     {
       header: "Home Internet",
@@ -196,9 +201,12 @@ const Client = () => {
                 <Nav.Link onClick={() => renderPageController("supportPage")}>
                   Support Ticket
                 </Nav.Link>
-                <Nav.Link onClick={() => renderPageController("payBill")}>
-                  Pay Bill
-                </Nav.Link>
+                {hasPG && (
+                  <Nav.Link onClick={() => renderPageController("payBill")}>
+                    Pay Bill
+                  </Nav.Link>
+                )}
+
                 <Nav.Link
                   onClick={() => renderPageController("paymentHistory")}
                 >
@@ -217,6 +225,26 @@ const Client = () => {
             <h1 className="text-center jumbotron">
               Welcome to {userData.ispOwner.company}
             </h1>
+            {diffFormBillDate <= 7 && (
+              <div className=" bg-primary py-3 text-center">
+                <div className="h5">
+                  <strong>Warning:</strong>Your billing date expire in{" "}
+                  <span className="text-warning">
+                    {moment(userData.billingCycle).format("DD MMM YYYY")}
+                  </span>
+                </div>
+                {hasPG && (
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#billPaymentModal"
+                    type="button"
+                    className=" btn-success "
+                  >
+                    Pay now
+                  </button>
+                )}
+              </div>
+            )}
 
             {renderText === "profile" && <ClientProfile />}
             {renderText === "resetPassword" && <PasswordReset />}

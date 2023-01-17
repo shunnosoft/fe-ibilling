@@ -33,6 +33,7 @@ import hotspotSlice from "../features/hotspotSlice";
 import customerNoteSlice from "../features/customerNoteSlice";
 import netfeeSettingsSlice from "../features/netfeeSettinsSlice";
 import resellerDataSlice from "../features/resellerDataSlice";
+import userSlice from "../features/userSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -47,6 +48,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
   reducer: {
     persistedReducer,
+    user: userSlice,
     customer: customerSlice,
     area: areaSlice,
     mikrotik: mikrotikSlice,

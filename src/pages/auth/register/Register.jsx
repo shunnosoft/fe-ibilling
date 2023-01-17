@@ -32,11 +32,10 @@ export default function Register() {
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [pakage, setPakage] = useState(allpakage[0]);
   const [subpakage, setsubPakage] = useState(allpakage[0]?.subPackage);
-  const [singlePakage, setSinglePakage] = useState([
-    // allpakage[0]["subPakage"][0],
-    "Standard",
-  ]);
+  const [singlePakage, setSinglePakage] = useState(["Standard"]);
   const [isLoading, setLoading] = useState(false);
+  const [customerType, setCustomerType] = useState(["pppoe"]);
+
   const validate = Yup.object({
     company: Yup.string()
       .min(3, t("minimumContaining3letter"))
@@ -76,6 +75,11 @@ export default function Register() {
     // const selector = document.getElementById("selector");
 
     // const { refName, refMobile, ...rest } = values;
+    if (!customerType.length) {
+      alert(t("pleaseSelectCustomerType"));
+      return;
+    }
+
     let userData = {};
 
     const { refName, maxUser, refMobile, ...rest } = values;
@@ -83,6 +87,7 @@ export default function Register() {
       ...rest,
       pack: singlePakage[0].subPackageName,
       packType: pakage?.packageName,
+      customerType,
       reference: {
         name: refName || "তৌকির হোসেন",
         mobile: refMobile || "01321141785",
@@ -90,8 +95,6 @@ export default function Register() {
     };
 
     // send user data to async function
-
-    console.log(userData);
     asyncRegister(userData, setLoading);
   };
 
@@ -110,18 +113,28 @@ export default function Register() {
   //   }
   // };
 
-  const handlePakageSelect = (e) => {
-    // setChecked(!isChecked)
-    const pakage = JSON.parse(e.target.value);
-    setPakage(pakage);
-    setsubPakage(pakage?.subPakage);
-    const getsinglePak = pakage?.subPakage?.filter(
-      (p) => p.subPackageName === singlePakage[0]?.subPackageName
-    );
-    setSinglePakage(getsinglePak);
-  };
+  // const handlePakageSelect = (e) => {
+  //   // setChecked(!isChecked)
+  //   const pakage = JSON.parse(e.target.value);
+  //   setPakage(pakage);
+  //   setsubPakage(pakage?.subPakage);
+  //   const getsinglePak = pakage?.subPakage?.filter(
+  //     (p) => p.subPackageName === singlePakage[0]?.subPackageName
+  //   );
+  //   setSinglePakage(getsinglePak);
+  // };
+
   const handleSubPakage = (e) => {
     setSinglePakage([JSON.parse(e.target.value)]);
+  };
+
+  //handle customer Type change
+  const handleCustomerTypeChange = ({ target: { value, checked } }) => {
+    if (!checked && customerType.includes(value)) {
+      setCustomerType(customerType.filter((item) => item !== value));
+    } else {
+      setCustomerType([...customerType, value]);
+    }
   };
 
   return (
@@ -267,7 +280,50 @@ export default function Register() {
                         {FormatNumber(singlePakage[0].monthly)}
                       </span>
                     </div>
-
+                    <label className="form-label mt-2">
+                      {t("customerType")}{" "}
+                    </label>
+                    <div className="input-group justify-content-between">
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          value="pppoe"
+                          id="pppoe"
+                          checked={customerType.includes("pppoe")}
+                          onChange={handleCustomerTypeChange}
+                        />
+                        <label class="form-check-label" htmlFor="pppoe">
+                          PPPOE
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          value="static"
+                          id="static"
+                          checked={customerType.includes("static")}
+                          onChange={handleCustomerTypeChange}
+                        />
+                        <label class="form-check-label" htmlFor="static">
+                          Static
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          value="hotspot"
+                          id="hotspot"
+                          checked={customerType.includes("hotspot")}
+                          onChange={handleCustomerTypeChange}
+                        />
+                        <label class="form-check-label" htmlFor="hotspot">
+                          Hotspot
+                        </label>
+                      </div>
+                    </div>
                     {/* <div className="form-outline" id="get_customer">
                       <TextField
                         id="maxUserValue"

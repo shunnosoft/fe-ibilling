@@ -1349,7 +1349,12 @@ export const deleteReseller = async (dispatch, IDs, setIsLoading) => {
 // }
 
 //password update
-export const passwordUpdate = async (data, setIsLoadingpass) => {
+export const passwordUpdate = async ({
+  data,
+  setIsLoadingpass,
+  setRedirectTime,
+  setStartRedirect,
+}) => {
   setIsLoadingpass(true);
 
   try {
@@ -1360,6 +1365,19 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
       "পাসওয়ার্ড আপডেট সফল হয়েছে",
       "Password Updated Successfully"
     );
+
+    setStartRedirect(true);
+
+    //if password changed than execute force logout
+    let redirectTime = 10;
+    const interval = setInterval(() => {
+      setRedirectTime(redirectTime - 1);
+      redirectTime--;
+      if (redirectTime === 0) {
+        clearInterval(interval);
+        userLogout();
+      }
+    }, 1000);
   } catch (error) {
     console.log(error.message);
     setIsLoadingpass(false);
@@ -1367,37 +1385,76 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
   }
 };
 
-export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
-  console.log(data);
+export const profileUpdate = async ({
+  dispatch,
+  data,
+  id,
+  mobile,
+  setIsLoading,
+  setRedirectTime,
+  setStartRedirect,
+}) => {
   setIsLoading(true);
-
   try {
     const res = await apiLink.patch(`/ispOwner/${id}`, data);
     // console.log(res.data);
+
+    //if mobile number change than execute force logout
+
+    if (res.data.mobile && mobile && mobile !== res.data.mobile) {
+      setStartRedirect(true);
+      let redirectTime = 10;
+      const interval = setInterval(() => {
+        setRedirectTime(redirectTime - 1);
+        redirectTime--;
+        if (redirectTime === 0) {
+          clearInterval(interval);
+          userLogout();
+        }
+      }, 1000);
+    }
     dispatch(updateProfile(res.data));
-    setIsLoading(false);
+
     langMessage(
       "success",
       "প্রোফাইল আপডেট সফল হয়েছে",
       "Profile Updated Successfully"
     );
   } catch (error) {
-    setIsLoading(false);
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
-export const resellerProfileUpdate = async (
+export const resellerProfileUpdate = async ({
   dispatch,
   data,
   resellerId,
-  setIsLoading
-) => {
+  setIsLoading,
+  setRedirectTime,
+  setStartRedirect,
+  mobile,
+}) => {
   setIsLoading(true);
 
   try {
     const res = await apiLink.patch(`/reseller/${resellerId}`, data);
     // console.log(res.data);
+
+    //if mobile number change than execute force logout
+    if (res.data.mobile && mobile && mobile !== res.data.mobile) {
+      setStartRedirect(true);
+      let redirectTime = 10;
+      const interval = setInterval(() => {
+        setRedirectTime(redirectTime - 1);
+        redirectTime--;
+        if (redirectTime === 0) {
+          clearInterval(interval);
+          userLogout();
+        }
+      }, 1000);
+    }
+
     dispatch(updateProfile(res.data));
     setIsLoading(false);
     langMessage(
@@ -1411,13 +1468,16 @@ export const resellerProfileUpdate = async (
   }
 };
 
-export const collectorProfileUpdate = async (
+export const collectorProfileUpdate = async ({
   dispatch,
   data,
   resellerId,
   collectorId,
-  setIsLoading
-) => {
+  setIsLoading,
+  setRedirectTime,
+  setStartRedirect,
+  mobile,
+}) => {
   setIsLoading(true);
 
   try {
@@ -1425,6 +1485,20 @@ export const collectorProfileUpdate = async (
       `/reseller/collector/${resellerId}/${collectorId}`,
       data
     );
+    //if mobile number change than force logout
+    if (res.data.mobile && mobile && mobile !== res.data.mobile) {
+      setStartRedirect(true);
+      let redirectTime = 10;
+      const interval = setInterval(() => {
+        setRedirectTime(redirectTime - 1);
+        redirectTime--;
+        if (redirectTime === 0) {
+          clearInterval(interval);
+          userLogout();
+        }
+      }, 1000);
+    }
+
     dispatch(updateProfile(res.data));
     setIsLoading(false);
     langMessage(

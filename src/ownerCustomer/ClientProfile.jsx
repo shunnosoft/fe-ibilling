@@ -15,6 +15,7 @@ export default function ClientProfile() {
   //       console.log(e.response?.data?.message);
   //     });
   // }, []);
+
   const hasPG = userData.ispOwner.bpSettings.hasPG;
 
   return (

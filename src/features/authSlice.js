@@ -22,6 +22,7 @@ const authSlice = createSlice({
       state.accessToken = action.payload?.access.token;
       state.isFetching = false;
       state.currentUser = action.payload;
+      localStorage.setItem("tokenUsr", JSON.stringify(action.payload.user));
       state.role = action.payload?.user.role;
       action.payload?.user.role === "ispOwner"
         ? (state.ispOwnerId = action.payload?.ispOwner?.id) &&

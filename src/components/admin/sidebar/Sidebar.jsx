@@ -46,7 +46,7 @@ export default function Sidebar() {
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
   const getIspOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData
@@ -103,6 +103,11 @@ export default function Sidebar() {
       localStorage.setItem("active-key", key);
     }
   };
+
+  const hasCustomerType = bpSettings?.customerType
+    ? bpSettings.customerType
+    : [];
+
   return (
     <TitleColor>
       <div>
@@ -253,53 +258,15 @@ export default function Sidebar() {
                         </span>
                       </Accordion.Header>
                       <Accordion.Body>
-                        <NavLink
-                          key={6}
-                          to={
-                            userRole === "reseller" ||
-                            (userRole === "collector" &&
-                              user.collector.reseller)
-                              ? "/reseller/customer"
-                              : "/customer"
-                          }
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname ===
-                                (userRole === "reseller"
-                                  ? "/reseller/customer"
-                                  : "/customer")
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">{<People />}</div>
-                              <span className="sidebarLinksName">
-                                {t("PPPoE")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
-
-                        {getIspOwnerData?.bpSettings?.hasMikrotik &&
-                        (userRole === "ispOwner" ||
-                          userRole === "manager" ||
-                          userRole === "reseller" ||
-                          userRole === "collector" ||
-                          user.collector.reseller) ? (
+                        {hasCustomerType.includes("pppoe") && (
                           <NavLink
-                            key={66}
+                            key={6}
                             to={
                               userRole === "reseller" ||
                               (userRole === "collector" &&
                                 user.collector.reseller)
-                                ? "/reseller/activeCustomer"
-                                : "/activeCustomer"
+                                ? "/reseller/customer"
+                                : "/customer"
                             }
                             className={(navInfo) =>
                               navInfo.isActive ? activeClass.active : ""
@@ -311,62 +278,93 @@ export default function Sidebar() {
                                 id={
                                   window.location.pathname ===
                                   (userRole === "reseller"
-                                    ? "/reseller/activeCustomer"
-                                    : "/activeCustomer")
+                                    ? "/reseller/customer"
+                                    : "/customer")
                                     ? "active"
                                     : ""
                                 }
                               >
-                                <div className="sidebarIcon">
-                                  {<PersonCheck />}
-                                </div>
+                                <div className="sidebarIcon">{<People />}</div>
                                 <span className="sidebarLinksName">
-                                  {t("active PPPoE")}
+                                  {t("PPPoE")}
                                 </span>
                               </li>
                             </FontColor>
                           </NavLink>
-                        ) : (
-                          ""
                         )}
-                        {userRole === "ispOwner" ||
-                        userRole === "manager" ||
-                        userRole === "reseller" ||
-                        userRole === "collector" ? (
-                          <NavLink
-                            key={60}
-                            to={
-                              userRole === "reseller" ||
-                              (userRole === "collector" &&
-                                user.collector.reseller)
-                                ? "/reseller/staticCustomer"
-                                : "/staticCustomer"
-                            }
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname ===
-                                  (userRole === "reseller"
-                                    ? "/reseller/staticCustomer"
-                                    : "/staticCustomer")
-                                    ? "active"
-                                    : ""
+                        {hasCustomerType.includes("static") && (
+                          <>
+                            {getIspOwnerData?.bpSettings?.hasMikrotik && (
+                              <NavLink
+                                key={66}
+                                to={
+                                  userRole === "reseller" ||
+                                  (userRole === "collector" &&
+                                    user.collector.reseller)
+                                    ? "/reseller/activeCustomer"
+                                    : "/activeCustomer"
+                                }
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
                                 }
                               >
-                                <div className="sidebarIcon">
-                                  {<PersonVideo />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("static")}
-                                </span>
-                              </li>
-                            </FontColor>
-                            {/* <FontColor>
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      (userRole === "reseller"
+                                        ? "/reseller/activeCustomer"
+                                        : "/activeCustomer")
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<PersonCheck />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("active PPPoE")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            )}
+
+                            <NavLink
+                              key={60}
+                              to={
+                                userRole === "reseller" ||
+                                (userRole === "collector" &&
+                                  user.collector.reseller)
+                                  ? "/reseller/staticCustomer"
+                                  : "/staticCustomer"
+                              }
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    (userRole === "reseller"
+                                      ? "/reseller/staticCustomer"
+                                      : "/staticCustomer")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<PersonVideo />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("static")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                              {/* <FontColor>
                             <li
                               className="sidebarItems"
                               id={
@@ -383,80 +381,84 @@ export default function Sidebar() {
                               </span>
                             </li>
                           </FontColor> */}
-                          </NavLink>
-                        ) : (
-                          ""
+                            </NavLink>
+
+                            {getIspOwnerData?.bpSettings?.hasMikrotik &&
+                            (userRole === "ispOwner" ||
+                              userRole === "manager" ||
+                              // userRole === "reseller" ||
+                              (userRole === "collector" &&
+                                !user.collector.reseller)) ? (
+                              <NavLink
+                                key={61}
+                                to={
+                                  userRole === "reseller" ||
+                                  (userRole === "collector" &&
+                                    user.collector.reseller)
+                                    ? "/reseller/staticActiveCustomer"
+                                    : "/staticActiveCustomer"
+                                }
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
+                                }
+                              >
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      (userRole === "reseller"
+                                        ? "/reseller/staticActiveCustomer"
+                                        : "/staticActiveCustomer")
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<PersonCheck />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("active static")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            ) : (
+                              ""
+                            )}
+                          </>
                         )}
 
-                        {getIspOwnerData?.bpSettings?.hasMikrotik &&
-                        (userRole === "ispOwner" ||
-                          userRole === "manager" ||
-                          // userRole === "reseller" ||
-                          (userRole === "collector" &&
-                            !user.collector.reseller)) ? (
-                          <NavLink
-                            key={61}
-                            to={
-                              userRole === "reseller" ||
-                              (userRole === "collector" &&
-                                user.collector.reseller)
-                                ? "/reseller/staticActiveCustomer"
-                                : "/staticActiveCustomer"
-                            }
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname ===
-                                  (userRole === "reseller"
-                                    ? "/reseller/staticActiveCustomer"
-                                    : "/staticActiveCustomer")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<PersonCheck />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("active static")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        ) : (
-                          ""
-                        )}
-                        {userRole === "ispOwner" && bpSettings?.hasMikrotik && (
-                          <NavLink
-                            key={120}
-                            to={"/hotspot/customer"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname ===
-                                  "/hotspot/customer"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">{<People />}</div>
-                                <span className="sidebarLinksName">
-                                  {t("hotspot")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        )}
+                        {userRole === "ispOwner" &&
+                          bpSettings?.hasMikrotik &&
+                          hasCustomerType.includes("hotspot") && (
+                            <NavLink
+                              key={120}
+                              to={"/hotspot/customer"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    "/hotspot/customer"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<People />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("hotspot")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          )}
 
                         {userRole === "reseller" && (
                           <NavLink
@@ -1141,7 +1143,9 @@ export default function Sidebar() {
                         </Accordion.Item> */}
                       </>
                     )}
-                    {(userRole === "ispOwner" || userRole === "collector") &&
+                    {(userRole === "ispOwner" ||
+                      userRole === "collector" ||
+                      userRole === "manager") &&
                       !user.collector?.reseller && (
                         <>
                           <Accordion.Item eventKey="7">
@@ -1156,33 +1160,30 @@ export default function Sidebar() {
                               </span>
                             </Accordion.Header>
                             <Accordion.Body>
-                              {(userRole === "ispOwner" ||
-                                userRole === "collector") && (
-                                <NavLink
-                                  key={11}
-                                  to={"/support/ticket"}
-                                  className={(navInfo) =>
-                                    navInfo.isActive ? activeClass.active : ""
-                                  }
-                                >
-                                  <FontColor>
-                                    <li
-                                      className="sidebarItems"
-                                      id={
-                                        window.location.pathname ===
-                                          "/support/ticket" && "active"
-                                      }
-                                    >
-                                      <div className="sidebarIcon">
-                                        {<PersonDash />}
-                                      </div>
-                                      <span className="sidebarLinksName">
-                                        {t("supportTicket")}
-                                      </span>
-                                    </li>
-                                  </FontColor>
-                                </NavLink>
-                              )}
+                              <NavLink
+                                key={11}
+                                to={"/support/ticket"}
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
+                                }
+                              >
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                        "/support/ticket" && "active"
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<PersonDash />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("supportTicket")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
                             </Accordion.Body>
                           </Accordion.Item>
                         </>

@@ -1,12 +1,27 @@
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
 import {
+  createSupportTicket,
   deleteSupportTickets,
   editSupportTickets,
-  getAllCustomer,
   getCollectorSupportTickets,
   getSupportTickets,
 } from "./supportTicketSlice";
+
+//create supportTickets api
+export const createSupportTicketApi = async (dispatch, body, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const { data } = await apiLink.post(`customer/supportTicket/`, body);
+
+    dispatch(createSupportTicket(data.data));
+    toast.success("Support ticket created successful");
+    document.getElementById("createSupportTicket").click();
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
 
 //get supportTickets api
 export const getAllSupportTickets = async (dispatch, id, setIsLoading) => {

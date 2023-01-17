@@ -19,7 +19,9 @@ import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const { t } = useTranslation();
-  // const role = useSelector(state=>state.persistedReducer.auth.currentUser?.user.role);
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -29,6 +31,8 @@ export default function Profile() {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingpass, setIsLoadingpass] = useState(false);
+  const [startRedirect, setStartRedirect] = useState(false);
+  const [redirectTime, setRedirectTime] = useState(10);
 
   const passwordValidator = Yup.object({
     mobile: Yup.string()
@@ -62,18 +66,57 @@ export default function Profile() {
 
   const dispatch = useDispatch();
   const progileEditHandler = (data) => {
-    // delete data.mobile;
-    profileUpdate(dispatch, data, ispOwnerId, setIsLoading);
-  };
+    const sendingData = {
+      dispatch,
+      data,
+      role,
+      id: ispOwnerId,
+      mobile: currentUser.mobile,
+      setIsLoading,
+      setRedirectTime,
+      setStartRedirect,
+    };
 
+    profileUpdate(sendingData);
+  };
   //   change password handler
   const changePasswordHandler = (data) => {
     delete data.confrimPassword;
-    passwordUpdate(data, setIsLoadingpass);
+    const sendingData = {
+      data,
+      role,
+      setIsLoadingpass,
+      setRedirectTime,
+      setStartRedirect,
+    };
+
+    passwordUpdate(sendingData);
   };
+
+  const styles = {
+    width: "100%",
+    height: "100vh",
+    overflow: "hidden",
+    position: "fixed",
+    top: 0,
+    bottom: 0,
+    zIndex: "5",
+  };
+
   return (
     <>
-      <Sidebar />
+      {startRedirect && (
+        <div style={styles}>
+          <h3
+            className="text-secondary text-center"
+            style={{ marginTop: "10rem" }}
+          >
+            you are being logging out in {redirectTime} seconds...
+          </h3>
+        </div>
+      )}
+
+      {!startRedirect && <Sidebar />}
       <ToastContainer
         className="bg-green"
         toastStyle={{
@@ -82,9 +125,10 @@ export default function Profile() {
           fontWeight: "500",
         }}
       />
-      <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
-          <div className="container">
+      {/* <div className={useDash.dashboardWrapper}> */}
+      <div className="container-fluied collector">
+        <div className="container">
+          {!startRedirect && (
             <FontColor>
               <FourGround>
                 <h2 className="collectorTitle"> {t("profile")} </h2>
@@ -199,9 +243,10 @@ export default function Profile() {
               </FourGround>
               <Footer />
             </FontColor>
-          </div>
+          )}
         </div>
       </div>
+      {/* </div> */}
     </>
   );
 }

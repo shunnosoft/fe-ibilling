@@ -66,6 +66,7 @@ export default function Home() {
   const customerStat = useSelector((state) => state.chart.customerStat);
   const invoice = useSelector((state) => state.invoice.invoice);
   const [isLoading, setIsloading] = useState(false);
+  const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
@@ -186,14 +187,14 @@ export default function Home() {
       dispatch(FetchAreaSuccess(areas));
       getDashboardCardData(
         dispatch,
-        setIsloading,
+        setLoadingDashboardData,
         ispOwnerId,
         null,
         userData?.id
       );
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
-      getDashboardCardData(dispatch, setIsloading, ispOwnerId);
+      getDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
     }
 
     // if (!invoice) getUnpaidInvoice(dispatch, ispOwnerId, setIsloading);
@@ -409,7 +410,7 @@ export default function Home() {
   return (
     <>
       <div className="container homeWrapper">
-        <div className={`Loader ${isLoading && "d-block"}`}></div>
+        <div className={`Loader ${loadingDashboardData && "d-block"}`}></div>
         <ToastContainer position="top-right" theme="colored" />
         <FontColor>
           <div className="home">

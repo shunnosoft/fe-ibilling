@@ -609,5 +609,7 @@
   "ispOwner": "Isp Owner",
   "own": "Own",
   "isp": "ISP",
-  "summary": "Summary"
+  "summary": "Summary",
+  "customerType": "Customer Type",
+  "pleaseSelectCustomerType": "Please select customer type"
 }
