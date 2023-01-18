@@ -101,7 +101,7 @@ const CreateSupportTicket = ({
               )}
 
               <button
-                className="btn btn-primary ms-auto shadow-none mt-2"
+                className="btn btn-success ms-auto shadow-none mt-3"
                 onClick={createSupportTicketHandler}
               >
                 {loading ? <Loader /> : t("submit")}

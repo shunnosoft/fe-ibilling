@@ -9,6 +9,7 @@ import {
   CurrencyDollar,
   FileExcelFill,
   KeyFill,
+  Newspaper,
   PenFill,
   PersonFill,
   PersonPlusFill,
@@ -31,8 +32,9 @@ import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import {
   fetchMikrotik,
   getArea,
+  getCollector,
   getCustomer,
-  getDueCustomer,
+  getManger,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import { ToastContainer } from "react-toastify";
@@ -69,6 +71,7 @@ import BandwidthModal from "./BandwidthModal";
 import BulkBalanceEdit from "./customerCRUD/bulkOpration/BulkBalanceEdit";
 import CustomerNote from "./customerCRUD/CustomerNote";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -80,6 +83,12 @@ const PPPOECustomer = () => {
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get collector
+  const collectors = useSelector((state) => state?.collector?.collector);
+
+  // get manager
+  const manager = useSelector((state) => state.manager?.manager);
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -173,6 +182,12 @@ const PPPOECustomer = () => {
   //collector area
   const [collectorAreas, setCollectorAreas] = useState([]);
 
+  // collector loading
+  const [collectorLoading, setCollectorLoading] = useState(false);
+
+  // get specific customer
+  const [singleCustomer, setSingleCustomer] = useState("");
+
   //filter state
   const [filterOptions, setFilterOption] = useState({
     status: "",
@@ -205,6 +220,12 @@ const PPPOECustomer = () => {
     // get customer api
     if (customers.length === 0)
       getCustomer(dispatch, ispOwner, setCustomerLoading);
+
+    if (role !== "collector") {
+      if (collectors.length === 0)
+        getCollector(dispatch, ispOwner, setCollectorLoading);
+      getManger(dispatch, ispOwner);
+    }
 
     // set initial state for print oprions
     const lang = localStorage.getItem("netFee:lang");
@@ -789,6 +810,19 @@ const PPPOECustomer = () => {
                       </div>
                     </li>
                   )}
+
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#createSupportTicket"
+                  onClick={() => setSingleCustomer(original)}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <Newspaper />
+                      <p className="actionP">{t("supportTicket")}</p>
+                    </div>
+                  </div>
+                </li>
 
                 {role === "ispOwner" && original.mobile && (
                   <li
@@ -1502,6 +1536,13 @@ const PPPOECustomer = () => {
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
         customerId={customerId}
+      />
+      <CreateSupportTicket
+        collectors={collectors}
+        manager={manager}
+        customer={singleCustomer}
+        ispOwner={ispOwner}
+        reseller=""
       />
       {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">

@@ -125,128 +125,132 @@ export default function Profile() {
           fontWeight: "500",
         }}
       />
-      {/* <div className={useDash.dashboardWrapper}> */}
-      <div className="container-fluied collector">
-        <div className="container">
-          {!startRedirect && (
-            <FontColor>
-              <FourGround>
-                <h2 className="collectorTitle"> {t("profile")} </h2>
-              </FourGround>
+      <div className={useDash.dashboardWrapper}>
+        <div className="container-fluied collector">
+          <div className="container">
+            {!startRedirect && (
+              <FontColor>
+                <FourGround>
+                  <h2 className="collectorTitle"> {t("profile")} </h2>
+                </FourGround>
 
-              <FourGround>
-                <div className="collectorWrapper">
-                  <div className="profileWrapper">
-                    <div className="profileUpdate">
-                      <h5 className="mb-4"> {t("updateProfile")} </h5>
-                      <Formik
-                        initialValues={{
-                          name: currentUser?.name || "",
-                          company: currentUser?.company || "",
-                          email: currentUser?.email || "",
-                          address: currentUser?.address || "",
-                          signature: currentUser?.signature || "",
-                          mobile: currentUser?.mobile || "",
-                        }}
-                        validationSchema={profileValidator}
-                        onSubmit={(values) => {
-                          progileEditHandler(values);
-                        }}
-                        enableReinitialize
-                      >
-                        {() => (
-                          <Form>
-                            <FtextField
-                              type="text"
-                              label={t("name")}
-                              name="name"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("company")}
-                              name="company"
-                            />
+                <FourGround>
+                  <div className="collectorWrapper">
+                    <div className="profileWrapper">
+                      <div className="profileUpdate">
+                        <h5 className="mb-4"> {t("updateProfile")} </h5>
+                        <Formik
+                          initialValues={{
+                            name: currentUser?.name || "",
+                            company: currentUser?.company || "",
+                            email: currentUser?.email || "",
+                            address: currentUser?.address || "",
+                            signature: currentUser?.signature || "",
+                            mobile: currentUser?.mobile || "",
+                          }}
+                          validationSchema={profileValidator}
+                          onSubmit={(values) => {
+                            progileEditHandler(values);
+                          }}
+                          enableReinitialize
+                        >
+                          {() => (
+                            <Form>
+                              <FtextField
+                                type="text"
+                                label={t("name")}
+                                name="name"
+                              />
+                              <FtextField
+                                type="text"
+                                label={t("company")}
+                                name="company"
+                              />
 
-                            <FtextField
-                              type="email"
-                              label={t("email")}
-                              name="email"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("mobile")}
-                              name="mobile"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("address")}
-                              name="address"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("signature")}
-                              name="signature"
-                            />
-                            <button
-                              type="submit"
-                              className="btn btn-success mt-2"
-                            >
-                              {isLoading ? <Loader /> : t("update")}
-                            </button>
-                          </Form>
-                        )}
-                      </Formik>
-                    </div>
-                    <div className="passwordUpdate">
-                      <h5 className="mb-4 marginTop20">
-                        {t("changePassword")}
-                      </h5>
-                      <Formik
-                        initialValues={{
-                          oldPassword: "",
-                          newPassword: "",
-                        }}
-                        validationSchema={passwordValidator}
-                        onSubmit={(values) => {
-                          changePasswordHandler(values);
-                        }}
-                      >
-                        {() => (
-                          <Form>
-                            <FtextField
-                              type="password"
-                              name="oldPassword"
-                              label={t("oldPassword")}
-                            />
-                            <FtextField
-                              type="password"
-                              name="newPassword"
-                              label={t("newPassword")}
-                            />
-                            <FtextField
-                              type="password"
-                              name="confrimPassword"
-                              label={t("againNewPassword")}
-                            />
-                            <button
-                              type="submit"
-                              className="btn btn-success mt-2"
-                            >
-                              {isLoadingpass ? <Loader /> : t("updatePassword")}
-                            </button>
-                          </Form>
-                        )}
-                      </Formik>
+                              <FtextField
+                                type="email"
+                                label={t("email")}
+                                name="email"
+                              />
+                              <FtextField
+                                type="text"
+                                label={t("mobile")}
+                                name="mobile"
+                              />
+                              <FtextField
+                                type="text"
+                                label={t("address")}
+                                name="address"
+                              />
+                              <FtextField
+                                type="text"
+                                label={t("signature")}
+                                name="signature"
+                              />
+                              <button
+                                type="submit"
+                                className="btn btn-success mt-2"
+                              >
+                                {isLoading ? <Loader /> : t("update")}
+                              </button>
+                            </Form>
+                          )}
+                        </Formik>
+                      </div>
+                      <div className="passwordUpdate">
+                        <h5 className="mb-4 marginTop20">
+                          {t("changePassword")}
+                        </h5>
+                        <Formik
+                          initialValues={{
+                            oldPassword: "",
+                            newPassword: "",
+                          }}
+                          validationSchema={passwordValidator}
+                          onSubmit={(values) => {
+                            changePasswordHandler(values);
+                          }}
+                        >
+                          {() => (
+                            <Form>
+                              <FtextField
+                                type="password"
+                                name="oldPassword"
+                                label={t("oldPassword")}
+                              />
+                              <FtextField
+                                type="password"
+                                name="newPassword"
+                                label={t("newPassword")}
+                              />
+                              <FtextField
+                                type="password"
+                                name="confrimPassword"
+                                label={t("againNewPassword")}
+                              />
+                              <button
+                                type="submit"
+                                className="btn btn-success mt-2"
+                              >
+                                {isLoadingpass ? (
+                                  <Loader />
+                                ) : (
+                                  t("updatePassword")
+                                )}
+                              </button>
+                            </Form>
+                          )}
+                        </Formik>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </FourGround>
-              <Footer />
-            </FontColor>
-          )}
+                </FourGround>
+                <Footer />
+              </FontColor>
+            )}
+          </div>
         </div>
       </div>
-      {/* </div> */}
     </>
   );
 }

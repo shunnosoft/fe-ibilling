@@ -612,5 +612,6 @@
   "isp": "আইএসপি ",
   "summary": "সামারি",
   "customerType": "গ্রাহক ধরন",
-  "pleaseSelectCustomerType": "গ্রাহক ধরন সিলেক্ট করুন"
+  "pleaseSelectCustomerType": "গ্রাহক ধরন সিলেক্ট করুন",
+  "createSupportTicket": "সাপোর্ট টিকেট তৈরি করুন"
 }

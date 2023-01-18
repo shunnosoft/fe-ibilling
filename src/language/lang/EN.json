@@ -611,5 +611,6 @@
   "isp": "ISP",
   "summary": "Summary",
   "customerType": "Customer Type",
-  "pleaseSelectCustomerType": "Please select customer type"
+  "pleaseSelectCustomerType": "Please select customer type",
+  "createSupportTicket": "Create Support Ticket"
 }
