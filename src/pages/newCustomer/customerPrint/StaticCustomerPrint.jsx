@@ -1,11 +1,11 @@
 import React from "react";
 import moment from "moment";
-import FormatNumber from "../../components/common/NumberFormat";
-import { badge } from "../../components/common/Utils";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import FormatNumber from "../../../components/common/NumberFormat";
+import { badge } from "../../../components/common/Utils";
 
-const PrintCustomer = React.forwardRef((props, ref) => {
+const StaticCustomerPrint = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { currentCustomers, filterData } = props;
   const ispOwnerData = useSelector(
@@ -14,7 +14,6 @@ const PrintCustomer = React.forwardRef((props, ref) => {
   const userType = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
   );
-  // console.log(ispOwnerData);
   return (
     <div className="mt-3 p-4" ref={ref}>
       <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
@@ -37,16 +36,11 @@ const PrintCustomer = React.forwardRef((props, ref) => {
       </div>
       <ul className="d-flex justify-content-evenly">
         <li>
-          {t("area")} : {filterData.area}
+          {t("startDate")} :{" "}
+          {moment(filterData?.startDate).format("DD MMM YYYY")}
         </li>
         <li>
-          {t("subArea")} : {filterData.subArea}
-        </li>
-        <li>
-          {t("status")} : {filterData.status}
-        </li>
-        <li>
-          {t("paymentStatus")} {filterData.payment}
+          {t("endDate")} : {moment(filterData?.endDate).format("DD MMM YYYY")}
         </li>
       </ul>
       <table className="table table-striped ">
@@ -59,10 +53,10 @@ const PrintCustomer = React.forwardRef((props, ref) => {
             <th scope="col">{t("mobile")}</th>
             <th scope="col">{t("status")}</th>
             <th scope="col">{t("amount")}</th>
-            <th scope="col">{t("package")}</th>
             <th scope="col">{t("month")}</th>
             <th scope="col">{t("balance")}</th>
             <th scope="col">{t("bill")}</th>
+            <th scope="col">{t("createdAt")}</th>
           </tr>
         </thead>
         <tbody>
@@ -79,28 +73,22 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
-              <td className="prin_td">{val.queue.package}</td>
               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
               <td className="prin_td">
                 <strong>{FormatNumber(val.balance)}</strong>
               </td>
               <td className="prin_td">
-                {moment(val.billingCycle).format("DD-MM-YYYY")}
+                {moment(val.billingCycle).format("DD MMM YYYY")}
+              </td>
+              <td className="prin_td">
+                {moment(val.created).format("DD MMM YYYY")}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {/* <div className="pdf_footer_line"></div>
-      <div className="signature_text text-mute">সাক্ষর এবং তারিখ</div>
-      <div className="signature_container">
-        <div className="p-3 signature_wraper">
-          <div className="signamture_field">ম্যানেজার</div>
-          <div className="signamture_field">এডমিন</div>
-        </div>
-      </div> */}
     </div>
   );
 });
 
-export default PrintCustomer;
+export default StaticCustomerPrint;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
@@ -12,13 +12,23 @@ import { badge } from "../../components/common/Utils";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
-import { ArrowClockwise } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FileExcelFill,
+  PrinterFill,
+} from "react-bootstrap-icons";
 import { Tab, Tabs } from "react-bootstrap";
+import ReactToPrint from "react-to-print";
+import PPPoECustomerPrint from "./customerPrint/PPPoECustomerPrint";
+import StaticCustomerPrint from "./customerPrint/StaticCustomerPrint";
+import { CSVLink } from "react-csv";
 
 const NewCustomer = () => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
+  const PPPoEComponentRef = useRef(); //reference of pdf export component
+  const staticComponentRef = useRef(); //reference of pdf export component
 
   // get Current date
   const today = new Date();
@@ -52,6 +62,11 @@ const NewCustomer = () => {
   // get all static customer from redux
   const staticCustomer = useSelector(
     (state) => state?.customer?.staticCustomer
+  );
+
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
   );
 
   // filter function
@@ -147,16 +162,7 @@ const NewCustomer = () => {
       {
         width: "9%",
         Header: t("name"),
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{ cursor: "move" }}
-            data-toggle="tooltip"
-            data-placement="top"
-            title={original.address}
-          >
-            {original.name}
-          </div>
-        ),
+        accessor: "name",
       },
       {
         width: "9%",
@@ -164,7 +170,7 @@ const NewCustomer = () => {
         accessor: "pppoe.name",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("mobile"),
         accessor: "mobile",
       },
@@ -178,7 +184,7 @@ const NewCustomer = () => {
         },
       },
       {
-        width: "11%",
+        width: "9%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -186,24 +192,32 @@ const NewCustomer = () => {
         },
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
       {
-        width: "11%",
+        width: "8%",
         Header: t("mountly"),
         accessor: "monthlyFee",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("balance"),
         accessor: "balance",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("bill"),
         accessor: "billingCycle",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm A");
+        },
+      },
+      {
+        width: "10%",
+        Header: t("createdAt"),
+        accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
         },
@@ -257,19 +271,27 @@ const NewCustomer = () => {
         },
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("mountly"),
         accessor: "monthlyFee",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("balance"),
         accessor: "balance",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("bill"),
         accessor: "billingCycle",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm A");
+        },
+      },
+      {
+        width: "10%",
+        Header: t("createdAt"),
+        accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
         },
@@ -277,6 +299,79 @@ const NewCustomer = () => {
     ],
     [t]
   );
+
+  // csv table header
+  const PPPoECustomerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "PPPoE_Name", key: "pppoeName" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+
+  //export customer data
+  let PPPoECustomerForCsVTableInfo = mainData.map((customer) => {
+    return {
+      name: customer.name,
+      pppoeName: customer.pppoe.name,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  const staticCustomerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "customer_ip", key: "ip" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+
+  //export customer data
+  let staticCustomerForCsVTableInfo = staticData.map((customer) => {
+    return {
+      name: customer.name,
+      ip:
+        customer.userType === "firewall-queue"
+          ? customer.queue.address
+          : customer.queue.target,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
+
+  const filterData = {
+    startDate,
+    endDate,
+  };
 
   return (
     <>
@@ -298,6 +393,70 @@ const NewCustomer = () => {
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
+                    </div>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-end">
+                    <div className="pppoe_customer">
+                      <div className="addAndSettingIcon">
+                        <ReactToPrint
+                          documentTitle={t("PPPoE Customer")}
+                          trigger={() => (
+                            <PrinterFill
+                              title={t("PPPoECustomerPrint")}
+                              className="addcutmButton"
+                            />
+                          )}
+                          content={() => PPPoEComponentRef.current}
+                        />
+                      </div>
+                      <div style={{ display: "none" }}>
+                        <PPPoECustomerPrint
+                          filterData={filterData}
+                          currentCustomers={mainData}
+                          ref={PPPoEComponentRef}
+                        />
+                      </div>
+                    </div>
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={PPPoECustomerForCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={PPPoECustomerForCsVTableInfoHeader}
+                        title={t("PPPoECustomerReport")}
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+                    <div className="static_customer">
+                      <div className="addAndSettingIcon">
+                        <ReactToPrint
+                          documentTitle={t("Static Customer")}
+                          trigger={() => (
+                            <PrinterFill
+                              title={t("StaticCustomerPrint")}
+                              className="addcutmButton"
+                            />
+                          )}
+                          content={() => staticComponentRef.current}
+                        />
+                      </div>
+                      <div style={{ display: "none" }}>
+                        <StaticCustomerPrint
+                          filterData={filterData}
+                          currentCustomers={staticData}
+                          ref={staticComponentRef}
+                        />
+                      </div>
+                    </div>
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={staticCustomerForCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={staticCustomerForCsVTableInfoHeader}
+                        title={t("staticCustomerReport")}
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
                     </div>
                   </div>
                 </div>

@@ -613,5 +613,7 @@
   "summary": "সামারি",
   "customerType": "গ্রাহক ধরন",
   "pleaseSelectCustomerType": "গ্রাহক ধরন সিলেক্ট করুন",
-  "createSupportTicket": "সাপোর্ট টিকেট তৈরি করুন"
+  "createSupportTicket": "সাপোর্ট টিকেট তৈরি করুন",
+  "PPPoECustomerReport": "পিপিই গ্রাহক রিপোর্ট",
+  "staticCustomerReport": "স্ট্যাটিক গ্রাহক রিপোর্ট"
 }

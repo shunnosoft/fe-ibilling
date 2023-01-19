@@ -67,14 +67,6 @@ export default function Sidebar() {
     document.querySelector(".sidebar").classList.remove("toggleSidebar");
   };
 
-  // sub bill toggle
-  // const toggleSubBillingHandle = () => {
-  //   setIsDown(!isDown);
-  //   document
-  //     .getElementById("toggleSubBilling")
-  //     .classList.toggle("hideSubBilling");
-  // };
-  console.log(getIspOwnerData?.bpSettings?.hasMikrotik);
   const [activeKey, setActiveKey] = useState();
   const location = window.location.pathname;
 
@@ -107,7 +99,6 @@ export default function Sidebar() {
   const hasCustomerType = bpSettings?.customerType
     ? bpSettings.customerType
     : [];
-  console.log(hasCustomerType);
   return (
     <TitleColor>
       <div>

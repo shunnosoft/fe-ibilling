@@ -612,5 +612,7 @@
   "summary": "Summary",
   "customerType": "Customer Type",
   "pleaseSelectCustomerType": "Please select customer type",
-  "createSupportTicket": "Create Support Ticket"
+  "createSupportTicket": "Create Support Ticket",
+  "PPPoECustomerReport": "Download PPPoE Customer Report",
+  "staticCustomerReport": "Download Static Customer Report"
 }
