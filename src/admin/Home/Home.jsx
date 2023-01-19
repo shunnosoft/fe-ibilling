@@ -28,6 +28,7 @@ import FileUpload from "./modal/FileUpload";
 import Permissions from "./modal/Permissions";
 import AddProprietorModal from "./modal/AddProprietorModal";
 import Invoices from "../invoiceList/Invoices";
+import { badge } from "../../components/common/Utils";
 
 export default function Home() {
   // loading
@@ -48,6 +49,9 @@ export default function Home() {
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
 
+  // status state
+  const [status, setStatus] = useState(null);
+
   // mikrotik filter state
   const [mikrotik, setMikrotik] = useState();
 
@@ -65,6 +69,10 @@ export default function Home() {
     ispOwners = ispOwners.filter(
       (value) => value.bpSettings.paymentStatus === filterStatus
     );
+  }
+
+  if (status && status !== "status") {
+    ispOwners = ispOwners.filter((item) => item.status === status);
   }
 
   // mikrotik filter
@@ -121,10 +129,8 @@ export default function Home() {
     () => [
       {
         width: "5%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+        Header: "Id",
+        accessor: "netFeeId",
       },
 
       {
@@ -166,12 +172,6 @@ export default function Home() {
         accessor: "bpSettings.packageRate",
         Header: "Rate",
       },
-
-      {
-        width: "10%",
-        accessor: "address",
-        Header: "Address",
-      },
       {
         width: "10%",
         Header: "Payment",
@@ -195,6 +195,19 @@ export default function Home() {
             </span>
           </div>
         ),
+      },
+      {
+        width: "8%",
+        Header: "Status",
+        accessor: "status",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
+      },
+      {
+        width: "10%",
+        accessor: "address",
+        Header: "Address",
       },
 
       {
@@ -421,6 +434,20 @@ export default function Home() {
                 </option>
                 <option value="paid">Paid</option>
                 <option value="unpaid">Unpaid</option>
+              </select>
+              <select
+                className="form-select mt-0 me-3"
+                aria-label="Default select example"
+                onChange={(event) => setStatus(event.target.value)}
+              >
+                <option value="status" selected>
+                  Status
+                </option>
+                <option value="new">New</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="Banned">banned</option>
+                <option value="deleted">Deleted</option>
               </select>
               <select
                 className="form-select mt-0 me-3"

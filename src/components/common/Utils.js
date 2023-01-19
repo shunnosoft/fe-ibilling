@@ -8,6 +8,8 @@ const addClass = {
 
   new: "secondary",
   prepaid: "info",
+  banned: "warning",
+  deleted: "danger",
   complainManagement: "danger",
   smsBalance: "success",
 

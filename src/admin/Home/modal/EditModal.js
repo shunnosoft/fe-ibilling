@@ -87,6 +87,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       name: values.name,
       company: values.company,
       address: values.address,
+      status: values.status,
 
       bpSettings: {
         ...ispOwner.bpSettings,
@@ -303,6 +304,47 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                             name="monthlyDueDate"
                           />
                         </div>
+                      </div>
+
+                      <div>
+                        <h6 className="mb-0">Status</h6>
+                        <Field
+                          as="select"
+                          name="status"
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                        >
+                          <option
+                            value="new"
+                            selected={ispOwner?.status === "new"}
+                          >
+                            New
+                          </option>
+                          <option
+                            value="active"
+                            selected={ispOwner?.status === "active"}
+                          >
+                            Active
+                          </option>
+                          <option
+                            value="inactive"
+                            selected={ispOwner?.status === "inactive"}
+                          >
+                            Inactive
+                          </option>
+                          <option
+                            value="banned"
+                            selected={ispOwner?.status === "banned"}
+                          >
+                            Banned
+                          </option>
+                          <option
+                            value="deleted"
+                            selected={ispOwner?.status === "deleted"}
+                          >
+                            Deleted
+                          </option>
+                        </Field>
                       </div>
                     </div>
                     <div className="displayGrid3">
