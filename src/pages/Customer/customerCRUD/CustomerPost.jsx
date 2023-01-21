@@ -58,8 +58,7 @@ export default function CustomerModal() {
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
       .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("writeMobileNumber")),
+      .max(11, t("over11DigitMobileNumber")),
     referenceMobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
       .min(11, t("write11DigitMobileNumber"))
@@ -404,7 +403,6 @@ export default function CustomerModal() {
                         label={t("mobile")}
                         name="mobile"
                         disabled={!mikrotikPackage}
-                        validation={"true"}
                       />
                       <FtextField
                         type="text"
