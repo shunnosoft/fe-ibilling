@@ -8,9 +8,8 @@ const StaffPdf = React.forwardRef((props, ref) => {
     (state) => state.persistedReducer.auth.userData
   );
 
-  console.log(ispOwnerData);
   const { allStaffData } = props;
-  console.log(allStaffData);
+
   return (
     <div className="mt-3 p-4" ref={ref}>
       <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">

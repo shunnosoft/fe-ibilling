@@ -119,6 +119,15 @@ export default function Sidebar() {
                   </span>
                 </NavLink>
                 <br />
+                {(userRole === "ispOwner" || userRole === "manager") && (
+                  <>
+                    <span className="role-section">
+                      {t("ID")}: {getIspOwnerData?.netFeeId}
+                    </span>
+                    <br />
+                  </>
+                )}
+
                 <span className="role-section">
                   {userRole === "manager" && t("roleManager")}
                   {userRole === "collector" && t("roleCollector")}
