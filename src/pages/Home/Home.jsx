@@ -586,26 +586,37 @@ export default function Home() {
                           customerStat.totalMonthlyDiscount
                       )}
                     </h2>
+                    {role !== "collector" && (
+                      <>
+                        <p style={{ fontSize: "15px", marginBottom: "0px" }}>
+                          {t("discount")}:{" "}
+                          {FormatNumber(customerStat.totalMonthlyDiscount)}
+                        </p>
 
-                    <p style={{ fontSize: "15px", marginBottom: "0px" }}>
-                      {t("discount")}:{" "}
-                      {FormatNumber(customerStat.totalMonthlyDiscount)}
-                    </p>
+                        <p style={{ fontSize: "13px", marginBottom: "0px" }}>
+                          {t("withoutDiscount")}:{" "}
+                          {FormatNumber(customerStat.totalMonthlyCollection)}
+                        </p>
 
-                    <p style={{ fontSize: "13px", marginBottom: "0px" }}>
-                      {t("withoutDiscount")}:{" "}
-                      {FormatNumber(customerStat.totalMonthlyCollection)}
-                    </p>
-
-                    <p style={{ fontSize: "13px" }}>
-                      {t("today collection")}:{" "}
-                      {FormatNumber(
-                        calculationOfBillStat() +
-                          customerStat.totalManagerCollectionToday +
-                          (customerStat.ispOwnerBillCollectionToday -
-                            customerStat.ispOwnerBillDiscountToday)
-                      )}
-                    </p>
+                        <p style={{ fontSize: "13px" }}>
+                          {t("today collection")}:{" "}
+                          {FormatNumber(
+                            calculationOfBillStat() +
+                              customerStat.totalManagerCollectionToday +
+                              (customerStat.ispOwnerBillCollectionToday -
+                                customerStat.ispOwnerBillDiscountToday)
+                          )}
+                        </p>
+                      </>
+                    )}
+                    {role === "collector" && (
+                      <p style={{ fontSize: "13px" }}>
+                        {t("today collection")}{" "}
+                        {FormatNumber(
+                          customerStat.collectorBillCollectionToday
+                        )}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

@@ -16,7 +16,6 @@ import {
   PrinterFill,
   Server,
   ThreeDots,
-  Wallet,
 } from "react-bootstrap-icons";
 import Table from "../../components/table/Table";
 
