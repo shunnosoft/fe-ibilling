@@ -3,7 +3,7 @@ import jwt_decode from "jwt-decode";
 import { userLogout } from "../features/actions/authAsyncAction";
 
 // PRODUCTION
-// const BASE_URL = "https://netfeebd.net/api/v1/";
+const BASE_URL = "https://netfeebd.net/api/v1/";
 
 //nahid
 // const BASE_URL = "http://192.168.1.27:3030/api/v1/";
@@ -12,7 +12,7 @@ import { userLogout } from "../features/actions/authAsyncAction";
 // const BASE_URL = "http://192.168.1.33:3030/api/v1/";
 
 //OwnS
-const BASE_URL = "http://localhost:3030/api/v1/";
+// const BASE_URL = "http://localhost:3030/api/v1/";
 // const BASE_URL = "http://137.184.69.182/api/v1/";
 
 // const user = JSON.parse(localStorage.getItem("persist:root"))?.currentUser;
