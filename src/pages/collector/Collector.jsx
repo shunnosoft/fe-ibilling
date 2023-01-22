@@ -265,17 +265,16 @@ export default function Collector() {
                     </div>
                   </div>
 
-                  {permission?.collectorAdd ||
-                    (role === "ispOwner" && (
-                      <div
-                        title="কালেক্টর এড করুন"
-                        className="header_icon"
-                        data-bs-toggle="modal"
-                        data-bs-target="#collectorModal"
-                      >
-                        <PersonPlusFill />
-                      </div>
-                    ))}
+                  {(permission?.collectorAdd || role === "ispOwner") && (
+                    <div
+                      title="কালেক্টর এড করুন"
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#collectorModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  )}
                 </div>
               </FourGround>
 
