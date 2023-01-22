@@ -432,9 +432,18 @@ export const getCollector = async (dispatch, ispOwnerId, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const addCollector = async (dispatch, data, setIsLoading) => {
+export const addCollector = async (
+  dispatch,
+  data,
+  setIsLoading,
+  addStaffStatus
+) => {
+  console.log(addStaffStatus);
   try {
-    const res = await apiLink.post("ispOwner/collector", data);
+    const res = await apiLink.post(
+      `ispOwner/collector?addStaff=${addStaffStatus}`,
+      data
+    );
     dispatch(addCollectorSuccess(res.data));
     setIsLoading(false);
     langMessage(

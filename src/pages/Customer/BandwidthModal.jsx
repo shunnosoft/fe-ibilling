@@ -30,13 +30,10 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
           "customer/mikrotik/currentSession?customerId=" + customerId
         );
         setBandWidth([
-          parseInt(res.data.data[0].rxByte.toFixed(2) / 1024 / 1024),
+          parseInt(res.data.data[0].rxByte.toFixed(2) / 1048576),
           ...bandwidth,
         ]);
-        setTx([
-          parseInt(res.data.data[0].txByte.toFixed(2) / 1024 / 1024),
-          ...tx,
-        ]);
+        setTx([parseInt(res.data.data[0].txByte.toFixed(2) / 1048576), ...tx]);
 
         setTime([Date.now(), ...time]);
         // callCount++;

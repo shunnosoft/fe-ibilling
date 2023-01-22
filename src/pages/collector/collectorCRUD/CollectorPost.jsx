@@ -10,19 +10,17 @@ import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { addCollector } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
-// import { getArea, fetchArea } from "../../../features/areaSlice";
-// import {
-//   postCollector,
-//   fetchCollector,
-// } from "../../../features/collectorSlice";
 
 export default function CollectorPost() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const area = useSelector((state) => state?.area?.area);
-  const [areaIds, setAreaIds] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.persistedReducer.auth?.currentUser);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  const [areaIds, setAreaIds] = useState([]);
+  const [addStaffStatus, setAddStaffStatus] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   //validator
   const collectorValidator = Yup.object({
@@ -35,12 +33,6 @@ export default function CollectorPost() {
     email: Yup.string().email(t("incorrectEmail")).required(t("enterEmail")),
     nid: Yup.string().required(t("enterNID")),
     status: Yup.string().required(t("enterStatus")),
-
-    // refName: Yup.string().required("রেফারেন্স নাম"),
-    // refMobile: Yup.string()
-    //   .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-    //   .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-    //   .required("মোবাইল নম্বর দিন "),
   });
 
   const setAreaHandler = () => {
@@ -56,6 +48,11 @@ export default function CollectorPost() {
   };
 
   const collectorPostHandler = async (data) => {
+    if (addStaffStatus) {
+      if (!data.salary) {
+        alert(t("incorrectSalary"));
+      }
+    }
     setIsLoading(true);
     if (auth.ispOwner) {
       const sendingData = {
@@ -63,7 +60,10 @@ export default function CollectorPost() {
         areas: areaIds,
         ispOwner: auth.ispOwner.id,
       };
-      addCollector(dispatch, sendingData, setIsLoading);
+      if (!addStaffStatus) {
+        delete sendingData.salary;
+      }
+      addCollector(dispatch, sendingData, setIsLoading, addStaffStatus);
     }
   };
 
@@ -99,6 +99,7 @@ export default function CollectorPost() {
                   email: "",
                   nid: "",
                   status: "",
+                  salary: "",
                 }}
                 validationSchema={collectorValidator}
                 onSubmit={(values) => {
@@ -120,33 +121,55 @@ export default function CollectorPost() {
                       ))}
 
                       {/* status */}
-                      <div className="form-check customerFormCheck">
-                        <div className="label">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("status")}
-                            <span className="text-danger">*</span>
-                          </label>
+                      <div className="form-check customerFormCheck d-flex justify-content-around">
+                        <div className="collectorStatus mt-2">
+                          <div className="label">
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("status")}
+                              <span className="text-danger">*</span>
+                            </label>
+                          </div>
+                          <div className="form-check form-check-inline">
+                            <FtextField
+                              label="Active"
+                              className="form-check-input"
+                              type="radio"
+                              name="status"
+                              value="active"
+                            />
+                          </div>
+                          <div className="form-check form-check-inline">
+                            <FtextField
+                              label="Inactive"
+                              className="form-check-input"
+                              type="radio"
+                              name="status"
+                              value="inactive"
+                            />
+                          </div>
                         </div>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Active"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="active"
-                          />
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Inactive"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="inactive"
-                          />
-                        </div>
+                        {role === "ispOwner" && (
+                          <div className="autoDisable">
+                            <input
+                              type="checkBox"
+                              checked={addStaffStatus}
+                              onChange={(e) =>
+                                setAddStaffStatus(e.target.checked)
+                              }
+                            />
+                            <label className="ps-2"> {t("addStaff")} </label>
+                          </div>
+                        )}
                       </div>
                       {/* status */}
+
+                      {role === "ispOwner" && addStaffStatus && (
+                        <FtextField
+                          type="number"
+                          label={t("salary")}
+                          name="salary"
+                        />
+                      )}
                     </div>
 
                     {/* area */}

@@ -97,12 +97,12 @@ export default function StaffEdit({ staffId }) {
                   fatherName: staffData?.name || "",
                   nid: staffData?.nid || "",
                   address: staffData?.address || "",
-                  refName: staffData?.reference.name || "",
-                  refMobile: staffData?.reference.mobile || "",
-                  refEmail: staffData?.reference.email || "",
-                  refAddress: staffData?.reference.address || "",
-                  refRelation: staffData?.reference.relation || "",
-                  refNid: staffData?.reference.data || "",
+                  refName: staffData?.reference?.name || "",
+                  refMobile: staffData?.reference?.mobile || "",
+                  refEmail: staffData?.reference?.email || "",
+                  refAddress: staffData?.reference?.address || "",
+                  refRelation: staffData?.reference?.relation || "",
+                  refNid: staffData?.reference?.data || "",
                   status: staffData?.status,
                 }}
                 validationSchema={resellerValidator}
@@ -153,7 +153,7 @@ export default function StaffEdit({ staffId }) {
                         name="address"
                       />
                     </div>
-                    <p className="radioTitle"> {t("address")} </p>
+                    <p className="radioTitle"> {t("status")} </p>
                     <div className="form-check d-flex">
                       {status.map((value, key) => (
                         <div key={key} className="form-check">
