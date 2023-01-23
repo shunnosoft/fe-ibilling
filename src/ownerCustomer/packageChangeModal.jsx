@@ -8,19 +8,27 @@ import Loader from "../components/common/Loader";
 const animatedComponents = makeAnimated();
 
 const PackageChangeModal = () => {
+  // get all packages
   const packages = useSelector((state) => state.package.packages);
+
+  // get own data
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
+  // package select option
   const options = packages.map((item) => {
-    return { value: item.id, label: item.name };
+    return { value: item.id, label: item?.aliasName || item.name };
   });
 
+  // loading state
   const [loading, setLoading] = useState(false);
+
+  // package select option
   const [selectedPackage, setSelectedPackage] = useState(null);
 
-  const changePackageController = async () => {
+  // handle submit method
+  const changePackageController = () => {
     const sendingData = {
       mikrotikPackage: selectedPackage.value,
       pppoe: {

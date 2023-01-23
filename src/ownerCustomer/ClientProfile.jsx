@@ -1,22 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import PaymentModal from "./paymentModal";
 import bkashImg from "../assets/img/bkash.jpg";
+import { getPackagesByIspOwer } from "../features/getIspOwnerUsersApi";
+import { useDispatch } from "react-redux";
 
 export default function ClientProfile() {
+  const dispatch = useDispatch();
+
+  // get own data
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
-  // useEffect(() => {
-  //   apiLink(`customer/mikrotik/currentSession `)
-  //     .then((data) => console.log(data.data))
-  //     .catch((e) => {
-  //       console.log(e.response?.data?.message);
-  //     });
-  // }, []);
-
+  // get payment get way status
   const hasPG = userData.ispOwner.bpSettings.hasPG;
+
+  // get all packages
+  const packages = useSelector((state) => state.package.packages);
+
+  // find alias name method
+  const findAliasName = (ownPackage) => {
+    const findItem = packages.find((item) => item.name.includes(ownPackage));
+    return findItem;
+  };
+
+  // get package api call
+  useEffect(() => {
+    getPackagesByIspOwer(dispatch);
+  }, []);
 
   return (
     <div className="container">
@@ -36,7 +48,10 @@ export default function ClientProfile() {
             <tr>
               <td>Package</td>
               {userData.userType === "pppoe" && (
-                <td>{userData?.pppoe.profile}</td>
+                <td>
+                  {findAliasName(userData?.pppoe.profile)?.aliasName ||
+                    findAliasName(userData?.pppoe.profile)?.name}
+                </td>
               )}
               {userData.userType === "simple-queue" && (
                 <td>
@@ -68,11 +83,21 @@ export default function ClientProfile() {
                 {parseInt(userData.queue.maxLimit.split("/")[0] / 1000000)}MBps
               </h3>
             )}
-            {userData.userType === "pppoe" && <h3>{userData.pppoe.profile}</h3>}
+            {userData.userType === "pppoe" && (
+              <h3>
+                {findAliasName(userData?.pppoe.profile)?.aliasName ||
+                  findAliasName(userData?.pppoe.profile)?.name}
+              </h3>
+            )}
           </div>
           <div className="up_down download">
             <p className="text-white">Downlaod</p>
-            {userData.userType === "pppoe" && <h3>{userData.pppoe.profile}</h3>}
+            {userData.userType === "pppoe" && (
+              <h3>
+                {findAliasName(userData?.pppoe.profile)?.aliasName ||
+                  findAliasName(userData?.pppoe.profile)?.name}
+              </h3>
+            )}
             {userData.userType === "simple-queue" && (
               <h3>
                 {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}MBps
