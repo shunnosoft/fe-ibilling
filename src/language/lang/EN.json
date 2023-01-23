@@ -614,5 +614,11 @@
   "pleaseSelectCustomerType": "Please select customer type",
   "createSupportTicket": "Create Support Ticket",
   "PPPoECustomerReport": "Download PPPoE Customer Report",
-  "staticCustomerReport": "Download Static Customer Report"
+  "staticCustomerReport": "Download Static Customer Report",
+  "netFeeId": "NetFee Id",
+  "customerLimit": "Customer Limit",
+  "nonMaskingRate": "Non Masking SMS Rate",
+  "fixedNumberSmsRate": "Fixed Number SMS Rate",
+  "maskingSmsRate": "Masking SMS Rate",
+  "settings": "Settings"
 }

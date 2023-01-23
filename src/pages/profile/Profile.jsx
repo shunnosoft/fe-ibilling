@@ -16,6 +16,9 @@ import { useDispatch } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Tab, Tabs } from "react-bootstrap";
+import moment from "moment/moment";
+import { badge } from "../../components/common/Utils";
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -25,6 +28,7 @@ export default function Profile() {
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
+  console.log(currentUser);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -135,115 +139,229 @@ export default function Profile() {
                 </FourGround>
 
                 <FourGround>
-                  <div className="collectorWrapper">
-                    <div className="profileWrapper">
-                      <div className="profileUpdate">
-                        <h5 className="mb-4"> {t("updateProfile")} </h5>
-                        <Formik
-                          initialValues={{
-                            name: currentUser?.name || "",
-                            company: currentUser?.company || "",
-                            email: currentUser?.email || "",
-                            address: currentUser?.address || "",
-                            signature: currentUser?.signature || "",
-                            mobile: currentUser?.mobile || "",
-                          }}
-                          validationSchema={profileValidator}
-                          onSubmit={(values) => {
-                            progileEditHandler(values);
-                          }}
-                          enableReinitialize
-                        >
-                          {() => (
-                            <Form>
-                              <FtextField
-                                type="text"
-                                label={t("name")}
-                                name="name"
-                              />
-                              <FtextField
-                                type="text"
-                                label={t("company")}
-                                name="company"
-                              />
+                  <Tabs
+                    defaultActiveKey={"settings"}
+                    id="uncontrolled-tab-example"
+                    className="mb-3"
+                  >
+                    <Tab eventKey="settings" title={t("settings")}>
+                      <div className="collectorWrapper">
+                        <div className="profileWrapper">
+                          <div className="profileUpdate">
+                            <h5 className="mb-4"> {t("updateProfile")} </h5>
+                            <Formik
+                              initialValues={{
+                                name: currentUser?.name || "",
+                                company: currentUser?.company || "",
+                                email: currentUser?.email || "",
+                                address: currentUser?.address || "",
+                                signature: currentUser?.signature || "",
+                                mobile: currentUser?.mobile || "",
+                              }}
+                              validationSchema={profileValidator}
+                              onSubmit={(values) => {
+                                progileEditHandler(values);
+                              }}
+                              enableReinitialize
+                            >
+                              {() => (
+                                <Form>
+                                  <FtextField
+                                    type="text"
+                                    label={t("name")}
+                                    name="name"
+                                  />
+                                  <FtextField
+                                    type="text"
+                                    label={t("company")}
+                                    name="company"
+                                  />
 
-                              <FtextField
-                                type="email"
-                                label={t("email")}
-                                name="email"
-                              />
-                              <FtextField
-                                type="text"
-                                label={t("mobile")}
-                                name="mobile"
-                              />
-                              <FtextField
-                                type="text"
-                                label={t("address")}
-                                name="address"
-                              />
-                              <FtextField
-                                type="text"
-                                label={t("signature")}
-                                name="signature"
-                              />
-                              <button
-                                type="submit"
-                                className="btn btn-success mt-2"
-                              >
-                                {isLoading ? <Loader /> : t("update")}
-                              </button>
-                            </Form>
-                          )}
-                        </Formik>
+                                  <FtextField
+                                    type="email"
+                                    label={t("email")}
+                                    name="email"
+                                  />
+                                  <FtextField
+                                    type="text"
+                                    label={t("mobile")}
+                                    name="mobile"
+                                  />
+                                  <FtextField
+                                    type="text"
+                                    label={t("address")}
+                                    name="address"
+                                  />
+                                  <FtextField
+                                    type="text"
+                                    label={t("signature")}
+                                    name="signature"
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="btn btn-success mt-2"
+                                  >
+                                    {isLoading ? <Loader /> : t("update")}
+                                  </button>
+                                </Form>
+                              )}
+                            </Formik>
+                          </div>
+                          <div className="passwordUpdate">
+                            <h5 className="mb-4 marginTop20">
+                              {t("changePassword")}
+                            </h5>
+                            <Formik
+                              initialValues={{
+                                oldPassword: "",
+                                newPassword: "",
+                              }}
+                              validationSchema={passwordValidator}
+                              onSubmit={(values) => {
+                                changePasswordHandler(values);
+                              }}
+                            >
+                              {() => (
+                                <Form>
+                                  <FtextField
+                                    type="password"
+                                    name="oldPassword"
+                                    label={t("oldPassword")}
+                                  />
+                                  <FtextField
+                                    type="password"
+                                    name="newPassword"
+                                    label={t("newPassword")}
+                                  />
+                                  <FtextField
+                                    type="password"
+                                    name="confrimPassword"
+                                    label={t("againNewPassword")}
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="btn btn-success mt-2"
+                                  >
+                                    {isLoadingpass ? (
+                                      <Loader />
+                                    ) : (
+                                      t("updatePassword")
+                                    )}
+                                  </button>
+                                </Form>
+                              )}
+                            </Formik>
+                          </div>
+                        </div>
                       </div>
-                      <div className="passwordUpdate">
-                        <h5 className="mb-4 marginTop20">
-                          {t("changePassword")}
-                        </h5>
-                        <Formik
-                          initialValues={{
-                            oldPassword: "",
-                            newPassword: "",
-                          }}
-                          validationSchema={passwordValidator}
-                          onSubmit={(values) => {
-                            changePasswordHandler(values);
-                          }}
-                        >
-                          {() => (
-                            <Form>
-                              <FtextField
-                                type="password"
-                                name="oldPassword"
-                                label={t("oldPassword")}
-                              />
-                              <FtextField
-                                type="password"
-                                name="newPassword"
-                                label={t("newPassword")}
-                              />
-                              <FtextField
-                                type="password"
-                                name="confrimPassword"
-                                label={t("againNewPassword")}
-                              />
-                              <button
-                                type="submit"
-                                className="btn btn-success mt-2"
-                              >
-                                {isLoadingpass ? (
-                                  <Loader />
-                                ) : (
-                                  t("updatePassword")
-                                )}
-                              </button>
-                            </Form>
-                          )}
-                        </Formik>
-                      </div>
-                    </div>
-                  </div>
+                    </Tab>
+                    <Tab eventKey="profile" title={t("profile")}>
+                      {role === "ispOwner" && (
+                        <>
+                          <div className="collectorWrapper">
+                            <div className="profileWrapper d-flex">
+                              <table class="table table-bordered">
+                                <tbody>
+                                  <tr>
+                                    <td>{t("netFeeId")}</td>
+                                    <td>
+                                      <b>{currentUser?.netFeeId}</b>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("company")}</td>
+                                    <td>{currentUser?.company}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("name")}</td>
+                                    <td>{currentUser?.name}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("mobile")}</td>
+                                    <td>{currentUser?.mobile}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("email")}</td>
+                                    <td>{currentUser?.email}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("address")}</td>
+                                    <td>{currentUser?.address}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("createdAt")}</td>
+                                    <td>
+                                      {moment(currentUser?.createdAt).format(
+                                        "lll"
+                                      )}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("dueDate")}</td>
+                                    <td>
+                                      {moment(
+                                        currentUser.bpSettings?.monthlyDueDate
+                                      ).format("lll")}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <table class="table table-bordered">
+                                <tbody>
+                                  <tr>
+                                    <td>{t("package")}</td>
+                                    <td>
+                                      <b>{currentUser.bpSettings?.pack}</b>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("packageRate")}</td>
+                                    <td>
+                                      {currentUser.bpSettings?.packageRate}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("customerLimit")}</td>
+                                    <td>
+                                      {currentUser.bpSettings?.customerLimit}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("customerType")}</td>
+                                    <td>
+                                      {currentUser.bpSettings?.customerType.map(
+                                        (item) => item + " "
+                                      )}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("paymentStatus")}</td>
+                                    <td>
+                                      {badge(
+                                        currentUser.bpSettings?.paymentStatus
+                                      )}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("nonMaskingRate")}</td>
+                                    <td>{currentUser?.smsRate}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("fixedNumberSmsRate")}</td>
+                                    <td>{currentUser?.fixedNumberSmsRate}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t("maskingSmsRate")}</td>
+                                    <td>{currentUser?.maskingSmsRate}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </Tab>
+                  </Tabs>
                 </FourGround>
                 <Footer />
               </FontColor>

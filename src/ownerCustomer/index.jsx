@@ -10,6 +10,7 @@ import {
   Question,
   GearFill,
   KeyFill,
+  BoxArrowLeft,
 } from "react-bootstrap-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -158,7 +159,7 @@ const Client = () => {
 
             <li onClick={handleLogOut}>
               <div className="menu_icon">
-                <KeyFill />
+                <BoxArrowLeft />
               </div>
               <div className="menu_label">Logout</div>
             </li>
