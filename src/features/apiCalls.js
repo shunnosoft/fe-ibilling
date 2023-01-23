@@ -204,12 +204,12 @@ export const getDashboardCardData = async (
   setIsloading(false);
 };
 
-export const addManager = async (dispatch, managerData) => {
+export const addManager = async (dispatch, addStaffStatus, managerData) => {
   const button = document.querySelector(".marginLeft");
   button.style.display = "none";
 
   await apiLink({
-    url: "/ispOwner/manager",
+    url: `/ispOwner/manager?addStaff=${addStaffStatus}`,
     method: "POST",
     headers: {
       "Content-Type": "application/json",

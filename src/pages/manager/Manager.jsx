@@ -41,6 +41,8 @@ export default function Manager() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [addStaffStatus, setAddStaffStatus] = useState(false);
+
   const [userId, setUserId] = useState();
   const manager = useSelector((state) => state.manager?.manager);
 
@@ -79,22 +81,23 @@ export default function Manager() {
       .email(t("incorrectEmail"))
       .required(t("enterManagerEmail")),
     nid: Yup.string().required(t("enterManagerNID")),
+    salary: Yup.string(),
   });
 
   const addManagerHandle = (data) => {
-    addManager(dispatch, {
+    if (addStaffStatus) {
+      if (!data.salary) {
+        alert(t("incorrectSalary"));
+      }
+    }
+    if (!addStaffStatus) {
+      delete data.salary;
+    }
+    addManager(dispatch, addStaffStatus, {
       ...data,
       ispOwner: ispOwnerId,
     });
-    // if (!manager) {
-    // } else {
-    //   toast("You can't add more than one manager");
-    // }
   };
-
-  // const deleteManagerHandler = () => {
-  //   deleteManager(dispatch, ispOwnerId);
-  // };
 
   const handleChange = (e) => {
     const { name, checked } = e.target;
@@ -191,6 +194,7 @@ export default function Manager() {
                           email: "",
                           nid: "",
                           // photo: "",
+                          salary: "",
                         }}
                         validationSchema={managerValidate}
                         onSubmit={(values) => {
@@ -224,6 +228,25 @@ export default function Manager() {
                               label={t("managerNID")}
                               name="nid"
                             />
+
+                            <div className="autoDisable mb-2">
+                              <input
+                                type="checkBox"
+                                checked={addStaffStatus}
+                                onChange={(e) =>
+                                  setAddStaffStatus(e.target.checked)
+                                }
+                              />
+                              <label className="ps-2"> {t("addStaff")} </label>
+                            </div>
+
+                            {addStaffStatus && (
+                              <FtextField
+                                type="number"
+                                label={t("salary")}
+                                name="salary"
+                              />
+                            )}
 
                             {/* Button */}
                             <div className="submitSection">
