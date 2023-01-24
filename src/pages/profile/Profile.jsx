@@ -28,7 +28,6 @@ export default function Profile() {
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
-  console.log(currentUser);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -256,12 +255,12 @@ export default function Profile() {
                       </div>
                     </Tab>
                     <Tab eventKey="profile" title={t("profile")}>
-                      {role === "ispOwner" && (
-                        <>
-                          <div className="collectorWrapper">
-                            <div className="profileWrapper d-flex">
-                              <table class="table table-bordered">
-                                <tbody>
+                      <div className="collectorWrapper">
+                        <div className="profileWrapper d-flex">
+                          <table class="table table-bordered">
+                            <tbody>
+                              {role === "ispOwner" && (
+                                <>
                                   <tr>
                                     <td>{t("netFeeId")}</td>
                                     <td>
@@ -272,30 +271,32 @@ export default function Profile() {
                                     <td>{t("company")}</td>
                                     <td>{currentUser?.company}</td>
                                   </tr>
-                                  <tr>
-                                    <td>{t("name")}</td>
-                                    <td>{currentUser?.name}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>{t("mobile")}</td>
-                                    <td>{currentUser?.mobile}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>{t("email")}</td>
-                                    <td>{currentUser?.email}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>{t("address")}</td>
-                                    <td>{currentUser?.address}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>{t("createdAt")}</td>
-                                    <td>
-                                      {moment(currentUser?.createdAt).format(
-                                        "lll"
-                                      )}
-                                    </td>
-                                  </tr>
+                                </>
+                              )}
+                              <tr>
+                                <td>{t("name")}</td>
+                                <td>{currentUser?.name}</td>
+                              </tr>
+                              <tr>
+                                <td>{t("mobile")}</td>
+                                <td>{currentUser?.mobile}</td>
+                              </tr>
+                              <tr>
+                                <td>{t("email")}</td>
+                                <td>{currentUser?.email}</td>
+                              </tr>
+                              <tr>
+                                <td>{t("address")}</td>
+                                <td>{currentUser?.address}</td>
+                              </tr>
+                              <tr>
+                                <td>{t("createdAt")}</td>
+                                <td>
+                                  {moment(currentUser?.createdAt).format("lll")}
+                                </td>
+                              </tr>
+                              {role !== "collector" && (
+                                <>
                                   <tr>
                                     <td>{t("dueDate")}</td>
                                     <td>
@@ -304,8 +305,12 @@ export default function Profile() {
                                       ).format("lll")}
                                     </td>
                                   </tr>
-                                </tbody>
-                              </table>
+                                </>
+                              )}
+                            </tbody>
+                          </table>
+                          {role === "ispOwner" && (
+                            <>
                               <table class="table table-bordered">
                                 <tbody>
                                   <tr>
@@ -356,10 +361,10 @@ export default function Profile() {
                                   </tr>
                                 </tbody>
                               </table>
-                            </div>
-                          </div>
-                        </>
-                      )}
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </Tab>
                   </Tabs>
                 </FourGround>

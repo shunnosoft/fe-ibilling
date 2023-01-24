@@ -34,22 +34,16 @@ const DueCustomer = () => {
   // static Customr loading
   const [staticLoading, setStaticLoading] = useState(false);
 
-  // pppoe payment status state
-  const [paymentStatus, setPaymentStatus] = useState();
-
-  // static payment status state
-  const [staticPaymentStatus, setStaticPaymentStatus] = useState();
-
   // get current date
   const date = new Date();
 
   let month = date.getMonth();
+  let year = date.getFullYear();
 
   if (month === 0) {
     month = 12;
+    year -= 1;
   }
-
-  const year = date.getFullYear();
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -68,20 +62,6 @@ const DueCustomer = () => {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
-
-  // pppoe customer payment filter
-  if (paymentStatus && paymentStatus !== "select") {
-    dueCustomer = dueCustomer.filter(
-      (value) => value.paymentStatus === paymentStatus
-    );
-  }
-
-  // static customer payment filter
-  if (staticPaymentStatus && staticPaymentStatus !== "select") {
-    staticDueCustomer = staticDueCustomer.filter(
-      (value) => value.paymentStatus === staticPaymentStatus
-    );
-  }
 
   // reload handler
   const reloadHandler = () => {
@@ -424,20 +404,6 @@ const DueCustomer = () => {
                       className="mb-3"
                     >
                       <Tab eventKey="pppoe" title={t("PPPoE")}>
-                        <div className="filter-section">
-                          {/* filter selector */}
-                          <select
-                            className="form-select"
-                            onChange={(e) => {
-                              setPaymentStatus(e.target.value);
-                            }}
-                          >
-                            <option value={"select"}>{t("select")}</option>
-                            <option value={"paid"}>{t("paid")}</option>
-                            <option value={"unpaid"}>{t("unpaid")}</option>
-                          </select>
-                        </div>
-
                         <div className="table-section">
                           <Table
                             isLoading={isLoading}
@@ -447,18 +413,6 @@ const DueCustomer = () => {
                         </div>
                       </Tab>
                       <Tab eventKey="static" title={t("static")}>
-                        {/* filter selector */}
-                        <select
-                          className="form-select"
-                          onChange={(e) => {
-                            setStaticPaymentStatus(e.target.value);
-                          }}
-                        >
-                          <option value={"select"}>{t("select")}</option>
-                          <option value={"paid"}>{t("paid")}</option>
-                          <option value={"unpaid"}>{t("unpaid")}</option>
-                        </select>
-
                         <div className="table-section">
                           <Table
                             isLoading={staticLoading}
