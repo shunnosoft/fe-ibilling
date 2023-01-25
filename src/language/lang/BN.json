@@ -614,12 +614,14 @@
   "customerType": "গ্রাহক ধরন",
   "pleaseSelectCustomerType": "গ্রাহক ধরন সিলেক্ট করুন",
   "createSupportTicket": "সাপোর্ট টিকেট তৈরি করুন",
-  "PPPoECustomerReport": "পিপিই গ্রাহক রিপোর্ট",
+  "PPPoECustomerReport": "পিপিওই গ্রাহক রিপোর্ট",
   "staticCustomerReport": "স্ট্যাটিক গ্রাহক রিপোর্ট",
   "netFeeId": "নেটফি আইডি",
   "customerLimit": "গ্রাহকের পরিমাণ",
   "nonMaskingRate": "নন মাস্কিং মেসেস রেট",
   "fixedNumberSmsRate": "ফিক্সড নাম্বার মেসেস রেট",
   "maskingSmsRate": "মাস্কিং মেসেস রেট",
-  "settings": "সেটিং"
+  "settings": "সেটিং",
+  "youHaveNoStaticCustomerType": "আপনার স্ট্যাটিক গ্রাহক টাইপ নেই!",
+  "youHaveNoPPPoECustomerType": "আপনার পিপিওই গ্রাহক টাইপ নেই!"
 }

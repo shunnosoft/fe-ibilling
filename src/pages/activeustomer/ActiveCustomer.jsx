@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
-import {
-  ArrowClockwise,
-  WifiOff,
-  Wifi,
-  ThreeDots,
-  PersonFill,
-  Server,
-} from "react-bootstrap-icons";
+import { ArrowClockwise, WifiOff, Wifi } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 // internal imports
@@ -24,7 +17,6 @@ import { fetchMikrotik, fetchpppoeUser } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import BandwidthModal from "../Customer/BandwidthModal";
-import moment from "moment/moment";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -33,16 +25,8 @@ export default function ConfigMikrotik() {
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
-
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -64,15 +48,8 @@ export default function ConfigMikrotik() {
   // set initialy mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
 
-  // running status state
-  const [runningStatus, setRunningStatus] = useState("");
-
-  // status filter
-  const [status, setStatus] = useState(null);
-
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
-  console.log(allUsers);
 
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
@@ -84,7 +61,6 @@ export default function ConfigMikrotik() {
 
   // customer filter state
   const filterIt = (e) => {
-    setStatus(e.target.value);
     let temp;
     if (e.target.value === "allCustomer") {
       setAllUsers(allMikrotikUsers);
@@ -96,60 +72,6 @@ export default function ConfigMikrotik() {
       setAllUsers(temp);
     }
   };
-
-  const statusFilterHandler = (status) => {
-    let statusFilter = [...allMikrotikUsers];
-    if (status && status !== "allCustomer") {
-      statusFilter = allMikrotikUsers.filter((item) => {
-        if (item.status === "active" && status === "active") {
-          return true;
-        }
-        if (item.status === "inactive" && status === "inactive") {
-          return true;
-        }
-        if (
-          status === "other" &&
-          item.status !== "active" &&
-          item.status !== "inactive" &&
-          item.running !== true
-        ) {
-          return true;
-        }
-      });
-    }
-    setAllUsers(statusFilter);
-  };
-
-  // const filter = allMikrotikUsers.filter((item) => {
-  //   if (item.status === "active") {
-  //   } else if (item.status === "inactive") {
-  //   } else {
-  //     console.log(item);
-  //   }
-  // });
-
-  // if (runningStatus) {
-  //   let filterCustomer;
-
-  //   if (runningStatus === "allCustomer") {
-  //     setAllUsers(allMikrotikUsers);
-  //   }
-
-  //   if (runningStatus === "online") {
-  //     filterCustomer = allMikrotikUsers.filter((item) => item.running == true);
-  //     setAllUsers(filterCustomer);
-  //   }
-  //   if (runningStatus === "offline") {
-  //     filterCustomer = allMikrotikUsers.filter((item) => item.running != true);
-  //     setAllUsers(filterCustomer);
-  //   }
-  // }
-
-  // if (status && status !== "allCustomer") {
-  //   allMikrotikUsers = allMikrotikUsers.filter(
-  //     (item) => item.status === status
-  //   );
-  // }
 
   // initialize id
   const IDs = {
@@ -258,53 +180,6 @@ export default function ConfigMikrotik() {
         Header: "Last Logout",
         accessor: "lastLogoutTime",
       },
-      // {
-      //   width: "15%",
-      //   Header: "Down Time",
-      //   accessor: (data) => {
-      //     if (!data.running) {
-      //       console.log(data.lastLinkDownTime);
-      //       return moment(data.lastLinkDownTime).startOf("hour").fromNow();
-      //     }
-      //   },
-      // },
-      // {
-      //   width: "15%",
-      //   Header: "Down Time",
-      //   accessor: "lastLinkUpTime",
-      //   Cell:(upTime)=>
-      // },
-      // {
-      //   width: "9%",
-      //   Header: () => <div className="text-center">{t("action")}</div>,
-      //   id: "option",
-      //   Cell: ({ row: { original } }) => (
-      //     <div className="d-flex justify-content-center align-items-center">
-      //       <div className="dropdown">
-      //         <ThreeDots
-      //           className="dropdown-toggle ActionDots"
-      //           id="areaDropdown"
-      //           type="button"
-      //           data-bs-toggle="dropdown"
-      //           aria-expanded="false"
-      //         />
-      //         <ul className="dropdown-menu" aria-labelledby="customerDrop">
-      //           {(role === "ispOwner" || role === "manager") &&
-      //             ispOwnerData.bpSettings.hasMikrotik && (
-      //               <li onClick={() => bandwidthModalController(original?.id)}>
-      //                 <div className="dropdown-item">
-      //                   <div className="customerAction">
-      //                     <Server />
-      //                     <p className="actionP">{t("bandwidth")}</p>
-      //                   </div>
-      //                 </div>
-      //               </li>
-      //             )}
-      //         </ul>
-      //       </div>
-      //     </div>
-      //   ),
-      // },
     ],
     [t]
   );
@@ -365,25 +240,6 @@ export default function ConfigMikrotik() {
                         <option value="offline">{t("ofline")}</option>
                       </select>
                     </div>
-                    {/* {status === "offline" && (
-                      <div className="mikrotik-filter ms-4">
-                        <h6 className="mb-0"> {t("status")} </h6>
-                        <select
-                          id="selectMikrotikOption"
-                          onChange={(event) =>
-                            statusFilterHandler(event.target.value)
-                          }
-                          className="form-select mt-0"
-                        >
-                          <option value="allCustomer">
-                            {t("sokolCustomer")}
-                          </option>
-                          <option value="active">{t("active")}</option>
-                          <option value="inactive">{t("in active")}</option>
-                          <option value="other">{t("other")}</option>
-                        </select>
-                      </div>
-                    )} */}
                   </div>
 
                   {/* Active PPPoE users */}

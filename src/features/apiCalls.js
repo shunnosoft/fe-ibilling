@@ -1011,7 +1011,7 @@ export const fetchpppoeUserForReseller = async (
     const pppsecretUsers = res.data?.secretCustomers;
     const interfaaceList = res.data?.interfaceList;
     const temp = [];
-    console.log(res.data);
+
     pppsecretUsers.forEach((i) => {
       let match = false;
       interfaaceList.forEach((j) => {

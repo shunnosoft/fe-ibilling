@@ -29,9 +29,9 @@ export default function CollectorPost() {
   );
   //validator
   const collectorValidator = Yup.object({
-    name: Yup.string().required(`${t("name")} ***`),
+    name: Yup.string().required(`${t("name")}`),
     mobile: Yup.string()
-      .min(11, `${t("write11DigitMobileNumber")}***`)
+      .min(11, `${t("write11DigitMobileNumber")}`)
       .max(11, t("over11DigitMobileNumber"))
       .required(`${t("writeMobileNumber")} ***`),
     address: Yup.string(),

@@ -620,5 +620,7 @@
   "nonMaskingRate": "Non Masking SMS Rate",
   "fixedNumberSmsRate": "Fixed Number SMS Rate",
   "maskingSmsRate": "Masking SMS Rate",
-  "settings": "Settings"
+  "settings": "Settings",
+  "youHaveNoStaticCustomerType": "You Have No Static Customer Type!",
+  "youHaveNoPPPoECustomerType": "You Have No PPPoE Customer Type!"
 }

@@ -118,7 +118,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
                     {bandwidth.map((item, key) => (
                       <p key={key}>
                         {FormatNumber(item)}
-                        <span className="text-secondary"> mbps</span>
+                        <span className="text-secondary"> kbps</span>
                       </p>
                     ))}
                   </div>
@@ -127,7 +127,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
                     {tx.map((item, key) => (
                       <p key={key}>
                         {FormatNumber(item)}
-                        <span className="text-secondary"> mbps</span>
+                        <span className="text-secondary"> kbps</span>
                       </p>
                     ))}
                   </div>

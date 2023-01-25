@@ -16,6 +16,7 @@ import {
   FileExcelFill,
   ChatText,
   CurrencyDollar,
+  Server,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -49,6 +50,7 @@ import BulkBillingCycleEdit from "./bulkOpration/bulkBillingCycleEdit";
 import BulkStatusEdit from "./bulkOpration/bulkStatusEdit";
 import BulkSubAreaEdit from "./bulkOpration/bulkSubAreaEdit";
 import FormatNumber from "../../components/common/NumberFormat";
+import BandwidthModal from "../../pages/Customer/BandwidthModal";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -62,7 +64,6 @@ export default function Customer() {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
   );
-
   const dispatch = useDispatch();
 
   const resellerId = useSelector((state) =>
@@ -96,6 +97,12 @@ export default function Customer() {
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
+
+  // customer id state
+  const [customerId, setCustomerId] = useState("");
+
+  //bandwidth modal state
+  const [bandWidthModal, setBandWidthModal] = useState(false);
 
   //   filter
   const handleSubAreaChange = (id) => {
@@ -203,6 +210,11 @@ export default function Customer() {
     };
     deleteACustomer(dispatch, IDs);
     setIsDeleting(false);
+  };
+
+  const bandwidthModalController = (customerID) => {
+    setCustomerId(customerID);
+    setBandWidthModal(true);
   };
 
   // reload handler
@@ -467,7 +479,7 @@ export default function Customer() {
                 )}
 
                 {original.mobile &&
-                  (collectorPermission?.sendSMS || role !== "collector" ? (
+                  (collectorPermission?.sendSMS || role !== "collector") && (
                     <li
                       data-bs-toggle="modal"
                       data-bs-target="#customerMessageModal"
@@ -482,9 +494,19 @@ export default function Customer() {
                         </div>
                       </div>
                     </li>
-                  ) : (
-                    ""
-                  ))}
+                  )}
+
+                {role === "reseller" &&
+                  ispOwnerData.bpSettings?.hasMikrotik && (
+                    <li onClick={() => bandwidthModalController(original.id)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Server />
+                          <p className="actionP">{t("bandwidth")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
               </ul>
             </div>
           </div>
@@ -745,6 +767,12 @@ export default function Customer() {
           )}
         </div>
       )}
+
+      <BandwidthModal
+        setModalShow={setBandWidthModal}
+        modalShow={bandWidthModal}
+        customerId={customerId}
+      />
     </>
   );
 }

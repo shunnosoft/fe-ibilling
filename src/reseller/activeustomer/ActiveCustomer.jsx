@@ -15,24 +15,14 @@ import { useTranslation } from "react-i18next";
 import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import { getMikrotik } from "../../features/apiCallReseller";
+import Footer from "../../components/admin/footer/Footer";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [isLoading, setIsloading] = useState(false);
-  const [filterStatus, setFilterStatus] = useState("active");
 
-  // get all mikrotik from redux
-  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-
-  // set initialy mikrotik id
-  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
-
-  //get reseller active customer
-  let activeUser = useSelector((state) => state?.mikrotik?.pppoeActiveUser);
-
-  //get reseller active customer
-  let allUserFromMikrotic = useSelector((state) => state?.mikrotik?.pppoeUser);
+  //get role
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get reseller id
   let userData = useSelector((state) => state.persistedReducer.auth.userData);
@@ -42,35 +32,52 @@ const ResellserActiveCustomer = () => {
     (state) => state.persistedReducer.auth?.currentUser
   );
 
-  //get role
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+  // get all mikrotik from redux
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+
+  // get all static customer
+  let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+
+  // mikrotik loading state
+  const [loading, setIsloading] = useState(false);
+
+  // set initialy mikrotik id
+  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+
+  // customer state
+  let [allUsers, setAllUsers] = useState(allMikrotikUsers);
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
     setMikrotikId(event.target.value);
   };
 
-  // // filter
-  // if (filterStatus && filterStatus !== t("sokolCustomer")) {
-  //   activeUser = activeUser.filter(
-  //     (value) => value.complete === JSON.parse(filterStatus)
-  //   );
-  // }
+  // customer filter state
+  const filterIt = (e) => {
+    let temp;
+    if (e.target.value === "allCustomer") {
+      setAllUsers(allMikrotikUsers);
+    } else if (e.target.value === "online") {
+      temp = allMikrotikUsers.filter((item) => item.running == true);
+      setAllUsers(temp);
+    } else if (e.target.value === "offline") {
+      temp = allMikrotikUsers.filter((item) => item.running != true);
+      setAllUsers(temp);
+    }
+  };
+
+  // initialize id
+  const ids = {
+    resellerId: role === "reseller" ? userData.id : userData.reseller,
+    mikrotikId,
+  };
 
   // reload handler
   const reloadHandler = () => {
-    fetchActivepppoeUserForReseller(
-      dispatch,
-      userData.id,
-      mikrotikId,
-      setIsloading
-    );
+    fetchpppoeUserForReseller(dispatch, ids, mikrotik[0].name, setIsloading);
   };
 
-  useEffect(() => {
-    setMikrotikId(mikrotik[0]?.id);
-  }, [mikrotik]);
-
+  // api call for get update static customer
   useEffect(() => {
     if (role === "collector") {
       getMikrotik(dispatch, currentUser?.collector.reseller);
@@ -78,129 +85,29 @@ const ResellserActiveCustomer = () => {
     if (role === "reseller") {
       getMikrotik(dispatch, currentUser?.reseller.id);
     }
-  }, [currentUser, userData]);
-
-  //fetch reseller active customer
-  useEffect(() => {
     if (mikrotikId) {
-      if (filterStatus === "active") {
-        fetchActivepppoeUserForReseller(
-          dispatch,
-          userData.id,
-          mikrotikId,
-          setIsloading
-        );
-      }
-      const ids = {
-        resellerId: userData.id,
-        mikrotikId,
-      };
-      fetchpppoeUserForReseller(dispatch, ids, mikrotik[0].name, setIsloading);
+      fetchpppoeUserForReseller(dispatch, ids, mikrotik[0]?.name, setIsloading);
     }
-  }, [mikrotikId, filterStatus]);
-  console.log({ allUserFromMikrotic });
+  }, [mikrotikId]);
 
-  if (filterStatus === "inactive") {
-    allUserFromMikrotic = allUserFromMikrotic.filter((item) => item.disabled);
-  }
+  // set mikrotik and customer into state
+  useEffect(() => {
+    setAllUsers(allMikrotikUsers);
+    setMikrotikId(mikrotik[0]?.id);
+  }, [allMikrotikUsers, mikrotik]);
 
+  // table column
   const columns = React.useMemo(
     () => [
       {
-        Header: t("serial"),
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "11%",
-        Header: t("status"),
-        accessor: "running",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original?.running ? (
-              <Wifi color="green" />
-            ) : (
-              <WifiOff color="red" />
-            )}
-          </div>
-        ),
-      },
-
-      {
-        Header: t("address"),
-        accessor: "address",
-      },
-      {
-        Header: "RX",
-        accessor: "rxByte",
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {(original?.rxByte / 1024 / 1024).toFixed(2) + " MB"}
-          </div>
-        ),
-      },
-      {
-        Header: "TX",
-        accessor: "txByte",
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {(original?.txByte / 1024 / 1024).toFixed(2) + " MB"}
-          </div>
-        ),
-      },
-
-      {
-        Header: t("upTime"),
-        accessor: "uptime",
-
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {original?.uptime
-              .replace("w", "w ")
-              .replace("d", "d ")
-              .replace("h", "h ")
-              .replace("m", "m ")
-              .replace("s", "s")}
-          </div>
-        ),
-      },
-    ],
-    [t]
-  );
-
-  const columns2 = React.useMemo(
-    () => [
-      {
-        width: "8%",
+        width: "6%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "20%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "11%",
+        width: "9%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -213,9 +120,13 @@ const ResellserActiveCustomer = () => {
           </div>
         ),
       },
-
       {
-        width: "12%",
+        width: "14%",
+        Header: t("name"),
+        accessor: "name",
+      },
+      {
+        width: "11%",
         Header: t("package"),
         accessor: "profile",
       },
@@ -240,25 +151,26 @@ const ResellserActiveCustomer = () => {
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              padding: "15px 15px 15px 0 !important",
-            }}
-          >
-            {original?.txByte
-              ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
-              : ""}
+          <div>
+            {original?.txByte &&
+              (original?.txByte / 1024 / 1024).toFixed(2) + " MB"}
           </div>
         ),
       },
       {
-        width: "25%",
-        Header: "Last Link Up Time",
+        width: "17%",
+        Header: "Last Link Up",
         accessor: "lastLinkUpTime",
+      },
+      {
+        width: "17%",
+        Header: "Last Logout",
+        accessor: "lastLoggedOut",
       },
     ],
     [t]
   );
+
   return (
     <>
       <Sidebar />
@@ -268,13 +180,12 @@ const ResellserActiveCustomer = () => {
           <div className="container">
             <FontColor>
               {/* modals */}
-
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
-                    <h2>{t("active PPPoE")}</h2>
+                    <div>{t("activeCustomer")}</div>
                     <div className="reloadBtn">
-                      {isLoading ? (
+                      {loading ? (
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
@@ -287,7 +198,7 @@ const ResellserActiveCustomer = () => {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
+                <div className="collectorWrapper mt-2 pt-4 py-2">
                   <div className="d-flex justify-content-center">
                     <div className="mikrotik-filter">
                       <h6 className="mb-0"> {t("selectMikrotik")} </h6>
@@ -301,51 +212,34 @@ const ResellserActiveCustomer = () => {
                         ))}
                       </select>
                     </div>
-                    <div className="customer-filter ms-4">
+
+                    <div className="mikrotik-filter ms-4">
                       <h6 className="mb-0"> {t("selectCustomer")} </h6>
                       <select
+                        id="selectMikrotikOption"
+                        onChange={filterIt}
                         className="form-select mt-0"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterStatus(event.target.value)
-                        }
                       >
-                        <option selected value="active">
-                          {t("active")}
-                        </option>
                         <option value="allCustomer">
                           {t("sokolCustomer")}
                         </option>
-                        <option value="inactive"> {t("in active")} </option>
+                        <option value="online">{t("online")}</option>
+                        <option value="offline">{t("ofline")}</option>
                       </select>
                     </div>
                   </div>
-                  {filterStatus === "active" && (
-                    <div className="table-section">
-                      <Table
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={activeUser}
-                      />
-                    </div>
-                  )}
 
-                  {filterStatus === "allCustomer" && (
+                  {/* Active PPPoE users */}
+                  <div className="table-section">
                     <Table
-                      isLoading={isLoading}
-                      columns={columns2}
-                      data={allUserFromMikrotic}
-                    />
-                  )}
-                  {filterStatus === "inactive" && (
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns2}
-                      data={allUserFromMikrotic}
-                    />
-                  )}
+                      isLoading={loading}
+                      columns={columns}
+                      data={allUsers}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

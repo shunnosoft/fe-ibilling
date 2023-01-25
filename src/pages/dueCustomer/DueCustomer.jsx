@@ -63,6 +63,16 @@ const DueCustomer = () => {
     (state) => state.persistedReducer.auth.userData
   );
 
+  // get bpSettings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
+  // get customer type
+  const hasCustomerType = bpSettings?.customerType
+    ? bpSettings.customerType
+    : [];
+
   // reload handler
   const reloadHandler = () => {
     getDueCustomer(dispatch, ispOwner, month, year, setIsLoading, "pppoe");
@@ -71,9 +81,9 @@ const DueCustomer = () => {
 
   // get customer api call
   useEffect(() => {
-    if (dueCustomer.length === 0)
+    if (hasCustomerType.includes("pppoe"))
       getDueCustomer(dispatch, ispOwner, month, year, setIsLoading, "pppoe");
-    if (staticDueCustomer.length === 0)
+    if (hasCustomerType.includes("static"))
       getDueCustomer(
         dispatch,
         ispOwner,
@@ -322,61 +332,69 @@ const DueCustomer = () => {
                   >
                     <>
                       {/* for pppoe customer */}
-                      <div className="addAndSettingIcon">
-                        <CSVLink
-                          data={customerForCsVTableInfo}
-                          filename={ispOwnerData.company}
-                          headers={customerForCsVTableInfoHeader}
-                          title="PPPoE Cutomer CSV"
-                        >
-                          <FileExcelFill className="addcutmButton" />
-                        </CSVLink>
-                      </div>
+                      {hasCustomerType.includes("pppoe") && (
+                        <>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={customerForCsVTableInfo}
+                              filename={ispOwnerData.company}
+                              headers={customerForCsVTableInfoHeader}
+                              title="PPPoE Cutomer CSV"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
 
-                      <div
-                        className="addAndSettingIcon"
-                        title={t("PPPoE Cutomer Print")}
-                      >
-                        <ReactToPrint
-                          documentTitle={t("dueCustomer")}
-                          trigger={() => (
-                            <PrinterFill
-                              title={t("print")}
-                              className="addcutmButton"
+                          <div
+                            className="addAndSettingIcon"
+                            title={t("PPPoE Cutomer Print")}
+                          >
+                            <ReactToPrint
+                              documentTitle={t("dueCustomer")}
+                              trigger={() => (
+                                <PrinterFill
+                                  title={t("print")}
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => componentRef.current}
                             />
-                          )}
-                          content={() => componentRef.current}
-                        />
-                      </div>
+                          </div>
+                        </>
+                      )}
                       {/* end for pppoe customer */}
 
                       {/* for static customer */}
-                      <div className="addAndSettingIcon">
-                        <CSVLink
-                          data={staticCustomerForCsVTableInfo}
-                          filename={ispOwnerData.company}
-                          headers={staticCustomerForCsVTableInfoHeader}
-                          title="Static Cutomer CSV"
-                        >
-                          <FileExcelFill className="addcutmButton" />
-                        </CSVLink>
-                      </div>
+                      {hasCustomerType.includes("static") && (
+                        <>
+                          <div className="addAndSettingIcon">
+                            <CSVLink
+                              data={staticCustomerForCsVTableInfo}
+                              filename={ispOwnerData.company}
+                              headers={staticCustomerForCsVTableInfoHeader}
+                              title="Static Cutomer CSV"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+                          </div>
 
-                      <div
-                        className="addAndSettingIcon"
-                        title={t("Static Cutomer Print")}
-                      >
-                        <ReactToPrint
-                          documentTitle={t("dueCustomer")}
-                          trigger={() => (
-                            <PrinterFill
-                              title={t("print")}
-                              className="addcutmButton"
+                          <div
+                            className="addAndSettingIcon"
+                            title={t("Static Cutomer Print")}
+                          >
+                            <ReactToPrint
+                              documentTitle={t("dueCustomer")}
+                              trigger={() => (
+                                <PrinterFill
+                                  title={t("print")}
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => staticRef.current}
                             />
-                          )}
-                          content={() => staticRef.current}
-                        />
-                      </div>
+                          </div>
+                        </>
+                      )}
                       {/* end for static customer */}
 
                       {/* print report */}
@@ -404,22 +422,38 @@ const DueCustomer = () => {
                       className="mb-3"
                     >
                       <Tab eventKey="pppoe" title={t("PPPoE")}>
-                        <div className="table-section">
-                          <Table
-                            isLoading={isLoading}
-                            columns={pppoeColumns}
-                            data={dueCustomer}
-                          ></Table>
-                        </div>
+                        {hasCustomerType.includes("pppoe") ? (
+                          <>
+                            <div className="table-section">
+                              <Table
+                                isLoading={isLoading}
+                                columns={pppoeColumns}
+                                data={dueCustomer}
+                              ></Table>
+                            </div>
+                          </>
+                        ) : (
+                          <h5 className="text-center">
+                            {t("youHaveNoPPPoECustomerType")}
+                          </h5>
+                        )}
                       </Tab>
                       <Tab eventKey="static" title={t("static")}>
-                        <div className="table-section">
-                          <Table
-                            isLoading={staticLoading}
-                            columns={staticColumns}
-                            data={staticDueCustomer}
-                          ></Table>
-                        </div>
+                        {hasCustomerType.includes("static") ? (
+                          <>
+                            <div className="table-section">
+                              <Table
+                                isLoading={staticLoading}
+                                columns={staticColumns}
+                                data={staticDueCustomer}
+                              ></Table>
+                            </div>
+                          </>
+                        ) : (
+                          <h5 className="text-center">
+                            {t("youHaveNoStaticCustomerType")}
+                          </h5>
+                        )}
                       </Tab>
                     </Tabs>
                   </div>
