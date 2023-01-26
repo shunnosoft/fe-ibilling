@@ -622,5 +622,6 @@
   "maskingSmsRate": "Masking SMS Rate",
   "settings": "Settings",
   "youHaveNoStaticCustomerType": "You Have No Static Customer Type!",
-  "youHaveNoPPPoECustomerType": "You Have No PPPoE Customer Type!"
+  "youHaveNoPPPoECustomerType": "You Have No PPPoE Customer Type!",
+  "resellerSummary": "Reseller Summary"
 }

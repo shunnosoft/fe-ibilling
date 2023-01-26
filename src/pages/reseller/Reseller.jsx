@@ -5,7 +5,6 @@ import {
   PenFill,
   ArchiveFill,
   PersonFill,
-  Wallet,
   PeopleFill,
   ChatText,
   ArrowRightShort,
@@ -14,6 +13,7 @@ import {
   PencilSquare,
   KeyFill,
   CashStack,
+  Book,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -50,6 +50,7 @@ import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import RechargeReport from "./resellerModals/RechargeReport";
 import MonthlyReport from "./resellerModals/MonthlyReport";
+import ResellerSummary from "./resellerModals/ResellerSummary";
 
 export default function Reseller() {
   const { t } = useTranslation();
@@ -83,6 +84,9 @@ export default function Reseller() {
   // singl reseler sms id
   const [resellerSmsId, setResellerSmsId] = useState();
 
+  // reseller name state
+  const [resellerName, setResellerName] = useState("");
+
   // data loader
   const [dataLoader, setDataLoader] = useState(false);
 
@@ -92,8 +96,9 @@ export default function Reseller() {
   };
 
   // get Single reseller
-  const getSpecificReseller = (id) => {
+  const getSpecificReseller = (id, resellerName) => {
     setResellerId(id);
+    setResellerName(resellerName);
   };
 
   // handle single sms method
@@ -228,6 +233,20 @@ export default function Reseller() {
                     <div className="customerAction">
                       <CashStack />
                       <p className="actionP">{t("report")}</p>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resellerSummary"
+                  onClick={() => {
+                    getSpecificReseller(original.id, original.name);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <Book />
+                      <p className="actionP">{t("summary")}</p>
                     </div>
                   </div>
                 </li>
@@ -430,6 +449,9 @@ export default function Reseller() {
 
       {/* reseller details modal */}
       <ResellerDetails resellerId={resellerId} />
+
+      {/* reseller summary modal */}
+      <ResellerSummary resellerId={resellerId} resellerName={resellerName} />
 
       {/* reseller rechare modal  */}
       <Recharge resellerId={resellerId} />

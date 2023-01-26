@@ -90,7 +90,7 @@ import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 import Stock from "./pages/Inventory/Stock";
 import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
 import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
-import Setting from "./reseller/summary/Summary";
+import Summary from "./reseller/summary/Summary";
 import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 
 function App() {
@@ -209,7 +209,7 @@ function App() {
               />
 
               <Route path="reseller/profile" element={<RProfile />} />
-              <Route path="reseller/summary" element={<Setting />} />
+              <Route path="reseller/summary" element={<Summary />} />
               <Route path="reseller/home" element={<RDashboard />} />
               <Route path="reseller/collector" element={<RCollector />} />
               <Route path="expenditure" element={<Expenditure />} />

@@ -464,7 +464,7 @@ export default function Sidebar() {
 
                         {userRole === "reseller" && (
                           <NavLink
-                            key={120}
+                            key={123}
                             to={userRole === "reseller" && "/reseller/summary"}
                             className={(navInfo) =>
                               navInfo.isActive ? activeClass.active : ""

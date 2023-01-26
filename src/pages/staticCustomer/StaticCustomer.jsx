@@ -780,23 +780,22 @@ export default function Customer() {
                   </div>
                 </li>
 
-                {role === "ispOwner" ||
-                  (permission.customerDelete && (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticCustomerDelete"
-                      onClick={() => {
-                        customerDelete(original.id);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <ArchiveFill />
-                          <p className="actionP">{t("delete")}</p>
-                        </div>
+                {(role === "ispOwner" || permission.customerDelete) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticCustomerDelete"
+                    onClick={() => {
+                      customerDelete(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">{t("delete")}</p>
                       </div>
-                    </li>
-                  ))}
+                    </div>
+                  </li>
+                )}
 
                 {original.mobile &&
                   (role === "ispOwner" || permission.sendSMS) && (

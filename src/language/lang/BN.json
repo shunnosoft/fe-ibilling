@@ -623,5 +623,6 @@
   "maskingSmsRate": "মাস্কিং মেসেস রেট",
   "settings": "সেটিং",
   "youHaveNoStaticCustomerType": "আপনার স্ট্যাটিক গ্রাহক টাইপ নেই!",
-  "youHaveNoPPPoECustomerType": "আপনার পিপিওই গ্রাহক টাইপ নেই!"
+  "youHaveNoPPPoECustomerType": "আপনার পিপিওই গ্রাহক টাইপ নেই!",
+  "resellerSummary": "রিসেলার সামারি"
 }
