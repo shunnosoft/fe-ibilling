@@ -158,9 +158,9 @@ export default function CustomerBillCollect({ single }) {
             <Formik
               initialValues={{
                 amount:
-                  data?.balance < data?.monthlyFee
-                    ? data?.monthlyFee - data?.balance
-                    : data?.monthlyFee,
+                  // data?.balance < data?.monthlyFee
+                  //   ? data?.monthlyFee - data?.balance :
+                  data?.monthlyFee,
               }}
               validationSchema={BillValidatoin}
               onSubmit={(values) => {

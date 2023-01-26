@@ -45,7 +45,9 @@ const customerSliec = createSlice({
       const customer = state.customer.find(
         (item) => item.id === action.payload.customer
       );
-      customer.balance += action.payload.amount;
+      if (action.payload.billType !== "connectionFee") {
+        customer.balance += action.payload.amount;
+      }
       if (
         customer.balance >= customer.monthlyFee &&
         action.payload.billType !== "connectionFee"
@@ -64,7 +66,9 @@ const customerSliec = createSlice({
         (item) => item.id === action.payload.customer
       );
 
-      customer.balance += action.payload.amount;
+      if (action.payload.billType !== "connectionFee") {
+        customer.balance += action.payload.amount;
+      }
       if (
         customer.balance >= customer.monthlyFee &&
         action.payload.billType !== "connectionFee"

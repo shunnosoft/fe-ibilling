@@ -294,7 +294,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                       </div>
 
                       <div className="monthlyDueDate">
-                        <p className="customerFieldsTitle">ইনভয়েস ডেট</p>
+                        <p className="customerFieldsTitle">Invoice Date</p>
 
                         <div className="timeDate">
                           <Field

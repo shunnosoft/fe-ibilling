@@ -1540,8 +1540,8 @@ export const billCollect = async (
     document.querySelector("#collectCustomerBillModal").click();
     langMessage(
       "success",
-      "বিল গ্রহণ সফল হয়েছে।",
-      "Bill Acceptance is Successful."
+      `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
+      `${res.data.billType} Acceptance is Successful.`
     );
     resetForm();
   } catch (error) {

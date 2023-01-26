@@ -106,43 +106,20 @@ export default function CustomerReport(props) {
                 <table className="table table-striped text-center">
                   <thead>
                     <tr className="spetialSortingRow">
-                      <th style={{ width: "8%" }} scope="col">
-                        {t("package")}
-                      </th>
-                      <th style={{ width: "7%" }} scope="col">
-                        {t("bill")}
-                      </th>
-                      <th style={{ width: "7%" }} scope="col">
-                        {t("discount")}
-                      </th>
-                      <th style={{ width: "7%" }} scope="col">
-                        {t("due")}
-                      </th>
-                      <th style={{ width: "10%" }} scope="col">
-                        {t("previousBalance")}
-                      </th>
+                      <th scope="col">{t("package")}</th>
+                      <th scope="col">{t("amount")}</th>
+                      <th scope="col">{t("type")}</th>
+                      <th scope="col">{t("discount")}</th>
+                      <th scope="col">{t("due")}</th>
+                      <th scope="col">{t("previousBalance")}</th>
 
-                      <th style={{ width: "16%" }} scope="col">
-                        {t("date")}
-                      </th>
-                      <th style={{ width: "16%" }} scope="col">
-                        {t("billingCycle")}
-                      </th>
-                      <th style={{ width: "16%" }} scope="col">
-                        {t("promiseDate")}
-                      </th>
-                      <th style={{ width: "7%" }} scope="col">
-                        {t("medium")}
-                      </th>
-                      <th style={{ width: "15%" }} scope="col">
-                        {t("collector")}
-                      </th>
-                      <th style={{ width: "25%" }} scope="col">
-                        {t("note")}
-                      </th>
-                      <th style={{ width: "8%" }} scope="col">
-                        {t("action")}
-                      </th>
+                      <th scope="col">{t("date")}</th>
+                      <th scope="col">{t("billingCycle")}</th>
+                      <th scope="col">{t("promiseDate")}</th>
+                      <th scope="col">{t("medium")}</th>
+                      <th scope="col">{t("collector")}</th>
+                      <th scope="col">{t("note")}</th>
+                      <th scope="col">{t("action")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -154,6 +131,7 @@ export default function CustomerReport(props) {
                           <tr className="spetialSortingRow" key={index}>
                             <td>{single.pppoe.profile}</td>
                             <td>{FormatNumber(val.amount)}</td>
+                            <td>{val.billType}</td>
                             <td>{FormatNumber(val?.discount)}</td>
                             <td>{FormatNumber(val.due)}</td>
                             <td>{FormatNumber(val?.prevState?.balance)}</td>
