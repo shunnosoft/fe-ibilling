@@ -86,6 +86,94 @@ export const collectorPermission = (
           ispOwnerPermission?.reportDelete &&
           managerPermission?.reportDelete),
     },
+    {
+      id: 12,
+      value: "bulkAreaEdit",
+      label: "বাল্ক এরিয়া এডিট",
+      isChecked: permission?.bulkAreaEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkAreaEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkAreaEdit &&
+          managerPermission?.bulkAreaEdit),
+    },
+    {
+      id: 13,
+      value: "bulkStatusEdit",
+      label: "বাল্ক স্ট্যাটাস এডিট",
+      isChecked: permission?.bulkStatusEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkStatusEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkStatusEdit &&
+          managerPermission?.bulkStatusEdit),
+    },
+    {
+      id: 14,
+      value: "bulkBillingCycleEdit",
+      label: "বাল্ক বিলিং সাইকেল এডিট",
+      isChecked: permission?.bulkBillingCycleEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkBillingCycleEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkBillingCycleEdit &&
+          managerPermission?.bulkBillingCycleEdit),
+    },
+    {
+      id: 19,
+      value: "bulkPromiseDateEdit",
+      label: "বাল্ক প্রমিজ ডেট এডিট",
+      isChecked: permission?.bulkPromiseDateEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkPromiseDateEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkPromiseDateEdit &&
+          managerPermission?.bulkPromiseDateEdit),
+    },
+    {
+      id: 20,
+      value: "bulkAutoDisableEdit",
+      label: "বাল্ক আটো ডিজেবল এডিট",
+      isChecked: permission?.bulkAutoDisableEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkAutoDisableEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkAutoDisableEdit &&
+          managerPermission?.bulkAutoDisableEdit),
+    },
+    {
+      id: 21,
+      value: "bulkPackageEdit",
+      label: "বাল্ক প্যকেজ এডিট",
+      isChecked: permission?.bulkPackageEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkPackageEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkPackageEdit &&
+          managerPermission?.bulkPackageEdit),
+    },
+    {
+      id: 22,
+      value: "bulkTransferToReseller",
+      label: "বাল্ক রিসেলার গ্রাহক ট্রান্সফার",
+      isChecked: permission?.bulkTransferToReseller,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkTransferToReseller
+        : role === "manager" &&
+          ispOwnerPermission?.bulkTransferToReseller &&
+          managerPermission?.bulkTransferToReseller),
+    },
+    {
+      id: 23,
+      value: "bulkCustomerDelete",
+      label: "বাল্ক গ্রাহক ডিলিট",
+      isChecked: permission?.bulkCustomerDelete,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkCustomerDelete
+        : role === "manager" &&
+          ispOwnerPermission?.bulkCustomerDelete &&
+          managerPermission?.bulkCustomerDelete),
+    },
   ];
 
   const permissionEn = [
@@ -169,6 +257,94 @@ export const collectorPermission = (
         (role === "manager" &&
           managerPermission?.reportDelete &&
           ispOwnerPermission?.reportDelete),
+    },
+    {
+      id: 12,
+      value: "bulkAreaEdit",
+      label: "Bulk Area Edit",
+      isChecked: permission?.bulkAreaEdit,
+      disabled:
+        (role === "ispOwner" && ispOwnerPermission?.bulkAreaEdit) ||
+        (role === "manager" &&
+          managerPermission?.bulkAreaEdit &&
+          ispOwnerPermission?.bulkAreaEdit),
+    },
+    {
+      id: 13,
+      value: "bulkStatusEdit",
+      label: "Bulk Status Edit",
+      isChecked: permission?.bulkStatusEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkStatusEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkStatusEdit &&
+          managerPermission?.bulkStatusEdit),
+    },
+    {
+      id: 14,
+      value: "bulkBillingCycleEdit",
+      label: "Bulk BillingCycle Edit",
+      isChecked: permission?.bulkBillingCycleEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkBillingCycleEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkBillingCycleEdit &&
+          managerPermission?.bulkBillingCycleEdit),
+    },
+    {
+      id: 19,
+      value: "bulkPromiseDateEdit",
+      label: "Bulk Promise Date Edit",
+      isChecked: permission?.bulkPromiseDateEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkPromiseDateEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkPromiseDateEdit &&
+          managerPermission?.bulkPromiseDateEdit),
+    },
+    {
+      id: 20,
+      value: "bulkAutoDisableEdit",
+      label: "Bulk Auto Disable Edit",
+      isChecked: permission?.bulkAutoDisableEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkAutoDisableEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkAutoDisableEdit &&
+          managerPermission?.bulkAutoDisableEdit),
+    },
+    {
+      id: 21,
+      value: "bulkPackageEdit",
+      label: "Bulk Package Edit",
+      isChecked: permission?.bulkPackageEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkPackageEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkPackageEdit &&
+          managerPermission?.bulkPackageEdit),
+    },
+    {
+      id: 22,
+      value: "bulkTransferToReseller",
+      label: "Bulk Transfer To Reseller",
+      isChecked: permission?.bulkTransferToReseller,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkTransferToReseller
+        : role === "manager" &&
+          ispOwnerPermission?.bulkTransferToReseller &&
+          managerPermission?.bulkTransferToReseller),
+    },
+    {
+      id: 23,
+      value: "bulkCustomerDelete",
+      label: "Bulk Customer Delete",
+      isChecked: permission?.bulkCustomerDelete,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkCustomerDelete
+        : role === "manager" &&
+          ispOwnerPermission?.bulkCustomerDelete &&
+          managerPermission?.bulkCustomerDelete),
     },
   ];
 

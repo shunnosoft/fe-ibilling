@@ -614,26 +614,27 @@ export default function StaticCustomerEdit({ single }) {
                           showTimeSelect
                         />
                       </div>
-                      {(role === "manager" || role === "ispOwner") && (
-                        <div
-                          className="static_edit_item"
-                          style={{ marginTop: "-12px" }}
-                        >
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("promiseDate")}
-                          </label>
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={promiseDate}
-                            onChange={(date) => setPromiseDate(date)}
-                            dateFormat="MMM dd yyyy hh:mm a"
-                            placeholderText={t("selectDate")}
-                            minDate={new Date(customer?.billingCycle)}
-                            maxDate={mxDate}
-                            showTimeSelect
-                          />
-                        </div>
-                      )}
+                      {bpSettings.promiseDate &&
+                        (role === "manager" || role === "ispOwner") && (
+                          <div
+                            className="static_edit_item"
+                            style={{ marginTop: "-12px" }}
+                          >
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("promiseDate")}
+                            </label>
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={promiseDate}
+                              onChange={(date) => setPromiseDate(date)}
+                              dateFormat="MMM dd yyyy hh:mm a"
+                              placeholderText={t("selectDate")}
+                              minDate={new Date(customer?.billingCycle)}
+                              maxDate={mxDate}
+                              showTimeSelect
+                            />
+                          </div>
+                        )}
                       <div className="static_edit_item">
                         <label className="form-control-label changeLabelFontColor mt-0">
                           {t("connectionDate")}

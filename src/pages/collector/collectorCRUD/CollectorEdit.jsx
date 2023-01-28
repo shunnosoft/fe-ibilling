@@ -41,6 +41,7 @@ export default function CollectorEdit({ collectorId }) {
   );
 
   const single = collector.find((val) => val.id === collectorId);
+  console.log(single?.permissions);
   const area = useSelector((state) => state?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -208,6 +209,7 @@ export default function CollectorEdit({ collectorId }) {
                           {val.subAreas.map((v, k) => (
                             <div key={k} className="displayFlex">
                               <input
+                                id={v.id}
                                 type="checkbox"
                                 className="getValueUsingClass_Edit"
                                 value={v.id}
@@ -216,7 +218,7 @@ export default function CollectorEdit({ collectorId }) {
                                 }
                                 onChange={setAreaHandler}
                               />
-                              <label>{v.name}</label>
+                              <label htmlFor={v.id}>{v.name}</label>
                             </div>
                           ))}
                         </div>

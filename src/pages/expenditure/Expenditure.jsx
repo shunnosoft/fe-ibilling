@@ -47,6 +47,12 @@ export default function Expenditure() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  // get bp setting
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   const expenditures = useSelector(
     (state) => state.expenditure.allExpenditures
   );
@@ -62,6 +68,7 @@ export default function Expenditure() {
 
   // pagination
   let [allExpenditures, setAllExpenditure] = useState([]);
+
   const [filterName, setFilterName] = useState();
   const [filterState, setFilterState] = useState(allExpenditures);
 
@@ -79,25 +86,6 @@ export default function Expenditure() {
     name: "",
     expenditurePurpose: "",
   });
-
-  //set the expenditurePurpose name to expenditure
-  useLayoutEffect(() => {
-    const temp = [];
-    expenditures?.forEach((e) => {
-      expenditurePurpose?.forEach((ep) => {
-        if (ep.id === e.expenditurePurpose) {
-          temp.push({
-            ...e,
-            expenditureName: ep.name,
-          });
-        }
-        return temp;
-      });
-      return temp;
-    });
-    setAllExpenditure(temp);
-    setFilterState(temp);
-  }, [expenditures, expenditurePurpose]);
 
   useEffect(() => {
     var initialToday = new Date();
@@ -119,13 +107,12 @@ export default function Expenditure() {
   }, [expenditures]);
 
   // // delete expenditure
-  // const deleteExpenditureHandler = (expenditureId) => {
-  //   console.log(expenditureId);
-  //   const confirm = window.confirm(t("areYouSureWantToDelete"));
-  //   if (confirm) {
-  //     deleteExpenditure(dispatch, expenditureId);
-  //   }
-  // };
+  const deleteExpenditureHandler = (expenditureId) => {
+    const confirm = window.confirm(t("areYouSureWantToDelete"));
+    if (confirm) {
+      deleteExpenditure(dispatch, expenditureId);
+    }
+  };
 
   // reload handler
   const reloadHandler = () => {
@@ -139,7 +126,7 @@ export default function Expenditure() {
       getAllExpenditure(dispatch, ispOwnerId, setExpenditureLoading);
     if (expenditurePurpose.length === 0)
       getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
-  }, [ispOwnerId, dispatch]);
+  }, [ispOwnerId]);
 
   // table column
   const columns = React.useMemo(
@@ -154,7 +141,13 @@ export default function Expenditure() {
       {
         width: "20%",
         Header: t("expenseSector"),
-        accessor: "expenditureName",
+        accessor: "expenditurePurpose",
+        Cell: ({ cell: { value } }) => {
+          const matchExpenditure =
+            expenditurePurpose &&
+            expenditurePurpose.find((item) => item.id === value);
+          return <div>{matchExpenditure?.name}</div>;
+        },
       },
       {
         width: "23%",
@@ -226,7 +219,8 @@ export default function Expenditure() {
                   </div>
                 </div>
               </li>
-              {/* {role === "ispOwner" &&
+              {role === "ispOwner" &&
+                bpSettings.expenditureDelete &&
                 new Date(original.createdAt).getMonth() ===
                   new Date().getMonth() && (
                   <li
@@ -241,7 +235,7 @@ export default function Expenditure() {
                       </div>
                     </div>
                   </li>
-                )} */}
+                )}
             </ul>
           </div>
         ),

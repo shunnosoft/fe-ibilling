@@ -401,45 +401,49 @@ export default function CustomerEdit({ single }) {
                       <FtextField type="text" label={t("email")} name="email" />
                     </div>
                     <div className="newDisplay">
-                      <div className="billCycle">
-                        <p className="customerFieldsTitle">
-                          {t("billingCycle")}
-                        </p>
+                      {status !== "expired" && (
+                        <>
+                          <div className="billCycle">
+                            <p className="customerFieldsTitle">
+                              {t("billingCycle")}
+                            </p>
 
-                        {role === "collector" ? (
-                          <div className="timeDate">
-                            <input
-                              value={billDate}
-                              onChange={(e) => setBillDate(e.target.value)}
-                              type="date"
-                              min={moment().format("YYYY-MM-DD")}
-                              disabled
-                            />
-                            <input
-                              className="billTime"
-                              value={billTime}
-                              onChange={(e) => setBilltime(e.target.value)}
-                              type="time"
-                              disabled
-                            />
+                            {role === "collector" ? (
+                              <div className="timeDate">
+                                <input
+                                  value={billDate}
+                                  onChange={(e) => setBillDate(e.target.value)}
+                                  type="date"
+                                  min={moment().format("YYYY-MM-DD")}
+                                  disabled
+                                />
+                                <input
+                                  className="billTime"
+                                  value={billTime}
+                                  onChange={(e) => setBilltime(e.target.value)}
+                                  type="time"
+                                  disabled
+                                />
+                              </div>
+                            ) : (
+                              <div className="timeDate">
+                                <input
+                                  value={billDate}
+                                  onChange={(e) => setBillDate(e.target.value)}
+                                  type="date"
+                                  min={moment().format("YYYY-MM-DD")}
+                                />
+                                <input
+                                  className="billTime"
+                                  value={billTime}
+                                  onChange={(e) => setBilltime(e.target.value)}
+                                  type="time"
+                                />
+                              </div>
+                            )}
                           </div>
-                        ) : (
-                          <div className="timeDate">
-                            <input
-                              value={billDate}
-                              onChange={(e) => setBillDate(e.target.value)}
-                              type="date"
-                              min={moment().format("YYYY-MM-DD")}
-                            />
-                            <input
-                              className="billTime"
-                              value={billTime}
-                              onChange={(e) => setBilltime(e.target.value)}
-                              type="time"
-                            />
-                          </div>
-                        )}
-                      </div>
+                        </>
+                      )}
                       {Getmikrotik.length > 0 && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>
@@ -451,69 +455,71 @@ export default function CustomerEdit({ single }) {
                           />
                         </div>
                       )}
-                      <div className="pppoeStatus">
-                        <p className="p-0 mt-2">{t("status")}</p>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="staus"
-                            value={"active"}
-                            id="changeToActive"
-                            onChange={(e) => setStatus(e.target.value)}
-                            checked={status === "active"}
-                            disabled={
-                              permission?.customerStatusEdit
-                                ? !permission?.customerStatusEdit
-                                : !collectorPermission?.customerActivate
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="changeToActive"
-                          >
-                            {t("active")}
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            id="inlineRadio2"
-                            value={"inactive"}
-                            onChange={(e) => setStatus(e.target.value)}
-                            checked={status === "inactive"}
-                            disabled={
-                              permission?.customerStatusEdit
-                                ? !permission?.customerStatusEdit
-                                : !collectorPermission?.customerDeactivate
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            {t("in active")}
-                          </label>
-                        </div>
-                        {data?.status === "expired" && (
+                      {status !== "expired" && (
+                        <div className="pppoeStatus">
+                          <p className="p-0 mt-2">{t("status")}</p>
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="staus"
+                              value={"active"}
+                              id="changeToActive"
+                              onChange={(e) => setStatus(e.target.value)}
+                              checked={status === "active"}
+                              disabled={
+                                permission?.customerStatusEdit
+                                  ? !permission?.customerStatusEdit
+                                  : !collectorPermission?.customerActivate
+                              }
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="changeToActive"
+                            >
+                              {t("active")}
+                            </label>
+                          </div>
                           <div className="form-check form-check-inline">
                             <input
                               className="form-check-input"
                               type="radio"
                               id="inlineRadio2"
-                              disabled
-                              checked={status === "expired"}
+                              value={"inactive"}
+                              onChange={(e) => setStatus(e.target.value)}
+                              checked={status === "inactive"}
+                              disabled={
+                                permission?.customerStatusEdit
+                                  ? !permission?.customerStatusEdit
+                                  : !collectorPermission?.customerDeactivate
+                              }
                             />
                             <label
                               className="form-check-label"
                               htmlFor="inlineRadio2"
                             >
-                              {t("expired")}
+                              {t("in active")}
                             </label>
                           </div>
-                        )}
-                      </div>
+                          {data?.status === "expired" && (
+                            <div className="form-check form-check-inline">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineRadio2"
+                                disabled
+                                checked={status === "expired"}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="inlineRadio2"
+                              >
+                                {t("expired")}
+                              </label>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>
