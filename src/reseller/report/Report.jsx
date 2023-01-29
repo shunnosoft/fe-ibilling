@@ -18,7 +18,11 @@ import {
   ArrowDownUp,
   PrinterFill,
 } from "react-bootstrap-icons";
-import { getAllBills } from "../../features/apiCallReseller";
+import {
+  getAllBills,
+  getSubAreas,
+  getCollector,
+} from "../../features/apiCallReseller";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
@@ -46,11 +50,13 @@ export default function Report() {
 
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const [isLoading, setisLoading] = useState(false);
+  const [collectorLoading, setCollectorLoading] = useState(false);
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [mainData, setMainData] = useState(allBills);
   const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
+  console.log(collectors);
   const [collectorIds, setCollectorIds] = useState([]);
   const [isSorted, setSorted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,6 +123,12 @@ export default function Report() {
     );
   }, [allBills]);
 
+  useEffect(() => {
+    getCollector(dispatch, userData.id, setCollectorLoading);
+
+    getSubAreas(dispatch, userData.id);
+  }, []);
+
   const onChangeCollector = (userId) => {
     // console.log("collector id", collectorId);
 
@@ -141,8 +153,8 @@ export default function Report() {
     let arr = allBills;
 
     if (subAreaIds.length) {
-      arr = allBills.filter((bill) =>
-        subAreaIds.includes(bill.customer.subArea)
+      arr = allBills?.filter((bill) =>
+        subAreaIds.includes(bill?.customer?.subArea)
       );
     }
     if (collectorIds.length) {

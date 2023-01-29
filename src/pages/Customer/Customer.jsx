@@ -1542,7 +1542,9 @@ const PPPOECustomer = () => {
       {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">
           {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
-            (bpSettings?.bulkAreaEdit && permission?.bulkAreaEdit)) && (
+            (bpSettings?.bulkAreaEdit &&
+              permission?.bulkAreaEdit &&
+              role !== "collector")) && (
             <button
               className="bulk_action_button btn btn-primary btn-floating btn-sm"
               title={t("editArea")}
@@ -1555,7 +1557,10 @@ const PPPOECustomer = () => {
             </button>
           )}
 
-          {bpSettings.updateCustomerBalance && (
+          {((role === "ispOwner" && bpSettings?.updateCustomerBalance) ||
+            (bpSettings?.updateCustomerBalance &&
+              permission?.updateCustomerBalance &&
+              role === "manager")) && (
             <button
               className="bulk_action_button btn btn-info btn-floating btn-sm"
               title={t("editBalance")}
@@ -1567,8 +1572,11 @@ const PPPOECustomer = () => {
               <span className="button_title">{t("editBalance")}</span>
             </button>
           )}
+
           {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
-            (bpSettings?.bulkStatusEdit && permission?.bulkStatusEdit)) && (
+            (bpSettings?.bulkStatusEdit &&
+              permission?.bulkStatusEdit &&
+              role === "manager")) && (
             <button
               className="bulk_action_button btn btn-dark btn-floating btn-sm"
               title={t("editStatus")}
@@ -1583,7 +1591,8 @@ const PPPOECustomer = () => {
 
           {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
             (bpSettings?.bulkBillingCycleEdit &&
-              permission?.bulkBillingCycleEdit)) && (
+              permission?.bulkBillingCycleEdit &&
+              role === "manager")) && (
             <button
               className="bulk_action_button btn btn-warning btn-floating btn-sm"
               title={t("editBillingCycle")}
@@ -1598,7 +1607,8 @@ const PPPOECustomer = () => {
 
           {((role === "ispOwner" && bpSettings?.bulkPromiseDateEdit) ||
             (bpSettings?.bulkPromiseDateEdit &&
-              permission?.bulkPromiseDateEdit)) && (
+              permission?.bulkPromiseDateEdit &&
+              role === "manager")) && (
             <button
               className="bulk_action_button btn btn-secondary btn-floating btn-sm"
               title={t("editPromiseDate")}
@@ -1613,7 +1623,8 @@ const PPPOECustomer = () => {
 
           {((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
             (bpSettings?.bulkAutoDisableEdit &&
-              permission?.bulkAutoDisableEdit)) && (
+              permission?.bulkAutoDisableEdit &&
+              role === "manager")) && (
             <button
               className="bulk_action_button btn btn-primary btn-floating btn-sm"
               title={t("autoConnectOnOff")}
@@ -1630,7 +1641,9 @@ const PPPOECustomer = () => {
 
           {bpSettings.hasMikrotik &&
             ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
-              (bpSettings?.bulkPackageEdit && permission?.bulkPackageEdit)) && (
+              (bpSettings?.bulkPackageEdit &&
+                permission?.bulkPackageEdit &&
+                role === "manager")) && (
               <button
                 className="bulk_action_button btn btn-warning btn-floating btn-sm"
                 title={t("package")}
@@ -1645,7 +1658,8 @@ const PPPOECustomer = () => {
 
           {((role === "ispOwner" && bpSettings?.bulkTransferToReseller) ||
             (bpSettings?.bulkTransferToReseller &&
-              permission?.bulkTransferToReseller)) && (
+              permission?.bulkTransferToReseller &&
+              role === "manager")) && (
             <button
               className="bulk_action_button btn btn-info btn-floating btn-sm"
               title={t("transferReseller")}
@@ -1660,7 +1674,8 @@ const PPPOECustomer = () => {
 
           {((role === "ispOwner" && bpSettings?.bulkCustomerDelete) ||
             (bpSettings?.bulkCustomerDelete &&
-              permission?.bulkCustomerDelete)) && (
+              permission?.bulkCustomerDelete &&
+              role === "manager")) && (
             <button
               className="bulk_action_button btn btn-danger btn-floating btn-sm"
               title={t("customerDelete")}

@@ -62,6 +62,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CustomerNote from "./customerCRUD/CustomerNote";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
+import BulkCustomerTransfer from "../Customer/customerCRUD/bulkOpration/bulkCustomerTransfer";
 
 export default function Customer() {
   //call hooks
@@ -1019,6 +1020,7 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="customerBulkEdit"
               />
+
               <BulkBillingCycleEdit
                 bulkCustomer={bulkCustomer}
                 modalId="customerBillingCycle"
@@ -1041,6 +1043,12 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="autoDisableEditModal"
               />
+
+              <BulkCustomerTransfer
+                bulkCustomer={bulkCustomer}
+                modalId="bulkTransferToReseller"
+              />
+
               <CreateSupportTicket
                 collectors={collectors}
                 manager={manager}
@@ -1406,73 +1414,125 @@ export default function Customer() {
       </div>
       {bulkCustomer.length > 0 && (
         <div className="bulkActionButton">
-          <button
-            className="bulk_action_button"
-            title={t("editArea")}
-            data-bs-toggle="modal"
-            data-bs-target="#customerBulkEdit"
-            type="button"
-            class="btn btn-primary btn-floating btn-sm"
-          >
-            <i class="fas fa-edit"></i>
-            <span className="button_title">{t("editArea")}</span>
-          </button>
-          <button
-            className="bulk_action_button"
-            title={t("editStatus")}
-            data-bs-toggle="modal"
-            data-bs-target="#bulkStatusEdit"
-            type="button"
-            class="btn btn-dark btn-floating btn-sm"
-          >
-            <i class="fas fa-edit"></i>
-            <span className="button_title">{t("editStatus")}</span>
-          </button>
-          <button
-            className="bulk_action_button"
-            title={t("editBillingCycle")}
-            data-bs-toggle="modal"
-            data-bs-target="#customerBillingCycle"
-            type="button"
-            class="btn btn-warning btn-floating btn-sm"
-          >
-            <i class="fas fa-edit"></i>
-            <span className="button_title">{t("editBillingCycle")}</span>
-          </button>
+          {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
+            (bpSettings?.bulkAreaEdit &&
+              permission?.bulkAreaEdit &&
+              role === "manager")) && (
+            <button
+              className="bulk_action_button"
+              title={t("editArea")}
+              data-bs-toggle="modal"
+              data-bs-target="#customerBulkEdit"
+              type="button"
+              class="btn btn-primary btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title">{t("editArea")}</span>
+            </button>
+          )}
 
-          <button
-            className="bulk_action_button"
-            title={t("editPromiseDate")}
-            data-bs-toggle="modal"
-            data-bs-target="#bulkPromiseDateEdit"
-            type="button"
-            class="btn btn-secondary btn-floating btn-sm"
-          >
-            <i class="fas fa-edit"></i>
-            <span className="button_title"> {t("editPromiseDate")} </span>
-          </button>
-          <button
-            className="bulk_action_button"
-            title={t("automaticConnectionOff")}
-            data-bs-toggle="modal"
-            data-bs-target="#autoDisableEditModal"
-            type="button"
-            class="btn btn-primary btn-floating btn-sm"
-          >
-            <i class="fas fa-edit"></i>
-            <span className="button_title">{t("automaticConnectionOff")}</span>
-          </button>
-          <button
-            className="bulk_action_button"
-            title={t("customerDelete")}
-            data-bs-toggle="modal"
-            data-bs-target="#bulkDeleteCustomer"
-            type="button"
-            class="btn btn-danger btn-floating btn-sm"
-          >
-            <i class="fas fa-trash-alt"></i>
-            <span className="button_title">{t("customerDelete")}</span>
-          </button>
+          {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
+            (bpSettings?.bulkStatusEdit &&
+              permission?.bulkStatusEdit &&
+              role === "manager")) && (
+            <button
+              className="bulk_action_button"
+              title={t("editStatus")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkStatusEdit"
+              type="button"
+              class="btn btn-dark btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title">{t("editStatus")}</span>
+            </button>
+          )}
+
+          {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
+            (bpSettings?.bulkBillingCycleEdit &&
+              permission?.bulkBillingCycleEdit &&
+              role === "manager")) && (
+            <button
+              className="bulk_action_button"
+              title={t("editBillingCycle")}
+              data-bs-toggle="modal"
+              data-bs-target="#customerBillingCycle"
+              type="button"
+              class="btn btn-warning btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title">{t("editBillingCycle")}</span>
+            </button>
+          )}
+
+          {((role === "ispOwner" && bpSettings?.bulkPromiseDateEdit) ||
+            (bpSettings?.bulkPromiseDateEdit &&
+              permission?.bulkPromiseDateEdit &&
+              role === "manager")) && (
+            <button
+              className="bulk_action_button"
+              title={t("editPromiseDate")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkPromiseDateEdit"
+              type="button"
+              class="btn btn-secondary btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title"> {t("editPromiseDate")} </span>
+            </button>
+          )}
+
+          {((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
+            (bpSettings?.bulkAutoDisableEdit &&
+              permission?.bulkAutoDisableEdit &&
+              role === "manager")) && (
+            <button
+              className="bulk_action_button"
+              title={t("automaticConnectionOff")}
+              data-bs-toggle="modal"
+              data-bs-target="#autoDisableEditModal"
+              type="button"
+              class="btn btn-primary btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title">
+                {t("automaticConnectionOff")}
+              </span>
+            </button>
+          )}
+
+          {((role === "ispOwner" && bpSettings?.bulkTransferToReseller) ||
+            (bpSettings?.bulkTransferToReseller &&
+              permission?.bulkTransferToReseller &&
+              role !== "collector")) && (
+            <button
+              className="bulk_action_button btn btn-info btn-floating btn-sm"
+              title={t("transferReseller")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkTransferToReseller"
+              type="button"
+            >
+              <i className="fa-solid fa-right-left"></i>
+              <span className="button_title"> {t("transferReseller")} </span>
+            </button>
+          )}
+
+          {((role === "ispOwner" && bpSettings?.bulkCustomerDelete) ||
+            (bpSettings?.bulkCustomerDelete &&
+              permission?.bulkCustomerDelete &&
+              role !== "collector")) && (
+            <button
+              className="bulk_action_button"
+              title={t("customerDelete")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkDeleteCustomer"
+              type="button"
+              class="btn btn-danger btn-floating btn-sm"
+            >
+              <i class="fas fa-trash-alt"></i>
+              <span className="button_title">{t("customerDelete")}</span>
+            </button>
+          )}
         </div>
       )}
     </>

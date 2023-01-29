@@ -614,7 +614,7 @@ export default function StaticCustomerEdit({ single }) {
                           showTimeSelect
                         />
                       </div>
-                      {bpSettings.promiseDate &&
+                      {bpSettings?.promiseDate &&
                         (role === "manager" || role === "ispOwner") && (
                           <div
                             className="static_edit_item"
