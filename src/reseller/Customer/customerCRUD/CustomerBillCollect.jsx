@@ -109,7 +109,6 @@ export default function CustomerBillCollect({ single }) {
       });
       sendingData.month = monthValues.join(",");
     }
-
     billCollect(dispatch, sendingData, setLoading, resetForm);
   };
 

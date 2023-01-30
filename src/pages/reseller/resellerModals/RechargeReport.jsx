@@ -2,6 +2,7 @@ import moment from "moment";
 import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { PrinterFill } from "react-bootstrap-icons";
+import ReactDatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -17,16 +18,49 @@ const RechargeReport = ({ resellerId }) => {
   const componentRef = useRef();
 
   //get recharge history
-  const data = useSelector((state) => state.recharge.singleHistory);
+  let data = useSelector((state) => state.recharge.singleHistory);
 
   // get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
+  // get Current date
+  const today = new Date();
+
+  // get first date of month
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  // start date state
+  const [startDate, setStartDate] = useState(firstDay);
+
+  // end date state
+  const [endDate, setEndDate] = useState(today);
+
   // loading state
   const [isLoading, setIsLoading] = useState();
 
+  // report data state
+  const [mainData, setMainData] = useState([]);
+
   // find select reseller
   const findName = reseller.find((item) => item?.id === resellerId);
+
+  useEffect(() => {
+    setMainData(data);
+  }, [data]);
+
+  // filter handler
+  const onClickFilter = () => {
+    let filterData = [...data];
+    // date filter
+    filterData = filterData.filter(
+      (value) =>
+        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
+    );
+    setMainData(filterData);
+  };
 
   useEffect(() => {
     if (resellerId) {
@@ -68,6 +102,36 @@ const RechargeReport = ({ resellerId }) => {
               ></button>
             </div>
             <div className="modal-body">
+              {/* filter selector */}
+              <div className="selectFilteringg">
+                <div>
+                  <ReactDatePicker
+                    className="form-control mw-100"
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    dateFormat="MMM dd yyyy"
+                    placeholderText={t("selectBillDate")}
+                  />
+                </div>
+                <div className="mx-2">
+                  <ReactDatePicker
+                    className="form-control mw-100"
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    dateFormat="MMM dd yyyy"
+                    placeholderText={t("selectBillDate")}
+                  />
+                </div>
+                <div className="">
+                  <button
+                    className="btn btn-outline-primary w-140 "
+                    type="button"
+                    onClick={onClickFilter}
+                  >
+                    {t("filter")}
+                  </button>
+                </div>
+              </div>
               <div className="table-section">
                 <table class="table">
                   <thead>
@@ -75,14 +139,13 @@ const RechargeReport = ({ resellerId }) => {
                       <th scope="col">#</th>
                       <th scope="col">{t("amount")}</th>
                       <th scope="col">{t("date")}</th>
-                      {/* <th scope="col">{t("print")}</th> */}
                     </tr>
                   </thead>
                   <tbody>
                     {isLoading ? (
                       <TdLoader colspan={4} />
-                    ) : data?.length > 0 ? (
-                      data?.map((item, index) => {
+                    ) : mainData?.length > 0 ? (
+                      mainData?.map((item, index) => {
                         return (
                           <>
                             <tr key={index}>
