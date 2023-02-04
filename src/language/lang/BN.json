@@ -624,5 +624,8 @@
   "settings": "সেটিং",
   "youHaveNoStaticCustomerType": "আপনার স্ট্যাটিক গ্রাহক টাইপ নেই!",
   "youHaveNoPPPoECustomerType": "আপনার পিপিওই গ্রাহক টাইপ নেই!",
-  "resellerSummary": "রিসেলার সামারি"
+  "resellerSummary": "রিসেলার সামারি",
+  "sumBill": "মোট বিল",
+  "paidSum": "মোট পেইড",
+  "unpaidSum": "মোট আনপেইড"
 }

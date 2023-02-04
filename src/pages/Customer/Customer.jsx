@@ -104,13 +104,10 @@ const PPPOECustomer = () => {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
-  console.log({ permission });
-
   // get bp settings
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
-  console.log(bpSettings);
 
   //get all areas
   const areas = useSelector((state) => state.area?.area);

@@ -23,9 +23,9 @@ const MessageLog = () => {
   // import dispatch
   const dispatch = useDispatch();
 
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
+  // get reseller id
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.id
   );
 
   // loading state
@@ -35,9 +35,9 @@ const MessageLog = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getMessageLog(dispatch, setNonMasking, ispOwner);
-    getFixedNumberMessageLog(dispatch, setFixedNumber, ispOwner);
-    getMaskingMessageLog(dispatch, setMasking, ispOwner);
+    getMessageLog(dispatch, setNonMasking, resellerId);
+    getFixedNumberMessageLog(dispatch, setFixedNumber, resellerId);
+    getMaskingMessageLog(dispatch, setMasking, resellerId);
   };
 
   return (

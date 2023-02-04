@@ -1,37 +1,39 @@
 import React, { useMemo } from "react";
 import { ToastContainer } from "react-toastify";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import useDash from "../../assets/css/dash.module.css";
+import { FontColor, FourGround } from "../../../assets/js/theme";
+import Sidebar from "../../../components/admin/sidebar/Sidebar";
+import useDash from "../../../assets/css/dash.module.css";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getResellerData } from "../../features/resellerDataApi";
+import { getResellerData } from "../../../features/resellerDataApi";
 import { useDispatch } from "react-redux";
-import Table from "../../components/table/Table";
-import FormatNumber from "../../components/common/NumberFormat";
-import Loader from "../../components/common/Loader";
+import Table from "../../../components/table/Table";
+import FormatNumber from "../../../components/common/NumberFormat";
+import Loader from "../../../components/common/Loader";
 import ReactDatePicker from "react-datepicker";
+import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "react-bootstrap-icons";
+import { fetchReseller } from "../../../features/apiCalls";
 
-const Summary = () => {
+const ResellerSummary = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  let navigate = useNavigate();
+
+  // get id from route
+  const { resellerId } = useParams();
+
+  // get current date
   const date = new Date();
 
-  // get current user information
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
+  // get all reseller
+  const allReseller = useSelector((state) => state?.reseller?.reseller);
 
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
-  );
-
-  // get reseller id
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
   );
 
   // get reseller data
@@ -40,8 +42,14 @@ const Summary = () => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // reseller data loader
+  const [dataLoader, setDataLoader] = useState(false);
+
   // date filter state
   const [filterDate, setFilterDate] = useState(date);
+
+  // find current reseller
+  const reseller = allReseller.find((item) => item.id === resellerId);
 
   const filterData = {
     year: filterDate.getFullYear(),
@@ -56,6 +64,7 @@ const Summary = () => {
   // get reseller summary api call
   useEffect(() => {
     getResellerData(ispOwnerId, resellerId, setIsLoading, filterData, dispatch);
+    fetchReseller(dispatch, ispOwnerId, setDataLoader);
   }, []);
 
   // table column
@@ -73,12 +82,12 @@ const Summary = () => {
       },
       {
         width: "7%",
-        Header: t("isp"),
+        Header: t("own"),
         accessor: "ispOwnerRate",
       },
       {
         width: "7%",
-        Header: t("own"),
+        Header: t("reseller"),
         accessor: "resellerRate",
       },
       {
@@ -104,12 +113,12 @@ const Summary = () => {
       },
       {
         width: "7%",
-        Header: t("isp"),
+        Header: t("own"),
         accessor: "paidCustomerBillIspOwnerCommission",
       },
       {
         width: "7%",
-        Header: t("own"),
+        Header: t("reseller"),
         accessor: "paidCustomerBillResellerCommission",
       },
       {
@@ -124,12 +133,12 @@ const Summary = () => {
       },
       {
         width: "7%",
-        Header: t("isp"),
+        Header: t("own"),
         accessor: "unpaidCustomerBillIspOwnerCommission",
       },
       {
         width: "7%",
-        Header: t("own"),
+        Header: t("reseller"),
         accessor: "unpaidCustomerBillResellerCommission",
       },
     ],
@@ -183,7 +192,20 @@ const Summary = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("summary")} </h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <div
+                      className="pe-2 text-black"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(-1)}
+                    >
+                      <ArrowLeft className="arrowLeftSize" />
+                    </div>
+                    <div>
+                      {reseller?.name} {t("summary")}
+                    </div>
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
@@ -200,7 +222,7 @@ const Summary = () => {
                         endDate={"2014/04/08"}
                         placeholderText={t("filterDashboard")}
                         maxDate={new Date()}
-                        minDate={new Date(currentUser?.createdAt)}
+                        minDate={new Date(reseller?.createdAt)}
                       />
                     </div>
                     <button
@@ -228,4 +250,4 @@ const Summary = () => {
   );
 };
 
-export default Summary;
+export default ResellerSummary;

@@ -92,6 +92,7 @@ import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket
 import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
 import Summary from "./reseller/summary/Summary";
 import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
+import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -535,6 +536,16 @@ function App() {
                 element={
                   userRole === "ispOwner" ? (
                     <ResellerCustomer />
+                  ) : (
+                    <Navigate to={"/home"}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path="reseller/summary/:resellerId"
+                element={
+                  userRole === "ispOwner" ? (
+                    <ResellerSummary />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
                   )

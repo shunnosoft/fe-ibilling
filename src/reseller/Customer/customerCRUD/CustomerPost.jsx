@@ -11,7 +11,6 @@ import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
   fetchpppoePackage,
-  getSubAreas,
 } from "../../../features/apiCallReseller";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
@@ -25,6 +24,10 @@ export default function CustomerModal() {
 
   // get user role from redux
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
 
   // get user data from redux
   const userData = useSelector(
@@ -337,6 +340,8 @@ export default function CustomerModal() {
                         type="text"
                         label={t("monthFee")}
                         name="monthlyFee"
+                        min={packageRate?.rate}
+                        disabled={!permission?.monthlyFeeEdit}
                       />
                     </div>
 

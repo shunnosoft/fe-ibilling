@@ -6,6 +6,11 @@ import { useTranslation } from "react-i18next";
 
 const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   const { t } = useTranslation();
+  // get ispOwner bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   // get all customer
   const customers = useSelector((state) => state?.customer?.customer);
 
@@ -73,19 +78,22 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
             <h5>
               {singleData?.name} {t("deleteCustomer")}{" "}
             </h5>
-
-            <div class="form-check mt-4">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                checked={mikrotikCheck}
-                id="flexCheckDefault"
-                onChange={(event) => setMikrotikCheck(event.target.checked)}
-              />
-              <label class="form-check-label" htmlFor="flexCheckDefault">
-                <small className="text-secondary">{t("deleteMikrotik")}</small>
-              </label>
-            </div>
+            {bpSettings?.hasMikrotik && (
+              <div class="form-check mt-4">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  checked={mikrotikCheck}
+                  id="flexCheckDefault"
+                  onChange={(event) => setMikrotikCheck(event.target.checked)}
+                />
+                <label class="form-check-label" htmlFor="flexCheckDefault">
+                  <small className="text-secondary">
+                    {t("deleteMikrotik")}
+                  </small>
+                </label>
+              </div>
+            )}
 
             <div className="modal-footer" style={{ border: "none" }}>
               <button

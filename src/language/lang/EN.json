@@ -623,5 +623,8 @@
   "settings": "Settings",
   "youHaveNoStaticCustomerType": "You Have No Static Customer Type!",
   "youHaveNoPPPoECustomerType": "You Have No PPPoE Customer Type!",
-  "resellerSummary": "Reseller Summary"
+  "resellerSummary": "Reseller Summary",
+  "sumBill": "Bill Sum",
+  "paidSum": "Paid Sum",
+  "unpaidSum": "Unpaid Sum"
 }

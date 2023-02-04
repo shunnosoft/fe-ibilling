@@ -50,7 +50,6 @@ import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import RechargeReport from "./resellerModals/RechargeReport";
 import MonthlyReport from "./resellerModals/MonthlyReport";
-import ResellerSummary from "./resellerModals/ResellerSummary";
 
 export default function Reseller() {
   const { t } = useTranslation();
@@ -236,20 +235,19 @@ export default function Reseller() {
                     </div>
                   </div>
                 </li>
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#resellerSummary"
-                  onClick={() => {
-                    getSpecificReseller(original.id, original.name);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <Book />
-                      <p className="actionP">{t("summary")}</p>
+
+                <Link to={`/reseller/summary/${original.id}`}>
+                  <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <Book />
+
+                        <p className="actionP">{t("summary")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                </Link>
+
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#monthlyReport"
@@ -449,9 +447,6 @@ export default function Reseller() {
 
       {/* reseller details modal */}
       <ResellerDetails resellerId={resellerId} />
-
-      {/* reseller summary modal */}
-      <ResellerSummary resellerId={resellerId} resellerName={resellerName} />
 
       {/* reseller rechare modal  */}
       <Recharge resellerId={resellerId} />
