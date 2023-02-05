@@ -1,5 +1,10 @@
 import apiLink from "../api/apiLink";
-import { getResellerDataSuccess } from "./resellerDataSlice";
+import {
+  getResellerDataSuccess,
+  packageBasedCustomerSuccess,
+  packageBasedPaidCustomerSuccess,
+  packageBasedUnpaidCustomerSuccess,
+} from "./resellerDataSlice";
 
 export const getResellerData = async (
   ispOwnerId,
@@ -16,6 +21,69 @@ export const getResellerData = async (
       `/reseller/data/${ispOwnerId}/${resellerId}?year=${year}&month=${month}`
     );
     dispatch(getResellerDataSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
+export const getPackageBasedCustomer = async (
+  ispOwnerId,
+  resellerId,
+  packageId,
+  year,
+  month,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/package-based-customer/${ispOwnerId}/${resellerId}/${packageId}?year=${year}&month=${month}`
+    );
+    dispatch(packageBasedCustomerSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
+export const getPackageBasePaidCustomer = async (
+  ispOwnerId,
+  resellerId,
+  packageId,
+  year,
+  month,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/package-based-paid-customer/${ispOwnerId}/${resellerId}/${packageId}?year=${year}&month=${month}`
+    );
+    dispatch(packageBasedPaidCustomerSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
+export const getPackageBaseUnpaidCustomer = async (
+  ispOwnerId,
+  resellerId,
+  packageId,
+  year,
+  month,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/package-based-unpaid-customer/${ispOwnerId}/${resellerId}/${packageId}?year=${year}&month=${month}`
+    );
+    dispatch(packageBasedUnpaidCustomerSuccess(res.data));
   } catch (error) {
     console.log(error);
   }

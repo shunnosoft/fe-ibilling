@@ -16,6 +16,7 @@ import ReactDatePicker from "react-datepicker";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "react-bootstrap-icons";
 import { fetchReseller } from "../../../features/apiCalls";
+import AllCustomer from "../resellerModals/summaryData/AllCustomer";
 
 const ResellerSummary = () => {
   const { t } = useTranslation();
@@ -48,6 +49,9 @@ const ResellerSummary = () => {
   // date filter state
   const [filterDate, setFilterDate] = useState(date);
 
+  // packageId state
+  const [packageId, setPackageId] = useState();
+
   // find current reseller
   const reseller = allReseller.find((item) => item.id === resellerId);
 
@@ -73,7 +77,18 @@ const ResellerSummary = () => {
       {
         width: "9%",
         Header: t("package"),
-        accessor: "packageName",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.packageName}
+            </span>
+          </div>
+        ),
       },
       {
         width: "5%",
@@ -93,7 +108,18 @@ const ResellerSummary = () => {
       {
         width: "7%",
         Header: t("customer"),
-        accessor: "customerCount",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.customerCount}
+            </span>
+          </div>
+        ),
       },
       {
         width: "9%",
@@ -104,7 +130,18 @@ const ResellerSummary = () => {
       {
         width: "7%",
         Header: t("paid"),
-        accessor: "paidCustomer",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.paidCustomer}
+            </span>
+          </div>
+        ),
       },
       {
         width: "7%",
@@ -125,6 +162,18 @@ const ResellerSummary = () => {
         width: "7%",
         Header: t("unpaid"),
         accessor: "unpaidCustomer",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.unpaidCustomer}
+            </span>
+          </div>
+        ),
       },
       {
         width: "7%",
@@ -246,6 +295,12 @@ const ResellerSummary = () => {
           </div>
         </div>
       </div>
+      <AllCustomer
+        packageId={packageId}
+        resellerId={resellerId}
+        year={filterData.year}
+        month={filterData.month}
+      />
     </>
   );
 };

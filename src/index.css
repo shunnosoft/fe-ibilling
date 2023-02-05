@@ -144,3 +144,12 @@ p {
 #custom-form-select .form-select {
   margin-top: 1rem !important;
 }
+
+.reseller-summary-count {
+  cursor: pointer;
+}
+
+.reseller-summary-count:hover {
+  color: #05d36a !important;
+  text-decoration: underline;
+}
