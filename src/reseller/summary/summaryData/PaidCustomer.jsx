@@ -5,36 +5,35 @@ import { useEffect } from "react";
 
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { badge } from "../../../../components/common/Utils";
-import Table from "../../../../components/table/Table";
-import { getPackageBaseUnpaidCustomer } from "../../../../features/resellerDataApi";
+import { badge } from "../../../components/common/Utils";
+import Table from "../../../components/table/Table";
+import { getPackageBasePaidCustomer } from "../../../features/resellerDataApi";
 
-const UnpaidCustomer = ({ packageId, resellerId, year, month }) => {
+const PaidCustomer = ({ packageId, resellerId, year, month }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
-  // get unpaid customer
-  const packageBaseUnpaidCustomer = useSelector(
-    (state) => state.resellerData?.unPaidCustomer
+  // get paid customer
+  const packageBasePaidCustomer = useSelector(
+    (state) => state.resellerData?.paidCustomer
   );
 
   // loading state
-  const [unpaidCustomerLoading, setUnpaidCustomerLoading] = useState(false);
+  const [paidCustomerLoading, setPaidCustomerLoading] = useState(false);
 
   useEffect(() => {
     if (packageId) {
-      getPackageBaseUnpaidCustomer(
+      getPackageBasePaidCustomer(
         ispOwnerId,
         resellerId,
         packageId,
         year,
         month,
-        setUnpaidCustomerLoading,
+        setPaidCustomerLoading,
         dispatch
       );
     }
@@ -109,12 +108,12 @@ const UnpaidCustomer = ({ packageId, resellerId, year, month }) => {
   return (
     <div className="table-section">
       <Table
-        isLoading={unpaidCustomerLoading}
+        isLoading={paidCustomerLoading}
         columns={column}
-        data={packageBaseUnpaidCustomer}
+        data={packageBasePaidCustomer}
       ></Table>
     </div>
   );
 };
 
-export default UnpaidCustomer;
+export default PaidCustomer;

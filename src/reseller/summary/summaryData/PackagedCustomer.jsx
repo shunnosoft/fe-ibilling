@@ -5,11 +5,11 @@ import { useEffect } from "react";
 
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { badge } from "../../../../components/common/Utils";
-import Table from "../../../../components/table/Table";
-import { getPackageBaseUnpaidCustomer } from "../../../../features/resellerDataApi";
+import { badge } from "../../../components/common/Utils";
+import Table from "../../../components/table/Table";
+import { getPackageBasedCustomer } from "../../../features/resellerDataApi";
 
-const UnpaidCustomer = ({ packageId, resellerId, year, month }) => {
+const PackagedCustomer = ({ packageId, resellerId, year, month }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -18,23 +18,22 @@ const UnpaidCustomer = ({ packageId, resellerId, year, month }) => {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
-  // get unpaid customer
-  const packageBaseUnpaidCustomer = useSelector(
-    (state) => state.resellerData?.unPaidCustomer
+  // get all packaged
+  const packageBaseCustomer = useSelector(
+    (state) => state.resellerData?.packageBasedCustomer
   );
 
-  // loading state
-  const [unpaidCustomerLoading, setUnpaidCustomerLoading] = useState(false);
-
+  // customer loading state
+  const [customerLoading, setCustomerLoading] = useState(false);
   useEffect(() => {
     if (packageId) {
-      getPackageBaseUnpaidCustomer(
+      getPackageBasedCustomer(
         ispOwnerId,
         resellerId,
         packageId,
         year,
         month,
-        setUnpaidCustomerLoading,
+        setCustomerLoading,
         dispatch
       );
     }
@@ -109,12 +108,12 @@ const UnpaidCustomer = ({ packageId, resellerId, year, month }) => {
   return (
     <div className="table-section">
       <Table
-        isLoading={unpaidCustomerLoading}
+        isLoading={customerLoading}
         columns={column}
-        data={packageBaseUnpaidCustomer}
+        data={packageBaseCustomer}
       ></Table>
     </div>
   );
 };
 
-export default UnpaidCustomer;
+export default PackagedCustomer;

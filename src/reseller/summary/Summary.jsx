@@ -13,6 +13,7 @@ import Table from "../../components/table/Table";
 import FormatNumber from "../../components/common/NumberFormat";
 import Loader from "../../components/common/Loader";
 import ReactDatePicker from "react-datepicker";
+import AllCustomer from "./summaryData/AllCustomer";
 
 const Summary = () => {
   const { t } = useTranslation();
@@ -43,6 +44,9 @@ const Summary = () => {
   // date filter state
   const [filterDate, setFilterDate] = useState(date);
 
+  // packageId state
+  const [packageId, setPackageId] = useState();
+
   const filterData = {
     year: filterDate.getFullYear(),
     month: filterDate.getMonth() + 1,
@@ -64,7 +68,18 @@ const Summary = () => {
       {
         width: "9%",
         Header: t("package"),
-        accessor: "packageName",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.packageName}
+            </span>
+          </div>
+        ),
       },
       {
         width: "5%",
@@ -73,18 +88,29 @@ const Summary = () => {
       },
       {
         width: "7%",
-        Header: t("isp"),
+        Header: t("own"),
         accessor: "ispOwnerRate",
       },
       {
         width: "7%",
-        Header: t("own"),
+        Header: t("reseller"),
         accessor: "resellerRate",
       },
       {
         width: "7%",
         Header: t("customer"),
-        accessor: "customerCount",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.customerCount}
+            </span>
+          </div>
+        ),
       },
       {
         width: "9%",
@@ -95,7 +121,18 @@ const Summary = () => {
       {
         width: "7%",
         Header: t("paid"),
-        accessor: "paidCustomer",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.paidCustomer}
+            </span>
+          </div>
+        ),
       },
       {
         width: "7%",
@@ -104,18 +141,30 @@ const Summary = () => {
       },
       {
         width: "7%",
-        Header: t("isp"),
+        Header: t("own"),
         accessor: "paidCustomerBillIspOwnerCommission",
       },
       {
         width: "7%",
-        Header: t("own"),
+        Header: t("reseller"),
         accessor: "paidCustomerBillResellerCommission",
       },
       {
         width: "7%",
         Header: t("unpaid"),
         accessor: "unpaidCustomer",
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <span
+              className="text-primary reseller-summary-count"
+              data-bs-toggle="modal"
+              data-bs-target="#packageBasedCustomer"
+              onClick={() => setPackageId(original.packageId)}
+            >
+              {original.unpaidCustomer}
+            </span>
+          </div>
+        ),
       },
       {
         width: "7%",
@@ -124,12 +173,12 @@ const Summary = () => {
       },
       {
         width: "7%",
-        Header: t("isp"),
+        Header: t("own"),
         accessor: "unpaidCustomerBillIspOwnerCommission",
       },
       {
         width: "7%",
-        Header: t("own"),
+        Header: t("reseller"),
         accessor: "unpaidCustomerBillResellerCommission",
       },
     ],
@@ -224,6 +273,12 @@ const Summary = () => {
           </div>
         </div>
       </div>
+      <AllCustomer
+        packageId={packageId}
+        resellerId={resellerId}
+        year={filterData.year}
+        month={filterData.month}
+      />
     </>
   );
 };

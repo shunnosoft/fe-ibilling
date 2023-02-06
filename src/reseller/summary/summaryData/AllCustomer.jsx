@@ -1,4 +1,3 @@
-import moment from "moment";
 import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";

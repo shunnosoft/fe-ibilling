@@ -5,9 +5,9 @@ import { useEffect } from "react";
 
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { badge } from "../../../../components/common/Utils";
-import Table from "../../../../components/table/Table";
-import { getPackageBaseUnpaidCustomer } from "../../../../features/resellerDataApi";
+import { badge } from "../../../components/common/Utils";
+import Table from "../../../components/table/Table";
+import { getPackageBaseUnpaidCustomer } from "../../../features/resellerDataApi";
 
 const UnpaidCustomer = ({ packageId, resellerId, year, month }) => {
   const { t } = useTranslation();

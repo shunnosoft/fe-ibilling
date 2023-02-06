@@ -17,6 +17,7 @@ const PaidCustomer = ({ packageId, resellerId, year, month }) => {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // get paid customer
   const packageBasePaidCustomer = useSelector(
     (state) => state.resellerData?.paidCustomer
   );

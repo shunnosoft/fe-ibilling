@@ -18,6 +18,7 @@ const PackagedCustomer = ({ packageId, resellerId, year, month }) => {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // get all packaged
   const packageBaseCustomer = useSelector(
     (state) => state.resellerData?.packageBasedCustomer
   );
