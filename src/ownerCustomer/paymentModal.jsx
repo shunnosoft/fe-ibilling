@@ -53,6 +53,12 @@ const PaymentModal = () => {
         createRequest: async function (request) {
           try {
             const { data } = await apiLink.post(`bkash/createPayment`, request);
+
+            if (data?.statusCode === "0000") {
+              localStorage.setItem("paymentAmount", paymentAmount);
+              window.location.href = data?.bkashURL;
+            }
+
             if (data?.paymentID) {
               paymentID = data.paymentID;
               bKash.create().onSuccess(data);
@@ -81,7 +87,7 @@ const PaymentModal = () => {
           };
           try {
             const { data } = await apiLink.post(
-              `bkash/executePayment/${paymentID}`,
+              `bkash/executePayment?paymentID=${paymentID}`,
               billData
             );
             if (data.bill.paymentStatus === "paid") {

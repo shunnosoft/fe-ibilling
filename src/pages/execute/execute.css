@@ -1,0 +1,27 @@
+.customcontainer {
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 200px;
+}
+.successTitle {
+  color: #53af50;
+}
+.successText {
+  color: gray;
+  font-size: 19px;
+  margin-bottom: 20px;
+}
+.successButton {
+  text-decoration: none;
+  background: #4caf50;
+  padding: 5px 20px;
+  border-radius: 9px;
+  color: white;
+  font-weight: 500;
+  margin-top: 20px;
+}
+.successButton:hover {
+  background: #51cc55;
+  color: white;
+}
