@@ -2,6 +2,7 @@ import moment from "moment";
 import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import OtherCustomer from "./OtherCustomer";
 
 import PackagedCustomer from "./PackagedCustomer";
 import PaidCustomer from "./PaidCustomer";
@@ -38,7 +39,7 @@ const AllCustomer = ({ packageId, resellerId, year, month }) => {
                 id="uncontrolled-tab-example"
                 className="mb-3"
               >
-                <Tab eventKey="allCustomer" title={t("customer")}>
+                <Tab eventKey="allCustomer" title={t("allCustomer")}>
                   <PackagedCustomer
                     packageId={packageId}
                     resellerId={resellerId}
@@ -54,8 +55,16 @@ const AllCustomer = ({ packageId, resellerId, year, month }) => {
                     month={month}
                   />
                 </Tab>
-                <Tab eventKey="unPaidCustomer" title={t("totalUnpaidCustomer")}>
+                <Tab eventKey="otherCustomer" title={t("totalUnpaidCustomer")}>
                   <UnpaidCustomer
+                    packageId={packageId}
+                    resellerId={resellerId}
+                    year={year}
+                    month={month}
+                  />
+                </Tab>
+                <Tab eventKey="other" title={t("otherCustomer")}>
+                  <OtherCustomer
                     packageId={packageId}
                     resellerId={resellerId}
                     year={year}

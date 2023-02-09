@@ -7,6 +7,7 @@ const resellerDataSlice = createSlice({
     packageBasedCustomer: [],
     paidCustomer: [],
     unPaidCustomer: [],
+    otherCustomer: [],
   },
   reducers: {
     getResellerDataSuccess: (state, actions) => {
@@ -21,6 +22,9 @@ const resellerDataSlice = createSlice({
     packageBasedUnpaidCustomerSuccess: (state, actions) => {
       state.unPaidCustomer = actions.payload;
     },
+    packageBasedOtherCustomerSuccess: (state, actions) => {
+      state.otherCustomer = actions.payload;
+    },
   },
 });
 
@@ -29,5 +33,6 @@ export const {
   packageBasedCustomerSuccess,
   packageBasedPaidCustomerSuccess,
   packageBasedUnpaidCustomerSuccess,
+  packageBasedOtherCustomerSuccess,
 } = resellerDataSlice.actions;
 export default resellerDataSlice.reducer;

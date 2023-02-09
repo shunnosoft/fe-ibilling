@@ -22,7 +22,7 @@
   "mikrotik": "Mikrotik",
   "addMikrotik": "Add Mikrotik",
   "customer": "Customers",
-  "veiw": "Veiw",
+  "view": "View",
   "activity": "Activity",
   "details": "Details",
   "path": "Path",
@@ -626,5 +626,11 @@
   "resellerSummary": "Reseller Summary",
   "sumBill": "Bill Sum",
   "paidSum": "Paid Sum",
-  "unpaidSum": "Unpaid Sum"
+  "unpaidSum": "Unpaid Sum",
+  "paidCommission": "Paid Commission",
+  "unpaidCommission": "UnPaid Commission",
+  "otherCommission": "Commission",
+  "packageCommission": "Package Commission",
+  "allCustomer": "All Customer",
+  "otherCustomer": "Other Customer"
 }

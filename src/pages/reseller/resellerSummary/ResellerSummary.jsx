@@ -14,7 +14,7 @@ import FormatNumber from "../../../components/common/NumberFormat";
 import Loader from "../../../components/common/Loader";
 import ReactDatePicker from "react-datepicker";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "react-bootstrap-icons";
+import { ArrowLeft, Eye } from "react-bootstrap-icons";
 import { fetchReseller } from "../../../features/apiCalls";
 import AllCustomer from "../resellerModals/summaryData/AllCustomer";
 
@@ -75,120 +75,172 @@ const ResellerSummary = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "9%",
+        width: "8%",
         Header: t("package"),
         Cell: ({ row: { original } }) => (
           <div className="package-based-customer">
-            <span
+            <p
               className="text-primary reseller-summary-count"
               data-bs-toggle="modal"
               data-bs-target="#packageBasedCustomer"
               onClick={() => setPackageId(original.packageId)}
             >
               {original.packageName}
-            </span>
+            </p>
+            <p>
+              {t("rate")} <b>{FormatNumber(original.packageRate)} </b>
+            </p>
           </div>
         ),
       },
       {
-        width: "5%",
-        Header: t("rate"),
-        accessor: "packageRate",
-      },
-      {
-        width: "7%",
-        Header: t("own"),
-        accessor: "ispOwnerRate",
-      },
-      {
-        width: "7%",
-        Header: t("reseller"),
-        accessor: "resellerRate",
-      },
-      {
-        width: "7%",
-        Header: t("customer"),
+        width: "12%",
+        Header: t("packageCommission"),
         Cell: ({ row: { original } }) => (
           <div className="package-based-customer">
-            <span
-              className="text-primary reseller-summary-count"
-              data-bs-toggle="modal"
-              data-bs-target="#packageBasedCustomer"
-              onClick={() => setPackageId(original.packageId)}
-            >
-              {original.customerCount}
-            </span>
+            <p>
+              {t("own")} <b>{FormatNumber(original.ispOwnerRate)}</b>
+            </p>
+            <p>
+              {t("reseller")} <b>{FormatNumber(original.resellerRate)}</b>
+            </p>
           </div>
         ),
       },
       {
-        width: "9%",
-        Header: t("sumBill"),
-        accessor: "totalBill",
+        width: "11%",
+        Header: t("allCustomer"),
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <p>
+              {t("customer")} <b>{FormatNumber(original.customerCount)}</b>
+            </p>
+            <p>
+              {t("sumBill")} <b>{FormatNumber(original.totalBill)}</b>
+            </p>
+          </div>
+        ),
       },
 
       {
-        width: "7%",
+        width: "10%",
         Header: t("paid"),
         Cell: ({ row: { original } }) => (
           <div className="package-based-customer">
-            <span
-              className="text-primary reseller-summary-count"
-              data-bs-toggle="modal"
-              data-bs-target="#packageBasedCustomer"
-              onClick={() => setPackageId(original.packageId)}
-            >
-              {original.paidCustomer}
-            </span>
+            <p>
+              {t("customer")} <b>{FormatNumber(original.paidCustomer)}</b>
+            </p>
+            <p>
+              {t("sumBill")} <b>{FormatNumber(original.paidCustomerBillSum)}</b>
+            </p>
           </div>
         ),
       },
       {
-        width: "7%",
-        Header: t("paidSum"),
-        accessor: "paidCustomerBillSum",
-      },
-      {
-        width: "7%",
-        Header: t("own"),
-        accessor: "paidCustomerBillIspOwnerCommission",
-      },
-      {
-        width: "7%",
-        Header: t("reseller"),
-        accessor: "paidCustomerBillResellerCommission",
-      },
-      {
-        width: "7%",
-        Header: t("unpaid"),
-        accessor: "unpaidCustomer",
+        width: "12%",
+        Header: t("paidCommission"),
         Cell: ({ row: { original } }) => (
           <div className="package-based-customer">
-            <span
-              className="text-primary reseller-summary-count"
-              data-bs-toggle="modal"
-              data-bs-target="#packageBasedCustomer"
-              onClick={() => setPackageId(original.packageId)}
-            >
-              {original.unpaidCustomer}
-            </span>
+            <p>
+              {t("own")}{" "}
+              <b>{FormatNumber(original.paidCustomerBillIspOwnerCommission)}</b>
+            </p>
+            <p>
+              {t("reseller")}{" "}
+              <b>{FormatNumber(original.paidCustomerBillResellerCommission)}</b>
+            </p>
           </div>
         ),
       },
       {
-        width: "7%",
-        Header: t("unpaidSum"),
-        accessor: "unpaidCustomerBillSum",
+        width: "11%",
+        Header: t("unpaid"),
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <p>
+              {t("customer")} <b>{FormatNumber(original.unpaidCustomer)}</b>
+            </p>
+            <p>
+              {t("sumBill")}{" "}
+              <b>{FormatNumber(original.unpaidCustomerBillSum)}</b>
+            </p>
+          </div>
+        ),
       },
       {
-        width: "7%",
-        Header: t("own"),
-        accessor: "unpaidCustomerBillIspOwnerCommission",
+        width: "11%",
+        Header: t("unpaidCommission"),
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <p>
+              {t("own")}{" "}
+              <b>
+                {FormatNumber(original.unpaidCustomerBillIspOwnerCommission)}
+              </b>
+            </p>
+            <p>
+              {t("reseller")}{" "}
+              <b>
+                {FormatNumber(original.unpaidCustomerBillResellerCommission)}
+              </b>
+            </p>
+          </div>
+        ),
       },
       {
-        width: "7%",
-        Header: t("reseller"),
-        accessor: "unpaidCustomerBillResellerCommission",
+        width: "10%",
+        Header: t("other"),
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <p>
+              {t("customer")} <b>{FormatNumber(original.otherCustomer)}</b>
+            </p>
+            <p>
+              {t("sumBill")}{" "}
+              <b>{FormatNumber(original.otherCustomerMonthlyFeeSum)}</b>
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "10%",
+        Header: t("otherCommission"),
+        Cell: ({ row: { original } }) => (
+          <div className="package-based-customer">
+            <p>
+              {t("own")}{" "}
+              <b>
+                {FormatNumber(original.otherCustomerBillIspOwnerCommission)}
+              </b>
+            </p>
+            <p>
+              {t("reseller")}{" "}
+              <b>
+                {FormatNumber(original.otherCustomerBillResellerCommission)}
+              </b>
+            </p>
+          </div>
+        ),
+      },
+      {
+        Header: () => <div className="text-center">{t("view")}</div>,
+        width: "5%",
+        id: "option",
+
+        Cell: ({ row: { original } }) => {
+          return (
+            <div className="d-flex align-items-center justify-content-center">
+              <button
+                data-bs-toggle="modal"
+                data-bs-target="#packageBasedCustomer"
+                onClick={() => setPackageId(original.packageId)}
+                className="btn btn-sm btn-outline-primary"
+              >
+                <Eye />
+              </button>
+            </div>
+          );
+        },
       },
     ],
     [t]
@@ -281,14 +333,12 @@ const ResellerSummary = () => {
                       {isLoading ? <Loader /> : t("filter")}
                     </button>
                   </div>
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      customComponent={customComponent}
-                      columns={columns}
-                      data={data}
-                    ></Table>
-                  </div>
+                  <Table
+                    isLoading={isLoading}
+                    customComponent={customComponent}
+                    columns={columns}
+                    data={data}
+                  ></Table>
                 </div>
               </FourGround>
             </FontColor>

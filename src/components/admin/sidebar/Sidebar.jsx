@@ -462,32 +462,6 @@ export default function Sidebar() {
                             </NavLink>
                           )}
 
-                        {userRole === "reseller" && (
-                          <NavLink
-                            key={123}
-                            to={userRole === "reseller" && "/reseller/summary"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname ===
-                                  "/reseller/summary"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">{<People />}</div>
-                                <span className="sidebarLinksName">
-                                  {t("summary")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        )}
                         {/* <NavLink
                           key={121}
                           to={"/active/hotspot/customer"}
@@ -591,6 +565,34 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
+
+                        {userRole === "reseller" && (
+                          <NavLink
+                            key={123}
+                            to={userRole === "reseller" && "/reseller/summary"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/reseller/summary"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("summary")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+
                         {(userRole === "ispOwner" ||
                           userRole === "manager") && (
                           <NavLink

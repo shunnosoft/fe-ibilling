@@ -22,6 +22,7 @@
   "activity": "এক্টিভিটি",
   "details": "ডিটেলস",
   "path": "পাথ",
+  "view": "ভিউ",
   "previousValue": "পূর্বের ভ্যালু",
   "presentValue": "বর্তমান ভ্যালু",
   "date": "তারিখ",
@@ -627,5 +628,11 @@
   "resellerSummary": "রিসেলার সামারি",
   "sumBill": "মোট বিল",
   "paidSum": "মোট পেইড",
-  "unpaidSum": "মোট আনপেইড"
+  "unpaidSum": "মোট আনপেইড",
+  "paidCommission": "পেইড কমিশন",
+  "unpaidCommission": "আনপেইড কমিশন",
+  "otherCommission": "কমিশন",
+  "packageCommission": "প্যকেজ কমিশন",
+  "allCustomer": "মোট গ্রাহক",
+  "otherCustomer": "অনন্য গ্রাহক"
 }

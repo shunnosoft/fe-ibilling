@@ -41,6 +41,7 @@ const PrintReport = React.forwardRef((props, ref) => {
               <th scope="col">{t("name")}</th>
               <th scope="col">{t("pppoe")}</th>
               <th scope="col">{t("mobile")}</th>
+              <th scope="col">{t("address")}</th>
               <th scope="col">{t("status")}</th>
               <th scope="col">{t("paymentStatus")}</th>
               <th scope="col">{t("package")}</th>
@@ -55,8 +56,8 @@ const PrintReport = React.forwardRef((props, ref) => {
                 <td className="prin_td">{val.customerId}</td>
                 <td className="prin_td">{val.name}</td>
                 <td className="prin_td">{val.pppoe?.name}</td>
-
                 <td className="prin_td">{val.mobile}</td>
+                <td className="prin_td">{val.address}</td>
                 <td className="prin_td">{badge(val.status)}</td>
                 <td className="prin_td">{badge(val.paymentStatus)}</td>
                 <td className="prin_td">{val.pppoe.profile}</td>

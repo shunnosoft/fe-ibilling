@@ -2,6 +2,7 @@ import apiLink from "../api/apiLink";
 import {
   getResellerDataSuccess,
   packageBasedCustomerSuccess,
+  packageBasedOtherCustomerSuccess,
   packageBasedPaidCustomerSuccess,
   packageBasedUnpaidCustomerSuccess,
 } from "./resellerDataSlice";
@@ -42,6 +43,27 @@ export const getPackageBasedCustomer = async (
       `reseller/package-based-customer/${ispOwnerId}/${resellerId}/${packageId}?year=${year}&month=${month}`
     );
     dispatch(packageBasedCustomerSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
+export const getPackageBasedOtherCustomer = async (
+  ispOwnerId,
+  resellerId,
+  packageId,
+  year,
+  month,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/package-based-other-customer/${ispOwnerId}/${resellerId}/${packageId}?year=${year}&month=${month}`
+    );
+    dispatch(packageBasedOtherCustomerSuccess(res.data));
   } catch (error) {
     console.log(error);
   }
