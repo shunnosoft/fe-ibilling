@@ -33,6 +33,7 @@ import ResellerMessageLog from "./reseller/messageLog/MessageLog";
 import AdminDashboard from "./admin/dashboard/AdminDashboard";
 
 import NotFound from "./pages/NotFound/NotFound";
+import Execute from "./pages/execute/Execute";
 import Success from "./pages/success/Success";
 import Manager from "./pages/manager/Manager";
 // import Reseller from "./pages/reseller/Reseller";
@@ -320,6 +321,7 @@ function App() {
               }
             />
 
+            <Route path="/payment/execute" element={<Execute />} />
             <Route path="/payment/success" element={<Success />} />
             <Route path="/payment/cancel" element={<Cancel />} />
             <Route path="/payment/failed" element={<Failed />} />
