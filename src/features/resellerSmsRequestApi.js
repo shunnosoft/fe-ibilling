@@ -32,6 +32,7 @@ export const acceptedStatus = async (resellerId, dataId, data, dispatch) => {
     // console.log(res.data);
     dispatch(acceptedStatusSuccess(res.data.smsPurchase));
   } catch (error) {
+    toast.error(error.response.data.message);
     console.log(error.response);
   }
 };
