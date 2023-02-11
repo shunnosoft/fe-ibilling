@@ -14,6 +14,7 @@ const SupportTicket = () => {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
+  console.log(userData);
   const paymentHistory = useSelector((state) => state.client.supportTicket);
 
   const [supportMessage, setSupportMessage] = useState("");
@@ -26,19 +27,23 @@ const SupportTicket = () => {
       return setError("");
     }
     setSupportMessage("");
-    return setError("Please write yout support message");
+    return setError("Please write your support message");
   };
 
   const createSupportTicket = () => {
     if (!supportMessage) {
       supportForm.current.focus();
-      return setError("Please write yout support message");
+      return setError("Please write your support message");
     }
     const data = {
       message: supportMessage,
       ispOwner: userData.ispOwner.id,
       customer: userData.id,
     };
+    if (userData.reseller) {
+      data.reseller = userData.reseller;
+    }
+    console.log(data);
     createSupportTicketApi(data, dispatch, setLoading, setSupportMessage);
   };
 

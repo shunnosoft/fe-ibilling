@@ -24,10 +24,20 @@ export const createSupportTicketApi = async (dispatch, body, setIsLoading) => {
 };
 
 //get supportTickets api
-export const getAllSupportTickets = async (dispatch, id, setIsLoading) => {
+export const getAllSupportTickets = async (
+  dispatch,
+  id,
+  setIsLoading,
+  customerType
+) => {
   setIsLoading(true);
   try {
-    const response = await apiLink.get(`customer/supportTickets/${id}`);
+    let response;
+    if (customerType === "reseller") {
+      response = await apiLink.get(`customer/reseller/supportTickets/${id}`);
+    } else {
+      response = await apiLink.get(`customer/supportTickets/${id}`);
+    }
     // console.log(response.data.supportTickets);
     dispatch(getSupportTickets(response.data.supportTickets));
   } catch (error) {

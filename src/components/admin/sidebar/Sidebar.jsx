@@ -1149,7 +1149,8 @@ export default function Sidebar() {
                     )}
                     {(userRole === "ispOwner" ||
                       userRole === "collector" ||
-                      userRole === "manager") &&
+                      userRole === "manager" ||
+                      userRole === "reseller") &&
                       !user.collector?.reseller && (
                         <>
                           <Accordion.Item eventKey="7">
@@ -1166,7 +1167,11 @@ export default function Sidebar() {
                             <Accordion.Body>
                               <NavLink
                                 key={11}
-                                to={"/support/ticket"}
+                                to={
+                                  userRole === "reseller"
+                                    ? "/reseller/support/ticket"
+                                    : "/support/ticket"
+                                }
                                 className={(navInfo) =>
                                   navInfo.isActive ? activeClass.active : ""
                                 }
@@ -1176,7 +1181,11 @@ export default function Sidebar() {
                                     className="sidebarItems"
                                     id={
                                       window.location.pathname ===
-                                        "/support/ticket" && "active"
+                                      (userRole === "reseller"
+                                        ? "/reseller/support/ticket"
+                                        : "/support/ticket")
+                                        ? "active"
+                                        : ""
                                     }
                                   >
                                     <div className="sidebarIcon">

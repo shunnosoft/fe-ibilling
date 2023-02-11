@@ -3,12 +3,15 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { supportTicketsEditApi } from "../../../features/supportTicketApi";
+// import { supportTicketsEditApi } from "../../../features/supportTicketApi";
 
-const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
+const SupportTicketEdit = ({ supportTicketId }) => {
   const dispatch = useDispatch();
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
   const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
-  console.log(supportTicketStatusValue);
+
+  // get Collector
+  const allCollector = useSelector((state) => state.collector.collector);
 
   // storing data form redux
   const supportTickets = useSelector(
@@ -16,7 +19,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   );
 
   const singleTicket = supportTickets.find(
-    (ticket) => ticket.id === ticketEditId
+    (ticket) => ticket.id === supportTicketId
   );
 
   // all handler here
@@ -24,6 +27,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
     let statusValue = e.target.value;
     setSupportTicketStatusValue(statusValue);
   };
+
   const handleCollectorId = (e) => {
     let value = e.target.value;
     setSupportTicketCollectorId(value);
@@ -36,7 +40,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
       status: supportTicketStatusValue,
       collector: supportTicketCollectorId,
     };
-    supportTicketsEditApi(dispatch, data, ticketEditId);
+    supportTicketsEditApi(dispatch, data, supportTicketId);
   };
   useEffect(() => {
     if (singleTicket) {
@@ -46,7 +50,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   return (
     <div
       class="modal fade"
-      id="editModal"
+      id="resellerSupportTicketEdit"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"

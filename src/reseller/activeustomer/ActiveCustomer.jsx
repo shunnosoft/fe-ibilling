@@ -4,10 +4,7 @@ import useDash from "../../assets/css/dash.module.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchActivepppoeUserForReseller,
-  fetchpppoeUserForReseller,
-} from "../../features/apiCalls";
+import { fetchpppoeUserForReseller } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 // get specific customer

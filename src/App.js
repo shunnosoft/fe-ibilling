@@ -94,6 +94,7 @@ import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveH
 import Summary from "./reseller/summary/Summary";
 import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
+import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -226,6 +227,10 @@ function App() {
               <Route
                 path="reseller/staticCustomer"
                 element={<RstaticCustomer />}
+              />
+              <Route
+                path="reseller/support/ticket"
+                element={<ResellerCustomerSupportTicket />}
               />
 
               <Route path="*" element={<NotFound />} />

@@ -106,7 +106,7 @@ export default function Expenditure() {
     );
   }, [expenditures]);
 
-  // // delete expenditure
+  // delete expenditure
   const deleteExpenditureHandler = (expenditureId) => {
     const confirm = window.confirm(t("areYouSureWantToDelete"));
     if (confirm) {
@@ -126,7 +126,14 @@ export default function Expenditure() {
       getAllExpenditure(dispatch, ispOwnerId, setExpenditureLoading);
     if (expenditurePurpose.length === 0)
       getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
-  }, [ispOwnerId]);
+  }, []);
+
+  const findExpenditureType = (expenditureTypeId) => {
+    const matchExpenditure = expenditurePurpose.find(
+      (item) => item.id === expenditureTypeId
+    );
+    return matchExpenditure?.name;
+  };
 
   // table column
   const columns = React.useMemo(
@@ -142,12 +149,7 @@ export default function Expenditure() {
         width: "20%",
         Header: t("expenseSector"),
         accessor: "expenditurePurpose",
-        Cell: ({ cell: { value } }) => {
-          const matchExpenditure =
-            expenditurePurpose &&
-            expenditurePurpose.find((item) => item.id === value);
-          return <div>{matchExpenditure?.name}</div>;
-        },
+        Cell: ({ cell: { value } }) => <div>{findExpenditureType(value)}</div>,
       },
       {
         width: "23%",

@@ -574,6 +574,7 @@ export const getStaticCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/static-customer/${ispOwner}`);
+    console.log(res.data);
     dispatch(getStaticCustomerSuccess(res.data));
     setIsloading(false);
   } catch (error) {
@@ -747,6 +748,7 @@ export const syncMikrotikStaticUser = async (
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
+      console.log(res.data);
       setIsLoading(false);
       document.querySelector("#staticCustomerSync").click();
       langMessage(
