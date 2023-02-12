@@ -40,6 +40,9 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           </li>
         )}
         <li>
+          {t("userType")} : {filterData.userType}
+        </li>
+        <li>
           {t("status")} : {filterData.status}
         </li>
         <li>
@@ -70,7 +73,11 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
-              <td className="prin_td">{val.pppoe.profile}</td>
+              <td className="prin_td">
+                {val.userType === "pppoe"
+                  ? val.pppoe.profile
+                  : val.queue.package}
+              </td>
               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
               <td className="prin_td">
                 <strong>{FormatNumber(val.balance)}</strong>

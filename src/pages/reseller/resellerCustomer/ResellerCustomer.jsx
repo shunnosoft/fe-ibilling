@@ -13,7 +13,6 @@ import {
   ArchiveFill,
   ArrowClockwise,
   ArrowLeft,
-  ArrowLeftShort,
   CashStack,
   FileExcelFill,
   PenFill,
@@ -86,6 +85,9 @@ const ResellerCustomer = () => {
   // payment status state
   const [filterPayment, setFilterPayment] = useState(null);
 
+  // user type state
+  const [filterUserType, setFilterUserType] = useState(null);
+
   // customer id state
   const [customerId, setCustomerId] = useState();
 
@@ -122,6 +124,15 @@ const ResellerCustomer = () => {
   let tempCustomer = [...resellerCustomer];
 
   const filterClick = () => {
+    // user type filter
+    if (filterUserType !== "all" && filterUserType == "pppoe") {
+      tempCustomer = tempCustomer.filter((value) => value.userType === "pppoe");
+    }
+
+    if (filterUserType !== "all" && filterUserType == "static") {
+      tempCustomer = tempCustomer.filter((value) => value.userType !== "pppoe");
+    }
+
     // status filter
     if (filterStatus) {
       if (filterStatus !== "all") {
@@ -163,7 +174,10 @@ const ResellerCustomer = () => {
       connectionType: "Wired",
       connectivity: "Dedicated",
       createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
+      package:
+        customer.userType === "pppoe"
+          ? customer?.pppoe?.profile
+          : customer.queue.package,
       ip: "",
       road: ispOwnerData.address,
       address: ispOwnerData.address,
@@ -200,6 +214,7 @@ const ResellerCustomer = () => {
   const filterData = {
     status: filterStatus ? filterStatus : t("sokolCustomer"),
     payment: filterPayment ? filterPayment : t("sokolCustomer"),
+    userType: filterUserType ? filterUserType : t("sokolCustomer"),
   };
 
   //export customer data
@@ -208,7 +223,10 @@ const ResellerCustomer = () => {
       name: customer.name,
       customerAddress: customer.address,
       createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
+      package:
+        customer.userType === "pppoe"
+          ? customer?.pppoe?.profile
+          : customer.queue.package,
       mobile: customer?.mobile || "",
       status: customer.status,
       paymentStatus: customer.paymentStatus,
@@ -262,9 +280,9 @@ const ResellerCustomer = () => {
         width: "9%",
       },
       {
-        Header: "PPPoE",
-        accessor: "pppoe.name",
         width: "9%",
+        Header: t("userType"),
+        accessor: "userType",
       },
       {
         Header: t("mobile"),
@@ -291,7 +309,10 @@ const ResellerCustomer = () => {
       {
         width: "10%",
         Header: t("package"),
-        accessor: "pppoe.profile",
+        accessor: (field) =>
+          field.userType === "pppoe"
+            ? field.pppoe.profile
+            : field.queue.package,
       },
       {
         width: "8%",
@@ -505,6 +526,21 @@ const ResellerCustomer = () => {
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
                     <div className="d-flex flex-row justify-content-center">
+                      {/* userType filter */}
+                      <select
+                        className="form-select me-2 mt-3"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterUserType(event.target.value)
+                        }
+                      >
+                        <option selected value="all">
+                          {t("userType")}
+                        </option>
+                        <option value="pppoe"> {t("pppoe")} </option>
+                        <option value="static"> {t("static")} </option>
+                      </select>
+                      {/* end userType filter */}
                       {/* status filter */}
                       <select
                         className="form-select mt-3"
@@ -532,7 +568,6 @@ const ResellerCustomer = () => {
                         }
                       >
                         <option selected value="all">
-                          {" "}
                           {t("paymentStatus")}{" "}
                         </option>
                         <option value="paid"> {t("paid")} </option>

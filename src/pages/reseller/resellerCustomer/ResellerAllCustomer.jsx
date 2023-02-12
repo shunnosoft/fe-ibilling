@@ -91,6 +91,9 @@ const AllResellerCustomer = () => {
   // payment status state
   const [filterPayment, setFilterPayment] = useState(null);
 
+  // user type state
+  const [filterUserType, setFilterUserType] = useState(null);
+
   // reseller id state
   const [resellerId, setResellerId] = useState("");
 
@@ -131,6 +134,15 @@ const AllResellerCustomer = () => {
           (customer) => customer.reseller.id === resellerId
         );
       }
+    }
+
+    // user type filter
+    if (filterUserType !== "all" && filterUserType == "pppoe") {
+      tempCustomer = tempCustomer.filter((value) => value.userType === "pppoe");
+    }
+
+    if (filterUserType !== "all" && filterUserType == "static") {
+      tempCustomer = tempCustomer.filter((value) => value.userType !== "pppoe");
     }
 
     // status filter
@@ -207,7 +219,10 @@ const AllResellerCustomer = () => {
       connectionType: "Wired",
       connectivity: "Dedicated",
       createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
+      package:
+        customer.userType === "pppoe"
+          ? customer?.pppoe?.profile
+          : customer.queue.package,
       ip: "",
       road: ispOwnerData.address,
       address: ispOwnerData.address,
@@ -249,6 +264,7 @@ const AllResellerCustomer = () => {
     reseller: resellerName?.name ? resellerName?.name : t("allReseller"),
     status: filterStatus ? filterStatus : t("sokolCustomer"),
     payment: filterPayment ? filterPayment : t("sokolCustomer"),
+    userType: filterUserType ? filterUserType : t("sokolCustomer"),
   };
 
   //export customer data
@@ -257,7 +273,10 @@ const AllResellerCustomer = () => {
       name: customer.name,
       customerAddress: customer.address,
       createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
+      package:
+        customer.userType === "pppoe"
+          ? customer?.pppoe?.profile
+          : customer.queue.packag,
       mobile: customer?.mobile || "",
       status: customer.status,
       paymentStatus: customer.paymentStatus,
@@ -316,6 +335,11 @@ const AllResellerCustomer = () => {
         width: "9%",
       },
       {
+        width: "9%",
+        Header: t("userType"),
+        accessor: "userType",
+      },
+      {
         Header: t("mobile"),
         accessor: "mobile",
         width: "11%",
@@ -339,7 +363,10 @@ const AllResellerCustomer = () => {
       {
         width: "10%",
         Header: t("package"),
-        accessor: "pppoe.profile",
+        accessor: (field) =>
+          field.userType === "pppoe"
+            ? field.pppoe.profile
+            : field.queue.package,
       },
       {
         width: "9%",
@@ -536,6 +563,21 @@ const AllResellerCustomer = () => {
                           </option>
                         ))}
                       </select>
+                      {/* userType filter */}
+                      <select
+                        className="form-select ms-2 mt-3"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterUserType(event.target.value)
+                        }
+                      >
+                        <option selected value="all">
+                          {t("userType")}
+                        </option>
+                        <option value="pppoe"> {t("pppoe")} </option>
+                        <option value="static"> {t("static")} </option>
+                      </select>
+                      {/* end userType filter */}
                       <select
                         className="form-select mt-3 mx-2"
                         aria-label="Default select example"

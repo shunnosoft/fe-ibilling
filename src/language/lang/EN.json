@@ -38,6 +38,7 @@
   "newCustomer": "New Customer",
   "companyName": "Company Name :",
   "PPPoE": "PPPoE",
+  "pppoe": "PPPoE",
   "active PPPoE": "Active PPPoE",
   "static": "Static",
   "addStaticCustomer": "Add Static Customer",

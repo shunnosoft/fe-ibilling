@@ -40,6 +40,7 @@
   "newCustomer": "নতুন গ্রাহক",
   "companyName": "কোম্পানির নামঃ",
   "PPPoE": "PPPoE",
+  "pppoe": "পিপিওই",
   "active PPPoE": "এক্টিভ PPPoE",
   "static": "স্ট্যাটিক",
   "addStaticCustomer": "স্ট্যাটিক গ্রাহক যুক্ত",
