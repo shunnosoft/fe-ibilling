@@ -67,6 +67,25 @@ export const getCollectorApi = async (
   setIsLoading(false);
 };
 
+export const getResellerCollectorSupportTicket = async (
+  dispatch,
+  resellerId,
+  collectorId,
+  setIsLoading
+) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.get(
+      `customer/reseller/supportTickets/${resellerId}/${collectorId}`
+    );
+    // console.log(res.data);
+    dispatch(getCollectorSupportTickets(res.data.supportTickets));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
 //Support Tickets Edit Api
 export const supportTicketsEditApi = async (dispatch, data, ticketId) => {
   try {

@@ -7,21 +7,20 @@ import { useTranslation } from "react-i18next";
 import Footer from "../../components/admin/footer/Footer";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSupportTickets } from "../../features/supportTicketApi";
+import { getResellerCollectorSupportTicket } from "../../features/supportTicketApi";
 import { badge } from "../../components/common/Utils";
 import moment from "moment";
-import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
+import { PenFill, ThreeDots } from "react-bootstrap-icons";
 import Table from "../../components/table/Table";
-import SupportTicketEdit from "./supportTicketOperation/SupportTicketEdit";
-import { getCollector } from "../../features/apiCallReseller";
+import CollectorSupportTicketEdit from "./supportTicketOperation/CollectorSupportTicketEdit";
 
-const SupportTicket = () => {
+const CollectorSupportTicket = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get reseller id
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth?.userData
   );
 
   // storing data form redux
@@ -31,9 +30,6 @@ const SupportTicket = () => {
 
   // loading state
   const [isLoading, setIsLoading] = useState();
-
-  // collector loading
-  const [collectorLoading, setCollectorLoading] = useState("");
 
   // support ticket id state
   const [supportTicketId, setSupportTicketId] = useState();
@@ -106,7 +102,7 @@ const SupportTicket = () => {
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#resellerSupportTicketEdit"
+                  data-bs-target="#supportTicketEdit"
                   onClick={() => {
                     setSupportTicketId(original?.id);
                   }}
@@ -128,8 +124,12 @@ const SupportTicket = () => {
   );
 
   useEffect(() => {
-    getAllSupportTickets(dispatch, resellerId, setIsLoading, "reseller");
-    getCollector(dispatch, resellerId, setCollectorLoading);
+    getResellerCollectorSupportTicket(
+      dispatch,
+      userData.reseller,
+      userData.id,
+      setIsLoading
+    );
   }, []);
 
   return (
@@ -145,15 +145,6 @@ const SupportTicket = () => {
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
                     <div>{t("supportTicket")}</div>
-                    {/* <div className="reloadBtn">
-                      {loading ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div> */}
                   </div>
                 </div>
               </FourGround>
@@ -174,9 +165,9 @@ const SupportTicket = () => {
           </div>
         </div>
       </div>
-      <SupportTicketEdit supportTicketId={supportTicketId} />
+      <CollectorSupportTicketEdit supportTicketId={supportTicketId} />
     </>
   );
 };
 
-export default SupportTicket;
+export default CollectorSupportTicket;

@@ -733,7 +733,6 @@ export default function Sidebar() {
                         </Accordion.Body>
                       </Accordion.Item>
                     )}
-
                     {/* রিসেলার */}
                     {userRole === "ispOwner" && (
                       <Accordion.Item eventKey="3">
@@ -1147,60 +1146,62 @@ export default function Sidebar() {
                         </Accordion.Item> */}
                       </>
                     )}
-                    {(userRole === "ispOwner" ||
+                    {/* {(userRole === "ispOwner" ||
                       userRole === "collector" ||
                       userRole === "manager" ||
                       userRole === "reseller") &&
-                      !user.collector?.reseller && (
-                        <>
-                          <Accordion.Item eventKey="7">
-                            <Accordion.Header
-                              onClick={() => handleActiveAccordian("7")}
-                            >
-                              <div className="sidebarIcon">
-                                {<WalletFill />}
-                              </div>
-                              <span className="sidebarLinksName">
-                                {t("support")}
-                              </span>
-                            </Accordion.Header>
-                            <Accordion.Body>
-                              <NavLink
-                                key={11}
-                                to={
-                                  userRole === "reseller"
+                      !user.collector?.reseller && ( */}
+                    <>
+                      <Accordion.Item eventKey="7">
+                        <Accordion.Header
+                          onClick={() => handleActiveAccordian("7")}
+                        >
+                          <div className="sidebarIcon">{<WalletFill />}</div>
+                          <span className="sidebarLinksName">
+                            {t("support")}
+                          </span>
+                        </Accordion.Header>
+                        <Accordion.Body>
+                          <NavLink
+                            key={11}
+                            to={
+                              userRole === "reseller" ||
+                              (userRole === "collector" &&
+                                user.collector?.reseller)
+                                ? "/reseller/support/ticket"
+                                : "/support/ticket"
+                            }
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  (userRole === "reseller" ||
+                                  (userRole === "collector" &&
+                                    user.collector?.reseller)
                                     ? "/reseller/support/ticket"
-                                    : "/support/ticket"
-                                }
-                                className={(navInfo) =>
-                                  navInfo.isActive ? activeClass.active : ""
+                                    : "/support/ticket")
+                                    ? "active"
+                                    : ""
                                 }
                               >
-                                <FontColor>
-                                  <li
-                                    className="sidebarItems"
-                                    id={
-                                      window.location.pathname ===
-                                      (userRole === "reseller"
-                                        ? "/reseller/support/ticket"
-                                        : "/support/ticket")
-                                        ? "active"
-                                        : ""
-                                    }
-                                  >
-                                    <div className="sidebarIcon">
-                                      {<PersonDash />}
-                                    </div>
-                                    <span className="sidebarLinksName">
-                                      {t("supportTicket")}
-                                    </span>
-                                  </li>
-                                </FontColor>
-                              </NavLink>
-                            </Accordion.Body>
-                          </Accordion.Item>
-                        </>
-                      )}
+                                <div className="sidebarIcon">
+                                  {<PersonDash />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("supportTicket")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </>
+                    {/* )} */}
                   </Accordion>
                 </div>
               </ul>

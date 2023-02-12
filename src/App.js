@@ -95,6 +95,7 @@ import Summary from "./reseller/summary/Summary";
 import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
 import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
+import ResellerCollectorCustomerSupportTicket from "./reseller/supportTicket/CollectorSupportTicket";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -230,7 +231,16 @@ function App() {
               />
               <Route
                 path="reseller/support/ticket"
-                element={<ResellerCustomerSupportTicket />}
+                element={
+                  userRole === "reseller" ? (
+                    <ResellerCustomerSupportTicket />
+                  ) : (
+                    userRole === "collector" &&
+                    user.collector?.reseller && (
+                      <ResellerCollectorCustomerSupportTicket />
+                    )
+                  )
+                }
               />
 
               <Route path="*" element={<NotFound />} />

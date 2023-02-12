@@ -10,18 +10,11 @@ import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  getAllSupportTickets,
-  getCollectorApi,
-} from "../../features/supportTicketApi";
+import { getCollectorApi } from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
-import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
-import SupportTicketEdit from "./modal/SupportTicketEdit";
-import SupportTicketDelete from "./modal/SupportTicketDelete";
+import { PenFill, ThreeDots } from "react-bootstrap-icons";
 import { badge } from "../../components/common/Utils";
-import apiLink from "../../api/apiLink";
 import CollectorSupportTicketEdit from "./modal/CollectorSupportTicketEdit";
-// import CollectorSupportTicketDelete from "./modal/CollectorSupportTicketDelete";
 
 const CollectorSupportTicket = () => {
   const { t } = useTranslation();
@@ -34,38 +27,22 @@ const CollectorSupportTicket = () => {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-  //   const ispOwner = useSelector(
-  //     (state) => state.persistedReducer.auth.currentUser.collector.ispOwner
-  //   );
+
   const collectorId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.collector.id
   );
-  // console.log(collectorId);
 
   // declare state
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
-  const [deleteTicketId, setDeleteTicketId] = useState("");
-  // const [allCollector, setAllCollector] = useState([]);
 
   useEffect(() => {
     getCollectorApi(dispatch, ispOwner, collectorId, setIsLoading);
   }, []);
 
-  //   useEffect(async () => {
-  //     const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
-  //     setAllCollector([...res.data]);
-  //   }, []);
-
   // handle edit function
   const handlesupportTicketEditId = (ticketId) => {
     setSupportTicketId(ticketId);
-    // console.log(ticketId);
-  };
-
-  // handle delete function
-  const handlesupportTicketDeleteId = (ticketId) => {
-    setDeleteTicketId(ticketId);
   };
 
   const columns = useMemo(
@@ -137,7 +114,6 @@ const CollectorSupportTicket = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#editModal"
                   onClick={() => {
-                    // console.log(original);
                     handlesupportTicketEditId(original?.id);
                   }}
                 >
@@ -148,21 +124,6 @@ const CollectorSupportTicket = () => {
                     </div>
                   </div>
                 </li>
-                {/* <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteModal"
-                  onClick={() => {
-                    console.log(original);
-                    handlesupportTicketDeleteId(original?.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">{t("delete")}</p>
-                    </div>
-                  </div>
-                </li> */}
               </ul>
             </div>
           </div>
@@ -191,16 +152,12 @@ const CollectorSupportTicket = () => {
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
-                      // customComponent={customComponent}
                       columns={columns}
                       data={supportTickets}
                     ></Table>
                   </div>
                 </div>
               </FourGround>
-              {/* <FourGround>
-                <div className="collectorWrapper mt-2 py-2"></div>
-              </FourGround> */}
               <Footer />
             </FontColor>
           </div>
@@ -209,19 +166,6 @@ const CollectorSupportTicket = () => {
 
       {/* Edit Modal Start */}
       <CollectorSupportTicketEdit supportTicketId={supportTicketId} />
-      {/* <SupportTicketEdit
-        ticketEditId={supportTicketId}
-        allCollector={allCollector}
-      /> */}
-      {/* Edit Modal End */}
-
-      {/* Delete Modal Start */}
-      {/* 
-      <CollectorSupportTicketDelete
-        collectorSupportTicketDeleteID={deleteTicketId}
-      /> */}
-
-      {/* Delete Modal end */}
     </>
   );
 };

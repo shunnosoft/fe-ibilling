@@ -18,7 +18,6 @@ export const supportTicketSlice = createSlice({
     },
 
     editSupportTickets: (state, action) => {
-      console.log(action.payload);
       let index = state.supportTickets.findIndex(
         (singleTicket) => singleTicket.id === action.payload.id
       );
