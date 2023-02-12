@@ -62,6 +62,12 @@ const apiLink = axios.create({
 apiLink.interceptors.request.use(
   async (config) => {
     const TOKEN = await JSON.parse(localStorage.getItem("netFeeToken"));
+
+    if (!TOKEN) {
+      userLogout();
+      localStorage.removeItem("netFeeToken");
+    }
+
     let currentDate = new Date();
     const decodedToken = jwt_decode(TOKEN);
 

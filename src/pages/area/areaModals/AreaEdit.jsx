@@ -10,20 +10,38 @@ import Loader from "../../../components/common/Loader";
 import { editArea } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 
-export default function AreaEdit({ oneArea }) {
+export default function AreaEdit({ areaId }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get ispOwnerId
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-  // const area = useSelector(state => state.area.area);
-  const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
 
-  //validator
+  // get mikrotik
+  const mikrotiks = useSelector((state) => state.mikrotik.mikrotik);
+
+  // get areas
+  const area = useSelector((state) => state?.area?.area);
+
+  // find editable area
+  const oneArea = area.find((val) => val.id === areaId);
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  const checkMikrotikName = () => {
+    const match = mikrotiks.some((item) => item.name == oneArea?.name);
+    return match;
+  };
+
+  // validator
   const areaEditValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
   });
 
+  // edit handler
   const areaEditHandler = async (data) => {
     setIsLoading(true);
     if (ispOwnerId) {
@@ -61,7 +79,7 @@ export default function AreaEdit({ oneArea }) {
             <div className="modal-body">
               <Formik
                 initialValues={{
-                  name: oneArea.name || "",
+                  name: oneArea?.name || "",
                 }}
                 validationSchema={areaEditValidator}
                 onSubmit={(values) => {
@@ -75,6 +93,7 @@ export default function AreaEdit({ oneArea }) {
                       type="text"
                       label={t("editAreaName")}
                       name="name"
+                      disabled={checkMikrotikName()}
                     />
 
                     <div className="modal-footer">

@@ -22,7 +22,12 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import SubAreaPost from "./subAreaModals/SubAreaPost";
 import { FtextField } from "../../components/common/FtextField";
-import { deleteSubArea, getArea, editSubArea } from "../../features/apiCalls";
+import {
+  deleteSubArea,
+  getArea,
+  editSubArea,
+  fetchMikrotik,
+} from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
@@ -37,6 +42,7 @@ export default function SubArea() {
   const [ispId, setIspId] = useState("");
   const [subAreaID, setSubAreaID] = useState("");
   const [name, setName] = useState("");
+  const [checkMikrotikName, setCheckMikrotikName] = useState();
   const [id, setId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const cus = useSelector((state) => state?.customer?.customer);
@@ -47,10 +53,14 @@ export default function SubArea() {
 
   const dispatch = useDispatch();
 
-  // const user = useSelector(state => state.persistedReducer.auth.currentUser);
+  // get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  // get mikrotik
+  const mikrotiks = useSelector((state) => state.mikrotik.mikrotik);
+
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
   }, [dispatch, ispOwnerId]);
@@ -85,7 +95,13 @@ export default function SubArea() {
         setSubAreas(oneArea.subAreas);
       }
     }
+    fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   }, [area, areaId]);
+
+  useEffect(() => {
+    const match = mikrotiks.find((item) => item.name == name);
+    setCheckMikrotikName(match);
+  }, [name]);
 
   // delete sub area
   const deleteSingleSubAarea = (id, ispOwner) => {
@@ -138,44 +154,52 @@ export default function SubArea() {
               justifyContent: "center",
             }}
           >
-            <ThreeDots
-              className="dropdown-toggle ActionDots"
-              id="areaDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-            <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#subAreaEditModal"
-                onClick={() => {
-                  setSubAreaID(original.id);
-                  setSubAreaName(original.name);
-                  setIspId(original.ispOwner);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PenFill />
-                    <p className="actionP">{t("edit")}</p>
-                  </div>
-                </div>
-              </li>
+            <>
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                {checkMikrotikName?.name !== name ? (
+                  <>
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#subAreaEditModal"
+                      onClick={() => {
+                        setSubAreaID(original.id);
+                        setSubAreaName(original.name);
+                        setIspId(original.ispOwner);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <PenFill />
+                          <p className="actionP">{t("edit")}</p>
+                        </div>
+                      </div>
+                    </li>
 
-              <li
-                onClick={() => {
-                  deleteSingleSubAarea(original.id, original.ispOwner);
-                }}
-              >
-                <div className="dropdown-item actionManager">
-                  <div className="customerAction">
-                    <ArchiveFill />
-                    <p className="actionP">{t("delete")}</p>
-                  </div>
-                </div>
-              </li>
-            </ul>
+                    <li
+                      onClick={() => {
+                        deleteSingleSubAarea(original.id, original.ispOwner);
+                      }}
+                    >
+                      <div className="dropdown-item actionManager">
+                        <div className="customerAction">
+                          <ArchiveFill />
+                          <p className="actionP">{t("delete")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  </>
+                ) : (
+                  ""
+                )}
+              </ul>
+            </>
           </div>
         ),
       },

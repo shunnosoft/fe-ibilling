@@ -85,7 +85,12 @@ export default function ConfigMikrotikModal(props) {
               >
                 {() => (
                   <Form>
-                    <FtextField type="text" label={t("name")} name="name" />
+                    <FtextField
+                      type="text"
+                      label={t("name")}
+                      name="name"
+                      disabled
+                    />
                     <FtextField
                       type="text"
                       label={t("userName")}

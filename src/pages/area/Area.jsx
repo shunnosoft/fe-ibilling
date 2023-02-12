@@ -19,7 +19,12 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./areaModals/AreaPost";
 import AreaEdit from "./areaModals/AreaEdit";
-import { deleteArea, getArea, getCustomer } from "../../features/apiCalls";
+import {
+  deleteArea,
+  fetchMikrotik,
+  getArea,
+  getCustomer,
+} from "../../features/apiCalls";
 import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
 
@@ -33,7 +38,7 @@ export default function Area() {
   const cus = useSelector((state) => state?.customer?.customer);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [EditAarea, setEditAarea] = useState("");
+  const [editAreaId, setEditAreaId] = useState("");
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -45,6 +50,7 @@ export default function Area() {
   useEffect(() => {
     if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setIsloading);
+    fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   }, [dispatch, ispOwnerId]);
 
   const deleteSingleArea = async (id, ispOwner) => {
@@ -74,12 +80,7 @@ export default function Area() {
   };
 
   const getSpecificArea = (id) => {
-    if (area.length !== undefined) {
-      const oneArea = area.find((val) => {
-        return val.id === id;
-      });
-      setEditAarea(oneArea);
-    }
+    setEditAreaId(id);
   };
 
   //create column of table
@@ -154,7 +155,7 @@ export default function Area() {
               {/* modals */}
               <ResellerPost />
               {/* area edit modal */}
-              <AreaEdit oneArea={EditAarea} />
+              <AreaEdit areaId={editAreaId} />
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">

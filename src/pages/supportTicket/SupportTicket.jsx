@@ -25,7 +25,7 @@ const SupportTicket = () => {
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
-  console.log(supportTickets);
+
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -48,7 +48,6 @@ const SupportTicket = () => {
   // handle edit function
   const handlesupportTicketEditId = (ticketId) => {
     setSupportTicketId(ticketId);
-    console.log(ticketId);
   };
 
   // handle delete function
@@ -125,7 +124,6 @@ const SupportTicket = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#editModal"
                   onClick={() => {
-                    console.log(original);
                     handlesupportTicketEditId(original?.id);
                   }}
                 >
@@ -140,7 +138,6 @@ const SupportTicket = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#deleteModal"
                   onClick={() => {
-                    console.log(original);
                     handlesupportTicketDeleteId(original?.id);
                   }}
                 >
