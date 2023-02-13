@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import Table from "react-bootstrap/Table";
 import { useTranslation } from "react-i18next";
 const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
@@ -7,127 +8,249 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
   return (
     <>
       <div ref={ref}>
-        <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
-          <div className="logo_side">
-            <div className="company_logo">
-              <img src="/assets/img/logo.png" alt="Company Logo" />
-            </div>
-            <div className="company_name">{ispOwnerData.company}</div>
-          </div>
-          <div className="details_side">
+        <div className="text-center mb-1">{t("officeCopy")}</div>
+        <div
+          className="text-center bg-primary text-white fw-bold p-1"
+          style={{ borderRadius: "1.1rem" }}
+        >
+          <h2>{ispOwnerData.company}</h2>
+          {ispOwnerData.address && (
             <p>
-              {t("companyName")} {ispOwnerData.company}
+              {t("address")} : {ispOwnerData?.address}
             </p>
+          )}
+        </div>
+
+        <div className="container">
+          <div className="d-flex justify-content-between p-1 m-1">
+            <div>
+              <p>
+                {t("name")} :
+                <strong style={{ marginLeft: "2.7rem" }}>
+                  {customerData.name}
+                </strong>
+              </p>
+              <p>
+                {customerData.mobile && (
+                  <span>
+                    {t("mobile")} :
+                    <strong style={{ marginLeft: ".7rem" }}>
+                      {customerData.mobile}
+                    </strong>
+                  </span>
+                )}
+              </p>
+              <p>
+                {customerData.address && (
+                  <span>
+                    {t("address")} : {customerData.address}
+                  </span>
+                )}
+              </p>
+            </div>
+            <div>
+              <p>
+                {t("package")}:
+                <strong style={{ marginLeft: "4rem" }}>
+                  {customerData.userType === "simple-queue" ||
+                  customerData.userType === "firewall-queue"
+                    ? customerData.queue.package
+                    : customerData.pppoe.profile}
+                </strong>
+              </p>
+              <p>
+                {t("paidDate")}:
+                <strong style={{ marginLeft: ".7rem" }}>
+                  {moment(paymentDate).format("MMM DD YYYY")}
+                </strong>
+              </p>
+            </div>
+          </div>
+
+          <Table
+            bordered
+            className="text-center align-center"
+            style={{ lineHeight: "9px" }}
+          >
+            <tbody>
+              <tr>
+                <th>{t("billDhoron")}</th>
+                <td>
+                  {billingData?.billType == "bill"
+                    ? t("bill")
+                    : t("connectionFee")}
+                </td>
+              </tr>
+              <tr>
+                <th>{t("amount")}</th>
+                <td> {billingData?.amount}</td>
+              </tr>
+              <tr>
+                <th>{t("due")}</th>
+                <td>{billingData.due}</td>
+              </tr>
+              <tr>
+                <th>{t("discount")}</th>
+                <td>{billingData.discount}</td>
+              </tr>
+              <tr>
+                <th>{t("medium")}</th>
+                <td>{billingData?.medium}</td>
+              </tr>
+              <tr>
+                <th>{t("billingCycle")}</th>
+                <td>
+                  {moment(billingData?.billingCycle).format("MMM DD YYYY")}
+                </td>
+              </tr>
+              <tr>
+                <th>{t("comment")}</th>
+                <td>
+                  {moment(billingData?.startDate).format("MMM DD YYYY")} -
+                  {moment(billingData?.endDate).format("MMM DD YYYY")}{" "}
+                  {billingData?.month} {billingData?.note}
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+
+          <div
+            className="d-flex justify-content-between h5"
+            style={{ marginTop: "1.8rem" }}
+          >
+            <div>
+              <hr className="mb-1" />
+              <p>{t("Proprietor")}</p>
+            </div>
+
+            <div>
+              <hr className="mb-1" />
+              <p>{t("customer")}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* hhhhhhhhhhhhhhhhhhh */}
+        <div>
+          <hr className="mb-1 mt-1" />
+        </div>
+        <div>
+          <div className="text-center mb-1 ">{t("customerCopy")}</div>
+          <div
+            className="text-center bg-primary text-white fw-bold p-1 "
+            style={{ borderRadius: "1.1rem" }}
+          >
+            <h2>{ispOwnerData.company}</h2>
             {ispOwnerData.address && (
               <p>
                 {t("address")} : {ispOwnerData?.address}
               </p>
             )}
           </div>
-        </div>
 
-        {/* <table className="table table-striped ">
-          <thead>
-            <tr>
-              <th scope="col">নাম</th>
-              <th scope="col">মোবাইল</th>
-              <th scope="col">বিল টাইপ</th>
-              <th scope="col">বিলের ধরণ</th>
-              <th scope="col">এমাউন্ট</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{customerData?.name}</td>
-              <td>{customerData?.mobile}</td>
-              <td>{customerData?.billPayType}</td>
-              <td>{billingData?.billType == "bill" ? "বিল" : "কানেকশন ফি"}</td>
-              <td>{billingData?.amount && customerData?.monthlyFee}</td>
-            </tr>
-          </tbody>
-        </table> */}
-        {/* <div className="page-footer">
-          <div className="signature_container">
-            <div className="p-3 signature_wraper">
-              <div className="signamture_field">ম্যানেজার</div>
-              <div className="signamture_field">এডমিন</div>
-            </div>
-          </div>
-        </div>
-        </div>
-        */}
-
-        <div className="container mt-3 mb-5">
-          <table>
-            <tbody>
-              <tr>
-                <td>{t("customerData")}</td>
-              </tr>
-              <tr>
-                <td className="font-weight-bold">
-                  {t("name")} : {customerData.name}
+          <div className="container">
+            <div className="d-flex justify-content-between p-1 m-1">
+              <div className="text-justify">
+                <p>
+                  {t("name")} :
+                  <strong style={{ marginLeft: "2.7rem" }}>
+                    {customerData.name}
+                  </strong>
+                </p>
+                <p>
                   {customerData.mobile && (
-                    <>
-                      <br />
-                      {t("mobile")} : {customerData.mobile}
-                    </>
+                    <span>
+                      {t("mobile")} :
+                      <strong style={{ marginLeft: ".7rem" }}>
+                        {customerData.mobile}
+                      </strong>
+                    </span>
                   )}
+                </p>
+                <p>
                   {customerData.address && (
-                    <>
-                      <br />
+                    <span>
                       {t("address")} : {customerData.address}
-                    </>
+                    </span>
                   )}
-                  <br />
-                  {`PPPOE  ${t("name")}: ${customerData.pppoe.name}`}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table className="table table-bordered mt-2">
-            <tbody>
-              <tr>
-                <th>{t("billType")}</th>
-                <th>{t("billDhoron")}</th>
-                <th>{t("package")}</th>
-                <th>{t("amount")}</th>
-                <th>{t("medium")}</th>
-                <th style={{ width: "30%" }}> {t("paidDate")} </th>
-              </tr>
+                </p>
+              </div>
+              <div>
+                <p>
+                  <span>{t("package")}:</span>
+                  <strong style={{ marginLeft: "4rem" }}>
+                    {customerData.userType === "simple-queue" ||
+                    customerData.userType === "firewall-queue"
+                      ? customerData.queue.package
+                      : customerData.pppoe.profile}
+                  </strong>
+                </p>
+                <p>
+                  {t("paidDate")}:
+                  <strong style={{ marginLeft: ".7rem" }}>
+                    {moment(paymentDate).format("MMM DD YYYY")}
+                  </strong>
+                </p>
+              </div>
+            </div>
 
-              <tr>
-                <td>{customerData?.billPayType}</td>
-                <td>
-                  {billingData?.billType == "bill"
-                    ? t("bill")
-                    : t("connectionFee")}
-                </td>
+            <Table
+              bordered
+              className="text-center align-align"
+              style={{ lineHeight: "9px" }}
+            >
+              <tbody>
+                <tr>
+                  <th>{t("billDhoron")}</th>
+                  <td>
+                    {billingData?.billType == "bill"
+                      ? t("bill")
+                      : t("connectionFee")}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{t("amount")}</th>
+                  <td> {billingData?.amount}</td>
+                </tr>
+                <tr>
+                  <th>{t("due")}</th>
+                  <td>{billingData.due}</td>
+                </tr>
+                <tr>
+                  <th>{t("discount")}</th>
+                  <td>{billingData.discount}</td>
+                </tr>
+                <tr>
+                  <th>{t("medium")}</th>
+                  <td>{billingData?.medium}</td>
+                </tr>
+                <tr>
+                  <th>{t("billingCycle")}</th>
+                  <td>
+                    {moment(billingData?.billingCycle).format("MMM DD YYYY")}
+                  </td>
+                </tr>
+                {/* <tr>
+                  <th>{t("promiseDate")}</th>
+                  <td>
+                    {moment(billingData?.promiseDate).format("MMM DD YYYY")}
+                  </td>
+                </tr> */}
+              </tbody>
+            </Table>
 
-                <td>
-                  {customerData.userType === "simple-queue" ||
-                  customerData.userType === "firewall-queue"
-                    ? customerData.queue.package
-                    : customerData.pppoe.profile}
-                </td>
-                <td>{billingData?.amount}</td>
-                <td>{billingData?.medium}</td>
-                <td>{moment(paymentDate).format("MMM-DD-YYYY")}</td>
-              </tr>
-            </tbody>
-          </table>
+            <div
+              className="d-flex justify-content-between h5"
+              style={{ marginTop: "1.8rem" }}
+            >
+              <div>
+                <hr className="mb-1" />
+                <p>{t("Proprietor")}</p>
+              </div>
 
-          <div className="mt-4">
-            <strong>{t("note")} :</strong>{" "}
-            {moment(billingData?.startDate).format("MMM/DD/YYYY")}-
-            {moment(billingData?.endDate).format("MMM/DD/YYYY")}{" "}
-            {t("Periodic bills have been paid.")}
-          </div>
-
-          <div className="page-footer">
-            <div className="signature_container">
-              <div className="p-3 signature_wraper">
-                <div className="signamture_field">{t("Proprietor")}</div>
-                <div className="signamture_field">{t("customer")}</div>
+              <div>
+                <hr className="mb-1" />
+                <p>{t("customer")}</p>
               </div>
             </div>
           </div>
