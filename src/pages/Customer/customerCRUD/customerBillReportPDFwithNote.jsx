@@ -61,13 +61,17 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
               <p>
                 {t("paidDate")}:
                 <strong style={{ marginLeft: ".7rem" }}>
-                  {moment(paymentDate).format("MMM-DD-YYYY")}
+                  {moment(paymentDate).format("MMM DD YYYY")}
                 </strong>
               </p>
             </div>
           </div>
 
-          <Table bordered className="text-center ">
+          <Table
+            bordered
+            className="text-center align-center"
+            style={{ lineHeight: "9px" }}
+          >
             <tbody>
               <tr>
                 <th>{t("billDhoron")}</th>
@@ -82,12 +86,28 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
                 <td> {billingData?.amount}</td>
               </tr>
               <tr>
-                <th>Due</th>
-                <td>Not available</td>
+                <th>{t("due")}</th>
+                <td>{billingData.due}</td>
+              </tr>
+              <tr>
+                <th>{t("discount")}</th>
+                <td>{billingData.discount}</td>
               </tr>
               <tr>
                 <th>{t("medium")}</th>
                 <td>{billingData?.medium}</td>
+              </tr>
+              <tr>
+                <th>{t("billingCycle")}</th>
+                <td>
+                  {moment(billingData?.billingCycle).format("MMM DD YYYY")}
+                </td>
+              </tr>
+              <tr>
+                <th>{t("promiseDate")}</th>
+                <td>
+                  {moment(billingData?.promiseDate).format("MMM DD YYYY")}
+                </td>
               </tr>
             </tbody>
           </Table>
@@ -97,22 +117,22 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
             style={{ marginTop: "1.8rem" }}
           >
             <div>
-              <hr />
+              <hr className="mb-1" />
               <p>{t("Proprietor")}</p>
             </div>
 
             <div>
-              <hr />
+              <hr className="mb-1" />
               <p>{t("customer")}</p>
             </div>
           </div>
         </div>
 
         {/* hhhhhhhhhhhhhhhhhhh */}
-        <div style={{ marginTop: "2rem" }}>
+        <div style={{ marginTop: "1rem" }}>
           <hr />
         </div>
-        <div style={{ marginTop: "1.3rem" }}>
+        <div style={{ marginTop: "1rem" }}>
           <div className="text-center mb-1 ">{t("customerCopy")}</div>
           <div
             className="text-center bg-primary text-white fw-bold p-1 "
@@ -166,13 +186,17 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
                 <p>
                   {t("paidDate")}:
                   <strong style={{ marginLeft: ".7rem" }}>
-                    {moment(paymentDate).format("MMM-DD-YYYY")}
+                    {moment(paymentDate).format("MMM DD YYYY")}
                   </strong>
                 </p>
               </div>
             </div>
 
-            <Table bordered className="text-center">
+            <Table
+              bordered
+              className="text-center align-align"
+              style={{ lineHeight: "9px" }}
+            >
               <tbody>
                 <tr>
                   <th>{t("billDhoron")}</th>
@@ -187,12 +211,28 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
                   <td> {billingData?.amount}</td>
                 </tr>
                 <tr>
-                  <th>Due</th>
-                  <td>Not available</td>
+                  <th>{t("due")}</th>
+                  <td>{billingData.due}</td>
+                </tr>
+                <tr>
+                  <th>{t("discount")}</th>
+                  <td>{billingData.discount}</td>
                 </tr>
                 <tr>
                   <th>{t("medium")}</th>
                   <td>{billingData?.medium}</td>
+                </tr>
+                <tr>
+                  <th>{t("billingCycle")}</th>
+                  <td>
+                    {moment(billingData?.billingCycle).format("MMM DD YYYY")}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{t("promiseDate")}</th>
+                  <td>
+                    {moment(billingData?.promiseDate).format("MMM DD YYYY")}
+                  </td>
                 </tr>
               </tbody>
             </Table>
@@ -202,12 +242,12 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
               style={{ marginTop: "1.8rem" }}
             >
               <div>
-                <hr />
+                <hr className="mb-1" />
                 <p>{t("Proprietor")}</p>
               </div>
 
               <div>
-                <hr />
+                <hr className="mb-1" />
                 <p>{t("customer")}</p>
               </div>
             </div>

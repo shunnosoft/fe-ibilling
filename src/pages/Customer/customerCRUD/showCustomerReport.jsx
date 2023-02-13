@@ -38,6 +38,7 @@ export default function CustomerReport(props) {
   );
 
   const [customerReport, setCustomerReport] = useState([]);
+  console.log(customerReport);
 
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -112,7 +113,6 @@ export default function CustomerReport(props) {
                       <th scope="col">{t("discount")}</th>
                       <th scope="col">{t("due")}</th>
                       <th scope="col">{t("previousBalance")}</th>
-
                       <th scope="col">{t("date")}</th>
                       <th scope="col">{t("billingCycle")}</th>
                       <th scope="col">{t("promiseDate")}</th>
@@ -185,6 +185,7 @@ export default function CustomerReport(props) {
                                     customerData={single}
                                     billingData={{
                                       amount: val.amount,
+                                      due: val.due,
                                       billType: val.billType,
                                       paymentDate: val.createdAt,
                                       medium: val.medium,
@@ -240,8 +241,12 @@ export default function CustomerReport(props) {
                                     customerData={single}
                                     billingData={{
                                       amount: val.amount,
+                                      due: val.due,
+                                      discount: val.discount,
                                       billType: val.billType,
                                       paymentDate: val.createdAt,
+                                      billingCycle: val.prevState.billingCycle,
+                                      promiseDate: val.prevState.promiseDate,
                                       medium: val.medium,
                                     }}
                                     ispOwnerData={ispOwnerData}
