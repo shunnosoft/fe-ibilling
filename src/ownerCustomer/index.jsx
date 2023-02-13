@@ -53,6 +53,7 @@ const Client = () => {
     new Date(),
     "days"
   );
+
   const serviceData = [
     {
       header: "Home Internet",
@@ -226,7 +227,7 @@ const Client = () => {
             <h1 className="text-center jumbotron">
               Welcome to {userData.ispOwner.company}
             </h1>
-            {diffFormBillDate <= 7 && (
+            {diffFormBillDate <= 7 && userData.paymentStatus !== "paid" && (
               <div className=" bg-primary py-3 text-center">
                 <div className="h5">
                   <strong>Warning:</strong>Your billing date expire in{" "}
@@ -239,7 +240,7 @@ const Client = () => {
                     data-bs-toggle="modal"
                     data-bs-target="#billPaymentModal"
                     type="button"
-                    className=" btn-success "
+                    className="btn btn-success "
                   >
                     Pay now
                   </button>
