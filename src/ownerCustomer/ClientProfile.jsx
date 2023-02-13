@@ -36,7 +36,7 @@ export default function ClientProfile() {
       <div className="client-info">
         <PaymentModal />
         <div className="jumbotron">
-          <h3>Customer Information</h3>
+          <h4 className="pt-2">Customer Information</h4>
           <div className="d-flex justify-content-between">
             <table className="client_info_table">
               <tr>

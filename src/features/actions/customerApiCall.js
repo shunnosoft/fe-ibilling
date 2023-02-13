@@ -30,4 +30,5 @@ export const transferToResellerApi = async (
     toast.error("Failed to transfer");
     console.log(error);
   }
+  setIsLoading(false);
 };

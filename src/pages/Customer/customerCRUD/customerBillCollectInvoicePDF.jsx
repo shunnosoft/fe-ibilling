@@ -104,7 +104,7 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
                 </td>
               </tr>
               <tr>
-                <th>{t("comment")}</th>
+                <th>{t("billComment")}</th>
                 <td>
                   {moment(billingData?.startDate).format("MMM DD YYYY")} -
                   {moment(billingData?.endDate).format("MMM DD YYYY")}{" "}

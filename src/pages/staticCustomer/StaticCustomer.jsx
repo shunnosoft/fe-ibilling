@@ -22,6 +22,7 @@ import {
   KeyFill,
   CardChecklist,
   Newspaper,
+  ArrowRightSquareFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -63,6 +64,8 @@ import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CustomerNote from "./customerCRUD/CustomerNote";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 import BulkCustomerTransfer from "../Customer/customerCRUD/bulkOpration/bulkCustomerTransfer";
+import TransferToReseller from "./customerCRUD/TransferToReseller";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function Customer() {
   //call hooks
@@ -353,6 +356,8 @@ export default function Customer() {
   useEffect(() => {
     if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setIsloading);
     if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
+    // get sub area api
+    getSubAreasApi(dispatch, ispOwner);
     if (role !== "collector") {
       if (collectors.length === 0)
         getCollector(dispatch, ispOwner, setIsloading);
@@ -815,6 +820,25 @@ export default function Customer() {
                       </div>
                     </li>
                   )}
+
+                {role === "ispOwner" &&
+                  ispOwnerData?.bpSettings?.hasReseller && (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#transferToReseller"
+                      onClick={() => {
+                        getSpecificCustomer(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ArrowRightSquareFill />
+                          <p className="actionP">{t("transferReseller")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
+
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#createSupportTicket"
@@ -1011,6 +1035,9 @@ export default function Customer() {
                 single={singleCustomer}
                 sendCustomer="staticCustomer"
               />
+
+              {/* transferReseller modal */}
+              <TransferToReseller customerId={singleCustomer} />
 
               {/* password reset modal */}
               <PasswordReset resetCustomerId={userId} />

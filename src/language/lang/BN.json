@@ -635,5 +635,6 @@
   "otherCommission": "কমিশন",
   "packageCommission": "প্যকেজ কমিশন",
   "allCustomer": "মোট গ্রাহক",
-  "otherCustomer": "অনন্য গ্রাহক"
+  "otherCustomer": "অনন্য গ্রাহক",
+  "billComment": "মন্তব্য"
 }

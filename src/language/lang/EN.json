@@ -633,5 +633,6 @@
   "otherCommission": "Commission",
   "packageCommission": "Package Commission",
   "allCustomer": "All Customer",
-  "otherCustomer": "Other Customer"
+  "otherCustomer": "Other Customer",
+  "billComment": "Comment"
 }
