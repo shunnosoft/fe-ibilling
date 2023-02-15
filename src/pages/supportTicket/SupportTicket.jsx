@@ -167,7 +167,7 @@ const SupportTicket = () => {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
-                    <div>Support Ticket</div>
+                    <div>{t("supportTicket")}</div>
                   </div>
                 </div>
               </FourGround>

@@ -6,6 +6,9 @@ import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
 import moment from "moment";
+import { divisions } from "../../../divis&dist&upazila/bd-divisions.json";
+import { districts } from "../../../divis&dist&upazila/bd-districts.json";
+import { upazilas } from "../../../divis&dist&upazila/bd-upazilas.json";
 
 const ISPOwnerEditModal = ({ ownerId }) => {
   // import dispatch from react redux
@@ -16,11 +19,22 @@ const ISPOwnerEditModal = ({ ownerId }) => {
 
   // get editable owner
   const ispOwner = data.find((item) => item.id === ownerId);
+  // console.log(ispOwner?.division);
 
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
 
   const [billDate, setBillDate] = useState();
+
+  // owner division
+  // const [ownerDivisionId, setOwnerDivisionId] = useState();
+
+  // //get districts & upazilas state
+  // const [division, setDivision] = useState("");
+  // const [getDistricts, setGetDistricts] = useState([]);
+  // const [district, setDistrict] = useState("");
+  // const [getUpazilas, setGetUpazilas] = useState([]);
+  // const [upazila, setUpazila] = useState("");
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -29,6 +43,13 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       moment(ispOwner?.bpSettings?.monthlyDueDate).format("YYYY-MM-DD")
     );
   }, [ispOwner]);
+
+  // useEffect(() => {
+  //   const findDivision = divisions.find(
+  //     (item) => item.name === ispOwner?.division
+  //   );
+  //   setOwnerDivisionId(findDivision);
+  // }, []);
 
   //  isp owner form validation
   const ispOwnerValidator = Yup.object({
@@ -87,6 +108,9 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       name: values.name,
       company: values.company,
       address: values.address,
+      // division,
+      // district,
+      // upazila,
       status: values.status,
 
       bpSettings: {
@@ -136,12 +160,28 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       }
     );
 
-    // console.log(data);
-    // return;
-
     // api call
     updateOwner(ownerId, data, setIsLoading, dispatch);
   };
+
+  //division & districts handle
+  // const divisionHandle = (e) => {
+  //   setDivision(e.target.selectedOptions[0].text);
+  //   const divisionId = e.target.value;
+  //   const districtsData = districts.filter(
+  //     (dist) => dist.division_id === divisionId
+  //   );
+  //   setGetDistricts(districtsData);
+  // };
+
+  // const distrHandle = (e) => {
+  //   setDistrict(e.target.selectedOptions[0].text);
+  //   const districtId = e.target.value;
+  //   const upazilasData = upazilas.filter(
+  //     (dist) => dist.district_id === districtId
+  //   );
+  //   setGetUpazilas(upazilasData);
+  // };
 
   return (
     <div>
@@ -347,6 +387,82 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         </Field>
                       </div>
                     </div>
+                    {/* <div className="displayGrid3">
+                      <div>
+                        <h6 className="mb-0">Division</h6>
+                        <Field
+                          as="select"
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                          name="divisions"
+                          onChange={(e) => {
+                            divisionHandle(e);
+                          }}
+                        >
+                          <option>Select</option>
+                          {divisions?.map((divis) => (
+                            <option
+                              key={divis.long}
+                              value={divis.id}
+                              selected={divis.name === ispOwner?.division}
+                            >
+                              {divis.name}
+                            </option>
+                          ))}
+                        </Field>
+                      </div>
+
+                      <div>
+                        <h6 className="mb-0">District</h6>
+                        <Field
+                          as="select"
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                          name="districts"
+                          onChange={(e) => {
+                            distrHandle(e);
+                          }}
+                        >
+                          <option>Select</option>
+                          {getDistricts?.map((dist) => {
+                            return (
+                              <option
+                                key={dist.long}
+                                value={dist.id}
+                                selected={dist.name === ispOwner?.district}
+                              >
+                                {dist.name}
+                              </option>
+                            );
+                          })}
+                        </Field>
+                      </div>
+
+                      <div>
+                        <h6 className="mb-0">Upazila & Thana</h6>
+                        <Field
+                          as="select"
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                          name="upazilas"
+                          onChange={(e) => setUpazila(e.target.value)}
+                        >
+                          <option>Select</option>
+                          {getUpazilas?.map((upaz) => {
+                            return (
+                              <option
+                                key={upaz.id}
+                                value={upaz.name}
+                                selected={upaz.name === ispOwner?.upazila}
+                              >
+                                {upaz.name}
+                              </option>
+                            );
+                          })}
+                        </Field>
+                      </div>
+                    </div> */}
+
                     <div className="displayGrid3">
                       {role === "superadmin" && (
                         <FtextField

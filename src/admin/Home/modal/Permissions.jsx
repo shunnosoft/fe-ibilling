@@ -13,7 +13,6 @@ const Permissions = ({ ownerId }) => {
 
   // get single isp owner data
   const ownerData = ispOwners.find((item) => item.id === ownerId);
-  console.log(ownerData);
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);

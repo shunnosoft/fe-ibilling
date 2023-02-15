@@ -634,5 +634,7 @@
   "packageCommission": "Package Commission",
   "allCustomer": "All Customer",
   "otherCustomer": "Other Customer",
-  "billComment": "Comment"
+  "billComment": "Comment",
+  "netFeeSupport": "NetFee Support",
+  "addSupportTicket": "Add Net Fee Support"
 }

@@ -1198,6 +1198,38 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
+                          <NavLink
+                            key={12}
+                            to={
+                              userRole === "reseller"
+                                ? "/reseller/netFee/support"
+                                : "/netFee/support"
+                            }
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  (userRole === "reseller"
+                                    ? "/reseller/netFee/support"
+                                    : "/netFee/support")
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<PersonDash />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("supportTicket")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
                         </Accordion.Body>
                       </Accordion.Item>
                     </>

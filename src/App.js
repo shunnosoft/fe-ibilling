@@ -96,6 +96,7 @@ import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
 import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
 import ResellerCollectorCustomerSupportTicket from "./reseller/supportTicket/CollectorSupportTicket";
+import NetFeeSupport from "./pages/netFeeSupport/NetFeeSupport";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -489,6 +490,16 @@ function App() {
                   ) : (
                     userRole === "collector" && <CollectorSupportTicket />
                   )
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+            <Route
+              path="/netFee/support"
+              element={
+                user && (userRole === "ispOwner" || userRole === "manager") ? (
+                  <NetFeeSupport />
                 ) : (
                   <Navigate to={"/home"} />
                 )
