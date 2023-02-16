@@ -1225,7 +1225,7 @@ export default function Sidebar() {
                                   {<PersonDash />}
                                 </div>
                                 <span className="sidebarLinksName">
-                                  {t("supportTicket")}
+                                  {t("netFeeSupport")}
                                 </span>
                               </li>
                             </FontColor>

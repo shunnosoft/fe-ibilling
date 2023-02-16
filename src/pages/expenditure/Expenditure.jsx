@@ -40,10 +40,10 @@ import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Expenditure() {
   const { t } = useTranslation();
-  const [isLoading, setIsloading] = useState(false);
-  const [expenditureLoading, setExpenditureLoading] = useState(false);
   const componentRef = useRef();
   const dispatch = useDispatch();
+
+  // get ispOwner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -53,12 +53,23 @@ export default function Expenditure() {
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
+  // get expenditure
   const expenditures = useSelector(
     (state) => state.expenditure.allExpenditures
   );
+
+  // get expenditure purpose
   const expenditurePurpose = useSelector(
     (state) => state.expenditure.expenditurePourposes
   );
+
+  // get current date
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  // set time
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
 
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
@@ -66,27 +77,32 @@ export default function Expenditure() {
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
-  // pagination
+  // expenditure state
   let [allExpenditures, setAllExpenditure] = useState([]);
 
-  const [filterName, setFilterName] = useState();
-  const [filterState, setFilterState] = useState(allExpenditures);
-
+  // single expenditure state
   const [singleExp, setSingleExp] = useState({});
-  const [singlePurpose, setSinglePurpose] = useState({});
-  const [expenditureTypeFilter, setExpenditureTtypeFilter] = useState();
-  var today = new Date();
-  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  firstDay.setHours(0, 0, 0, 0);
-  today.setHours(23, 59, 59, 999);
+  // single expenditure purpose state
+  const [singlePurpose, setSinglePurpose] = useState({});
+
+  // loading state
+  const [isLoading, setIsloading] = useState(false);
+  const [expenditureLoading, setExpenditureLoading] = useState(false);
+
+  // start date state
   const [dateStart, setStartDate] = useState(firstDay);
+
+  // end date state
   const [dateEnd, setEndDate] = useState(today);
+
+  // filter value state
   const [filterOptions, setFilterOption] = useState({
     name: "",
     expenditurePurpose: "",
   });
 
+  // set initial expenditure by current month
   useEffect(() => {
     var initialToday = new Date();
     var initialFirst = new Date(
@@ -120,6 +136,15 @@ export default function Expenditure() {
     getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   };
 
+  // find expenditure purpose method
+  const findExpenditureType = (expenditureTypeId) => {
+    const matchExpenditure = expenditurePurpose.find(
+      (item) => item.id === expenditureTypeId
+    );
+    return matchExpenditure?.name;
+  };
+
+  // api call
   useEffect(() => {
     getOwnerUsers(dispatch, ispOwnerId);
     if (expenditures.length === 0)
@@ -128,15 +153,8 @@ export default function Expenditure() {
       getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   }, []);
 
-  const findExpenditureType = (expenditureTypeId) => {
-    const matchExpenditure = expenditurePurpose.find(
-      (item) => item.id === expenditureTypeId
-    );
-    return matchExpenditure?.name;
-  };
-
-  // table column
-  const columns = React.useMemo(
+  // expenditure table column
+  const expenditureColumns = React.useMemo(
     () => [
       {
         width: "8%",
@@ -243,10 +261,11 @@ export default function Expenditure() {
         ),
       },
     ],
-    [ownerUsers, t]
+    [ownerUsers, expenditurePurpose, t]
   );
 
-  const columns2 = React.useMemo(
+  // expenditure purpose table column
+  const expenditurePurposeColumns = React.useMemo(
     () => [
       {
         width: "20%",
@@ -315,9 +334,9 @@ export default function Expenditure() {
     [t]
   );
 
-  // filter function
+  // onclick filter function
   const onClickFilter = () => {
-    let expenditureValue = [...filterState];
+    let expenditureValue = [...expenditures];
 
     if (filterOptions.name && filterOptions.name !== "Select") {
       expenditureValue = expenditureValue.filter(
@@ -330,7 +349,7 @@ export default function Expenditure() {
       filterOptions.expenditurePurpose != "Select"
     ) {
       expenditureValue = expenditureValue.filter(
-        (item) => item?.expenditureName === filterOptions.expenditurePurpose
+        (item) => item?.expenditurePurpose === filterOptions.expenditurePurpose
       );
     }
 
@@ -344,18 +363,30 @@ export default function Expenditure() {
     setAllExpenditure(expenditureValue);
   };
 
-  // find user name
-  const getFilterId = ownerUsers.find((item) => item[filterName]);
+  // find filter user name
+  const getFilterId = ownerUsers.find((item) => item[filterOptions.name]);
 
   let getFilterName;
   if (getFilterId) {
-    getFilterName = getFilterId[filterName];
+    getFilterName = getFilterId[filterOptions.name];
+  }
+
+  // find filter expenditure type
+  let expenditureName;
+  if (
+    filterOptions.expenditurePurpose &&
+    filterOptions.expenditurePurpose != "Select"
+  ) {
+    const expenditureType = expenditurePurpose.find(
+      (item) => item.id === filterOptions.expenditurePurpose
+    );
+    expenditureName = expenditureType?.name;
   }
 
   // filter data
   const filterData = {
     name: getFilterName ? getFilterName?.name : t("all"),
-    expenditureType: expenditureTypeFilter ? expenditureTypeFilter : t("all"),
+    expenditureType: expenditureName ? expenditureName : t("all"),
     totalAmount: allExpenditures.reduce(
       (prev, current) => prev + current.amount,
       0
@@ -511,7 +542,7 @@ export default function Expenditure() {
                               {t("expenseSector")}
                             </option>
                             {expenditurePurpose.map((item, key) => (
-                              <option value={item?.name}>{item?.name}</option>
+                              <option value={item?.id}>{item?.name}</option>
                             ))}
                           </select>
                           <div style={{ margin: "0 5px" }} className="dateDiv">
@@ -553,7 +584,7 @@ export default function Expenditure() {
                             isLoading={expenditureLoading}
                             customComponent={customComponent}
                             data={allExpenditures.reverse()}
-                            columns={columns}
+                            columns={expenditureColumns}
                           ></Table>
                         </div>
                       </Tab>
@@ -566,7 +597,7 @@ export default function Expenditure() {
                           <Table
                             isLoading={isLoading}
                             data={expenditurePurpose}
-                            columns={columns2}
+                            columns={expenditurePurposeColumns}
                           ></Table>
                         </div>
                       </Tab>
