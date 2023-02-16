@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FontColor } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import "./allInvoices.css";
 import DetailsModal from "./modal/DetailsModal";
 import InvoiceEditModal from "./modal/EditModal";
 import { badge } from "../../components/common/Utils";
+import FormatNumber from "../../components/common/NumberFormat";
 
 const AllInvoices = () => {
   // get all note in redux
@@ -42,6 +43,9 @@ const AllInvoices = () => {
 
   // react main state
   let [mainData, setMainData] = useState([]);
+
+  // get user role from redux
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
   // import dispatch
   const dispatch = useDispatch();
@@ -96,12 +100,16 @@ const AllInvoices = () => {
     let filterMainData = [...invoices];
     // date filter
     filterMainData = filterMainData.filter(
-      (value) =>
-        new Date(moment(value.dueDate).format("YYYY-MM-DD")).getTime() >=
+      (value) => {
+
+        let tempDT = value.type === 'smsPurchase' ? value.createdAt : value.dueDate
+
+        return new Date(moment(tempDT).format("YYYY-MM-DD")).getTime() >=
           new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(value.dueDate).format("YYYY-MM-DD")).getTime() <=
+        new Date(moment(tempDT).format("YYYY-MM-DD")).getTime() <=
           new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-    );
+
+      });
     // payment filter
     if (filterStatus && filterStatus !== "All") {
       filterMainData = filterMainData.filter(
@@ -119,11 +127,36 @@ const AllInvoices = () => {
     setMainData(filterMainData);
   };
 
+  //total monthly fee and due calculation
+  const totalStat = useMemo(() => {
+    let dueAmount = 0;
+    let totalSms = 0;
+    let totalAmount = 0;
+
+    mainData.map((item) => {
+      // sum of all monthly fee
+      totalAmount += item.amount;
+      totalSms += item.numberOfSms;
+    });
+
+    return { totalSms, totalAmount };
+  }, [mainData]);
+
+  //custom table header component
+  const customComponent = (
+    userRole === 'superadmin' ? <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {"Total: "}&nbsp; {FormatNumber(totalStat.totalAmount)}
+      &nbsp;
+      {"Tk"} &nbsp;&nbsp; {"Total Sms: "}&nbsp;
+      {FormatNumber(totalStat.totalSms)} &nbsp;    
+    </div> : null
+  );
+
   // table column
   const columns = React.useMemo(
     () => [
       {
-        width: "5%",
+        // width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -131,7 +164,7 @@ const AllInvoices = () => {
       },
 
       {
-        width: "10%",
+        // width: "10%",
         Header: "Comapny",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
@@ -150,7 +183,7 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "15%",
+        // width: "15%",
         Header: "Type",
         accessor: "type",
         Cell: ({ cell: { value } }) => {
@@ -162,7 +195,7 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "10%",
+        // width: "10%",
         Header: "Status",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -174,18 +207,18 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "5%",
+        // width: "5%",
         Header: "SMS",
         accessor: "numberOfSms",
       },
       {
-        width: "15%",
+        // width: "15%",
         Header: "Amount",
         accessor: "amount",
       },
 
       {
-        width: "8%",
+        // width: "10%",
         Header: "CreatedAt",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -193,7 +226,7 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "8%",
+        // width: "10%",
         Header: "LastDate",
         accessor: "dueDate",
         Cell: ({ cell: { value } }) => {
@@ -201,7 +234,7 @@ const AllInvoices = () => {
         },
       },
       {
-        width: "8%",
+        // width: "10%",
         Header: "PaidAt",
         accessor: "paidAt",
         Cell: ({ cell: { value } }) => {
@@ -210,7 +243,7 @@ const AllInvoices = () => {
       },
 
       {
-        width: "6%",
+        // width: "10%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
@@ -332,6 +365,7 @@ const AllInvoices = () => {
 
                 <div className="table-section-th">
                   <Table
+                    customComponent={customComponent}
                     columns={columns}
                     data={mainData}
                     isLoading={isLoading}
