@@ -1299,7 +1299,7 @@ export default function Sidebar() {
                   </FontColor>
                 </NavLink>
 
-                {userRole === "superadmin" && (
+                {["admin", "superadmin"].includes(userRole) && (
                   <NavLink
                     to={"/admin/invoices"}
                     className={(navInfo) =>
