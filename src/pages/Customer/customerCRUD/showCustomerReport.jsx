@@ -38,7 +38,6 @@ export default function CustomerReport(props) {
   );
 
   const [customerReport, setCustomerReport] = useState([]);
-  console.log(customerReport);
 
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -194,7 +193,8 @@ export default function CustomerReport(props) {
                                       endDate: val.end,
                                       note: val.note,
                                       month: val.month,
-                                      billingCycle: val?.prevState?.billingCycle,
+                                      billingCycle:
+                                        val?.prevState?.billingCycle,
                                       promiseDate: val?.prevState?.promiseDate,
                                     }}
                                     ispOwnerData={ispOwnerData}
@@ -250,7 +250,8 @@ export default function CustomerReport(props) {
                                       discount: val.discount,
                                       billType: val.billType,
                                       paymentDate: val.createdAt,
-                                      billingCycle: val?.prevState?.billingCycle,
+                                      billingCycle:
+                                        val?.prevState?.billingCycle,
                                       promiseDate: val?.prevState?.promiseDate,
                                       medium: val.medium,
                                     }}
