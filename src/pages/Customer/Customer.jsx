@@ -1573,7 +1573,10 @@ const PPPOECustomer = () => {
           {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
             (bpSettings?.bulkStatusEdit &&
               permission?.bulkStatusEdit &&
-              role === "manager")) && (
+              role === "manager") ||
+            (role === "collector" &&
+              bpSettings.bulkStatusEdit &&
+              permission.bulkStatusEdit)) && (
             <button
               className="bulk_action_button btn btn-dark btn-floating btn-sm"
               title={t("editStatus")}
