@@ -33,6 +33,9 @@ const addClass = {
   bulk: "primary",
   alert: "warning",
   processed: "warning",
+
+  feature: "secondary",
+  complain: "warning",
 };
 
 export const badge = (item) => {

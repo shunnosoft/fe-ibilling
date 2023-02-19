@@ -115,6 +115,12 @@ import {
 import { deleteReCustomer } from "./resellerCustomerAdminSlice";
 import { userLogout } from "./actions/authAsyncAction";
 import { createNote, getNotesSuccess } from "./customerNoteSlice";
+import {
+  AddNetFeeSupport,
+  deleteNetFeeSupport,
+  getNetFeeSupport,
+  updateNetFeeSupport,
+} from "./netFeeSupportSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -2212,4 +2218,92 @@ export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
       "Expenditure Type Added Failed"
     );
   }
+};
+
+//add netFee support
+export const addNetFeeSupport = async (dispatch, supportData, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(
+      `/ispOwner/create/netFee-support`,
+      supportData
+    );
+    dispatch(AddNetFeeSupport(res.data));
+    document.querySelector("#addNetFeeSupport").click();
+    langMessage(
+      "success",
+      "নেটফি সাপর্ট অ্যাড সফল হয়েছে",
+      "NetFee Support Add Successfully"
+    );
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get netFee support
+export const getNetFeeSupportData = async (
+  dispatch,
+  ispOwner,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/ispOwner/netFee/support/${ispOwner}`);
+    dispatch(getNetFeeSupport(res.data));
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// update netFee support
+export const updateNetFeeSupportData = async (
+  dispatch,
+  setIsLoading,
+  updateSupport
+) => {
+  console.log(updateSupport);
+
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(
+      `/ispOwner/netFee/support-edit/${updateSupport.id}`,
+      updateSupport
+    );
+    dispatch(updateNetFeeSupport(res.data));
+    document.querySelector("#supportEdit").click();
+    langMessage(
+      "success",
+      "নেটফি সাপর্ট আপডেট সফল হয়েছে",
+      "NetFee Support Update Successfully"
+    );
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// delete netFee support
+export const deleteNetFeeSupportData = async (
+  dispatch,
+  setIsLoading,
+  supportId
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.delete(
+      `/ispOwner/netFee/support-delete/${supportId}`
+    );
+    dispatch(deleteNetFeeSupport(res.data));
+    document.querySelector("#supportDelete").click();
+    langMessage(
+      "success",
+      "নেটফি সাপর্ট ডিলিট সফল হয়েছে",
+      "NetFee Support Delete Successfully"
+    );
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
 };

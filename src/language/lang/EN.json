@@ -636,5 +636,14 @@
   "otherCustomer": "Other Customer",
   "billComment": "Comment",
   "netFeeSupport": "NetFee Support",
-  "addSupportTicket": "Add Net Fee Support"
+  "addSupportTicket": "Add Net Fee Support",
+  "pleaseSelectYourSupporType": "Please Select Your Support Type",
+  "pleaseInputYourComment": "Please Input Your Comment",
+  "complain": "Complain",
+  "featureRequest": "Feature Request",
+  "supportType": "Support Type",
+  "doYouWantToDeleteSupport?": "Do you want to delete support?",
+  "supportDelete": "Support Delete",
+  "netFeeSupportAdd": "NetFee Support Add",
+  "netFeeSupportUpdate": "NetFee Support Update"
 }
