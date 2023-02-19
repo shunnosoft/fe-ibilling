@@ -879,24 +879,24 @@ const PPPOECustomer = () => {
 
   // csv header
   const headers = [
-    { label: "name_operator", key: "companyName" },
-    { label: "type_of_client", key: "home" },
-    { label: "distribution Location point", key: "companyAddress" },
-    { label: "name_of_client", key: "name" },
-    { label: "address_of_client", key: "customerAddress" },
-    { label: "type_of_connection", key: "connectionType" },
-    { label: "type_of_connectivity", key: "connectivity" },
+    { label: "client_type", key: "home" },
+    { label: "connection_type", key: "connectionType" },
+    { label: "client_name", key: "name" },
+    { label: "bandwidth_distribution_point", key: "companyAddress" },
+    { label: "connectivity_type", key: "connectivity" },
     { label: "activation_date", key: "createdAt" },
-    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "bandwidth_allocation", key: "package" },
     { label: "allowcated_ip", key: "ip" },
-    { label: "house_no", key: "address" },
-    { label: "road_no", key: "road" },
-    { label: "area", key: "area" },
+    { label: "division", key: "division" },
     { label: "district", key: "district" },
     { label: "thana", key: "thana" },
-    { label: "client_phone", key: "mobile" },
-    { label: "mail", key: "email" },
+    { label: "address", key: "customerAddress" },
+    { label: "client_mobile", key: "mobile" },
+    { label: "client_email", key: "email" },
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
+    // { label: "name_operator", key: "companyName" },
+    // { label: "house_no", key: "address" },
+    // { label: "area", key: "area" },
   ];
 
   //export customer data
