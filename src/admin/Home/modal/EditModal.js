@@ -6,9 +6,10 @@ import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
 import moment from "moment";
-import { divisions } from "../../../divis&dist&upazila/bd-divisions.json";
-import { districts } from "../../../divis&dist&upazila/bd-districts.json";
-import { upazilas } from "../../../divis&dist&upazila/bd-upazilas.json";
+
+// import { divisions } from "../../../bdAddress/bd-divisions.json";
+// import { districts } from "../../../bdAddress/bd-districts.json";
+// import { thana } from "../../../bdAddress/bd-upazilas.json";
 
 const ISPOwnerEditModal = ({ ownerId }) => {
   // import dispatch from react redux
@@ -29,12 +30,12 @@ const ISPOwnerEditModal = ({ ownerId }) => {
   // owner division
   // const [ownerDivisionId, setOwnerDivisionId] = useState();
 
-  // //get districts & upazilas state
+  // //get districts & thana state
   // const [division, setDivision] = useState("");
   // const [getDistricts, setGetDistricts] = useState([]);
   // const [district, setDistrict] = useState("");
   // const [getUpazilas, setGetUpazilas] = useState([]);
-  // const [upazila, setUpazila] = useState("");
+  // const [thana, setThana] = useState("");
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 

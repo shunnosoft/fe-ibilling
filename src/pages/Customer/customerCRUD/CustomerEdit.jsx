@@ -17,8 +17,19 @@ import { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 
+import { divisions } from "../../../bdAddress/bd-divisions.json";
+import { districts } from "../../../bdAddress/bd-districts.json";
+import { thana } from "../../../bdAddress/bd-upazilas.json";
+
+//custom hook
+import useISPowner from "../../../hooks/useISPOwner";
+
 export default function CustomerEdit(props) {
   const { t } = useTranslation();
+
+  //calling custom hook here
+  const { ispOwnerId, hasMikrotik } = useISPowner();
+
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
 
@@ -26,15 +37,15 @@ export default function CustomerEdit(props) {
   const data = customer.find((item) => item.id === props.single);
 
   // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  // const ispOwnerId = useSelector(
+  //   (state) => state.persistedReducer.auth?.ispOwnerId
+  // );
 
   // get all area
   const area = useSelector((state) => state?.area?.area);
 
-  // get mikrotik
-  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  // get mikrotiks
+  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get bp setting
   const bpSettings = useSelector(
@@ -49,9 +60,9 @@ export default function CustomerEdit(props) {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
-  // get ppoe package
+  // get pppoe package
   const ppPackage = useSelector((state) =>
-    bpSettings?.hasMikrotik
+    hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
@@ -80,15 +91,28 @@ export default function CustomerEdit(props) {
 
   const [packageId, setPackageId] = useState("");
   //component states
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
+
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
 
   // fix max promise date
   let mxDate = new Date(data?.billingCycle);
   mxDate.setDate(mxDate.getDate() + parseInt(20));
 
   useEffect(() => {
+    if (data) setBillDate(new Date(data?.billingCycle));
+    if (data) setPromiseDate(new Date(data.promiseDate));
+    setAutoDisable(data?.autoDisable);
+
     setPackageId(data?.mikrotikPackage);
     setStatus(data?.status);
+    setConnectionDate(
+      data?.connectionDate ? new Date(data?.connectionDate) : null
+    );
     const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: data?.mikrotik,
@@ -97,19 +121,34 @@ export default function CustomerEdit(props) {
     if (bpSettings?.hasMikrotik) {
       fetchPackagefromDatabase(dispatch, IDs, setIsloading);
     }
-  }, [bpSettings, ispOwnerId, dispatch, data]);
+    //select customer district,division and thana for sync with state
+    const divisionalInfo = {};
+    if (data?.division) {
+      const division = divisions.find((item) => item.name === data.division);
+      divisionalInfo.division = division.id;
+    }
+    if (data?.district) {
+      const district = districts.find((item) => item.name === data.district);
+      divisionalInfo.district = district.id;
+    }
+    if (data?.thana) {
+      const findThana = thana.find(
+        (item) =>
+          item.name === data.thana &&
+          item.district_id === divisionalInfo.district
+      );
+      divisionalInfo.thana = findThana.id;
+    }
+    setDivisionalArea({
+      ...divisionalArea,
+      ...divisionalInfo,
+    });
+  }, [bpSettings, ispOwnerId, data]);
 
   useEffect(() => {
-    setAutoDisable(data?.autoDisable);
-    setConnectionDate(
-      data?.connectionDate ? new Date(data?.connectionDate) : null
-    );
-    const temp = Getmikrotik.find((val) => val.id === data?.mikrotik);
+    const temp = mikrotiks.find((val) => val.id === data?.mikrotik);
     setmikrotikName(temp);
-    if (data) setBillDate(new Date(data?.billingCycle));
-    if (data) setPromiseDate(new Date(data.promiseDate));
-    // findout area id by sub area id
-  }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
+  }, [mikrotiks, data, ispOwnerId]);
 
   useEffect(() => {
     fetchMikrotik(dispatch, ispOwnerId, setLoading);
@@ -164,6 +203,11 @@ export default function CustomerEdit(props) {
     setPackageId(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
+  };
+
+  //for select divisional area name
+  const getName = (array, matchValue) => {
+    return array.find((item) => item.id === matchValue);
   };
 
   // select subArea
@@ -228,6 +272,21 @@ export default function CustomerEdit(props) {
     if (!genCustomerId) {
       mainData.customerId = customerId;
     }
+
+    if (
+      divisionalArea.district ||
+      divisionalArea.division ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      //if  exist add the data
+      if (divisionName) mainData.division = divisionName;
+      if (districtName) mainData.district = districtName;
+      if (thanaName) mainData.thana = thanaName;
+    }
+
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -242,6 +301,44 @@ export default function CustomerEdit(props) {
         return sub;
       });
       return a;
+    });
+  };
+
+  //divisional area formula
+  const divisionalAreaFormData = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
+  // this function control the division district and thana change input
+  const onDivisionalAreaChange = ({ target }) => {
+    const { name, value } = target;
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
     });
   };
 
@@ -458,6 +555,32 @@ export default function CustomerEdit(props) {
                         name="address"
                       />
                     </div>
+
+                    <div className="displayGrid3">
+                      {divisionalAreaFormData.map((item) => (
+                        <div className="mb-2">
+                          <label className="form-control-label changeLabelFontColor">
+                            {item.text}
+                            <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name={item.name}
+                            id={item.id}
+                            disabled={!mikrotikPackage}
+                            onChange={onDivisionalAreaChange}
+                            value={item.value}
+                          >
+                            <option value="">...</option>
+                            {item.data.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="newDisplay">
                       <FtextField type="text" label={t("email")} name="email" />
 

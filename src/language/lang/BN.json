@@ -638,5 +638,8 @@
   "otherCustomer": "অনন্য গ্রাহক",
   "billComment": "মন্তব্য",
   "netFeeSupport": "নেটফি সাপোর্ট",
-  "addSupportTicket": "এড নেটফি সাপোর্ট"
+  "addSupportTicket": "এড নেটফি সাপোর্ট",
+  "selectDivision":"বিভাগ সিলেক্ট করুন",
+  "selectDistrict":"জেলা সিলেক্ট করুন",
+  "selectThana":"উপজেলা সিলেক্ট করুন"
 }
