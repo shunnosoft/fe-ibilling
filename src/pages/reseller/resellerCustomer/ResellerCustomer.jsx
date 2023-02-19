@@ -280,8 +280,13 @@ const ResellerCustomer = () => {
         width: "9%",
       },
       {
+        Header: t("PPPoEName"),
+        accessor: "pppoe.name",
         width: "9%",
-        Header: t("userType"),
+      },
+      {
+        width: "9%",
+        Header: t("customerType"),
         accessor: "userType",
       },
       {
