@@ -29,7 +29,7 @@ export const collectorPermission = (
     {
       id: 4,
       value: "customerDeactivate",
-      label: "গ্রাহক বন্ধ",
+      label: "গ্রাহক ডিএক্টিভেট",
       isChecked: permission?.customerDeactivate,
       disabled: false,
     },
