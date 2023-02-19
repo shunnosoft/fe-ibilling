@@ -32,6 +32,7 @@ import {
   Shop,
   Basket2Fill,
   CartFill,
+  Bag,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1225,7 +1226,7 @@ export default function Sidebar() {
                                   {<PersonDash />}
                                 </div>
                                 <span className="sidebarLinksName">
-                                  {t("supportTicket")}
+                                  {t("netFeeSupport")}
                                 </span>
                               </li>
                             </FontColor>
@@ -1294,12 +1295,12 @@ export default function Sidebar() {
                       }
                     >
                       <div className="sidebarIcon">{<ChatDots />}</div>
-                      <span className="sidebarLinksName">{"কমেন্টস"}</span>
+                      <span className="sidebarLinksName">Comments</span>
                     </li>
                   </FontColor>
                 </NavLink>
 
-                {userRole === "superadmin" && (
+                {["admin", "superadmin"].includes(userRole) && (
                   <NavLink
                     to={"/admin/invoices"}
                     className={(navInfo) =>
@@ -1316,11 +1317,32 @@ export default function Sidebar() {
                         }
                       >
                         <div className="sidebarIcon">{<Cash />}</div>
-                        <span className="sidebarLinksName">{"ইনভয়েস"}</span>
+                        <span className="sidebarLinksName">Invoice</span>
                       </li>
                     </FontColor>
                   </NavLink>
                 )}
+
+                <NavLink
+                  to={"/admin/support"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/admin/support"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<Bag />}</div>
+                      <span className="sidebarLinksName">Support</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
               </ul>
             </FourGround>
           )}

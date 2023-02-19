@@ -292,7 +292,8 @@ export default function Home() {
   const collectionPercentage = customerStat
     ? Math.round(
         (customerStat.totalMonthlyCollection /
-          customerStat.totalProbableAmount) *
+          (customerStat.totalProbableAmount -
+            customerStat.totalInactiveAmount)) *
           100
       )
     : 0;
@@ -443,7 +444,10 @@ export default function Home() {
                     <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <h2>
                         {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
-                        {FormatNumber(customerStat.totalProbableAmount)}{" "}
+                        {FormatNumber(
+                          customerStat.totalProbableAmount -
+                            customerStat.totalInactiveAmount
+                        )}{" "}
                       </h2>
                     </div>
                     <div className="col-md-6">
@@ -486,27 +490,46 @@ export default function Home() {
                   </div>
                 )}
 
-                <div className="d-flex justify-content-end">
-                  <div>
-                    <ReactDatePicker
-                      selected={filterDate}
-                      className="form-control shadow-none"
-                      onChange={(date) => setFilterDate(date)}
-                      dateFormat="MMM/yyyy"
-                      showMonthYearPicker
-                      showFullMonthYearPicker
-                      endDate={"2014/04/08"}
-                      placeholderText={t("filterDashboard")}
-                      maxDate={new Date()}
-                      minDate={new Date(ispOwnerData?.createdAt)}
-                    />
+                <div className="d-flex justify-content-between">
+                  <div className="customer-status-amount d-flex align-items-center">
+                    <p>
+                      {t("active")}{" "}
+                      {FormatNumber(customerStat.totalActiveAmount)}
+                    </p>
+                    &nbsp;&nbsp;
+                    <p>
+                      {t("in active")}{" "}
+                      {FormatNumber(customerStat.totalInactiveAmount)}
+                    </p>
+                    &nbsp;&nbsp;
+                    <p>
+                      {t("expired")}{" "}
+                      {FormatNumber(customerStat.totalExpiredAmount)}
+                    </p>
+                    &nbsp;&nbsp;
                   </div>
-                  <button
-                    className="btn btn-primary w-140 ms-1"
-                    onClick={dashboardFilterController}
-                  >
-                    {isLoading ? <Loader /> : t("filter")}
-                  </button>
+                  <div className="d-flex">
+                    <div>
+                      <ReactDatePicker
+                        selected={filterDate}
+                        className="form-control shadow-none"
+                        onChange={(date) => setFilterDate(date)}
+                        dateFormat="MMM/yyyy"
+                        showMonthYearPicker
+                        showFullMonthYearPicker
+                        endDate={"2014/04/08"}
+                        placeholderText={t("filterDashboard")}
+                        maxDate={new Date()}
+                        minDate={new Date(ispOwnerData?.createdAt)}
+                      />
+                    </div>
+                    <button
+                      className="btn btn-primary w-140 ms-1"
+                      onClick={dashboardFilterController}
+                    >
+                      {isLoading ? <Loader /> : t("filter")}
+                    </button>
+                  </div>
                 </div>
               </div>
 

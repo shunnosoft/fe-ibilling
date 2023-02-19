@@ -17,6 +17,7 @@ import {
   FileEarmarkExcel,
   JournalCode,
   CreditCard2Front,
+  KeyFill,
 } from "react-bootstrap-icons";
 import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -29,6 +30,7 @@ import Permissions from "./modal/Permissions";
 import AddProprietorModal from "./modal/AddProprietorModal";
 import Invoices from "../invoiceList/Invoices";
 import { badge } from "../../components/common/Utils";
+import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 
 export default function Home() {
   // loading
@@ -42,6 +44,9 @@ export default function Home() {
 
   // invoice id state
   const [invoiceId, setInvoiceId] = useState();
+
+  // user id state
+  const [userId, setUserId] = useState();
 
   // set owner name
   const [companyName, setCompanyName] = useState();
@@ -400,6 +405,20 @@ export default function Home() {
                       />
                     </div>
                   </li> */}
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPassword"
+                    onClick={() => {
+                      setUserId(original.user);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <KeyFill />
+                        <p className="actionP">Password Reset</p>
+                      </div>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -491,6 +510,9 @@ export default function Home() {
               <Invoices invoiceId={invoiceId} companyName={companyName} />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
+
+              {/* password reset modal */}
+              <PasswordReset resetCustomerId={userId} />
             </FontColor>
           </div>
         </div>

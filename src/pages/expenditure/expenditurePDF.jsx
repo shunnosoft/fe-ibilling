@@ -1,5 +1,4 @@
 import React from "react";
-import { ArrowDownUp } from "react-bootstrap-icons";
 import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
@@ -13,6 +12,20 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
+
+  // get expenditure purpose
+  const expenditurePurpose = useSelector(
+    (state) => state.expenditure.expenditurePourposes
+  );
+
+  // find expenditure purpose method
+  const findExpenditureType = (expenditureTypeId) => {
+    const matchExpenditure = expenditurePurpose.find(
+      (item) => item.id === expenditureTypeId
+    );
+    return matchExpenditure?.name;
+  };
+
   return (
     <>
       <div ref={ref}>
@@ -49,7 +62,7 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
           </li>
           <li className="ms-4">
             {t("amount")}
-            {filterData?.totalAmount}
+            {FormatNumber(filterData?.totalAmount)}
           </li>
         </ul>
 
@@ -66,21 +79,21 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
             {allExpenditures?.map((val, key) => (
               <tr key={key}>
                 <td>{++serial}</td>
-                <td>{val.expenditureName}</td>
-                <td>{val.amount}</td>
-                <td> {moment(val.createdAt).format("DD-MM-YYYY")}</td>
+                <td>{findExpenditureType(val.expenditurePurpose)}</td>
+                <td>{FormatNumber(val.amount)}</td>
+                <td> {moment(val.createdAt).format("MMM DD YYYY")}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div className="page-footer">
+        {/* <div className="page-footer">
           <div className="signature_container">
             <div className="p-3 signature_wraper">
               <div className="signamture_field">{t("manager")}</div>
               <div className="signamture_field">{t("admin")}</div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
