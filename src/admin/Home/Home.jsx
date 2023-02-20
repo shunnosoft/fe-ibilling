@@ -18,6 +18,7 @@ import {
   JournalCode,
   CreditCard2Front,
   KeyFill,
+  Award,
 } from "react-bootstrap-icons";
 import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
@@ -326,6 +327,16 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
+                  <Link to={`/admin/netFee/support/${original.id}`}>
+                    <li>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Award />
+                          <p className="actionP">NetFee Support</p>
+                        </div>
+                      </div>
+                    </li>
+                  </Link>
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#clientNoteModal"
