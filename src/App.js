@@ -96,9 +96,12 @@ import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
 import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
 import ResellerCollectorCustomerSupportTicket from "./reseller/supportTicket/CollectorSupportTicket";
+import ResellerNetFeeSupport from "./reseller/netFeeSupport/NetFeeSupport";
 import NetFeeSupport from "./pages/netFeeSupport/NetFeeSupport";
 import useCurrentUser from "./hooks/useCurrentUser";
 import useISPowner from "./hooks/useISPOwner";
+import Supports from "./admin/netFeeSupport/Supports";
+
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
 
@@ -244,6 +247,10 @@ function App() {
                   )
                 }
               />
+              <Route
+                path="reseller/netFee/support"
+                element={userRole === "reseller" && <ResellerNetFeeSupport />}
+              />
 
               <Route path="*" element={<NotFound />} />
             </Route>
@@ -291,6 +298,11 @@ function App() {
                 )
               }
             />
+
+            <Route
+              path="/netfee"
+              element={!user ? <Landing /> : <Navigate to={"/admin/support"} />}
+            />
             {/* <Route path="staff/:staffId" element={<StaffSalary />} /> */}
 
             <Route path="/*" element={<PrivateOutlet />}>
@@ -301,6 +313,7 @@ function App() {
               />
               <Route path="admin/all-comments" element={<AllComments />} />
               <Route path="admin/invoices" element={<AllInvoices />} />
+              <Route path="admin/support" element={<Supports />} />
 
               <Route path="*" element={<NotFound />} />
             </Route>

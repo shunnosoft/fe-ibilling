@@ -1,57 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
-import { useTranslation } from "react-i18next";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import {
-  ArchiveFill,
-  PenFill,
-  PersonPlusFill,
-  ThreeDots,
-} from "react-bootstrap-icons";
-import AddNetFeeSupport from "./supportOpration/AddNetFeeSupport";
 import { useDispatch, useSelector } from "react-redux";
-import Table from "../../components/table/Table";
-import SupportEdit from "./supportOpration/SupportEdit";
-import { getNetFeeSupportData } from "../../features/apiCalls";
+import { getResellerNetFeeSupport } from "../../features/apiCallReseller";
+import { ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { PenFill, PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
+import ResellerSupportAdd from "./supportOpration/ResellerSupportAdd";
 import moment from "moment";
-import SupportDelete from "./supportOpration/SupportDelete";
 import { badge } from "../../components/common/Utils";
+import Table from "../../components/table/Table";
+import ResellerSupportEdit from "./supportOpration/ResellerSupportEdit";
 
 const NetFeeSupport = () => {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
 
-  // netFee support data
-  const supportAllData = useSelector(
-    (state) => state.netFeeSupport?.netFeeSupport
+  // reseller id
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller.id
   );
 
-  //get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
+  // get reseller support
+  const resellerAllSupport = useSelector(
+    (state) => state.resellerSupport?.resellerSupport
   );
 
-  //netFee support isLoading state
+  // isLoading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // support edit data state
-  const [editId, setEditId] = useState("");
+  // support edit id state
+  const [editID, setEditID] = useState("");
 
-  // support delete id
-  const [deleteId, setDeleteId] = useState("");
-
-  //support edit handler
+  // support edit handler
   const supportEditHandler = (id) => {
-    setEditId(id);
-  };
-
-  // support delete handler
-  const supportDeleteHandlerModal = (id) => {
-    setDeleteId(id);
+    setEditID(id);
   };
 
   const columns = React.useMemo(
@@ -111,7 +96,7 @@ const NetFeeSupport = () => {
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#supportEdit"
+                  data-bs-target="#resellerSupportEditId"
                   onClick={() => {
                     supportEditHandler(original.id);
                   }}
@@ -120,19 +105,6 @@ const NetFeeSupport = () => {
                     <div className="customerAction">
                       <PenFill />
                       <p className="actionP">{t("edit")}</p>
-                    </div>
-                  </div>
-                </li>
-
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#supportDelete"
-                  onClick={() => supportDeleteHandlerModal(original.id)}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
                 </li>
@@ -146,7 +118,7 @@ const NetFeeSupport = () => {
   );
 
   useEffect(() => {
-    getNetFeeSupportData(dispatch, ispOwner, setIsLoading);
+    getResellerNetFeeSupport(dispatch, setIsLoading, resellerId);
   }, []);
 
   return (
@@ -154,7 +126,7 @@ const NetFeeSupport = () => {
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
+        <div className="container-fluied reseller">
           <div className="container">
             <FontColor>
               <FourGround>
@@ -164,7 +136,7 @@ const NetFeeSupport = () => {
                     <PersonPlusFill
                       className="addcutmButton"
                       data-bs-toggle="modal"
-                      data-bs-target="#addNetFeeSupport"
+                      data-bs-target="#resellerSupportAdd"
                       title={t("addSupportTicket")}
                     />
                   </div>
@@ -177,7 +149,7 @@ const NetFeeSupport = () => {
                       isLoading={isLoading}
                       // customComponent={customComponent}
                       columns={columns}
-                      data={supportAllData}
+                      data={resellerAllSupport}
                     ></Table>
                   </div>
                 </div>
@@ -187,9 +159,8 @@ const NetFeeSupport = () => {
           </div>
         </div>
       </div>
-      <AddNetFeeSupport />
-      <SupportEdit editId={editId} />
-      <SupportDelete deleteId={deleteId} />
+      <ResellerSupportAdd />
+      <ResellerSupportEdit editID={editID} />
     </>
   );
 };

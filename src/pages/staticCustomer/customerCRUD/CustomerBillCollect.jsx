@@ -87,7 +87,7 @@ export default function CustomerBillCollect({ single }) {
     }
 
     const sendingData = {
-      amount: formValue.amount,
+      amount: formValue.amount + formValue.due,
       discount: Number(discount),
       collectedBy: currentUser?.user.role,
       billType: billType,
@@ -145,10 +145,9 @@ export default function CustomerBillCollect({ single }) {
               <div className="modal-body">
                 <Formik
                   initialValues={{
-                    amount:
-                      // data?.balance < data?.monthlyFee
-                      //   ? data?.monthlyFee - data?.balance :
-                      data?.monthlyFee,
+                    amount: data?.monthlyFee,
+
+                    due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
                   }}
                   validationSchema={BillValidatoin}
                   onSubmit={(values) => {
@@ -177,6 +176,29 @@ export default function CustomerBillCollect({ single }) {
                             label={t("amount")}
                           />
                         </div>
+                        <div className="w-100 me-2">
+                          <FtextField
+                            type="number"
+                            name="due"
+                            label={t("due")}
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="w-100 me-2 mb-3">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billType")}
+                          </label>
+                          <select
+                            className="form-select mt-0 mw-100"
+                            onChange={(e) => setBillType(e.target.value)}
+                          >
+                            <option value="bill"> {t("bill")} </option>
+                            <option value="connectionFee">
+                              {t("connectionFee")}
+                            </option>
+                          </select>
+                        </div>
                         <div className="d-inline w-100 mb-3">
                           <label
                             htmlFor="receiver_type"
@@ -203,20 +225,6 @@ export default function CustomerBillCollect({ single }) {
                         </div>
                       </div>
                       <div className="d-flex justify-content-between align-items-center">
-                        <div className="w-50 me-2 mb-3">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("billType")}
-                          </label>
-                          <select
-                            className="form-select mt-0 mw-100"
-                            onChange={(e) => setBillType(e.target.value)}
-                          >
-                            <option value="bill"> {t("bill")} </option>
-                            <option value="connectionFee">
-                              {t("connectionFee")}
-                            </option>
-                          </select>
-                        </div>
                         {role === "ispOwner" && (
                           <div className="w-50">
                             <FtextField
@@ -230,21 +238,21 @@ export default function CustomerBillCollect({ single }) {
                             />
                           </div>
                         )}
-                      </div>
-                      <div className="form-check">
-                        <input
-                          type="checkbox"
-                          className="form-check-input me-1"
-                          id="addNOte"
-                          checked={noteCheck}
-                          onChange={(e) => setNoteCheck(e.target.checked)}
-                        />
-                        <label
-                          className="form-check-label changeLabelFontColor"
-                          htmlFor="addNOte"
-                        >
-                          {t("noteAndDate")}
-                        </label>
+                        <div className="form-check">
+                          <input
+                            type="checkbox"
+                            className="form-check-input me-1"
+                            id="addNOte"
+                            checked={noteCheck}
+                            onChange={(e) => setNoteCheck(e.target.checked)}
+                          />
+                          <label
+                            className="form-check-label changeLabelFontColor"
+                            htmlFor="addNOte"
+                          >
+                            {t("noteAndDate")}
+                          </label>
+                        </div>
                       </div>
                       {noteCheck && (
                         <>

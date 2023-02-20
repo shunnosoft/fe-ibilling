@@ -32,6 +32,8 @@ import {
   Shop,
   Basket2Fill,
   CartFill,
+  Bag,
+  Award,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1198,38 +1200,39 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
-                          <NavLink
-                            key={12}
-                            to={
-                              userRole === "reseller"
-                                ? "/reseller/netFee/support"
-                                : "/netFee/support"
-                            }
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname ===
-                                  (userRole === "reseller"
-                                    ? "/reseller/netFee/support"
-                                    : "/netFee/support")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<PersonDash />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("netFeeSupport")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
+                          {userRole !== "collector" && (
+                            <NavLink
+                              key={12}
+                              to={
+                                userRole === "reseller"
+                                  ? "/reseller/netFee/support"
+                                  : "/netFee/support"
+                              }
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    (userRole === "reseller" &&
+                                    userRole !== "collector"
+                                      ? "/reseller/netFee/support"
+                                      : "/netFee/support")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">{<Award />}</div>
+                                  <span className="sidebarLinksName">
+                                    {t("netFeeSupport")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          )}
                         </Accordion.Body>
                       </Accordion.Item>
                     </>
@@ -1294,7 +1297,7 @@ export default function Sidebar() {
                       }
                     >
                       <div className="sidebarIcon">{<ChatDots />}</div>
-                      <span className="sidebarLinksName">{"কমেন্টস"}</span>
+                      <span className="sidebarLinksName">Comments</span>
                     </li>
                   </FontColor>
                 </NavLink>
@@ -1316,11 +1319,32 @@ export default function Sidebar() {
                         }
                       >
                         <div className="sidebarIcon">{<Cash />}</div>
-                        <span className="sidebarLinksName">{"ইনভয়েস"}</span>
+                        <span className="sidebarLinksName">Invoice</span>
                       </li>
                     </FontColor>
                   </NavLink>
                 )}
+
+                <NavLink
+                  to={"/admin/support"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/admin/support"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<Bag />}</div>
+                      <span className="sidebarLinksName">Support</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
               </ul>
             </FourGround>
           )}

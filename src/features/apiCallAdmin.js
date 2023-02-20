@@ -15,6 +15,11 @@ import {
   getIspOwnerInvoicesSuccess,
   editInvoiceSuccess,
 } from "./ispOwnerInvoiceSlice";
+import {
+  deleteAdminSupport,
+  getAdminSupport,
+  updateAdminSupport,
+} from "./adminNetFeeSupportSlice";
 
 // get owners
 export const getIspOwners = async (dispatch, setIsLoading) => {
@@ -222,4 +227,58 @@ export const getInvoices = async (dispatch, setIsLoading) => {
   } catch (error) {
     console.log(error.response);
   }
+};
+
+//get all netFee support
+export const getAllNetFeeSupport = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/ispOwner/netFee/support`);
+    dispatch(getAdminSupport(res.data));
+  } catch (error) {
+    console.log(error.response);
+  }
+  setIsLoading(false);
+};
+
+// support update
+export const updateAdminNetFeeSupport = async (
+  dispatch,
+  setIsLoading,
+  updateData
+) => {
+  console.log(updateData);
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(
+      `/ispOwner/netFee/support-edit/${updateData.id}`,
+      updateData
+    );
+    console.log(res.data);
+    dispatch(updateAdminSupport(res.data));
+    document.querySelector("#adminSupportEditModal").click();
+  } catch (error) {
+    console.log(error.response);
+  }
+  setIsLoading(false);
+};
+
+// support delete
+export const deleteAdminNetFeeSupport = async (
+  dispatch,
+  setIsLoading,
+  deleteId
+) => {
+  console.log(deleteId);
+  setIsLoading(true);
+  try {
+    const res = await apiLink.delete(
+      `/ispOwner/netFee/support-delete/${deleteId}`
+    );
+    console.log(res.data);
+    dispatch(deleteAdminSupport(res.data));
+  } catch (error) {
+    console.log(error.response);
+  }
+  setIsLoading(false);
 };

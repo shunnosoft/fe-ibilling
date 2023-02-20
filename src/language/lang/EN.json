@@ -637,7 +637,16 @@
   "billComment": "Comment",
   "netFeeSupport": "NetFee Support",
   "addSupportTicket": "Add Net Fee Support",
-  "selectDivision":"Select Division",
-  "selectDistrict":"Select District",
-  "selectThana":"Select Thana"
+  "pleaseSelectYourSupportType": "Please Select Your Support Type",
+  "pleaseInputYourComment": "Please Input Your Comment",
+  "complain": "Complain",
+  "featureRequest": "Feature Request",
+  "supportType": "Support Type",
+  "doYouWantToDeleteSupport?": "Do you want to delete support?",
+  "supportDelete": "Support Delete",
+  "netFeeSupportAdd": "NetFee Support Add",
+  "netFeeSupportUpdate": "NetFee Support Update",
+  "selectDivision": "Select Division",
+  "selectDistrict": "Select District",
+  "selectThana": "Select Thana"
 }

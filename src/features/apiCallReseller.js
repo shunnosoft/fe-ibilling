@@ -33,6 +33,11 @@ import { getChartSuccess } from "./chartsSlice";
 import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
 import { getAllMikrotikPakages } from "./resellerSlice";
+import {
+  addResellerSupport,
+  getResellerSupport,
+  updateResellerSupport,
+} from "./resellerSupportSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -500,4 +505,72 @@ export const getStaticCustomerApi = async (
     console.log(error.message);
     setIsloading(false);
   }
+};
+
+// get support
+export const getResellerNetFeeSupport = async (
+  dispatch,
+  setIsLoading,
+  resellerId
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`reseller/netFee/support/${resellerId}`);
+    dispatch(getResellerSupport(res.data));
+  } catch (error) {
+    console.log(error.response);
+  }
+  setIsLoading(false);
+};
+
+// post support
+export const postResellerNetFeeSupport = async (
+  dispatch,
+  setIsLoading,
+  supportData
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(
+      `reseller/create/netFee-support`,
+      supportData
+    );
+    dispatch(addResellerSupport(res.data));
+    langMessage(
+      "success",
+      "নেটফি সাপর্ট অ্যাড সফল হয়েছে",
+      "NetFee Support Add Successfully"
+    );
+    document.querySelector("#resellerSupportAdd").click();
+  } catch (error) {
+    console.log(error.response);
+  }
+  setIsLoading(false);
+};
+
+//put support
+export const putResellerNetFeeSupport = async (
+  dispatch,
+  setIsLoading,
+  editSupport
+) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.patch(
+      `reseller/netFee/support-edit/${editSupport.id}`,
+      editSupport
+    );
+    document.querySelector("#resellerSupportEditId").click();
+    dispatch(updateResellerSupport(res.data));
+    langMessage(
+      "success",
+      "নেটফি সাপর্ট আপডেট সফল হয়েছে",
+      "NetFee Support Update Successfully"
+    );
+  } catch (error) {
+    console.log(error.response);
+  }
+
+  setIsLoading(false);
 };
