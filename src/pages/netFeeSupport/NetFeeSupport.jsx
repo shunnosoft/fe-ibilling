@@ -43,7 +43,6 @@ const NetFeeSupport = () => {
 
   // support delete id
   const [deleteId, setDeleteId] = useState("");
-  console.log(deleteId);
 
   //support edit handler
   const supportEditHandler = (id) => {

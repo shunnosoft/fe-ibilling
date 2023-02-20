@@ -17,12 +17,17 @@ import { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 
-import { divisions } from "../../../bdAddress/bd-divisions.json";
-import { districts } from "../../../bdAddress/bd-districts.json";
-import { thana } from "../../../bdAddress/bd-upazilas.json";
-
 //custom hook
 import useISPowner from "../../../hooks/useISPOwner";
+
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
 
 export default function CustomerEdit(props) {
   const { t } = useTranslation();

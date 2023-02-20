@@ -1,62 +1,61 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import Loader from "../../../components/common/Loader";
-import { updateNetFeeSupportData } from "../../../features/apiCalls";
+import { toast } from "react-toastify";
+import { putResellerNetFeeSupport } from "../../../features/apiCallReseller";
 
-const SupportEdit = ({ editId }) => {
+const ResellerSupportEdit = ({ editID }) => {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
 
-  // update support data state
-  const [supportEditData, setSupportEditData] = useState("");
-
-  // netFee support data
-  const supportAllData = useSelector(
-    (state) => state.netFeeSupport?.netFeeSupport
+  // get reseller support
+  const resellerAllSupport = useSelector(
+    (state) => state.resellerSupport?.resellerSupport
   );
 
-  // isLoading state
+  // support edit data store state
+  const [editSupportData, setEditSupportData] = useState("");
+
+  // is Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  //single support update data find
-  const singleSupport = supportAllData.find((support) => support.id === editId);
+  // support edit data find
+  const supportEdit = resellerAllSupport.find((item) => item.id === editID);
 
-  // netFee support handler
-  const handleSupportEdit = (e) => {
-    let value = e.target.value;
-    let name = e.target.name;
-    setSupportEditData({ ...supportEditData, [name]: value });
+  // support edit onchange handler
+  const resellerSupportEditHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setEditSupportData({ ...editSupportData, [name]: value });
   };
 
-  // update netFee support submit handle
-  const netFeeSupportUpdate = (e) => {
+  // support update data submit handler
+  const resellerSupportUpdateHandler = (e) => {
     e.preventDefault();
     if (!description) {
       toast.error(t("pleaseInputYourComment"));
     }
     if (!support) {
-      toast.error(t("pleaseSelectYourSupporType"));
+      toast.error(t("pleaseSelectYourSupportType"));
     }
-    updateNetFeeSupportData(dispatch, setIsLoading, supportEditData);
+    putResellerNetFeeSupport(dispatch, setIsLoading, editSupportData);
   };
 
   useEffect(() => {
-    if (singleSupport) {
-      setSupportEditData(singleSupport);
+    if (supportEdit) {
+      setEditSupportData(supportEdit);
     }
-  }, [singleSupport]);
+  }, [supportEdit]);
 
-  const { support, description } = supportEditData;
+  const { support, description } = editSupportData;
 
   return (
     <>
       <div
         className="modal fade"
-        id="supportEdit"
-        tabindex="-1"
+        id="resellerSupportEditId"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -74,15 +73,15 @@ const SupportEdit = ({ editId }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={netFeeSupportUpdate}>
+              <form onSubmit={resellerSupportUpdateHandler}>
                 <div className="form-group px-2">
-                  <label>{t("pleaseSelectYourSupporType")}</label>
+                  <label>{t("pleaseSelectYourSupportType")}</label>
                   <select
                     style={{ width: "100%" }}
                     class="form-select mw-100"
                     aria-label="Default select example"
                     name="support"
-                    onChange={handleSupportEdit}
+                    onChange={resellerSupportEditHandler}
                   >
                     <option selected={support === "complain"} value="complain">
                       {t("complain")}
@@ -103,7 +102,7 @@ const SupportEdit = ({ editId }) => {
                     rows="3"
                     name="description"
                     value={description}
-                    onChange={handleSupportEdit}
+                    onChange={resellerSupportEditHandler}
                   ></textarea>
                 </div>
                 <div className="modal-footer bg-whitesmoke br">
@@ -132,4 +131,4 @@ const SupportEdit = ({ editId }) => {
   );
 };
 
-export default SupportEdit;
+export default ResellerSupportEdit;

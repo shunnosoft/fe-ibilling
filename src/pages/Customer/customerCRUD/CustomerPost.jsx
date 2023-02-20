@@ -15,9 +15,14 @@ import {
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 
-import { divisions } from "../../../bdAddress/bd-divisions.json";
-import { districts } from "../../../bdAddress/bd-districts.json";
-import { thana } from "../../../bdAddress/bd-upazilas.json";
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
 
 export default function CustomerModal() {
   const { t } = useTranslation();

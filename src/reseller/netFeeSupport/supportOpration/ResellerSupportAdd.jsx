@@ -1,61 +1,60 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../../components/common/Loader";
-import { updateNetFeeSupportData } from "../../../features/apiCalls";
+import { postResellerNetFeeSupport } from "../../../features/apiCallReseller";
 
-const SupportEdit = ({ editId }) => {
+const ResellerSupportAdd = () => {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
 
-  // update support data state
-  const [supportEditData, setSupportEditData] = useState("");
-
-  // netFee support data
-  const supportAllData = useSelector(
-    (state) => state.netFeeSupport?.netFeeSupport
+  //get isp owner id
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  // isLoading state
+  //get user id
+  const user = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser?.user?.id
+  );
+
+  // reseller id
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller.id
+  );
+
+  // support add state
+  const [support, setSupport] = useState("");
+  const [description, setDescription] = useState("");
+
+  // is Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  //single support update data find
-  const singleSupport = supportAllData.find((support) => support.id === editId);
-
-  // netFee support handler
-  const handleSupportEdit = (e) => {
-    let value = e.target.value;
-    let name = e.target.name;
-    setSupportEditData({ ...supportEditData, [name]: value });
-  };
-
-  // update netFee support submit handle
-  const netFeeSupportUpdate = (e) => {
+  // support submit handler
+  const resellerSupportSubmitHandler = (e) => {
     e.preventDefault();
+    if (!support) {
+      toast.error(t("pleaseSelectYourSupportType"));
+    }
     if (!description) {
       toast.error(t("pleaseInputYourComment"));
     }
-    if (!support) {
-      toast.error(t("pleaseSelectYourSupporType"));
-    }
-    updateNetFeeSupportData(dispatch, setIsLoading, supportEditData);
+    const data = {
+      support,
+      description,
+      ispOwner,
+      user,
+      reseller: resellerId,
+    };
+    postResellerNetFeeSupport(dispatch, setIsLoading, data);
   };
-
-  useEffect(() => {
-    if (singleSupport) {
-      setSupportEditData(singleSupport);
-    }
-  }, [singleSupport]);
-
-  const { support, description } = supportEditData;
 
   return (
     <>
       <div
         className="modal fade"
-        id="supportEdit"
+        id="resellerSupportAdd"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -64,7 +63,7 @@ const SupportEdit = ({ editId }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {t("netFeeSupportUpdate")}
+                {t("netFeeSupportAdd")}
               </h5>
               <button
                 type="button"
@@ -74,36 +73,27 @@ const SupportEdit = ({ editId }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={netFeeSupportUpdate}>
+              <form onSubmit={resellerSupportSubmitHandler}>
                 <div className="form-group px-2">
                   <label>{t("pleaseSelectYourSupporType")}</label>
                   <select
-                    style={{ width: "100%" }}
-                    class="form-select mw-100"
+                    onChange={(e) => setSupport(e.target.value)}
+                    className="form-select mw-100"
                     aria-label="Default select example"
-                    name="support"
-                    onChange={handleSupportEdit}
                   >
-                    <option selected={support === "complain"} value="complain">
-                      {t("complain")}
-                    </option>
-                    <option selected={support === "feature"} value="feature">
-                      {t("featureRequest")}
-                    </option>
-                    <option selected={support === "support"} value="support">
-                      {t("support")}
-                    </option>
+                    <option value="">{t("select")}</option>
+                    <option value="complain">{t("complain")}</option>
+                    <option value="feature">{t("featureRequest")}</option>
+                    <option value="support">{t("support")}</option>
                   </select>
                 </div>
                 <div className="form-group px-2 mt-3">
                   <label>{t("pleaseInputYourComment")}</label>
                   <textarea
+                    onChange={(e) => setDescription(e.target.value)}
                     className="form-control"
                     id="exampleFormControlTextarea1"
                     rows="3"
-                    name="description"
-                    value={description}
-                    onChange={handleSupportEdit}
                   ></textarea>
                 </div>
                 <div className="modal-footer bg-whitesmoke br">
@@ -132,4 +122,4 @@ const SupportEdit = ({ editId }) => {
   );
 };
 
-export default SupportEdit;
+export default ResellerSupportAdd;

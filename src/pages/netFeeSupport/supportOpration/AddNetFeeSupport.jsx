@@ -20,7 +20,7 @@ const AddNetFeeSupport = () => {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  // add netfee support state
+  // add netFee support state
   const [support, setSupport] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ const AddNetFeeSupport = () => {
   const netFeeSupportSubmit = (e) => {
     e.preventDefault();
     if (!support) {
-      toast.error(t("pleaseSelectYourSupporType"));
+      toast.error(t("pleaseSelectYourSupportType"));
     }
     if (!description) {
       toast.error(t("pleaseInputYourComment"));
