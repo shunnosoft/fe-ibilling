@@ -96,6 +96,7 @@ import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
 import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
 import ResellerCollectorCustomerSupportTicket from "./reseller/supportTicket/CollectorSupportTicket";
+import ResellerNetFeeSupport from "./reseller/netFeeSupport/NetFeeSupport";
 import NetFeeSupport from "./pages/netFeeSupport/NetFeeSupport";
 import Supports from "./admin/netFeeSupport/Supports";
 
@@ -243,6 +244,10 @@ function App() {
                     )
                   )
                 }
+              />
+              <Route
+                path="reseller/netFee/support"
+                element={userRole === "reseller" && <ResellerNetFeeSupport />}
               />
 
               <Route path="*" element={<NotFound />} />

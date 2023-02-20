@@ -1200,42 +1200,39 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
-                          {/* {userRole !== "collector" &&
-                            userRole !== "reseller" && (
-                              <NavLink
-                                key={12}
-                                to={
-                                  userRole === "reseller"
-                                    ? "/reseller/netFee/support"
-                                    : "/netFee/support"
-                                }
-                                className={(navInfo) =>
-                                  navInfo.isActive ? activeClass.active : ""
-                                }
-                              >
-                                <FontColor>
-                                  <li
-                                    className="sidebarItems"
-                                    id={
-                                      window.location.pathname ===
-                                      (userRole === "reseller" &&
-                                      userRole !== "collector"
-                                        ? "/reseller/netFee/support"
-                                        : "/netFee/support")
-                                        ? "active"
-                                        : ""
-                                    }
-                                  >
-                                    <div className="sidebarIcon">
-                                      {<Award />}
-                                    </div>
-                                    <span className="sidebarLinksName">
-                                      {t("netFeeSupport")}
-                                    </span>
-                                  </li>
-                                </FontColor>
-                              </NavLink>
-                            )} */}
+                          {userRole !== "collector" && (
+                            <NavLink
+                              key={12}
+                              to={
+                                userRole === "reseller"
+                                  ? "/reseller/netFee/support"
+                                  : "/netFee/support"
+                              }
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    (userRole === "reseller" &&
+                                    userRole !== "collector"
+                                      ? "/reseller/netFee/support"
+                                      : "/netFee/support")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">{<Award />}</div>
+                                  <span className="sidebarLinksName">
+                                    {t("netFeeSupport")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          )}
                         </Accordion.Body>
                       </Accordion.Item>
                     </>
