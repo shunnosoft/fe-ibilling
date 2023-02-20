@@ -6,20 +6,25 @@ const useISPowner = () => {
     (state) => state.persistedReducer.auth.ispOwnerData
   );
 
-  // get bp setting
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData?.bpSettings
-  );
-
   const [ispOwnerId, setIspOwnerId] = useState(ispOwner.id);
-  const [hasMikrotik, setHasMikrotik] = useState(bpSettings?.hasMikrotik);
+  const [hasMikrotik, setHasMikrotik] = useState(
+    ispOwner.bpSettings?.hasMikrotik
+  );
+  const [hasReseller, setHasReseller] = useState(
+    ispOwner.bpSettings?.hasReseller
+  );
+  const [companyName, setCompanyName] = useState(ispOwner?.company);
 
   useEffect(() => {
-    setIspOwnerId(ispOwner.id);
-    setHasMikrotik(bpSettings.hasMikrotik);
+    if (ispOwner) {
+      setIspOwnerId(ispOwner.id);
+      setHasMikrotik(ispOwner.bpSettings?.hasMikrotik);
+      setHasReseller(ispOwner.bpSettings?.hasReseller);
+      setCompanyName(ispOwner.company);
+    }
   }, [ispOwner]);
 
-  return { ispOwnerId, hasMikrotik };
+  return { ispOwnerId, hasMikrotik, hasReseller, companyName };
 };
 
 export default useISPowner;

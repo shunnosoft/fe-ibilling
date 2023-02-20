@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,14 +9,27 @@ import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
-import moment from "moment";
 import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import getName from "../../../utils/getLocationName";
+
+//custom hooks
+import useISPowner from "../../../hooks/useISPOwner";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
+
 export default function AddStaticCustomer() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { ispOwnerId } = useISPowner();
 
   // get user bp setting
   const bpSettings = useSelector(
@@ -24,12 +37,12 @@ export default function AddStaticCustomer() {
   );
 
   // get role from redux
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+  // const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get Isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  // const ispOwnerId = useSelector(
+  //   (state) => state.persistedReducer.auth?.ispOwnerId
+  // );
 
   const userType = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
@@ -58,6 +71,13 @@ export default function AddStaticCustomer() {
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
+
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
+
   // customer validator
   const customerValidator = Yup.object({
     name: Yup.string().required(t("writeCustomerName")),
@@ -203,7 +223,59 @@ export default function AddStaticCustomer() {
         maxLimit: `${maxUpLimit}/${maxDownLimit}`,
       };
     }
+
+    if (
+      divisionalArea.district ||
+      divisionalArea.division ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      //if  exist add the data
+      if (divisionName) sendingData.division = divisionName;
+      if (districtName) sendingData.district = districtName;
+      if (thanaName) sendingData.thana = thanaName;
+    }
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
+  };
+
+  //divisional area formula
+  const divisionalAreaFormData = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
+  // this function control the division district and thana change input
+  const onDivisionalAreaChange = ({ target }) => {
+    const { name, value } = target;
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
+    });
   };
 
   return (
@@ -250,11 +322,11 @@ export default function AddStaticCustomer() {
                   customerHandler(values, resetForm);
                 }}
               >
-                {(formik) => (
+                {() => (
                   <Form>
-                    <div className="row">
+                    <div className="row align-items-center">
                       {bpSettings?.hasMikrotik && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div className="col-lg-4 col-md-4 col-xs-6 mb-3">
                           <label className="form-control-label changeLabelFontColor">
                             {t("selectMikrotik")}{" "}
                           </label>
@@ -315,8 +387,7 @@ export default function AddStaticCustomer() {
                             : ""}
                         </select>
                       </div>
-                    </div>
-                    <div className="row mt-4">
+
                       {userType === "simple-queue" && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
@@ -327,24 +398,25 @@ export default function AddStaticCustomer() {
                         </div>
                       )}
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {userType === "simple-queue" && (
+                      {userType === "simple-queue" && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
                             label={t("ipAddress")}
                             name="target"
                           />
-                        )}
-                        {userType === "firewall-queue" && (
-                          <>
-                            <FtextField
-                              type="text"
-                              label={t("ipAddress")}
-                              name="ipAddress"
-                            />
-                          </>
-                        )}
-                      </div>
+                        </div>
+                      )}
+                      {userType === "firewall-queue" && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <FtextField
+                            type="text"
+                            label={t("ipAddress")}
+                            name="ipAddress"
+                          />
+                        </div>
+                      )}
+
                       {bpSettings?.hasMikrotik &&
                         userType === "firewall-queue" && (
                           <div className="col-lg-4 col-md-4 col-xs-6">
@@ -373,36 +445,32 @@ export default function AddStaticCustomer() {
                           </div>
                         )}
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {bpSettings?.hasMikrotik &&
-                          userType === "simple-queue" && (
-                            <>
-                              <label className="form-control-label changeLabelFontColor">
-                                {t("uploadPackge")}{" "}
-                              </label>
-                              <select
-                                name="upPackage"
-                                className="form-select mw-100 mt-0"
-                                aria-label="Default select example"
-                                onChange={selectMikrotikPackage}
-                              >
-                                <option value={"0"}>...</option>
-                                {ppPackage &&
-                                  ppPackage?.map(
-                                    (val, key) =>
-                                      val.packageType === "queue" && (
-                                        <option key={key} value={val.id}>
-                                          {val.name}
-                                        </option>
-                                      )
-                                  )}
-                              </select>
-                            </>
-                          )}
-                      </div>
-                    </div>
+                      {bpSettings?.hasMikrotik &&
+                        userType === "simple-queue" && (
+                          <div className="col-lg-4 col-md-4 col-xs-6">
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("uploadPackge")}{" "}
+                            </label>
+                            <select
+                              name="upPackage"
+                              className="form-select mw-100 mt-0"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value={"0"}>...</option>
+                              {ppPackage &&
+                                ppPackage?.map(
+                                  (val, key) =>
+                                    val.packageType === "queue" && (
+                                      <option key={key} value={val.id}>
+                                        {val.name}
+                                      </option>
+                                    )
+                                )}
+                            </select>
+                          </div>
+                        )}
 
-                    <div className="row">
                       {bpSettings?.hasMikrotik &&
                         userType === "simple-queue" && (
                           <div className="col-lg-4 col-md-4 col-xs-6">
@@ -472,8 +540,7 @@ export default function AddStaticCustomer() {
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <FtextField type="text" label={t("NIDno")} name="nid" />
                       </div>
-                    </div>
-                    <div className="row">
+
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <FtextField type="text" label={t("name")} name="name" />
                       </div>
@@ -491,6 +558,29 @@ export default function AddStaticCustomer() {
                           name="address"
                         />
                       </div>
+
+                      {divisionalAreaFormData.map((item) => (
+                        <div className="col-lg-4 col-md-4 col-xs-6 mb-3">
+                          <label className="form-control-label changeLabelFontColor">
+                            {item.text}
+                            {/* <span className="text-danger">*</span> */}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name={item.name}
+                            id={item.id}
+                            onChange={onDivisionalAreaChange}
+                            value={item.value}
+                          >
+                            <option value="">...</option>
+                            {item.data.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <FtextField
                           type="text"

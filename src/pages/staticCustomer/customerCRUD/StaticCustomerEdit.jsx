@@ -13,6 +13,17 @@ import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 
+import getName from "../../../utils/getLocationName";
+
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
+
 export default function StaticCustomerEdit({ single }) {
   const { t } = useTranslation();
   const customer = useSelector((state) =>
@@ -68,6 +79,12 @@ export default function StaticCustomerEdit({ single }) {
   const [promiseDate, setPromiseDate] = useState(null);
   const [connectionDate, setConnectionDate] = useState("");
 
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
+
   // fix promise date
   let mxDate = new Date(customer?.billingCycle);
   mxDate.setDate(mxDate.getDate() + parseInt(20));
@@ -94,6 +111,32 @@ export default function StaticCustomerEdit({ single }) {
           return setArea(item);
         }
       });
+    });
+
+    const divisionalInfo = {};
+    if (customer?.division) {
+      const division = divisions.find(
+        (item) => item.name === customer.division
+      );
+      divisionalInfo.division = division.id;
+    }
+    if (customer?.district) {
+      const district = districts.find(
+        (item) => item.name === customer.district
+      );
+      divisionalInfo.district = district.id;
+    }
+    if (customer?.thana) {
+      const findThana = thana.find(
+        (item) =>
+          item.name === customer.thana &&
+          item.district_id === divisionalInfo.district
+      );
+      divisionalInfo.thana = findThana.id;
+    }
+    setDivisionalArea({
+      ...divisionalArea,
+      ...divisionalInfo,
     });
   }, [customer]);
 
@@ -200,6 +243,43 @@ export default function StaticCustomerEdit({ single }) {
       }
     }
   };
+  //divisional area formula
+  const divisionalAreaFormData = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
+  // this function control the division district and thana change input
+  const onDivisionalAreaChange = ({ target }) => {
+    const { name, value } = target;
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
+    });
+  };
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
@@ -265,6 +345,22 @@ export default function StaticCustomerEdit({ single }) {
     } else if (status === "inactive") {
       sendingData.status = status;
     }
+
+    if (
+      divisionalArea.district ||
+      divisionalArea.division ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      //if  exist add the data
+      if (divisionName) sendingData.division = divisionName;
+      if (districtName) sendingData.district = districtName;
+      if (thanaName) sendingData.thana = thanaName;
+    }
+
+    // return;
     updateStaticCustomerApi(customer.id, dispatch, sendingData, setIsloading);
   };
   return (
@@ -584,6 +680,27 @@ export default function StaticCustomerEdit({ single }) {
                           }
                         />
                       </div>
+                      {divisionalAreaFormData.map((item) => (
+                        <div className="static_edit_item">
+                          <label className="form-control-label changeLabelFontColor">
+                            {item.text}
+                            {/* <span className="text-danger">*</span> */}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name={item.name}
+                            id={item.id}
+                            onChange={onDivisionalAreaChange}
+                            value={item.value}
+                          >
+                            <option value="">...</option>
+                            {item.data.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
                       <div className="static_edit_item">
                         <FtextField
                           type="text"

@@ -13,6 +13,19 @@ import moment from "moment";
 import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
 
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import getName from "../../../utils/getLocationName";
+
+//custom hooks
+import useISPowner from "../../../hooks/useISPOwner";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
+
 export default function AddStaticCustomer() {
   const { t } = useTranslation();
   // get user bp setting
@@ -56,6 +69,13 @@ export default function AddStaticCustomer() {
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
+
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
+
   // customer validator
   const customerValidator = Yup.object({
     name: Yup.string().required(t("writeCustomerName")),
@@ -188,7 +208,57 @@ export default function AddStaticCustomer() {
       };
     }
 
+    if (
+      divisionalArea.district ||
+      divisionalArea.division ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      //if  exist add the data
+      if (divisionName) sendingData.division = divisionName;
+      if (districtName) sendingData.district = districtName;
+      if (thanaName) sendingData.thana = thanaName;
+    }
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
+  };
+  //divisional area formula
+  const divisionalAreaFormData = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
+  // this function control the division district and thana change input
+  const onDivisionalAreaChange = ({ target }) => {
+    const { name, value } = target;
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
+    });
   };
 
   useEffect(() => {
@@ -455,6 +525,27 @@ export default function AddStaticCustomer() {
                             name="address"
                           />
                         </div>
+                        {divisionalAreaFormData.map((item) => (
+                          <div className="col-lg-4 col-md-4 col-xs-6 mb-3">
+                            <label className="form-control-label changeLabelFontColor">
+                              {item.text}
+                              {/* <span className="text-danger">*</span> */}
+                            </label>
+                            <select
+                              className="form-select mw-100 mt-0"
+                              aria-label="Default select example"
+                              name={item.name}
+                              id={item.id}
+                              onChange={onDivisionalAreaChange}
+                              value={item.value}
+                            >
+                              <option value="">...</option>
+                              {item.data.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        ))}
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"

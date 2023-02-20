@@ -97,30 +97,31 @@ import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
 import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
 import ResellerCollectorCustomerSupportTicket from "./reseller/supportTicket/CollectorSupportTicket";
 import NetFeeSupport from "./pages/netFeeSupport/NetFeeSupport";
-
+import useCurrentUser from "./hooks/useCurrentUser";
+import useISPowner from "./hooks/useISPOwner";
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
+
   const [theme, setTheme] = useState("light");
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
+  const { userRole, permissions } = useCurrentUser();
+  const { ispOwnerId, hasMikrotik, hasReseller } = useISPowner();
+
+  // const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+  // const ispOwnerId = useSelector(
+  //   (state) => state.persistedReducer.auth?.ispOwnerId
+  // );
+  // const bpSettings = useSelector(
+  //   (state) => state.persistedReducer.auth?.userData?.bpSettings
+  // );
 
   // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
+  // const permission = useSelector(
+  //   (state) => state.persistedReducer.auth.userData.permissions
+  // );
 
-  //get most update user form api call
-  const usr = useSelector((state) => state.user.user);
-
-  // const hasReseller= true
   const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (userRole === "ispOwner" || userRole === "manager")
@@ -439,7 +440,7 @@ function App() {
             <Route
               path="mikrotik"
               element={
-                userRole === "ispOwner" && user && bpSettings?.hasMikrotik ? (
+                userRole === "ispOwner" && user && hasMikrotik ? (
                   <Mikrotik />
                 ) : (
                   <Navigate to={"/home"} />
@@ -450,7 +451,7 @@ function App() {
               path="package"
               element={
                 user &&
-                !bpSettings?.hasMikrotik &&
+                !hasMikrotik &&
                 (userRole === "ispOwner" || userRole === "manager") ? (
                   <Package />
                 ) : (
@@ -463,7 +464,7 @@ function App() {
               element={
                 user &&
                 (userRole === "ispOwner" ||
-                  (userRole === "manager" && permission?.readMessageLog)) ? (
+                  (userRole === "manager" && permissions?.readMessageLog)) ? (
                   <MessageLog />
                 ) : (
                   <Navigate to={"/home"} />
@@ -541,7 +542,7 @@ function App() {
               <Route
                 path="recharge"
                 element={
-                  bpSettings?.hasReseller ? (
+                  hasReseller ? (
                     <RechargeHistoryofReseller />
                   ) : (
                     <Navigate to={"/"}></Navigate>
@@ -552,7 +553,7 @@ function App() {
               <Route
                 path="reseller"
                 element={
-                  bpSettings?.hasReseller && userRole === "ispOwner" ? (
+                  hasReseller && userRole === "ispOwner" ? (
                     <Reseller />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
@@ -610,7 +611,7 @@ function App() {
             <Route
               path="/mikrotik/:ispOwner/:mikrotikId"
               element={
-                bpSettings?.hasMikrotik ? (
+                hasMikrotik ? (
                   <PrivateRoute user={user}>
                     <ConfigMikrotik />
                   </PrivateRoute>

@@ -17,12 +17,18 @@ import { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 
-import { divisions } from "../../../bdAddress/bd-divisions.json";
-import { districts } from "../../../bdAddress/bd-districts.json";
-import { thana } from "../../../bdAddress/bd-upazilas.json";
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import getName from "../../../utils/getLocationName";
 
 //custom hook
 import useISPowner from "../../../hooks/useISPOwner";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
 
 export default function CustomerEdit(props) {
   const { t } = useTranslation();
@@ -203,11 +209,6 @@ export default function CustomerEdit(props) {
     setPackageId(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
-  };
-
-  //for select divisional area name
-  const getName = (array, matchValue) => {
-    return array.find((item) => item.id === matchValue);
   };
 
   // select subArea

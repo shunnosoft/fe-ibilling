@@ -14,23 +14,30 @@ import {
 } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
+import getName from "../../../utils/getLocationName";
+import useISPowner from "../../../hooks/useISPOwner";
 
-import { divisions } from "../../../bdAddress/bd-divisions.json";
-import { districts } from "../../../bdAddress/bd-districts.json";
-import { thana } from "../../../bdAddress/bd-upazilas.json";
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
 
 export default function CustomerModal() {
   const { t } = useTranslation();
-
+  const { hasMikrotik, ispOwnerId } = useISPowner();
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   // const packages= useSelector(state=>state.package.packages)
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  // const ispOwnerId = useSelector(
+  //   (state) => state.persistedReducer.auth?.ispOwnerId
+  // );
   const area = useSelector((state) => state?.area?.area);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
@@ -39,7 +46,7 @@ export default function CustomerModal() {
     (state) => state.persistedReducer.auth.userData.bpSettings?.genCustomerId
   );
   const ppPackage = useSelector((state) =>
-    bpSettings?.hasMikrotik
+    hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
@@ -85,11 +92,6 @@ export default function CustomerModal() {
     Pcomment: Yup.string(),
     // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
-
-  //for select divisional area name
-  const getName = (array, matchValue) => {
-    return array.find((item) => item.id === matchValue);
-  };
 
   // select subArea
   // const selectSubArea = (data) => {
@@ -304,10 +306,10 @@ export default function CustomerModal() {
                 }}
                 enableReinitialize
               >
-                {(formik) => (
+                {() => (
                   <Form>
                     <div className="mikrotikSection">
-                      {bpSettings?.hasMikrotik ? (
+                      {hasMikrotik && (
                         <div>
                           <label className="form-control-label changeLabelFontColor">
                             {t("selectMikrotik")}{" "}
@@ -328,8 +330,6 @@ export default function CustomerModal() {
                                 ))}
                           </select>
                         </div>
-                      ) : (
-                        ""
                       )}
 
                       {/* pppoe package */}
@@ -484,7 +484,7 @@ export default function CustomerModal() {
                         <div className="mb-2">
                           <label className="form-control-label changeLabelFontColor">
                             {item.text}
-                            <span className="text-danger">*</span>
+                            {/* <span className="text-danger">*</span> */}
                           </label>
                           <select
                             className="form-select mw-100 mt-0"

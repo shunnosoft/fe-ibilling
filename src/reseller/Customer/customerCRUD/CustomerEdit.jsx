@@ -12,18 +12,30 @@ import { editCustomer } from "../../../features/apiCallReseller";
 import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
-import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+
+import getName from "../../../utils/getLocationName";
+import useISPowner from "../../../hooks/useISPOwner";
+
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
+
 export default function CustomerEdit({ single }) {
   const { t } = useTranslation();
-
+  const { ispOwnerId } = useISPowner();
   const customer = useSelector((state) => state?.customer?.customer);
 
   const data = customer.find((item) => item.id === single);
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.ispOwner
-  );
+  // const ispOwnerId = useSelector(
+  //   (state) => state.persistedReducer.auth?.userData?.ispOwner
+  // );
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -74,6 +86,12 @@ export default function CustomerEdit({ single }) {
   // initial package rate
   const [dataPackageRate, setDataPackageRate] = useState();
 
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
+
   // initial fix package rate
   const [fixPackageRate, setFixPackageRate] = useState();
 
@@ -91,9 +109,6 @@ export default function CustomerEdit({ single }) {
     if (!bpSetting) {
       setppPackage(withOutMtkPackage);
     }
-  }, [Getmikrotik, area, data, dispatch, ispOwnerId, ppPackage]);
-
-  useEffect(() => {
     const IDs = {
       ispOwner: ispOwnerId,
       mikrotikId: data?.mikrotik,
@@ -109,7 +124,47 @@ export default function CustomerEdit({ single }) {
       }
     };
     data?.mikrotik && fetchPac();
-  }, [ispOwnerId, data]);
+    //select customer district,division and thana for sync with state
+    const divisionalInfo = {};
+    if (data?.division) {
+      const division = divisions.find((item) => item.name === data.division);
+      divisionalInfo.division = division.id;
+    }
+    if (data?.district) {
+      const district = districts.find((item) => item.name === data.district);
+      divisionalInfo.district = district.id;
+    }
+    if (data?.thana) {
+      const findThana = thana.find(
+        (item) =>
+          item.name === data.thana &&
+          item.district_id === divisionalInfo.district
+      );
+      divisionalInfo.thana = findThana.id;
+    }
+    setDivisionalArea({
+      ...divisionalArea,
+      ...divisionalInfo,
+    });
+  }, [Getmikrotik, data, ispOwnerId]);
+
+  // useEffect(() => {
+  //   const IDs = {
+  //     ispOwner: ispOwnerId,
+  //     mikrotikId: data?.mikrotik,
+  //   };
+  //   const fetchPac = async () => {
+  //     try {
+  //       const res = await apiLink.get(
+  //         `/mikrotik/ppp/package/${IDs.mikrotikId}`
+  //       );
+  //       setppPackage(res.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   data?.mikrotik && fetchPac();
+  // }, [ispOwnerId, data]);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -197,7 +252,59 @@ export default function CustomerEdit({ single }) {
       mainData.mikrotik = data?.mikrotik;
       mainData.autoDisable = autoDisable;
     }
+
+    if (
+      divisionalArea.district ||
+      divisionalArea.division ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      //if  exist add the data
+      if (divisionName) mainData.division = divisionName;
+      if (districtName) mainData.district = districtName;
+      if (thanaName) mainData.thana = thanaName;
+    }
+
     editCustomer(dispatch, mainData, setIsloading);
+  };
+  //divisional area formula
+  const divisionalAreaFormData = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
+  // this function control the division district and thana change input
+  const onDivisionalAreaChange = ({ target }) => {
+    const { name, value } = target;
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
+    });
   };
 
   return (
@@ -400,6 +507,31 @@ export default function CustomerEdit({ single }) {
                       />
                       <FtextField type="text" label={t("email")} name="email" />
                     </div>
+                    <div className="displayGrid3">
+                      {divisionalAreaFormData.map((item) => (
+                        <div className="mb-2">
+                          <label className="form-control-label changeLabelFontColor">
+                            {item.text}
+                            <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name={item.name}
+                            id={item.id}
+                            disabled={!mikrotikPackage}
+                            onChange={onDivisionalAreaChange}
+                            value={item.value}
+                          >
+                            <option value="">...</option>
+                            {item.data.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="newDisplay">
                       {status !== "expired" && (
                         <>
