@@ -109,21 +109,22 @@ function App() {
   const [theme, setTheme] = useState("light");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
-  const { userRole, permissions } = useCurrentUser();
-  const { ispOwnerId, hasMikrotik, hasReseller } = useISPowner();
 
-  // const userRole = useSelector((state) => state.persistedReducer.auth?.role);
-  // const ispOwnerId = useSelector(
-  //   (state) => state.persistedReducer.auth?.ispOwnerId
-  // );
-  // const bpSettings = useSelector(
-  //   (state) => state.persistedReducer.auth?.userData?.bpSettings
-  // );
+  // const { userRole, permissions } = useCurrentUser();
+  // const { ispOwnerId, hasMikrotik, hasReseller } = useISPowner();
+
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
 
   // get user permission
-  // const permission = useSelector(
-  //   (state) => state.persistedReducer.auth.userData.permissions
-  // );
+  const permissions = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
 
   const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
 
@@ -468,7 +469,7 @@ function App() {
             <Route
               path="mikrotik"
               element={
-                userRole === "ispOwner" && user && hasMikrotik ? (
+                userRole === "ispOwner" && user && bpSettings?.hasMikrotik ? (
                   <Mikrotik />
                 ) : (
                   <Navigate to={"/home"} />
@@ -479,7 +480,7 @@ function App() {
               path="package"
               element={
                 user &&
-                !hasMikrotik &&
+                !bpSettings?.hasMikrotik &&
                 (userRole === "ispOwner" || userRole === "manager") ? (
                   <Package />
                 ) : (
@@ -570,7 +571,7 @@ function App() {
               <Route
                 path="recharge"
                 element={
-                  hasReseller ? (
+                  bpSettings?.hasReseller ? (
                     <RechargeHistoryofReseller />
                   ) : (
                     <Navigate to={"/"}></Navigate>
@@ -581,7 +582,7 @@ function App() {
               <Route
                 path="reseller"
                 element={
-                  hasReseller && userRole === "ispOwner" ? (
+                  bpSettings?.hasReseller && userRole === "ispOwner" ? (
                     <Reseller />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
@@ -639,7 +640,7 @@ function App() {
             <Route
               path="/mikrotik/:ispOwner/:mikrotikId"
               element={
-                hasMikrotik ? (
+                bpSettings?.hasMikrotik ? (
                   <PrivateRoute user={user}>
                     <ConfigMikrotik />
                   </PrivateRoute>
