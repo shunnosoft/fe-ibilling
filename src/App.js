@@ -101,6 +101,7 @@ import NetFeeSupport from "./pages/netFeeSupport/NetFeeSupport";
 import useCurrentUser from "./hooks/useCurrentUser";
 import useISPowner from "./hooks/useISPOwner";
 import Supports from "./admin/netFeeSupport/Supports";
+import NetFeeIspOwnerSupport from "./admin/netFeeSupport/NetFeeIspOwnerSupport";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -303,6 +304,16 @@ function App() {
               path="/netfee"
               element={!user ? <Landing /> : <Navigate to={"/admin/support"} />}
             />
+            <Route
+              path="/netfee"
+              element={
+                !user ? (
+                  <Landing />
+                ) : (
+                  <Navigate to={"/admin/netFee/support/:ispOwnerId"} />
+                )
+              }
+            />
             {/* <Route path="staff/:staffId" element={<StaffSalary />} /> */}
 
             <Route path="/*" element={<PrivateOutlet />}>
@@ -314,6 +325,10 @@ function App() {
               <Route path="admin/all-comments" element={<AllComments />} />
               <Route path="admin/invoices" element={<AllInvoices />} />
               <Route path="admin/support" element={<Supports />} />
+              <Route
+                path="admin/netFee/support/:ispOwnerId"
+                element={<NetFeeIspOwnerSupport />}
+              />
 
               <Route path="*" element={<NotFound />} />
             </Route>

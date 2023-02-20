@@ -1340,7 +1340,7 @@ export default function Sidebar() {
                           : ""
                       }
                     >
-                      <div className="sidebarIcon">{<Bag />}</div>
+                      <div className="sidebarIcon">{<Award />}</div>
                       <span className="sidebarLinksName">Support</span>
                     </li>
                   </FontColor>
