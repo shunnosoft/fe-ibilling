@@ -490,8 +490,8 @@ export default function Home() {
                   </div>
                 )}
 
-                <div className="d-flex justify-content-between">
-                  <div className="customer-status-amount d-flex align-items-center">
+                {/* <div className="d-flex justify-content-between"> */}
+                {/* <div className="customer-status-amount d-flex align-items-center">
                     <p>
                       {t("active")}{" "}
                       {FormatNumber(customerStat.totalActiveAmount)}
@@ -507,30 +507,30 @@ export default function Home() {
                       {FormatNumber(customerStat.totalExpiredAmount)}
                     </p>
                     &nbsp;&nbsp;
+                  </div> */}
+                <div className="d-flex justify-content-end">
+                  <div>
+                    <ReactDatePicker
+                      selected={filterDate}
+                      className="form-control shadow-none"
+                      onChange={(date) => setFilterDate(date)}
+                      dateFormat="MMM/yyyy"
+                      showMonthYearPicker
+                      showFullMonthYearPicker
+                      endDate={"2014/04/08"}
+                      placeholderText={t("filterDashboard")}
+                      maxDate={new Date()}
+                      minDate={new Date(ispOwnerData?.createdAt)}
+                    />
                   </div>
-                  <div className="d-flex">
-                    <div>
-                      <ReactDatePicker
-                        selected={filterDate}
-                        className="form-control shadow-none"
-                        onChange={(date) => setFilterDate(date)}
-                        dateFormat="MMM/yyyy"
-                        showMonthYearPicker
-                        showFullMonthYearPicker
-                        endDate={"2014/04/08"}
-                        placeholderText={t("filterDashboard")}
-                        maxDate={new Date()}
-                        minDate={new Date(ispOwnerData?.createdAt)}
-                      />
-                    </div>
-                    <button
-                      className="btn btn-primary w-140 ms-1"
-                      onClick={dashboardFilterController}
-                    >
-                      {isLoading ? <Loader /> : t("filter")}
-                    </button>
-                  </div>
+                  <button
+                    className="btn btn-primary w-140 ms-1"
+                    onClick={dashboardFilterController}
+                  >
+                    {isLoading ? <Loader /> : t("filter")}
+                  </button>
                 </div>
+                {/* </div> */}
               </div>
 
               <div className="col-md-3">

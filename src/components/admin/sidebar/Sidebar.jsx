@@ -33,6 +33,7 @@ import {
   Basket2Fill,
   CartFill,
   Bag,
+  Award,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1199,38 +1200,42 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
-                          <NavLink
-                            key={12}
-                            to={
-                              userRole === "reseller"
-                                ? "/reseller/netFee/support"
-                                : "/netFee/support"
-                            }
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname ===
-                                  (userRole === "reseller"
+                          {/* {userRole !== "collector" &&
+                            userRole !== "reseller" && (
+                              <NavLink
+                                key={12}
+                                to={
+                                  userRole === "reseller"
                                     ? "/reseller/netFee/support"
-                                    : "/netFee/support")
-                                    ? "active"
-                                    : ""
+                                    : "/netFee/support"
+                                }
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
                                 }
                               >
-                                <div className="sidebarIcon">
-                                  {<PersonDash />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("netFeeSupport")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      (userRole === "reseller" &&
+                                      userRole !== "collector"
+                                        ? "/reseller/netFee/support"
+                                        : "/netFee/support")
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<Award />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("netFeeSupport")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            )} */}
                         </Accordion.Body>
                       </Accordion.Item>
                     </>

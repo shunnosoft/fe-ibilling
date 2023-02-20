@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,9 +12,13 @@ import {
   addCustomer,
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
+
+import { divisions } from "../../../bdAddress/bd-divisions.json";
+import { districts } from "../../../bdAddress/bd-districts.json";
+import { thana } from "../../../bdAddress/bd-upazilas.json";
+
 export default function CustomerModal() {
   const { t } = useTranslation();
 
@@ -51,6 +55,12 @@ export default function CustomerModal() {
   const [billDate, setBillDate] = useState(new Date());
   const [connectionDate, setConnectionDate] = useState(new Date());
 
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
+
   // customer validator
   const customerValidator = Yup.object({
     // customerId: Yup.string(),
@@ -75,6 +85,11 @@ export default function CustomerModal() {
     Pcomment: Yup.string(),
     // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
+
+  //for select divisional area name
+  const getName = (array, matchValue) => {
+    return array.find((item) => item.id === matchValue);
+  };
 
   // select subArea
   // const selectSubArea = (data) => {
@@ -186,7 +201,60 @@ export default function CustomerModal() {
     if (!genCustomerId) {
       mainData.customerId = customerId;
     }
+
+    if (
+      divisionalArea.district ||
+      divisionalArea.division ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      //if  exist add the data
+      if (divisionName) mainData.division = divisionName;
+      if (districtName) mainData.district = districtName;
+      if (thanaName) mainData.thana = thanaName;
+    }
     addCustomer(dispatch, mainData, setIsloading, resetForm);
+  };
+
+  //divisional area formula
+  const divisionalAreaFormData = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
+
+  // this function control the division district and thana change input
+  const onDivisionalAreaChange = ({ target }) => {
+    const { name, value } = target;
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
+    });
   };
 
   return (
@@ -410,6 +478,29 @@ export default function CustomerModal() {
                         name="address"
                         disabled={!mikrotikPackage}
                       />
+                    </div>
+                    <div className="displayGrid3">
+                      {divisionalAreaFormData.map((item) => (
+                        <div className="mb-2">
+                          <label className="form-control-label changeLabelFontColor">
+                            {item.text}
+                            <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name={item.name}
+                            id={item.id}
+                            disabled={!mikrotikPackage}
+                            onChange={onDivisionalAreaChange}
+                          >
+                            <option value="">...</option>
+                            {item.data.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
                     </div>
                     <div className="displayGrid3">
                       <FtextField

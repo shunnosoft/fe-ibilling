@@ -19,20 +19,20 @@ export const collectorPermission = (
       isChecked: permission?.customerEdit,
       disabled: false,
     },
-    {
-      id: 3,
-      value: "customerActivate",
-      label: "গ্রাহক এক্টিভেট",
-      isChecked: permission?.customerActivate,
-      disabled: false,
-    },
-    {
-      id: 4,
-      value: "customerDeactivate",
-      label: "গ্রাহক ডিএক্টিভেট",
-      isChecked: permission?.customerDeactivate,
-      disabled: false,
-    },
+    // {
+    //   id: 3,
+    //   value: "customerActivate",
+    //   label: "গ্রাহক এক্টিভেট",
+    //   isChecked: permission?.customerActivate,
+    //   disabled: false,
+    // },
+    // {
+    //   id: 4,
+    //   value: "customerDeactivate",
+    //   label: "গ্রাহক ডিএক্টিভেট",
+    //   isChecked: permission?.customerDeactivate,
+    //   disabled: false,
+    // },
     {
       id: 5,
       value: "viewCustomerList",
@@ -97,17 +97,17 @@ export const collectorPermission = (
     //       ispOwnerPermission?.bulkAreaEdit &&
     //       managerPermission?.bulkAreaEdit),
     // },
-    // {
-    //   id: 13,
-    //   value: "bulkStatusEdit",
-    //   label: "বাল্ক স্ট্যাটাস এডিট",
-    //   isChecked: permission?.bulkStatusEdit,
-    //   disabled: !(role === "ispOwner"
-    //     ? ispOwnerPermission?.bulkStatusEdit
-    //     : role === "manager" &&
-    //       ispOwnerPermission?.bulkStatusEdit &&
-    //       managerPermission?.bulkStatusEdit),
-    // },
+    {
+      id: 13,
+      value: "bulkStatusEdit",
+      label: "বাল্ক স্ট্যাটাস এডিট",
+      isChecked: permission?.bulkStatusEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkStatusEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkStatusEdit &&
+          managerPermission?.bulkStatusEdit),
+    },
     // {
     //   id: 14,
     //   value: "bulkBillingCycleEdit",
@@ -181,20 +181,20 @@ export const collectorPermission = (
       isChecked: permission?.customerEdit,
       disabled: false,
     },
-    {
-      id: 3,
-      value: "customerActivate",
-      label: "Customer Activate",
-      isChecked: permission?.customerActivate,
-      disabled: false,
-    },
-    {
-      id: 4,
-      value: "customerDeactivate",
-      label: "Customer Deactivate",
-      isChecked: permission?.customerDeactivate,
-      disabled: false,
-    },
+    // {
+    //   id: 3,
+    //   value: "customerActivate",
+    //   label: "Customer Activate",
+    //   isChecked: permission?.customerActivate,
+    //   disabled: false,
+    // },
+    // {
+    //   id: 4,
+    //   value: "customerDeactivate",
+    //   label: "Customer Deactivate",
+    //   isChecked: permission?.customerDeactivate,
+    //   disabled: false,
+    // },
     {
       id: 5,
       value: "viewCustomerList",
@@ -259,17 +259,17 @@ export const collectorPermission = (
     //       managerPermission?.bulkAreaEdit &&
     //       ispOwnerPermission?.bulkAreaEdit),
     // },
-    // {
-    //   id: 13,
-    //   value: "bulkStatusEdit",
-    //   label: "Bulk Status Edit",
-    //   isChecked: permission?.bulkStatusEdit,
-    //   disabled: !(role === "ispOwner"
-    //     ? ispOwnerPermission?.bulkStatusEdit
-    //     : role === "manager" &&
-    //       ispOwnerPermission?.bulkStatusEdit &&
-    //       managerPermission?.bulkStatusEdit),
-    // },
+    {
+      id: 13,
+      value: "bulkStatusEdit",
+      label: "Bulk Status Edit",
+      isChecked: permission?.bulkStatusEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkStatusEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkStatusEdit &&
+          managerPermission?.bulkStatusEdit),
+    },
     // {
     //   id: 14,
     //   value: "bulkBillingCycleEdit",

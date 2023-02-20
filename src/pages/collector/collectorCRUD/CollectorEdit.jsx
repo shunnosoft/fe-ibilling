@@ -41,7 +41,7 @@ export default function CollectorEdit({ collectorId }) {
   );
 
   const single = collector.find((val) => val.id === collectorId);
-  console.log(single?.permissions);
+
   const area = useSelector((state) => state?.area?.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

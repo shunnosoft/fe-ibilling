@@ -647,5 +647,8 @@
   "doYouWantToDeleteSupport": "আপনি সাপোর্ট মুছে দিতে চান?",
   "supportDelete": "নেটফি সাপোর্ট ডিলিট",
   "netFeeSupportAdd": "নেটফি সাপোর্ট অ্যাড",
-  "netFeeSupportUpdate": "নেটফি সাপোর্ট আপডেট"
+  "netFeeSupportUpdate": "নেটফি সাপোর্ট আপডেট",
+  "selectDivision": "বিভাগ সিলেক্ট করুন",
+  "selectDistrict": "জেলা সিলেক্ট করুন",
+  "selectThana": "উপজেলা সিলেক্ট করুন"
 }
