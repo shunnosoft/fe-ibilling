@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../../components/common/Loader";
-import { updateNetFeeSupportData } from "../../../features/apiCalls";
+import { updateAdminNetFeeSupport } from "../../../features/apiCallAdmin";
 
-const SupportEdit = ({ editId }) => {
-  const { t } = useTranslation();
-
+const AdminSupportUpdate = ({ editId }) => {
+  console.log(editId);
   const dispatch = useDispatch();
 
   // update support data state
   const [supportEditData, setSupportEditData] = useState("");
 
   // netFee support data
-  const supportAllData = useSelector(
-    (state) => state.netFeeSupport?.netFeeSupport
+  const supportData = useSelector(
+    (state) => state.adminNetFeeSupport?.adminSupport
   );
+  console.log(supportData);
 
   //single support update data find
-  const singleSupport = supportAllData.find((support) => support.id === editId);
+  const findSupport = supportData.find((support) => support.id === editId);
+  console.log(findSupport);
 
   // isLoading state
   const [isLoading, setIsLoading] = useState(false);
@@ -35,28 +35,29 @@ const SupportEdit = ({ editId }) => {
   const netFeeSupportUpdate = (e) => {
     e.preventDefault();
     if (!description) {
-      toast.error(t("pleaseInputYourComment"));
+      toast.error("Please Input Your Comment");
     }
     if (!support) {
-      toast.error(t("pleaseSelectYourSupporType"));
+      toast.error("Please Select Your Support Type");
     }
-    updateNetFeeSupportData(dispatch, setIsLoading, supportEditData);
+    console.log(supportEditData);
+    updateAdminNetFeeSupport(dispatch, setIsLoading, supportEditData);
   };
 
   useEffect(() => {
-    if (singleSupport) {
-      setSupportEditData(singleSupport);
+    if (findSupport) {
+      setSupportEditData(findSupport);
     }
-  }, [singleSupport]);
+  }, [findSupport]);
 
   const { support, description } = supportEditData;
 
   return (
-    <>
+    <div className="edit_invoice_list">
       <div
-        className="modal fade"
-        id="supportEdit"
-        tabindex="-1"
+        className="modal fade modal-dialog-scrollable "
+        id="adminSupportEditModal"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -64,7 +65,7 @@ const SupportEdit = ({ editId }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {t("netFeeSupportUpdate")}
+                <span className="text-success">Support Update</span>
               </h5>
               <button
                 type="button"
@@ -76,7 +77,7 @@ const SupportEdit = ({ editId }) => {
             <div className="modal-body">
               <form onSubmit={netFeeSupportUpdate}>
                 <div className="form-group px-2">
-                  <label>{t("pleaseSelectYourSupporType")}</label>
+                  <label>Select Your Suppor Type</label>
                   <select
                     style={{ width: "100%" }}
                     class="form-select mw-100"
@@ -85,18 +86,18 @@ const SupportEdit = ({ editId }) => {
                     onChange={handleSupportEdit}
                   >
                     <option selected={support === "complain"} value="complain">
-                      {t("complain")}
+                      Complain
                     </option>
                     <option selected={support === "feature"} value="feature">
-                      {t("featureRequest")}
+                      Feature Request
                     </option>
                     <option selected={support === "support"} value="support">
-                      {t("support")}
+                      Support
                     </option>
                   </select>
                 </div>
                 <div className="form-group px-2 mt-3">
-                  <label>{t("pleaseInputYourComment")}</label>
+                  <label>Input Your Comment</label>
                   <textarea
                     className="form-control"
                     id="exampleFormControlTextarea1"
@@ -113,14 +114,14 @@ const SupportEdit = ({ editId }) => {
                     className="btn btn-danger"
                     data-bs-dismiss="modal"
                   >
-                    {t("cancel")}
+                    Cancel
                   </button>
                   <button
                     disabled={isLoading}
                     type="submit"
                     className="btn btn-success"
                   >
-                    {isLoading ? <Loader /> : t("submit")}
+                    {isLoading ? <Loader /> : "Submit"}
                   </button>
                 </div>
               </form>
@@ -128,8 +129,8 @@ const SupportEdit = ({ editId }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default SupportEdit;
+export default AdminSupportUpdate;
