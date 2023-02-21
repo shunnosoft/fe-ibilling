@@ -651,5 +651,9 @@
   "selectDivision": "বিভাগ সিলেক্ট করুন",
   "selectDistrict": "জেলা সিলেক্ট করুন",
   "selectThana": "উপজেলা সিলেক্ট করুন",
-  "inactiveCustomer": "ইন-এক্টিভ ইনেক্তিভে"
+  "inactiveCustomer": "ইন-এক্টিভ গ্রাহক",
+  "customerBillType": "বিলের ধরণ",
+  "prepaid": "প্রিপেইড",
+  "postPaid": "পোস্টপেইড",
+  "select billing type": "বিলিং টাইপ সিলেক্ট করুন"
 }

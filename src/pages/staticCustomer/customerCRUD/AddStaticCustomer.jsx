@@ -21,6 +21,7 @@ import getName from "../../../utils/getLocationName";
 
 //custom hooks
 import useISPowner from "../../../hooks/useISPOwner";
+import SelectField from "../../../components/common/SelectField";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -92,6 +93,8 @@ export default function AddStaticCustomer() {
     address: Yup.string(),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
+    customerBillingType: Yup.string().required(t("select billing type")),
+
     // monthlyFee: Yup.number()
     //   .integer()
     //   .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
@@ -316,6 +319,7 @@ export default function AddStaticCustomer() {
                   referenceName: "",
                   referenceMobile: "",
                   customerId: "",
+                  customerBillingType: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -619,6 +623,19 @@ export default function AddStaticCustomer() {
                         />
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
+                        <SelectField
+                          label={t("customerBillType")}
+                          id="exampleSelect"
+                          name="customerBillingType"
+                          className="form-select mw-100 mt-0"
+                        >
+                          <option value="">{t("customerBillType")}</option>
+
+                          <option value="prepaid">{t("prepaid")}</option>
+                          <option value="postpaid">{t("postPaid")}</option>
+                        </SelectField>
+                      </div>
+                      <div className="col-lg-4 col-md-4 col-xs-6 mt-2">
                         <FtextField
                           type="text"
                           label={t("referenceName")}
@@ -626,7 +643,7 @@ export default function AddStaticCustomer() {
                           disabled={!mikrotikPackage}
                         />
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div className="col-lg-4 col-md-4 col-xs-6 mt-2">
                         <FtextField
                           type="text"
                           label={t("referenceMobile")}
