@@ -24,6 +24,12 @@ const ResellerSupportAdd = () => {
     (state) => state.persistedReducer.auth.currentUser.reseller.id
   );
 
+  // get support company name
+  const company = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData.company
+  );
+  console.log(company);
+
   // support add state
   const [support, setSupport] = useState("");
   const [description, setDescription] = useState("");
@@ -46,8 +52,12 @@ const ResellerSupportAdd = () => {
       ispOwner,
       user,
       reseller: resellerId,
+      company,
     };
+    console.log(data);
     postResellerNetFeeSupport(dispatch, setIsLoading, data);
+    support("");
+    description("");
   };
 
   return (
@@ -75,8 +85,9 @@ const ResellerSupportAdd = () => {
             <div className="modal-body">
               <form onSubmit={resellerSupportSubmitHandler}>
                 <div className="form-group px-2">
-                  <label>{t("pleaseSelectYourSupporType")}</label>
+                  <label>{t("pleaseSelectYourSupportType")}</label>
                   <select
+                    value={support}
                     onChange={(e) => setSupport(e.target.value)}
                     className="form-select mw-100"
                     aria-label="Default select example"
@@ -90,6 +101,7 @@ const ResellerSupportAdd = () => {
                 <div className="form-group px-2 mt-3">
                   <label>{t("pleaseInputYourComment")}</label>
                   <textarea
+                    value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="form-control"
                     id="exampleFormControlTextarea1"

@@ -20,6 +20,11 @@ const AddNetFeeSupport = () => {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // get support company name
+  const company = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData.company
+  );
+
   // add netFee support state
   const [support, setSupport] = useState("");
   const [description, setDescription] = useState("");
@@ -34,8 +39,10 @@ const AddNetFeeSupport = () => {
     if (!description) {
       toast.error(t("pleaseInputYourComment"));
     }
-    const data = { ispOwner, user, support, description };
+    const data = { ispOwner, user, support, description, company };
     addNetFeeSupport(dispatch, data, setIsLoading);
+    setSupport("");
+    setDescription("");
   };
 
   return (
@@ -63,8 +70,9 @@ const AddNetFeeSupport = () => {
             <div className="modal-body">
               <form onSubmit={netFeeSupportSubmit}>
                 <div className="form-group px-2">
-                  <label>{t("pleaseSelectYourSupporType")}</label>
+                  <label>{t("pleaseSelectYourSupportType")}</label>
                   <select
+                    value={support}
                     onChange={(e) => setSupport(e.target.value)}
                     className="form-select mw-100"
                     aria-label="Default select example"
@@ -78,6 +86,7 @@ const AddNetFeeSupport = () => {
                 <div className="form-group px-2 mt-3">
                   <label>{t("pleaseInputYourComment")}</label>
                   <textarea
+                    value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="form-control"
                     id="exampleFormControlTextarea1"

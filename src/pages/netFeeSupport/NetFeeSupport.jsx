@@ -8,6 +8,7 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   ArchiveFill,
   PenFill,
+  PersonFill,
   PersonPlusFill,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -19,6 +20,8 @@ import { getNetFeeSupportData } from "../../features/apiCalls";
 import moment from "moment";
 import SupportDelete from "./supportOpration/SupportDelete";
 import { badge } from "../../components/common/Utils";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import SupportDetails from "./supportOpration/SupportDetails";
 
 const NetFeeSupport = () => {
   const { t } = useTranslation();
@@ -35,6 +38,9 @@ const NetFeeSupport = () => {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
   //netFee support isLoading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,6 +49,8 @@ const NetFeeSupport = () => {
 
   // support delete id
   const [deleteId, setDeleteId] = useState("");
+
+  const [detailsId, setDetailsId] = useState("");
 
   //support edit handler
   const supportEditHandler = (id) => {
@@ -54,30 +62,46 @@ const NetFeeSupport = () => {
     setDeleteId(id);
   };
 
+  // description details handler
+  const supportDetailsHandler = (id) => {
+    setDetailsId(id);
+  };
+
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
+
       {
-        width: "12%",
-        Header: t("supportType"),
+        Header: t("name"),
+        width: "20%",
+        accessor: "user",
+        Cell: ({ cell: { value } }) => {
+          const performer = ownerUsers.find((item) => item[value]);
+
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
+        },
+      },
+      {
+        width: "9%",
+        Header: t("type"),
         accessor: "support",
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
       },
       {
-        width: "49%",
-        Header: t("description"),
-        accessor: "description",
-      },
-      {
-        width: "8%",
+        width: "9%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -85,7 +109,29 @@ const NetFeeSupport = () => {
         },
       },
       {
-        width: "15%",
+        width: "32%",
+        Header: t("description"),
+        accessor: "description",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original.description && original.description.slice(0, 80)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#supportDetails"
+                onClick={() => {
+                  supportDetailsHandler(original.id);
+                }}
+              >
+                {original.description.length > 80 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        width: "17%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -109,6 +155,21 @@ const NetFeeSupport = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resellerSupportDetails"
+                  onClick={() => {
+                    supportDetailsHandler(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">Details</p>
+                    </div>
+                  </div>
+                </li>
+
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#supportEdit"
@@ -142,10 +203,11 @@ const NetFeeSupport = () => {
         ),
       },
     ],
-    [t]
+    [t, ownerUsers]
   );
 
   useEffect(() => {
+    getOwnerUsers(dispatch, ispOwner);
     getNetFeeSupportData(dispatch, ispOwner, setIsLoading);
   }, []);
 
@@ -172,14 +234,14 @@ const NetFeeSupport = () => {
               </FourGround>
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      // customComponent={customComponent}
-                      columns={columns}
-                      data={supportAllData}
-                    ></Table>
-                  </div>
+                  {/* <div className="table-section"> */}
+                  <Table
+                    isLoading={isLoading}
+                    // customComponent={customComponent}
+                    columns={columns}
+                    data={supportAllData}
+                  ></Table>
+                  {/* </div> */}
                 </div>
               </FourGround>
               <Footer />
@@ -190,6 +252,7 @@ const NetFeeSupport = () => {
       <AddNetFeeSupport />
       <SupportEdit editId={editId} />
       <SupportDelete deleteId={deleteId} />
+      <SupportDetails detailsId={detailsId} />
     </>
   );
 };

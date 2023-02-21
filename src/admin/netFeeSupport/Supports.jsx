@@ -8,11 +8,17 @@ import {
   getAllNetFeeSupport,
 } from "../../features/apiCallAdmin";
 import { useDispatch, useSelector } from "react-redux";
-import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  ArchiveFill,
+  PenFill,
+  PersonFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import moment from "moment";
 import { badge } from "../../components/common/Utils";
 import AdminSupportUpdate from "./supportOpration/AdminSupportUpdate";
 import { ToastContainer } from "react-toastify";
+import AdminSupportDetails from "./supportOpration/AdminSupportDetails";
 
 const Supports = () => {
   const dispatch = useDispatch();
@@ -28,6 +34,9 @@ const Supports = () => {
   // support edit id
   const [editId, setEditId] = useState("");
 
+  // support details id state
+  const [detailsId, setDetailsId] = useState("");
+
   // support edit handler
   const supportEditId = (id) => {
     setEditId(id);
@@ -35,24 +44,28 @@ const Supports = () => {
 
   // support delete handler
   const supportDeleteHandler = (id) => {
-    console.log(id);
-    let confirm = window.confirm("Are Youe Want Delete");
+    let confirm = window.confirm("Are You Want Delete");
     if (confirm) {
       deleteAdminNetFeeSupport(dispatch, setIsLoading, id);
     }
   };
 
+  // support details handler
+  const supportDetailsHandler = (id) => {
+    setDetailsId(id);
+  };
+
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "12%",
+        width: "15%",
         Header: "supportType",
         accessor: "support",
         Cell: ({ cell: { value } }) => {
@@ -68,9 +81,26 @@ const Supports = () => {
         },
       },
       {
-        width: "49%",
+        width: "48%",
         Header: "description",
         accessor: "description",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original.description && original.description.slice(0, 80)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#adminSupportDetails"
+                onClick={() => {
+                  supportDetailsHandler(original.id);
+                }}
+              >
+                {original.description.length > 80 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
       },
 
       {
@@ -103,6 +133,21 @@ const Supports = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#adminSupportDetails"
+                  onClick={() => {
+                    supportDetailsHandler(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">Details</p>
+                    </div>
+                  </div>
+                </li>
+
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#adminSupportEditModal"
@@ -165,6 +210,7 @@ const Supports = () => {
         </div>
       </FontColor>
       <AdminSupportUpdate editId={editId} />
+      <AdminSupportDetails detailsId={detailsId} />
     </>
   );
 };

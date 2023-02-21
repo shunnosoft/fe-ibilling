@@ -4,6 +4,7 @@ const adminNetFeeSupportSlice = createSlice({
   name: "support",
   initialState: {
     adminSupport: [],
+    ispOwnerSupport: [],
   },
   reducers: {
     getAdminSupport: (state, action) => {
@@ -20,9 +21,29 @@ const adminNetFeeSupportSlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+    getIspOwnerSupport: (state, action) => {
+      state.ispOwnerSupport = action.payload;
+    },
+    updateIspOwnerSupport: (state, action) => {
+      const supportIndex = state.ispOwnerSupport.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.ispOwnerSupport[supportIndex] = action.payload;
+    },
+    deleteIspOwnerSupport: (state, action) => {
+      state.ispOwnerSupport = state.ispOwnerSupport.filter(
+        (item) => item.id !== action.payload.id
+      );
+    },
   },
 });
 
-export const { getAdminSupport, updateAdminSupport, deleteAdminSupport } =
-  adminNetFeeSupportSlice.actions;
+export const {
+  getAdminSupport,
+  updateAdminSupport,
+  deleteAdminSupport,
+  getIspOwnerSupport,
+  deleteIspOwnerSupport,
+  updateIspOwnerSupport,
+} = adminNetFeeSupportSlice.actions;
 export default adminNetFeeSupportSlice.reducer;

@@ -7,12 +7,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { getResellerNetFeeSupport } from "../../features/apiCallReseller";
 import { ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { PenFill, PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  PenFill,
+  PersonFill,
+  PersonPlusFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import ResellerSupportAdd from "./supportOpration/ResellerSupportAdd";
 import moment from "moment";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import ResellerSupportEdit from "./supportOpration/ResellerSupportEdit";
+import ResellerSupportDetails from "./supportOpration/ResellerSupportDetails";
 
 const NetFeeSupport = () => {
   const { t } = useTranslation();
@@ -34,22 +40,30 @@ const NetFeeSupport = () => {
   // support edit id state
   const [editID, setEditID] = useState("");
 
+  // support details id state
+  const [detailsID, setDetailsID] = useState("");
+
   // support edit handler
   const supportEditHandler = (id) => {
     setEditID(id);
   };
 
+  // support details handler
+  const supportDetailsHandler = (id) => {
+    setDetailsID(id);
+  };
+
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "12%",
+        width: "14%",
         Header: t("supportType"),
         accessor: "support",
         Cell: ({ cell: { value } }) => {
@@ -57,12 +71,7 @@ const NetFeeSupport = () => {
         },
       },
       {
-        width: "49%",
-        Header: t("description"),
-        accessor: "description",
-      },
-      {
-        width: "8%",
+        width: "9%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -70,7 +79,29 @@ const NetFeeSupport = () => {
         },
       },
       {
-        width: "15%",
+        width: "47%",
+        Header: t("description"),
+        accessor: "description",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original.description && original.description.slice(0, 80)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#resellerSupportDetails"
+                onClick={() => {
+                  supportDetailsHandler(original.id);
+                }}
+              >
+                {original.description.length > 80 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        width: "17%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -94,6 +125,21 @@ const NetFeeSupport = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resellerSupportDetails"
+                  onClick={() => {
+                    supportDetailsHandler(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">Details</p>
+                    </div>
+                  </div>
+                </li>
+
                 <li
                   data-bs-toggle="modal"
                   data-bs-target="#resellerSupportEditId"
@@ -161,6 +207,7 @@ const NetFeeSupport = () => {
       </div>
       <ResellerSupportAdd />
       <ResellerSupportEdit editID={editID} />
+      <ResellerSupportDetails detailsID={detailsID} />
     </>
   );
 };

@@ -17,8 +17,11 @@ import {
 } from "./ispOwnerInvoiceSlice";
 import {
   deleteAdminSupport,
+  deleteIspOwnerSupport,
   getAdminSupport,
+  getIspOwnerSupport,
   updateAdminSupport,
+  updateIspOwnerSupport,
 } from "./adminNetFeeSupportSlice";
 
 // get owners
@@ -254,7 +257,6 @@ export const updateAdminNetFeeSupport = async (
       `/ispOwner/netFee/support-edit/${updateData.id}`,
       updateData
     );
-    console.log(res.data);
     dispatch(updateAdminSupport(res.data));
     document.querySelector("#adminSupportEditModal").click();
   } catch (error) {
@@ -275,8 +277,63 @@ export const deleteAdminNetFeeSupport = async (
     const res = await apiLink.delete(
       `/ispOwner/netFee/support-delete/${deleteId}`
     );
-    console.log(res.data);
     dispatch(deleteAdminSupport(res.data));
+  } catch (error) {
+    console.log(error.response);
+  }
+  setIsLoading(false);
+};
+
+// get ispOwner create support
+export const getIspOwnerCreateSupport = async (
+  dispatch,
+  setIsLoading,
+  ispOwnerId
+) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.get(`ispOwner/netFee/support/${ispOwnerId}`);
+    dispatch(getIspOwnerSupport(res.data));
+  } catch (error) {
+    console.log(error.response);
+  }
+
+  setIsLoading(false);
+};
+
+// edit ispOwner support
+export const editIspOwnerCreateSupport = async (
+  dispatch,
+  setIsLoading,
+  editSupport
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(
+      `/ispOwner/netFee/support-edit/${editSupport.id}`,
+      editSupport
+    );
+    dispatch(updateIspOwnerSupport(res.data));
+    document.querySelector("#ispOwnerSupportEdit").click();
+  } catch (error) {
+    console.log(error.response);
+  }
+  setIsLoading(false);
+};
+
+//delete ispOwner support
+export const deleteIspOwnerCreateSupport = async (
+  dispatch,
+  setIsLoading,
+  supportId
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.delete(
+      `/ispOwner/netFee/support-delete/${supportId}`
+    );
+    dispatch(deleteIspOwnerSupport(res.data));
   } catch (error) {
     console.log(error.response);
   }

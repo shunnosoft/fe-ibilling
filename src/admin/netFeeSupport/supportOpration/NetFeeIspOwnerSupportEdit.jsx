@@ -1,46 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import Loader from "../../../components/common/Loader";
-import { updateAdminNetFeeSupport } from "../../../features/apiCallAdmin";
+import { toast } from "react-toastify";
+import { editIspOwnerCreateSupport } from "../../../features/apiCallAdmin";
 
-const AdminSupportUpdate = ({ editId }) => {
+const NetFeeIspOwnerSupportEdit = ({ editID }) => {
   const dispatch = useDispatch();
 
-  // update support data state
-  const [supportEditData, setSupportEditData] = useState("");
-
-  // netFee support data
-  const supportData = useSelector(
-    (state) => state.adminNetFeeSupport?.adminSupport
+  // get ispOwner support create history
+  const ispOwnerSupport = useSelector(
+    (state) => state.adminNetFeeSupport?.ispOwnerSupport
   );
 
   //single support update data find
-  const findSupport = supportData.find((support) => support.id === editId);
+  const findSupport = ispOwnerSupport.find((support) => support.id === editID);
 
-  // isLoading state
+  // ispOwner support edit data state
+  const [supportEditData, setSupportEditData] = useState("");
+
+  // is Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // netFee support handler
-  const handleSupportEdit = (e) => {
-    let value = e.target.value;
-    let name = e.target.name;
+  // ispOwner support edit handler
+  const ispOwnerSupportEditHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
     setSupportEditData({ ...supportEditData, [name]: value });
   };
 
-  // update netFee support submit handle
-  const netFeeSupportUpdate = (e) => {
+  // ispOwner support update submit handler
+  const ispOwnerSupportUpdateSubmit = (e) => {
     e.preventDefault();
+
     if (!description) {
       toast.error("Please Input Your Comment");
     }
     if (!support) {
       toast.error("Please Select Your Support Type");
     }
-    if (!support) {
-      toast.error("Please Select Your Status");
-    }
-    updateAdminNetFeeSupport(dispatch, setIsLoading, supportEditData);
+    editIspOwnerCreateSupport(dispatch, setIsLoading, supportEditData);
   };
 
   useEffect(() => {
@@ -49,14 +47,14 @@ const AdminSupportUpdate = ({ editId }) => {
     }
   }, [findSupport]);
 
-  const { status, support, description } = supportEditData;
+  const { support, description } = supportEditData;
 
   return (
-    <div className="edit_invoice_list">
+    <>
       <div
-        className="modal fade modal-dialog-scrollable "
-        id="adminSupportEditModal"
-        tabIndex="-1"
+        className="modal fade"
+        id="ispOwnerSupportEdit"
+        tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -64,7 +62,7 @@ const AdminSupportUpdate = ({ editId }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                <span className="text-success">Support Update</span>
+                {/* {t("netFeeSupportUpdate")} */}
               </h5>
               <button
                 type="button"
@@ -74,30 +72,7 @@ const AdminSupportUpdate = ({ editId }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={netFeeSupportUpdate}>
-                <div className="form-group px-2">
-                  <label>Select Your Status</label>
-                  <select
-                    style={{ width: "100%" }}
-                    class="form-select mw-100"
-                    aria-label="Default select example"
-                    name="status"
-                    onChange={handleSupportEdit}
-                  >
-                    <option selected={status === "pending"} value="pending">
-                      Pending
-                    </option>
-                    <option
-                      selected={status === "processing"}
-                      value="processing"
-                    >
-                      Processing
-                    </option>
-                    <option selected={status === "completed"} value="completed">
-                      Completed
-                    </option>
-                  </select>
-                </div>
+              <form onSubmit={ispOwnerSupportUpdateSubmit}>
                 <div className="form-group px-2">
                   <label>Select Your Support Type</label>
                   <select
@@ -105,7 +80,7 @@ const AdminSupportUpdate = ({ editId }) => {
                     class="form-select mw-100"
                     aria-label="Default select example"
                     name="support"
-                    onChange={handleSupportEdit}
+                    onChange={ispOwnerSupportEditHandler}
                   >
                     <option selected={support === "complain"} value="complain">
                       Complain
@@ -126,7 +101,7 @@ const AdminSupportUpdate = ({ editId }) => {
                     rows="3"
                     name="description"
                     value={description}
-                    onChange={handleSupportEdit}
+                    onChange={ispOwnerSupportEditHandler}
                   ></textarea>
                 </div>
                 <div className="modal-footer bg-whitesmoke br">
@@ -151,8 +126,8 @@ const AdminSupportUpdate = ({ editId }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default AdminSupportUpdate;
+export default NetFeeIspOwnerSupportEdit;
