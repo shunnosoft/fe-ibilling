@@ -121,6 +121,7 @@ import {
   getNetFeeSupport,
   updateNetFeeSupport,
 } from "./netFeeSupportSlice";
+import { getInactiveCustomerSuccess } from "./dashboardInformationSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -208,6 +209,25 @@ export const getDashboardCardData = async (
     toast.error(err.response?.data?.message);
   }
   setIsloading(false);
+};
+
+export const getInactiveCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/inactive/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getInactiveCustomerSuccess(res.data));
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+  setIsLoading(false);
 };
 
 export const addManager = async (dispatch, addStaffStatus, managerData) => {

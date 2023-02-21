@@ -39,6 +39,8 @@ const DueCustomer = () => {
 
   let month = date.getMonth();
   let year = date.getFullYear();
+  console.log(month);
+  console.log(year);
 
   if (month === 0) {
     month = 12;

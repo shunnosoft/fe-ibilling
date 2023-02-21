@@ -45,6 +45,7 @@ import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
 import ReactToPrint from "react-to-print";
 import CollectionOverviewPdf from "./CollectionOverviewPdf";
+import Inactive from "./dataComponent/Inactive";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -544,7 +545,7 @@ export default function Home() {
                     <h2>{FormatNumber(customerStat.total)}</h2>
 
                     <Link to={"/new/customer"}>
-                      <p className="newCustomer">
+                      <p className="dashboardData">
                         {t("new customer")}{" "}
                         {FormatNumber(customerStat.newCustomer)}
                       </p>
@@ -563,10 +564,18 @@ export default function Home() {
                     <p style={{ fontSize: "16px" }}>{t("active")}</p>
                     <h2>{FormatNumber(customerStat.active)}</h2>
 
-                    <p style={{ fontSize: "15px", marginBottom: "0px" }}>
+                    <p
+                      className="dashboardData pb-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#inactiveCustomer"
+                      style={{ fontSize: "15px", marginBottom: "0px" }}
+                    >
                       {t("in active")}: {FormatNumber(customerStat.inactive)}
                     </p>
-                    <p style={{ fontSize: "13px", paddingTop: "0px" }}>
+                    <p
+                      className="pb-1"
+                      style={{ fontSize: "13px", paddingTop: "0px" }}
+                    >
                       {t("expired")}: {FormatNumber(customerStat.expired)}
                     </p>
                     <p style={{ fontSize: "13px", paddingTop: "0px" }}>
@@ -1241,6 +1250,11 @@ export default function Home() {
         </div>
       </div>
       {/* End Reseller Information Modal */}
+      <Inactive
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
     </>
   );
 }
