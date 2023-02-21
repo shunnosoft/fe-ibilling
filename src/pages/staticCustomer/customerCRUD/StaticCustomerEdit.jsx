@@ -19,6 +19,7 @@ import getName from "../../../utils/getLocationName";
 import divisionsJSON from "../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import SelectField from "../../../components/common/SelectField";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -169,6 +170,8 @@ export default function StaticCustomerEdit({ single }) {
     address: Yup.string(),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
+    customerBillingType: Yup.string().required(t("select billing type")),
+
     // monthlyFee: Yup.number()
     //   .integer()
     //   .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
@@ -398,6 +401,7 @@ export default function StaticCustomerEdit({ single }) {
                   queueName: customer?.queue.name || "",
                   target: customer?.queue.target || "",
                   customerId: customer?.customerId,
+                  customerBillingType: customer?.customerBillingType,
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -730,6 +734,19 @@ export default function StaticCustomerEdit({ single }) {
                           dateFormat="MMM dd yyyy hh:mm a"
                           showTimeSelect
                         />
+                      </div>
+                      <div className="static_edit_item">
+                        <SelectField
+                          label={t("customerBillType")}
+                          id="exampleSelect"
+                          name="customerBillingType"
+                          className="form-select mw-100 mt-0"
+                        >
+                          <option value="">{t("customerBillType")}</option>
+
+                          <option value="prepaid">{t("prepaid")}</option>
+                          <option value="postpaid">{t("postPaid")}</option>
+                        </SelectField>
                       </div>
                       {bpSettings?.promiseDate &&
                         (role === "manager" || role === "ispOwner") && (

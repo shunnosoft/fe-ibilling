@@ -650,5 +650,10 @@
   "netFeeSupportUpdate": "নেটফি সাপোর্ট আপডেট",
   "selectDivision": "বিভাগ সিলেক্ট করুন",
   "selectDistrict": "জেলা সিলেক্ট করুন",
-  "selectThana": "উপজেলা সিলেক্ট করুন"
+  "selectThana": "উপজেলা সিলেক্ট করুন",
+  "customerBillType":"বিলের ধরণ",
+  "prepaid":"প্রিপেইড",
+  "postPaid":"পোস্টপেইড",
+  "select billing type":"বিলিং টাইপ সিলেক্ট করুন"
+ 
 }
