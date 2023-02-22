@@ -705,7 +705,9 @@ export default function Sidebar() {
                             ""
                           )}
 
-                          {userRole === "ispOwner" && (
+                          {userRole === "ispOwner" /*||
+                            (userRole === "manager" &&
+                              permission.staffSalary) */ && (
                             <NavLink
                               key={330}
                               to={"/staff"}

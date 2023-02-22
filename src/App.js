@@ -549,8 +549,26 @@ function App() {
               <Route path="message" element={<Message />} />
               <Route path="expenditure" element={<Expenditure />} />
               {/* <Route path="stock" element={<Stock />} /> */}
-              <Route path="staff" element={<Staff />} />
-              <Route path="staff/:staffId" element={<StaffSalary />} />
+              <Route
+                path="staff"
+                element={
+                  userRole === "ispOwner" || permissions.staffSalary ? (
+                    <Staff />
+                  ) : (
+                    <Navigate to={"/home"} />
+                  )
+                }
+              />
+              <Route
+                path="staff/:staffId"
+                element={
+                  userRole === "ispOwner" || permissions.staffSalary ? (
+                    <StaffSalary />
+                  ) : (
+                    <Navigate to={"/home"} />
+                  )
+                }
+              />
 
               <Route path="settings" element={<Settings />} />
               <Route

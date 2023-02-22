@@ -154,8 +154,6 @@ export default function Mikrotik() {
           <div className="container">
             <FontColor>
               {/* modals */}
-              <MikrotikPost />
-              {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
@@ -201,6 +199,9 @@ export default function Mikrotik() {
           </div>
         </div>
       </div>
+      {/* modals */}
+      <MikrotikPost />
+
       <MikrotikDelete mikrotikID={mikrotikId} />
     </>
   );

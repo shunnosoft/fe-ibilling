@@ -160,6 +160,13 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.reportDelete,
       disabled: !bpSettings?.reportDelete,
     },
+    {
+      id: 24,
+      value: "staffSalary",
+      label: "Staff Salary",
+      isChecked: permission?.staffSalary,
+      disabled: false,
+    },
   ];
 
   const permissionBangla = [
@@ -323,6 +330,13 @@ export const managerPermission = (permission, bpSettings) => {
       label: "বিল রিপোর্ট ডিলিট",
       isChecked: permission?.reportDelete,
       disabled: !bpSettings?.reportDelete,
+    },
+    {
+      id: 24,
+      value: "staffSalary",
+      label: "স্টাফ স্যলারি",
+      isChecked: permission?.staffSalary,
+      disabled: false,
     },
   ];
 
