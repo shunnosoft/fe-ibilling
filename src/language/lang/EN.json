@@ -657,5 +657,6 @@
   "select billing type": "Select billing type",
   "expiredCustomer": "Expired Customer",
   "paidCustomer": "Paid Customer",
-  "unpaidCustomer": "Unpaid Customer"
+  "unpaidCustomer": "Unpaid Customer",
+  "allCollector": "All Collector"
 }

@@ -51,6 +51,8 @@ import FreeCustomer from "./dataComponent/FreeCustomer";
 import Paid from "./dataComponent/Paid";
 import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
+import AllCollector from "./dataComponent/AllCollector";
+import Reseller from "./dataComponent/Reseller";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -350,69 +352,6 @@ export default function Home() {
       );
     }
   };
-
-  const columns = React.useMemo(
-    () => [
-      {
-        width: "15%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "21%",
-        Header: t("todayBillCollection"),
-        accessor: "todayBillCollection",
-      },
-      {
-        width: "21%",
-        Header: t("totalBillCollected"),
-        accessor: "totalBillCollected",
-      },
-      {
-        width: "21%",
-        Header: t("totalDepositCollector"),
-        accessor: "totalDeposit",
-      },
-      {
-        width: "21%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-    ],
-    [t]
-  );
-  const resellerColumn = React.useMemo(
-    () => [
-      {
-        width: "10%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
-        width: "25%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "23%",
-        Header: t("balance"),
-        accessor: "currentBalance",
-      },
-      {
-        width: "23%",
-        Header: t("billCollected"),
-        accessor: "totalBillCollected",
-      },
-      {
-        width: "23%",
-        Header: t("billDue"),
-        accessor: "totalDueAmount",
-      },
-    ],
-    [t]
-  );
 
   return (
     <>
@@ -992,7 +931,7 @@ export default function Home() {
                   </Accordion.Body>
                 </Accordion.Item>
               )}
-              {role === "ispOwner" && (
+              {role === "ispOwner" && customerStat.totalCollector && (
                 <>
                   <Accordion.Item eventKey="2">
                     <Accordion.Header className="shadow-none">
@@ -1001,25 +940,33 @@ export default function Home() {
                     <Accordion.Body>
                       <div className="row ">
                         <div className="col-md-3">
-                          <div id="card9" className="dataCard">
+                          <div
+                            id="card9"
+                            className="dataCard"
+                            data-bs-toggle="modal"
+                            data-bs-target="#allCollector"
+                            style={{ cursor: "pointer" }}
+                          >
                             <ThreeDotsVertical className="ThreeDots" />
                             <div className="cardIcon">
                               <CurrencyDollar />
                             </div>
                             <div className="chartSection">
                               <p style={{ fontSize: "16px" }}>
-                                {t("totalCollection")}
+                                {t("allCollector")}
                               </p>
                               <h2>
-                                ৳{" "}
+                                ৳ {FormatNumber(customerStat.totalCollector)}
+                              </h2>
+
+                              <p style={{ fontSize: "15px" }}>
+                                {t("totalCollection")}:{" "}
                                 {FormatNumber(
                                   customerStat.totalBillCollectionByCollector
                                 )}
-                              </h2>
+                              </p>
 
-                              <p
-                                style={{ fontSize: "15px", paddingTop: "10px" }}
-                              >
+                              <p style={{ fontSize: "15px" }}>
                                 {t("todayTotalCollectionByCollector")}:{" "}
                                 {FormatNumber(calculationOfBillStat())}
                               </p>
@@ -1234,89 +1181,11 @@ export default function Home() {
               </div>
             </FourGround>
             {/* print to collectorOverview start */}
-
-            {role === "ispOwner" &&
-              collectorData &&
-              collectorData.length > 0 && (
-                <FourGround>
-                  <div className="collectorWrapper pt-1 pb-2">
-                    <div
-                      className="addAndSettingIcon"
-                      style={{
-                        marginLeft: ".5rem",
-                        textAlign: "end",
-                        paddingTop: "1rem",
-                        // background: "green",
-                      }}
-                    >
-                      <ReactToPrint
-                        documentTitle="Collection Overveiw"
-                        trigger={() => (
-                          <PrinterFill
-                            // title={t("print")}
-                            className="addcutmButton"
-                            style={{ background: "#0EB96A", color: "white" }}
-                          />
-                        )}
-                        content={() => componentRef.current}
-                      />
-                    </div>
-                    <div className="table-section">
-                      <Table
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={collectorData}
-                      ></Table>
-                    </div>
-                  </div>
-                  <div className="d-none">
-                    <CollectionOverviewPdf
-                      allCollectionData={customerStat}
-                      //customerStat
-                      // currentCustomers={Customers}
-                      ref={componentRef}
-                    />
-                  </div>
-                </FourGround>
-              )}
           </div>
           <Footer />
         </FontColor>
       </div>
-      {/*  Start Reseller Information Modal */}
-      <div>
-        <div
-          className="modal fade"
-          id="resellerInformationModal"
-          tabIndex="-1"
-          aria-labelledby="customerModalDetails"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-scrollable modal-lg">
-            <div className="modal-content">
-              <div className="modal-body">
-                <div className="table-section">
-                  <Table
-                    isLoading={isLoading}
-                    columns={resellerColumn}
-                    data={resellerData}
-                  ></Table>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  {t("cancel")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* End Reseller Information Modal */}
+
       <Inactive
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
@@ -1347,6 +1216,9 @@ export default function Home() {
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
       />
+
+      <AllCollector />
+      <Reseller />
     </>
   );
 }

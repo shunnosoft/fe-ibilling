@@ -659,5 +659,6 @@
   "select billing type": "বিলিং টাইপ সিলেক্ট করুন",
   "expiredCustomer": "এক্সপায়ার্ড কাস্টমার",
   "paidCustomer": "পেইড কাস্টমার",
-  "unpaidCustomer": "বকেয়া কাস্টমার"
+  "unpaidCustomer": "বকেয়া কাস্টমার",
+  "allCollector": "মোট কালেক্টর"
 }
