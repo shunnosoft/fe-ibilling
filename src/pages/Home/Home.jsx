@@ -45,6 +45,12 @@ import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
 import ReactToPrint from "react-to-print";
 import CollectionOverviewPdf from "./CollectionOverviewPdf";
+import Inactive from "./dataComponent/Inactive";
+import Expired from "./dataComponent/Expired";
+import FreeCustomer from "./dataComponent/FreeCustomer";
+import Paid from "./dataComponent/Paid";
+import Unpaid from "./dataComponent/Unpaid";
+import Active from "./dataComponent/Active";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -544,7 +550,7 @@ export default function Home() {
                     <h2>{FormatNumber(customerStat.total)}</h2>
 
                     <Link to={"/new/customer"}>
-                      <p className="newCustomer">
+                      <p className="dashboardData">
                         {t("new customer")}{" "}
                         {FormatNumber(customerStat.newCustomer)}
                       </p>
@@ -560,18 +566,57 @@ export default function Home() {
                     <PersonCheckFill />
                   </div>
                   <div className="chartSection">
-                    <p style={{ fontSize: "16px" }}>{t("active")}</p>
-                    <h2>{FormatNumber(customerStat.active)}</h2>
+                    <p
+                      className="dashboardActive"
+                      data-bs-toggle="modal"
+                      data-bs-target="#activeCustomer"
+                      style={{ fontSize: "16px" }}
+                    >
+                      {t("active")}
+                    </p>
+                    <h2
+                      className="dashboardActive"
+                      data-bs-toggle="modal"
+                      data-bs-target="#activeCustomer"
+                    >
+                      {FormatNumber(customerStat.active)}
+                    </h2>
 
-                    <p style={{ fontSize: "15px", marginBottom: "0px" }}>
-                      {t("in active")}: {FormatNumber(customerStat.inactive)}
+                    <p
+                      className="dashboardActive pb-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#activeCustomer"
+                      style={{ fontSize: "15px" }}
+                    >
+                      {t("active")}
+                      &nbsp;
+                      <span className="text-info">
+                        ৳ {FormatNumber(customerStat.totalActiveAmount)}
+                      </span>
                     </p>
-                    <p style={{ fontSize: "13px", paddingTop: "0px" }}>
-                      {t("expired")}: {FormatNumber(customerStat.expired)}
+                    <p
+                      className="dashboardData pb-1 pt-0"
+                      data-bs-toggle="modal"
+                      data-bs-target="#inactiveCustomer"
+                      style={{ fontSize: "15px", marginBottom: "0px" }}
+                    >
+                      {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
+                      &nbsp;
+                      <span className="text-info">
+                        ৳ {FormatNumber(customerStat.totalInactiveAmount)}
+                      </span>
                     </p>
-                    <p style={{ fontSize: "13px", paddingTop: "0px" }}>
-                      {t("freeCustomer")}:{" "}
-                      {FormatNumber(customerStat.freeCustomer)}
+                    <p
+                      className="dashboardData pb-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#expiredCustomer"
+                      style={{ fontSize: "15px", paddingTop: "0px" }}
+                    >
+                      {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
+                      &nbsp;
+                      <span className="text-info">
+                        ৳{FormatNumber(customerStat.totalExpiredAmount)}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -584,11 +629,42 @@ export default function Home() {
                     <BarChartFill />
                   </div>
                   <div className="chartSection">
-                    <p style={{ fontSize: "16px" }}>{t("paid")}</p>
-                    <h2>{FormatNumber(customerStat.paid)}</h2>
+                    <p
+                      className="dashboardUnpaid pb-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#paid"
+                      style={{ fontSize: "16px" }}
+                    >
+                      {t("paid")}
+                    </p>
+                    <h2
+                      className="dashboardUnpaid"
+                      data-bs-toggle="modal"
+                      data-bs-target="#paid"
+                    >
+                      {FormatNumber(customerStat.paid)}
+                    </h2>
 
-                    <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                      {t("due")}: {FormatNumber(customerStat.unpaid)}
+                    <p
+                      className="dashboardUnpaid pb-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#unPaid"
+                      style={{ fontSize: "15px", paddingTop: "10px" }}
+                    >
+                      {t("unpaid")}: {FormatNumber(customerStat.unpaid)}
+                    </p>
+
+                    <p
+                      className="dashboardUnpaid pb-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#freeCustomer"
+                      style={{
+                        fontSize: "15px",
+                        paddingTop: "0px",
+                      }}
+                    >
+                      {t("freeCustomer")}:
+                      {FormatNumber(customerStat.freeCustomer)}
                     </p>
                   </div>
                 </div>
@@ -1241,6 +1317,36 @@ export default function Home() {
         </div>
       </div>
       {/* End Reseller Information Modal */}
+      <Inactive
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
+      <Expired
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
+      <FreeCustomer
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
+      <Paid
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
+      <Unpaid
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
+      <Active
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
     </>
   );
 }

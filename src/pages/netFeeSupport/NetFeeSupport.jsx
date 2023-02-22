@@ -157,7 +157,7 @@ const NetFeeSupport = () => {
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#resellerSupportDetails"
+                  data-bs-target="#supportDetails"
                   onClick={() => {
                     supportDetailsHandler(original.id);
                   }}

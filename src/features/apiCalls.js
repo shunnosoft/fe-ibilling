@@ -121,6 +121,14 @@ import {
   getNetFeeSupport,
   updateNetFeeSupport,
 } from "./netFeeSupportSlice";
+import {
+  getActiveCustomerSuccess,
+  getExpiredCustomerSuccess,
+  getFreeCustomerSuccess,
+  getInactiveCustomerSuccess,
+  getPaidCustomerSuccess,
+  getUnpaidCustomerSuccess,
+} from "./dashboardInformationSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -208,6 +216,130 @@ export const getDashboardCardData = async (
     toast.error(err.response?.data?.message);
   }
   setIsloading(false);
+};
+
+export const getInactiveCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/inactive/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getInactiveCustomerSuccess(res.data));
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+  setIsLoading(false);
+};
+
+//get expired customer
+export const getExpiredCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `ispOwner/expired/customer/${ispOwnerId}?month=${month}&year=${year}`
+  );
+  dispatch(getExpiredCustomerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+
+  setIsLoading(false);
+};
+
+//get free customer
+export const getFreeCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `ispOwner/free/customer/${ispOwnerId}?month=${month}&year=${year}`
+  );
+  dispatch(getFreeCustomerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+
+  setIsLoading(false);
+};
+
+//get paid customer
+export const getPaidCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `ispOwner/paid/customer/${ispOwnerId}?month=${month}&year=${year}`
+  );
+  dispatch(getPaidCustomerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+
+  setIsLoading(false);
+};
+
+// get unpaid customer
+export const getUnpaidCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `ispOwner/unpaid/customer/${ispOwnerId}?month=${month}&year=${year}`
+  );
+  dispatch(getUnpaidCustomerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+
+  setIsLoading(false);
+};
+
+// get unpaid customer
+export const getActiveCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `ispOwner/active/customer/${ispOwnerId}?month=${month}&year=${year}`
+  );
+  dispatch(getActiveCustomerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+
+  setIsLoading(false);
 };
 
 export const addManager = async (dispatch, addStaffStatus, managerData) => {

@@ -22,6 +22,9 @@ import divisionsJSON from "../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 
+//formik select
+import SelectField from "../../../components/common/SelectField";
+
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
@@ -90,6 +93,7 @@ export default function CustomerModal() {
     Pname: Yup.string().required(t("writePPPoEName")),
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
+    customerBillingType: Yup.string().required(t("select billing type")),
     // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
 
@@ -217,6 +221,7 @@ export default function CustomerModal() {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
+
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -299,6 +304,7 @@ export default function CustomerModal() {
                   balance: "",
                   referenceName: "",
                   referenceMobile: "",
+                  customerBillingType: "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -546,6 +552,18 @@ export default function CustomerModal() {
                       </div>
                     </div>
                     <div className="displayGrid3">
+                      <SelectField
+                        label={t("customerBillType")}
+                        id="exampleSelect"
+                        name="customerBillingType"
+                        className="form-select mw-100 mt-0"
+                      >
+                        <option value="">{t("customerBillType")}</option>
+
+                        <option value="prepaid">{t("prepaid")}</option>
+                        <option value="postpaid">{t("postPaid")}</option>
+                      </SelectField>
+
                       <FtextField
                         type="text"
                         label={t("referenceName")}

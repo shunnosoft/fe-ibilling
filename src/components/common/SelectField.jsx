@@ -1,21 +1,20 @@
-import { ErrorMessage, useField } from "formik";
 import React from "react";
+import { useField, ErrorMessage } from "formik";
 
-export const FtextField = ({ label, validation, ...props }) => {
+const SelectField = ({ label, ...props }) => {
   const [field, meta] = useField(props);
-
   return (
-    <div className="mb-3">
-      <label htmlFor={field.name} className="changeLabelFontColor">
-        {label} {validation && <span className="text-danger">*</span>}
+    <div>
+      <label className="changeLabelFontColor" htmlFor={props.id || props.name}>
+        {label}
       </label>
-      <input
+      <select
+        style={{ display: "inline-block" }}
         className={`form-control shadow-none ${
           meta.touched && meta.error && "is-invalid"
         }`}
         {...field}
         {...props}
-        autoComplete="off"
       />
       <ErrorMessage
         component="div"
@@ -25,3 +24,5 @@ export const FtextField = ({ label, validation, ...props }) => {
     </div>
   );
 };
+
+export default SelectField;

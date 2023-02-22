@@ -25,6 +25,7 @@ import getName from "../../../utils/getLocationName";
 
 //custom hook
 import useISPowner from "../../../hooks/useISPOwner";
+import SelectField from "../../../components/common/SelectField";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -192,6 +193,8 @@ export default function CustomerEdit(props) {
     Pname: Yup.string().required(t("writePPPoEName")),
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
+    customerBillingType: Yup.string().required(t("select billing type")),
+
     // balance: Yup.number().integer(),
   });
 
@@ -382,6 +385,7 @@ export default function CustomerEdit(props) {
                   Ppassword: data?.pppoe?.password || "",
                   status: status || "",
                   balance: data?.balance || "",
+                  customerBillingType: data?.customerBillingType || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -633,7 +637,17 @@ export default function CustomerEdit(props) {
                           placeholderText={t("selectDate")}
                         />
                       </div>
+                      <SelectField
+                        label={t("customerBillType")}
+                        id="exampleSelect"
+                        name="customerBillingType"
+                        className="form-select mw-100 mt-0"
+                      >
+                        <option value="">{t("customerBillType")}</option>
 
+                        <option value="prepaid">{t("prepaid")}</option>
+                        <option value="postpaid">{t("postPaid")}</option>
+                      </SelectField>
                       <div className="pppoeStatus">
                         <p className="p-0 mt-2">{t("status")}</p>
                         <div className="form-check form-check-inline mt-0">

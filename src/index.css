@@ -130,15 +130,36 @@ p {
   color: #328eea;
 }
 
-.newCustomer {
+.dashboardData {
   font-size: 15px;
   padding-top: 10px;
   color: #ffffff !important;
   transition: ease-in-out 0.3s;
+  cursor: pointer;
 }
 
-.newCustomer:hover {
+.dashboardData:hover {
   color: #2c8beb !important;
+}
+
+.dashboardUnpaid {
+  font-size: 15px;
+  padding-top: 10px;
+  color: #ffffff !important;
+  transition: ease-in-out 0.3s;
+  cursor: pointer;
+}
+.dashboardUnpaid:hover {
+  color: #035c27 !important;
+}
+
+.dashboardActive {
+  color: #ffffff !important;
+  transition: ease-in-out 0.3s;
+  cursor: pointer;
+}
+.dashboardActive:hover {
+  color: #035c27 !important;
 }
 
 #custom-form-select .form-select {

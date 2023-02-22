@@ -21,6 +21,7 @@ import useISPowner from "../../../hooks/useISPOwner";
 import divisionsJSON from "../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import SelectField from "../../../components/common/SelectField";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -180,6 +181,7 @@ export default function CustomerEdit({ single }) {
     Pname: Yup.string().required(t("writePPPoEName")),
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
+    customerBillingType: Yup.string().required(t("select billing type")),
   });
 
   // select Mikrotik Package
@@ -346,6 +348,7 @@ export default function CustomerEdit({ single }) {
                   Pname: data?.pppoe?.name || "",
                   Pprofile: packageRate?.name || data?.pppoe?.profile || "",
                   Ppassword: data?.pppoe?.password || "",
+                  customerBillingType: data?.customerBillingType,
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => {
@@ -533,6 +536,17 @@ export default function CustomerEdit({ single }) {
                     </div>
 
                     <div className="newDisplay">
+                      <SelectField
+                        label={t("customerBillType")}
+                        id="exampleSelect"
+                        name="customerBillingType"
+                        className="form-select mw-100 mt-0"
+                      >
+                        <option value="">{t("customerBillType")}</option>
+
+                        <option value="prepaid">{t("prepaid")}</option>
+                        <option value="postpaid">{t("postPaid")}</option>
+                      </SelectField>
                       {status !== "expired" && (
                         <>
                           <div className="billCycle">
@@ -576,6 +590,7 @@ export default function CustomerEdit({ single }) {
                           </div>
                         </>
                       )}
+
                       {Getmikrotik.length > 0 && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>
