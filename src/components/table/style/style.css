@@ -6,3 +6,24 @@
   padding: 2px;
   margin-top: -2px;
 }
+
+.toggle-column-header {
+  position: relative;
+}
+
+.toggle-column-modal {
+  width: 15vw;
+  padding: 1rem;
+  position: absolute;
+  transform: scale(0);
+  border: 1px solid blueviolet;
+  transition: transform 0.4s;
+  transform-origin: top left;
+  background-color: ghostwhite;
+
+}
+
+.toggle-column-modal.active {
+  transform: scale(1);
+
+}
