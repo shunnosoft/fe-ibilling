@@ -225,7 +225,7 @@ export const getInactiveCustomer = async (
     );
     dispatch(getInactiveCustomerSuccess(res.data));
   } catch (error) {
-    console.log(error.response.data.message);
+    console.log(error.response?.data?.message);
   }
   setIsLoading(false);
 };
