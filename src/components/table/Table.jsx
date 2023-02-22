@@ -1,7 +1,7 @@
 // import React from "react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
-import { ArrowDown, ArrowUp } from "react-bootstrap-icons";
+import { ArrowDown, ArrowUp, GearFill } from "react-bootstrap-icons";
 import {
   useTable,
   useSortBy,
@@ -34,6 +34,8 @@ const Table = (props) => {
     state,
     setGlobalFilter,
     selectedFlatRows,
+    allColumns,
+    getToggleHideAllColumnsProps,
   } = useTable(
     { columns, data, autoResetGlobalFilter: false },
     useGlobalFilter,
@@ -52,6 +54,8 @@ const Table = (props) => {
       props?.bulkState.setBulkCustomer(selectedFlatRows);
     }
   }, [selectedFlatRows]);
+  const [isActive, setIsActive] = useState(false);
+  console.log(allColumns);
   return (
     <>
       <GlobalFilter
@@ -59,6 +63,40 @@ const Table = (props) => {
         data={data}
         setFilter={setGlobalFilter}
         customComponent={customComponent}
+        toggleColumnButton={
+          <div className="toggle-column-header w-100">
+            <button
+              className="btn btn-sm text-white"
+              onClick={() => setIsActive(!isActive)}
+            >
+              <GearFill />
+            </button>
+
+            <div className={`toggle-column-modal ${isActive && "active"}`}>
+              <div class="form-check form-switch">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  {...getToggleHideAllColumnsProps()}
+                />
+                <label class="form-check-label">Show All</label>
+              </div>
+
+              {allColumns.map((item) => (
+                <div class="form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    {...item.getToggleHiddenProps()}
+                  />
+                  <label class="form-check-label">{item.Header}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+        }
       />
 
       <div className="table-responsive-lg">

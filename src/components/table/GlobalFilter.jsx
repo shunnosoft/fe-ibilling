@@ -1,10 +1,22 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-const GlobalFilter = ({ filter, setFilter, data, customComponent }) => {
+const GlobalFilter = ({
+  filter,
+  setFilter,
+  data,
+  customComponent,
+  toggleColumnButton,
+}) => {
   const { t } = useTranslation();
   return (
-    <div className="row searchCollector">
+    <div className="row searchCollector d-flex">
+      <div
+        style={{ display: "flex", alignItems: "center" }}
+        className="col-sm-1"
+      >
+        {toggleColumnButton}
+      </div>
       <div
         style={{ display: "flex", alignItems: "center" }}
         className="col-sm-8"
@@ -15,7 +27,7 @@ const GlobalFilter = ({ filter, setFilter, data, customComponent }) => {
         <div>{customComponent}</div>
       </div>
 
-      <div className="col-sm-4">
+      <div className="col-sm-3">
         <div className=" collectorSearch">
           <input
             type="text"
