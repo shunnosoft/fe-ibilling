@@ -1,17 +1,28 @@
 import moment from "moment";
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import ReactToPrint from "react-to-print";
+import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 import Table from "../../../components/table/Table";
 import { getActiveCustomer } from "../../../features/apiCalls";
+import CustomerPdf from "../homePdf/CustomerPdf";
 
 const Active = ({ ispOwnerId, month, year }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const componentRef = useRef();
 
   // get active customer data
-  const activeCustomer = useSelector(
+  const customer = useSelector(
     (state) => state.dashboardInformation?.activeCustomer
   );
 
@@ -83,6 +94,22 @@ const Active = ({ ispOwnerId, month, year }) => {
     getActiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
   }, [month]);
 
+  // all monthlyFee count
+  const allBill = useCallback(() => {
+    let count = 0;
+    customer.forEach((item) => {
+      count = count + item.monthlyFee;
+    });
+    return FormatNumber(count);
+  }, [customer]);
+
+  // custom component monthlyFee tk show
+  const customComponent = (
+    <div style={{ fontSize: "18px" }}>
+      {t("totalBill")} {allBill()} {t("tk")}
+    </div>
+  );
+
   return (
     <div
       className="modal fade"
@@ -97,6 +124,29 @@ const Active = ({ ispOwnerId, month, year }) => {
             <h5 className="modal-title" id="exampleModalLabel">
               {t("activeCustomer")}
             </h5>
+
+            <div className="collectorWrapper pt-0">
+              <div
+                className="addAndSettingIcon"
+                style={{
+                  marginLeft: ".5rem",
+                  textAlign: "end",
+                }}
+              >
+                <ReactToPrint
+                  documentTitle="Customer Overview"
+                  trigger={() => (
+                    <PrinterFill
+                      // title={t("print")}
+                      className="addcutmButton"
+                      style={{ background: "#0EB96A", color: "white" }}
+                    />
+                  )}
+                  content={() => componentRef.current}
+                />
+              </div>
+            </div>
+
             <button
               type="button"
               className="btn-close"
@@ -105,13 +155,22 @@ const Active = ({ ispOwnerId, month, year }) => {
             ></button>
           </div>
           <div className="modal-body">
-            <div className="table-section">
-              <Table
-                isLoading={isLoading}
-                columns={column}
-                data={activeCustomer}
-              ></Table>
-            </div>
+            {customer && (
+              <>
+                <div className="table-section">
+                  <Table
+                    isLoading={isLoading}
+                    customComponent={customComponent}
+                    columns={column}
+                    data={customer}
+                  ></Table>
+                </div>
+
+                <div className="d-none">
+                  <CustomerPdf customerData={customer} ref={componentRef} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

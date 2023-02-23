@@ -660,5 +660,8 @@
   "expiredCustomer": "এক্সপায়ার্ড কাস্টমার",
   "paidCustomer": "পেইড কাস্টমার",
   "unpaidCustomer": "বকেয়া কাস্টমার",
-  "allCollector": "মোট কালেক্টর"
+  "allCollector": "মোট কালেক্টর",
+  "totalBillAmount": "মোট বিলের পরিমানঃ ",
+  "dueNotAcceptable": "বকেয়া গ্রহণ যোগ্য নয়",
+  "discountNotAcceptable": "ডিসকাউন্ট গ্রহণ যোগ্য নয়"
 }
