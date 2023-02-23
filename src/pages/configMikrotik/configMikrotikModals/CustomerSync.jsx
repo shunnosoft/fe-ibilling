@@ -172,6 +172,7 @@ const CustomerSync = ({
               </div>
             ) : (
               <>
+                <h4>Select customer</h4>
                 <Table
                   columns={column}
                   data={customer}
