@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import ReactToPrint from "react-to-print";
 import Table from "../../../components/table/Table";
-import CollectionOverviewPdf from "../CollectionOverviewPdf";
+import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
 
 const AllCollector = () => {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ const AllCollector = () => {
 
   useEffect(() => {
     if (customerState) {
-      setCollectorData(customerState.collectorStat);
+      setCollectorData(customerState?.collectorStat);
     }
   }, [customerState]);
 
@@ -76,18 +76,19 @@ const AllCollector = () => {
               {t("allCollector")}
             </h5>
 
-            <div className="collectorWrapper pt-1 pb-2">
+            <div className="collectorWrapper pt-0">
               <div
                 className="addAndSettingIcon"
                 style={{
                   marginLeft: ".5rem",
                   textAlign: "end",
-                  paddingTop: "1rem",
+                  // paddingTop: "1rem",
+                  // paddingBottom: "1rem",
                   // background: "green",
                 }}
               >
                 <ReactToPrint
-                  documentTitle="Collection Overveiw"
+                  documentTitle="Collection Overview"
                   trigger={() => (
                     <PrinterFill
                       // title={t("print")}

@@ -20,15 +20,14 @@ const ResellerSupportAdd = () => {
   );
 
   // reseller id
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.reseller.id
+  const reseller = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.reseller
   );
 
   // get support company name
   const company = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData.company
   );
-  console.log(company);
 
   // support add state
   const [support, setSupport] = useState("");
@@ -51,7 +50,7 @@ const ResellerSupportAdd = () => {
       description,
       ispOwner,
       user,
-      reseller: resellerId,
+      mobile: reseller.mobile,
       company,
     };
     console.log(data);

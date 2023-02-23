@@ -11,9 +11,10 @@ const AddNetFeeSupport = () => {
   const dispatch = useDispatch();
 
   //get user id
-  const user = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser?.user?.id
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser?.user
   );
+  console.log(currentUser);
 
   //get isp owner id
   const ispOwner = useSelector(
@@ -39,7 +40,15 @@ const AddNetFeeSupport = () => {
     if (!description) {
       toast.error(t("pleaseInputYourComment"));
     }
-    const data = { ispOwner, user, support, description, company };
+    const data = {
+      ispOwner,
+      user: currentUser.id,
+      mobile: currentUser.mobile,
+      support,
+      description,
+      company,
+    };
+    console.log(data);
     addNetFeeSupport(dispatch, data, setIsLoading);
     setSupport("");
     setDescription("");
