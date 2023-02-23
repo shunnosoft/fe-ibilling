@@ -55,11 +55,6 @@ const Table = (props) => {
     }
   }, [selectedFlatRows]);
   const [isActive, setIsActive] = useState(false);
-<<<<<<< HEAD
-
-=======
-  console.log(allColumns);
->>>>>>> 27a900634a30cd62b64890514c7ece42dae87a4e
   return (
     <>
       <GlobalFilter

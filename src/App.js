@@ -552,7 +552,7 @@ function App() {
               <Route
                 path="staff"
                 element={
-                  userRole === "ispOwner" || permissions.staffSalary ? (
+                  userRole === "ispOwner" || permissions?.staffSalary ? (
                     <Staff />
                   ) : (
                     <Navigate to={"/home"} />
@@ -562,7 +562,7 @@ function App() {
               <Route
                 path="staff/:staffId"
                 element={
-                  userRole === "ispOwner" || permissions.staffSalary ? (
+                  userRole === "ispOwner" || permissions?.staffSalary ? (
                     <StaffSalary />
                   ) : (
                     <Navigate to={"/home"} />

@@ -658,5 +658,8 @@
   "expiredCustomer": "Expired Customer",
   "paidCustomer": "Paid Customer",
   "unpaidCustomer": "Unpaid Customer",
-  "allCollector": "All Collector"
+  "allCollector": "All Collector",
+  "totalBillAmount": "Total Bill Amount: ",
+  "dueNotAcceptable": "Due Not Acceptable",
+  "discountNotAcceptable": "Discount Not Acceptable"
 }
