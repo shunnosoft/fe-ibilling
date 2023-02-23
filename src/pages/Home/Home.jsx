@@ -44,7 +44,7 @@ import { Accordion } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
 import ReactToPrint from "react-to-print";
-import CollectionOverviewPdf from "./CollectionOverviewPdf";
+import CollectionOverviewPdf from "./homePdf/CollectionOverviewPdf";
 import Inactive from "./dataComponent/Inactive";
 import Expired from "./dataComponent/Expired";
 import FreeCustomer from "./dataComponent/FreeCustomer";
@@ -661,6 +661,93 @@ export default function Home() {
             </div>
             <hr />
 
+            <FourGround>
+              <div className="ChartsHeadernew">
+                <div className="selectGraph">
+                  <h4>{t("collection")}</h4>
+                  <div>
+                    <input
+                      type="radio"
+                      name="graphSelectRadio"
+                      checked={showGraphData === "amount" && "checked"}
+                      onChange={() => setShowGraphData("amount")}
+                    />
+                     <label htmlFor="html">{t("amount")}</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      name="graphSelectRadio"
+                      onChange={() => setShowGraphData("bill")}
+                    />
+                      <label htmlFor="css">{t("bill")}</label>
+                  </div>
+                </div>
+
+                <div className="ChartsFilternew">
+                  {role === "collector" ? (
+                    ""
+                  ) : (
+                    <select
+                      className="form-select chartFilteritem"
+                      onChange={(e) => setCurrentCollector(e.target.value)}
+                    >
+                      <option value="">{t("all collector")}</option>
+                      {collectors?.map((c, key) => (
+                        <option key={key} value={c.user}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  <select
+                    className="form-select chartFilteritem"
+                    onChange={(e) => setYear(e.target.value)}
+                  >
+                    <option value={Year}>{Year}</option>
+                    <option value={Year - 1}>{Year - 1}</option>
+                  </select>
+                  <select
+                    className="form-select chartFilteritem"
+                    value={Month}
+                    onChange={(e) => setMonth(e.target.value)}
+                  >
+                    {monthsName.map((val, index) => (
+                      <option
+                        // selected={index === Month ? true : false}
+                        value={index}
+                        key={index}
+                      >
+                        {val}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
+                    type="button"
+                    onClick={handleFilterHandler}
+                  >
+                    {t("filter")}
+                  </button>
+                </div>
+              </div>
+
+              {/* select graph */}
+
+              <div className="lineChart">
+                <Line
+                  data={chartsData}
+                  height={400}
+                  width={600}
+                  options={{
+                    tension: 0.4,
+                    maintainAspectRatio: false,
+                  }}
+                />
+              </div>
+            </FourGround>
+
             <Accordion alwaysOpen>
               {role === "ispOwner" && (
                 <Accordion.Item eventKey="0">
@@ -1093,93 +1180,7 @@ export default function Home() {
             </Accordion>
             {/* chart section */}
             {/* <h2 className="dashboardTitle mt-2">কালেকশন</h2> */}
-            <br />
-            <FourGround>
-              <div className="ChartsHeadernew">
-                <div className="selectGraph">
-                  <h4>{t("collection")}</h4>
-                  <div>
-                    <input
-                      type="radio"
-                      name="graphSelectRadio"
-                      checked={showGraphData === "amount" && "checked"}
-                      onChange={() => setShowGraphData("amount")}
-                    />
-                     <label htmlFor="html">{t("amount")}</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      name="graphSelectRadio"
-                      onChange={() => setShowGraphData("bill")}
-                    />
-                      <label htmlFor="css">{t("bill")}</label>
-                  </div>
-                </div>
 
-                <div className="ChartsFilternew">
-                  {role === "collector" ? (
-                    ""
-                  ) : (
-                    <select
-                      className="form-select chartFilteritem"
-                      onChange={(e) => setCurrentCollector(e.target.value)}
-                    >
-                      <option value="">{t("all collector")}</option>
-                      {collectors?.map((c, key) => (
-                        <option key={key} value={c.user}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-
-                  <select
-                    className="form-select chartFilteritem"
-                    onChange={(e) => setYear(e.target.value)}
-                  >
-                    <option value={Year}>{Year}</option>
-                    <option value={Year - 1}>{Year - 1}</option>
-                  </select>
-                  <select
-                    className="form-select chartFilteritem"
-                    value={Month}
-                    onChange={(e) => setMonth(e.target.value)}
-                  >
-                    {monthsName.map((val, index) => (
-                      <option
-                        // selected={index === Month ? true : false}
-                        value={index}
-                        key={index}
-                      >
-                        {val}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
-                    type="button"
-                    onClick={handleFilterHandler}
-                  >
-                    {t("filter")}
-                  </button>
-                </div>
-              </div>
-
-              {/* select graph */}
-
-              <div className="lineChart">
-                <Line
-                  data={chartsData}
-                  height={400}
-                  width={600}
-                  options={{
-                    tension: 0.4,
-                    maintainAspectRatio: false,
-                  }}
-                />
-              </div>
-            </FourGround>
             {/* print to collectorOverview start */}
           </div>
           <Footer />
