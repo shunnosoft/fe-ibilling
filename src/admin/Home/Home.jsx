@@ -105,7 +105,7 @@ export default function Home() {
     setOwnerId(ispOwnerId);
   };
 
-  // permisson modal method
+  // permission modal method
   const permissionModal = (permissionId) => {
     setOwnerId(permissionId);
   };
@@ -142,7 +142,7 @@ export default function Home() {
       {
         width: "9%",
         accessor: "company",
-        Header: "Comapny",
+        Header: "Company",
       },
 
       {
@@ -476,7 +476,7 @@ export default function Home() {
                 <option value="new">New</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="Banned">banned</option>
+                <option value="banned">Banned</option>
                 <option value="deleted">Deleted</option>
               </select>
               <select

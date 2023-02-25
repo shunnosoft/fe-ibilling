@@ -74,7 +74,7 @@ const AllComments = () => {
       },
       {
         width: "12%",
-        Header: "Comapny",
+        Header: "Company",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
           return (

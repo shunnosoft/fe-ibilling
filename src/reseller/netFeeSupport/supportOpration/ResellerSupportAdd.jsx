@@ -50,10 +50,10 @@ const ResellerSupportAdd = () => {
       description,
       ispOwner,
       user,
+      reseller: reseller.id,
       mobile: reseller.mobile,
       company,
     };
-    console.log(data);
     postResellerNetFeeSupport(dispatch, setIsLoading, data);
     support("");
     description("");

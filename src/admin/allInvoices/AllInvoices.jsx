@@ -99,17 +99,17 @@ const AllInvoices = () => {
   const onClickDueDateFilter = () => {
     let filterMainData = [...invoices];
     // date filter
-    filterMainData = filterMainData.filter(
-      (value) => {
+    filterMainData = filterMainData.filter((value) => {
+      let tempDT =
+        value.type === "smsPurchase" ? value.createdAt : value.dueDate;
 
-        let tempDT = value.type === 'smsPurchase' ? value.createdAt : value.dueDate
-
-        return new Date(moment(tempDT).format("YYYY-MM-DD")).getTime() >=
+      return (
+        new Date(moment(tempDT).format("YYYY-MM-DD")).getTime() >=
           new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
         new Date(moment(tempDT).format("YYYY-MM-DD")).getTime() <=
           new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-
-      });
+      );
+    });
     // payment filter
     if (filterStatus && filterStatus !== "All") {
       filterMainData = filterMainData.filter(
@@ -143,14 +143,18 @@ const AllInvoices = () => {
   }, [mainData]);
 
   //custom table header component
-  const customComponent = (
-    userRole === 'superadmin' ? <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {"Total: "}&nbsp; {FormatNumber(totalStat.totalAmount)}
-      &nbsp;
-      {"Tk"} &nbsp;&nbsp; {"Total Sms: "}&nbsp;
-      {FormatNumber(totalStat.totalSms)} &nbsp;    
-    </div> : null
-  );
+  const customComponent =
+    userRole === "superadmin" ? (
+      <div
+        className="text-center"
+        style={{ fontSize: "18px", display: "flex" }}
+      >
+        {"Total: "}&nbsp; {FormatNumber(totalStat.totalAmount)}
+        &nbsp;
+        {"Tk"} &nbsp;&nbsp; {"Total Sms: "}&nbsp;
+        {FormatNumber(totalStat.totalSms)} &nbsp;
+      </div>
+    ) : null;
 
   // table column
   const columns = React.useMemo(

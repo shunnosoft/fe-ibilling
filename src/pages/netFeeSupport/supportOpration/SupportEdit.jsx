@@ -38,7 +38,7 @@ const SupportEdit = ({ editId }) => {
       toast.error(t("pleaseInputYourComment"));
     }
     if (!support) {
-      toast.error(t("pleaseSelectYourSupporType"));
+      toast.error(t("pleaseSelectYourSupportType"));
     }
     updateNetFeeSupportData(dispatch, setIsLoading, supportEditData);
   };

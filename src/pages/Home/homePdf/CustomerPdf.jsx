@@ -2,6 +2,7 @@ import moment from "moment";
 import React, { forwardRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { badge } from "../../../components/common/Utils";
 
 const CustomerPdf = forwardRef((props, ref) => {
   const { t } = useTranslation();
@@ -52,8 +53,8 @@ const CustomerPdf = forwardRef((props, ref) => {
                 <td className="prin_td">{val.customerId}</td>
                 <td className="prin_td">{val.name}</td>
                 <td className="prin_td">{val.pppoe.name}</td>
-                <td className="prin_td">{val.status}</td>
-                <td className="prin_td">{val.paymentStatus}</td>
+                <td className="prin_td">{badge(val.status)}</td>
+                <td className="prin_td">{badge(val.paymentStatus)}</td>
                 <td className="prin_td">{val.pppoe.profile}</td>
                 <td className="prin_td">{val.monthlyFee}</td>
                 <td className="prin_td">{val.balance}</td>

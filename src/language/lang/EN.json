@@ -642,6 +642,7 @@
   "complain": "Complain",
   "featureRequest": "Feature Request",
   "supportType": "Support Type",
+  "supportMessage": "Support Message",
   "doYouWantToDeleteSupport?": "Do you want to delete support?",
   "supportDelete": "Support Delete",
   "netFeeSupportAdd": "NetFee Support Add",

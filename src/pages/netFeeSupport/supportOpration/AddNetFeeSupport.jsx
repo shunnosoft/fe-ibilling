@@ -14,7 +14,6 @@ const AddNetFeeSupport = () => {
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser?.user
   );
-  console.log(currentUser);
 
   //get isp owner id
   const ispOwner = useSelector(

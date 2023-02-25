@@ -67,17 +67,17 @@ const SupportTicket = () => {
 
       {
         width: "8%",
-        Header: "Id",
+        Header: t("customerId"),
         accessor: "customer.customerId",
       },
       {
         width: "11%",
-        Header: "Name",
+        Header: t("name"),
         accessor: "customer.name",
       },
       {
         width: "11%",
-        Header: " Support Message",
+        Header: t("supportMessage"),
         accessor: "message",
       },
 
@@ -92,7 +92,7 @@ const SupportTicket = () => {
 
       {
         width: "12%",
-        Header: "Created At",
+        Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm a");
