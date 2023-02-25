@@ -11,7 +11,11 @@ import { FtextField } from "../../components/common/FtextField";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
-import { passwordUpdate, profileUpdate } from "../../features/apiCalls";
+import {
+  getAllCustomerCount,
+  passwordUpdate,
+  profileUpdate,
+} from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { useState } from "react";
@@ -19,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import { Tab, Tabs } from "react-bootstrap";
 import moment from "moment/moment";
 import { badge } from "../../components/common/Utils";
+import { useEffect } from "react";
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -36,6 +41,7 @@ export default function Profile() {
   const [isLoadingpass, setIsLoadingpass] = useState(false);
   const [startRedirect, setStartRedirect] = useState(false);
   const [redirectTime, setRedirectTime] = useState(10);
+  const [customerCount, setCustomerCount] = useState();
 
   const passwordValidator = Yup.object({
     mobile: Yup.string()
@@ -105,6 +111,10 @@ export default function Profile() {
     bottom: 0,
     zIndex: "5",
   };
+
+  useEffect(() => {
+    role === "ispOwner" && getAllCustomerCount(ispOwnerId, setCustomerCount);
+  }, []);
 
   return (
     <>
@@ -331,6 +341,12 @@ export default function Profile() {
                                       {currentUser.bpSettings?.customerLimit}
                                     </td>
                                   </tr>
+                                  {role === "ispOwner" && (
+                                    <tr>
+                                      <td>{t("total customer")}</td>
+                                      <td>{customerCount?.customersCount}</td>
+                                    </tr>
+                                  )}
                                   <tr>
                                     <td>{t("customerType")}</td>
                                     <td>

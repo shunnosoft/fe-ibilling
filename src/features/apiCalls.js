@@ -647,6 +647,16 @@ export const deleteCollector = async (
 };
 
 //Customers
+export const getAllCustomerCount = async (ispOwner, setCustomerCount) => {
+  try {
+    const res = await apiLink.get(`/ispOwner/customer/count/${ispOwner}`);
+    setCustomerCount(res.data);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+//Customers
 export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
