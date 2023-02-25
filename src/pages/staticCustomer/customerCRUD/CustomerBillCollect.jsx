@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -63,10 +63,27 @@ export default function CustomerBillCollect({ single }) {
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [discount, setDiscount] = useState("0");
+  const [billAmount, setBillAmount] = useState();
+  const [balanceDue, setBalanceDue] = useState();
+  const totalAmount = Number(billAmount) + Number(balanceDue);
+
+  const maxDiscount =
+    data?.monthlyFee + (data?.balance < 0 ? Math.abs(data?.balance) : 0);
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
       .min(0, t("billNotAcceptable"))
+      .integer(t("decimalNumberNotAcceptable")),
+    due: Yup.number()
+      .min(0, t("dueNotAcceptable"))
+      .max(
+        data?.balance < 0 ? Math.abs(data?.balance) : 0,
+        t("dueNotAcceptable")
+      )
+      .integer(t("decimalNumberNotAcceptable")),
+    discount: Yup.number()
+      .min(0, t("discountNotAcceptable"))
+      .max(maxDiscount, t("discountNotAcceptable"))
       .integer(t("decimalNumberNotAcceptable")),
   });
   //form resetFunction
@@ -79,16 +96,39 @@ export default function CustomerBillCollect({ single }) {
     setDiscount("");
   };
 
+  useEffect(() => {
+    setBalanceDue(data?.balance < 0 ? Math.abs(data?.balance) : 0);
+    setBillAmount(data?.monthlyFee);
+  }, [data]);
+
+  const handleFormValue = (event) => {
+    if (event.target.name === "amount") {
+      setBillAmount(event.target.value);
+    }
+    if (event.target.name === "due") {
+      setBalanceDue(event.target.value);
+    }
+  };
+
   // bill amount
   const customerBillHandler = (formValue) => {
-    if (data?.monthlyFee < Number(discount)) {
+    if (balanceDue > (data?.balance < 0 ? Math.abs(data?.balance) : 0)) {
       setLoading(false);
-      return alert(t("discountMustBeLessThanMonthlyFee"));
+      return alert(t("dueNotAcceptable"));
+    }
+
+    if (balanceDue < 0) {
+      setLoading(false);
+      return alert(t("dueNotAcceptable"));
+    }
+    if (maxDiscount < formValue.discount) {
+      setLoading(false);
+      return alert(t("discountNotAcceptable"));
     }
 
     const sendingData = {
       amount: formValue.amount + formValue.due,
-      discount: Number(discount),
+      discount: formValue.discount,
       collectedBy: currentUser?.user.role,
       billType: billType,
       name: userData.name,
@@ -146,8 +186,8 @@ export default function CustomerBillCollect({ single }) {
                 <Formik
                   initialValues={{
                     amount: data?.monthlyFee,
-
                     due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
+                    discount: 0,
                   }}
                   validationSchema={BillValidatoin}
                   onSubmit={(values) => {
@@ -156,7 +196,7 @@ export default function CustomerBillCollect({ single }) {
                   enableReinitialize
                 >
                   {() => (
-                    <Form>
+                    <Form onChange={handleFormValue}>
                       <div className="d-flex flex-wrap">
                         <h5 className="me-3 text-secondary">
                           {t("ip")}{" "}
@@ -168,6 +208,13 @@ export default function CustomerBillCollect({ single }) {
                           {t("ID")} {data?.customerId}
                         </h5>
                       </div>
+                      <h5>
+                        <span className="text-success">
+                          {t("totalBillAmount")}
+                        </span>
+                        <span className="text-danger">{totalAmount} </span>
+                      </h5>
+
                       <div className="bill_collect_form">
                         <div className="w-100 me-2">
                           <FtextField
@@ -231,10 +278,10 @@ export default function CustomerBillCollect({ single }) {
                               type="number"
                               name="discount"
                               label={t("discount")}
-                              value={discount}
-                              onChange={(event) =>
-                                setDiscount(event.target.value)
-                              }
+                              // value={discount}
+                              // onChange={(event) =>
+                              //   setDiscount(event.target.value)
+                              // }
                             />
                           </div>
                         )}
