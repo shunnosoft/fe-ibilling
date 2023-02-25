@@ -1,20 +1,18 @@
 import {
   ThreeDots,
   PenFill,
-  ArchiveFill,
   CurrencyDollar,
   ChatText,
 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
-const ActionButton = ({
-  data,
-  deleteStaff,
-  editHandler,
-  handleSingleMessage,
-}) => {
+const ActionButton = ({ data, editHandler, handleSingleMessage }) => {
   const { t } = useTranslation();
+
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+
   return (
     <>
       <div className="dropdown">
@@ -27,20 +25,22 @@ const ActionButton = ({
         />
 
         <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
-          <li
-            data-bs-toggle="modal"
-            data-bs-target="#staffEditModal"
-            onClick={() => {
-              editHandler(data.id);
-            }}
-          >
-            <div className="dropdown-item">
-              <div className="customerAction">
-                <PenFill />
-                <p className="actionP"> {t("edit")} </p>
+          {userRole === "ispOwner" && (
+            <li
+              data-bs-toggle="modal"
+              data-bs-target="#staffEditModal"
+              onClick={() => {
+                editHandler(data.id);
+              }}
+            >
+              <div className="dropdown-item">
+                <div className="customerAction">
+                  <PenFill />
+                  <p className="actionP"> {t("edit")} </p>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+          )}
           <Link to={"/staff/" + data.id}>
             <li>
               <div className="dropdown-item actionManager">

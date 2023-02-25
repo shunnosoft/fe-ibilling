@@ -136,7 +136,7 @@ export default function Header(props) {
                     className="refreshIcon"
                   >
                     {isRefrsh ? (
-                      <Loader></Loader>
+                      <Loader />
                     ) : (
                       <ArrowClockwise
                         onClick={() =>
@@ -180,8 +180,8 @@ export default function Header(props) {
                     style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
                     className="refreshIcon"
                   >
-                    {isRefrsh ? (
-                      <Loader></Loader>
+                    {isLoading ? (
+                      <Loader />
                     ) : (
                       <ArrowClockwise
                         onClick={() => getTotalbal(dispatch, setLoading)}

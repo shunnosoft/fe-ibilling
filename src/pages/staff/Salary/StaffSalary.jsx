@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { getMonth } from "../../../components/common/getMonth";
 import SalaryDeleteModal from "./SalaryDeleteModal";
+import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
 export default function StaffSalary() {
   const { t } = useTranslation();
@@ -32,6 +33,11 @@ export default function StaffSalary() {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   const staff = useSelector((state) =>
     state.staff.staff.find((item) => item.id == staffId)
@@ -45,24 +51,25 @@ export default function StaffSalary() {
   useEffect(() => {
     getSalaryApi(dispatch, staffId, setIsLoading);
     getStaffs(dispatch, ispOwner, setIsLoading);
+    getOwnerUsers(dispatch, ispOwner);
   }, [staffId]);
 
   const columns = useMemo(
     () => [
       {
-        width: "10%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "18%",
+        width: "12%",
         Header: t("year"),
         accessor: "year",
       },
       {
-        width: "18%",
+        width: "15%",
         Header: t("month"),
         accessor: "month",
         Cell: ({ cell: { value } }) => {
@@ -70,12 +77,27 @@ export default function StaffSalary() {
         },
       },
       {
-        width: "18%",
+        width: "12%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
-        width: "18%",
+        Header: t("paySalary"),
+        width: "20%",
+        accessor: "user",
+        Cell: ({ cell: { value } }) => {
+          const performer = ownerUsers.find((item) => item[value]);
+
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
+        },
+      },
+      {
+        width: "20%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -84,7 +106,7 @@ export default function StaffSalary() {
       },
 
       {
-        width: "18%",
+        width: "10%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -100,28 +122,29 @@ export default function StaffSalary() {
 
             <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
               {new Date(original.createdAt).getMonth() ===
-                new Date().getMonth() && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteSalaryModal"
-                  onClick={() => {
-                    setSalaryId(original.id);
-                  }}
-                >
-                  <div className="dropdown-item actionManager">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">{t("delete")}</p>
+                new Date().getMonth() &&
+                userRole === "ispOwner" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteSalaryModal"
+                    onClick={() => {
+                      setSalaryId(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item actionManager">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">{t("delete")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )}
+                  </li>
+                )}
             </ul>
           </>
         ),
       },
     ],
-    [t]
+    [t, ownerUsers]
   );
 
   return (

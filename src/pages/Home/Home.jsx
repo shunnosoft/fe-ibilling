@@ -12,7 +12,6 @@ import {
   PersonCheckFill,
   Coin,
   CurrencyDollar,
-  PrinterFill,
 } from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
@@ -311,7 +310,9 @@ export default function Home() {
       customerStat.totalManagerCollection +
       customerStat.totalDepositByCollectors;
     const totalCost =
-      customerStat.managerExpenditure + customerStat.totalManagerDeposit;
+      customerStat.managerExpenditure +
+      customerStat.totalManagerDeposit +
+      customerStat.managerStaffSalarySum;
 
     return FormatNumber(totalCollection - totalCost);
   };
@@ -1001,6 +1002,28 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="col-md-3">
+                        <div id="card11" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("staffSalary")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(customerStat.managerStaffSalarySum)}
+                            </h2>
+
+                            {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                        {t("todayTotalExpenditure")}:{" "}
+                        {FormatNumber(customerStat.totalExpenditureToday)}
+                      </p> */}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
                         <div id="card7" className="dataCard">
                           <ThreeDotsVertical className="ThreeDots" />
                           <div className="cardIcon">
@@ -1010,7 +1033,12 @@ export default function Home() {
                             <p style={{ fontSize: "16px" }}>
                               {t("managersBalance")}
                             </p>
-                            <h2>৳ {managerBalanceCalculation()}</h2>
+                            <h2>
+                              ৳{" "}
+                              {
+                                customerStat.managerBalance /*managerBalanceCalculation()*/
+                              }
+                            </h2>
                           </div>
                         </div>
                       </div>
