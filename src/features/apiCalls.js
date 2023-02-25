@@ -647,6 +647,16 @@ export const deleteCollector = async (
 };
 
 //Customers
+export const getAllCustomerCount = async (ispOwner, setCustomerCount) => {
+  try {
+    const res = await apiLink.get(`/ispOwner/customer/count/${ispOwner}`);
+    setCustomerCount(res.data);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+//Customers
 export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
@@ -852,8 +862,11 @@ export const deleteStaticCustomerApi = async (
 export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   await apiLink({
-    method: "GET",
-    url: `/mikrotik/customer/${data.ispOwner}/${data.mikrotikId}?inActiveCustomer=${data.inActiveCustomer}`,
+    method: "POST",
+    url: `/mikrotik/customer/${data.ispOwner}/${
+      data.mikrotikId
+    }?inActiveCustomer=${data.inActiveCustomer}&&isSelected=${true}`,
+    data: { customers: data.customers },
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));

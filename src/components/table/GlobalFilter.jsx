@@ -11,23 +11,14 @@ const GlobalFilter = ({
   const { t } = useTranslation();
   return (
     <div className="row searchCollector d-flex">
-      <div
-        style={{ display: "flex", alignItems: "center" }}
-        className="col-sm-1"
-      >
-        {toggleColumnButton}
-      </div>
-      <div
-        style={{ display: "flex", alignItems: "center" }}
-        className="col-sm-8"
-      >
-        <h4 style={{ fontSize: "18px" }} className="allCollector">
+      <div className="col-sm-8 d-flex align-items-center">
+        <div style={{ marginTop: "-5px" }}>{toggleColumnButton}</div>
+        <h6 style={{ fontSize: "18px" }} className="allCollector">
           {t("totalData")} <span>{data ? data.length : "0"}</span>
-        </h4>
+        </h6>
         <div>{customComponent}</div>
       </div>
-
-      <div className="col-sm-3">
+      <div className="col-sm-4">
         <div className=" collectorSearch">
           <input
             type="text"

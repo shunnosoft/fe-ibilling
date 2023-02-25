@@ -1,5 +1,5 @@
 // import React from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Pagination } from "react-bootstrap";
 import { ArrowDown, ArrowUp, GearFill } from "react-bootstrap-icons";
 import {
@@ -55,6 +55,12 @@ const Table = (props) => {
     }
   }, [selectedFlatRows]);
   const [isActive, setIsActive] = useState(false);
+  const toggleColumnRef = useRef();
+
+  const handleToggleColumn = () => {
+    setIsActive(!isActive);
+  };
+
   return (
     <>
       <GlobalFilter
@@ -63,10 +69,10 @@ const Table = (props) => {
         setFilter={setGlobalFilter}
         customComponent={customComponent}
         toggleColumnButton={
-          <div className="toggle-column-header w-100">
+          <div ref={toggleColumnRef} className="toggle-column-header w-100">
             <button
               className="btn btn-sm text-white"
-              onClick={() => setIsActive(!isActive)}
+              onClick={handleToggleColumn}
             >
               <GearFill />
             </button>

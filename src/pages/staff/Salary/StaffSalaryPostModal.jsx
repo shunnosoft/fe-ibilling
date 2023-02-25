@@ -42,7 +42,6 @@ export default function StaffSalaryPostModal({ staffId }) {
   });
 
   const staffSalaryHandler = (data, resetForm) => {
-    console.log(data);
     const { remarks, amount } = data;
     const date = data.date.split("-");
     const year = date[0];

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { fetchMikrotikSyncUser } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
@@ -23,10 +23,8 @@ const CustomerSync = ({
   const [isLoading, setIsloading] = useState(false);
   const [customer, setCustomer] = useState([]);
   const [loaded, setLoaded] = useState(false);
-  const [firstLoading, setFirstLoading] = useState(false);
   // bulk customer state
   const [bulkCustomers, setBulkCustomer] = useState([]);
-
   // Sync Customer
   const syncCustomer = () => {
     // send data for api
@@ -34,25 +32,25 @@ const CustomerSync = ({
       ispOwner: ispOwner,
       mikrotikId: mikrotikId,
       inActiveCustomer: inActiveCustomer,
+      customers: bulkCustomers.map((item) => item.original),
     };
 
     fetchMikrotikSyncUser(dispatch, data, setIsloading);
   };
 
   const syncCustomerFirstTime = async () => {
-    setFirstLoading(true);
+    setIsloading(true);
     try {
       const { data } = await apiLink({
-        method: "GET",
-        url: `/mikrotik/customer/${ispOwner}/${mikrotikId}?inActiveCustomer=${inActiveCustomer}?isSelected=${false}`,
+        method: "POST",
+        url: `/mikrotik/customer/${ispOwner}/${mikrotikId}?inActiveCustomer=${inActiveCustomer}&&isSelected=${false}`,
       });
-
       setCustomer(data);
       setLoaded(true);
     } catch (error) {
       console.log(error);
     }
-    setFirstLoading(false);
+    setIsloading(false);
   };
 
   const column = React.useMemo(
@@ -72,11 +70,7 @@ const CustomerSync = ({
         ),
         width: "2%",
       },
-      {
-        width: "8%",
-        Header: t("id"),
-        accessor: "customerId",
-      },
+
       {
         width: "9%",
         Header: t("name"),
@@ -92,23 +86,15 @@ const CustomerSync = ({
         Header: t("mobile"),
         accessor: "mobile",
       },
-
       {
         width: "8%",
         Header: t("status"),
-        accessor: "status",
+        accessor: "pppoe.disabled",
         Cell: ({ cell: { value } }) => {
-          return badge(value);
+          return value ? badge("inactive") : badge("active");
         },
       },
-      {
-        width: "9%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
+
       {
         width: "9%",
         Header: t("package"),
@@ -119,11 +105,7 @@ const CustomerSync = ({
         Header: t("mountly"),
         accessor: "monthlyFee",
       },
-      {
-        width: "9%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
+
       {
         width: "11%",
         Header: t("bill"),
@@ -144,7 +126,11 @@ const CustomerSync = ({
       aria-labelledby="customerModalDetails"
       aria-hidden="true"
     >
-      <div className="modal-dialog modal-xl">
+      <div
+        className={`modal-dialog modal-dialog-scrollable ${
+          customer.length && "modal-xl"
+        }`}
+      >
         <div className="modal-content">
           <div className="modal-header">
             <h5
@@ -162,8 +148,12 @@ const CustomerSync = ({
             ></button>
           </div>
           <div className="modal-body">
-            {firstLoading && <div className="">loading...</div>}
-            {loaded && !firstLoading ? (
+            {isLoading && (
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            )}
+            {!loaded ? (
               <div class="form-check mt-4">
                 <input
                   class="form-check-input"
@@ -182,6 +172,7 @@ const CustomerSync = ({
               </div>
             ) : (
               <>
+                <h4>Select customer</h4>
                 <Table
                   columns={column}
                   data={customer}
@@ -192,24 +183,23 @@ const CustomerSync = ({
                 ></Table>
               </>
             )}
-
-            <div className="modal-footer" style={{ border: "none" }}>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-                disabled={isLoading}
-              >
-                {t("cancel")}
-              </button>
-              <button
-                onClick={loaded ? syncCustomer : syncCustomerFirstTime}
-                className="btn btn-success"
-                disabled={isLoading}
-              >
-                {isLoading ? <Loader /> : t("sync")}
-              </button>
-            </div>
+          </div>
+          <div className="modal-footer" style={{ border: "none" }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              data-bs-dismiss="modal"
+              disabled={isLoading}
+            >
+              {t("cancel")}
+            </button>
+            <button
+              onClick={loaded ? syncCustomer : syncCustomerFirstTime}
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("sync")}
+            </button>
           </div>
         </div>
       </div>

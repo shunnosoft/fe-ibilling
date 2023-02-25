@@ -160,16 +160,13 @@ const Staff = () => {
                   </div>
                 </div>
                 <div className="d-flex justify-content-between align-items-center">
-                  <div
-                    className="addAndSettingIcon"
-                    style={{ marginLeft: ".5rem" }}
-                  >
+                  <div className="header_icon me-1">
                     <ReactToPrint
                       documentTitle="Staff Report"
                       trigger={() => (
                         <PrinterFill
-                          // title={t("print")}
-                          className="addcutmButton"
+                        // title={t("print")}
+                        // className="addcutmButton"
                         />
                       )}
                       content={() => componentRef.current}
