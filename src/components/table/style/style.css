@@ -17,7 +17,7 @@
   position: absolute;
   transform: scale(0);
   border: 1px solid blueviolet;
-  transition: transform 0.4s;
+  transition: transform 0.2s;
   transform-origin: top left;
   background-color: ghostwhite;
 

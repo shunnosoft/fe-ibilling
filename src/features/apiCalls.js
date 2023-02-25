@@ -852,8 +852,11 @@ export const deleteStaticCustomerApi = async (
 export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
   setIsLoading(true);
   await apiLink({
-    method: "GET",
-    url: `/mikrotik/customer/${data.ispOwner}/${data.mikrotikId}?inActiveCustomer=${data.inActiveCustomer}`,
+    method: "POST",
+    url: `/mikrotik/customer/${data.ispOwner}/${
+      data.mikrotikId
+    }?inActiveCustomer=${data.inActiveCustomer}&&isSelected=${true}`,
+    data: { customers: data.customers },
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));

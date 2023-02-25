@@ -13,12 +13,6 @@ const GlobalFilter = ({
     <div className="row searchCollector d-flex">
       <div
         style={{ display: "flex", alignItems: "center" }}
-        className="col-sm-1"
-      >
-        {toggleColumnButton}
-      </div>
-      <div
-        style={{ display: "flex", alignItems: "center" }}
         className="col-sm-8"
       >
         <h4 style={{ fontSize: "18px" }} className="allCollector">
@@ -26,7 +20,12 @@ const GlobalFilter = ({
         </h4>
         <div>{customComponent}</div>
       </div>
-
+      <div
+        style={{ display: "flex", justifyContent: "end", alignItems: "center" }}
+        className="col-sm-1"
+      >
+        {toggleColumnButton}
+      </div>
       <div className="col-sm-3">
         <div className=" collectorSearch">
           <input
