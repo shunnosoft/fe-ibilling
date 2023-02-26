@@ -21,6 +21,14 @@ const Unpaid = ({ ispOwnerId, month, year }) => {
   const dispatch = useDispatch();
   const componentRef = useRef();
 
+  // get user role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user permission
+  const permissions = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
   // get unpaid customer data
   const customer = useSelector(
     (state) => state.dashboardInformation?.unpaidCustomer
@@ -160,7 +168,12 @@ const Unpaid = ({ ispOwnerId, month, year }) => {
                 <div className="table-section">
                   <Table
                     isLoading={isLoading}
-                    customComponent={customComponent}
+                    customComponent={
+                      role === "ispOwner" ||
+                      permissions?.dashboardCollectionData
+                        ? customComponent
+                        : ""
+                    }
                     columns={column}
                     data={customer}
                   ></Table>

@@ -174,3 +174,7 @@ p {
   color: #05d36a !important;
   text-decoration: underline;
 }
+
+.fs-13 {
+  font-size: 13px !important;
+}

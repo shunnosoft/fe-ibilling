@@ -42,8 +42,6 @@ import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
-import ReactToPrint from "react-to-print";
-import CollectionOverviewPdf from "./homePdf/CollectionOverviewPdf";
 import Inactive from "./dataComponent/Inactive";
 import Expired from "./dataComponent/Expired";
 import FreeCustomer from "./dataComponent/FreeCustomer";
@@ -63,6 +61,11 @@ export default function Home() {
 
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner
+  );
+
+  // get user permission
+  const permissions = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
   );
 
   const reseller = useSelector((state) => state.reseller?.reseller);
@@ -385,7 +388,8 @@ export default function Home() {
               )}
 
               <div className="col-md-12 mb-3">
-                {role !== "collector" && (
+                {(role === "ispOwner" ||
+                  permissions?.dashboardCollectionData) && (
                   <div className="row">
                     <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <h2>
@@ -398,7 +402,11 @@ export default function Home() {
                     </div>
                     <div className="col-md-6">
                       <div
-                        style={{ width: 200, height: 200, margin: "0 auto" }}
+                        style={{
+                          width: 200,
+                          height: 200,
+                          margin: "0 auto",
+                        }}
                       >
                         <AnimatedProgressProvider
                           valueStart={0}
@@ -416,7 +424,9 @@ export default function Home() {
                                 text={`${
                                   isNaN(roundedValue) ? 0 : roundedValue
                                 }%`}
-                                styles={buildStyles({ pathTransition: "none" })}
+                                styles={buildStyles({
+                                  pathTransition: "none",
+                                })}
                               />
                             );
                           }}
@@ -521,19 +531,21 @@ export default function Home() {
                     >
                       {FormatNumber(customerStat.active)}
                     </h2>
-
-                    <p
-                      className="dashboardActive pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
-                      style={{ fontSize: "15px" }}
-                    >
-                      {t("active")}
-                      &nbsp;
-                      <span className="text-info">
-                        ৳ {FormatNumber(customerStat.totalActiveAmount)}
-                      </span>
-                    </p>
+                    {role === "ispOwner" ||
+                      (permissions?.dashboardCollectionData && (
+                        <p
+                          className="dashboardActive pb-1"
+                          data-bs-toggle="modal"
+                          data-bs-target="#activeCustomer"
+                          style={{ fontSize: "15px" }}
+                        >
+                          {t("active")}
+                          &nbsp;
+                          <span className="text-info">
+                            ৳ {FormatNumber(customerStat.totalActiveAmount)}
+                          </span>
+                        </p>
+                      ))}
                     <p
                       className="dashboardData pb-1 pt-0"
                       data-bs-toggle="modal"
@@ -542,9 +554,12 @@ export default function Home() {
                     >
                       {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
                       &nbsp;
-                      <span className="text-info">
-                        ৳ {FormatNumber(customerStat.totalInactiveAmount)}
-                      </span>
+                      {role === "ispOwner" ||
+                        (permissions?.dashboardCollectionData && (
+                          <span className="text-info">
+                            ৳ {FormatNumber(customerStat.totalInactiveAmount)}
+                          </span>
+                        ))}
                     </p>
                     <p
                       className="dashboardData pb-1"
@@ -554,9 +569,12 @@ export default function Home() {
                     >
                       {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
                       &nbsp;
-                      <span className="text-info">
-                        ৳{FormatNumber(customerStat.totalExpiredAmount)}
-                      </span>
+                      {role === "ispOwner" ||
+                        (permissions?.dashboardCollectionData && (
+                          <span className="text-info">
+                            ৳{FormatNumber(customerStat.totalExpiredAmount)}
+                          </span>
+                        ))}
                     </p>
                   </div>
                 </div>
@@ -617,28 +635,52 @@ export default function Home() {
                     <Coin />
                   </div>
                   <div className="chartSection">
-                    <p style={{ fontSize: "16px" }}>{t("total collection")}</p>
-                    <h2>
-                      ৳{" "}
-                      {FormatNumber(
-                        customerStat.totalMonthlyCollection -
-                          customerStat.totalMonthlyDiscount
-                      )}
-                    </h2>
+                    {(role === "ispOwner" ||
+                      permissions?.dashboardCollectionData) && (
+                      <>
+                        <p style={{ fontSize: "16px" }}>
+                          {t("total collection")}
+                        </p>
+                        <h2>
+                          ৳{" "}
+                          {FormatNumber(
+                            customerStat.totalMonthlyCollection -
+                              customerStat.totalMonthlyDiscount
+                          )}
+                        </h2>
+                      </>
+                    )}
                     {role !== "collector" && (
                       <>
-                        <p style={{ fontSize: "15px", marginBottom: "0px" }}>
-                          {t("discount")}:{" "}
-                          {FormatNumber(customerStat.totalMonthlyDiscount)}
-                        </p>
+                        {(role === "ispOwner" ||
+                          permissions?.dashboardCollectionData) && (
+                          <>
+                            <p
+                              style={{ fontSize: "15px", marginBottom: "0px" }}
+                            >
+                              {t("discount")}:{" "}
+                              {FormatNumber(customerStat.totalMonthlyDiscount)}
+                            </p>
 
-                        <p style={{ fontSize: "13px", marginBottom: "0px" }}>
-                          {t("withoutDiscount")}:{" "}
-                          {FormatNumber(customerStat.totalMonthlyCollection)}
-                        </p>
+                            <p
+                              style={{ fontSize: "13px", marginBottom: "0px" }}
+                            >
+                              {t("withoutDiscount")}:{" "}
+                              {FormatNumber(
+                                customerStat.totalMonthlyCollection
+                              )}
+                            </p>
+                          </>
+                        )}
 
-                        <p style={{ fontSize: "13px" }}>
-                          {t("today collection")}:{" "}
+                        <p
+                          className={
+                            !permissions?.dashboardCollectionData
+                              ? "fs-6"
+                              : "fs-13"
+                          }
+                        >
+                          {t("today collection")}{" "}
                           {FormatNumber(
                             calculationOfBillStat() +
                               customerStat.totalManagerCollectionToday +
@@ -649,7 +691,13 @@ export default function Home() {
                       </>
                     )}
                     {role === "collector" && (
-                      <p style={{ fontSize: "13px" }}>
+                      <p
+                        className={
+                          !permissions?.dashboardCollectionData
+                            ? "fs-6"
+                            : "fs-13"
+                        }
+                      >
                         {t("today collection")}{" "}
                         {FormatNumber(
                           customerStat.collectorBillCollectionToday

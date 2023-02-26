@@ -664,5 +664,12 @@
   "dueNotAcceptable": "Due Not Acceptable",
   "discountNotAcceptable": "Discount Not Acceptable",
   "staffSalary": "Staff Salary",
-  "totalRechargeBill": "Total Bill"
+  "totalRechargeBill": "Total Bill",
+  "totalMonthlyFee": "Total Monthly Fee",
+  "bandWith": "Bandwith",
+  "collected": "Collected",
+  "currentBalance": "Current Balance",
+  "billDate": "Bill Date",
+  "previousState": "পূর্বের স্টেট",
+  "currentState": "বর্তমান স্টেট"
 }

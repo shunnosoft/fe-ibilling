@@ -167,6 +167,13 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.staffSalary,
       disabled: false,
     },
+    {
+      id: 25,
+      value: "dashboardCollectionData",
+      label: "Dashboard Collection",
+      isChecked: permission?.dashboardCollectionData,
+      disabled: false,
+    },
   ];
 
   const permissionBangla = [
@@ -336,6 +343,13 @@ export const managerPermission = (permission, bpSettings) => {
       value: "staffSalary",
       label: "স্টাফ স্যলারি",
       isChecked: permission?.staffSalary,
+      disabled: false,
+    },
+    {
+      id: 25,
+      value: "dashboardCollectionData",
+      label: "ড্যাশবোর্ড কালেকশন",
+      isChecked: permission?.dashboardCollectionData,
       disabled: false,
     },
   ];

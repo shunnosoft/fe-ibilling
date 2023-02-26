@@ -21,6 +21,14 @@ const Expired = ({ ispOwnerId, year, month }) => {
   const dispatch = useDispatch();
   const componentRef = useRef();
 
+  // get user role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user permission
+  const permissions = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
   // get expired customer data
   const customer = useSelector(
     (state) => state.dashboardInformation?.expiredCustomer
@@ -158,7 +166,11 @@ const Expired = ({ ispOwnerId, year, month }) => {
             <div className="table-section">
               <Table
                 isLoading={isLoading}
-                customComponent={customComponent}
+                customComponent={
+                  role === "ispOwner" || permissions?.dashboardCollectionData
+                    ? customComponent
+                    : ""
+                }
                 columns={column}
                 data={customer}
               ></Table>

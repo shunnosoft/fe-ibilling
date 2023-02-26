@@ -666,5 +666,12 @@
   "dueNotAcceptable": "বকেয়া গ্রহণ যোগ্য নয়",
   "discountNotAcceptable": "ডিসকাউন্ট গ্রহণ যোগ্য নয়",
   "staffSalary": "স্টাফের বেতন",
-  "totalRechargeBill": "মোট বিল"
+  "totalRechargeBill": "মোট বিল",
+  "totalMonthlyFee": "মোট মাসিক ফি",
+  "bandWith": "ব্যান্ডউইথ",
+  "collected": "কালেক্টেড",
+  "currentBalance": "বর্তমান ব্যালেন্স",
+  "billDate": "বিল ডেট",
+  "previousState": "পূর্বের স্টেট",
+  "currentState": "বর্তমান স্টেট"
 }

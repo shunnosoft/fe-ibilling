@@ -344,6 +344,8 @@ const PPPOECustomer = () => {
         mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
         freeUser: freeUser ? c.monthlyFee === 0 : true,
         nonFreeUser: freeUser ? c.monthlyFee !== 0 : true,
+        prepaid: freeUser ? c.customerBillingType === "prepaid" : true,
+        postpaid: freeUser ? c.customerBillingType === "postpaid" : true,
         package: filterOptions.package
           ? c.mikrotikPackage === filterOptions.package
           : true,
@@ -818,6 +820,7 @@ const PPPOECustomer = () => {
     () =>
       tableData.map((customer) => {
         return {
+          customerId: customer.customerId,
           name: customer.name,
           pppoeName: customer.pppoe.name,
           customerAddress: customer.address,
@@ -837,6 +840,7 @@ const PPPOECustomer = () => {
 
   // csv table header
   const customerForCsVTableInfoHeader = [
+    { label: "customer_id", key: "customerId" },
     { label: "name_of_client", key: "name" },
     { label: "PPPoE_Name", key: "pppoeName" },
     { label: "address_of_client", key: "customerAddress" },
@@ -1057,6 +1061,8 @@ const PPPOECustomer = () => {
       options: [
         { value: "freeUser", text: t("freeCustomer") },
         { value: "nonFreeUser", text: t("nonFreeCustomer") },
+        { value: "prepaid", text: t("prepaid") },
+        { value: "postpaid", text: t("postPaid") },
       ],
       firstOptions: t("sokolCustomer"),
       textAccessor: "text",

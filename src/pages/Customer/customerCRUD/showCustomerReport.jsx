@@ -38,6 +38,7 @@ export default function CustomerReport(props) {
   );
 
   const [customerReport, setCustomerReport] = useState([]);
+  console.log(customerReport);
 
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,20 +104,14 @@ export default function CustomerReport(props) {
             </div>
             <div className="modal-body">
               <div className="table-responsive-lg">
-                <table className="table table-striped text-center">
+                <table className="table table-striped">
                   <thead>
                     <tr className="spetialSortingRow">
                       <th scope="col">{t("package")}</th>
+                      <th scope="col">{t("collected")}</th>
                       <th scope="col">{t("amount")}</th>
-                      <th scope="col">{t("type")}</th>
-                      <th scope="col">{t("discount")}</th>
-                      <th scope="col">{t("due")}</th>
-                      <th scope="col">{t("previousBalance")}</th>
-                      <th scope="col">{t("date")}</th>
-                      <th scope="col">{t("billingCycle")}</th>
-                      <th scope="col">{t("promiseDate")}</th>
-                      <th scope="col">{t("medium")}</th>
-                      <th scope="col">{t("collector")}</th>
+                      <th scope="col">{t("previousState")}</th>
+                      <th scope="col">{t("currentState")}</th>
                       <th scope="col">{t("note")}</th>
                       <th scope="col">{t("action")}</th>
                     </tr>
@@ -128,30 +123,105 @@ export default function CustomerReport(props) {
                       customerReport.map((val, index) => {
                         return (
                           <tr className="spetialSortingRow" key={index}>
-                            <td>{single.pppoe.profile}</td>
-                            <td>{FormatNumber(val.amount)}</td>
-                            <td>{val.billType}</td>
-                            <td>{FormatNumber(val?.discount)}</td>
-                            <td>{FormatNumber(val.due)}</td>
-                            <td>{FormatNumber(val?.prevState?.balance)}</td>
                             <td>
-                              {moment(val.createdAt).format(
-                                "MMM DD YYYY hh:mm a"
-                              )}
-                            </td>
-                            <td>
-                              {moment(val.prevState?.billingCycle).format(
-                                "MMM DD YYYY hh:mm a"
-                              )}
-                            </td>
-                            <td>
-                              {moment(val.prevState?.promiseDate).format(
-                                "MMM DD YYYY hh:mm a"
-                              )}
+                              <p>
+                                {t("bandWith")}{" "}
+                                <b className="text-secondary">
+                                  {single.pppoe.profile}
+                                </b>
+                              </p>
+                              <p>
+                                {t("amount")}{" "}
+                                <b className="text-secondary">
+                                  {FormatNumber(val.amount)}
+                                </b>
+                              </p>
+                              <p>
+                                {t("type")}{" "}
+                                <b className="text-secondary">{val.billType}</b>
+                              </p>
+                              <p>
+                                {t("medium")}{" "}
+                                <b className="text-secondary">{val.medium}</b>
+                              </p>
                             </td>
 
-                            <td>{val.medium}</td>
-                            <td>{val.name}</td>
+                            <td>
+                              <p>
+                                {t("collected")}{" "}
+                                <b className="text-secondary">{val.name}</b>
+                              </p>
+                              <p>
+                                {t("createdAt")}{" "}
+                                <b className="text-secondary">
+                                  {moment(val.createdAt).format(
+                                    "MMM DD YYYY hh:mm a"
+                                  )}
+                                </b>
+                              </p>
+                            </td>
+                            <td>
+                              <p>
+                                {t("discount")}{" "}
+                                <b className="text-secondary">
+                                  {FormatNumber(val?.discount)}
+                                </b>
+                              </p>
+                              <p>
+                                {t("due")}{" "}
+                                <b className="text-secondary">
+                                  {FormatNumber(val.due)}
+                                </b>
+                              </p>
+                              <p>
+                                {t("previousBalance")}{" "}
+                                <b className="text-secondary">
+                                  {FormatNumber(val?.prevState?.balance)}
+                                </b>
+                              </p>
+                              <p>
+                                {t("currentBalance")}{" "}
+                                <b className="text-secondary">
+                                  {FormatNumber(val?.currentState?.balance)}
+                                </b>
+                              </p>
+                            </td>
+                            <td>
+                              <p>
+                                {t("billDate")}{" "}
+                                <b className="text-secondary">
+                                  {moment(val.prevState?.billingCycle).format(
+                                    "MMM DD YYYY hh:mm a"
+                                  )}
+                                </b>
+                              </p>
+                              <p>
+                                {t("promiseDate")}{" "}
+                                <b className="text-secondary">
+                                  {moment(val.prevState?.billingCycle).format(
+                                    "MMM DD YYYY hh:mm a"
+                                  )}
+                                </b>
+                              </p>
+                            </td>
+                            <td>
+                              <p>
+                                {t("billDate")}{" "}
+                                <b className="text-secondary">
+                                  {moment(val.current?.billingCycle).format(
+                                    "MMM DD YYYY hh:mm a"
+                                  )}
+                                </b>
+                              </p>
+                              <p>
+                                {t("promiseDate")}{" "}
+                                <b className="text-secondary">
+                                  {moment(val.current?.billingCycle).format(
+                                    "MMM DD YYYY hh:mm a"
+                                  )}
+                                </b>
+                              </p>
+                            </td>
 
                             <td>
                               <p>
