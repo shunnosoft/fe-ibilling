@@ -663,5 +663,6 @@
   "totalBillAmount": "Total Bill Amount: ",
   "dueNotAcceptable": "Due Not Acceptable",
   "discountNotAcceptable": "Discount Not Acceptable",
-  "staffSalary": "Staff Salary"
+  "staffSalary": "Staff Salary",
+  "totalRechargeBill": "Total Bill"
 }

@@ -74,13 +74,10 @@ export default function CustomerBillCollect({ single }) {
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const [discount, setDiscount] = useState("0");
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
   const totalAmount = Number(billAmount) + Number(balanceDue);
-
-  const maxDiscount =
-    data?.monthlyFee + (data?.balance < 0 ? Math.abs(data?.balance) : 0);
+  const maxDiscount = totalAmount;
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -106,12 +103,17 @@ export default function CustomerBillCollect({ single }) {
     setNote("");
     setNoteCheck(false);
     setSelectedMonth(null);
-    setDiscount("");
   };
 
   useEffect(() => {
     setBalanceDue(data?.balance < 0 ? Math.abs(data?.balance) : 0);
-    setBillAmount(data?.monthlyFee);
+    setBillAmount(
+      data?.balance > 0 && data?.balance <= data?.monthlyFee
+        ? data?.monthlyFee - data?.balance
+        : data?.balance > data?.monthlyFee
+        ? 0
+        : data?.monthlyFee
+    );
   }, [data]);
 
   const handleFormValue = (event) => {
@@ -185,7 +187,7 @@ export default function CustomerBillCollect({ single }) {
               className="modal-title"
               id="customerModalDetails"
             >
-              {t("recharge")} {data?.name}
+              {t("recharge")}
             </h5>
             <button
               type="button"
@@ -198,7 +200,12 @@ export default function CustomerBillCollect({ single }) {
           <div className="modal-body">
             <Formik
               initialValues={{
-                amount: data?.monthlyFee,
+                amount:
+                  data?.balance > 0 && data?.balance <= data?.monthlyFee
+                    ? data?.monthlyFee - data?.balance
+                    : data?.balance > data?.monthlyFee
+                    ? 0
+                    : data?.monthlyFee,
                 due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
                 discount: 0,
               }}
@@ -211,17 +218,48 @@ export default function CustomerBillCollect({ single }) {
               {() => (
                 <Form onChange={handleFormValue}>
                   <div className="d-flex flex-wrap">
-                    <h5 className="me-3 text-secondary">
-                      {t("PPPoEName")} {data?.pppoe?.name}
-                    </h5>
-                    <h5 className="text-secondary">
-                      {t("ID")} {data?.customerId}
-                    </h5>
+                    <table
+                      className="table table-bordered"
+                      style={{ lineHeight: "12px" }}
+                    >
+                      <tbody>
+                        <tr>
+                          <td>{t("id")}</td>
+                          <td>
+                            <b>{data?.customerId}</b>
+                          </td>
+                          <td>{t("pppoe")}</td>
+                          <td>
+                            <b>{data?.pppoe.name}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{t("name")}</td>
+                          <td>
+                            <b>{data?.name}</b>
+                          </td>
+                          <td>{t("mobile")}</td>
+                          <td className="text-primary">
+                            <b>{data?.mobile}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{t("monthly")}</td>
+                          <td className="text-success">
+                            <b>{data?.monthlyFee}</b>
+                          </td>
+                          <td>{t("balance")}</td>
+                          <td className="text-info">
+                            <b>{data?.balance}</b>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <h5>
+                  <h6>
                     <span className="text-success">{t("totalBillAmount")}</span>
                     <span className="text-danger">{totalAmount} </span>
-                  </h5>
+                  </h6>
 
                   <div className="bill_collect_form">
                     <div className="w-100 me-2">
@@ -229,18 +267,10 @@ export default function CustomerBillCollect({ single }) {
                         type="number"
                         name="amount"
                         label={t("amount")}
-                        // value={billAmount}
-                        // onChange={(event) => setBillAmount(event.target.value)}
                       />
                     </div>
                     <div className="w-100 me-2">
-                      <FtextField
-                        type="number"
-                        name="due"
-                        label={t("due")}
-                        // value={balanceDue}
-                        // onChange={(event) => setBalanceDue(event.target.value)}
-                      />
+                      <FtextField type="number" name="due" label={t("due")} />
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center">
@@ -295,8 +325,6 @@ export default function CustomerBillCollect({ single }) {
                           type="number"
                           name="discount"
                           label={t("discount")}
-                          // value={discount}
-                          // onChange={(event) => setDiscount(event.target.value)}
                         />
                       </div>
                     )}
