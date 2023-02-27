@@ -24,6 +24,8 @@ import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 
 //formik select
 import SelectField from "../../../components/common/SelectField";
+import useCurrentUser from "../../../hooks/useCurrentUser";
+import { useId } from "react";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -32,11 +34,12 @@ const thana = thanaJSON.thana;
 export default function CustomerModal() {
   const { t } = useTranslation();
   const { hasMikrotik, ispOwnerId } = useISPowner();
+  const { userRole, userId } = useCurrentUser();
+
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   // const packages= useSelector(state=>state.package.packages)
   // const ispOwnerId = useSelector(
   //   (state) => state.persistedReducer.auth?.ispOwnerId
@@ -90,6 +93,7 @@ export default function CustomerModal() {
       .integer()
       .min(0, t("minimumPackageRate"))
       .required(t("enterPackageRate")),
+    connectionFee: Yup.number().integer().min(0, t("minimumPackageRate")),
     Pname: Yup.string().required(t("writePPPoEName")),
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
@@ -221,7 +225,6 @@ export default function CustomerModal() {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
-
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -297,6 +300,7 @@ export default function CustomerModal() {
                   email: "",
                   nid: "",
                   monthlyFee: packageRate?.rate || 0,
+                  connectionFee: "",
                   Pname: "",
                   Pprofile: packageRate?.name || "",
                   Ppassword: "",
@@ -366,9 +370,8 @@ export default function CustomerModal() {
                         disabled={!(mikrotikPackage && userRole === "ispOwner")}
                         validation={"true"}
                       />
-                      {bpSettings?.hasMikrotik ? (
-                        ""
-                      ) : (
+
+                      {!bpSettings?.hasMikrotik && (
                         <FtextField
                           type="number"
                           label={t("prevDue")}
@@ -378,15 +381,13 @@ export default function CustomerModal() {
                     </div>
 
                     <div className="pppoeSection2">
-                      {!genCustomerId && (
-                        <FtextField
-                          type="text"
-                          label={t("customerId")}
-                          name="customerId"
-                          disabled={!mikrotikPackage}
-                          validation={"true"}
-                        />
-                      )}
+                      <FtextField
+                        type="number"
+                        label={t("connectionFee")}
+                        name="connectionFee"
+                        min={0}
+                        disabled={!mikrotikPackage}
+                      />
                       <FtextField
                         type="text"
                         label={t("PPPoEName")}
@@ -401,15 +402,15 @@ export default function CustomerModal() {
                         disabled={!mikrotikPackage}
                         validation={"true"}
                       />
+                    </div>
+
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("comment")}
                         name="Pcomment"
                         disabled={!mikrotikPackage}
                       />
-                    </div>
-
-                    <div className="displayGrid3">
                       <div>
                         <label className="form-control-label changeLabelFontColor">
                           {t("selectArea")}{" "}
@@ -455,13 +456,6 @@ export default function CustomerModal() {
                             : ""}
                         </select>
                       </div>
-
-                      <FtextField
-                        type="text"
-                        label={t("NIDno")}
-                        name="nid"
-                        disabled={!mikrotikPackage}
-                      />
                     </div>
 
                     <div className="displayGrid3">
@@ -486,8 +480,31 @@ export default function CustomerModal() {
                       />
                     </div>
                     <div className="displayGrid3">
+                      <FtextField
+                        type="text"
+                        label={t("NIDno")}
+                        name="nid"
+                        disabled={!mikrotikPackage}
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("email")}
+                        name="email"
+                        disabled={!mikrotikPackage}
+                      />
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label={t("customerId")}
+                          name="customerId"
+                          disabled={!mikrotikPackage}
+                          validation={"true"}
+                        />
+                      )}
+                    </div>
+                    <div className="displayGrid3">
                       {divisionalAreaFormData.map((item) => (
-                        <div className="mb-2">
+                        <div className="mb-3">
                           <label className="form-control-label changeLabelFontColor">
                             {item.text}
                             {/* <span className="text-danger">*</span> */}
@@ -508,14 +525,18 @@ export default function CustomerModal() {
                         </div>
                       ))}
                     </div>
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label={t("email")}
-                        name="email"
-                        disabled={!mikrotikPackage}
-                      />
+                    <div className="displayGrid3 mb-3">
+                      <SelectField
+                        label={t("customerBillType")}
+                        id="exampleSelect"
+                        name="customerBillingType"
+                        className="form-select mw-100 mt-0"
+                      >
+                        <option value="">{t("customerBillType")}</option>
 
+                        <option value="prepaid">{t("prepaid")}</option>
+                        <option value="postpaid">{t("postPaid")}</option>
+                      </SelectField>
                       <div className="billCycle">
                         <label className="form-control-label changeLabelFontColor">
                           {t("billingCycle")}{" "}
@@ -552,18 +573,6 @@ export default function CustomerModal() {
                       </div>
                     </div>
                     <div className="displayGrid3">
-                      <SelectField
-                        label={t("customerBillType")}
-                        id="exampleSelect"
-                        name="customerBillingType"
-                        className="form-select mw-100 mt-0"
-                      >
-                        <option value="">{t("customerBillType")}</option>
-
-                        <option value="prepaid">{t("prepaid")}</option>
-                        <option value="postpaid">{t("postPaid")}</option>
-                      </SelectField>
-
                       <FtextField
                         type="text"
                         label={t("referenceName")}

@@ -446,24 +446,6 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* <div className="d-flex justify-content-between"> */}
-                {/* <div className="customer-status-amount d-flex align-items-center">
-                    <p>
-                      {t("active")}{" "}
-                      {FormatNumber(customerStat.totalActiveAmount)}
-                    </p>
-                    &nbsp;&nbsp;
-                    <p>
-                      {t("in active")}{" "}
-                      {FormatNumber(customerStat.totalInactiveAmount)}
-                    </p>
-                    &nbsp;&nbsp;
-                    <p>
-                      {t("expired")}{" "}
-                      {FormatNumber(customerStat.totalExpiredAmount)}
-                    </p>
-                    &nbsp;&nbsp;
-                  </div> */}
                 <div className="d-flex justify-content-end">
                   <div>
                     <ReactDatePicker
@@ -531,21 +513,21 @@ export default function Home() {
                     >
                       {FormatNumber(customerStat.active)}
                     </h2>
-                    {role === "ispOwner" ||
-                      (permissions?.dashboardCollectionData && (
-                        <p
-                          className="dashboardActive pb-1"
-                          data-bs-toggle="modal"
-                          data-bs-target="#activeCustomer"
-                          style={{ fontSize: "15px" }}
-                        >
-                          {t("active")}
-                          &nbsp;
-                          <span className="text-info">
-                            ৳ {FormatNumber(customerStat.totalActiveAmount)}
-                          </span>
-                        </p>
-                      ))}
+                    {(role === "ispOwner" ||
+                      permissions?.dashboardCollectionData) && (
+                      <p
+                        className="dashboardActive pb-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#activeCustomer"
+                        style={{ fontSize: "15px" }}
+                      >
+                        {t("active")}
+                        &nbsp;
+                        <span className="text-info">
+                          ৳ {FormatNumber(customerStat.totalActiveAmount)}
+                        </span>
+                      </p>
+                    )}
                     <p
                       className="dashboardData pb-1 pt-0"
                       data-bs-toggle="modal"
@@ -554,12 +536,12 @@ export default function Home() {
                     >
                       {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
                       &nbsp;
-                      {role === "ispOwner" ||
-                        (permissions?.dashboardCollectionData && (
-                          <span className="text-info">
-                            ৳ {FormatNumber(customerStat.totalInactiveAmount)}
-                          </span>
-                        ))}
+                      {(role === "ispOwner" ||
+                        permissions?.dashboardCollectionData) && (
+                        <span className="text-info">
+                          ৳ {FormatNumber(customerStat.totalInactiveAmount)}
+                        </span>
+                      )}
                     </p>
                     <p
                       className="dashboardData pb-1"
@@ -569,12 +551,12 @@ export default function Home() {
                     >
                       {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
                       &nbsp;
-                      {role === "ispOwner" ||
-                        (permissions?.dashboardCollectionData && (
-                          <span className="text-info">
-                            ৳{FormatNumber(customerStat.totalExpiredAmount)}
-                          </span>
-                        ))}
+                      {(role === "ispOwner" ||
+                        permissions?.dashboardCollectionData) && (
+                        <span className="text-info">
+                          ৳{FormatNumber(customerStat.totalExpiredAmount)}
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -691,18 +673,24 @@ export default function Home() {
                       </>
                     )}
                     {role === "collector" && (
-                      <p
-                        className={
-                          !permissions?.dashboardCollectionData
-                            ? "fs-6"
-                            : "fs-13"
-                        }
-                      >
-                        {t("today collection")}{" "}
-                        {FormatNumber(
-                          customerStat.collectorBillCollectionToday
-                        )}
-                      </p>
+                      <>
+                        <p
+                          className={
+                            !permissions?.dashboardCollectionData
+                              ? "fs-6"
+                              : "fs-13"
+                          }
+                        >
+                          {t("today collection")}{" "}
+                          {FormatNumber(
+                            customerStat.collectorBillCollectionToday
+                          )}
+                        </p>
+                        <p className="fs-13">
+                          {t("connectionFee")}{" "}
+                          {FormatNumber(customerStat.collectorConnectionFee)}
+                        </p>
+                      </>
                     )}
                   </div>
                 </div>
@@ -835,6 +823,25 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="col-md-3">
+                        <div id="card14" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("connectionFee")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.ispOwnerConnectionFeeCollection
+                              )}
+                            </h2>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
                         <div id="card8" className="dataCard">
                           <ThreeDotsVertical className="ThreeDots" />
                           <div className="cardIcon">
@@ -892,7 +899,8 @@ export default function Home() {
                             <h2>
                               ৳{" "}
                               {FormatNumber(
-                                customerStat.totalMonthlyCollection -
+                                customerStat.totalMonthlyCollection +
+                                  customerStat.ispOwnerConnectionFeeCollection -
                                   customerStat.totalMonthlyDiscount -
                                   (customerStat.totalExpenditure +
                                     customerStat.totalSalary)
@@ -914,7 +922,8 @@ export default function Home() {
                             <h2>
                               ৳{" "}
                               {FormatNumber(
-                                customerStat.ispOwnerBillCollection -
+                                customerStat.ispOwnerBillCollection +
+                                  customerStat.ispOwnerConnectionFeeCollection -
                                   customerStat.totalMonthlyDiscount +
                                   customerStat.totalManagerDeposit -
                                   (customerStat.ispOwnerExpenditure -
@@ -951,11 +960,25 @@ export default function Home() {
                                 customerStat.totalManagerCollection
                               )}
                             </h2>
-
-                            {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("totalCollectorDeposite")}:{" "}
-                        {FormatNumber(customerStat.totalDepositByCollectors)}
-                      </p> */}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card10" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <Coin />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("connectionFee")}
+                            </p>
+                            <h2>
+                              ৳{" "}
+                              {FormatNumber(
+                                customerStat.totalManagerConnectionFee
+                              )}
+                            </h2>
                           </div>
                         </div>
                       </div>
@@ -1094,7 +1117,7 @@ export default function Home() {
                   </Accordion.Body>
                 </Accordion.Item>
               )}
-              {role === "ispOwner" && customerStat.totalCollector && (
+              {role === "ispOwner" && customerStat?.totalCollector && (
                 <>
                   <Accordion.Item eventKey="2">
                     <Accordion.Header className="shadow-none">
@@ -1136,6 +1159,25 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
+                        <div className="col-md-3">
+                          <div id="card13" className="dataCard">
+                            <ThreeDotsVertical className="ThreeDots" />
+                            <div className="cardIcon">
+                              <CurrencyDollar />
+                            </div>
+                            <div className="chartSection">
+                              <p style={{ fontSize: "16px" }}>
+                                {t("connectionFee")}
+                              </p>
+                              <h2>
+                                ৳{" "}
+                                {FormatNumber(
+                                  customerStat.totalConnectionFeeByCollector
+                                )}
+                              </h2>
+                            </div>
+                          </div>
+                        </div>
                         <div className="col-md-3" key={2}>
                           <div id="card10" className="dataCard">
                             <ThreeDotsVertical className="ThreeDots" />
@@ -1171,23 +1213,6 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
-                        {/* <div className="col-md-3">
-                  <div id="card13" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("totalProfit")}</p>
-                      <h2>
-                        ৳{" "}
-                        {FormatNumber(
-                          totalCollection - customerStat.totalExpenditure
-                        )}
-                      </h2>
-                    </div>
-                  </div>
-                </div> */}
 
                         {/* <div className="col-md-3">
                   <div id="card12" className="dataCard">

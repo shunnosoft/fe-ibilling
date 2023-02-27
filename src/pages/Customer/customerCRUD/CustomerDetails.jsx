@@ -102,6 +102,9 @@ export default function CustomerDetails({ single }) {
                     {t("monthFee")} : {FormatNumber(data?.monthlyFee)}
                   </h6>
                   <h6>
+                    {t("connectionFee")} : {FormatNumber(data?.connectionFee)}
+                  </h6>
+                  <h6>
                     {t("balance")} : {FormatNumber(data?.balance)}
                   </h6>
                   <h6>
