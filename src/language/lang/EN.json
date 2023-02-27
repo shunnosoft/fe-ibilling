@@ -670,6 +670,7 @@
   "collected": "Collected",
   "currentBalance": "Current Balance",
   "billDate": "Bill Date",
-  "previousState": "পূর্বের স্টেট",
-  "currentState": "বর্তমান স্টেট"
+  "previousState": "Previous State",
+  "currentState": "Current State",
+  "changeMikrotik": "Change Mikrotik"
 }

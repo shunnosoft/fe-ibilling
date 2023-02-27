@@ -38,7 +38,6 @@ export default function CustomerReport(props) {
   );
 
   const [customerReport, setCustomerReport] = useState([]);
-  console.log(customerReport);
 
   // const [canDelete, setDelete] = useState(true);
   const [isLoading, setIsLoading] = useState(false);

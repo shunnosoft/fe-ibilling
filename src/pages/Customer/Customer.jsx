@@ -71,6 +71,7 @@ import BulkBalanceEdit from "./customerCRUD/bulkOpration/BulkBalanceEdit";
 import CustomerNote from "./customerCRUD/CustomerNote";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
+import BulkMikrotikEdit from "./customerCRUD/bulkOpration/bulkMikrotikEdit";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -1318,7 +1319,16 @@ const PPPOECustomer = () => {
       />
 
       {bpSettings.hasMikrotik && (
-        <BulkStatusEdit bulkCustomer={bulkCustomers} modalId="bulkStatusEdit" />
+        <>
+          <BulkStatusEdit
+            bulkCustomer={bulkCustomers}
+            modalId="bulkStatusEdit"
+          />
+          <BulkMikrotikEdit
+            bulkCustomer={bulkCustomers}
+            modalId="bulkMikrotikEdit"
+          />
+        </>
       )}
       <BulkCustomerDelete
         bulkCustomer={bulkCustomers}
@@ -1329,6 +1339,7 @@ const PPPOECustomer = () => {
         modalId="autoDisableEditModal"
       />
       <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
+
       <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
@@ -1448,6 +1459,22 @@ const PPPOECustomer = () => {
             </button>
           )}
 
+          {bpSettings.hasMikrotik &&
+            ((role === "ispOwner" && bpSettings?.bulkCustomerMikrotikUpdate) ||
+              (bpSettings?.bulkCustomerMikrotikUpdate &&
+                permission?.bulkCustomerMikrotikUpdate &&
+                role === "manager")) && (
+              <button
+                className="bulk_action_button btn btn-dark btn-floating btn-sm"
+                title={t("package")}
+                data-bs-toggle="modal"
+                data-bs-target="#bulkMikrotikEdit"
+                type="button"
+              >
+                <i className="fas fa-edit"></i>
+                <span className="button_title">{t("changeMikrotik")}</span>
+              </button>
+            )}
           {bpSettings.hasMikrotik &&
             ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
               (bpSettings?.bulkPackageEdit &&

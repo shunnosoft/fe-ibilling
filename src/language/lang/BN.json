@@ -673,5 +673,6 @@
   "currentBalance": "বর্তমান ব্যালেন্স",
   "billDate": "বিল ডেট",
   "previousState": "পূর্বের স্টেট",
-  "currentState": "বর্তমান স্টেট"
+  "currentState": "বর্তমান স্টেট",
+  "changeMikrotik": "মাইক্রোটিক পরিবর্তন"
 }
