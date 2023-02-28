@@ -3,24 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const NetFeeIspOwnerSupportDetails = ({ detailsID }) => {
-  // netFee support all data
-  const allSupportData = useSelector(
-    (state) => state.adminNetFeeSupport?.adminSupport
+  // get ispOwner support create history
+  const ispOwnerSupport = useSelector(
+    (state) => state.adminNetFeeSupport?.ispOwnerSupport
   );
 
-  // support details data state
-  const [detailSupport, setDetailSupport] = useState("");
-
   // find support details data
-  const supportDetail = allSupportData.find((item) => item.id === detailsID);
-
-  useEffect(() => {
-    if (supportDetail) {
-      setDetailSupport(supportDetail);
-    }
-  }, [supportDetail]);
-
-  const { company, createdAt, description, status, support } = detailSupport;
+  const supportDetail = ispOwnerSupport.find((item) => item.id === detailsID);
 
   return (
     <>
@@ -50,21 +39,23 @@ const NetFeeIspOwnerSupportDetails = ({ detailsID }) => {
                 className="modal-title"
                 id="supportDetails"
               >
-                {company}
+                {supportDetail?.company}
               </h4>
               <>
                 <div className="comment-show">
                   <div className="d-flex">
                     <small className="mb-3">
-                      {moment(createdAt).format("MMM DD YYYY")}
+                      {moment(supportDetail?.createdAt).format("MMM DD YYYY")}
                     </small>
                   </div>
                   <div className="comment-info" style={{ marginTop: "-10px" }}>
-                    <i class="badge bg-primary me-1">{support}</i>
-                    <i class="badge bg-info">{status}</i>
+                    <i class="badge bg-primary me-1">
+                      {supportDetail?.support}
+                    </i>
+                    <i class="badge bg-info">{supportDetail?.status}</i>
                   </div>
                   <p className="mt-2" style={{ textAlign: "justify" }}>
-                    {description}
+                    {supportDetail?.description}
                   </p>
                 </div>
                 <br />

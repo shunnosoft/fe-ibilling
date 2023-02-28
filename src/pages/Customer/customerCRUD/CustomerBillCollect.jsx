@@ -217,45 +217,43 @@ export default function CustomerBillCollect({ single }) {
             >
               {() => (
                 <Form onChange={handleFormValue}>
-                  <div className="d-flex flex-wrap">
-                    <table
-                      className="table table-bordered"
-                      style={{ lineHeight: "12px" }}
-                    >
-                      <tbody>
-                        <tr>
-                          <td>{t("id")}</td>
-                          <td>
-                            <b>{data?.customerId}</b>
-                          </td>
-                          <td>{t("pppoe")}</td>
-                          <td>
-                            <b>{data?.pppoe.name}</b>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>{t("name")}</td>
-                          <td>
-                            <b>{data?.name}</b>
-                          </td>
-                          <td>{t("mobile")}</td>
-                          <td className="text-primary">
-                            <b>{data?.mobile}</b>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>{t("monthly")}</td>
-                          <td className="text-success">
-                            <b>{data?.monthlyFee}</b>
-                          </td>
-                          <td>{t("balance")}</td>
-                          <td className="text-info">
-                            <b>{data?.balance}</b>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <table
+                    className="table table-bordered"
+                    style={{ lineHeight: "12px" }}
+                  >
+                    <tbody>
+                      <tr>
+                        <td>{t("id")}</td>
+                        <td>
+                          <b>{data?.customerId}</b>
+                        </td>
+                        <td>{t("pppoe")}</td>
+                        <td>
+                          <b>{data?.pppoe.name}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>{t("name")}</td>
+                        <td>
+                          <b>{data?.name}</b>
+                        </td>
+                        <td>{t("mobile")}</td>
+                        <td className="text-primary">
+                          <b>{data?.mobile}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>{t("monthly")}</td>
+                        <td className="text-success">
+                          <b>{data?.monthlyFee}</b>
+                        </td>
+                        <td>{t("balance")}</td>
+                        <td className="text-info">
+                          <b>{data?.balance}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <h6>
                     <span className="text-success">{t("totalBillAmount")}</span>
                     <span className="text-danger">{totalAmount} </span>

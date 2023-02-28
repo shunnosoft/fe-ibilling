@@ -6,13 +6,17 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCallReseller";
+import {
+  billCollect,
+  getResellerPackageRate,
+} from "../../../features/apiCallReseller";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 const animatedComponents = makeAnimated();
 
 const options = [
@@ -51,6 +55,10 @@ export default function CustomerBillCollect({ single }) {
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
+  const resellerCommission = useSelector(
+    (state) => state.persistedReducer.auth?.userData
+  );
+
   const currentUserId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
@@ -64,12 +72,35 @@ export default function CustomerBillCollect({ single }) {
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [packageRate, setPackageRate] = useState();
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
-      .min(0, t("billNotAcceptable"))
+      .min(
+        (resellerCommission.commissionType === "packageBased" &&
+          resellerCommission.commissionStyle === "fixedRate" &&
+          packageRate?.ispOwnerRate) ||
+          (!(
+            resellerCommission.commissionType === "packageBased" &&
+            resellerCommission.commissionStyle === "fixedRate"
+          ) && data?.balance < data?.monthlyFee
+            ? data?.monthlyFee - data?.balance
+            : data?.monthlyFee),
+        t("billNotAcceptable")
+      )
       .integer(t("decimalNumberNotAcceptable")),
   });
+
+  useEffect(() => {
+    data &&
+      resellerCommission.commissionType === "packageBased" &&
+      resellerCommission.commissionStyle === "fixedRate" &&
+      getResellerPackageRate(
+        data?.reseller,
+        data?.mikrotikPackage,
+        setPackageRate
+      );
+  }, [data]);
 
   //form resetFunction
   const resetForm = () => {
@@ -82,10 +113,26 @@ export default function CustomerBillCollect({ single }) {
 
   // bill amount
   const customerBillHandler = (formValue) => {
-    if (data?.monthlyFee > formValue.amount + data?.balance) {
+    if (
+      resellerCommission.commissionType === "packageBased" &&
+      resellerCommission.commissionStyle === "fixedRate" &&
+      packageRate.ispOwnerRate > formValue.amount
+    ) {
+      toast.error(t("rechargeAmountMustBeUptoIspOwnerRate"));
+      return;
+    }
+
+    if (
+      !(
+        resellerCommission.commissionType === "packageBased" &&
+        resellerCommission.commissionStyle === "fixedRate"
+      ) &&
+      data?.monthlyFee > formValue.amount + data?.balance
+    ) {
       toast.error(t("rechargeAmountMustBeUptoOrEqualMonthlyFee"));
       return;
     }
+
     const sendingData = {
       amount: formValue.amount,
       collectedBy: currentUser?.user.role,
@@ -156,14 +203,43 @@ export default function CustomerBillCollect({ single }) {
                 >
                   {() => (
                     <Form>
-                      <div className="d-flex flex-wrap">
-                        <h5 className="me-3 text-secondary">
-                          {t("PPPoEName")} {data?.pppoe?.name}
-                        </h5>
-                        <h5 className="text-secondary">
-                          {t("ID")} {data?.customerId}
-                        </h5>
-                      </div>
+                      <table
+                        className="table table-bordered"
+                        style={{ lineHeight: "12px" }}
+                      >
+                        <tbody>
+                          <tr>
+                            <td>{t("id")}</td>
+                            <td>
+                              <b>{data?.customerId}</b>
+                            </td>
+                            <td>{t("pppoe")}</td>
+                            <td>
+                              <b>{data?.pppoe.name}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{t("name")}</td>
+                            <td>
+                              <b>{data?.name}</b>
+                            </td>
+                            <td>{t("mobile")}</td>
+                            <td className="text-primary">
+                              <b>{data?.mobile}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{t("monthly")}</td>
+                            <td className="text-success">
+                              <b>{data?.monthlyFee}</b>
+                            </td>
+                            <td>{t("balance")}</td>
+                            <td className="text-info">
+                              <b>{data?.balance}</b>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                       <div className="bill_collect_form">
                         <div className="w-100 me-2">
                           <FtextField
