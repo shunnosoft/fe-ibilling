@@ -40,19 +40,18 @@ const NetFeeSupport = () => {
   // support edit id state
   const [editID, setEditID] = useState("");
 
-  // support details id state
-  const [detailsID, setDetailsID] = useState("");
+  // support details data state
+  const [supportID, setSupportI] = useState("");
 
   // support edit handler
   const supportEditHandler = (id) => {
     setEditID(id);
   };
 
-  // support details handler
+  // description details handler
   const supportDetailsHandler = (id) => {
-    setDetailsID(id);
+    setSupportI(id);
   };
-
   const columns = React.useMemo(
     () => [
       {
@@ -193,7 +192,6 @@ const NetFeeSupport = () => {
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
-                      // customComponent={customComponent}
                       columns={columns}
                       data={resellerAllSupport}
                     ></Table>
@@ -207,7 +205,7 @@ const NetFeeSupport = () => {
       </div>
       <ResellerSupportAdd />
       <ResellerSupportEdit editID={editID} />
-      <ResellerSupportDetails detailsID={detailsID} />
+      <ResellerSupportDetails supportID={supportID} />
     </>
   );
 };

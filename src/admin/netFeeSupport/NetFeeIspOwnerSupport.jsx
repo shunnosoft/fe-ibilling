@@ -45,7 +45,10 @@ const NetFeeIspOwnerSupport = () => {
 
   // ispOwner support delete handler
   const ispOwnerSupportDeleteHandler = (id) => {
-    deleteIspOwnerCreateSupport(dispatch, setIsLoading, id);
+    let confirm = window.confirm("Do you want to delete support?");
+    if (confirm) {
+      deleteIspOwnerCreateSupport(dispatch, setIsLoading, id);
+    }
   };
 
   // support details handler

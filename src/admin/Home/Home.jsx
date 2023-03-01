@@ -140,23 +140,23 @@ export default function Home() {
       },
 
       {
-        width: "9%",
+        width: "5%",
         accessor: "company",
         Header: "Company",
       },
 
       {
-        width: "8%",
+        width: "5%",
         accessor: "name",
         Header: "Name",
       },
       {
-        width: "10%",
+        width: "8%",
         accessor: "mobile",
         Header: "Mobile",
       },
       {
-        width: "8%",
+        width: "5%",
         accessor: "bpSettings.hasMikrotik",
         Header: "MTK",
         Cell: ({ cell: { value } }) => {
@@ -169,7 +169,7 @@ export default function Home() {
         Header: "SMS",
       },
       {
-        width: "10%",
+        width: "8%",
         accessor: "bpSettings.customerLimit",
         Header: "Customer",
       },
@@ -211,7 +211,7 @@ export default function Home() {
         },
       },
       {
-        width: "10%",
+        width: "8%",
         accessor: "address",
         Header: "Address",
       },
@@ -226,7 +226,7 @@ export default function Home() {
       },
 
       {
-        width: "10%",
+        width: "9%",
         Header: "Bill Date",
         accessor: "bpSettings.monthlyDueDate",
         Cell: ({ cell: { value } }) => {
@@ -235,7 +235,7 @@ export default function Home() {
       },
 
       {
-        width: "7%",
+        width: "5%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 

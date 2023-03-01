@@ -38,6 +38,9 @@ const NetFeeIspOwnerSupportEdit = ({ editID }) => {
     if (!support) {
       toast.error("Please Select Your Support Type");
     }
+    if (!support) {
+      toast.error("Please Select Your Status");
+    }
     editIspOwnerCreateSupport(dispatch, setIsLoading, supportEditData);
   };
 
@@ -47,7 +50,7 @@ const NetFeeIspOwnerSupportEdit = ({ editID }) => {
     }
   }, [findSupport]);
 
-  const { support, description } = supportEditData;
+  const { status, support, description } = supportEditData;
 
   return (
     <>
@@ -73,6 +76,29 @@ const NetFeeIspOwnerSupportEdit = ({ editID }) => {
             </div>
             <div className="modal-body">
               <form onSubmit={ispOwnerSupportUpdateSubmit}>
+                <div className="form-group px-2">
+                  <label>Select Your Status</label>
+                  <select
+                    style={{ width: "100%" }}
+                    class="form-select mw-100"
+                    aria-label="Default select example"
+                    name="status"
+                    onChange={ispOwnerSupportEditHandler}
+                  >
+                    <option selected={status === "pending"} value="pending">
+                      Pending
+                    </option>
+                    <option
+                      selected={status === "processing"}
+                      value="processing"
+                    >
+                      Processing
+                    </option>
+                    <option selected={status === "completed"} value="completed">
+                      Completed
+                    </option>
+                  </select>
+                </div>
                 <div className="form-group px-2">
                   <label>Select Your Support Type</label>
                   <select

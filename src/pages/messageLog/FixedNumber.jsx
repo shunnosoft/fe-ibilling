@@ -10,6 +10,7 @@ import {
   getMaskingMessageLog,
   getMessageLog,
 } from "../../features/messageLogApi";
+import MessageDetails from "./messageModal/MessageDetails";
 
 const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   const { t } = useTranslation();
@@ -45,6 +46,10 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   // status state
   const [status, setStatus] = useState("");
 
+  //message id state
+  const [messageData, setMessageData] = useState("");
+  const [modalStatus, setModalStatus] = useState(false);
+
   // filter function
   const onClickFilter = () => {
     let filterData = [...fixedNumber];
@@ -69,6 +74,13 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
     );
 
     setFixedNUmberMessage(filterData);
+  };
+
+  // message details handler
+  const messageDetailsHandler = (id) => {
+    const messageDetail = fixedNumber.find((item) => item._id === id);
+    setMessageData(messageDetail);
+    setModalStatus(true);
   };
 
   // get customer api call
@@ -133,6 +145,21 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
         width: "45%",
         Header: t("message"),
         accessor: "message",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original.message && original.message.slice(0, 90)}
+              <span
+                className="text-primary see-more"
+                onClick={() => {
+                  messageDetailsHandler(original._id);
+                }}
+              >
+                {original.message.length > 90 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
       },
     ],
     [t]
@@ -205,6 +232,7 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
           data={fixedNumber}
         ></Table>
       </div>
+      <MessageDetails messageData={messageData} modalStatus={modalStatus} />
     </>
   );
 };

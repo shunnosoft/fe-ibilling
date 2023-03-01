@@ -329,6 +329,7 @@
   "comment": "কমেন্ট",
   "collectorReportBill": "বিলঃ ",
   "tk": "টাকা",
+  "close": "বন্ধ",
   "addNewCollector": "নতুন কালেক্টর অ্যাড",
   "addNewStaff": "কর্মচারী অ্যাড করুন",
   "parentName": "পিতার নাম",
@@ -665,5 +666,7 @@
   "totalBillAmount": "মোট বিলের পরিমানঃ ",
   "dueNotAcceptable": "বকেয়া গ্রহণ যোগ্য নয়",
   "discountNotAcceptable": "ডিসকাউন্ট গ্রহণ যোগ্য নয়",
-  "staffSalary": "স্টাফের বেতন"
+  "staffSalary": "স্টাফের বেতন",
+  "purchaseSMSYouDoNotHaveEnoughSMS": "এসএমএস পার্চেজ করুন, আপনার পর্যাপ্ত পরিমান এসএমএস নাই!",
+  "messageAlertBoard": "মেসেজ বোর্ড এলার্ট"
 }

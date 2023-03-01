@@ -50,7 +50,8 @@ const NetFeeSupport = () => {
   // support delete id
   const [deleteId, setDeleteId] = useState("");
 
-  const [detailsId, setDetailsId] = useState("");
+  // support details data state
+  const [supportId, setSupportId] = useState("");
 
   //support edit handler
   const supportEditHandler = (id) => {
@@ -64,7 +65,7 @@ const NetFeeSupport = () => {
 
   // description details handler
   const supportDetailsHandler = (id) => {
-    setDetailsId(id);
+    setSupportId(id);
   };
 
   const columns = React.useMemo(
@@ -119,7 +120,7 @@ const NetFeeSupport = () => {
               <span
                 className="text-primary see-more"
                 data-bs-toggle="modal"
-                data-bs-target="#supportDetails"
+                data-bs-target="#netFeeSupportDetails"
                 onClick={() => {
                   supportDetailsHandler(original.id);
                 }}
@@ -157,7 +158,7 @@ const NetFeeSupport = () => {
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#supportDetails"
+                  data-bs-target="#netFeeSupportDetails"
                   onClick={() => {
                     supportDetailsHandler(original.id);
                   }}
@@ -234,14 +235,11 @@ const NetFeeSupport = () => {
               </FourGround>
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  {/* <div className="table-section"> */}
                   <Table
                     isLoading={isLoading}
-                    // customComponent={customComponent}
                     columns={columns}
                     data={supportAllData}
                   ></Table>
-                  {/* </div> */}
                 </div>
               </FourGround>
               <Footer />
@@ -252,7 +250,7 @@ const NetFeeSupport = () => {
       <AddNetFeeSupport />
       <SupportEdit editId={editId} />
       <SupportDelete deleteId={deleteId} />
-      <SupportDetails detailsId={detailsId} />
+      <SupportDetails supportId={supportId} />
     </>
   );
 };

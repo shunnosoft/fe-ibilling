@@ -30,8 +30,8 @@
 .header_icon {
   width: 46px;
   height: 35px;
-  background-color: #fcf2f2;
-  color: #04a753;
+  background-color: #fcf2f2 !important;
+  color: #04a753 !important;
   border-radius: 9px;
   cursor: pointer;
   display: flex;
@@ -42,6 +42,6 @@
 }
 
 .header_icon:hover {
-  background-color: #04a753;
-  color: #fcf2f2;
+  background-color: #04a753 !important;
+  color: #fcf2f2 !important;
 }

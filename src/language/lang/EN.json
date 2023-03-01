@@ -325,6 +325,7 @@
   "comment": "Comment",
   "collectorReportBill": "Bill :",
   "tk": "Tk",
+  "close": "Close",
   "addNewCollector": "Add New Collector",
   "addNewStaff": "Add New Staff",
   "parentName": "Parent Name",
@@ -663,5 +664,7 @@
   "totalBillAmount": "Total Bill Amount: ",
   "dueNotAcceptable": "Due Not Acceptable",
   "discountNotAcceptable": "Discount Not Acceptable",
-  "staffSalary": "Staff Salary"
+  "staffSalary": "Staff Salary",
+  "purchaseSMSYouDoNotHaveEnoughSMS": "Purchase SMS, You do not have enough SMS!",
+  "messageAlertBoard": "Message Board Alert"
 }

@@ -58,24 +58,24 @@ const Supports = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "18%",
+        width: "9%",
         accessor: "company",
         Header: "Company",
       },
       {
-        width: "10%",
+        width: "8%",
         accessor: "mobile",
         Header: "Mobile",
       },
       {
-        width: "18%",
+        width: "11%",
         Header: "Support Type",
         accessor: "support",
         Cell: ({ cell: { value } }) => {
@@ -84,15 +84,15 @@ const Supports = () => {
       },
       {
         width: "8%",
-        Header: "status",
+        Header: "Status",
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
       },
       {
-        width: "19%",
-        Header: "description",
+        width: "35%",
+        Header: "Description",
         accessor: "description",
         Cell: ({ row: { original } }) => {
           return (
@@ -114,8 +114,8 @@ const Supports = () => {
       },
 
       {
-        width: "14%",
-        Header: "createdAt",
+        width: "12%",
+        Header: "Created At",
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");

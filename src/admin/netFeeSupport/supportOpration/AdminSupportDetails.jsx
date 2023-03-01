@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 const AdminSupportDetails = ({ detailsId }) => {
@@ -8,19 +8,8 @@ const AdminSupportDetails = ({ detailsId }) => {
     (state) => state.adminNetFeeSupport?.adminSupport
   );
 
-  // support details data state
-  const [detailsSupport, setDetailsSupport] = useState("");
-
   // find support details data
   const supportDetails = allSupportData.find((item) => item.id === detailsId);
-
-  useEffect(() => {
-    if (supportDetails) {
-      setDetailsSupport(supportDetails);
-    }
-  }, [supportDetails]);
-
-  const { company, createdAt, description, status, support } = detailsSupport;
 
   return (
     <>
@@ -50,21 +39,23 @@ const AdminSupportDetails = ({ detailsId }) => {
                 className="modal-title"
                 id="supportDetails"
               >
-                {company}
+                {supportDetails?.company}
               </h4>
               <>
                 <div className="comment-show">
                   <div className="d-flex">
                     <small className="mb-3">
-                      {moment(createdAt).format("MMM DD YYYY")}
+                      {moment(supportDetails?.createdAt).format("MMM DD YYYY")}
                     </small>
                   </div>
                   <div className="comment-info" style={{ marginTop: "-10px" }}>
-                    <i class="badge bg-primary me-1">{support}</i>
-                    <i class="badge bg-info">{status}</i>
+                    <i class="badge bg-primary me-1">
+                      {supportDetails?.support}
+                    </i>
+                    <i class="badge bg-info">{supportDetails?.status}</i>
                   </div>
                   <p className="mt-2" style={{ textAlign: "justify" }}>
-                    {description}
+                    {supportDetails?.description}
                   </p>
                 </div>
                 <br />

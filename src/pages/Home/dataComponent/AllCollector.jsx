@@ -27,27 +27,34 @@ const AllCollector = () => {
   const column = useMemo(
     () => [
       {
-        width: "15%",
+        width: "5%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        width: "19%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "21%",
+        width: "19%",
         Header: t("todayBillCollection"),
         accessor: "todayBillCollection",
       },
       {
-        width: "21%",
+        width: "19%",
         Header: t("totalBillCollected"),
         accessor: "totalBillCollected",
       },
       {
-        width: "21%",
+        width: "19%",
         Header: t("totalDepositCollector"),
         accessor: "totalDeposit",
       },
       {
-        width: "21%",
+        width: "19%",
         Header: t("balance"),
         accessor: "balance",
       },

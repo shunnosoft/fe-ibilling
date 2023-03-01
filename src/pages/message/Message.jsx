@@ -10,7 +10,6 @@ import { ArrowClockwise } from "react-bootstrap-icons";
 import { FontColor, FourGround } from "../../assets/js/theme";
 
 import Footer from "../../components/admin/footer/Footer";
-import SmsParchase from "./smsParchaseModal";
 import Loader from "../../components/common/Loader";
 
 import "./message.css";
@@ -20,6 +19,9 @@ import apiLink from "../../api/apiLink";
 import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
 import { getArea } from "../../features/apiCalls";
+import { Button } from "react-bootstrap";
+import MessageAlert from "./MessageAlert";
+import SMSPurchase from "./SMSPurchase";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -91,6 +93,9 @@ export default function Message() {
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
   const [sendingType, setSendingType] = useState("nonMasking");
+
+  const [show, setShow] = useState(false);
+
   const maskingId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner?.maskingId
   );
@@ -399,7 +404,7 @@ export default function Message() {
 
   return (
     <>
-      <SmsParchase />
+      <SMSPurchase />
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
@@ -415,10 +420,9 @@ export default function Message() {
                   <div className="d-flex">
                     <div>{t("SMSboard")}</div>
                   </div>
-                  <div
+                  <Button
                     className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#smsparchase"
+                    onClick={() => setShow({ ...show, [false]: true })}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -431,7 +435,7 @@ export default function Message() {
                       <path d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2H2Zm3.708 6.208L1 11.105V5.383l4.708 2.825ZM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2-7-4.2Z" />
                       <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z" />
                     </svg>
-                  </div>
+                  </Button>
                 </div>
               </FourGround>
 
@@ -961,7 +965,9 @@ export default function Message() {
           </div>
         </div>
       </div>
-      <SmsParchase />
+
+      <MessageAlert sms={sms} />
+      <SMSPurchase show={show} />
     </>
   );
 }
