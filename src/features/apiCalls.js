@@ -1705,11 +1705,9 @@ export const billCollect = async (
 
 export const addDeposit = async (dispatch, data, setLoading) => {
   setLoading(true);
-
   try {
     const res = await apiLink.post(`/deposit`, data);
     dispatch(addDepositSucces(res.data));
-    console.log(res.data);
     setLoading(false);
     langMessage(
       "success",

@@ -196,7 +196,6 @@ export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
 export const editCustomer = async (dispatch, data, setIsloading) => {
   setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
-  console.log(reseller);
   try {
     const res = await apiLink.patch(
       `/reseller/customer/${reseller}/${singleCustomerID}`,
@@ -272,8 +271,23 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
   }
 };
 
-//Bill
+// get reseller package rate
+export const getResellerPackageRate = async (
+  resellerId,
+  packageId,
+  setPackageRate
+) => {
+  try {
+    const res = await apiLink.get(
+      `/reseller/package/rate/${resellerId}/${packageId}`
+    );
+    setPackageRate(res.data);
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+};
 
+//Bill
 export const billCollect = async (
   dispatch,
   billData,

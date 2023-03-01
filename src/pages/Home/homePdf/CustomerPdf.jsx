@@ -35,7 +35,7 @@ const CustomerPdf = forwardRef((props, ref) => {
       <table className="table table-striped ">
         <thead className="text-center">
           <tr className="spetialSortingRow">
-            <th scope="col">{t("customerId")}</th>
+            <th scope="col">{t("id")}</th>
             <th scope="col">{t("name")}</th>
             <th scope="col">{t("PPPoE")}</th>
             <th scope="col">{t("status")}</th>

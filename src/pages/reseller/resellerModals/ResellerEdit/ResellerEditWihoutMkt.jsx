@@ -36,7 +36,7 @@ export const PackageBasedEditWithOutMkt = ({
   return (
     <>
       {packages.map((p) => {
-        const value = packageCommisson.reduce((acc, curr) => {
+        const value = packageCommisson?.reduce((acc, curr) => {
           if (curr?.mikrotikPackage === p.id) {
             acc = curr.ispOwnerRate;
           }

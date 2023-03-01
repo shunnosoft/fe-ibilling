@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
 import { bulkDeleteCustomer } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
@@ -7,6 +7,12 @@ import { useTranslation } from "react-i18next";
 
 const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
   const { t } = useTranslation();
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   // loading state
   const [isLoading, setIsloading] = useState(false);
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
@@ -41,18 +47,20 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
       modalId={modalId}
       header={`${bulkCustomer.length} টি গ্রাহক ডিলিট করুন`}
     >
-      <div class="form-check mt-4">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          checked={mikrotikCheck}
-          id="flexCheckDefault"
-          onChange={(event) => setMikrotikCheck(event.target.checked)}
-        />
-        <label class="form-check-label" for="flexCheckDefault">
-          <small className="text-secondary">{t("deleteMikrotik")}</small>
-        </label>
-      </div>
+      {bpSettings.hasMikrotik && (
+        <div class="form-check mt-4">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            checked={mikrotikCheck}
+            id="flexCheckDefault"
+            onChange={(event) => setMikrotikCheck(event.target.checked)}
+          />
+          <label class="form-check-label" for="flexCheckDefault">
+            <small className="text-secondary">{t("deleteMikrotik")}</small>
+          </label>
+        </div>
+      )}
 
       <div className="modal-footer" style={{ border: "none" }}>
         <button

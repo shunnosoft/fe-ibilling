@@ -218,7 +218,7 @@
 .bulkActionButton {
   position: fixed;
   width: 42px;
-  top: 50vh;
+  top: 40%;
   right: 13px;
   z-index: 100;
   display: flex;

@@ -55,8 +55,8 @@ const ResellerSupportAdd = () => {
       company,
     };
     postResellerNetFeeSupport(dispatch, setIsLoading, data);
-    support("");
-    description("");
+    setSupport("");
+    setDescription("");
   };
 
   return (

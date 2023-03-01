@@ -21,6 +21,14 @@ const Inactive = ({ ispOwnerId, year, month }) => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // get user role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user permission
+  const permissions = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
   // get inactive customer
   const customer = useSelector(
     (state) => state.dashboardInformation?.inactiveCustomer
@@ -158,7 +166,12 @@ const Inactive = ({ ispOwnerId, year, month }) => {
                 <div className="table-section">
                   <Table
                     isLoading={isLoading}
-                    customComponent={customComponent}
+                    customComponent={
+                      role === "ispOwner" ||
+                      permissions?.dashboardCollectionData
+                        ? customComponent
+                        : ""
+                    }
                     columns={column}
                     data={customer}
                   ></Table>

@@ -164,6 +164,13 @@ export const collectorPermission = (
     //       ispOwnerPermission?.bulkCustomerDelete &&
     //       managerPermission?.bulkCustomerDelete),
     // },
+    {
+      id: 23,
+      value: "dashboardCollectionData",
+      label: "ড্যাশবোর্ড কালেকশন",
+      isChecked: permission?.dashboardCollectionData,
+      disabled: !role === "ispOwner" ? true : false,
+    },
   ];
 
   const permissionEn = [
@@ -325,6 +332,13 @@ export const collectorPermission = (
     //       ispOwnerPermission?.bulkCustomerDelete &&
     //       managerPermission?.bulkCustomerDelete),
     // },
+    {
+      id: 23,
+      value: "dashboardCollectionData",
+      label: "Dashboard Collection",
+      isChecked: permission?.dashboardCollectionData,
+      disabled: role === "ispOwner" ? true : false,
+    },
   ];
 
   if (localStorage.getItem("netFee:lang") === "bn") return permissionBn;

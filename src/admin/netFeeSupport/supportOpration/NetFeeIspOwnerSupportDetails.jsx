@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 
 const NetFeeIspOwnerSupportDetails = ({ detailsID }) => {
   // netFee support all data
-  const allSupportData = useSelector(
+  const ispOwnerSupport = useSelector(
     (state) => state.adminNetFeeSupport?.ispOwnerSupport
   );
 
   // find support details data
-  const supportDetail = allSupportData.find((item) => item.id === detailsID);
+  const supportDetail = ispOwnerSupport.find((item) => item.id === detailsID);
 
   return (
     <>

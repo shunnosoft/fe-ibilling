@@ -84,6 +84,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Bulk Customer Delete",
       isChecked: perm?.bulkCustomerDelete,
     },
+    {
+      id: 15,
+      value: "bulkCustomerMikrotikUpdate",
+      label: "Bulk Customer Mikrotik Update",
+      isChecked: perm?.bulkCustomerMikrotikUpdate,
+    },
   ];
   return permission;
 };

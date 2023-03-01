@@ -103,6 +103,22 @@ export const bulkPackageEdit = async (dispatch, data, setIsLoading) => {
     }
   }
 };
+
+export const bulkMikrotikUpdate = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch("/customer/bulk-mikrotik-update", data);
+    document.querySelector("#bulkMikrotikEdit").click();
+    dispatch(bulkUpdate(res.data.data));
+    toast.success("কাস্টমার মাইক্রোটিক আপডেট সফল হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      document.querySelector("#bulkMikrotikEdit").click();
+      toast.error(err.response.data.message);
+    }
+  }
+  setIsLoading(false);
+};
 export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);

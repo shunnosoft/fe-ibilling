@@ -39,22 +39,27 @@ const AllCollector = () => {
         accessor: "name",
       },
       {
-        width: "19%",
+        width: "18%",
         Header: t("todayBillCollection"),
         accessor: "todayBillCollection",
       },
       {
-        width: "19%",
+        width: "18%",
         Header: t("totalBillCollected"),
         accessor: "totalBillCollected",
       },
       {
-        width: "19%",
+        width: "21%",
+        Header: t("connectionFeeCollected"),
+        accessor: "totalConnectionFeeCollected",
+      },
+      {
+        width: "18%",
         Header: t("totalDepositCollector"),
         accessor: "totalDeposit",
       },
       {
-        width: "19%",
+        width: "10%",
         Header: t("balance"),
         accessor: "balance",
       },

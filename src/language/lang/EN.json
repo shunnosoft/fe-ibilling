@@ -665,6 +665,14 @@
   "dueNotAcceptable": "Due Not Acceptable",
   "discountNotAcceptable": "Discount Not Acceptable",
   "staffSalary": "Staff Salary",
-  "purchaseSMSYouDoNotHaveEnoughSMS": "Purchase SMS, You do not have enough SMS!",
-  "messageAlertBoard": "Message Board Alert"
+  "totalRechargeBill": "Total Bill",
+  "totalMonthlyFee": "Total Monthly Fee",
+  "bandWith": "Bandwith",
+  "collected": "Collected",
+  "currentBalance": "Current Balance",
+  "billDate": "Bill Date",
+  "previousState": "Previous State",
+  "currentState": "Current State",
+  "changeMikrotik": "Change Mikrotik",
+  "connectionFeeCollected": "Connection Fee Collected"
 }

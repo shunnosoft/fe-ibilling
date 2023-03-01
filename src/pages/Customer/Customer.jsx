@@ -71,6 +71,7 @@ import BulkBalanceEdit from "./customerCRUD/bulkOpration/BulkBalanceEdit";
 import CustomerNote from "./customerCRUD/CustomerNote";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
+import BulkMikrotikEdit from "./customerCRUD/bulkOpration/bulkMikrotikEdit";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -344,6 +345,8 @@ const PPPOECustomer = () => {
         mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
         freeUser: freeUser ? c.monthlyFee === 0 : true,
         nonFreeUser: freeUser ? c.monthlyFee !== 0 : true,
+        prepaid: freeUser ? c.customerBillingType === "prepaid" : true,
+        postpaid: freeUser ? c.customerBillingType === "postpaid" : true,
         package: filterOptions.package
           ? c.mikrotikPackage === filterOptions.package
           : true,
@@ -818,6 +821,7 @@ const PPPOECustomer = () => {
     () =>
       tableData.map((customer) => {
         return {
+          customerId: customer.customerId,
           name: customer.name,
           pppoeName: customer.pppoe.name,
           customerAddress: customer.address,
@@ -837,6 +841,7 @@ const PPPOECustomer = () => {
 
   // csv table header
   const customerForCsVTableInfoHeader = [
+    { label: "customer_id", key: "customerId" },
     { label: "name_of_client", key: "name" },
     { label: "PPPoE_Name", key: "pppoeName" },
     { label: "address_of_client", key: "customerAddress" },
@@ -1057,6 +1062,8 @@ const PPPOECustomer = () => {
       options: [
         { value: "freeUser", text: t("freeCustomer") },
         { value: "nonFreeUser", text: t("nonFreeCustomer") },
+        { value: "prepaid", text: t("prepaid") },
+        { value: "postpaid", text: t("postPaid") },
       ],
       firstOptions: t("sokolCustomer"),
       textAccessor: "text",
@@ -1312,7 +1319,16 @@ const PPPOECustomer = () => {
       />
 
       {bpSettings.hasMikrotik && (
-        <BulkStatusEdit bulkCustomer={bulkCustomers} modalId="bulkStatusEdit" />
+        <>
+          <BulkStatusEdit
+            bulkCustomer={bulkCustomers}
+            modalId="bulkStatusEdit"
+          />
+          <BulkMikrotikEdit
+            bulkCustomer={bulkCustomers}
+            modalId="bulkMikrotikEdit"
+          />
+        </>
       )}
       <BulkCustomerDelete
         bulkCustomer={bulkCustomers}
@@ -1323,6 +1339,7 @@ const PPPOECustomer = () => {
         modalId="autoDisableEditModal"
       />
       <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
+
       <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
@@ -1442,6 +1459,22 @@ const PPPOECustomer = () => {
             </button>
           )}
 
+          {bpSettings.hasMikrotik &&
+            ((role === "ispOwner" && bpSettings?.bulkCustomerMikrotikUpdate) ||
+              (bpSettings?.bulkCustomerMikrotikUpdate &&
+                permission?.bulkCustomerMikrotikUpdate &&
+                role === "manager")) && (
+              <button
+                className="bulk_action_button btn btn-dark btn-floating btn-sm"
+                title={t("package")}
+                data-bs-toggle="modal"
+                data-bs-target="#bulkMikrotikEdit"
+                type="button"
+              >
+                <i className="fas fa-edit"></i>
+                <span className="button_title">{t("changeMikrotik")}</span>
+              </button>
+            )}
           {bpSettings.hasMikrotik &&
             ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
               (bpSettings?.bulkPackageEdit &&

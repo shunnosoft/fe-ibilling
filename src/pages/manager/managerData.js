@@ -167,6 +167,20 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.staffSalary,
       disabled: false,
     },
+    {
+      id: 25,
+      value: "dashboardCollectionData",
+      label: "Dashboard Collection",
+      isChecked: permission?.dashboardCollectionData,
+      disabled: false,
+    },
+    {
+      id: 26,
+      value: "bulkCustomerMikrotikUpdate",
+      label: "Bulk Customer Mikrotik Update",
+      isChecked: permission?.bulkCustomerMikrotikUpdate,
+      disabled: !bpSettings?.bulkCustomerMikrotikUpdate,
+    },
   ];
 
   const permissionBangla = [
@@ -337,6 +351,20 @@ export const managerPermission = (permission, bpSettings) => {
       label: "স্টাফ স্যলারি",
       isChecked: permission?.staffSalary,
       disabled: false,
+    },
+    {
+      id: 25,
+      value: "dashboardCollectionData",
+      label: "ড্যাশবোর্ড কালেকশন",
+      isChecked: permission?.dashboardCollectionData,
+      disabled: false,
+    },
+    {
+      id: 26,
+      value: "bulkCustomerMikrotikUpdate",
+      label: "বাল্ক গ্রাহকের মাইক্রোটিক পরিবর্তন",
+      isChecked: permission?.bulkCustomerMikrotikUpdate,
+      disabled: !bpSettings?.bulkCustomerMikrotikUpdate,
     },
   ];
 
