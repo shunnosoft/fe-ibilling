@@ -102,6 +102,7 @@ import useCurrentUser from "./hooks/useCurrentUser";
 import useISPowner from "./hooks/useISPOwner";
 import Supports from "./admin/netFeeSupport/Supports";
 import NetFeeIspOwnerSupport from "./admin/netFeeSupport/NetFeeIspOwnerSupport";
+import QRCodePay from "./pages/public-pages/QRCodePay";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -353,6 +354,7 @@ function App() {
             />
             <Route path="/privacy-policy" element={<Privacy></Privacy>} />
             <Route path="/terms-conditions" element={<Terms></Terms>} />
+            <Route path="/isp" element={<QRCodePay />} />
             <Route
               path="/return-and-refund-policy"
               element={<Refund></Refund>}
