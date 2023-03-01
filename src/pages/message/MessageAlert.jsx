@@ -33,7 +33,7 @@ const MessageAlert = ({ sms }) => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>{t("messageAlertBoard")}</Modal.Title>
+          <Modal.Title>{t("messageBoardAlert")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p className="text-danger text-center" style={{ fontSize: "2rem" }}>

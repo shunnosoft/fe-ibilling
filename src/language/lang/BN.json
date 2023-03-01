@@ -676,5 +676,7 @@
   "previousState": "পূর্বের স্টেট",
   "currentState": "বর্তমান স্টেট",
   "changeMikrotik": "মাইক্রোটিক পরিবর্তন",
-  "connectionFeeCollected": "কানেকশনফি সংগ্রহ"
+  "connectionFeeCollected": "কানেকশনফি সংগ্রহ",
+  "messageBoardAlert": "মেসেজ বোর্ড এলার্ট",
+  "purchaseSMSYouDoNotHaveEnoughSMS": "এসএমএস কিনুন, আপনার কাছে পর্যাপ্ত এসএমএস নেই"
 }

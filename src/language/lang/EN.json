@@ -674,5 +674,7 @@
   "previousState": "Previous State",
   "currentState": "Current State",
   "changeMikrotik": "Change Mikrotik",
-  "connectionFeeCollected": "Connection Fee Collected"
+  "connectionFeeCollected": "Connection Fee Collected",
+  "messageBoardAlert": "Message Board Alert",
+  "purchaseSMSYouDoNotHaveEnoughSMS": "Purchase SMS, You Do Not Have Enough SMS"
 }

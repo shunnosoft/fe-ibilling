@@ -966,7 +966,7 @@ export default function Message() {
         </div>
       </div>
 
-      <MessageAlert sms={sms} />
+      {/* <MessageAlert sms={sms} /> */}
       <SMSPurchase show={show} />
     </>
   );
