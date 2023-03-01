@@ -201,6 +201,7 @@ const PPPOECustomer = () => {
     filterDate: null,
     dayFilter: "",
   });
+  console.log(filterOptions.subArea);
 
   //initial api calls
   useEffect(() => {
@@ -324,6 +325,7 @@ const PPPOECustomer = () => {
         area: area
           ? getArea.subAreas.some((item) => item.id === c.subArea)
           : true,
+        subArea: subArea ? c.subArea === subArea : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,
         unpaid: paymentStatus
@@ -341,7 +343,6 @@ const PPPOECustomer = () => {
         overDue: paymentStatus
           ? c.paymentStatus === "unpaid" && c.balance < 0
           : true,
-        subArea: subArea ? c.subArea === subArea : true,
         mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
         freeUser: freeUser ? c.monthlyFee === 0 : true,
         nonFreeUser: freeUser ? c.monthlyFee !== 0 : true,
@@ -351,7 +352,6 @@ const PPPOECustomer = () => {
           ? c.mikrotikPackage === filterOptions.package
           : true,
         filterDate: filterDate ? billingCycle == filterDateData : true,
-
         dayFilter: dayFilter
           ? moment(c.billingCycle).diff(moment(), "days") ===
             Number(filterOptions.dayFilter)
@@ -935,7 +935,7 @@ const PPPOECustomer = () => {
           subArea: e.target.value,
         });
       },
-      options: subAreas,
+      options: subAreas.filter((item) => item.area?.id === areaId),
       firstOptions: t("subArea"),
       textAccessor: "name",
       valueAccessor: "id",
