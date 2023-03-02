@@ -391,6 +391,34 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                           </option>
                         </Field>
                       </div>
+                      <div>
+                        <h6 className="mb-0">Execute Billing Cycle</h6>
+                        <Field
+                          as="select"
+                          name="executeBillingCycle"
+                          className="form-select mt-1 mb-4"
+                          aria-label="Default select example"
+                        >
+                          <option
+                            value="true"
+                            selected={
+                              ispOwner?.bpSettings?.executeBillingCycle ===
+                              "true"
+                            }
+                          >
+                            Yes
+                          </option>
+                          <option
+                            value="false"
+                            selected={
+                              ispOwner?.bpSettings?.executeBillingCycle ===
+                              "false"
+                            }
+                          >
+                            No
+                          </option>
+                        </Field>
+                      </div>
                     </div>
                     {/* <div className="displayGrid3">
                       <div>
@@ -508,33 +536,6 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                         Has Inventory
                         </label>
                       </div> */}
-                    </div>
-
-                    <div className="displayGrid3">
-                      <Field
-                        as="select"
-                        name="executeBillingCycle"
-                        className="form-select mt-1 mb-4"
-                        aria-label="Default select example"
-                      >
-                        <option
-                          value="true"
-                          selected={
-                            ispOwner?.bpSettings?.executeBillingCycle === "true"
-                          }
-                        >
-                          True
-                        </option>
-                        <option
-                          value="false"
-                          selected={
-                            ispOwner?.bpSettings?.executeBillingCycle ===
-                            "false"
-                          }
-                        >
-                          False
-                        </option>
-                      </Field>
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

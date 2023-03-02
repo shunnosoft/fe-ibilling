@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 // internal imports
 import "chart.js/auto";
 import { FontColor } from "../../assets/js/theme";
+
 import {
   PersonBoundingBox,
   PersonFill,
@@ -20,7 +21,11 @@ import {
   KeyFill,
   Award,
 } from "react-bootstrap-icons";
-import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
+import {
+  getIspOwner,
+  getIspOwners,
+  resetSerialNumber,
+} from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
 import "./home.css";
@@ -32,6 +37,7 @@ import AddProprietorModal from "./modal/AddProprietorModal";
 import Invoices from "../invoiceList/Invoices";
 import { badge } from "../../components/common/Utils";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import { setIspOwnerData } from "../../features/authSlice";
 
 export default function Home() {
   // loading
@@ -145,6 +151,12 @@ export default function Home() {
   const fileModal = (ownerId, mtk) => {
     setOwnerId(ownerId);
     setMikrotikStatus(mtk);
+  };
+
+  //get ispOwner
+  const ipsOwnerHandler = (id) => {
+    const findIspOwner = ispOwners.find((item) => item.id === id);
+    getIspOwner(findIspOwner);
   };
 
   // table column
@@ -444,6 +456,18 @@ export default function Home() {
                       <div className="customerAction">
                         <KeyFill />
                         <p className="actionP">Password Reset</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    onClick={() => {
+                      ipsOwnerHandler(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <p className="actionP">Execute Bill</p>
                       </div>
                     </div>
                   </li>
