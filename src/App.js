@@ -354,7 +354,7 @@ function App() {
             />
             <Route path="/privacy-policy" element={<Privacy></Privacy>} />
             <Route path="/terms-conditions" element={<Terms></Terms>} />
-            <Route path="/isp" element={<QRCodePay />} />
+            <Route path="/isp/:ispId" element={<QRCodePay />} />
             <Route
               path="/return-and-refund-policy"
               element={<Refund></Refund>}

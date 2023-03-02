@@ -64,6 +64,9 @@ export default function Home() {
   // mikrotik status state
   const [mikrotikStatus, setMikrotikStatus] = useState("");
 
+  // execute billing cycle statue state
+  const [executeBill, setExecuteBill] = useState("");
+
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
@@ -79,6 +82,20 @@ export default function Home() {
 
   if (status && status !== "status") {
     ispOwners = ispOwners.filter((item) => item.status === status);
+  }
+
+  // execute billing cycle filter
+  if (executeBill && executeBill !== "All") {
+    let billCycle;
+    if (executeBill === "true") {
+      billCycle = true;
+    } else if (executeBill === "false") {
+      billCycle = false;
+    }
+
+    ispOwners = ispOwners.filter(
+      (value) => value.bpSettings.executeBillingCycle === billCycle
+    );
   }
 
   // mikrotik filter
@@ -478,6 +495,17 @@ export default function Home() {
                 <option value="inactive">Inactive</option>
                 <option value="banned">Banned</option>
                 <option value="deleted">Deleted</option>
+              </select>
+              <select
+                className="form-select mt-0 me-3"
+                aria-label="Default select example"
+                onChange={(event) => setExecuteBill(event.target.value)}
+              >
+                <option value="All" selected>
+                  Execute Billing Cycle
+                </option>
+                <option value="true">Run Billing Cycle</option>
+                <option value="false">Don't Billing Cycle</option>
               </select>
               <select
                 className="form-select mt-0 me-3"

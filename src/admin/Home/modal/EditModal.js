@@ -74,6 +74,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
     customerLimit: Yup.string().required("কাস্টমার লিমিট দিন"),
     packageRate: Yup.string().required("প্যাকেজ রেট দিন"),
     hasMikrotik: Yup.string(),
+    executeBillingCycle: Yup.string(),
   });
 
   //  set initial form values
@@ -95,6 +96,7 @@ const ISPOwnerEditModal = ({ ownerId }) => {
       packageRate: ispOwner?.bpSettings?.packageRate,
       customerLimit: ispOwner?.bpSettings?.customerLimit,
       hasMikrotik: ispOwner?.bpSettings?.hasMikrotik,
+      executeBillingCycle: ispOwner?.bpSettings?.executeBillingCycle,
     };
   }
 
@@ -123,12 +125,14 @@ const ISPOwnerEditModal = ({ ownerId }) => {
         queueType: values.queueType,
         hasMikrotik: values.hasMikrotik,
         monthlyDueDate: billDate,
+        executeBillingCycle: values.executeBillingCycle,
       },
       reference: {
         ...ispOwner.reference,
         mobile: values.referenceMobile,
       },
     };
+    console.log(data);
 
     if (role === "superadmin") {
       data.smsBalance = values.smsBalance;
@@ -492,17 +496,45 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                           Has Mikrotik
                         </label>
                       </div>
+
                       {/* <div className="form-check mt-4">
                         <Field
-                          className="form-check-input"
-                          type="checkbox"
-                          id="inventory"
-                          name="inventory"
+                        className="form-check-input"
+                        type="checkbox"
+                        id="inventory"
+                        name="inventory"
                         />
                         <label className="form-check-label" for="inventory">
-                          Has Inventory
+                        Has Inventory
                         </label>
                       </div> */}
+                    </div>
+
+                    <div className="displayGrid3">
+                      <Field
+                        as="select"
+                        name="executeBillingCycle"
+                        className="form-select mt-1 mb-4"
+                        aria-label="Default select example"
+                      >
+                        <option
+                          value="true"
+                          selected={
+                            ispOwner?.bpSettings?.executeBillingCycle === "true"
+                          }
+                        >
+                          True
+                        </option>
+                        <option
+                          value="false"
+                          selected={
+                            ispOwner?.bpSettings?.executeBillingCycle ===
+                            "false"
+                          }
+                        >
+                          False
+                        </option>
+                      </Field>
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

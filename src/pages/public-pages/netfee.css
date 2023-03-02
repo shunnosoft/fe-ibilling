@@ -270,3 +270,59 @@
     overflow: hidden;
   }
 }
+
+.ispOwner {
+  background-color: #173161;
+  height: 150vh;
+  background-size: cover;
+}
+table.client_info {
+  color: #bfbfbf;
+  font-weight: 700;
+  margin-top: 2rem;
+}
+
+table.client_info td {
+  padding: 0px 10px !important;
+  color: #bfbfbf !important;
+  font-size: 1.1rem !important;
+}
+
+.selectInfo {
+  width: 15% !important;
+  border: none;
+}
+
+.customer {
+  /* border: 1px solid black; */
+  /* text-align: center; */
+  color: #ffffff;
+}
+
+.customerInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.customerInfo {
+  margin-top: 10rem !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+.customer-title {
+  font-size: 2.5rem;
+  color: #ffffff;
+  border-bottom: 1px solid white;
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+}
+
+table.customer-info td {
+  padding: 0px 10px !important;
+  color: #bfbfbf !important;
+  font-size: 1.5rem !important;
+  line-height: 3rem;
+}
