@@ -6,7 +6,7 @@ const useISPowner = () => {
     (state) => state.persistedReducer.auth.ispOwnerData
   );
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
   const [ispOwnerId, setIspOwnerId] = useState(ispOwner.id);
   const [hasMikrotik, setHasMikrotik] = useState(bpSettings?.hasMikrotik);
