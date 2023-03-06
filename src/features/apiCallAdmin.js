@@ -341,13 +341,15 @@ export const deleteIspOwnerCreateSupport = async (
 };
 
 //get ispOwner
-export const getIspOwner = async (data) => {
+export const getIspOwner = async (mobile, setBillingCycle, setIsLoading) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get(
-      `admin/ispOwnerBillingCycle?mobile=${data.mobile}`
+      `admin/ispOwnerBillingCycle?mobile=${mobile}`
     );
-    console.log(res.data);
+    setBillingCycle(res.data);
   } catch (error) {
     console.log(error);
   }
+  setIsLoading(false);
 };

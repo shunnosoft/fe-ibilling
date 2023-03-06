@@ -132,7 +132,6 @@ const ISPOwnerEditModal = ({ ownerId }) => {
         mobile: values.referenceMobile,
       },
     };
-    console.log(data);
 
     if (role === "superadmin") {
       data.smsBalance = values.smsBalance;

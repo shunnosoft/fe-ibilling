@@ -21,11 +21,7 @@ import {
   KeyFill,
   Award,
 } from "react-bootstrap-icons";
-import {
-  getIspOwner,
-  getIspOwners,
-  resetSerialNumber,
-} from "../../features/apiCallAdmin";
+import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
 import "./home.css";
@@ -38,6 +34,7 @@ import Invoices from "../invoiceList/Invoices";
 import { badge } from "../../components/common/Utils";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import { setIspOwnerData } from "../../features/authSlice";
+import IspOwnerExecuteBill from "./modal/IspOwnerExecuteBill";
 
 export default function Home() {
   // loading
@@ -73,8 +70,12 @@ export default function Home() {
   // execute billing cycle statue state
   const [executeBill, setExecuteBill] = useState("");
 
+  // ispOwner data state
+  const [ispOwnerBillingID, setIspOwnerBillingID] = useState("");
+
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
+  console.log(ispOwners);
 
   // get user role from redux
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
@@ -153,10 +154,9 @@ export default function Home() {
     setMikrotikStatus(mtk);
   };
 
-  //get ispOwner
+  //get ispOwner execute billing cycle
   const ipsOwnerHandler = (id) => {
-    const findIspOwner = ispOwners.find((item) => item.id === id);
-    getIspOwner(findIspOwner);
+    setIspOwnerBillingID(id);
   };
 
   // table column
@@ -460,6 +460,8 @@ export default function Home() {
                     </div>
                   </li>
                   <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#ispOwnerExecuteBill"
                     onClick={() => {
                       ipsOwnerHandler(original.id);
                     }}
@@ -576,6 +578,8 @@ export default function Home() {
 
               {/* password reset modal */}
               <PasswordReset resetCustomerId={userId} />
+              {/* Execute billing cycle ispOwner */}
+              <IspOwnerExecuteBill ownerId={ispOwnerBillingID} />
             </FontColor>
           </div>
         </div>

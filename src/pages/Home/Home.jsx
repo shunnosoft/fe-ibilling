@@ -68,7 +68,7 @@ export default function Home() {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
-  const reseller = useSelector((state) => state.reseller?.reseller);
+  const reseller = useSelector((state) => state.reseller);
   const allCollector = useSelector((state) => state.collector.collector);
   const manager = useSelector((state) => state.manager.manager);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
