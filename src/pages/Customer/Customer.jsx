@@ -201,7 +201,6 @@ const PPPOECustomer = () => {
     filterDate: null,
     dayFilter: "",
   });
-  console.log(filterOptions.subArea);
 
   //initial api calls
   useEffect(() => {

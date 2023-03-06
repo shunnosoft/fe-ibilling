@@ -899,8 +899,7 @@ export default function Home() {
                             <h2>
                               ৳{" "}
                               {FormatNumber(
-                                customerStat.totalMonthlyCollection +
-                                  customerStat.ispOwnerConnectionFeeCollection -
+                                customerStat.totalMonthlyCollection -
                                   customerStat.totalMonthlyDiscount -
                                   (customerStat.totalExpenditure +
                                     customerStat.totalSalary)
@@ -922,8 +921,7 @@ export default function Home() {
                             <h2>
                               ৳{" "}
                               {FormatNumber(
-                                customerStat.ispOwnerBillCollection +
-                                  customerStat.ispOwnerConnectionFeeCollection -
+                                customerStat.ispOwnerBillCollection -
                                   customerStat.totalMonthlyDiscount +
                                   customerStat.totalManagerDeposit -
                                   (customerStat.ispOwnerExpenditure -

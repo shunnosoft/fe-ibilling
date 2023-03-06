@@ -67,6 +67,8 @@ export default function CustomerModal() {
 
   const [billDate, setBillDate] = useState(new Date());
   const [connectionDate, setConnectionDate] = useState(new Date());
+  const [connectionFee, setConnectionFee] = useState(false);
+  const [medium, setMedium] = useState("cash");
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
@@ -93,12 +95,13 @@ export default function CustomerModal() {
       .integer()
       .min(0, t("minimumPackageRate"))
       .required(t("enterPackageRate")),
-    connectionFee: Yup.number().integer().min(0, t("minimumPackageRate")),
     Pname: Yup.string().required(t("writePPPoEName")),
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
-    // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
+    amount: Yup.number()
+      .min(0, t("billNotAcceptable"))
+      .integer(t("decimalNumberNotAcceptable")),
   });
 
   // select subArea
@@ -185,6 +188,17 @@ export default function CustomerModal() {
       }
     }
 
+    // if (connectionFee) {
+    //   if (data.amount <= 0) {
+    //     setIsloading(false);
+    //     return alert(t("writeConnectionFee"));
+    //   }
+    //   if (medium === "") {
+    //     setIsloading(false);
+    //     return alert(t("selectMedium"));
+    //   }
+    // }
+
     const mainData = {
       paymentStatus: "unpaid",
       subArea: subArea2,
@@ -195,6 +209,8 @@ export default function CustomerModal() {
       autoDisable: autoDisable,
       connectionDate: connectionDate?.toISOString(),
       billingCycle: billDate?.toISOString(),
+      // medium,
+      // connectionFeeStatus: connectionFee,
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -211,6 +227,10 @@ export default function CustomerModal() {
     if (!genCustomerId) {
       mainData.customerId = customerId;
     }
+    // if (!connectionFee) {
+    //   delete mainData.amount;
+    //   delete mainData.medium;
+    // }
 
     if (
       divisionalArea.district ||
@@ -300,7 +320,6 @@ export default function CustomerModal() {
                   email: "",
                   nid: "",
                   monthlyFee: packageRate?.rate || 0,
-                  connectionFee: "",
                   Pname: "",
                   Pprofile: packageRate?.name || "",
                   Ppassword: "",
@@ -309,6 +328,7 @@ export default function CustomerModal() {
                   referenceName: "",
                   referenceMobile: "",
                   customerBillingType: "",
+                  // amount: 0,
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -382,13 +402,6 @@ export default function CustomerModal() {
 
                     <div className="pppoeSection2">
                       <FtextField
-                        type="number"
-                        label={t("connectionFee")}
-                        name="connectionFee"
-                        min={0}
-                        disabled={!mikrotikPackage}
-                      />
-                      <FtextField
                         type="text"
                         label={t("PPPoEName")}
                         name="Pname"
@@ -402,15 +415,15 @@ export default function CustomerModal() {
                         disabled={!mikrotikPackage}
                         validation={"true"}
                       />
-                    </div>
-
-                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("comment")}
                         name="Pcomment"
                         disabled={!mikrotikPackage}
                       />
+                    </div>
+
+                    <div className="displayGrid3">
                       <div>
                         <label className="form-control-label changeLabelFontColor">
                           {t("selectArea")}{" "}
@@ -456,9 +469,6 @@ export default function CustomerModal() {
                             : ""}
                         </select>
                       </div>
-                    </div>
-
-                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("name")}
@@ -466,6 +476,9 @@ export default function CustomerModal() {
                         disabled={!mikrotikPackage}
                         validation={"true"}
                       />
+                    </div>
+
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("mobile")}
@@ -474,33 +487,17 @@ export default function CustomerModal() {
                       />
                       <FtextField
                         type="text"
-                        label={t("address")}
-                        name="address"
+                        label={t("email")}
+                        name="email"
                         disabled={!mikrotikPackage}
                       />
-                    </div>
-                    <div className="displayGrid3">
+
                       <FtextField
                         type="text"
                         label={t("NIDno")}
                         name="nid"
                         disabled={!mikrotikPackage}
                       />
-                      <FtextField
-                        type="text"
-                        label={t("email")}
-                        name="email"
-                        disabled={!mikrotikPackage}
-                      />
-                      {!genCustomerId && (
-                        <FtextField
-                          type="text"
-                          label={t("customerId")}
-                          name="customerId"
-                          disabled={!mikrotikPackage}
-                          validation={"true"}
-                        />
-                      )}
                     </div>
                     <div className="displayGrid3">
                       {divisionalAreaFormData.map((item) => (
@@ -525,7 +522,14 @@ export default function CustomerModal() {
                         </div>
                       ))}
                     </div>
-                    <div className="displayGrid3 mb-3">
+                    <div className="displayGrid3">
+                      <FtextField
+                        type="text"
+                        label={t("address")}
+                        name="address"
+                        disabled={!mikrotikPackage}
+                      />
+
                       <SelectField
                         label={t("customerBillType")}
                         id="exampleSelect"
@@ -555,6 +559,9 @@ export default function CustomerModal() {
                           }
                         />
                       </div>
+                    </div>
+
+                    <div className="displayGrid3">
                       <div className="billCycle">
                         <div>
                           <label className="form-control-label changeLabelFontColor">
@@ -571,8 +578,6 @@ export default function CustomerModal() {
                           />
                         </div>
                       </div>
-                    </div>
-                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("referenceName")}
@@ -585,6 +590,17 @@ export default function CustomerModal() {
                         name="referenceMobile"
                         disabled={!mikrotikPackage}
                       />
+                    </div>
+                    <div className="displayGrid3 mb-3">
+                      {!genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label={t("customerId")}
+                          name="customerId"
+                          disabled={!mikrotikPackage}
+                          validation={"true"}
+                        />
+                      )}
                       {bpSettings?.hasMikrotik && (
                         <div className="autoDisable">
                           <label> {t("automaticConnectionOff")} </label>
@@ -595,7 +611,51 @@ export default function CustomerModal() {
                           />
                         </div>
                       )}
+                      {/* <div className="autoDisable">
+                        <label htmlFor="checkConnectionFee">
+                          {t("WantToChargeConnectionFee")}{" "}
+                        </label>
+                        <input
+                          id="checkConnectionFee"
+                          type="checkBox"
+                          checked={connectionFee}
+                          onChange={(e) => setConnectionFee(e.target.checked)}
+                        />
+                      </div> */}
                     </div>
+                    {/* {connectionFee && (
+                      <div className="displayGrid3">
+                        <FtextField
+                          type="number"
+                          name="amount"
+                          label={t("amount")}
+                        />
+                        <div className="d-inline mb-3">
+                          <label
+                            htmlFor="receiver_type"
+                            className="form-control-label changeLabelFontColor"
+                          >
+                            {t("medium")}
+                          </label>
+
+                          <select
+                            as="select"
+                            id="receiver_type"
+                            className="form-select mt-0 mw-100"
+                            aria-label="Default select example"
+                            onChange={(e) => setMedium(e.target.value)}
+                          >
+                            <option value="cash" selected>
+                              {t("handCash")}
+                            </option>
+                            <option value="bKash"> {t("bKash")} </option>
+                            <option value="rocket"> {t("rocket")} </option>
+                            <option value="nagad"> {t("nagad")} </option>
+                            <option value="others"> {t("others")} </option>
+                          </select>
+                        </div>
+                      </div>
+                    )} */}
 
                     <div className="modal-footer" style={{ border: "none" }}>
                       <button
