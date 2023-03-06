@@ -210,7 +210,6 @@ export const editComments = async (dispatch, setIsLoading, data, commentId) => {
   try {
     const res = await apiLink.patch(`admin/comment/${commentId}`, data);
     setIsLoading(false);
-    console.log(res.data.comment);
     document.querySelector("#editComment").click();
     dispatch(editCommentSuccess(res.data.comment));
   } catch (error) {
@@ -348,6 +347,24 @@ export const getIspOwner = async (mobile, setBillingCycle, setIsLoading) => {
       `admin/ispOwnerBillingCycle?mobile=${mobile}`
     );
     setBillingCycle(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
+//get reseller
+export const getReseller = async (
+  mobile,
+  setIsLoading,
+  setResellerBillCycleData
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `admin/resellerBillingCycle?mobile=${mobile}`
+    );
+    setResellerBillCycleData(res.data);
   } catch (error) {
     console.log(error);
   }

@@ -21,7 +21,11 @@ import {
   KeyFill,
   Award,
 } from "react-bootstrap-icons";
-import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
+import {
+  getIspOwners,
+  getReseller,
+  resetSerialNumber,
+} from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
 import "./home.css";
@@ -73,9 +77,11 @@ export default function Home() {
   // ispOwner data state
   const [ispOwnerBillingID, setIspOwnerBillingID] = useState("");
 
+  //reseller data state
+  const [resellerBillCycleData, setResellerBillCycleData] = useState("");
+
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
-  console.log(ispOwners);
 
   // get user role from redux
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
@@ -157,6 +163,15 @@ export default function Home() {
   //get ispOwner execute billing cycle
   const ipsOwnerHandler = (id) => {
     setIspOwnerBillingID(id);
+  };
+
+  //reseller billing cycle
+  const resellerBillingCycleHandle = (id) => {
+    const findIspOwner = ispOwners.find((item) => item.id === id);
+    const mobile = findIspOwner?.mobile;
+    getReseller(mobile, setIsLoading, setResellerBillCycleData);
+
+    alert(resellerBillCycleData);
   };
 
   // table column
@@ -470,6 +485,18 @@ export default function Home() {
                       <div className="customerAction">
                         <i class="fa-solid fa-money-bill-wave"></i>
                         <p className="actionP">Execute Bill</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    onClick={() => {
+                      resellerBillingCycleHandle(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <p className="actionP">Reseller Billing Cycle</p>
                       </div>
                     </div>
                   </li>
