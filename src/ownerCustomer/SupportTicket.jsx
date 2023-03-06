@@ -65,7 +65,7 @@ const SupportTicket = () => {
           Total Pending: <span className="badge bg-warning text-dark">TK</span>{" "}
         </p>
       </div>
-      <h2 className="mt-1">Get Support Ticket</h2>
+      <h2 className="mt-1">Get Support Ticket </h2>
       <div className="support-message-form">
         <input
           ref={supportForm}

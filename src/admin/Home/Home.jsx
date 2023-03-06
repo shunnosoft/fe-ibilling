@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 // internal imports
 import "chart.js/auto";
 import { FontColor } from "../../assets/js/theme";
+
 import {
   PersonBoundingBox,
   PersonFill,
@@ -20,7 +21,11 @@ import {
   KeyFill,
   Award,
 } from "react-bootstrap-icons";
-import { getIspOwners, resetSerialNumber } from "../../features/apiCallAdmin";
+import {
+  getIspOwner,
+  getIspOwners,
+  resetSerialNumber,
+} from "../../features/apiCallAdmin";
 import Table from "../../components/table/Table";
 import EditModal from "./modal/EditModal";
 import "./home.css";
@@ -32,6 +37,7 @@ import AddProprietorModal from "./modal/AddProprietorModal";
 import Invoices from "../invoiceList/Invoices";
 import { badge } from "../../components/common/Utils";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import { setIspOwnerData } from "../../features/authSlice";
 
 export default function Home() {
   // loading
@@ -64,6 +70,9 @@ export default function Home() {
   // mikrotik status state
   const [mikrotikStatus, setMikrotikStatus] = useState("");
 
+  // execute billing cycle statue state
+  const [executeBill, setExecuteBill] = useState("");
+
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
@@ -79,6 +88,20 @@ export default function Home() {
 
   if (status && status !== "status") {
     ispOwners = ispOwners.filter((item) => item.status === status);
+  }
+
+  // execute billing cycle filter
+  if (executeBill && executeBill !== "All") {
+    let billCycle;
+    if (executeBill === "true") {
+      billCycle = true;
+    } else if (executeBill === "false") {
+      billCycle = false;
+    }
+
+    ispOwners = ispOwners.filter(
+      (value) => value.bpSettings.executeBillingCycle === billCycle
+    );
   }
 
   // mikrotik filter
@@ -128,6 +151,12 @@ export default function Home() {
   const fileModal = (ownerId, mtk) => {
     setOwnerId(ownerId);
     setMikrotikStatus(mtk);
+  };
+
+  //get ispOwner
+  const ipsOwnerHandler = (id) => {
+    const findIspOwner = ispOwners.find((item) => item.id === id);
+    getIspOwner(findIspOwner);
   };
 
   // table column
@@ -430,6 +459,18 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
+                  <li
+                    onClick={() => {
+                      ipsOwnerHandler(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <p className="actionP">Execute Bill</p>
+                      </div>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -478,6 +519,17 @@ export default function Home() {
                 <option value="inactive">Inactive</option>
                 <option value="banned">Banned</option>
                 <option value="deleted">Deleted</option>
+              </select>
+              <select
+                className="form-select mt-0 me-3"
+                aria-label="Default select example"
+                onChange={(event) => setExecuteBill(event.target.value)}
+              >
+                <option value="All" selected>
+                  Execute Billing Cycle
+                </option>
+                <option value="true">Run Billing Cycle</option>
+                <option value="false">Don't Billing Cycle</option>
               </select>
               <select
                 className="form-select mt-0 me-3"

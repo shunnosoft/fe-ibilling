@@ -339,3 +339,15 @@ export const deleteIspOwnerCreateSupport = async (
   }
   setIsLoading(false);
 };
+
+//get ispOwner
+export const getIspOwner = async (data) => {
+  try {
+    const res = await apiLink.get(
+      `admin/ispOwnerBillingCycle?mobile=${data.mobile}`
+    );
+    console.log(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
