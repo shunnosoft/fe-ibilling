@@ -257,6 +257,22 @@ const DetailsModal = ({ ownerId }) => {
                             </td>
                           </tr>
                           <tr>
+                            <th scope="col">Execute Billing Cycle </th>
+                            <td>
+                              <i className="text-body">
+                                {ownerData?.bpSettings?.executeBillingCycle ? (
+                                  <span class="badge rounded-pill bg-success">
+                                    YES
+                                  </span>
+                                ) : (
+                                  <span class="badge rounded-pill bg-danger">
+                                    NO
+                                  </span>
+                                )}
+                              </i>
+                            </td>
+                          </tr>
+                          <tr>
                             <th scope="col">Mikrotik </th>
                             <td>
                               <i className="text-body">

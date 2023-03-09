@@ -22,6 +22,7 @@ import {
   Award,
 } from "react-bootstrap-icons";
 import {
+  getIspOwner,
   getIspOwners,
   getReseller,
   resetSerialNumber,
@@ -38,7 +39,6 @@ import Invoices from "../invoiceList/Invoices";
 import { badge } from "../../components/common/Utils";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import { setIspOwnerData } from "../../features/authSlice";
-import IspOwnerExecuteBill from "./modal/IspOwnerExecuteBill";
 
 export default function Home() {
   // loading
@@ -74,8 +74,8 @@ export default function Home() {
   // execute billing cycle statue state
   const [executeBill, setExecuteBill] = useState("");
 
-  // ispOwner data state
-  const [ispOwnerBillingID, setIspOwnerBillingID] = useState("");
+  // billing cycle response data state
+  const [billingCycle, setBillingCycle] = useState("");
 
   //reseller data state
   const [resellerBillCycleData, setResellerBillCycleData] = useState("");
@@ -162,16 +162,26 @@ export default function Home() {
 
   //get ispOwner execute billing cycle
   const ipsOwnerHandler = (id) => {
-    setIspOwnerBillingID(id);
+    const ispData = ispOwners.find((item) => item.id === id);
+
+    let confirm = window.confirm(
+      "The isp owner wants to continue the billing cycle"
+    );
+    if (confirm) {
+      getIspOwner(ispData, setBillingCycle, setIsLoading);
+      alert(billingCycle?.msg);
+    }
   };
 
   //reseller billing cycle
   const resellerBillingCycleHandle = (id) => {
-    const findIspOwner = ispOwners.find((item) => item.id === id);
-    const mobile = findIspOwner?.mobile;
-    getReseller(mobile, setIsLoading, setResellerBillCycleData);
+    const ispData = ispOwners.find((item) => item.id === id);
 
-    alert(resellerBillCycleData);
+    let confirm = window.confirm("Reseller wants to continue billing cycle");
+    if (confirm) {
+      getReseller(ispData, setIsLoading, setResellerBillCycleData);
+      alert(resellerBillCycleData?.msg);
+    }
   };
 
   // table column
@@ -475,8 +485,6 @@ export default function Home() {
                     </div>
                   </li>
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#ispOwnerExecuteBill"
                     onClick={() => {
                       ipsOwnerHandler(original.id);
                     }}
@@ -484,7 +492,7 @@ export default function Home() {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <i class="fa-solid fa-money-bill-wave"></i>
-                        <p className="actionP">Execute Bill</p>
+                        <p className="actionP">IspOwner Billing Cycle</p>
                       </div>
                     </div>
                   </li>
@@ -606,7 +614,6 @@ export default function Home() {
               {/* password reset modal */}
               <PasswordReset resetCustomerId={userId} />
               {/* Execute billing cycle ispOwner */}
-              <IspOwnerExecuteBill ownerId={ispOwnerBillingID} />
             </FontColor>
           </div>
         </div>
