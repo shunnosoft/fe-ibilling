@@ -38,7 +38,6 @@ import AddProprietorModal from "./modal/AddProprietorModal";
 import Invoices from "../invoiceList/Invoices";
 import { badge } from "../../components/common/Utils";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
-import { setIspOwnerData } from "../../features/authSlice";
 
 export default function Home() {
   // loading
@@ -160,29 +159,31 @@ export default function Home() {
     setMikrotikStatus(mtk);
   };
 
-  //get ispOwner execute billing cycle
-  const ipsOwnerHandler = (id) => {
-    const ispData = ispOwners.find((item) => item.id === id);
-
+  const ipsOwnerBillingCycleHandler = (ispOwner) => {
     let confirm = window.confirm(
       "The isp owner wants to continue the billing cycle"
     );
     if (confirm) {
-      getIspOwner(ispData, setBillingCycle, setIsLoading);
-      alert(billingCycle?.msg);
+      getIspOwner(ispOwner, setBillingCycle, setIsLoading);
     }
   };
 
   //reseller billing cycle
-  const resellerBillingCycleHandle = (id) => {
-    const ispData = ispOwners.find((item) => item.id === id);
-
+  const resellerBillingCycleHandle = (ispOwner) => {
     let confirm = window.confirm("Reseller wants to continue billing cycle");
     if (confirm) {
-      getReseller(ispData, setIsLoading, setResellerBillCycleData);
-      alert(resellerBillCycleData?.msg);
+      getReseller(ispOwner, setIsLoading, setResellerBillCycleData);
     }
   };
+
+  useEffect(() => {
+    if (billingCycle) {
+      alert(billingCycle.msg);
+    }
+    if (resellerBillCycleData) {
+      alert(resellerBillCycleData.msg);
+    }
+  }, [billingCycle, resellerBillCycleData]);
 
   // table column
   const columns = React.useMemo(
@@ -486,7 +487,7 @@ export default function Home() {
                   </li>
                   <li
                     onClick={() => {
-                      ipsOwnerHandler(original.id);
+                      ipsOwnerBillingCycleHandler(original);
                     }}
                   >
                     <div className="dropdown-item">
@@ -498,7 +499,7 @@ export default function Home() {
                   </li>
                   <li
                     onClick={() => {
-                      resellerBillingCycleHandle(original.id);
+                      resellerBillingCycleHandle(original);
                     }}
                   >
                     <div className="dropdown-item">
