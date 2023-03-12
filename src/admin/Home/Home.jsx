@@ -164,7 +164,7 @@ export default function Home() {
       "The isp owner wants to continue the billing cycle"
     );
     if (confirm) {
-      getIspOwner(ispOwner, setBillingCycle, setIsLoading);
+      getIspOwner(ispOwner, setBillingCycle);
     }
   };
 
@@ -172,7 +172,7 @@ export default function Home() {
   const resellerBillingCycleHandle = (ispOwner) => {
     let confirm = window.confirm("Reseller wants to continue billing cycle");
     if (confirm) {
-      getReseller(ispOwner, setIsLoading, setResellerBillCycleData);
+      getReseller(ispOwner, setResellerBillCycleData);
     }
   };
 
@@ -180,10 +180,13 @@ export default function Home() {
     if (billingCycle) {
       alert(billingCycle.msg);
     }
+  }, [billingCycle]);
+
+  useEffect(() => {
     if (resellerBillCycleData) {
       alert(resellerBillCycleData.msg);
     }
-  }, [billingCycle, resellerBillCycleData]);
+  }, [resellerBillCycleData]);
 
   // table column
   const columns = React.useMemo(

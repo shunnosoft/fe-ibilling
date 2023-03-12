@@ -676,5 +676,22 @@
   "changeMikrotik": "Change Mikrotik",
   "connectionFeeCollected": "Connection Fee Collected",
   "messageBoardAlert": "Message Board Alert",
-  "purchaseSMSYouDoNotHaveEnoughSMS": "Purchase SMS, You Do Not Have Enough SMS"
+  "purchaseSMSYouDoNotHaveEnoughSMS": "Purchase SMS, You Do Not Have Enough SMS",
+  "bkash": "Bkash",
+  "appSecret": "App Secret",
+  "appKey": "App Key",
+  "isTokenized": "Is Tokenized",
+  "Has PG": "hasPG",
+  "ISPOwner": "ISP Owner",
+  "adress": "Adress",
+  "queueType": "Queue Type",
+  "InvoiceDate": "Invoice Date",
+  "simpleQueue": "Simple Queue",
+  "firewallQueue": "Firewall Queue",
+  "hasPG": "Has PG",
+  "new": "New",
+  "hasMikrotik": "Has Mikrotik",
+  "packageType": "Package Type",
+  "downloadQRCode": "Download QR Code",
+  "qrCode": "QR Code"
 }

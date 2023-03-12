@@ -24,6 +24,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import moment from "moment/moment";
 import { badge } from "../../components/common/Utils";
 import { useEffect } from "react";
+import QrCode from "./QrCode";
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -379,6 +380,20 @@ export default function Profile() {
                               </table>
                             </>
                           )}
+                        </div>
+                      </div>
+                    </Tab>
+                    <Tab eventKey="qrCode" title={t("qrCode")}>
+                      <div className="collectorWrapper overflow-hidden">
+                        <div className="profileWrapper">
+                          <QrCode
+                            ispInfo={{
+                              company: currentUser?.company,
+                              mobile: currentUser?.mobile,
+                              netFeeId: currentUser?.netFeeId,
+                              address: currentUser?.address,
+                            }}
+                          />
                         </div>
                       </div>
                     </Tab>

@@ -340,8 +340,7 @@ export const deleteIspOwnerCreateSupport = async (
 };
 
 //get ispOwner
-export const getIspOwner = async (ispData, setBillingCycle, setIsLoading) => {
-  setIsLoading(true);
+export const getIspOwner = async (ispData, setBillingCycle) => {
   try {
     const res = await apiLink.get(
       `admin/ispOwnerBillingCycle?mobile=${ispData.mobile}`
@@ -350,16 +349,14 @@ export const getIspOwner = async (ispData, setBillingCycle, setIsLoading) => {
   } catch (error) {
     console.log(error);
   }
-  setIsLoading(false);
 };
 
 //get reseller
 export const getReseller = async (
   ispData,
-  setIsLoading,
+
   setResellerBillCycleData
 ) => {
-  setIsLoading(true);
   try {
     const res = await apiLink.get(
       `admin/resellerBillingCycle?mobile=${ispData.mobile}`
@@ -368,5 +365,4 @@ export const getReseller = async (
   } catch (error) {
     console.log(error);
   }
-  setIsLoading(false);
 };
