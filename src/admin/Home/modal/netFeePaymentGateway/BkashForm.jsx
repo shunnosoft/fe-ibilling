@@ -1,12 +1,12 @@
 import { Form, Formik, Field } from "formik";
 import React from "react";
-import { FtextField } from "../../../components/common/FtextField";
-import Loader from "../../../components/common/Loader";
+import { FtextField } from "../../../../components/common/FtextField";
+import Loader from "../../../../components/common/Loader";
 import * as Yup from "yup";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { updateOwner } from "../../../features/apiCallAdmin";
+import { updateOwner } from "../../../../features/apiCallAdmin";
 
 const BkashForm = ({ ispOwner }) => {
   const [passType, setPassType] = useState("password");
