@@ -206,7 +206,20 @@ export default function Report() {
       arr = arr.filter((bill) => bill.billType === billType);
     }
     if (medium) {
-      arr = arr.filter((item) => item.medium === medium);
+      if (medium === "onlinePayment") {
+        arr = arr.filter(
+          (item) =>
+            item.medium === "sslcommerz" ||
+            item.medium === "uddoktapay" ||
+            item.medium === "sslpay" ||
+            item.medium === "bKashPG" ||
+            item.medium === "rocket" ||
+            item.medium === "nagad" ||
+            item.medium === "bKash"
+        );
+      } else {
+        arr = arr.filter((item) => item.medium === medium);
+      }
     }
 
     arr = arr.filter(
@@ -546,6 +559,9 @@ export default function Report() {
                         </option>
 
                         <option value="cash">{t("handCash")}</option>
+                        <option value="onlinePayment">
+                          {t("onlinePayment")}
+                        </option>
                         <option value="bKash"> {t("bKash")} </option>
                         <option value="rocket"> {t("rocket")} </option>
                         <option value="nagad"> {t("nagad")} </option>

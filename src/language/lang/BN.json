@@ -700,5 +700,6 @@
   "deleted": "মুছে ফেলা",
   "hasPG": "পিজি আছে",
   "isTokenized": "টোকেনাইজ করা",
-  "downloadQRCode": "ডাউনলোড কিউআর কোড"
+  "downloadQRCode": "ডাউনলোড কিউআর কোড",
+  "onlinePayment":"অনলাইন পেমেন্ট"
 }

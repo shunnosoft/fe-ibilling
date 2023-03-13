@@ -693,5 +693,6 @@
   "hasMikrotik": "Has Mikrotik",
   "packageType": "Package Type",
   "downloadQRCode": "Download QR Code",
-  "qrCode": "QR Code"
+  "qrCode": "QR Code",
+  "onlinePayment":"Online Payment"
 }
