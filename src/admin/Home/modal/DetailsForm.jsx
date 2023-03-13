@@ -18,12 +18,13 @@ const DetailsForm = ({ ispOwner }) => {
   // import dispatch from react redux
   const dispatch = useDispatch();
 
-  // console.log(ispOwner?.division);
-
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
 
   const [billDate, setBillDate] = useState();
+
+  //ispOwner customer type data state
+  const [customerType, setCustomerType] = useState("");
 
   // owner division
   // const [ownerDivisionId, setOwnerDivisionId] = useState();
@@ -41,6 +42,7 @@ const DetailsForm = ({ ispOwner }) => {
     setBillDate(
       moment(ispOwner?.bpSettings?.monthlyDueDate).format("YYYY-MM-DD")
     );
+    setCustomerType(ispOwner?.bpSettings?.customerType);
   }, [ispOwner]);
 
   // useEffect(() => {
@@ -73,6 +75,7 @@ const DetailsForm = ({ ispOwner }) => {
     packageRate: Yup.string().required("প্যাকেজ রেট দিন"),
     hasMikrotik: Yup.string(),
     executeBillingCycle: Yup.string(),
+    customerType: Yup.array(),
   });
 
   //  set initial form values
@@ -95,6 +98,9 @@ const DetailsForm = ({ ispOwner }) => {
       customerLimit: ispOwner?.bpSettings?.customerLimit,
       hasMikrotik: ispOwner?.bpSettings?.hasMikrotik,
       executeBillingCycle: ispOwner?.bpSettings?.executeBillingCycle,
+      pppoe: ispOwner?.bpSettings?.customerType,
+      static: ispOwner?.bpSettings?.customerType,
+      hotspot: ispOwner?.bpSettings?.customerType,
     };
   }
 
@@ -124,6 +130,7 @@ const DetailsForm = ({ ispOwner }) => {
         hasMikrotik: values.hasMikrotik,
         monthlyDueDate: billDate,
         executeBillingCycle: values.executeBillingCycle,
+        customerType: customerType,
       },
       reference: {
         ...ispOwner.reference,
@@ -370,6 +377,56 @@ const DetailsForm = ({ ispOwner }) => {
                 </option>
               </Field>
             </div>
+            <div>
+              <h6 className="mb-0">Customer</h6>
+              <div className="d-inline-flex mb-4">
+                <div className="form-check me-3">
+                  <Field
+                    className="form-check-input"
+                    type="checkbox"
+                    id="pppoe-customer"
+                    name="pppoe"
+                    value={"pppoe"}
+                    onClick={(e) =>
+                      setCustomerType([...customerType, e.target.value])
+                    }
+                  />
+                  <label className="form-check-label" for="pppoe-customer">
+                    PPPoE
+                  </label>
+                </div>
+                <div className="form-check me-3">
+                  <Field
+                    className="form-check-input"
+                    type="checkbox"
+                    id="static-customer"
+                    name="static"
+                    value={"static"}
+                    onClick={(e) =>
+                      setCustomerType([...customerType, e.target.value])
+                    }
+                  />
+                  <label className="form-check-label" for="static-customer">
+                    Static
+                  </label>
+                </div>
+                <div className="form-check">
+                  <Field
+                    className="form-check-input"
+                    type="checkbox"
+                    id="hotspot-customer"
+                    name="hotspot"
+                    value={"hotspot"}
+                    onClick={(e) =>
+                      setCustomerType([...customerType, e.target.value])
+                    }
+                  />
+                  <label className="form-check-label" for="hotspot-customer">
+                    Hotspot
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
           {/* <div className="displayGrid3">
                       <div>
@@ -467,7 +524,7 @@ const DetailsForm = ({ ispOwner }) => {
                 name="hasMikrotik"
               />
               <label className="form-check-label" for="flexCheckChecked">
-                {t("hasMikrotik")}
+                Has Mikrotik
               </label>
             </div>
             {/* <div className="form-check mt-4">

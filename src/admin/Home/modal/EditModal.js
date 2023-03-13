@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import DetailsForm from "./DetailsForm";
-import BkashForm from "./BkashForm";
+import PaymentGateway from "./PaymentGateway";
 
 // import { divisions } from "../../../bdAddress/bd-divisions.json";
 // import { districts } from "../../../bdAddress/bd-districts.json";
@@ -53,11 +53,11 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                 id="uncontrolled-tab-example"
                 className="mb-3"
               >
-                <Tab eventKey="Owner" title={t("ISPOwner")}>
+                <Tab eventKey="Owner" title="ISP Owner">
                   <DetailsForm ispOwner={ispOwner} />
                 </Tab>
-                <Tab eventKey="bkash" title={t("bkash")}>
-                  <BkashForm ispOwner={ispOwner} />
+                <Tab eventKey="paymentGateway" title="Payment Gateway">
+                  <PaymentGateway ispOwner={ispOwner} />
                 </Tab>
               </Tabs>
             </div>

@@ -104,3 +104,9 @@
 .tableWrapper {
   padding: 20px;
 }
+.paymentGateway {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  margin: 30px 0;
+}
