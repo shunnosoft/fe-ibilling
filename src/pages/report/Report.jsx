@@ -212,10 +212,7 @@ export default function Report() {
             item.medium === "sslcommerz" ||
             item.medium === "uddoktapay" ||
             item.medium === "sslpay" ||
-            item.medium === "bKashPG" ||
-            item.medium === "rocket" ||
-            item.medium === "nagad" ||
-            item.medium === "bKash"
+            item.medium === "bKashPG"
         );
       } else {
         arr = arr.filter((item) => item.medium === medium);
