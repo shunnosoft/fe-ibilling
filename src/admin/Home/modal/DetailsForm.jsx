@@ -98,9 +98,9 @@ const DetailsForm = ({ ispOwner }) => {
       customerLimit: ispOwner?.bpSettings?.customerLimit,
       hasMikrotik: ispOwner?.bpSettings?.hasMikrotik,
       executeBillingCycle: ispOwner?.bpSettings?.executeBillingCycle,
-      pppoe: ispOwner?.bpSettings?.customerType,
-      static: ispOwner?.bpSettings?.customerType,
-      hotspot: ispOwner?.bpSettings?.customerType,
+      pppoe: customerType,
+      static: customerType,
+      hotspot: customerType,
     };
   }
 
@@ -171,6 +171,20 @@ const DetailsForm = ({ ispOwner }) => {
 
     // api call
     updateOwner(ispOwner.id, data, setIsLoading, dispatch);
+  };
+
+  //ispOwner customer type handler
+  const customerTypeHandler = (e) => {
+    let customerTypeData = [...customerType];
+
+    if (customerTypeData.includes(e.target.value)) {
+      customerTypeData = customerTypeData.filter(
+        (value) => value !== e.target.value
+      );
+    } else if (!customerTypeData.includes(e.target.value)) {
+      customerTypeData.push(e.target.value);
+    }
+    setCustomerType(customerTypeData);
   };
 
   //division & districts handle
@@ -378,7 +392,7 @@ const DetailsForm = ({ ispOwner }) => {
               </Field>
             </div>
             <div>
-              <h6 className="mb-0">Customer</h6>
+              <h6 className="mb-0">Customer Type</h6>
               <div className="d-inline-flex mb-4">
                 <div className="form-check me-3">
                   <Field
@@ -387,9 +401,7 @@ const DetailsForm = ({ ispOwner }) => {
                     id="pppoe-customer"
                     name="pppoe"
                     value={"pppoe"}
-                    onClick={(e) =>
-                      setCustomerType([...customerType, e.target.value])
-                    }
+                    onClick={customerTypeHandler}
                   />
                   <label className="form-check-label" for="pppoe-customer">
                     PPPoE
@@ -402,9 +414,7 @@ const DetailsForm = ({ ispOwner }) => {
                     id="static-customer"
                     name="static"
                     value={"static"}
-                    onClick={(e) =>
-                      setCustomerType([...customerType, e.target.value])
-                    }
+                    onClick={customerTypeHandler}
                   />
                   <label className="form-check-label" for="static-customer">
                     Static
@@ -417,9 +427,7 @@ const DetailsForm = ({ ispOwner }) => {
                     id="hotspot-customer"
                     name="hotspot"
                     value={"hotspot"}
-                    onClick={(e) =>
-                      setCustomerType([...customerType, e.target.value])
-                    }
+                    onClick={customerTypeHandler}
                   />
                   <label className="form-check-label" for="hotspot-customer">
                     Hotspot
