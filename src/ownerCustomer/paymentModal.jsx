@@ -49,6 +49,14 @@ const PaymentModal = () => {
           merchantInvoiceNumber: Date.now(),
           intent: "sale",
           ispOwnerId: userData.ispOwner.id,
+          name: userData.name,
+          billType: "bill",
+          customer: userData.id,
+          user: userData.id,
+          userType: userData.userType,
+          medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
+          paymentStatus: "pending",
+          package: userData.pppoe.profile,
         },
         createRequest: async function (request) {
           try {

@@ -18,23 +18,20 @@ export default function Execute() {
     return await apiLink.post(
       `bkash/executePayment?paymentID=${paymentID}&status=${status}`,
       {
-        amount: localStorage.getItem("paymentAmount"),
-        name: userData.name,
-        billType: "bill",
-        customer: userData.id,
         ispOwner: userData.ispOwner.id,
-        user: userData.id,
-        userType: userData.userType,
-        medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-        paymentStatus: "pending",
-        package: userData.pppoe.profile,
       }
     );
   };
 
   useEffect(() => {
     paymentExecute()
-      .then((response) => (window.location.href = "/payment/success"))
+      .then((response) => {
+        if (response.data.bill.paymentStatus === "paid") {
+          window.location.href = "/payment/success";
+        } else {
+          window.location.href = "/payment/failed";
+        }
+      })
       .catch((err) => (window.location.href = "/payment/failed"));
   }, []);
 
