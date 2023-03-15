@@ -5,7 +5,7 @@ import UddoktaPayForm from "./netFeePaymentGateway/UddoktaPayForm";
 
 const PaymentGateway = ({ ispOwner }) => {
   //payment gateway state
-  const [paymentGatewayName, setPaymentGatewayName] = useState("bKash");
+  const [paymentGatewayName, setPaymentGatewayName] = useState("bKashPG");
 
   useEffect(() => {
     setPaymentGatewayName(ispOwner?.bpSettings?.paymentGateway?.gatewayType);
@@ -21,7 +21,7 @@ const PaymentGateway = ({ ispOwner }) => {
             id="bKash-payment"
             name="bKash"
             value={"bKash"}
-            checked={paymentGatewayName === "bKash"}
+            checked={paymentGatewayName === "bKashPG"}
             onChange={(e) => setPaymentGatewayName(e.target.value)}
           />
           <label className="form-check-label" for="bKash-payment">
@@ -60,7 +60,7 @@ const PaymentGateway = ({ ispOwner }) => {
 
       <div>
         {/* bkash payment page */}
-        {paymentGatewayName === "bKash" ? (
+        {paymentGatewayName === "bKashPG" ? (
           <BkashForm ispOwner={ispOwner} />
         ) : (
           ""

@@ -57,6 +57,7 @@ const PaymentModal = () => {
           medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
           paymentStatus: "pending",
           package: userData.pppoe.profile,
+          collectedBy: 'customer'
         },
         createRequest: async function (request) {
           try {
@@ -161,9 +162,9 @@ const PaymentModal = () => {
               Cancel
             </button>
             <button
-              id={gatewayType === "bKash" ? "bKash_button" : ""}
+              id={gatewayType === "bKashPG" ? "bKash_button" : ""}
               onClick={
-                gatewayType !== "bKash" ? billPaymentController : () => {}
+                gatewayType !== "bKashPG" ? billPaymentController : () => {}
               }
               type="button"
               className="btn btn-primary"
