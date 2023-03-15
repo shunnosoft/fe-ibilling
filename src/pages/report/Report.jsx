@@ -199,9 +199,7 @@ export default function Report() {
         subAreaIds.includes(bill.customer?.subArea)
       );
     }
-    if (collectorIds.length) {
-      arr = arr.filter((bill) => collectorIds.includes(bill.user));
-    }
+  
     if (billType) {
       arr = arr.filter((bill) => bill.billType === billType);
     }
@@ -216,6 +214,13 @@ export default function Report() {
         );
       } else {
         arr = arr.filter((item) => item.medium === medium);
+        if (collectorIds.length) {
+          arr = arr.filter((bill) => collectorIds.includes(bill.user));
+        }
+      }
+    } else {
+      if (collectorIds.length) {
+        arr = arr.filter((bill) => collectorIds.includes(bill.user));
       }
     }
 
