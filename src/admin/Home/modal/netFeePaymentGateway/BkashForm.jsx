@@ -59,7 +59,7 @@ const BkashForm = ({ ispOwner }) => {
           ...ispOwner.bpSettings,
           paymentGateway: {
             ...ispOwner.bpSettings.paymentGateway,
-            gatewayType: "bKash",
+            gatewayType: "bKashPG",
             bKash: {
               username: values.username,
               appSecret: values.appSecret,
