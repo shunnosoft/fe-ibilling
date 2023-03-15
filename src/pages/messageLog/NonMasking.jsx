@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getMessageLog } from "../../features/messageLogApi";
-import MessageDetails from "./messageModal/MessageDetails";
 
 const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
   const { t } = useTranslation();
@@ -45,7 +44,6 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
 
   //message id state
   const [messageData, setMessageData] = useState("");
-  const [modalStatus, setModalStatus] = useState(false);
 
   // filter function
   const onClickFilter = () => {
@@ -77,7 +75,6 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
   const messageDetailsHandler = (id) => {
     const messageDetail = data.find((item) => item._id === id);
     setMessageData(messageDetail);
-    setModalStatus(true);
   };
 
   // get customer api call
@@ -229,7 +226,6 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
           data={mainData}
         ></Table>
       </div>
-      <MessageDetails messageData={messageData} modalStatus={modalStatus} />
     </>
   );
 };

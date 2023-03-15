@@ -169,7 +169,7 @@ const AllInvoices = () => {
 
       {
         // width: "10%",
-        Header: "Comapny",
+        Header: "Owner Id",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
           return (
@@ -181,7 +181,7 @@ const AllInvoices = () => {
                 // showIndividualInvoice(value, company[value]);
               }}
             >
-              {company[value]}
+              {value}
             </div>
           );
         },

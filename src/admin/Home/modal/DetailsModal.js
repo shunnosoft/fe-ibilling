@@ -36,6 +36,13 @@ const DetailsModal = ({ ownerId }) => {
     return acc;
   }, 0);
 
+  // ispOwner total customer
+  const totalCustomer =
+    customerCount +
+    staffs.pppoeCustomerCount +
+    staffs.firewallQueueCustomerCount +
+    staffs.simpleQueueCustomerCount;
+
   useEffect(() => {
     if (ownerId) {
       getIspOwnersStaffs(ownerId, dispatch, setIsLoading);
@@ -78,6 +85,9 @@ const DetailsModal = ({ ownerId }) => {
               >
                 <Tab eventKey="details" title="Details">
                   <div class="d-flex justify-content-evenly pb-2">
+                    <strong>
+                      <p class="h6 m-2">Total Customer: {totalCustomer}</p>
+                    </strong>
                     <strong>
                       <p class="h6 m-2">
                         PPPoE Customer: {staffs.pppoeCustomerCount}
