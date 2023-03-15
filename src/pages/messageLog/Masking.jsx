@@ -47,7 +47,6 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
 
   //message id state
   const [messageData, setMessageData] = useState("");
-  const [modalStatus, setModalStatus] = useState(false);
 
   // filter function
   const onClickFilter = () => {
@@ -79,7 +78,6 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
   const messageDetailsHandler = (id) => {
     const messageDetail = masking.find((item) => item._id === id);
     setMessageData(messageDetail);
-    setModalStatus(true);
   };
 
   // get customer api call
@@ -150,6 +148,8 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
               {original.message && original.message.slice(0, 90)}
               <span
                 className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#maskingMessageDetails"
                 onClick={() => {
                   messageDetailsHandler(original._id);
                 }}
@@ -231,7 +231,7 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
           data={masking}
         ></Table>
       </div>
-      <MessageDetails messageData={messageData} modalStatus={modalStatus} />
+      <MessageDetails messageData={messageData} />
     </>
   );
 };

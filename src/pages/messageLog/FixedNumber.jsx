@@ -10,7 +10,6 @@ import {
   getMaskingMessageLog,
   getMessageLog,
 } from "../../features/messageLogApi";
-import MessageDetails from "./messageModal/MessageDetails";
 
 const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   const { t } = useTranslation();
@@ -48,7 +47,6 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
 
   //message id state
   const [messageData, setMessageData] = useState("");
-  const [modalStatus, setModalStatus] = useState(false);
 
   // filter function
   const onClickFilter = () => {
@@ -80,7 +78,6 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   const messageDetailsHandler = (id) => {
     const messageDetail = fixedNumber.find((item) => item._id === id);
     setMessageData(messageDetail);
-    setModalStatus(true);
   };
 
   // get customer api call
@@ -232,7 +229,6 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
           data={fixedNumber}
         ></Table>
       </div>
-      <MessageDetails messageData={messageData} modalStatus={modalStatus} />
     </>
   );
 };
