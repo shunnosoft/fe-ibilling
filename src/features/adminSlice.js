@@ -14,7 +14,9 @@ const adminSlice = createSlice({
     getIspOwnersSuccess: (state, action) => {
       state.ispOwners = action.payload;
       const ids = {};
-      action.payload.map((ispOwner) => (ids[ispOwner.id] = ispOwner.company));
+      action.payload.map((ispOwner) => (ids[ispOwner.id] = {
+        company: ispOwner.company, netFeeId: ispOwner.netFeeId, name: ispOwner.name, mobile: ispOwner.mobile 
+      }));
       state.ispOwnerIds = ids;
     },
     getIspOwnerStaffsSuccess: (state, action) => {

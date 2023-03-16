@@ -201,6 +201,9 @@ export default function Home() {
         width: "5%",
         accessor: "company",
         Header: "Company",
+        Cell: ({ cell: { value } }) => {
+          return <strong>{value}</strong> 
+        },
       },
 
       {

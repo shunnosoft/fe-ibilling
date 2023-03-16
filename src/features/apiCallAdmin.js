@@ -222,7 +222,7 @@ export const getInvoices = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(
-      `admin/all-invoice?limit=${1000}&sortBy=${"createdAt:desc"}`
+      `admin/all-invoice?limit=${5000}&sortBy=${"createdAt:desc"}`
     );
     setIsLoading(false);
     dispatch(getInvoicesSuccess(res.data?.invoices.results));
