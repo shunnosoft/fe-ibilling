@@ -19,6 +19,16 @@ import { useDispatch } from "react-redux";
 import { getNetfeeSettings } from "../../../features/netfeeSettingsApi";
 import { useSelector } from "react-redux";
 
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import getName from "../../../utils/getLocationName";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
+
 export default function Register() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -35,6 +45,11 @@ export default function Register() {
   const [singlePakage, setSinglePakage] = useState(["Standard"]);
   const [isLoading, setLoading] = useState(false);
   const [customerType, setCustomerType] = useState(["pppoe"]);
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
 
   const validate = Yup.object({
     company: Yup.string()
@@ -94,6 +109,20 @@ export default function Register() {
       },
     };
 
+    if (
+      divisionalArea.division ||
+      divisionalArea.district ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+
+      if (divisionName) userData.division = districtName;
+      if (districtName) userData.district = districtName;
+      if (thanaName) userData.upazila = thanaName;
+    }
+
     // send user data to async function
     asyncRegister(userData, setLoading);
   };
@@ -135,6 +164,46 @@ export default function Register() {
     } else {
       setCustomerType([...customerType, value]);
     }
+  };
+
+  //divisional area format
+  const divisionalAreaFormat = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
+
+  // deviational area change handler
+  const divisionalAreaChangeHandler = ({ target }) => {
+    const { name, value } = target;
+
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
+    });
   };
 
   return (
@@ -184,6 +253,28 @@ export default function Register() {
                       type="email"
                       validation="true"
                     />
+
+                    {divisionalAreaFormat.map((item) => (
+                      <div className="mb-3">
+                        <label className="form-control-label">
+                          {item.text}
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          name={item.name}
+                          id={item.id}
+                          onChange={divisionalAreaChangeHandler}
+                          value={item.value}
+                        >
+                          <option value="">...</option>
+                          {item.data.map((item) => (
+                            <option value={item.id}>{item.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+
                     <TextField
                       label={t("address")}
                       name="address"
@@ -229,7 +320,9 @@ export default function Register() {
 
                     <select
                       name="package"
-                      className="customFormSelect"
+                      className="form-select mw-100 mt-0 fw-700"
+                      style={{ backgroundColor: "#dcdcdc" }}
+                      aria-label="Default select example"
                       id="selector"
                       onChange={handleSubPakage}
                     >

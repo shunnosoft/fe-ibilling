@@ -9,6 +9,7 @@ const adminSlice = createSlice({
     ispOwnerIds: {},
     invoices: [],
     staffs: [],
+    singleIspOwner: [],
   },
   reducers: {
     getIspOwnersSuccess: (state, action) => {
@@ -50,6 +51,10 @@ const adminSlice = createSlice({
         state.invoices.findIndex((item) => item.id === actions.payload.id)
       ] = actions.payload;
     },
+    //single ispOwner
+    getSingleIspOwnerData: (state, action) => {
+      state.singleIspOwner = action.payload;
+    },
   },
 });
 
@@ -63,6 +68,7 @@ export const {
   editCommentSuccess,
   getInvoicesSuccess,
   editInvoiceSuccessSuper,
+  getSingleIspOwnerData,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;
