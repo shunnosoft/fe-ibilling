@@ -1233,7 +1233,7 @@ export default function Home() {
                     </Accordion.Body>
                   </Accordion.Item>
 
-                  {reseller.length > 0 && (
+                  {reseller.reseller.length > 0 && (
                     <Accordion.Item eventKey="3">
                       <Accordion.Header className="shadow-none">
                         <h4 className="mb-0">{t("reseller")}</h4>

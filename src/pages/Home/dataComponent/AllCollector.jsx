@@ -16,13 +16,12 @@ const AllCollector = () => {
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // get customerStat
-  const customerState = useSelector((state) => state.chart.customerStat);
+  const collectorData = useSelector(
+    (state) => state.chart.customerStat.collectorStat
+  );
 
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
-
-  // collector data state
-  const [collectorData, setCollectorData] = useState("");
 
   const column = useMemo(
     () => [
@@ -39,24 +38,29 @@ const AllCollector = () => {
         accessor: "name",
       },
       {
-        width: "18%",
-        Header: t("todayBillCollection"),
+        width: "14%",
+        Header: t("todayCollection"),
         accessor: "todayBillCollection",
       },
       {
-        width: "18%",
-        Header: t("totalBillCollected"),
+        width: "10%",
+        Header: t("collection"),
         accessor: "totalBillCollected",
       },
       {
-        width: "21%",
-        Header: t("connectionFeeCollected"),
+        width: "14%",
+        Header: t("connectionFee"),
         accessor: "totalConnectionFeeCollected",
       },
       {
-        width: "18%",
+        width: "15%",
         Header: t("totalDepositCollector"),
         accessor: "totalDeposit",
+      },
+      {
+        width: "15%",
+        Header: t("previousBalance"),
+        accessor: "prevMonthBalance",
       },
       {
         width: "10%",
@@ -66,12 +70,6 @@ const AllCollector = () => {
     ],
     [t]
   );
-
-  useEffect(() => {
-    if (customerState) {
-      setCollectorData(customerState?.collectorStat);
-    }
-  }, [customerState]);
 
   return (
     <div
@@ -94,9 +92,6 @@ const AllCollector = () => {
                 style={{
                   marginLeft: ".5rem",
                   textAlign: "end",
-                  // paddingTop: "1rem",
-                  // paddingBottom: "1rem",
-                  // background: "green",
                 }}
               >
                 <ReactToPrint
@@ -134,9 +129,7 @@ const AllCollector = () => {
                   </div>
                   <div className="d-none">
                     <CollectionOverviewPdf
-                      allCollectionData={customerState}
-                      //customerStat
-                      // currentCustomers={Customers}
+                      allCollectionData={collectorData}
                       ref={componentRef}
                     />
                   </div>

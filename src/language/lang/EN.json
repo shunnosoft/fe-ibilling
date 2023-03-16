@@ -91,6 +91,7 @@
   "total collection": "Total Collection",
   "totalData": "Total Data: ",
   "today collection": "Today: ",
+  "todayCollection": "Today Collection",
   "amount": "Amount",
   "bill": "Bill",
   "admin": "Admin",
@@ -694,5 +695,5 @@
   "packageType": "Package Type",
   "downloadQRCode": "Download QR Code",
   "qrCode": "QR Code",
-  "onlinePayment":"Online Payment"
+  "onlinePayment": "Online Payment"
 }
