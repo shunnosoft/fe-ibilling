@@ -17,7 +17,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 const AllInvoices = () => {
   // get all note in redux
 
-  let invoices = useSelector((state) => state.admin?.invoices);
+  let invoices = useSelector((state) => state.admin?.invoices);  
   // get Current date
   const today = new Date();
 
@@ -59,7 +59,8 @@ const AllInvoices = () => {
   }, [invoices]);
 
   // get all company name from redux
-  const company = useSelector((state) => state?.companyName?.ispOwnerIds);
+  const company = useSelector((state) => state?.admin?.ispOwnerIds);
+  
 
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
@@ -166,26 +167,33 @@ const AllInvoices = () => {
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
-
       {
-        // width: "10%",
-        Header: "Owner Id",
+        width: "20%",
+        Header: "Id",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
-          return (
-            <div
-              className="company-name"
-              data-bs-toggle="modal"
-              data-bs-target="#clientNoteModal"
-              onClick={() => {
-                // showIndividualInvoice(value, company[value]);
-              }}
-            >
-              {value}
-            </div>
-          );
+          return (<div><strong>{`${company[value]?.company}`}</strong> ({company[value]?.netFeeId})</div>)   
         },
       },
+      // { 
+      //   Header: "Company",
+      //   accessor: "ispOwner",
+      //   Cell: ({ cell: { value } }) => {
+      //     return (<div>{company[value]?.company}</div>)
+      //     // return (
+      //     //   <div
+      //     //     className="company-name"
+      //     //     data-bs-toggle="modal"
+      //     //     data-bs-target="#clientNoteModal"
+      //     //     onClick={() => {
+      //     //       // showIndividualInvoice(value, company[value]);
+      //     //     }}
+      //     //   >
+      //     //     {company[value]}
+      //     //   </div>
+      //     // );
+      //   },
+      // },
       {
         // width: "15%",
         Header: "Type",
