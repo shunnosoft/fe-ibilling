@@ -202,7 +202,7 @@ export default function Home() {
         accessor: "company",
         Header: "Company",
         Cell: ({ cell: { value } }) => {
-          return <strong>{value}</strong> 
+          return <strong>{value}</strong>;
         },
       },
 
@@ -412,7 +412,7 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
-                  {/* <li
+                  <li
                     data-bs-toggle="modal"
                     data-bs-target="#inventoryAddModal"
                     onClick={() => {
@@ -425,7 +425,7 @@ export default function Home() {
                         <p className="actionP">Add Inventory</p>
                       </div>
                     </div>
-                  </li> */}
+                  </li>
                   <li onClick={() => resetSerialNumberHandler(original.id)}>
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -613,7 +613,7 @@ export default function Home() {
               <Permissions ownerId={ownerId} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
-              {/* <AddProprietorModal ownerId={ownerId} /> */}
+              <AddProprietorModal ownerId={ownerId} />
               <Invoices invoiceId={invoiceId} companyName={companyName} />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
