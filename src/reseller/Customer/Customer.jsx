@@ -593,15 +593,13 @@ export default function Customer() {
                       )}
                       content={() => componentRef.current}
                     />
-                    {permission?.customerAdd ||
-                    collectorPermission?.customerAdd ? (
+                    {(permission?.customerAdd ||
+                      collectorPermission?.customerAdd) && (
                       <PersonPlusFill
                         className="addcutmButton"
                         data-bs-toggle="modal"
                         data-bs-target="#customerModal"
                       />
-                    ) : (
-                      ""
                     )}
                   </div>
                 </div>

@@ -1072,7 +1072,7 @@ const PPPOECustomer = () => {
       name: "billDayLeft",
       type: "select",
       id: "billDayLeft",
-      value: filterOptions.freeUser,
+      value: filterOptions.dayFilter,
       isVisible: true,
       disabled: false,
       onChange: (e) =>
