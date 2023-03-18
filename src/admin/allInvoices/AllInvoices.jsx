@@ -17,7 +17,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 const AllInvoices = () => {
   // get all note in redux
 
-  let invoices = useSelector((state) => state.admin?.invoices);  
+  let invoices = useSelector((state) => state.admin?.invoices);
   // get Current date
   const today = new Date();
 
@@ -60,7 +60,6 @@ const AllInvoices = () => {
 
   // get all company name from redux
   const company = useSelector((state) => state?.admin?.ispOwnerIds);
-  
 
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
@@ -168,14 +167,25 @@ const AllInvoices = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "20%",
-        Header: "Id",
+        // width: "10%",
+        Header: "Company",
         accessor: "ispOwner",
         Cell: ({ cell: { value } }) => {
-          return (<div><strong>{`${company[value]?.company}`}</strong> ({company[value]?.netFeeId})</div>)   
+          return (
+            <div
+              className="company-name"
+              data-bs-toggle="modal"
+              data-bs-target="#clientNoteModal"
+              onClick={() => {
+                // showIndividualInvoice(value, company[value]);
+              }}
+            >
+              {company[value]}
+            </div>
+          );
         },
       },
-      // { 
+      // {
       //   Header: "Company",
       //   accessor: "ispOwner",
       //   Cell: ({ cell: { value } }) => {
