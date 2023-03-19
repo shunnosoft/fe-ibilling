@@ -1087,67 +1087,32 @@ export default function Sidebar() {
                             </NavLink>
                           </Accordion.Body>
                         </Accordion.Item>
-                        {/* <Accordion.Item eventKey="6">
-                          <Accordion.Header
-                            onClick={() => handleActiveAccordian("6")}
-                          >
-                            <div className="sidebarIcon">{<CartFill />}</div>
-                            <span className="sidebarLinksName">
-                              {t("inventory")}
-                            </span>
-                          </Accordion.Header>
-                          <Accordion.Body>
-                            <NavLink
-                              key={309}
-                              to={"/stock"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname === "/stock"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">{<Shop />}</div>
-                                  <span className="sidebarLinksName">
-                                    {t("stock")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
 
-                            <NavLink
-                              key={300}
-                              to={"/invoice"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname === "/invoice"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<ReceiptCutoff />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("invoice")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          </Accordion.Body>
-                        </Accordion.Item> */}
+                        {bpSettings?.inventory && (
+                          <a
+                            href={"https://hisabnikash.biz"}
+                            target="_blank"
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/inventory"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<Shop />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("inventory")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </a>
+                        )}
                       </>
                     )}
                     {/* {(userRole === "ispOwner" ||

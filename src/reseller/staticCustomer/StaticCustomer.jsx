@@ -11,6 +11,7 @@ import {
   ArrowClockwise,
   ChatText,
   PersonPlusFill,
+  PenFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -42,6 +43,7 @@ import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import FormatNumber from "../../components/common/NumberFormat";
+import CustomerEdit from "../../pages/staticCustomer/customerCRUD/CustomerEdit";
 export default function RstaticCustomer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
@@ -362,6 +364,25 @@ export default function RstaticCustomer() {
                     </div>
                   </div>
                 </li>
+
+                {(role === "reseller" || permission.customerEdit) && (
+                <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resellerCustomerEdit"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">{t("edit")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+
+
                 {(role === "reseller" || role === "collector") && (
                   <li
                     data-bs-toggle="modal"
@@ -379,6 +400,7 @@ export default function RstaticCustomer() {
                   </li>
                 )}
 
+
                 {original.mobile && (
                   <li
                     data-bs-toggle="modal"
@@ -395,6 +417,7 @@ export default function RstaticCustomer() {
                     </div>
                   </li>
                 )}
+
               </ul>
             </div>
           </div>
@@ -453,6 +476,7 @@ export default function RstaticCustomer() {
               {/* Model start */}
               <CustomerBillCollect single={singleCustomer} />
               <AddStaticCustomer />
+              <CustomerEdit single={singleCustomer}/>
               <CustomerDetails single={singleCustomer} />
               <SingleMessage
                 single={singleCustomer}

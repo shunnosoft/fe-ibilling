@@ -34,18 +34,17 @@ const AddProprietorModal = ({ ownerId }) => {
     try {
       setLoading(true);
       const { data } = await axios.post(
-        "http://192.168.1.16:6100/api/users/register",
+        "http://192.168.1.14:6100/api/users/register",
         proprietorData
       );
-      if (!data.status) {
-        toast.error("Failed to create inventory account");
-        return toast.error(data.data.mobile);
-      }
+
       if (data.status) {
         toast.success("Successfully to created inventory account");
       }
     } catch (error) {
-      console.log(error.response?.data?.msg);
+      console.log(error.response?.data?.message);
+      toast.error("Failed to create inventory account");
+      return toast.error(error.response?.data?.message);
       return false;
     } finally {
       setLoading(false);
@@ -115,6 +114,7 @@ const AddProprietorModal = ({ ownerId }) => {
                     className="form-control"
                     name="name"
                     value={proprietorData.name}
+                    required={true}
                   ></input>
                 </div>
                 <div className="form-group">
@@ -136,6 +136,7 @@ const AddProprietorModal = ({ ownerId }) => {
                     name="mobile"
                     onChange={onChangeHandler}
                     value={proprietorData.mobile}
+                    required={true}
                   ></input>
                 </div>
 

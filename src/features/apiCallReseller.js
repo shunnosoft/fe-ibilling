@@ -256,6 +256,31 @@ export const addResellerStaticCustomer = async (
   setIsloading(false);
 };
 
+// edit reseller customer
+export const updateResellerStaticCustomer = async (
+  customerId,
+  resellerId,
+  dispatch,
+  data,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    
+    const res = await apiLink.patch(`reseller/update-static-customer/${resellerId}/${customerId}`, data);
+    dispatch(addStaticCustomerSuccess(res.data.customer));
+    document.getElementById("resellerCustomerEdit").click();
+    langMessage(
+      "success",
+      "কাস্টমার আপডেট সফল হয়েছে",
+      "Customer Updated Successfully"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
 //password update
 export const passwordUpdate = async (data, setIsLoadingpass) => {
   setIsLoadingpass(true);
