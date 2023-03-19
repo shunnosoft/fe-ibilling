@@ -1,9 +1,11 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import DetailsForm from "./DetailsForm";
 import PaymentGateway from "./PaymentGateway";
+import { getSingleIspOwner } from "../../../features/apiCallAdmin";
+import TdLoader from "../../../components/common/TdLoader";
 
 // import { divisions } from "../../../bdAddress/bd-divisions.json";
 // import { districts } from "../../../bdAddress/bd-districts.json";
@@ -11,11 +13,19 @@ import PaymentGateway from "./PaymentGateway";
 
 const ISPOwnerEditModal = ({ ownerId }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
-  //get all isp owner
-  //get editable owner
-  const data = useSelector((state) => state.admin?.ispOwners);
-  const ispOwner = data.find((item) => item.id === ownerId);
+  // isLoading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  //get single ispOwner
+  const ispData = useSelector((state) => state.admin?.singleIspOwner);
+
+  useEffect(() => {
+    if (ownerId) {
+      getSingleIspOwner(ownerId, dispatch, setIsLoading);
+    }
+  }, [ownerId]);
 
   return (
     <div>
@@ -32,11 +42,11 @@ const ISPOwnerEditModal = ({ ownerId }) => {
               <div className="modal-title" id="exampleModalLabel">
                 <div className="d-flex">
                   <h5>
-                    Id: <span className="text-success"> {ispOwner?.id} </span>
+                    Id: <span className="text-success"> {ispData?.id} </span>
                   </h5>
                   <h5 className="ms-5">
                     Mobile:
-                    <span className="text-success"> {ispOwner?.mobile}</span>
+                    <span className="text-success"> {ispData?.mobile}</span>
                   </h5>
                 </div>
               </div>
@@ -54,10 +64,14 @@ const ISPOwnerEditModal = ({ ownerId }) => {
                 className="mb-3"
               >
                 <Tab eventKey="Owner" title="ISP Owner">
-                  <DetailsForm ispOwner={ispOwner} />
+                  {isLoading ? (
+                    <TdLoader />
+                  ) : (
+                    <DetailsForm ispOwner={ispData} />
+                  )}
                 </Tab>
                 <Tab eventKey="paymentGateway" title="Payment Gateway">
-                  <PaymentGateway ispOwner={ispOwner} />
+                  <PaymentGateway ispOwner={ispData} />
                 </Tab>
               </Tabs>
             </div>

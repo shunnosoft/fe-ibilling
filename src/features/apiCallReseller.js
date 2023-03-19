@@ -12,6 +12,7 @@ import {
 } from "./collectorSlice";
 import {
   addCustomerSuccess,
+  addStaticCustomerSuccess,
   deleteCustomerSuccess,
   editCustomerSuccess,
   getCustomerSuccess,
@@ -231,6 +232,28 @@ export const deleteACustomer = async (dispatch, IDs) => {
       toast.error(err.response.data.message);
     }
   }
+};
+
+// add reseller customer
+export const addResellerStaticCustomer = async (
+  dispatch,
+  data,
+  setIsloading
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.post("reseller/create-static-customer/", data);
+    dispatch(addStaticCustomerSuccess(res.data.customer));
+    document.getElementById("addStaticCustomerModal").click();
+    langMessage(
+      "success",
+      "কাস্টমার এড সফল হয়েছে",
+      "Customer Added Successfully"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsloading(false);
 };
 
 //password update
@@ -477,6 +500,7 @@ export const withMtkPackage = async (dispatch, resellerId) => {
       method: "GET",
       url: `/reseller/package/${resellerId}`,
     });
+    console.log(res.data);
     dispatch(getpppoePackageSuccess(res.data.packages));
   } catch (error) {
     console.log(error.response);

@@ -20,7 +20,7 @@ const PaymentGateway = ({ ispOwner }) => {
             type="radio"
             id="bKash-payment"
             name="bKash"
-            value={"bKash"}
+            value={"bKashPG"}
             checked={paymentGatewayName === "bKashPG"}
             onChange={(e) => setPaymentGatewayName(e.target.value)}
           />

@@ -10,6 +10,7 @@ import {
   PrinterFill,
   ArrowClockwise,
   ChatText,
+  PersonPlusFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -55,8 +56,13 @@ export default function RstaticCustomer() {
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
+
+  const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
+
   const [Customers, setCustomers] = useState(cus);
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
@@ -432,6 +438,14 @@ export default function RstaticCustomer() {
                       )}
                       content={() => componentRef.current}
                     />
+                    {(permission?.customerAdd ||
+                      collectorPermission?.customerAdd) && (
+                      <PersonPlusFill
+                        className="addcutmButton"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addStaticCustomerModal"
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

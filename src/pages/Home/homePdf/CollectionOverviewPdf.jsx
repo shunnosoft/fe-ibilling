@@ -41,8 +41,8 @@ const CollectionOverviewPdf = React.forwardRef((props, ref) => {
           </tr>
         </thead>
         <tbody className="text-center">
-          {allCollectionData.collectorStat &&
-            allCollectionData.collectorStat.map((val, key) => (
+          {allCollectionData &&
+            allCollectionData?.map((val, key) => (
               <tr key={key} id={val.id}>
                 <td className="prin_td">{val.name}</td>
                 <td className="prin_td">{val.todayBillCollection}</td>

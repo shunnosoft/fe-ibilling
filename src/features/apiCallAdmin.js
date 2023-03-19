@@ -10,6 +10,7 @@ import {
   getInvoicesSuccess,
   editInvoiceSuccessSuper,
   getIspOwnerStaffsSuccess,
+  getSingleIspOwnerData,
 } from "./adminSlice";
 import {
   getIspOwnerInvoicesSuccess,
@@ -48,6 +49,18 @@ export const resetSerialNumber = async (ispOwnerId) => {
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
+};
+
+// get single ispOwner
+export const getSingleIspOwner = async (ispOwnerId, dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/admin/getIspOwner/${ispOwnerId}`);
+    dispatch(getSingleIspOwnerData(res.data));
+  } catch (error) {
+    console.log(error.response?.data?.message);
+  }
+  setIsLoading(false);
 };
 
 export const getIspOwnersStaffs = async (

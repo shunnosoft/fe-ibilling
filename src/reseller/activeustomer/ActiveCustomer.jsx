@@ -43,6 +43,7 @@ const ResellserActiveCustomer = () => {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  console.log(allUsers);
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
@@ -121,6 +122,16 @@ const ResellserActiveCustomer = () => {
         width: "14%",
         Header: t("name"),
         accessor: "name",
+      },
+      {
+        width: "13%",
+        Header: t("PPPoEName"),
+        accessor: "pppoe.name",
+      },
+      {
+        width: "12%",
+        Header: t("ip"),
+        accessor: "ip",
       },
       {
         width: "11%",

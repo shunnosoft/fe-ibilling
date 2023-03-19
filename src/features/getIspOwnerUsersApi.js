@@ -13,7 +13,7 @@ export const getOwnerUsers = async (dispatch, ispOwnerId) => {
     const res = await apiLink.get(`/ispOwner/user-map/${ispOwnerId}`);
     dispatch(getOwnerUserSuccess(res.data.usersMap));
   } catch (error) {
-    console.log(error.response);
+    console.log(error.response.data.message);
   }
 };
 

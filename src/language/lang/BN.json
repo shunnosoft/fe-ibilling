@@ -95,6 +95,7 @@
   "total collection": "মোট আদায়",
   "totalData": "মোট ডাটাঃ",
   "today collection": "আজঃ",
+  "todayCollection": "আজকের আদায়",
   "amount": "পরিমান",
   "bill": "বিল",
   "admin": "এডমিন",
@@ -701,5 +702,5 @@
   "hasPG": "পিজি আছে",
   "isTokenized": "টোকেনাইজ করা",
   "downloadQRCode": "ডাউনলোড কিউআর কোড",
-  "onlinePayment":"অনলাইন পেমেন্ট"
+  "onlinePayment": "অনলাইন পেমেন্ট"
 }

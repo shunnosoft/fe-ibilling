@@ -22,6 +22,10 @@ import getName from "../../../utils/getLocationName";
 //custom hooks
 import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
+import {
+  addResellerStaticCustomer,
+  withMtkPackage,
+} from "../../../features/apiCallReseller";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -29,9 +33,11 @@ const thana = thanaJSON.thana;
 
 export default function AddStaticCustomer() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
   // get user bp setting
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // get role from redux
@@ -40,6 +46,10 @@ export default function AddStaticCustomer() {
   // get Isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.id
   );
 
   const userType = useSelector(
@@ -57,7 +67,6 @@ export default function AddStaticCustomer() {
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
-  const dispatch = useDispatch();
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
@@ -89,11 +98,6 @@ export default function AddStaticCustomer() {
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
-
-    // monthlyFee: Yup.number()
-    //   .integer()
-    //   .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-    //   .required("প্যাকেজ রেট দিন"),
   });
 
   const selectMikrotik = (e) => {
@@ -109,17 +113,6 @@ export default function AddStaticCustomer() {
       }
     }
     setSingleMikrotik(id);
-  };
-
-  // select subArea
-  const selectSubArea = (data) => {
-    const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
-      });
-      setSubArea(temp);
-    }
   };
 
   //function for set 0
@@ -167,17 +160,12 @@ export default function AddStaticCustomer() {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    // console.log(data);
-    const subArea2 = document.getElementById("subAreaId").value;
-    if (subArea2 === "") {
-      setIsloading(false);
-      return alert(t("selectSubArea"));
-    }
     const { balance, ipAddress, queueName, target, ...rest } = data;
     const mainData = {
       paymentStatus: "unpaid",
-      subArea: subArea2,
+      subArea: subArea,
       ispOwner: ispOwnerId,
+      reseller: resellerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
@@ -224,7 +212,7 @@ export default function AddStaticCustomer() {
       if (districtName) sendingData.district = districtName;
       if (thanaName) sendingData.thana = thanaName;
     }
-    addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
+    addResellerStaticCustomer(dispatch, sendingData, setIsloading, resetForm);
   };
   //divisional area formula
   const divisionalAreaFormData = [
@@ -316,11 +304,11 @@ export default function AddStaticCustomer() {
                   <Form>
                     <div className="row">
                       <div className="col-lg-4 col-md-4 col-xs-6">
-                        <p className="comstomerFieldsTitle">
-                          {t("selectMikrotik")}
-                        </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectMikrotik")}{" "}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectMikrotik}
                         >
@@ -335,11 +323,13 @@ export default function AddStaticCustomer() {
                         </select>
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
-                        <p> {t("selectArea")} </p>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectArea")}{" "}
+                        </label>
                         <select
-                          className="form-select mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
-                          onChange={selectSubArea}
+                          onChange={(event) => setSubArea(event.target.value)}
                         >
                           <option value="">...</option>
                           {area.length === undefined
@@ -349,27 +339,6 @@ export default function AddStaticCustomer() {
                                   {val.name}
                                 </option>
                               ))}
-                        </select>
-                      </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        <p>
-                          {subArea ? subArea.name + " এর - " : ""}{" "}
-                          {t("selectSubArea")}
-                        </p>
-                        <select
-                          className="form-select mw-100"
-                          aria-label="Default select example"
-                          name="subArea"
-                          id="subAreaId"
-                        >
-                          <option value="">...</option>
-                          {subArea?.subAreas
-                            ? subArea.subAreas.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))
-                            : ""}
                         </select>
                       </div>
                     </div>
@@ -405,12 +374,12 @@ export default function AddStaticCustomer() {
                       {userType === "firewall-queue" && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <>
-                            <p className="comstomerFieldsTitle">
-                              {t("selectPackage")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}{" "}
+                            </label>
                             <select
                               name="firewallPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-100 mb-3 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -432,12 +401,12 @@ export default function AddStaticCustomer() {
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         {userType === "simple-queue" && (
                           <>
-                            <p className="comstomerFieldsTitle">
-                              {t("uploadPackge")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("uploadPackge")}{" "}
+                            </label>
                             <select
                               name="upPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-100 mb-3 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
@@ -458,12 +427,12 @@ export default function AddStaticCustomer() {
                       <div className="row mt-3">
                         {userType === "simple-queue" && (
                           <div className="col-lg-4 col-md-4 col-xs-6">
-                            <p className="comstomerFieldsTitle">
+                            <label className="form-control-label changeLabelFontColor">
                               {t("downloadPackge")}
-                            </p>
+                            </label>
                             <select
                               name="downPackage"
-                              className="form-select mw-100 mb-3"
+                              className="form-select mw-100 mb-3 mt-0"
                               aria-label="Default select example"
                               onChange={selectMikrotikPackage}
                             >
