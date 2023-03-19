@@ -593,6 +593,7 @@ const PPPOECustomer = () => {
                     data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      setCustomerData(original);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1268,7 +1269,7 @@ const PPPOECustomer = () => {
       <CustomerEdit single={customerId} />
 
       {/* bill collection modal  */}
-      <CustomerBillCollect single={customerId} />
+      <CustomerBillCollect single={customerId} customerData={customerData} />
 
       {/* customer details modal  */}
       <CustomerDetails single={customerId} />

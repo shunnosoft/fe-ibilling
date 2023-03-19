@@ -32,6 +32,7 @@ import Loader from "../../components/common/Loader";
 
 import {
   deleteACustomer,
+  fetchpppoePackage,
   getCustomer,
   getMikrotik,
   getSubAreas,
@@ -55,8 +56,11 @@ import BandwidthModal from "../../pages/Customer/BandwidthModal";
 export default function Customer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
-
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  const reseller = useSelector((state) => state.persistedReducer.auth?.userData);
+  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
   const cus = useSelector((state) => state?.customer?.customer);
+  console.log(cus);
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -65,6 +69,29 @@ export default function Customer() {
     (state) => state.persistedReducer.auth.ispOwnerData
   );
   const dispatch = useDispatch();
+  const [singleMikrotik, setSingleMikrotik] = useState("");
+  const [mikrotikPackage, setMikrotikPackage] = useState("");
+  const [packageRate, setPackageRate] = useState("");
+
+  const selectMikrotik = (e) => {
+    const id = e.target.value;
+    if (id && resellerId) {
+      const IDs = {
+        reseller: resellerId,
+        mikrotikId: id,
+      };
+      fetchpppoePackage(dispatch, IDs);
+    }
+    setSingleMikrotik(id);
+  };
+
+  const selectMikrotikPackage = (e) => {
+    
+    const mikrotikPackageId = e.target.value;
+    setMikrotikPackage(mikrotikPackageId);
+    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
+    setPackageRate(temp);
+  };
 
   const resellerId = useSelector((state) =>
     role === "reseller"
@@ -95,6 +122,7 @@ export default function Customer() {
   );
 
   const [paymentStatus, setPaymentStatus] = useState("");
+  const [mikrotik, setMikrotik] = useState("");
   const [status, setStatus] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
 
@@ -125,6 +153,19 @@ export default function Customer() {
         (customer) => customer.subArea === subAreaId
       );
     }
+
+    if (packageRate) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.pppoe.profile === packageRate.name
+      );
+    }
+
+    if (singleMikrotik) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotik === singleMikrotik
+      );
+    }
+    
 
     if (status) {
       tempCustomers = tempCustomers.filter(
@@ -178,7 +219,7 @@ export default function Customer() {
     }
 
     setCustomers(tempCustomers);
-  }, [cus, paymentStatus, status, subAreaId]);
+  }, [cus, paymentStatus, status, subAreaId, packageRate, singleMikrotik]);
 
   // find area name
   const areaName = subAreas.find((item) => item.id === subAreaId);
@@ -637,10 +678,12 @@ export default function Customer() {
                 <FourGround>
                   <div className="collectorWrapper mt-e py-2">
                     <div className="addCollector">
-                      <div className="displexFlexSys">
+                      <div className="displexFlexSys d-flex ">
                         {/* filter selector */}
-                        <div className="selectFiltering allFilter">
+
+                        <div className="selectFiltering allFilter mx-auto">
                           {/* //Todo */}
+
                           <select
                             className="form-select"
                             onChange={(e) =>
@@ -656,6 +699,7 @@ export default function Customer() {
                               </option>
                             ))}
                           </select>
+
                           <select
                             className="form-select"
                             onChange={handleStatusChange}
@@ -667,6 +711,46 @@ export default function Customer() {
                             <option value="inactive"> {t("in active")} </option>
                             <option value="expired"> {t("expired")} </option>
                           </select>
+
+                          <select
+                            className="form-select"
+                            onChange={selectMikrotik}
+                          >
+                            <option value="" defaultValue>
+                              {t("mikrotik")}
+                            </option>
+                            
+                              {Getmikrotik?.length === undefined
+                                ? ""
+                                : Getmikrotik?.map((val, key) =>
+                                    reseller.mikrotiks.map(
+                                      (item) =>
+                                        val.id === item && (
+                                          <option key={key} value={val.id}>
+                                            {val.name}
+                                          </option>
+                                        )
+                                    )
+                                  )}
+                            </select>
+                            
+                          <select
+                              className="form-select"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="" defaultValue>
+                              {t("PPPoEPackage")}
+                            </option>
+
+                              {ppPackage.length === undefined
+                                ? ""
+                                : ppPackage?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
+                        
                           <select
                             className="form-select"
                             onChange={handlePaymentChange}

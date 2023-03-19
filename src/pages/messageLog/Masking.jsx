@@ -7,7 +7,6 @@ import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import {
   getMaskingMessageLog,
-  getMessageLog,
 } from "../../features/messageLogApi";
 import MessageDetails from "./messageModal/MessageDetails";
 
@@ -46,7 +45,7 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
   const [status, setStatus] = useState("");
 
   //message id state
-  const [messageData, setMessageData] = useState("");
+  const [maskingId,setMaskingId]=useState()
 
   // filter function
   const onClickFilter = () => {
@@ -72,12 +71,6 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
     );
 
     setMaskingMessage(filterData);
-  };
-
-  // message details handler
-  const messageDetailsHandler = (id) => {
-    const messageDetail = masking.find((item) => item._id === id);
-    setMessageData(messageDetail);
   };
 
   // get customer api call
@@ -151,7 +144,7 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
                 data-bs-toggle="modal"
                 data-bs-target="#maskingMessageDetails"
                 onClick={() => {
-                  messageDetailsHandler(original._id);
+                  setMaskingId(original._id);
                 }}
               >
                 {original.message.length > 90 ? "...see more" : ""}
@@ -231,7 +224,7 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
           data={masking}
         ></Table>
       </div>
-      <MessageDetails messageData={messageData} />
+      <MessageDetails maskingMessageId={maskingId} />
     </>
   );
 };
