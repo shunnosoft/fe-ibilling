@@ -5,10 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
-import {
-  getMaskingMessageLog,
-} from "../../features/messageLogApi";
-import MessageDetails from "./messageModal/MessageDetails";
+import { getMaskingMessageLog } from "../../features/messageLogApi";
 
 const Masking = ({ maskingLoading, setMaskingLoading }) => {
   const { t } = useTranslation();
@@ -45,7 +42,7 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
   const [status, setStatus] = useState("");
 
   //message id state
-  const [maskingId,setMaskingId]=useState()
+  const [maskingId, setMaskingId] = useState();
 
   // filter function
   const onClickFilter = () => {
@@ -135,23 +132,6 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
         width: "45%",
         Header: t("message"),
         accessor: "message",
-        Cell: ({ row: { original } }) => {
-          return (
-            <div>
-              {original.message && original.message.slice(0, 90)}
-              <span
-                className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#maskingMessageDetails"
-                onClick={() => {
-                  setMaskingId(original._id);
-                }}
-              >
-                {original.message.length > 90 ? "...see more" : ""}
-              </span>
-            </div>
-          );
-        },
       },
     ],
     [t]
@@ -224,7 +204,6 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
           data={masking}
         ></Table>
       </div>
-      <MessageDetails maskingMessageId={maskingId} />
     </>
   );
 };

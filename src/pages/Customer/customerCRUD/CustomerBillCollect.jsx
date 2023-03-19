@@ -13,20 +13,14 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
-import BillCollectInvoiceWithNote from "./customerBillCollectInvoicePDF";
 import { useRef } from "react";
-import ReactToPrint from "react-to-print";
-import BillPDF from "./bulkOpration/BillPDF";
 import apiLink from "../../../api/apiLink";
-import BillCollectInvoiceWithoutNote from "./customerBillReportPDFwithNote";
 const animatedComponents = makeAnimated();
 
-export default function CustomerBillCollect({ single,customerData }) {
+export default function CustomerBillCollect({ single, customerData }) {
   // console.log(single,customerData);
   const { t } = useTranslation();
-  const billRefwithNote = useRef();
-  const [billingData,setBillingData]=useState({})
-  const [responseData,setResponseData]=useState()
+  const [responseData, setResponseData] = useState();
 
   const options = [
     { value: "January", label: t("january") },
@@ -136,7 +130,7 @@ export default function CustomerBillCollect({ single,customerData }) {
   };
 
   // bill amount
-  const customerBillHandler =(formValue) => {
+  const customerBillHandler = (formValue) => {
     if (balanceDue > (data?.balance < 0 ? Math.abs(data?.balance) : 0)) {
       setLoading(false);
       return alert(t("dueNotAcceptable"));
@@ -178,8 +172,6 @@ export default function CustomerBillCollect({ single,customerData }) {
       sendingData.month = monthValues.join(",");
     }
     billCollect(dispatch, sendingData, setLoading, resetForm, setResponseData);
-    console.log(responseData);
-    // document.getElementById("printButton").click();
 
     setAmount(data.amount);
   };
@@ -438,7 +430,7 @@ export default function CustomerBillCollect({ single,customerData }) {
                     </>
                   )}
 
-                          {/* { val.start && val.end? (
+                  {/* { val.start && val.end? (
                               <>
                               <div style={{ display: "none" }}>
                                 <BillCollectInvoiceWithNote
@@ -518,8 +510,6 @@ export default function CustomerBillCollect({ single,customerData }) {
                           )
                                    
                                 } */}
-                                
-
 
                   <div className="mt-4">
                     <button type="submit" className="btn btn-success">

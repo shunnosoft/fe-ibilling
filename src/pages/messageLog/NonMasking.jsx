@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getMessageLog } from "../../features/messageLogApi";
-import MessageDetails from "./messageModal/MessageDetails";
 
 const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
   const { t } = useTranslation();
@@ -41,9 +40,6 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
 
   // status state
   const [status, setStatus] = useState("");
-
-  //message id state
-  const [nonMaskingId,setNonMaskingId]=useState()
 
   // filter function
   const onClickFilter = () => {
@@ -133,23 +129,6 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
         width: "45%",
         Header: t("message"),
         accessor: "message",
-        Cell: ({ row: { original } }) => {
-          return (
-            <div>
-              {original.message && original.message.slice(0, 90)}
-              <span
-                className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#maskingMessageDetails"
-                onClick={() => {
-                  setNonMaskingId(original._id);
-                }}
-              >
-                {original.message.length > 90 ? "...see more" : ""}
-              </span>
-            </div>
-          );
-        },
       },
     ],
     [t]
@@ -222,8 +201,6 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
           data={mainData}
         ></Table>
       </div>
-
-     <MessageDetails maskingMessageId={nonMaskingId} />
     </>
   );
 };

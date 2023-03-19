@@ -365,187 +365,113 @@ export default function Customer() {
     }
   }, []);
 
-  //Filter function
   const handleActiveFilter = () => {
-    let tempCustomers = [...Customers2];
+    let tempCustomers = Customers2.reduce((acc, c) => {
+      const {
+        area,
+        subArea,
+        status,
+        mikrotik,
+        paymentStatus,
+        freeUser,
+        filterDate,
+        dayFilter,
+      } = filterOptions;
 
-    // distructured filterd value
-    const {
-      status,
-      paymentStatus,
-      area,
-      subArea,
-      mikrotik,
-      freeUser,
-      filterDate,
-      dayFilter,
-    } = filterOptions;
+      const billingCycle = new Date(
+        moment(c.billingCycle).format("YYYY-MM-DD")
+      ).getTime();
 
-    // initial filter customer
-    let filteredCustomer = [];
+      const filterDateData = new Date(
+        moment(filterOptions.filterDate).format("YYYY-MM-DD")
+      ).getTime();
 
-    // check filterd value
-    if (
-      status ||
-      paymentStatus ||
-      area ||
-      subArea ||
-      mikrotik ||
-      freeUser ||
-      filterDate ||
-      dayFilter ||
-      filterOptions.package
-    ) {
-      filteredCustomer = tempCustomers.filter((customer) => {
-        let isFound = false;
-        //filter by area
-        if (filterOptions.area) {
-          if (customer.area === filterOptions.area) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        }
-        //filter by subarea
-        if (filterOptions.subArea) {
-          if (customer.subArea === filterOptions.subArea) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        }
-        //free user filter
-        if (filterOptions.freeUser) {
-          if (filterOptions.freeUser === "freeUser") {
-            if (customer.monthlyFee === parseInt("0")) {
-              isFound = true;
-            } else {
-              return false;
-            }
-          } else if (filterOptions.freeUser === "nonFreeUser") {
-            if (customer.monthlyFee !== parseInt("0")) {
-              isFound = true;
-            } else {
-              return false;
-            }
-          }
-        }
-        //status filter active/incative
-        if (filterOptions.status) {
-          if (customer.status === filterOptions.status) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        }
+      let getArea = [];
+      if (area) {
+        getArea = allareas.find((item) => item.id === area);
+      }
 
-        // payment status filter
-        if (filterOptions.paymentStatus) {
-          if (filterOptions.paymentStatus === "free") {
-            if (customer.monthlyFee === 0) {
-              isFound = true;
-            } else {
-              return false;
-            }
-          } else if (
-            filterOptions.paymentStatus === "paid" &&
-            customer.paymentStatus === "paid"
-          ) {
-            isFound = true;
-          } else if (
-            filterOptions.paymentStatus === "unpaid" &&
-            customer.paymentStatus === "unpaid" &&
-            customer.balance == 0
-          ) {
-            isFound = true;
-          } else if (
-            filterOptions.paymentStatus === "partial" &&
-            customer.paymentStatus === "unpaid"
-          ) {
-            if (
-              customer.monthlyFee > customer.balance &&
-              customer.balance > 0
-            ) {
-              isFound = true;
-            } else {
-              return false;
-            }
-          } else if (
-            filterOptions.paymentStatus === "advance"
-            // && customer.paymentStatus === "paid"
-          ) {
-            if (
-              customer.monthlyFee <= customer.balance &&
-              customer.monthlyFee > 0
-            ) {
-              isFound = true;
-            } else {
-              return false;
-            }
-          } else if (
-            filterOptions.paymentStatus === "overDue" &&
-            customer.paymentStatus === "unpaid"
-          ) {
-            if (customer.balance < 0) {
-              isFound = true;
-            } else {
-              return false;
-            }
-          } else {
-            isFound = false;
-          }
-        }
-
-        //filter by mikrotik
-        if (filterOptions.mikrotik) {
-          if (customer.mikrotik === filterOptions.mikrotik) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        }
-        //filter using mikrotik package
-        if (filterOptions.package) {
-          if (customer.profile === filterOptions.package) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        }
-        //filter by billing cycle
-        if (filterOptions.filterDate) {
-          const convertStingToDate = moment(filterOptions.filterDate).format(
-            "YYYY-MM-DD"
-          );
-          if (
-            new Date(
-              moment(customer.billingCycle).format("YYYY-MM-DD")
-            ).getTime() === new Date(convertStingToDate).getTime()
-          ) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        }
-        //bill date  filter
-        if (filterOptions.dayFilter) {
-          if (
-            moment(customer.billingCycle).diff(moment(), "days") ===
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
+      const conditions = {
+        area: area
+          ? getArea.subAreas.some((item) => item.id === c.subArea)
+          : true,
+        subArea: subArea ? c.subArea === subArea : true,
+        status: status ? c.status === status : true,
+        paid: paymentStatus ? c.paymentStatus === "paid" : true,
+        unpaid: paymentStatus
+          ? c.paymentStatus === "unpaid" && c.monthlyFee !== 0
+          : true,
+        free: paymentStatus ? c.monthlyFee === 0 : true,
+        partial: paymentStatus
+          ? c.paymentStatus === "unpaid" &&
+            c.monthlyFee > c.balance &&
+            c.balance > 0
+          : true,
+        advance: paymentStatus
+          ? c.monthlyFee <= c.balance && c.monthlyFee > 0
+          : true,
+        overdue: paymentStatus
+          ? c.paymentStatus === "unpaid" && c.balance < 0
+          : true,
+        mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
+        freeUser: freeUser ? c.monthlyFee === 0 : true,
+        nonFreeUser: freeUser ? c.monthlyFee !== 0 : true,
+        prepaid: freeUser ? c.customerBillingType === "prepaid" : true,
+        postpaid: freeUser ? c.customerBillingType === "postpaid" : true,
+        package: filterOptions.package
+          ? c.mikrotikPackage === filterOptions.package
+          : true,
+        filterDate: filterDate ? billingCycle == filterDateData : true,
+        dayFilter: dayFilter
+          ? moment(c.billingCycle).diff(moment(), "days") ===
             Number(filterOptions.dayFilter)
-          ) {
-            isFound = true;
-          } else {
-            return false;
-          }
-        }
-        return isFound;
-      });
-      setCustomers1(filteredCustomer);
-      setCustomers(filteredCustomer);
-    } else {
-      setCustomers1(Customers2);
-    }
+          : true,
+      };
+
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
+
+      let isPass = false;
+      isPass = conditions["area"];
+      if (!isPass) return acc;
+      isPass = conditions["subArea"];
+      if (!isPass) return acc;
+
+      isPass = conditions["status"];
+      if (!isPass) return acc;
+
+      if (paymentStatus) {
+        isPass = conditions[paymentStatus];
+        if (!isPass) return acc;
+      }
+
+      isPass = conditions["mikrotik"];
+      if (!isPass) return acc;
+
+      if (freeUser) {
+        isPass = conditions[freeUser];
+        if (!isPass) return acc;
+      }
+
+      isPass = conditions["package"];
+      if (!isPass) return acc;
+
+      isPass = conditions["filterDate"];
+      if (!isPass) return acc;
+
+      isPass = conditions["dayFilter"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    // set filter customer in customer state
+    setCustomers1(tempCustomers);
   };
+
   const handleFilterReset = () => {
     setMikrotikPac([]);
     setFilterOption({

@@ -1686,8 +1686,7 @@ export const billCollect = async (
     const res = await apiLink.post("/bill/monthlyBill", billData);
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
-      console.log(res.data);
-      setResponseData(res.data)
+      setResponseData(res.data);
     } else {
       dispatch(updateBalanceStaticCustomer(res.data));
     }
