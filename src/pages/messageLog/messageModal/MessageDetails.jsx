@@ -1,18 +1,27 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
-const MessageDetails = ({ messageData }) => {
+const MessageDetails = ({ maskingMessageId }) => {
   const { t } = useTranslation();
 
-  // current data state
-  const [currentData, setCurrentData] = useState("");
+  const masking = useSelector((state) => state?.messageLog?.masking);
+  const nonMasking = useSelector((state) => state?.messageLog?.messageLog);
+  const fixedNumber = useSelector((state) => state?.messageLog?.fixedNumber);
 
-  useEffect(() => {
-    if (messageData) {
-      setCurrentData(messageData);
-    }
-  }, [messageData]);
+  let singleData =maskingMessageId && masking.find((item) => item._id === maskingMessageId);
+ 
+  if(!singleData) {
+    singleData = maskingMessageId && nonMasking.find((item) => item._id === maskingMessageId);
+  }
+ 
+
+  if(!singleData){
+     singleData = maskingMessageId && fixedNumber.find((item) => item._id === maskingMessageId);
+  }
+ 
+  
 
   return (
     <>
@@ -32,7 +41,7 @@ const MessageDetails = ({ messageData }) => {
                   className="modal-title"
                   id="supportDetails"
                 >
-                  Mobile : {currentData.mobile}
+                  Mobile : {singleData?.mobile}
                 </h4>
                 <button
                   type="button"
@@ -46,18 +55,18 @@ const MessageDetails = ({ messageData }) => {
                   <div className="comment-show">
                     <div className="d-flex">
                       <small className="mb-3 fw-bold">
-                        {moment(currentData.createdAt).format("MMM DD YYYY")}
+                        {moment(singleData?.createdAt).format("MMM DD YYYY")}
                       </small>
                     </div>
                     <div
                       className="comment-info"
                       style={{ marginTop: "-10px" }}
                     >
-                      <i class="badge bg-primary me-1">{currentData.type}</i>
-                      <i class="badge bg-success">{currentData.status}</i>
+                      <i class="badge bg-primary me-1">{singleData?.type}</i>
+                      <i class="badge bg-success">{singleData?.status}</i>
                     </div>
                     <p className="mt-2" style={{ textAlign: "justify" }}>
-                      {currentData.message}
+                      {singleData?.message}
                     </p>
                   </div>
                   <br />

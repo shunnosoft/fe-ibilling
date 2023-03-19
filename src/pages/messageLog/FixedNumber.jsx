@@ -10,6 +10,7 @@ import {
   getMaskingMessageLog,
   getMessageLog,
 } from "../../features/messageLogApi";
+import MessageDetails from "./messageModal/MessageDetails";
 
 const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   const { t } = useTranslation();
@@ -46,7 +47,7 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   const [status, setStatus] = useState("");
 
   //message id state
-  const [messageData, setMessageData] = useState("");
+  const [fxNumberId,setFxNumberId]=useState()
 
   // filter function
   const onClickFilter = () => {
@@ -74,11 +75,6 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
     setFixedNUmberMessage(filterData);
   };
 
-  // message details handler
-  const messageDetailsHandler = (id) => {
-    const messageDetail = fixedNumber.find((item) => item._id === id);
-    setMessageData(messageDetail);
-  };
 
   // get customer api call
   useEffect(() => {
@@ -147,10 +143,13 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
             <div>
               {original.message && original.message.slice(0, 90)}
               <span
-                className="text-primary see-more"
-                onClick={() => {
-                  messageDetailsHandler(original._id);
-                }}
+              className="text-primary see-more"
+              data-bs-toggle="modal"
+              data-bs-target="#maskingMessageDetails"
+              onClick={() => {
+                setFxNumberId(original._id);
+              }}
+                
               >
                 {original.message.length > 90 ? "...see more" : ""}
               </span>
@@ -229,6 +228,7 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
           data={fixedNumber}
         ></Table>
       </div>
+      <MessageDetails maskingMessageId={fxNumberId} />
     </>
   );
 };

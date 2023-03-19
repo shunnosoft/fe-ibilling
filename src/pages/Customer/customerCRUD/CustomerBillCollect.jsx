@@ -13,10 +13,20 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
+import BillCollectInvoiceWithNote from "./customerBillCollectInvoicePDF";
+import { useRef } from "react";
+import ReactToPrint from "react-to-print";
+import BillPDF from "./bulkOpration/BillPDF";
+import apiLink from "../../../api/apiLink";
+import BillCollectInvoiceWithoutNote from "./customerBillReportPDFwithNote";
 const animatedComponents = makeAnimated();
 
-export default function CustomerBillCollect({ single }) {
+export default function CustomerBillCollect({ single,customerData }) {
+  // console.log(single,customerData);
   const { t } = useTranslation();
+  const billRefwithNote = useRef();
+  const [billingData,setBillingData]=useState({})
+  const [responseData,setResponseData]=useState()
 
   const options = [
     { value: "January", label: t("january") },
@@ -126,7 +136,7 @@ export default function CustomerBillCollect({ single }) {
   };
 
   // bill amount
-  const customerBillHandler = (formValue) => {
+  const customerBillHandler =(formValue) => {
     if (balanceDue > (data?.balance < 0 ? Math.abs(data?.balance) : 0)) {
       setLoading(false);
       return alert(t("dueNotAcceptable"));
@@ -167,9 +177,31 @@ export default function CustomerBillCollect({ single }) {
       });
       sendingData.month = monthValues.join(",");
     }
-    billCollect(dispatch, sendingData, setLoading, resetForm);
+    billCollect(dispatch, sendingData, setLoading, resetForm, setResponseData);
+    console.log(responseData);
+    // document.getElementById("printButton").click();
+
     setAmount(data.amount);
   };
+
+  const [val, setCustomerReport] = useState([]);
+  useEffect(() => {
+    const getCustoemrReport = async () => {
+      setLoading(true);
+      try {
+        const res = await apiLink(`/bill/customer/${single}`);
+        const data = await res.data;
+        setCustomerReport(data[0]);
+        setLoading(false);
+      } catch (err) {
+        console.log("Error to get report: ", err);
+        setLoading(false);
+      }
+    };
+    single && getCustoemrReport();
+  }, [single]);
+
+  console.log(val);
 
   return (
     <div
@@ -405,6 +437,90 @@ export default function CustomerBillCollect({ single }) {
                       </div>
                     </>
                   )}
+
+                          {/* { val.start && val.end? (
+                              <>
+                              <div style={{ display: "none" }}>
+                                <BillCollectInvoiceWithNote
+                                  ref={billRefwithNote}
+                                  customerData={customerData}
+                                  billingData={{
+                                    amount: val.amount,
+                                    due: val.due,
+                                    discount: val.discount,
+                                    billType: val.billType,
+                                    paymentDate: val.createdAt,
+                                    medium: val.medium,
+                                    startDate: val.start,
+                                    endDate: val.end,
+                                    note: val.note,
+                                    month: val.month,
+                                    billingCycle:
+                                      val?.prevState?.billingCycle,
+                                    promiseDate: val?.prevState?.promiseDate,
+                                  }}
+                                  ispOwnerData={userData}
+                                />
+                              </div>
+                       
+                              <div style={{ display: "none" }}>
+                                  <ReactToPrint
+                                    documentTitle={t("billIvoice")}
+                                    trigger={() => (
+                                      <div
+                                        title={t("printInvoiceBill")}
+                                        style={{ cursor: "pointer" }}
+                                      >
+                                        <button id="printButton">Click to Print</button>
+                                      </div>
+                                    )}
+                                    content={() => billRefwithNote.current}
+                                  />
+                                </div>
+                              </>
+                          ):
+                          (
+                            <>
+                            <div style={{ display: "none" }}>
+                              <BillCollectInvoiceWithoutNote
+                                ref={billRefwithNote}
+                                customerData={customerData}
+                                billingData={{
+                                  amount: val.amount,
+                                  due: val.due,
+                                  discount: val.discount,
+                                  billType: val.billType,
+                                  paymentDate: val.createdAt,
+                                  billingCycle:
+                                    val?.prevState?.billingCycle,
+                                  promiseDate: val?.prevState?.promiseDate,
+                                  medium: val.medium,
+                                }}
+                                ispOwnerData={userData}
+                              />
+                            </div>
+                     
+                            <div style={{ display: "none" }}>
+                                <ReactToPrint
+                                  documentTitle={t("billIvoice")}
+                                  trigger={() => (
+                                    <div
+                                      title={t("printInvoiceBill")}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <button id="printButton">Click to Print</button>
+                                    </div>
+                                  )}
+                                  content={() => billRefwithNote.current}
+                                />
+                              </div>
+                            </>
+                          )
+                                   
+                                } */}
+                                
+
+
                   <div className="mt-4">
                     <button type="submit" className="btn btn-success">
                       {isLoading ? <Loader /> : t("submit")}
