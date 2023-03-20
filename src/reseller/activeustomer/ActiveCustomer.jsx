@@ -43,7 +43,6 @@ const ResellserActiveCustomer = () => {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
-  console.log(allUsers);
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {

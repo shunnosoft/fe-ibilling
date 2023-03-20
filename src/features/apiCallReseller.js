@@ -283,6 +283,27 @@ export const updateResellerStaticCustomer = async (
   setIsloading(false);
 };
 
+//Static Customers
+export const getStaticActiveCustomer = async (
+  dispatch,
+  ispOwnerId,
+  resellerId,
+  mikrotikId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `/reseller/active/static/${ispOwnerId}/${resellerId}/${mikrotikId}`
+    );
+    // dispatch(getStaticCustomerActiveSuccess(res.data));
+    console.log(res.data);
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+  setIsLoading(false);
+};
+
 //password update
 export const passwordUpdate = async (data, setIsLoadingpass) => {
   setIsLoadingpass(true);

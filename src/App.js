@@ -103,6 +103,7 @@ import useISPowner from "./hooks/useISPOwner";
 import Supports from "./admin/netFeeSupport/Supports";
 import NetFeeIspOwnerSupport from "./admin/netFeeSupport/NetFeeIspOwnerSupport";
 import QRCodePay from "./pages/public-pages/QRCodePay";
+import ActiveStaticCustomer from "./reseller/activeStaticCustomer/ActiveStaticCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -236,6 +237,10 @@ function App() {
               <Route
                 path="reseller/staticCustomer"
                 element={<RstaticCustomer />}
+              />
+              <Route
+                path="reseller/staticActiveCustomer"
+                element={userRole === "reseller" && <ActiveStaticCustomer />}
               />
               <Route
                 path="reseller/support/ticket"
