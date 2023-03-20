@@ -27,6 +27,7 @@ import Loader from "../../components/common/Loader";
 
 import {
   deleteACustomer,
+  fetchpppoePackage,
   getCustomer,
   getMikrotik,
   getStaticCustomerApi,
@@ -44,10 +45,30 @@ import PrintCustomer from "./customerPDF";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import FormatNumber from "../../components/common/NumberFormat";
 import CustomerEdit from "./staticCustomerCrud/CustomerEdit";
+import { fetchPackagefromDatabase } from "../../features/apiCalls";
+
 export default function RstaticCustomer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
   const cus = useSelector((state) => state?.customer?.staticCustomer);
+  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  const reseller = useSelector((state) => state.persistedReducer.auth?.userData);
+  
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
+  const ppPackage = useSelector((state) =>
+    bpSettings?.hasMikrotik
+      ? state?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
+  );
+
+  // get Isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
@@ -75,9 +96,61 @@ export default function RstaticCustomer() {
     (state) => state.persistedReducer.auth?.currentUser
   );
 
+  const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
+  const [singleMikrotik, setSingleMikrotik] = useState("");
+  const [mikrotikPackage, setMikrotikPackage] = useState("");
+  const [maxDownLimit, setDownMaxLimit] = useState("");
+
+  const selectMikrotik = (e) => {
+    const id = e.target.value;
+    if (id && ispOwnerId) {
+      const IDs = {
+        ispOwner: ispOwnerId,
+        mikrotikId: id,
+      };
+      //ToDo
+      if (bpSettings?.hasMikrotik) {
+        fetchPackagefromDatabase(dispatch, IDs, setIsloading);
+      }
+    }
+    setSingleMikrotik(id);
+  };
+
+  //function for set 0
+  const setPackageLimit = (value, isDown) => {
+    setMikrotikPackage(value);
+    const temp = ppPackage.find((val) => val.id === value);
+    if (isDown) {
+      setPackageRate(temp);
+    }
+    if (value === "unlimited") return "0";
+    const getLetter = temp.name.toLowerCase();
+    if (getLetter.indexOf("m") !== -1) {
+      const setZero = getLetter.replace("m", "000000");
+      return setZero;
+    }
+    if (getLetter.indexOf("k") !== -1) {
+      const setZero = getLetter.replace("k", "000");
+      return setZero;
+    }
+  };
+
+  // select Mikrotik Package
+  const selectMikrotikPackage = ({ target }) => {
+    if (target.value === "0") {
+      setPackageRate({ rate: 0 });
+    } 
+    else {
+
+      if (target.name === "downPackage") {
+        const getLimit = setPackageLimit(target.value, true);
+        getLimit && setDownMaxLimit(getLimit);
+      }
+    }
+  };
 
   //   filter
   const handleSubAreaChange = (id) => {
@@ -104,6 +177,18 @@ export default function RstaticCustomer() {
     if (status) {
       tempCustomers = tempCustomers.filter(
         (customer) => customer.status === status
+      );
+    }
+
+    if (singleMikrotik) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotik === singleMikrotik
+      );
+    }
+
+    if (mikrotikPackage) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotikPackage === mikrotikPackage
       );
     }
 
@@ -159,7 +244,7 @@ export default function RstaticCustomer() {
     }
 
     setCustomers(tempCustomers);
-  }, [cus, paymentStatus, status, subAreaId]);
+  }, [cus, paymentStatus, status, subAreaId, singleMikrotik, mikrotikPackage]);
 
   // find area name
   const areaName = subAreas.find((item) => item.id === subAreaId);
@@ -485,10 +570,50 @@ export default function RstaticCustomer() {
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    <div className="displexFlexSys">
+                    <div className="displexFlexSys d-flex justify-content-center">
                       {/* filter selector */}
-                      <div className="selectFiltering allFilter">
+                      <div className="selectFiltering allFilter ">
                         {/* //Todo */}
+
+                        <select
+                            className="form-select"
+                            onChange={selectMikrotik}
+                          >
+                            <option value="" defaultValue>
+                              {t("mikrotik")}
+                            </option>
+                            
+                              {Getmikrotik?.length === undefined
+                                ? ""
+                                : Getmikrotik?.map((val, key) =>
+                                    reseller.mikrotiks.map(
+                                      (item) =>
+                                        val.id === item && (
+                                          <option key={key} value={val.id}>
+                                            {val.name}
+                                          </option>
+                                        )
+                                    )
+                                  )}
+                        </select>
+
+                        <select
+                              name="downPackage"
+                              className="form-select"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value={"0"}>Download Package</option>
+                              {ppPackage &&
+                                ppPackage?.map(
+                                  (val, key) =>
+                                    val.packageType === "queue" && (
+                                      <option key={key} value={val.id}>
+                                        {val.name}
+                                      </option>
+                                    )
+                                )}
+                        </select>
+
                         <select
                           className="form-select"
                           onChange={(e) => handleSubAreaChange(e.target.value)}
@@ -502,6 +627,7 @@ export default function RstaticCustomer() {
                             </option>
                           ))}
                         </select>
+
                         <select
                           className="form-select"
                           onChange={handleStatusChange}
@@ -527,6 +653,8 @@ export default function RstaticCustomer() {
                           <option value="advance"> {t("advance")} </option>
                           <option value="overdue"> {t("overDue")} </option>
                         </select>
+   
+
                       </div>
 
                       <div style={{ display: "none" }}>
