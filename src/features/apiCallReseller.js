@@ -15,8 +15,8 @@ import {
   addStaticCustomerSuccess,
   deleteCustomerSuccess,
   editCustomerSuccess,
+  editStaticCustomerSuccess,
   getCustomerSuccess,
-  getStaticCustomerActiveSuccess,
   getStaticCustomerSuccess,
   updateBalance,
 } from "./customerSlice";
@@ -266,9 +266,11 @@ export const updateResellerStaticCustomer = async (
 ) => {
   setIsloading(true);
   try {
-    
-    const res = await apiLink.patch(`reseller/update-static-customer/${resellerId}/${customerId}`, data);
-    dispatch(addStaticCustomerSuccess(res.data.customer));
+    const res = await apiLink.patch(
+      `reseller/update-static-customer/${resellerId}/${customerId}`,
+      data
+    );
+    dispatch(editStaticCustomerSuccess(res.data.customer));
     document.getElementById("resellerCustomerEdit").click();
     langMessage(
       "success",

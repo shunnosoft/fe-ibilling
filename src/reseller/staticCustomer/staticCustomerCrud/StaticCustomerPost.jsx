@@ -4,13 +4,10 @@ import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
-
 import { FtextField } from "../../../components/common/FtextField";
-
 import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
-import { addStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
 
 //divisional location
@@ -20,12 +17,8 @@ import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import getName from "../../../utils/getLocationName";
 
 //custom hooks
-import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
-import {
-  addResellerStaticCustomer,
-  withMtkPackage,
-} from "../../../features/apiCallReseller";
+import { addResellerStaticCustomer } from "../../../features/apiCallReseller";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -313,13 +306,12 @@ export default function AddStaticCustomer() {
                           onChange={selectMikrotik}
                         >
                           <option value="">...</option>
-                          {Getmikrotik.length === undefined
-                            ? ""
-                            : Getmikrotik.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
+                          {Getmikrotik.length &&
+                            Getmikrotik.map((val, key) => (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
                       <div className="col-lg-4 col-md-4 col-xs-6">
@@ -332,13 +324,12 @@ export default function AddStaticCustomer() {
                           onChange={(event) => setSubArea(event.target.value)}
                         >
                           <option value="">...</option>
-                          {area.length === undefined
-                            ? ""
-                            : area.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
+                          {area.length &&
+                            area.map((val, key) => (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
                     </div>

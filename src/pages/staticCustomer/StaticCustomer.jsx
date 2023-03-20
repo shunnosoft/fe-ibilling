@@ -1249,7 +1249,7 @@ export default function Customer() {
                                   selected={
                                     filterOptions.package === `${m.name}`
                                   }
-                                  value={m.name}
+                                  value={m.id}
                                 >
                                   {m.name}
                                 </option>

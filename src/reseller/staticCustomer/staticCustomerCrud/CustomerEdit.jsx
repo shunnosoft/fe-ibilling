@@ -4,12 +4,9 @@ import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
-import "../../collector/collector.css";
-import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
-import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 
@@ -49,9 +46,8 @@ export default function CustomerEdit({ single }) {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  // get User 
   const resellerId = useSelector(
-    (state) => state?.user?.user?.id
+    (state) => state.persistedReducer.auth?.userData?.id
   );
 
   // get User Type
@@ -61,7 +57,6 @@ export default function CustomerEdit({ single }) {
 
   // get all area
   const areas = useSelector((state) => state?.area?.area);
-  
 
   // get all mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -79,7 +74,6 @@ export default function CustomerEdit({ single }) {
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState();
-  const [area, setArea] = useState("");
   const [billDate, setBillDate] = useState(null);
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
@@ -115,13 +109,6 @@ export default function CustomerEdit({ single }) {
       setDownMaxLimit(customer?.queue?.maxLimit?.split("/")[1]);
     }
     setQdisable(customer?.queue.disabled);
-    areas?.forEach((item) => {
-      item.subAreas?.forEach((sub) => {
-        if (sub.id === customer?.subArea) {
-          return setArea(item);
-        }
-      });
-    });
 
     const divisionalInfo = {};
     if (customer?.division) {
@@ -201,17 +188,6 @@ export default function CustomerEdit({ single }) {
     }
     setSingleMikrotik(id);
   };
-
-  // select subArea
-  // const selectSubArea = (data) => {
-  //   const areaId = data.target.value;
-  //   if (areas) {
-  //     const temp = areas.find((val) => {
-  //       return val.id === areaId;
-  //     });
-  //     setArea(temp);
-  //   }
-  // };
 
   //function for set 0
   const setPackageLimit = (value, isDown) => {
@@ -295,7 +271,6 @@ export default function CustomerEdit({ single }) {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    
     const { customerId, ipAddress, queueName, target, ...rest } = data;
     if (!bpSettings.genCustomerId) {
       if (!customerId) {
@@ -313,6 +288,7 @@ export default function CustomerEdit({ single }) {
       autoDisable: autoDisable,
       billingCycle: billDate.toISOString(),
       promiseDate: promiseDate.toISOString(),
+      connectionDate: connectionDate.toISOString(),
       ...rest,
       monthlyFee: monthlyFee,
     };
@@ -372,8 +348,15 @@ export default function CustomerEdit({ single }) {
       if (districtName) sendingData.district = districtName;
       if (thanaName) sendingData.thana = thanaName;
     }
+
     // return;
-    updateResellerStaticCustomer(customerId,resellerId, dispatch, sendingData, setIsloading);
+    updateResellerStaticCustomer(
+      customer.id,
+      resellerId,
+      dispatch,
+      sendingData,
+      setIsloading
+    );
   };
   return (
     <div>
@@ -433,17 +416,16 @@ export default function CustomerEdit({ single }) {
                             disabled
                           >
                             <option value="">...</option>
-                            {Getmikrotik.length === undefined
-                              ? ""
-                              : Getmikrotik.map((val, key) => (
-                                  <option
-                                    selected={val.id === customer?.mikrotik}
-                                    key={key}
-                                    value={val.id}
-                                  >
-                                    {val.name}
-                                  </option>
-                                ))}
+                            {Getmikrotik.length &&
+                              Getmikrotik.map((val, key) => (
+                                <option
+                                  selected={val.id === customer?.mikrotik}
+                                  key={key}
+                                  value={val.id}
+                                >
+                                  {val.name}
+                                </option>
+                              ))}
                           </select>
                         </div>
                       )}
@@ -457,50 +439,21 @@ export default function CustomerEdit({ single }) {
                           // onChange={selectSubArea}
                         >
                           <option value="">...</option>
-                          {areas.length === undefined
-                            ? ""
-                            : areas.map((val, key) => (
-                                <option
-                                  selected={val.id === area?.id}
-                                  key={key}
-                                  value={val.id}
-                                >
-                                  {val.name}
-                                </option>
-                              ))}
+                          {areas.length &&
+                            areas.map((val, key) => (
+                              <option
+                                selected={val.id === customer?.subArea}
+                                key={key}
+                                value={val.id}
+                              >
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
 
-                      {/* <div className="static_edit_item">
-                        <label className="form-control-label changeLabelFontColor">
-                          {area ? area.name + " এর - " : ""}{" "}
-                          {t("selectSubArea")}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="subArea"
-                          id="subAreaId"
-                        >
-                          <option value="">...</option>
-                          {area?.subAreas
-                            ? area.subAreas.map((val, key) => {
-                                return (
-                                  <option
-                                    selected={val.id === customer?.subArea}
-                                    key={key}
-                                    value={val.id}
-                                  >
-                                    {val.name}
-                                  </option>
-                                );
-                              })
-                            : ""}
-                        </select>
-                      </div> */}
-
                       {userType === "simple-queue" && (
-                        <div className="static_edit_item">
+                        <div className="static_edit_item pt-3">
                           <FtextField
                             type="text"
                             label={t("queueName")}
@@ -519,7 +472,7 @@ export default function CustomerEdit({ single }) {
                         </div>
                       )}
                       {userType === "firewall-queue" && (
-                        <div className="static_edit_item">
+                        <div className="static_edit_item pt-3">
                           <>
                             <FtextField
                               type="text"
@@ -695,7 +648,7 @@ export default function CustomerEdit({ single }) {
                         />
                       </div>
                       {divisionalAreaFormData.map((item) => (
-                        <div className="static_edit_item">
+                        <div className="static_edit_item pb-3">
                           <label className="form-control-label changeLabelFontColor">
                             {item.text}
                             {/* <span className="text-danger">*</span> */}
@@ -758,27 +711,26 @@ export default function CustomerEdit({ single }) {
                           <option value="postpaid">{t("postPaid")}</option>
                         </SelectField>
                       </div>
-                      {bpSettings?.promiseDate &&
-                        (role === "reseller" || role === "ispOwner") && (
-                          <div
-                            className="static_edit_item"
-                            style={{ marginTop: "-12px" }}
-                          >
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("promiseDate")}
-                            </label>
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={promiseDate}
-                              onChange={(date) => setPromiseDate(date)}
-                              dateFormat="MMM dd yyyy hh:mm a"
-                              placeholderText={t("selectDate")}
-                              minDate={new Date(customer?.billingCycle)}
-                              maxDate={mxDate}
-                              showTimeSelect
-                            />
-                          </div>
-                        )}
+                      {bpSettings?.promiseDate && role === "reseller" && (
+                        <div
+                          className="static_edit_item pt-3"
+                          style={{ marginTop: "-12px" }}
+                        >
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("promiseDate")}
+                          </label>
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={promiseDate}
+                            onChange={(date) => setPromiseDate(date)}
+                            dateFormat="MMM dd yyyy hh:mm a"
+                            placeholderText={t("selectDate")}
+                            minDate={new Date(customer?.billingCycle)}
+                            maxDate={mxDate}
+                            showTimeSelect
+                          />
+                        </div>
+                      )}
                       <div className="static_edit_item">
                         <label className="form-control-label changeLabelFontColor mt-0">
                           {t("connectionDate")}
