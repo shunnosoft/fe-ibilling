@@ -80,13 +80,13 @@ const AllComments = () => {
           return (
             <div
               className="company-name"
-              data-bs-toggle="modal"
-              data-bs-target="#clientNoteModal"
-              onClick={() => {
-                showIndividualComment(value, company[value]);
-              }}
+              // data-bs-toggle="modal"
+              // data-bs-target="#clientNoteModal"
+              // onClick={() => {
+              //   showIndividualComment(value, company[value]);
+              // }}
             >
-              {company[value]}
+              {company[value]?.company}
             </div>
           );
         },

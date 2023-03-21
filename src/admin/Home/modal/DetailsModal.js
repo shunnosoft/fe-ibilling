@@ -39,7 +39,6 @@ const DetailsModal = ({ ownerId }) => {
   // get all ispOwner mikrotiks
   let allmikrotiks = [];
   allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
-  console.log(allmikrotiks);
 
   // get single isp owner data
   const ownerData = data.find((item) => item.id === ownerId);

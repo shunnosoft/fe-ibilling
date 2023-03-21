@@ -368,11 +368,12 @@ export default function ResellerPost() {
                         <div className="AllAreaClass">
                           <div className="row">
                             {mikrotikpakages?.mikrotiks?.map((item) => (
-                              <div className="col-md-4" key={item.id}>
-                                <h6 className="areaParent">
+                              <div className="col-md-3" key={item.id}>
+                                <h6 className="areaParent mt-3">
                                   <input
+                                    id={item.id}
                                     type="checkbox"
-                                    className="getValueUsingClasses"
+                                    className="getValueUsingClasses form-check-input"
                                     value={item.id}
                                     onChange={(e) =>
                                       setMikrotikHandler(e.target.value)
@@ -382,14 +383,14 @@ export default function ResellerPost() {
                                     <b className="h5">{item.name}</b>
                                   </label>
                                 </h6>
-                                <div className="d-flex flex-wrap">
+                                <div>
                                   {mikrotikpakages.packages.map(
                                     (p) =>
                                       p.mikrotik === item.id && (
-                                        <div key={p.id} className="w-50 my-1">
+                                        <div key={p.id} className="w-100 my-1">
                                           <input
                                             id={p.id}
-                                            className="form-check-input me-2"
+                                            className="me-2"
                                             disabled={
                                               !mikrotikIds.includes(p.mikrotik)
                                             }
@@ -416,7 +417,7 @@ export default function ResellerPost() {
                                                 }`}
                                               >
                                                 <input
-                                                  className={`form-control w-50 shadow-none m-1 ${
+                                                  className={`form-control w-100 shadow-none m-1 ${
                                                     mikroTikPackagesId.includes(
                                                       p.id
                                                     )

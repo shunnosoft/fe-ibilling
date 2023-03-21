@@ -173,14 +173,14 @@ const AllInvoices = () => {
         Cell: ({ cell: { value } }) => {
           return (
             <div
-              className="company-name"
-              data-bs-toggle="modal"
-              data-bs-target="#clientNoteModal"
-              onClick={() => {
-                // showIndividualInvoice(value, company[value]);
-              }}
+            //       className="company-name"
+            //       data-bs-toggle="modal"
+            //       data-bs-target="#clientNoteModal"
+            //       onClick={() => {
+            //         // showIndividualInvoice(value, company[value]);
+            //       }}
             >
-              {company[value]}
+              {company[value]?.company}
             </div>
           );
         },
