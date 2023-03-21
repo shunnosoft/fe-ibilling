@@ -181,6 +181,13 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.bulkCustomerMikrotikUpdate,
       disabled: !bpSettings?.bulkCustomerMikrotikUpdate,
     },
+    {
+      id: 27,
+      value: "billDiscount",
+      label: "Bill Discount",
+      isChecked: permission?.billDiscount,
+      disabled: false,
+    },
   ];
 
   const permissionBangla = [
@@ -365,6 +372,13 @@ export const managerPermission = (permission, bpSettings) => {
       label: "বাল্ক গ্রাহকের মাইক্রোটিক পরিবর্তন",
       isChecked: permission?.bulkCustomerMikrotikUpdate,
       disabled: !bpSettings?.bulkCustomerMikrotikUpdate,
+    },
+    {
+      id: 27,
+      value: "billDiscount",
+      label: "বিল দিসকাউন্ট",
+      isChecked: permission?.billDiscount,
+      disabled: false,
     },
   ];
 

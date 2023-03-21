@@ -193,8 +193,6 @@ export default function CustomerBillCollect({ single, customerData }) {
     single && getCustoemrReport();
   }, [single]);
 
-  console.log(val);
-
   return (
     <div
       className="modal fade"
@@ -341,7 +339,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                   </div>
 
                   <div className="d-flex justify-content-between align-items-center">
-                    {role === "ispOwner" && (
+                    {(role === "ispOwner" || permission.billDiscount) && (
                       <div className="w-50">
                         <FtextField
                           type="number"
