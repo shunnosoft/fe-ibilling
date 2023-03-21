@@ -46,8 +46,10 @@ export default function CustomerEdit({ single }) {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   // get User Type
@@ -286,9 +288,9 @@ export default function CustomerEdit({ single }) {
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       autoDisable: autoDisable,
-      billingCycle: billDate.toISOString(),
-      promiseDate: promiseDate.toISOString(),
-      connectionDate: connectionDate.toISOString(),
+      billingCycle: billDate,
+      promiseDate: promiseDate,
+      connectionDate: connectionDate,
       ...rest,
       monthlyFee: monthlyFee,
     };
@@ -756,46 +758,54 @@ export default function CustomerEdit({ single }) {
 
                       <div className="static_edit_item">
                         <p> {t("status")} </p>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value={"active"}
-                            disabled={
-                              !permission?.customerActivate &&
-                              role !== "ispOwner"
-                            }
-                            checked={status === "active"}
-                            onChange={(e) => setStatus("active")}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio1"
-                          >
-                            {t("active")}
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            id="inlineRadio2"
-                            value={"inactive"}
-                            disabled={
-                              !permission?.customerDeactivate &&
-                              role !== "ispOwner"
-                            }
-                            checked={status === "inactive"}
-                            onChange={(e) => setStatus("inactive")}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            {t("in active")}
-                          </label>
-                        </div>
+                        {(role === "reseller" ||
+                          permission.customerActivate) && (
+                          <>
+                            <div className="form-check form-check-inline">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="status"
+                                value={"active"}
+                                disabled={
+                                  !permission?.customerActivate &&
+                                  role !== "ispOwner"
+                                }
+                                checked={status === "active"}
+                                onChange={(e) => setStatus("active")}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="inlineRadio1"
+                              >
+                                {t("active")}
+                              </label>
+                            </div>
+                          </>
+                        )}
+                        {(role === "reseller" ||
+                          permission.customerDeactivate) && (
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              id="inlineRadio2"
+                              value={"inactive"}
+                              disabled={
+                                !permission?.customerDeactivate &&
+                                role !== "ispOwner"
+                              }
+                              checked={status === "inactive"}
+                              onChange={(e) => setStatus("inactive")}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="inlineRadio2"
+                            >
+                              {t("in active")}
+                            </label>
+                          </div>
+                        )}
 
                         {customer?.status === "expired" && (
                           <div className="form-check form-check-inline">

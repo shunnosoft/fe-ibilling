@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ToastContainer } from "react-bootstrap";
-import { ArrowClockwise } from "react-bootstrap-icons";
+import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -13,6 +13,7 @@ import {
   getStaticActiveCustomer,
 } from "../../features/apiCallReseller";
 import { useDispatch, useSelector } from "react-redux";
+import Table from "../../components/table/Table";
 
 const ActiveStaticCustomer = () => {
   const { t } = useTranslation();
@@ -20,38 +21,118 @@ const ActiveStaticCustomer = () => {
 
   // get user role
   const role = useSelector((state) => state.persistedReducer.auth?.role);
-  console.log(role);
+
   // get Isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+  // get reseller id
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  console.log(mikrotik[0]?.id);
+
+  // get all static customer
+  let staticActiveCustomer = useSelector(
+    (state) => state?.customer?.staticActiveCustomer
+  );
 
   // loading state
   const [isLoading, setIsLoading] = useState();
 
+  // filter status state
+  const [filterStatus, setFilterStatus] = useState();
+
   // mikrotikId state
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
 
+  // select mikrotik handler
+  const mikrotiSelectionHandler = (event) => {
+    setMikrotikId(event.target.value);
+  };
+
+  // filter
+  if (filterStatus && filterStatus !== t("sokolCustomer")) {
+    staticActiveCustomer = staticActiveCustomer.filter(
+      (value) => value.complete === JSON.parse(filterStatus)
+    );
+  }
+
+  // reload handler
+  const reloadHandler = () => {
+    getStaticActiveCustomer(
+      dispatch,
+      ispOwnerId,
+      resellerId,
+      mikrotikId,
+      setIsLoading
+    );
+  };
+
   useEffect(() => {
-    if (role === "reseller") {
-      getMikrotik(dispatch, resellerId);
+    setMikrotikId(mikrotik[0]?.id);
+  }, [mikrotik]);
+
+  useEffect(() => {
+    getMikrotik(dispatch, resellerId);
+
+    if (mikrotikId) {
       getStaticActiveCustomer(
         dispatch,
         ispOwnerId,
         resellerId,
-        mikrotik[0]?.id,
+        mikrotikId,
         setIsLoading
       );
     }
-  }, []);
+  }, [mikrotikId]);
+
+  const columns = React.useMemo(
+    () => [
+      {
+        width: "10%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        width: "20%",
+        Header: t("status"),
+        accessor: "running",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.complete === true ? (
+              <Wifi color="green" />
+            ) : (
+              <WifiOff color="red" />
+            )}
+          </div>
+        ),
+      },
+      {
+        width: "20%",
+        Header: t("name"),
+        accessor: "name",
+      },
+      {
+        width: "20%",
+        Header: t("address"),
+        accessor: "address",
+      },
+      {
+        width: "30%",
+        Header: t("macAddress"),
+        accessor: "macAddress",
+      },
+    ],
+    [t]
+  );
   return (
     <>
       <Sidebar />
@@ -70,7 +151,7 @@ const ActiveStaticCustomer = () => {
                         <Loader />
                       ) : (
                         <ArrowClockwise
-                        // onClick={() => reloadHandler()}
+                          onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
                     </div>
@@ -78,12 +159,41 @@ const ActiveStaticCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="displexFlexSys">
-                      {/* filter selector */}
-                      <div className="selectFiltering allFilter"></div>
+                <div className="collectorWrapper mt-2 pt-4">
+                  <div className="d-flex justify-content-center">
+                    <div className="mikrotik-filter">
+                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
+                      <select
+                        id="selectMikrotikOption"
+                        onChange={mikrotiSelectionHandler}
+                        className="form-select mt-0"
+                      >
+                        {mikrotik.map((item) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
                     </div>
+                    <div className="customer-filter ms-4">
+                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
+                      <select
+                        className="form-select mt-0"
+                        aria-label="Default select example"
+                        onChange={(event) =>
+                          setFilterStatus(event.target.value)
+                        }
+                      >
+                        <option selected> {t("sokolCustomer")} </option>
+                        <option value={true}> {t("active")} </option>
+                        <option value={false}> {t("in active")} </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={staticActiveCustomer}
+                    />
                   </div>
                 </div>
               </FourGround>

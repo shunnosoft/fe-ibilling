@@ -388,12 +388,7 @@ export default function Sidebar() {
                           </FontColor> */}
                             </NavLink>
 
-                            {getIspOwnerData?.bpSettings?.hasMikrotik &&
-                            (userRole === "ispOwner" ||
-                              userRole === "manager" ||
-                              userRole === "reseller" ||
-                              (userRole === "collector" &&
-                                !user.collector.reseller)) ? (
+                            {getIspOwnerData?.bpSettings?.hasMikrotik && (
                               <NavLink
                                 key={61}
                                 to={
@@ -412,7 +407,9 @@ export default function Sidebar() {
                                     className="sidebarItems"
                                     id={
                                       window.location.pathname ===
-                                      (userRole === "reseller"
+                                      (userRole === "reseller" ||
+                                      (userRole === "collector" &&
+                                        user.collector.reseller)
                                         ? "/reseller/staticActiveCustomer"
                                         : "/staticActiveCustomer")
                                         ? "active"
@@ -428,8 +425,6 @@ export default function Sidebar() {
                                   </li>
                                 </FontColor>
                               </NavLink>
-                            ) : (
-                              ""
                             )}
                           </>
                         )}

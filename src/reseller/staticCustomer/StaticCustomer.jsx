@@ -51,17 +51,15 @@ export default function RstaticCustomer() {
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
-
-  const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
@@ -365,7 +363,7 @@ export default function RstaticCustomer() {
                   </div>
                 </li>
 
-                {(role === "reseller" || permission.customerEdit) && (
+                {(role === "reseller" || permission?.customerEdit) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#resellerCustomerEdit"
@@ -382,7 +380,7 @@ export default function RstaticCustomer() {
                   </li>
                 )}
 
-                {(role === "reseller" || role === "collector") && (
+                {(role === "reseller" || permission.billPosting) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#collectCustomerBillModal"
@@ -399,22 +397,23 @@ export default function RstaticCustomer() {
                   </li>
                 )}
 
-                {original.mobile && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
-                    onClick={() => {
-                      getSpecificCustomer(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <ChatText />
-                        <p className="actionP">{t("message")}</p>
+                {original.mobile &&
+                  (role === "reseller" || permission.sendSMS) && (
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#customerMessageModal"
+                      onClick={() => {
+                        getSpecificCustomer(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ChatText />
+                          <p className="actionP">{t("message")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                )}
+                    </li>
+                  )}
               </ul>
             </div>
           </div>
@@ -448,18 +447,19 @@ export default function RstaticCustomer() {
                   </div>
 
                   <div className="addAndSettingIcon">
-                    <ReactToPrint
-                      documentTitle="গ্রাহক লিস্ট"
-                      trigger={() => (
-                        <PrinterFill
-                          title={t("print")}
-                          className="addcutmButton"
-                        />
-                      )}
-                      content={() => componentRef.current}
-                    />
-                    {(permission?.customerAdd ||
-                      collectorPermission?.customerAdd) && (
+                    {(role === "reseller" || permission?.viewCustomerList) && (
+                      <ReactToPrint
+                        documentTitle="গ্রাহক লিস্ট"
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    )}
+                    {permission?.customerAdd && (
                       <PersonPlusFill
                         className="addcutmButton"
                         data-bs-toggle="modal"
@@ -484,78 +484,79 @@ export default function RstaticCustomer() {
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="displexFlexSys">
-                      {/* filter selector */}
-                      <div className="selectFiltering allFilter">
-                        {/* //Todo */}
-                        <select
-                          className="form-select"
-                          onChange={(e) => handleSubAreaChange(e.target.value)}
-                        >
-                          <option value="" defaultValue>
-                            {t("area")}
-                          </option>
-                          {subAreas?.map((sub, key) => (
-                            <option key={key} value={sub.id}>
-                              {sub.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className="form-select"
-                          onChange={handleStatusChange}
-                        >
-                          <option value="" defaultValue>
-                            {t("status")}
-                          </option>
-                          <option value="active"> {t("active")} </option>
-                          <option value="inactive"> {t("in active")} </option>
-                          <option value="expired"> {t("expired")} </option>
-                        </select>
-                        <select
-                          className="form-select"
-                          onChange={handlePaymentChange}
-                        >
-                          <option value="" defaultValue>
-                            {t("payment")}
-                          </option>
-                          <option value="free"> {t("free")} </option>
-                          <option value="paid"> {t("paid")} </option>
-                          <option value="unpaid"> {t("unpaid")} </option>
-                          <option value="partial"> {t("partial")} </option>
-                          <option value="advance"> {t("advance")} </option>
-                          <option value="overdue"> {t("overDue")} </option>
-                        </select>
-                      </div>
+                  {(role === "reseller" || permission?.viewCustomerList) && (
+                    <>
+                      <div className="addCollector">
+                        <div className="displexFlexSys">
+                          {/* filter selector */}
+                          <div className="selectFiltering allFilter">
+                            {/* //Todo */}
+                            <select
+                              className="form-select"
+                              onChange={(e) =>
+                                handleSubAreaChange(e.target.value)
+                              }
+                            >
+                              <option value="" defaultValue>
+                                {t("area")}
+                              </option>
+                              {subAreas?.map((sub, key) => (
+                                <option key={key} value={sub.id}>
+                                  {sub.name}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              className="form-select"
+                              onChange={handleStatusChange}
+                            >
+                              <option value="" defaultValue>
+                                {t("status")}
+                              </option>
+                              <option value="active"> {t("active")} </option>
+                              <option value="inactive">
+                                {" "}
+                                {t("in active")}{" "}
+                              </option>
+                              <option value="expired"> {t("expired")} </option>
+                            </select>
+                            <select
+                              className="form-select"
+                              onChange={handlePaymentChange}
+                            >
+                              <option value="" defaultValue>
+                                {t("payment")}
+                              </option>
+                              <option value="free"> {t("free")} </option>
+                              <option value="paid"> {t("paid")} </option>
+                              <option value="unpaid"> {t("unpaid")} </option>
+                              <option value="partial"> {t("partial")} </option>
+                              <option value="advance"> {t("advance")} </option>
+                              <option value="overdue"> {t("overDue")} </option>
+                            </select>
+                          </div>
 
-                      <div style={{ display: "none" }}>
-                        <PrintCustomer
-                          filterData={filterData}
-                          currentCustomers={Customers}
-                          ref={componentRef}
-                        />
-                      </div>
+                          <div style={{ display: "none" }}>
+                            <PrintCustomer
+                              filterData={filterData}
+                              currentCustomers={Customers}
+                              ref={componentRef}
+                            />
+                          </div>
 
-                      <div className="addNewCollector"></div>
-                    </div>
-
-                    {isDeleting ? (
-                      <div className="deletingAction">
-                        <Loader /> <b>Deleting...</b>
+                          <div className="addNewCollector"></div>
+                        </div>
                       </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <div className="table-section">
-                    <Table
-                      customComponent={customComponent}
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={Customers}
-                    ></Table>
-                  </div>
+                      <div className="table-section">
+                        <Table
+                          customComponent={customComponent}
+                          isLoading={isLoading}
+                          columns={columns}
+                          data={Customers}
+                        ></Table>
+                      </div>
+                    </>
+                  )}
                 </div>
               </FourGround>
               <Footer />

@@ -41,8 +41,10 @@ export default function AddStaticCustomer() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
   );
 
   const userType = useSelector(
