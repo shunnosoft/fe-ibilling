@@ -38,6 +38,10 @@ import AddProprietorModal from "./modal/AddProprietorModal";
 import Invoices from "../invoiceList/Invoices";
 import { badge } from "../../components/common/Utils";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import districtsJSON from "../../bdAddress/bd-districts.json";
+import getName from "../../utils/getLocationName";
+
+const districts = districtsJSON.districts;
 
 export default function Home() {
   // loading
@@ -78,6 +82,9 @@ export default function Home() {
 
   //reseller data state
   const [resellerBillCycleData, setResellerBillCycleData] = useState("");
+
+  //district filter data state
+  const [district, setDistrict] = useState("");
 
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
@@ -122,6 +129,12 @@ export default function Home() {
     ispOwners = ispOwners.filter(
       (value) => value.bpSettings.hasMikrotik === mtkStatus
     );
+  }
+
+  //divisional area filter
+  if (district && district !== "All") {
+    const districtName = getName(districts, district)?.name;
+    ispOwners = ispOwners.filter((item) => item.district === districtName);
   }
 
   // api call
@@ -585,6 +598,18 @@ export default function Home() {
                 </option>
                 <option value="true">With Mikrotik</option>
                 <option value="false">WithOut Mikrotik</option>
+              </select>
+              <select
+                className="form-select mt-0 me-3"
+                aria-label="Default select example"
+                onChange={(event) => setDistrict(event.target.value)}
+              >
+                <option value="All" selected>
+                  All
+                </option>
+                {districts.map((item) => {
+                  return <option value={item.id}>{item.name}</option>;
+                })}
               </select>
               <Link to={"/admin/all-comments"}>
                 <div className="all-comment-btn">
