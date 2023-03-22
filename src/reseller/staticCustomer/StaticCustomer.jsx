@@ -23,7 +23,6 @@ import Loader from "../../components/common/Loader";
 
 import {
   deleteACustomer,
-  fetchpppoePackage,
   getCustomer,
   getMikrotik,
   getStaticCustomerApi,
@@ -160,6 +159,18 @@ export default function RstaticCustomer() {
   useEffect(() => {
     let tempCustomers = cus;
 
+    if (singleMikrotik) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotik === singleMikrotik
+      );
+    }
+
+    if (mikrotikPackage) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotikPackage === mikrotikPackage
+      );
+    }
+
     if (subAreaId) {
       tempCustomers = tempCustomers.filter(
         (customer) => customer.subArea === subAreaId
@@ -172,17 +183,7 @@ export default function RstaticCustomer() {
       );
     }
 
-    if (singleMikrotik) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.mikrotik === singleMikrotik
-      );
-    }
-
-    if (mikrotikPackage) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.mikrotikPackage === mikrotikPackage
-      );
-    }
+    
 
     // if (paymentStatus) {
     //   tempCustomers = tempCustomers.filter(
