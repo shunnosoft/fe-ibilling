@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 // internal
 import { FontColor, FourGround } from "../../../assets/js/theme";
@@ -88,6 +88,10 @@ export default function Register() {
 
   const submitHandle = (values) => {
     // const selector = document.getElementById("selector");
+    if (!singlePakage[0].subPackageName) {
+      alert(t("selectPackage"));
+      return;
+    }
 
     // const { refName, refMobile, ...rest } = values;
     if (!customerType.length) {
@@ -109,20 +113,36 @@ export default function Register() {
       },
     };
 
+    let divisionName;
+    let districtName;
+    let thanaName;
+
     if (
       divisionalArea.division ||
       divisionalArea.district ||
       divisionalArea.thana
     ) {
-      const divisionName = getName(divisions, divisionalArea.division)?.name;
-      const districtName = getName(districts, divisionalArea.district)?.name;
-      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      divisionName = getName(divisions, divisionalArea.division)?.name;
+      districtName = getName(districts, divisionalArea.district)?.name;
+      thanaName = getName(thana, divisionalArea.thana)?.name;
 
       if (divisionName) userData.division = divisionName;
       if (districtName) userData.district = districtName;
       if (thanaName) userData.upazila = thanaName;
     }
 
+    if (!divisionName) {
+      alert(t("selectDivision"));
+      return;
+    }
+    if (!districtName) {
+      alert(t("selectDistrict"));
+      return;
+    }
+    if (!thanaName) {
+      alert(t("selectThana"));
+      return;
+    }
     // send user data to async function
     asyncRegister(userData, setLoading);
   };
@@ -327,7 +347,7 @@ export default function Register() {
                       onChange={handleSubPakage}
                     >
                       {/* <option value="">সাব প্যাকেজ সিলেক্ট করুন</option> */}
-
+                      <option value="">{t("selectPackage")}</option>
                       {subpakage?.map((pak, index) => {
                         return (
                           <option
