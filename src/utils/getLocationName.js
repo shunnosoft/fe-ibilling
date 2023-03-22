@@ -4,3 +4,7 @@ const getName = (array, matchValue) => {
 };
 
 export default getName;
+
+export const getNameId = (array, matchValue) => {
+  return array.find((item) => item.name === matchValue);
+};

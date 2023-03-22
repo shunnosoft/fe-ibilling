@@ -118,7 +118,7 @@ export default function Register() {
       const districtName = getName(districts, divisionalArea.district)?.name;
       const thanaName = getName(thana, divisionalArea.thana)?.name;
 
-      if (divisionName) userData.division = districtName;
+      if (divisionName) userData.division = divisionName;
       if (districtName) userData.district = districtName;
       if (thanaName) userData.upazila = thanaName;
     }

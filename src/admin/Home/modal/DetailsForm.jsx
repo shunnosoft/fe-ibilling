@@ -6,11 +6,18 @@ import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
 import moment from "moment";
-import { useTranslation } from "react-i18next";
 
-// import { divisions } from "../../../bdAddress/bd-divisions.json";
-// import { districts } from "../../../bdAddress/bd-districts.json";
-// import { thana } from "../../../bdAddress/bd-upazilas.json";
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import getName, { getNameId } from "../../../utils/getLocationName";
+import { useTranslation } from "react-i18next";
+import ReactDatePicker from "react-datepicker";
+
+const divisions = divisionsJSON.divisions;
+const districts = districtsJSON.districts;
+const thana = thanaJSON.thana;
 
 const DetailsForm = ({ ispOwner }) => {
   const { t } = useTranslation();
@@ -25,16 +32,11 @@ const DetailsForm = ({ ispOwner }) => {
 
   //ispOwner customer type data state
   const [customerType, setCustomerType] = useState("");
-
-  // owner division
-  // const [ownerDivisionId, setOwnerDivisionId] = useState();
-
-  // //get districts & thana state
-  // const [division, setDivision] = useState("");
-  // const [getDistricts, setGetDistricts] = useState([]);
-  // const [district, setDistrict] = useState("");
-  // const [getUpazilas, setGetUpazilas] = useState([]);
-  // const [thana, setThana] = useState("");
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -44,13 +46,6 @@ const DetailsForm = ({ ispOwner }) => {
     );
     setCustomerType(ispOwner?.bpSettings?.customerType);
   }, [ispOwner]);
-
-  // useEffect(() => {
-  //   const findDivision = divisions.find(
-  //     (item) => item.name === ispOwner?.division
-  //   );
-  //   setOwnerDivisionId(findDivision);
-  // }, []);
 
   //  isp owner form validation
   const ispOwnerValidator = Yup.object({
@@ -169,6 +164,20 @@ const DetailsForm = ({ ispOwner }) => {
       }
     );
 
+    if (
+      divisionalArea.division ||
+      divisionalArea.district ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+
+      if (divisionName) data.division = divisionName;
+      if (districtName) data.district = districtName;
+      if (thanaName) data.upazila = thanaName;
+    }
+
     // api call
     updateOwner(ispOwner.id, data, setIsLoading, dispatch);
   };
@@ -187,24 +196,56 @@ const DetailsForm = ({ ispOwner }) => {
     setCustomerType(customerTypeData);
   };
 
-  //division & districts handle
-  // const divisionHandle = (e) => {
-  //   setDivision(e.target.selectedOptions[0].text);
-  //   const divisionId = e.target.value;
-  //   const districtsData = districts.filter(
-  //     (dist) => dist.division_id === divisionId
-  //   );
-  //   setGetDistricts(districtsData);
-  // };
+  //divisional area format
+  const divisionalAreaFormat = [
+    {
+      text: t("selectDivision"),
+      name: "division",
+      id: "division",
+      value: divisionalArea.division,
+      data: divisions,
+    },
+    {
+      text: t("selectDistrict"),
+      name: "district",
+      id: "district",
+      value: divisionalArea.district,
+      data: districts.filter(
+        (item) => item.division_id === divisionalArea.division
+      ),
+    },
+    {
+      text: t("selectThana"),
+      name: "thana",
+      id: "thana",
+      value: divisionalArea.thana,
+      data: thana.filter(
+        (item) => item.district_id === divisionalArea.district
+      ),
+    },
+  ];
 
-  // const distrHandle = (e) => {
-  //   setDistrict(e.target.selectedOptions[0].text);
-  //   const districtId = e.target.value;
-  //   const upazilasData = upazilas.filter(
-  //     (dist) => dist.district_id === districtId
-  //   );
-  //   setGetUpazilas(upazilasData);
-  // };
+  // deviational area change handler
+  const divisionalAreaChangeHandler = ({ target }) => {
+    const { name, value } = target;
+
+    //set the value of division district and thana dynamically
+    setDivisionalArea({
+      ...divisionalArea,
+      [name]: value,
+    });
+  };
+
+  useEffect(() => {
+    const division_id = getNameId(divisions, ispOwner?.division)?.id;
+    const district_id = getNameId(districts, ispOwner?.district)?.id;
+    const thana_id = getNameId(thana, ispOwner?.upazila)?.id;
+    setDivisionalArea({
+      division: division_id,
+      district: district_id,
+      thana: thana_id,
+    });
+  }, [ispOwner.division]);
 
   return (
     <Formik
@@ -249,7 +290,7 @@ const DetailsForm = ({ ispOwner }) => {
               <Field
                 as="select"
                 name="packType"
-                className="form-select mt-1 mb-4"
+                className="form-select mw-100 mt-0"
                 aria-label="Default select example"
               >
                 <option
@@ -271,7 +312,7 @@ const DetailsForm = ({ ispOwner }) => {
               <h6 className="mb-0">{t("package")}</h6>
               <Field
                 as="select"
-                className="form-select"
+                className="form-select mw-100 mt-0"
                 aria-label="Default select example"
                 name="pack"
               >
@@ -298,7 +339,7 @@ const DetailsForm = ({ ispOwner }) => {
                 <h6 className="mb-0">{t("paidStatus")}</h6>
                 <Field
                   as="select"
-                  className="form-select mt-1 mb-4"
+                  className="form-select mw-100 mt-0"
                   aria-label="Default select example"
                   name="paymentStatus"
                 >
@@ -312,7 +353,7 @@ const DetailsForm = ({ ispOwner }) => {
               <h6 className="mb-0">{t("queueType")}</h6>
               <Field
                 as="select"
-                className="form-select mt-1 mb-4"
+                className="form-select mw-100 mt-0"
                 aria-label="Default select example"
                 name="queueType"
               >
@@ -325,7 +366,8 @@ const DetailsForm = ({ ispOwner }) => {
               <p className="customerFieldsTitle">{t("InvoiceDate")}</p>
 
               <div className="timeDate">
-                <Field
+                <ReactDatePicker
+                  className="form-control mw-100 me-3 mt-0"
                   value={billDate}
                   onChange={(e) => setBillDate(e.target.value)}
                   type="date"
@@ -339,7 +381,7 @@ const DetailsForm = ({ ispOwner }) => {
               <Field
                 as="select"
                 name="status"
-                className="form-select mt-1 mb-4"
+                className="form-select mw-100 mt-0"
                 aria-label="Default select example"
               >
                 <option value="new" selected={ispOwner?.status === "new"}>
@@ -365,12 +407,13 @@ const DetailsForm = ({ ispOwner }) => {
                 </option>
               </Field>
             </div>
+
             <div>
               <h6 className="mb-0">Execute Billing Cycle</h6>
               <Field
                 as="select"
                 name="executeBillingCycle"
-                className="form-select mt-1 mb-4"
+                className="form-select mw-100 mt-0"
                 aria-label="Default select example"
               >
                 <option
@@ -391,7 +434,45 @@ const DetailsForm = ({ ispOwner }) => {
                 </option>
               </Field>
             </div>
-            <div>
+          </div>
+
+          <div className="displayGrid3">
+            {divisionalAreaFormat.map((item) => (
+              <div className="mb-3 mt-3">
+                <p className="customerFieldsTitle">{item.text}</p>
+                <select
+                  className="form-select mw-100 mt-0"
+                  aria-label="Default select example"
+                  name={item.name}
+                  id={item.id}
+                  onChange={divisionalAreaChangeHandler}
+                  value={item.value}
+                >
+                  <option value="">...</option>
+                  {item.data.map((item) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+
+          <div className="displayGrid3">
+            {role === "superadmin" && (
+              <FtextField
+                type="text"
+                label={t("referenceName")}
+                name="referenceName"
+              />
+            )}
+
+            <FtextField
+              type="text"
+              label={t("referenceMobile")}
+              name="referenceMobile"
+            />
+
+            <div className="mt-3">
               <h6 className="mb-0">Customer Type</h6>
               <div className="d-inline-flex mb-4">
                 <div className="form-check me-3">
@@ -435,95 +516,7 @@ const DetailsForm = ({ ispOwner }) => {
                 </div>
               </div>
             </div>
-          </div>
-          {/* <div className="displayGrid3">
-                      <div>
-                        <h6 className="mb-0">Division</h6>
-                        <Field
-                          as="select"
-                          className="form-select mt-1 mb-4"
-                          aria-label="Default select example"
-                          name="divisions"
-                          onChange={(e) => {
-                            divisionHandle(e);
-                          }}
-                        >
-                          <option>Select</option>
-                          {divisions?.map((divis) => (
-                            <option
-                              key={divis.long}
-                              value={divis.id}
-                              selected={divis.name === ispOwner?.division}
-                            >
-                              {divis.name}
-                            </option>
-                          ))}
-                        </Field>
-                      </div>
-                      <div>
-                        <h6 className="mb-0">District</h6>
-                        <Field
-                          as="select"
-                          className="form-select mt-1 mb-4"
-                          aria-label="Default select example"
-                          name="districts"
-                          onChange={(e) => {
-                            distrHandle(e);
-                          }}
-                        >
-                          <option>Select</option>
-                          {getDistricts?.map((dist) => {
-                            return (
-                              <option
-                                key={dist.long}
-                                value={dist.id}
-                                selected={dist.name === ispOwner?.district}
-                              >
-                                {dist.name}
-                              </option>
-                            );
-                          })}
-                        </Field>
-                      </div>
-                      <div>
-                        <h6 className="mb-0">Upazila & Thana</h6>
-                        <Field
-                          as="select"
-                          className="form-select mt-1 mb-4"
-                          aria-label="Default select example"
-                          name="upazilas"
-                          onChange={(e) => setUpazila(e.target.value)}
-                        >
-                          <option>Select</option>
-                          {getUpazilas?.map((upaz) => {
-                            return (
-                              <option
-                                key={upaz.id}
-                                value={upaz.name}
-                                selected={upaz.name === ispOwner?.upazila}
-                              >
-                                {upaz.name}
-                              </option>
-                            );
-                          })}
-                        </Field>
-                      </div>
-                    </div> */}
 
-          <div className="displayGrid3">
-            {role === "superadmin" && (
-              <FtextField
-                type="text"
-                label={t("referenceName")}
-                name="referenceName"
-              />
-            )}
-
-            <FtextField
-              type="text"
-              label={t("referenceMobile")}
-              name="referenceMobile"
-            />
             <div className="form-check mt-4">
               <Field
                 className="form-check-input"
@@ -535,6 +528,7 @@ const DetailsForm = ({ ispOwner }) => {
                 Has Mikrotik
               </label>
             </div>
+
             {/* <div className="form-check mt-4">
                         <Field
                           className="form-check-input"
