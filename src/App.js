@@ -240,7 +240,12 @@ function App() {
               />
               <Route
                 path="reseller/staticActiveCustomer"
-                element={userRole === "reseller" && <ActiveStaticCustomer />}
+                element={
+                  (userRole === "reseller" ||
+                    (userRole === "collector" && user.collector.reseller)) && (
+                    <ActiveStaticCustomer />
+                  )
+                }
               />
               <Route
                 path="reseller/support/ticket"

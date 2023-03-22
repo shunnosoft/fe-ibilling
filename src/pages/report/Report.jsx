@@ -20,7 +20,12 @@ import {
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
-import { getAllBills } from "../../features/apiCalls";
+import {
+  getAllBills,
+  getArea,
+  getCollector,
+  getManger,
+} from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
@@ -61,7 +66,8 @@ export default function Report() {
   const [dateEnd, setEndDate] = useState(today);
 
   const allBills = useSelector((state) => state?.payment?.allBills);
-
+  const [areaLoading, setAreaLoading] = useState(false);
+  const [collectorLoading, setCollectorLoading] = useState(false);
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
@@ -69,6 +75,7 @@ export default function Report() {
 
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
+  const [collectedBy, setCollectedBy] = useState();
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");
 
@@ -78,6 +85,7 @@ export default function Report() {
   };
 
   useEffect(() => {
+    if (allArea.length === 0) getArea(dispatch, ispOwnerId, setAreaLoading);
     if (allBills.length === 0) getAllBills(dispatch, ispOwnerId, setIsLoading);
     let collectors = [];
 
@@ -137,6 +145,12 @@ export default function Report() {
       )
     );
   }, [allBills]);
+
+  useEffect(() => {
+    getManger(dispatch, ispOwnerId);
+    if (allCollector.length === 0)
+      getCollector(dispatch, ispOwnerId, setCollectorLoading);
+  }, []);
 
   const onChangeCollector = (userId) => {
     if (userId) {
@@ -199,31 +213,32 @@ export default function Report() {
         subAreaIds.includes(bill.customer?.subArea)
       );
     }
-  
+
+    if (collectedBy && collectedBy !== "other") {
+      arr = arr.filter((collected) => collected.collectorId === collectedBy);
+    }
+
+    if (collectedBy && collectedBy === "other") {
+      arr = arr.filter((collected) => collected.collectorId !== collectedBy);
+    }
+
     if (billType) {
       arr = arr.filter((bill) => bill.billType === billType);
     }
+
     if (medium) {
       if (medium === "onlinePayment") {
         arr = arr.filter(
-          (item) =>
-            item.medium === "sslcommerz" ||
-            item.medium === "uddoktapay" ||
-            item.medium === "sslpay" ||
-            item.medium === "bKashPG"
+          (paymentStatus) =>
+            paymentStatus.medium === "sslcommerz" ||
+            paymentStatus.medium === "uddoktapay" ||
+            paymentStatus.medium === "sslpay" ||
+            paymentStatus.medium === "bKashPG"
         );
       } else {
         arr = arr.filter((item) => item.medium === medium);
-        if (collectorIds.length) {
-          arr = arr.filter((bill) => collectorIds.includes(bill.user));
-        }
-      }
-    } else {
-      if (collectorIds.length) {
-        arr = arr.filter((bill) => collectorIds.includes(bill.user));
       }
     }
-
     arr = arr.filter(
       (item) =>
         new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
@@ -455,7 +470,7 @@ export default function Report() {
                     <div>{t("billReport")}</div>
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
                           onClick={() => reloadHandler()}
@@ -526,16 +541,17 @@ export default function Report() {
                       {userRole !== "collector" && (
                         <select
                           className="form-select"
-                          onChange={(e) => onChangeCollector(e.target.value)}
+                          onChange={(e) => setCollectedBy(e.target.value)}
                         >
                           <option value="" defaultValue>
                             {t("all collector")}
                           </option>
                           {collectors?.map((c, key) => (
-                            <option key={key} value={c.user}>
+                            <option key={key} value={c.id}>
                               {c.name}
                             </option>
                           ))}
+                          <option value="other">Other</option>
                         </select>
                       )}
 

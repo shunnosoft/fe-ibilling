@@ -193,8 +193,6 @@ export default function CustomerBillCollect({ single, customerData }) {
     single && getCustoemrReport();
   }, [single]);
 
-  console.log(val);
-
   return (
     <div
       className="modal fade"
@@ -341,7 +339,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                   </div>
 
                   <div className="d-flex justify-content-between align-items-center">
-                    {role === "ispOwner" && (
+                    {(role === "ispOwner" || permission.billDiscount) && (
                       <div className="w-50">
                         <FtextField
                           type="number"
@@ -429,87 +427,6 @@ export default function CustomerBillCollect({ single, customerData }) {
                       </div>
                     </>
                   )}
-
-                  {/* { val.start && val.end? (
-                              <>
-                              <div style={{ display: "none" }}>
-                                <BillCollectInvoiceWithNote
-                                  ref={billRefwithNote}
-                                  customerData={customerData}
-                                  billingData={{
-                                    amount: val.amount,
-                                    due: val.due,
-                                    discount: val.discount,
-                                    billType: val.billType,
-                                    paymentDate: val.createdAt,
-                                    medium: val.medium,
-                                    startDate: val.start,
-                                    endDate: val.end,
-                                    note: val.note,
-                                    month: val.month,
-                                    billingCycle:
-                                      val?.prevState?.billingCycle,
-                                    promiseDate: val?.prevState?.promiseDate,
-                                  }}
-                                  ispOwnerData={userData}
-                                />
-                              </div>
-                       
-                              <div style={{ display: "none" }}>
-                                  <ReactToPrint
-                                    documentTitle={t("billIvoice")}
-                                    trigger={() => (
-                                      <div
-                                        title={t("printInvoiceBill")}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <button id="printButton">Click to Print</button>
-                                      </div>
-                                    )}
-                                    content={() => billRefwithNote.current}
-                                  />
-                                </div>
-                              </>
-                          ):
-                          (
-                            <>
-                            <div style={{ display: "none" }}>
-                              <BillCollectInvoiceWithoutNote
-                                ref={billRefwithNote}
-                                customerData={customerData}
-                                billingData={{
-                                  amount: val.amount,
-                                  due: val.due,
-                                  discount: val.discount,
-                                  billType: val.billType,
-                                  paymentDate: val.createdAt,
-                                  billingCycle:
-                                    val?.prevState?.billingCycle,
-                                  promiseDate: val?.prevState?.promiseDate,
-                                  medium: val.medium,
-                                }}
-                                ispOwnerData={userData}
-                              />
-                            </div>
-                     
-                            <div style={{ display: "none" }}>
-                                <ReactToPrint
-                                  documentTitle={t("billIvoice")}
-                                  trigger={() => (
-                                    <div
-                                      title={t("printInvoiceBill")}
-                                      style={{ cursor: "pointer" }}
-                                    >
-                                      <button id="printButton">Click to Print</button>
-                                    </div>
-                                  )}
-                                  content={() => billRefwithNote.current}
-                                />
-                              </div>
-                            </>
-                          )
-                                   
-                                } */}
 
                   <div className="mt-4">
                     <button type="submit" className="btn btn-success">

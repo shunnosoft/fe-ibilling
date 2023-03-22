@@ -26,7 +26,7 @@ const StaticActiveCustomer = () => {
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  // set initialy mikrotik id
+  // set initial mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
 
   // get all static customer

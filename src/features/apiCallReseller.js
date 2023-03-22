@@ -17,6 +17,7 @@ import {
   editCustomerSuccess,
   editStaticCustomerSuccess,
   getCustomerSuccess,
+  getStaticCustomerActiveSuccess,
   getStaticCustomerSuccess,
   updateBalance,
 } from "./customerSlice";
@@ -296,8 +297,7 @@ export const getStaticActiveCustomer = async (
     const res = await apiLink.get(
       `/reseller/active/static/${ispOwnerId}/${resellerId}/${mikrotikId}`
     );
-    // dispatch(getStaticCustomerActiveSuccess(res.data));
-    console.log(res.data);
+    dispatch(getStaticCustomerActiveSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }

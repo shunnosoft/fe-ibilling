@@ -111,7 +111,7 @@ export default function CustomerBillCollect({ single }) {
           aria-labelledby="customerModalDetails"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-dialog-scrollable modal-lg">
+          <div className="modal-dialog modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5
@@ -145,120 +145,171 @@ export default function CustomerBillCollect({ single }) {
                 >
                   {() => (
                     <Form>
-                      <h4>Name:{data?.name}</h4>
-                      <h4>ID:{data?.customerId}</h4>
-
-                      <FtextField
-                        type="number"
-                        name="amount"
-                        label={t("amount")}
-                      />
-                      <div className="d-inline w-100 mb-3">
-                        <label
-                          htmlFor="receiver_type"
-                          className="form-control-label changeLabelFontColor"
-                        >
-                          {t("medium")}
-                        </label>
-
-                        <select
-                          as="select"
-                          id="receiver_type"
-                          className="form-select mt-0 mw-100"
-                          aria-label="Default select example"
-                          onChange={(e) => setMedium(e.target.value)}
-                        >
-                          <option value="cash" selected>
-                            {t("handCash")}
-                          </option>
-                          <option value="bKash"> {t("bKash")} </option>
-                          <option value="rocket"> {t("rocket")} </option>
-                          <option value="nagad"> {t("nagad")} </option>
-                          <option value="others"> {t("others")} </option>
-                        </select>
-                      </div>
-                      <label> {t("billType")} </label>
-                      <select
-                        className="form-select"
-                        onChange={(e) => setBillType(e.target.value)}
+                      <table
+                        className="table table-bordered"
+                        style={{ lineHeight: "12px" }}
                       >
-                        <option value="bill"> {t("bill")} </option>
-                        <option value="connectionFee">
-                          {" "}
-                          {t("connectionFee")}{" "}
-                        </option>
-                      </select>
-                      <div className="mb-2 mt-3">
-                        <input
-                          type="checkbox"
-                          className="form-check-input me-1"
-                          id="addNOte"
-                          onChange={(e) => setNoteCheck(e.target.checked)}
-                          checked={noteCheck}
-                        />
-                        <label
-                          className="form-check-label changeLabelFontColor"
-                          htmlFor="addNOte"
-                        >
-                          {t("noteAndDate")}
-                        </label>
-                      </div>
-                      {noteCheck && (
-                        <>
-                          <div className="bill_collect_form mb-1">
-                            <div class="form-floating me-3">
-                              <textarea
-                                cols={200}
-                                class="form-control shadow-none"
-                                placeholder={t("writeNote")}
-                                id="noteField"
-                                onChange={(e) => setNote(e.target.value)}
-                              ></textarea>
-                              <label for="noteField"> {t("addNote")} </label>
-                            </div>
-                            <div className="me-3" style={{ width: "100%" }}>
-                              <label className="form-control-label changeLabelFontColor">
-                                {t("startDate")}
-                              </label>
-                              <DatePicker
-                                selected={startDate}
-                                className="form-control mw-100"
-                                onChange={(date) => setStartDate(date)}
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText={t("selectDate")}
-                              />
-                            </div>
-                            <div cla style={{ width: "100%" }}>
-                              <label className="form-control-label changeLabelFontColor">
-                                {t("endDate")}
-                              </label>
+                        <tbody>
+                          <tr>
+                            <td>{t("id")}</td>
+                            <td>
+                              <b>{data?.customerId}</b>
+                            </td>
+                            <td>{t("queue")}</td>
+                            <td>
+                              <b>{data?.queue?.name}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{t("name")}</td>
+                            <td>
+                              <b>{data?.name}</b>
+                            </td>
+                            <td>{t("mobile")}</td>
+                            <td className="text-primary">
+                              <b>{data?.mobile}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{t("monthly")}</td>
+                            <td className="text-success">
+                              <b>{data?.monthlyFee}</b>
+                            </td>
+                            <td>{t("balance")}</td>
+                            <td className="text-info">
+                              <b>{data?.balance}</b>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
 
-                              <DatePicker
-                                selected={endDate}
-                                className="form-control mw-100"
-                                onChange={(date) => setEndDate(date)}
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText={t("selectDate")}
-                              />
-                            </div>
-                          </div>
+                      <div className="bill_collect_form">
+                        <div className="w-50 me-2">
+                          <FtextField
+                            type="number"
+                            name="amount"
+                            label={t("amount")}
+                          />
+                        </div>
+                        <div className="d-inline w-50 mb-3">
+                          <label
+                            htmlFor="receiver_type"
+                            className="form-control-label changeLabelFontColor"
+                          >
+                            {t("medium")}
+                          </label>
+
+                          <select
+                            as="select"
+                            id="receiver_type"
+                            className="form-select mt-0 mw-100"
+                            aria-label="Default select example"
+                            onChange={(e) => setMedium(e.target.value)}
+                          >
+                            <option value="cash" selected>
+                              {t("handCash")}
+                            </option>
+                            <option value="bKash"> {t("bKash")} </option>
+                            <option value="rocket"> {t("rocket")} </option>
+                            <option value="nagad"> {t("nagad")} </option>
+                            <option value="others"> {t("others")} </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="w-50 mb-3">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("billType")}
+                          </label>
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => setBillType(e.target.value)}
+                          >
+                            <option value="bill"> {t("bill")} </option>
+                            <option value="connectionFee">
+                              {" "}
+                              {t("connectionFee")}{" "}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div className="form-check">
+                          <input
+                            type="checkbox"
+                            className="form-check-input me-1"
+                            id="addNOte"
+                            onChange={(e) => setNoteCheck(e.target.checked)}
+                            checked={noteCheck}
+                          />
                           <label
                             className="form-check-label changeLabelFontColor"
-                            htmlFor="selectMonth"
+                            htmlFor="addNOte"
                           >
-                            {t("selectMonth")}
+                            {t("noteAndDate")}
                           </label>
-                          <Select
-                            className="w-50 mt-1"
-                            defaultValue={selectedMonth}
-                            onChange={setSelectedMonth}
-                            options={options}
-                            isMulti={true}
-                            placeholder={t("selectMonth")}
-                            isSearchable
-                            components={animatedComponents}
-                            id="selectMonth"
-                          />
+                        </div>
+                      </div>
+
+                      {noteCheck && (
+                        <>
+                          <div className="mb-1">
+                            <div className="d-flex">
+                              <div className="me-2">
+                                <label className="form-control-label changeLabelFontColor">
+                                  {t("startDate")}
+                                </label>
+                                <DatePicker
+                                  selected={startDate}
+                                  className="form-control mw-100"
+                                  onChange={(date) => setStartDate(date)}
+                                  dateFormat="dd/MM/yyyy"
+                                  placeholderText={t("selectDate")}
+                                />
+                              </div>
+                              <div>
+                                <label className="form-control-label changeLabelFontColor">
+                                  {t("endDate")}
+                                </label>
+
+                                <DatePicker
+                                  selected={endDate}
+                                  className="form-control mw-100"
+                                  onChange={(date) => setEndDate(date)}
+                                  dateFormat="dd/MM/yyyy"
+                                  placeholderText={t("selectDate")}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="month mt-2">
+                            <label
+                              className="form-check-label changeLabelFontColor"
+                              htmlFor="selectMonth"
+                            >
+                              {t("selectMonth")}
+                            </label>
+                            <Select
+                              className="mt-1"
+                              defaultValue={selectedMonth}
+                              onChange={setSelectedMonth}
+                              options={options}
+                              isMulti={true}
+                              placeholder={t("selectMonth")}
+                              isSearchable
+                              components={animatedComponents}
+                              id="selectMonth"
+                            />
+                          </div>
+                          <div class="form-floating mt-3">
+                            <textarea
+                              cols={200}
+                              class="form-control shadow-none"
+                              placeholder="নোট লিখুন"
+                              id="noteField"
+                              onChange={(e) => setNote(e.target.value)}
+                            ></textarea>
+                            <label for="noteField"> {t("addNote")} </label>
+                          </div>
                         </>
                       )}
                       <div className="mt-4">
