@@ -57,10 +57,11 @@ export default function Customer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  const reseller = useSelector((state) => state.persistedReducer.auth?.userData);
+  const reseller = useSelector(
+    (state) => state.persistedReducer.auth?.userData
+  );
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
   const cus = useSelector((state) => state?.customer?.customer);
-  console.log(cus);
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -86,7 +87,6 @@ export default function Customer() {
   };
 
   const selectMikrotikPackage = (e) => {
-    
     const mikrotikPackageId = e.target.value;
     setMikrotikPackage(mikrotikPackageId);
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
@@ -165,7 +165,6 @@ export default function Customer() {
         (customer) => customer.mikrotik === singleMikrotik
       );
     }
-    
 
     if (status) {
       tempCustomers = tempCustomers.filter(
@@ -465,8 +464,8 @@ export default function Customer() {
                   </li>
                 )}
 
-                {permission?.customerEdit ||
-                collectorPermission?.customerEdit ? (
+                {(permission?.customerEdit ||
+                  collectorPermission?.customerEdit) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerEditModal"
@@ -481,8 +480,6 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
                 {role !== "collector" && (
                   <li
@@ -717,38 +714,38 @@ export default function Customer() {
                             <option value="" defaultValue>
                               {t("mikrotik")}
                             </option>
-                            
-                              {Getmikrotik?.length === undefined
-                                ? ""
-                                : Getmikrotik?.map((val, key) =>
-                                    reseller.mikrotiks.map(
-                                      (item) =>
-                                        val.id === item && (
-                                          <option key={key} value={val.id}>
-                                            {val.name}
-                                          </option>
-                                        )
-                                    )
-                                  )}
-                            </select>
-                            
+
+                            {Getmikrotik?.length === undefined
+                              ? ""
+                              : Getmikrotik?.map((val, key) =>
+                                  reseller.mikrotiks.map(
+                                    (item) =>
+                                      val.id === item && (
+                                        <option key={key} value={val.id}>
+                                          {val.name}
+                                        </option>
+                                      )
+                                  )
+                                )}
+                          </select>
+
                           <select
-                              className="form-select"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value="" defaultValue>
+                            className="form-select"
+                            onChange={selectMikrotikPackage}
+                          >
+                            <option value="" defaultValue>
                               {t("PPPoEPackage")}
                             </option>
 
-                              {ppPackage.length === undefined
-                                ? ""
-                                : ppPackage?.map((val, key) => (
-                                    <option key={key} value={val.id}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                            </select>
-                        
+                            {ppPackage.length === undefined
+                              ? ""
+                              : ppPackage?.map((val, key) => (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                          </select>
+
                           <select
                             className="form-select"
                             onChange={handlePaymentChange}
