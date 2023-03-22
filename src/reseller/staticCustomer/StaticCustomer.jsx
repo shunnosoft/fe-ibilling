@@ -4,7 +4,6 @@ import moment from "moment";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
-  Wallet,
   ThreeDots,
   PersonFill,
   PrinterFill,
@@ -12,6 +11,7 @@ import {
   ChatText,
   PersonPlusFill,
   PenFill,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,10 +19,6 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-// import CustomerPost from "./customerCRUD/CustomerPost";
-// import CustomerDetails from "./customerCRUD/CustomerDetails";
-// import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-// import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 
 import {
@@ -33,7 +29,6 @@ import {
   getStaticCustomerApi,
   getSubAreas,
 } from "../../features/apiCallReseller";
-// import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import CustomerBillCollect from "./staticCustomerCrud/CustomerBillCollect";
@@ -474,7 +469,7 @@ export default function RstaticCustomer() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <Wallet />
+                        <CurrencyDollar />
                         <p className="actionP"> {t("useMemoRecharge")} </p>
                       </div>
                     </div>
