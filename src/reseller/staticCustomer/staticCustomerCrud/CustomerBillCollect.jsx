@@ -145,38 +145,78 @@ export default function CustomerBillCollect({ single }) {
                 >
                   {() => (
                     <Form>
-                      <h4>Name:{data?.name}</h4>
-                      <h4>ID:{data?.customerId}</h4>
+                      <table
+                        className="table table-bordered"
+                        style={{ lineHeight: "12px" }}
+                      >
+                        <tbody>
+                          <tr>
+                            <td>{t("id")}</td>
+                            <td>
+                              <b>{data?.customerId}</b>
+                            </td>
+                            <td>{t("queue")}</td>
+                            <td>
+                              <b>{data?.queue?.name}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{t("name")}</td>
+                            <td>
+                              <b>{data?.name}</b>
+                            </td>
+                            <td>{t("mobile")}</td>
+                            <td className="text-primary">
+                              <b>{data?.mobile}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{t("monthly")}</td>
+                            <td className="text-success">
+                              <b>{data?.monthlyFee}</b>
+                            </td>
+                            <td>{t("balance")}</td>
+                            <td className="text-info">
+                              <b>{data?.balance}</b>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
 
-                      <FtextField
-                        type="number"
-                        name="amount"
-                        label={t("amount")}
-                      />
-                      <div className="d-inline w-100 mb-3">
-                        <label
-                          htmlFor="receiver_type"
-                          className="form-control-label changeLabelFontColor"
-                        >
-                          {t("medium")}
-                        </label>
+                      <div className="bill_collect_form">
+                        <div className="w-50 me-2">
+                          <FtextField
+                            type="number"
+                            name="amount"
+                            label={t("amount")}
+                          />
+                        </div>
+                          <div className="d-inline w-50 mb-3">
+                            <label
+                              htmlFor="receiver_type"
+                              className="form-control-label changeLabelFontColor"
+                            >
+                              {t("medium")}
+                            </label>
 
-                        <select
-                          as="select"
-                          id="receiver_type"
-                          className="form-select mt-0 mw-100"
-                          aria-label="Default select example"
-                          onChange={(e) => setMedium(e.target.value)}
-                        >
-                          <option value="cash" selected>
-                            {t("handCash")}
-                          </option>
-                          <option value="bKash"> {t("bKash")} </option>
-                          <option value="rocket"> {t("rocket")} </option>
-                          <option value="nagad"> {t("nagad")} </option>
-                          <option value="others"> {t("others")} </option>
-                        </select>
+                            <select
+                              as="select"
+                              id="receiver_type"
+                              className="form-select mt-0 mw-100"
+                              aria-label="Default select example"
+                              onChange={(e) => setMedium(e.target.value)}
+                            >
+                              <option value="cash" selected>
+                                {t("handCash")}
+                              </option>
+                              <option value="bKash"> {t("bKash")} </option>
+                              <option value="rocket"> {t("rocket")} </option>
+                              <option value="nagad"> {t("nagad")} </option>
+                              <option value="others"> {t("others")} </option>
+                            </select>
+                        </div>
                       </div>
+
                       <label> {t("billType")} </label>
                       <select
                         className="form-select"
@@ -188,6 +228,7 @@ export default function CustomerBillCollect({ single }) {
                           {t("connectionFee")}{" "}
                         </option>
                       </select>
+
                       <div className="mb-2 mt-3">
                         <input
                           type="checkbox"
@@ -203,6 +244,7 @@ export default function CustomerBillCollect({ single }) {
                           {t("noteAndDate")}
                         </label>
                       </div>
+
                       {noteCheck && (
                         <>
                           <div className="bill_collect_form mb-1">
