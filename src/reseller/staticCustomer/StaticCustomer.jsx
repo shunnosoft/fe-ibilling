@@ -19,10 +19,6 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
-// import CustomerPost from "./customerCRUD/CustomerPost";
-// import CustomerDetails from "./customerCRUD/CustomerDetails";
-// import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-// import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 
 import {
@@ -32,7 +28,6 @@ import {
   getStaticCustomerApi,
   getSubAreas,
 } from "../../features/apiCallReseller";
-// import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import CustomerBillCollect from "./staticCustomerCrud/CustomerBillCollect";
@@ -186,12 +181,6 @@ export default function RstaticCustomer() {
       );
     }
 
-    // if (paymentStatus) {
-    //   tempCustomers = tempCustomers.filter(
-    //     (customer) => customer.paymentStatus === paymentStatus
-    //   );
-    // }
-
     if (paymentStatus) {
       tempCustomers = tempCustomers.filter((customer) => {
         if (customer.paymentStatus && paymentStatus === "free") {
@@ -340,9 +329,6 @@ export default function RstaticCustomer() {
       &nbsp;
       {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
       {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
-      {/* {t("collection")}&nbsp;{" "} */}
-      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
-          {t("tk")} */}
     </div>
   );
 
@@ -640,7 +626,7 @@ export default function RstaticCustomer() {
                           onChange={handlePaymentChange}
                         >
                           <option value="" defaultValue>
-                            {t("paymentStatus")}
+                            {t("payment")}
                           </option>
                           <option value="free"> {t("free")} </option>
                           <option value="paid"> {t("paid")} </option>
