@@ -110,9 +110,6 @@ const DetailsForm = ({ ispOwner }) => {
       name: values.name,
       company: values.company,
       address: values.address,
-      // division,
-      // district,
-      // upazila,
       status: values.status,
 
       bpSettings: {
@@ -362,12 +359,12 @@ const DetailsForm = ({ ispOwner }) => {
               </Field>
             </div>
 
-            <div className="monthlyDueDate">
-              <p className="customerFieldsTitle">{t("InvoiceDate")}</p>
+            <div>
+              <h6 className="customerFieldsTitle mb-0">{t("InvoiceDate")}</h6>
 
               <div className="timeDate">
                 <ReactDatePicker
-                  className="form-control mw-100 me-3 mt-0"
+                  className="form-control mw-100"
                   value={billDate}
                   onChange={(e) => setBillDate(e.target.value)}
                   type="date"
