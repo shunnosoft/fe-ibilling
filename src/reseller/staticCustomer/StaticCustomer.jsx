@@ -4,6 +4,7 @@ import moment from "moment";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
+  Wallet,
   ThreeDots,
   PersonFill,
   PrinterFill,
@@ -11,7 +12,6 @@ import {
   ChatText,
   PersonPlusFill,
   PenFill,
-  CurrencyDollar,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +19,10 @@ import { useSelector, useDispatch } from "react-redux";
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
+// import CustomerPost from "./customerCRUD/CustomerPost";
+// import CustomerDetails from "./customerCRUD/CustomerDetails";
+// import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
+// import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
 
 import {
@@ -28,6 +32,7 @@ import {
   getStaticCustomerApi,
   getSubAreas,
 } from "../../features/apiCallReseller";
+// import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import CustomerBillCollect from "./staticCustomerCrud/CustomerBillCollect";
@@ -67,15 +72,17 @@ export default function RstaticCustomer() {
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
-  const resellerId = useSelector((state) =>
-    role === "reseller"
-      ? state.persistedReducer.auth?.userData?.id
-      : state.persistedReducer.auth?.userData?.reseller
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.id
   );
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
+
+  const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
@@ -133,13 +140,9 @@ export default function RstaticCustomer() {
 
   // select Mikrotik Package
   const selectMikrotikPackage = ({ target }) => {
-    if (target.value === "0") {
-      setPackageRate({ rate: 0 });
-    } else {
-      if (target.name === "downPackage") {
-        const getLimit = setPackageLimit(target.value, true);
-        getLimit && setDownMaxLimit(getLimit);
-      }
+    if (target.name === "downPackage") {
+      const getLimit = setPackageLimit(target.value, true);
+      getLimit && setDownMaxLimit(getLimit);
     }
   };
 
@@ -182,8 +185,6 @@ export default function RstaticCustomer() {
         (customer) => customer.status === status
       );
     }
-
-    
 
     // if (paymentStatus) {
     //   tempCustomers = tempCustomers.filter(
@@ -443,7 +444,7 @@ export default function RstaticCustomer() {
                   </div>
                 </li>
 
-                {(role === "reseller" || permission?.customerEdit) && (
+                {(role === "reseller" || permission.customerEdit) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#resellerCustomerEdit"
@@ -460,7 +461,7 @@ export default function RstaticCustomer() {
                   </li>
                 )}
 
-                {(role === "reseller" || permission.billPosting) && (
+                {(role === "reseller" || role === "collector") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#collectCustomerBillModal"
@@ -470,30 +471,29 @@ export default function RstaticCustomer() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <CurrencyDollar />
+                        <Wallet />
                         <p className="actionP"> {t("useMemoRecharge")} </p>
                       </div>
                     </div>
                   </li>
                 )}
 
-                {original.mobile &&
-                  (role === "reseller" || permission.sendSMS) && (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#customerMessageModal"
-                      onClick={() => {
-                        getSpecificCustomer(original.id);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <ChatText />
-                          <p className="actionP">{t("message")}</p>
-                        </div>
+                {original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("message")}</p>
                       </div>
-                    </li>
-                  )}
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -527,19 +527,18 @@ export default function RstaticCustomer() {
                   </div>
 
                   <div className="addAndSettingIcon">
-                    {(role === "reseller" || permission?.viewCustomerList) && (
-                      <ReactToPrint
-                        documentTitle="গ্রাহক লিস্ট"
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
-                      />
-                    )}
-                    {(role === "reseller" || permission?.customerAdd) && (
+                    <ReactToPrint
+                      documentTitle="গ্রাহক লিস্ট"
+                      trigger={() => (
+                        <PrinterFill
+                          title={t("print")}
+                          className="addcutmButton"
+                        />
+                      )}
+                      content={() => componentRef.current}
+                    />
+                    {(permission?.customerAdd ||
+                      collectorPermission?.customerAdd) && (
                       <PersonPlusFill
                         className="addcutmButton"
                         data-bs-toggle="modal"
@@ -564,79 +563,121 @@ export default function RstaticCustomer() {
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  {(role === "reseller" || permission?.viewCustomerList) && (
-                    <>
-                      <div className="addCollector">
-                        <div className="displexFlexSys">
-                          {/* filter selector */}
-                          <div className="selectFiltering allFilter">
-                            {/* //Todo */}
-                            <select
-                              className="form-select"
-                              onChange={(e) =>
-                                handleSubAreaChange(e.target.value)
-                              }
-                            >
-                              <option value="" defaultValue>
-                                {t("area")}
-                              </option>
-                              {subAreas?.map((sub, key) => (
-                                <option key={key} value={sub.id}>
-                                  {sub.name}
-                                </option>
-                              ))}
-                            </select>
-                            <select
-                              className="form-select"
-                              onChange={handleStatusChange}
-                            >
-                              <option value="" defaultValue>
-                                {t("status")}
-                              </option>
-                              <option value="active"> {t("active")} </option>
-                              <option value="inactive">
-                                {" "}
-                                {t("in active")}{" "}
-                              </option>
-                              <option value="expired"> {t("expired")} </option>
-                            </select>
-                            <select
-                              className="form-select"
-                              onChange={handlePaymentChange}
-                            >
-                              <option value="" defaultValue>
-                                {t("payment")}
-                              </option>
-                              <option value="free"> {t("free")} </option>
-                              <option value="paid"> {t("paid")} </option>
-                              <option value="unpaid"> {t("unpaid")} </option>
-                              <option value="partial"> {t("partial")} </option>
-                              <option value="advance"> {t("advance")} </option>
-                              <option value="overdue"> {t("overDue")} </option>
-                            </select>
-                          </div>
+                  <div className="addCollector">
+                    <div className="displexFlexSys d-flex justify-content-center">
+                      {/* filter selector */}
+                      <div className="selectFiltering allFilter ">
+                        {/* //Todo */}
 
-                          <div style={{ display: "none" }}>
-                            <PrintCustomer
-                              filterData={filterData}
-                              currentCustomers={Customers}
-                              ref={componentRef}
-                            />
-                          </div>
+                        <select
+                          className="form-select"
+                          onChange={selectMikrotik}
+                        >
+                          <option value="" defaultValue>
+                            {t("mikrotik")}
+                          </option>
 
-                          <div className="addNewCollector"></div>
-                        </div>
+                          {Getmikrotik?.length === undefined
+                            ? ""
+                            : Getmikrotik?.map((val, key) =>
+                                reseller.mikrotiks.map(
+                                  (item) =>
+                                    val.id === item && (
+                                      <option key={key} value={val.id}>
+                                        {val.name}
+                                      </option>
+                                    )
+                                )
+                              )}
+                        </select>
+
+                        <select
+                          name="downPackage"
+                          className="form-select"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value="" defaultValue>
+                            {t("package")}
+                          </option>
+                          {ppPackage &&
+                            ppPackage?.map(
+                              (val, key) =>
+                                val.packageType === "queue" && (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                )
+                            )}
+                        </select>
+
+                        <select
+                          className="form-select"
+                          onChange={(e) => handleSubAreaChange(e.target.value)}
+                        >
+                          <option value="" defaultValue>
+                            {t("area")}
+                          </option>
+                          {subAreas?.map((sub, key) => (
+                            <option key={key} value={sub.id}>
+                              {sub.name}
+                            </option>
+                          ))}
+                        </select>
+
+                        <select
+                          className="form-select"
+                          onChange={handleStatusChange}
+                        >
+                          <option value="" defaultValue>
+                            {t("status")}
+                          </option>
+                          <option value="active"> {t("active")} </option>
+                          <option value="inactive"> {t("in active")} </option>
+                          <option value="expired"> {t("expired")} </option>
+                        </select>
+                        <select
+                          className="form-select"
+                          onChange={handlePaymentChange}
+                        >
+                          <option value="" defaultValue>
+                            {t("paymentStatus")}
+                          </option>
+                          <option value="free"> {t("free")} </option>
+                          <option value="paid"> {t("paid")} </option>
+                          <option value="unpaid"> {t("unpaid")} </option>
+                          <option value="partial"> {t("partial")} </option>
+                          <option value="advance"> {t("advance")} </option>
+                          <option value="overdue"> {t("overDue")} </option>
+                        </select>
                       </div>
-                      <div className="table-section">
-                        <Table
-                          customComponent={customComponent}
-                          isLoading={isLoading}
-                          columns={columns}
-                          data={Customers}
-                        ></Table>
+
+                      <div style={{ display: "none" }}>
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={Customers}
+                          ref={componentRef}
+                        />
                       </div>
-                    </>
-                  )}
+
+                      <div className="addNewCollector"></div>
+                    </div>
+
+                    {isDeleting ? (
+                      <div className="deletingAction">
+                        <Loader /> <b>Deleting...</b>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <div className="table-section">
+                    <Table
+                      customComponent={customComponent}
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={Customers}
+                    ></Table>
+                  </div>
                 </div>
               </FourGround>
               <Footer />
