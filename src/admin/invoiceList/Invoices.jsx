@@ -2,7 +2,11 @@ import { Form, Field, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { PencilSquare, PenFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  FileEarmarkPlusFill,
+  PencilSquare,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
@@ -12,6 +16,7 @@ import {
   getIspOwnerInvoice,
 } from "../../features/apiCallAdmin";
 import InvoiceEditModal from "./modal/InvoiceEditModal";
+import InvoiceCreate from "./modal/InvoiceCreate";
 
 const Invoices = ({ invoiceId, companyName }) => {
   // import dispatch
@@ -200,7 +205,7 @@ const Invoices = ({ invoiceId, companyName }) => {
       >
         <div className="modal-dialog modal-xl">
           <div className="modal-content">
-            <div className="modal-header">
+            <div className="modal-header px-5">
               <h5
                 style={{ color: "#0abb7a" }}
                 className="modal-title"
@@ -208,6 +213,14 @@ const Invoices = ({ invoiceId, companyName }) => {
               >
                 Company Name: {companyName}
               </h5>
+              <div
+                title="AddMikrotik"
+                className="header_icon mx-3"
+                data-bs-toggle="modal"
+                data-bs-target="#ispOwnerInvoiceCreate"
+              >
+                <FileEarmarkPlusFill />
+              </div>
               <button
                 type="button"
                 className="btn-close"
@@ -323,6 +336,7 @@ const Invoices = ({ invoiceId, companyName }) => {
         </div>
       </div>
       <InvoiceEditModal invoiceeEditId={invoiceeEditId} />
+      <InvoiceCreate ispOwnerId={invoiceId} />
     </>
   );
 };

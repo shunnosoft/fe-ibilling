@@ -487,6 +487,12 @@
       "bn_name": "সীতাকুণ্ড"
     },
     {
+      "id": "552",
+      "district_id": "43",
+      "name": "Khatungonj",
+      "bn_name": "খাতুনগঞ্জ"
+    },
+    {
       "id": "06 ",
       "district_id": "43",
       "name": " Bayejid Bostami Thana",
@@ -653,6 +659,12 @@
       "district_id": "44",
       "name": "Titas",
       "bn_name": "তিতাস"
+    },
+    {
+      "id": "550",
+      "district_id": "44",
+      "name": "Lalmai",
+      "bn_name": "লালমাই"
     },
     {
       "id": "98",
@@ -1654,7 +1666,7 @@
     {
       "id": "223",
       "district_id": "11",
-      "name": "Naryanganj Sadar",
+      "name": "Narayanganj Sadar",
       "bn_name": "নারায়ানগঞ্জ সদর"
     },
     {

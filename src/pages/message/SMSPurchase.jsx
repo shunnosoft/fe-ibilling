@@ -10,7 +10,6 @@ const SMSPurchase = ({ show, smsPurchase }) => {
 
   // modal onHide true or false state
   const [showIf, setShowIf] = useState(false);
-  console.log(showIf);
 
   // modal close handler
   const handleClose = () => setShowIf(false);
