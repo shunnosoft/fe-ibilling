@@ -5,12 +5,21 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import { getSingleIspOwner } from "../../../features/apiCallAdmin";
+import { getNetfeeSettings } from "../../../features/netfeeSettingsApi";
+import { purchaseSms } from "../../../features/apiCalls";
 
 const InvoiceCreate = ({ ispOwnerId }) => {
   const dispatch = useDispatch();
 
   //get single ispOwner
   const ispOwnerData = useSelector((state) => state.admin?.singleIspOwner);
+  console.log(ispOwnerData);
+
+  // get all package in netFee
+  const allPackage = useSelector(
+    (state) => state.netfeeSettings?.netfeeSettings
+  );
+  console.log(allPackage);
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +33,7 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   );
 
   // message prise state
-  const [smsAmount, setSmsAmount] = useState(100);
+  const [smsAmount, setSmsAmount] = useState("");
 
   // sms count state
   const [smsCount, setSmsCount] = useState(
@@ -39,8 +48,9 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   const [startDate, setStartDate] = useState(currentFirstDay);
   const [endDate, setEndDate] = useState(getDay);
 
-  //package customer limit state
-  const [customerLimit, setCustomerLimit] = useState();
+  //subPackage state
+  const [supPackage, setSubPackage] = useState(allPackage[0]?.subPackage);
+  const [singlePackage, setSinglePackage] = useState(["Standard"]);
 
   //  isp owner form validation
   const validationSchema = Yup.object({
@@ -56,9 +66,8 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   let initialValues;
   if (ispOwnerData) {
     initialValues = {
-      pack: ispOwnerData?.bpSettings?.pack,
-      customerLimit: ispOwnerData?.bpSettings?.customerLimit,
       status: "unpaid",
+      amount: "",
     };
     if (type === "registration") {
       initialValues.status = ispOwnerData?.bpSettings?.paymentStatus;
@@ -66,11 +75,49 @@ const InvoiceCreate = ({ ispOwnerId }) => {
     if (type === "monthlyServiceCharge") {
       initialValues.status = ispOwnerData?.bpSettings?.monthlyPaymentStatus;
     }
+    if (type) {
+      initialValues.amount =
+        type === "smsPurchase"
+          ? Math.ceil(smsAmount)
+          : type === "registration"
+          ? ispOwnerData?.bpSettings?.registrationFee
+          : type === "monthlyServiceCharge"
+          ? ispOwnerData?.bpSettings?.packageRate
+          : type === "migration"
+          ? singlePackage[0].installation
+          : "";
+    }
   }
 
   //  handle submit
   const invoiceCreateHandler = (values) => {
-    console.log(values);
+    // message invoice create
+    if (type === "smsPurchase") {
+      if (smsCount * ispOwnerData.smsRate < 100) {
+        alert("Unsuccess SMS Purchase");
+      } else {
+        let data = {
+          amount: Math.ceil(smsAmount),
+          numberOfSms: Number.parseInt(smsCount),
+          ispOwner: ispOwnerData.id,
+          user: ispOwnerData.user,
+          type: "smsPurchase",
+          smsPurchaseType: messageType,
+          status: values.status,
+        };
+        purchaseSms(data, setIsLoading);
+      }
+    }
+
+    // ispOwner package change invoice create
+    if (type === "migration") {
+      let data = {
+        pack: singlePackage[0].subPackageName,
+        status: values.status,
+      };
+
+      console.log(data);
+    }
   };
 
   // message type change handler
@@ -84,9 +131,11 @@ const InvoiceCreate = ({ ispOwnerId }) => {
     }
     setSmsCount(num);
   };
+
   // handler package ispOwner
-  // const handleSubPackage = (e) => {
-  //   console.log([JSON.parse(e.target.value)]);
+  const handleSubPackage = (e) => {
+    setSinglePackage([JSON.parse(e.target.value)]);
+  };
 
   useEffect(() => {
     // message purchase
@@ -97,7 +146,18 @@ const InvoiceCreate = ({ ispOwnerId }) => {
     } else if (messageType === "fixedNumber") {
       setSmsAmount(ispOwnerData.fixedNumberSmsRate * smsCount);
     }
-  }, [messageType]);
+
+    if (allPackage) {
+      setSubPackage(allPackage[0]?.subPackage);
+    }
+  }, [messageType, allPackage]);
+
+  // get netFee settings api call
+  useEffect(() => {
+    if (type === "migration") {
+      getNetfeeSettings(dispatch, setIsLoading);
+    }
+  }, [type]);
 
   useEffect(() => {
     if (ispOwnerId) {
@@ -218,23 +278,20 @@ const InvoiceCreate = ({ ispOwnerId }) => {
                               name="pack"
                               aria-label="Default select example"
                               as="select"
+                              onChange={handleSubPackage}
                             >
                               <option value="">Select Package</option>
-                              <option value="P1">P1</option>
-                              <option value="P2">P2</option>
-                              <option value="P3">P3</option>
-                              <option value="P4">P4</option>
-                              <option value="P5">P5</option>
-                              <option value="P6">P6</option>
-                              <option value="P7">P7</option>
-                              <option value="P8">P8</option>
-                              <option value="P9">P9</option>
-                              <option value="P10">P10</option>
-                              <option value="P11">P11</option>
-                              <option value="P12">P12</option>
-                              <option value="P13">P13</option>
-                              <option value="P14">P14</option>
-                              <option value="P15">P15</option>
+                              {supPackage?.map((pak, index) => {
+                                return (
+                                  <option
+                                    className="customOption"
+                                    key={index}
+                                    value={JSON.stringify(pak)}
+                                  >
+                                    {pak.subPackageName}
+                                  </option>
+                                );
+                              })}
                             </Field>
                           </div>
 
@@ -244,6 +301,7 @@ const InvoiceCreate = ({ ispOwnerId }) => {
                               className="form-control"
                               type="text"
                               name="customerLimit"
+                              value={singlePackage[0].customer}
                             />
                           </div>
                         </>
@@ -279,15 +337,6 @@ const InvoiceCreate = ({ ispOwnerId }) => {
                           type="number"
                           name="amount"
                           className="form-control"
-                          value={
-                            type === "smsPurchase"
-                              ? Math.ceil(smsAmount)
-                              : type === "registration"
-                              ? ispOwnerData?.bpSettings?.registrationFee
-                              : type === "monthlyServiceCharge"
-                              ? ispOwnerData?.bpSettings?.packageRate
-                              : ""
-                          }
                         />
                       </div>
                     </div>
