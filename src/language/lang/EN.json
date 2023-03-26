@@ -695,5 +695,8 @@
   "packageType": "Package Type",
   "downloadQRCode": "Download QR Code",
   "qrCode": "QR Code",
-  "onlinePayment": "Online Payment"
+  "onlinePayment": "Online Payment",
+  "calenderAlert": "Calender Alert",
+  "title": "Title",
+  "selectMonthDate": "Select Month Date"
 }

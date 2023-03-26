@@ -6,11 +6,45 @@ import Loader from "../../../components/common/Loader";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { useTranslation } from "react-i18next";
+import Select from "react-select";
 
-function AlertSmsTemplate() {
+const dayOptions = [
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "3", label: "3" },
+  { value: "4", label: "4" },
+  { value: "5", label: "5" },
+  { value: "6", label: "6" },
+  { value: "7", label: "7" },
+  { value: "8", label: "8" },
+  { value: "9", label: "9" },
+  { value: "10", label: "10" },
+  { value: "11", label: "11" },
+  { value: "12", label: "12" },
+  { value: "13", label: "13" },
+  { value: "14", label: "14" },
+  { value: "15", label: "15" },
+  { value: "16", label: "16" },
+  { value: "17", label: "17" },
+  { value: "18", label: "18" },
+  { value: "19", label: "19" },
+  { value: "20", label: "20" },
+  { value: "21", label: "21" },
+  { value: "22", label: "22" },
+  { value: "23", label: "23" },
+  { value: "24", label: "24" },
+  { value: "25", label: "25" },
+  { value: "26", label: "26" },
+  { value: "27", label: "27" },
+  { value: "28", label: "28" },
+  { value: "29", label: "29" },
+  { value: "30", label: "30" },
+  { value: "31", label: "31" },
+];
+
+function CalenderAlert() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [totalText, setTotalText] = useState("");
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -18,12 +52,15 @@ function AlertSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+  const title = settings.sms.template.calenderAlert.split("\n")[0];
+
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
-  const [fontValue, setFontValue] = useState("");
+  const [fontValue, setFontValue] = useState(title);
   const [upperText, setUpperText] = useState("");
   const [numberOfDay, setnumberOfDay] = useState();
   const [days, setDays] = useState([]);
+  const [calenderDays, setCalenderDays] = useState([]);
 
   const [billConfirmation, setBillConfirmation] = useState("");
   // const [billconfarmationparametres, setbillconparametres] = useState([]);
@@ -62,17 +99,20 @@ function AlertSmsTemplate() {
 
     setTemplet(smsTemplet);
   };
+  const onChangeHandler = (value) => {
+    setCalenderDays([...value]);
+  };
 
   useEffect(() => {
-    setDays(settings?.sms.alertDays);
+    setDays(settings?.sms?.calenderDays);
 
-    if (settings?.sms?.alert) {
+    if (settings?.sms?.calenderAlert) {
       setBillConfirmation("on");
     } else {
       setBillConfirmation("off");
     }
 
-    setSendingType(settings?.sms?.alertSendBy);
+    setSendingType(settings?.sms?.calenderAlertSendBy);
   }, [settings]);
 
   const radioCheckHandler = (e) => {
@@ -82,48 +122,35 @@ function AlertSmsTemplate() {
   useEffect(() => {
     setnumberOfDay(Math.max(...days));
   }, [days]);
-  // day checkbox select
-  const daySettingHandler = (e) => {
-    let tempDays = [...days];
-    let item = Number(e);
-
-    if (tempDays.includes(item)) {
-      const index = tempDays.indexOf(item);
-      if (index > -1) {
-        tempDays.splice(index, 1);
-      }
-    } else {
-      tempDays.push(item);
-    }
-
-    setDays(tempDays);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const allDays = e.target.day;
+    let monthDays = [];
+    for (let i = 0; i < allDays.length; i++) {
+      monthDays.push(allDays[i].value);
+    }
+
     const temp = upperText.split("\n");
     temp.length = smsTemplet.length + 1;
     const newUpperText = temp.join("\n");
     let data = {
       ...settings?.sms,
-      alertSendBy: sendingType,
-      alert:
+      calenderAlertSendBy: sendingType,
+      calenderAlert:
         billConfirmation === "on"
           ? true
           : billConfirmation === "off"
           ? false
           : null,
-      alertDays: days,
+      calenderDays: monthDays,
       template: {
         ...settings?.sms?.template,
-        alert: newUpperText + "\n" + bottomText,
-        [alertNum]: fontValue + newUpperText + "\n" + bottomText,
+        calenderAlert: fontValue + newUpperText + "\n" + bottomText,
       },
     };
-    // if (!alertNum) {
-    //   toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
-    //   return 0;
-    // }
+
     setLoading(true);
 
     try {
@@ -142,101 +169,13 @@ function AlertSmsTemplate() {
     // formRef.current.reset();
   };
 
-  const smstempletDay = useMemo(() => {
-    return [
-      {
-        name: t("onedayTemplate"),
-        value: (settings?.sms?.template?.alert1 || "") + "\nalert1",
-      },
-      {
-        name: t("twodaysTemplate"),
-        value: (settings?.sms?.template?.alert2 || "") + "\nalert2",
-      },
-      {
-        name: t("threedaysTemplate"),
-        value: (settings?.sms?.template?.alert3 || "") + "\nalert3",
-      },
-      {
-        name: t("fourdaysTemplate"),
-        value: (settings?.sms?.template?.alert4 || "") + "\nalert4",
-      },
-      {
-        name: t("fivedaysTemplate"),
-        value: (settings?.sms?.template?.alert5 || "") + "\nalert5",
-      },
-      {
-        name: t("sixdaysTemplate"),
-        value: (settings?.sms?.template?.alert6 || "") + "\nalert6",
-      },
-      {
-        name: t("sevendaysTemplate"),
-        value: (settings?.sms?.template?.alert7 || "") + "\nalert7",
-      },
-    ];
-  }, [settings, t]);
-
-  const dayTempletHandler = (e) => {
-    let temp2 = e.target.value
-      ?.replace("ইউজারনেমঃ USERNAME", "")
-      .replace("ইউজার আইডিঃ USERID", "")
-      .replace("গ্রাহকঃ NAME", "")
-      .replace("বিলঃ AMOUNT", "")
-      .replace("তারিখঃ DATE", "");
-    let temp = temp2.split("\n");
-    temp.splice(-2);
-    const temp9 = temp;
-    const temp10 = temp9.filter((i) =>
-      [
-        "USER: USERNAME",
-        "ID: CUSTOMER_ID",
-        "NAME: CUSTOMER_NAME",
-        "BILL: AMOUNT",
-        "LAST DATE: BILL_DATE",
-      ].includes(i)
+  useEffect(() => {
+    const filteredDate = dayOptions?.filter(
+      (calenderDay) =>
+        calenderDay?.value == days?.find((day) => calenderDay?.value == day)
     );
-    setTemplet(temp10);
-    setAlertNum(temp2.split("\n").splice(-1)[0]);
-    if (!e.target.value) {
-      setTemplet(temp);
-    }
-
-    let messageBoxStr = e.target.value
-      ?.replace("USER: USERNAME", "")
-      .replace("ID: CUSTOMER_ID", "")
-      .replace("NAME: CUSTOMER_NAME", "")
-      .replace("BILL: AMOUNT", "")
-      .replace("LAST DATE: BILL_DATE", "");
-    let temp4 = messageBoxStr.split("\n");
-    temp4.splice(-1);
-    // let temp5 = "";
-    // temp4.map((i) => {
-    //   if (i !== "") {
-    //     temp5 = temp5 + i + "\n";
-    //   }
-    //   return temp5;
-    // });
-
-    // setBottomText(temp5);
-
-    var theText = "";
-    temp.map((i) => {
-      return (theText = theText + "\n" + i);
-    });
-
-    setUpperText(theText);
-
-    if (temp4.length > 0) {
-      setFontValue(temp4[0] || "");
-
-      let temptxt = "";
-      temp4.map((value, index) => {
-        if (index > 1 && value !== "") {
-          temptxt += value + "\n";
-        }
-      });
-      setBottomText(temptxt);
-    }
-  };
+    setCalenderDays(filteredDate);
+  }, [days]);
 
   return (
     <div>
@@ -397,30 +336,17 @@ function AlertSmsTemplate() {
 
               {/* //working */}
             </div>
+
             <div className="templateSelect">
-              <select
-                style={{
-                  width: "150px",
-                  border: "2px solid grey",
-                  fontWeight: "600",
-                  borderRadius: "5px",
-                  marginTop: "25px",
-                }}
-                onChange={(e) => dayTempletHandler(e)}
-                name=""
-                id=""
-              >
-                <option value=""> {t("selectTemplate")} </option>
-                {smstempletDay
-                  .filter((s, i) => days.includes(i + 1))
-                  .map((item, index) => {
-                    return (
-                      <option key={index} value={item.value}>
-                        {item.name}
-                      </option>
-                    );
-                  })}
-              </select>
+              <Select
+                value={calenderDays}
+                onChange={onChangeHandler}
+                isMulti
+                name="day"
+                options={dayOptions}
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
 
               <div className="mt-3">
                 <input
@@ -428,83 +354,12 @@ function AlertSmsTemplate() {
                   onChange={(event) => setFontValue(event.target.value)}
                   class="form-control"
                   type="text"
-                  placeholder={t("title")}
+                  placeholder="Title"
                 />
               </div>
             </div>
-            <div style={{ marginBotton: "20px" }} className="displayFlex">
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"1"}
-                checked={days.includes(1)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueOneDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"2"}
-                checked={days.includes(2)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueTwoDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"3"}
-                checked={days.includes(3)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueThreeDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"4"}
-                checked={days.includes(4)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueFourDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"5"}
-                checked={days.includes(5)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueFiveDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"6"}
-                checked={days.includes(6)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueSixDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"7"}
-                checked={days.includes(7)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueSevenDay")}</label>
-            </div>
-            <p style={{ marginTop: "20px" }}> {t("dueToFinishBillCycle")} </p>
+
+            <p style={{ marginTop: "20px" }}> {t("selectMonthDate")} </p>
           </div>
 
           <div className="smsCount">
@@ -541,4 +396,4 @@ function AlertSmsTemplate() {
   );
 }
 
-export default AlertSmsTemplate;
+export default CalenderAlert;

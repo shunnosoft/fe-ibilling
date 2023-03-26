@@ -9,6 +9,7 @@ import "../message/message.css";
 
 import BillConfirmationSmsTemplate from "./template/BillConfirmationSmsTemplate";
 import AlertSmsTemplate from "./template/AlertSmsTemplate";
+import CalenderAlert from "./template/CalenderAlert";
 import CreateCustomerSmsTemplate from "./template/CreateCustomerSmsTemplate";
 import CustomerInactiveSmsTemplate from "./template/CustomerInactiveSmsTemplate";
 import { useState } from "react";
@@ -81,6 +82,16 @@ export default function Settings() {
                     >
                       <FourGround>
                         <AlertSmsTemplate />
+                      </FourGround>
+                    </Tab>
+
+                    <Tab
+                      className="mt-5"
+                      eventKey="calenderAlert"
+                      title={t("calenderAlert")}
+                    >
+                      <FourGround>
+                        <CalenderAlert />
                       </FourGround>
                     </Tab>
 
