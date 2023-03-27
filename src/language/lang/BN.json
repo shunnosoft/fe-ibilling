@@ -705,5 +705,7 @@
   "onlinePayment": "অনলাইন পেমেন্ট",
   "calenderAlert": "ক্যালেন্ডার অ্যালার্ট",
   "title": "শিরোনাম",
-  "selectMonthDate": "মাসের তারিখ নির্বাচন করুন"
+  "selectMonthDate": "মাসের তারিখ নির্বাচন করুন",
+  "time": "টাইম",
+  "bandwidthLive": "ব্যান্ডউইথ লাইভ"
 }

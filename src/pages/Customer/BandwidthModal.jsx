@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -8,10 +8,13 @@ import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
 import TdLoader from "../../components/common/TdLoader";
+import { Doughnut, Line } from "react-chartjs-2";
+import { useTranslation } from "react-i18next";
 
 // let callCount = 0;
 let err = false;
 const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
+  const { t } = useTranslation();
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
 
@@ -22,6 +25,9 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
   let [tx, setTx] = useState([]);
 
   let [time, setTime] = useState([]);
+
+  let date = new Date();
+  date = date.toLocaleTimeString("en-US");
 
   const getCurrentSession = async () => {
     if (!err) {
@@ -35,7 +41,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         ]);
         setTx([parseInt(res.data.data[0].txByte.toFixed(2) / 1048576), ...tx]);
 
-        setTime([Date.now(), ...time]);
+        setTime([date, ...time]);
         // callCount++;
       } catch (error) {
         // callCount++;
@@ -79,6 +85,28 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
     setTimeout(resetState, 3000);
   };
 
+  const [chartData, setChartData] = useState({});
+
+  useEffect(() => {
+    setChartData({
+      labels: time,
+      datasets: [
+        {
+          label: "Rx",
+          data: bandwidth,
+          backgroundColor: "red",
+          borderWidth: 8,
+        },
+        {
+          label: "Tx",
+          data: tx,
+          backgroundColor: "green",
+          borderWidth: 8,
+        },
+      ],
+    });
+  }, [time, bandwidth, tx]);
+
   return (
     <>
       <Modal
@@ -91,12 +119,12 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
       >
         <Modal.Header>
           <Modal.Title id="customerBandWidth">
-            Bandwidth Live{" "}
+            {t("bandwidthLive")}{" "}
             <span className="text-secondary">{data?.pppoe?.name}</span>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {!bandwidth ? (
+          {!bandwidth.length ? (
             <div className="d-flex justify-content-center">
               <TdLoader />
             </div>
@@ -108,11 +136,12 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
               >
                 <div className="live-bandwith d-flex justify-content-around">
                   <div className="dateTime">
-                    <h5>Time</h5>
+                    <h5>{t("time")}</h5>
                     {time.map((item, key) => (
-                      <p key={key}>{moment(item).format("LTS")}</p>
+                      <p key={key}>{item}</p>
                     ))}
                   </div>
+
                   <div className="rx">
                     <h5>Rx</h5>
                     {bandwidth.map((item, key) => (
@@ -122,6 +151,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
                       </p>
                     ))}
                   </div>
+
                   <div className="tx">
                     <h5>Tx</h5>
                     {tx.map((item, key) => (
@@ -133,11 +163,12 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
                   </div>
                 </div>
               </div>
+              <Line data={chartData} />
             </>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={onCloseModal}>Close</Button>
+          <Button onClick={onCloseModal}>{t("close")}</Button>
         </Modal.Footer>
       </Modal>
     </>

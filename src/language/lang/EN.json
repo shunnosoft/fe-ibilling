@@ -698,5 +698,7 @@
   "onlinePayment": "Online Payment",
   "calenderAlert": "Calender Alert",
   "title": "Title",
-  "selectMonthDate": "Select Month Date"
+  "selectMonthDate": "Select Month Date",
+  "time": "Time",
+  "bandwidthLive": "Bandwidth Live"
 }
