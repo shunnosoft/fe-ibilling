@@ -90,6 +90,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Bulk Customer Mikrotik Update",
       isChecked: perm?.bulkCustomerMikrotikUpdate,
     },
+    {
+      id: 16,
+      value: "customerAutoConnection",
+      label: "Customer Auto Connection",
+      isChecked: perm?.customerAutoConnection,
+    },
   ];
   return permission;
 };
