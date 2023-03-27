@@ -1306,7 +1306,7 @@
     {
       "id": "162",
       "district_id": "3",
-      "name": "Sripur",
+      "name": "Sreepur",
       "bn_name": "শ্রীপুর"
     },
     {
@@ -1714,7 +1714,7 @@
     {
       "id": "230",
       "district_id": "12",
-      "name": "Raipura, Narsingdi",
+      "name": "Raipura",
       "bn_name": "রায়পুর"
     },
     {
@@ -2506,8 +2506,8 @@
     {
       "id": "357",
       "district_id": "21",
-      "name": "Natore Sadar",
-      "bn_name": "নাটোর সদর"
+      "name": "Gurudaspur",
+      "bn_name": "গুরুদাসপুর"
     },
     {
       "id": "358",
@@ -3118,7 +3118,7 @@
     {
       "id": "454",
       "district_id": "51",
-      "name": "Baniachang",
+      "name": "Baniachong",
       "bn_name": "বানিয়াচং"
     },
     {
@@ -3167,7 +3167,7 @@
       "id": "462",
       "district_id": "52",
       "name": "Moulvibazar Sadar",
-      "bn_name": "মৌলভীবাজার"
+      "bn_name": "মৌলভীবাজার সদর"
     },
     {
       "id": "463",

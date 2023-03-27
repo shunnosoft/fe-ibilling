@@ -6,20 +6,18 @@ import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import { getSingleIspOwner } from "../../../features/apiCallAdmin";
 import { getNetfeeSettings } from "../../../features/netfeeSettingsApi";
-import { purchaseSms } from "../../../features/apiCalls";
+import { ispOwnerInvoiceCreate } from "../../../features/apiCalls";
 
 const InvoiceCreate = ({ ispOwnerId }) => {
   const dispatch = useDispatch();
 
   //get single ispOwner
   const ispOwnerData = useSelector((state) => state.admin?.singleIspOwner);
-  console.log(ispOwnerData);
 
   // get all package in netFee
   const allPackage = useSelector(
     (state) => state.netfeeSettings?.netfeeSettings
   );
-  console.log(allPackage);
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -51,15 +49,13 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   //subPackage state
   const [supPackage, setSubPackage] = useState(allPackage[0]?.subPackage);
   const [singlePackage, setSinglePackage] = useState(["Standard"]);
+  const discount = allPackage[0]?.discount;
 
   //  isp owner form validation
   const validationSchema = Yup.object({
-    smsBalance: Yup.string(),
     monthlyPaymentStatus: Yup.string(),
     paymentStatus: Yup.string(),
-    pack: Yup.string(),
-    customerLimit: Yup.string(),
-    packageRate: Yup.string(),
+    amount: Yup.number(),
   });
 
   //  set initial form values
@@ -84,7 +80,8 @@ const InvoiceCreate = ({ ispOwnerId }) => {
           : type === "monthlyServiceCharge"
           ? ispOwnerData?.bpSettings?.packageRate
           : type === "migration"
-          ? singlePackage[0].installation
+          ? singlePackage[0].installation -
+            (singlePackage[0].installation * discount) / 100
           : "";
     }
   }
@@ -105,18 +102,31 @@ const InvoiceCreate = ({ ispOwnerId }) => {
           smsPurchaseType: messageType,
           status: values.status,
         };
-        purchaseSms(data, setIsLoading);
+        ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
       }
+    }
+
+    if (type === "monthlyServiceCharge") {
+      let data = {
+        amount: values.amount,
+        ispOwner: ispOwnerData.id,
+        user: ispOwnerData.user,
+        type: "monthlyServiceCharge",
+        monthlyPaymentStatus: values.status,
+      };
+      ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
     }
 
     // ispOwner package change invoice create
     if (type === "migration") {
       let data = {
-        pack: singlePackage[0].subPackageName,
         status: values.status,
+        amount: values.amount,
+        ispOwner: ispOwnerData.id,
+        user: ispOwnerData.user,
+        type: "migration",
       };
-
-      console.log(data);
+      ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
     }
   };
 
