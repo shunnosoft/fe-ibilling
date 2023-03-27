@@ -589,6 +589,33 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
                         )}
+                        {(userRole === "ispOwner" ||
+                          userRole === "manager") && (
+                          <NavLink
+                            key={124}
+                            to={"/inactive/customer"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/inactive/customer"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("inactiveCustomer")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
 
                         {(userRole === "ispOwner" ||
                           userRole === "manager") && (
