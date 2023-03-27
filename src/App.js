@@ -104,6 +104,7 @@ import Supports from "./admin/netFeeSupport/Supports";
 import NetFeeIspOwnerSupport from "./admin/netFeeSupport/NetFeeIspOwnerSupport";
 import QRCodePay from "./pages/public-pages/QRCodePay";
 import ActiveStaticCustomer from "./reseller/activeStaticCustomer/ActiveStaticCustomer";
+import InactiveCustomer from "./pages/inactiveCustomer/InactiveCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -507,6 +508,16 @@ function App() {
                 (userRole === "ispOwner" ||
                   (userRole === "manager" && permissions?.readMessageLog)) ? (
                   <MessageLog />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+            <Route
+              path="inactive/customer"
+              element={
+                user && (userRole === "ispOwner" || userRole === "manager") ? (
+                  <InactiveCustomer />
                 ) : (
                   <Navigate to={"/home"} />
                 )

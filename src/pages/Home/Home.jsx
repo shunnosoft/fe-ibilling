@@ -12,6 +12,7 @@ import {
   PersonCheckFill,
   Coin,
   CurrencyDollar,
+  ChatSquareDots,
 } from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
@@ -62,6 +63,7 @@ export default function Home() {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
+  console.log(ispOwnerData);
 
   // get user permission
   const permissions = useSelector(
@@ -928,6 +930,28 @@ export default function Home() {
                                     customerStat.totalSalary)
                               )}
                             </h2>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div id="card5" className="dataCard">
+                          <ThreeDotsVertical className="ThreeDots" />
+                          <div className="cardIcon">
+                            <ChatSquareDots />
+                          </div>
+                          <div className="chartSection">
+                            <p style={{ fontSize: "16px" }}>
+                              {t("nonMasking")}
+                            </p>
+                            <h2> {FormatNumber(ispOwnerData.smsBalance)}</h2>
+                            <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                              {t("masking")}:{" "}
+                              {FormatNumber(ispOwnerData.maskingSmsBalance)}
+                            </p>
+                            <p style={{ fontSize: "15px" }}>
+                              {t("fixedNumber")}:{" "}
+                              {FormatNumber(ispOwnerData.fixedNumberSmsBalance)}
+                            </p>
                           </div>
                         </div>
                       </div>

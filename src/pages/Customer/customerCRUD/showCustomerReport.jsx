@@ -245,8 +245,7 @@ export default function CustomerReport(props) {
                               </p>
                             </td>
                             {/* conditional rendering because print component doesnot perform with conditon  */}
-                            
-                            
+
                             {val.start && val.end ? (
                               <td className="text-center">
                                 <div style={{ display: "none" }}>
@@ -376,8 +375,6 @@ export default function CustomerReport(props) {
                                 </div>
                               </td>
                             )}
-
-
                           </tr>
                         );
                       })
