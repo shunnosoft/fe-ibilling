@@ -63,7 +63,6 @@ export default function Home() {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
-  console.log(ispOwnerData);
 
   // get user permission
   const permissions = useSelector(

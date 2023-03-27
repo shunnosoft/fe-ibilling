@@ -39,8 +39,6 @@ const DueCustomer = () => {
 
   let month = date.getMonth();
   let year = date.getFullYear();
-  console.log(month);
-  console.log(year);
 
   if (month === 0) {
     month = 12;
@@ -341,7 +339,7 @@ const DueCustomer = () => {
                               data={customerForCsVTableInfo}
                               filename={ispOwnerData.company}
                               headers={customerForCsVTableInfoHeader}
-                              title="PPPoE Cutomer CSV"
+                              title="PPPoE Customer CSV"
                             >
                               <FileExcelFill className="addcutmButton" />
                             </CSVLink>
@@ -349,7 +347,7 @@ const DueCustomer = () => {
 
                           <div
                             className="addAndSettingIcon"
-                            title={t("PPPoE Cutomer Print")}
+                            title={t("PPPoE Customer Print")}
                           >
                             <ReactToPrint
                               documentTitle={t("dueCustomer")}
@@ -374,7 +372,7 @@ const DueCustomer = () => {
                               data={staticCustomerForCsVTableInfo}
                               filename={ispOwnerData.company}
                               headers={staticCustomerForCsVTableInfoHeader}
-                              title="Static Cutomer CSV"
+                              title="Static Customer CSV"
                             >
                               <FileExcelFill className="addcutmButton" />
                             </CSVLink>
@@ -382,7 +380,7 @@ const DueCustomer = () => {
 
                           <div
                             className="addAndSettingIcon"
-                            title={t("Static Cutomer Print")}
+                            title={t("Static Customer Print")}
                           >
                             <ReactToPrint
                               documentTitle={t("dueCustomer")}
