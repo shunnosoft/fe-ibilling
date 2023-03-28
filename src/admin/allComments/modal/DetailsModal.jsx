@@ -29,7 +29,7 @@ const DetailsModal = ({ id }) => {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {company[data?.ispOwner]}
+                {company[data?.ispOwner]?.company}
               </h4>
               <button
                 type="button"

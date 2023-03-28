@@ -17,6 +17,7 @@ import moment from "moment";
 import ReactToPrint from "react-to-print";
 import CustomerPdf from "../Home/homePdf/CustomerPdf";
 import { CSVLink } from "react-csv";
+import Footer from "../../components/admin/footer/Footer";
 
 const InactiveCustomer = () => {
   const { t } = useTranslation();
@@ -42,14 +43,30 @@ const InactiveCustomer = () => {
   );
 
   // get ispOwner inactive customer
-  const inactiveCustomer = useSelector(
+  let inactiveCustomer = useSelector(
     (state) => state.dashboardInformation.inactiveCustomer
   );
+
+  //customer type state
+  const [customerType, setCustomerType] = useState("");
 
   // reload handler
   const reloadHandler = () => {
     getInactiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
   };
+
+  //customer type filter
+  if (customerType && customerType !== "all") {
+    if (customerType === "pppoe") {
+      inactiveCustomer = inactiveCustomer.filter(
+        (value) => value.userType === "pppoe"
+      );
+    } else if (customerType === "static") {
+      inactiveCustomer = inactiveCustomer.filter(
+        (value) => value.userType !== "pppoe"
+      );
+    }
+  }
 
   // inactive customer csv table header
   const customerForCsVTableInfoHeader = [
@@ -165,71 +182,94 @@ const InactiveCustomer = () => {
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
-            <div className="collectorTitle d-flex justify-content-between px-5">
-              <div className="d-flex">
-                <h2>{t("inactiveCustomer")}</h2>
-                <div className="reloadBtn">
-                  {isLoading ? (
-                    <Loader></Loader>
-                  ) : (
-                    <ArrowClockwise
-                      onClick={() => reloadHandler()}
-                    ></ArrowClockwise>
-                  )}
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div className="addAndSettingIcon">
-                  <CSVLink
-                    data={customerForCsVTableInfo}
-                    filename={ispOwnerData.company}
-                    headers={customerForCsVTableInfoHeader}
-                    title="inactive Customer CSV"
+            <FontColor>
+              <FourGround>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div className="d-flex">
+                    <h2>{t("inactiveCustomer")}</h2>
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                   >
-                    <FileExcelFill className="addcutmButton" />
-                  </CSVLink>
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={customerForCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={customerForCsVTableInfoHeader}
+                        title="inactive Customer CSV"
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+
+                    <div
+                      className="addAndSettingIcon"
+                      title={t("inactiveCustomer")}
+                    >
+                      <ReactToPrint
+                        documentTitle={t("inactiveCustomer")}
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </FourGround>
+              <FourGround>
+                <div className="collectorWrapper mt-2 py-2">
+                  <div className="addCollector my-3">
+                    <div className="row g-3">
+                      <div className="col-md-2 form-group px-2 d-flex">
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          onChange={(event) =>
+                            setCustomerType(event.target.value)
+                          }
+                        >
+                          <option selected value="all">
+                            {t("userType")}
+                          </option>
+                          <option value="pppoe">{t("pppoe")}</option>
+                          <option value="static">{t("static")}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <Table
+                    isLoading={isLoading}
+                    columns={inactive}
+                    data={inactiveCustomer}
+                  ></Table>
                 </div>
 
-                <div
-                  className="addAndSettingIcon"
-                  title={t("inactiveCustomer")}
-                >
-                  <ReactToPrint
-                    documentTitle={t("inactiveCustomer")}
-                    trigger={() => (
-                      <PrinterFill
-                        title={t("print")}
-                        className="addcutmButton"
-                      />
-                    )}
-                    content={() => componentRef.current}
+                <div className="d-none">
+                  <CustomerPdf
+                    customerData={inactiveCustomer}
+                    ref={componentRef}
                   />
                 </div>
-              </div>
-            </div>
-
-            <FourGround>
-              <div className="collectorWrapper mt-2 py-2">
-                <Table
-                  isLoading={isLoading}
-                  columns={inactive}
-                  data={inactiveCustomer}
-                ></Table>
-              </div>
-
-              <div className="d-none">
-                <CustomerPdf
-                  customerData={inactiveCustomer}
-                  ref={componentRef}
-                />
-              </div>
-            </FourGround>
+              </FourGround>
+              <Footer />
+            </FontColor>
           </div>
         </div>
       </div>
