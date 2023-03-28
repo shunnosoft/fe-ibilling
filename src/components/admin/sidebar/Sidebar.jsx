@@ -1044,7 +1044,9 @@ export default function Sidebar() {
                       </Accordion.Item>
                     )}
                     {/* একাউন্টস */}
-                    {(userRole === "ispOwner" || userRole === "manager") && (
+                    {(userRole === "ispOwner" ||
+                      userRole === "manager" ||
+                      (userRole === "collector" && permission.expenditure)) && (
                       <>
                         <Accordion.Item eventKey="5">
                           <Accordion.Header
@@ -1056,61 +1058,68 @@ export default function Sidebar() {
                             </span>
                           </Accordion.Header>
                           <Accordion.Body>
-                            <NavLink
-                              key={309}
-                              to={"/expenditure"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname === "/expenditure"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<CashCoin />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("cost")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-
-                            <NavLink
-                              key={300}
-                              to={"/invoice"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname === "/invoice"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<ReceiptCutoff />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("invoice")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
+                            {(userRole === "ispOwner" ||
+                              userRole === "manager" ||
+                              (userRole === "collector" &&
+                                permission.expenditure)) && (
+                              <NavLink
+                                key={309}
+                                to={"/expenditure"}
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
+                                }
+                              >
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      "/expenditure"
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<CashCoin />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("cost")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            )}
+                            {userRole !== "collector" && (
+                              <NavLink
+                                key={300}
+                                to={"/invoice"}
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
+                                }
+                              >
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname === "/invoice"
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<ReceiptCutoff />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("invoice")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            )}
                           </Accordion.Body>
                         </Accordion.Item>
 
-                        {bpSettings?.inventory && (
+                        {bpSettings?.inventory && userRole !== "collector" && (
                           <a
                             href={"https://hisabnikash.biz"}
                             target="_blank"

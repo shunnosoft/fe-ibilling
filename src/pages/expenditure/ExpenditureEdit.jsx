@@ -45,7 +45,6 @@ export default function EditExpenditure({ singleExp }) {
         description,
         expenditurePurpose: purpose,
       };
-      console.log(data);
       editExpenditure(dispatch, data, singleExp?.id, setIsLoading, resetForm);
     }
   };

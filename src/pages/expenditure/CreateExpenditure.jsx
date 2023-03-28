@@ -1,12 +1,12 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Loader from "../../components/common/Loader";
 import * as Yup from "yup";
 import "./expenditure.css";
 import { FtextField } from "../../components/common/FtextField";
-import { Plus, PlusSquare } from "react-bootstrap-icons";
+import { Plus } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { addExpenditure, getExpenditureSectors } from "../../features/apiCalls";
+import { addExpenditure } from "../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 export default function CreateExpenditure() {
   const { t } = useTranslation();

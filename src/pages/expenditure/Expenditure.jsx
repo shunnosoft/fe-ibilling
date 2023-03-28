@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ThreeDots,
   PlusCircleDotted,
@@ -73,6 +73,9 @@ export default function Expenditure() {
 
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
+  // get user data
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
@@ -225,20 +228,24 @@ export default function Expenditure() {
               aria-expanded="false"
             />
             <ul className="dropdown-menu" aria-labelledby="customerDrop">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#editExpenditure"
-                onClick={() => {
-                  setSingleExp(original);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <Tools />
-                    <p className="actionP">{t("edit")}</p>
+              {((role.match("collector") &&
+                original.user.match(userData.user)) ||
+                role !== "collector") && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#editExpenditure"
+                  onClick={() => {
+                    setSingleExp(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <Tools />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
+              )}
               {role === "ispOwner" &&
                 bpSettings.expenditureDelete &&
                 new Date(original.createdAt).getMonth() ===
@@ -311,20 +318,22 @@ export default function Expenditure() {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editPurpose"
-                  onClick={() => {
-                    setSinglePurpose(original);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <Tools />
-                      <p className="actionP">{t("edit")}</p>
+                {role !== "collector" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#editPurpose"
+                    onClick={() => {
+                      setSinglePurpose(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <Tools />
+                        <p className="actionP">{t("edit")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -435,7 +444,7 @@ export default function Expenditure() {
                   <div>{t("expense")}</div>
                   <div className="reloadBtn">
                     {isLoading ? (
-                      <Loader></Loader>
+                      <Loader />
                     ) : (
                       <ArrowClockwise
                         onClick={() => reloadHandler()}
@@ -459,13 +468,15 @@ export default function Expenditure() {
                         data-bs-target="#createExpenditure"
                       />
                     </div>
-                    <div title={t("addExpenseSector")}>
-                      <PlusCircleFill
-                        className="addcutmButton"
-                        data-bs-toggle="modal"
-                        data-bs-target="#createPourpose"
-                      />
-                    </div>
+                    {role !== "collector" && (
+                      <div title={t("addExpenseSector")}>
+                        <PlusCircleFill
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#createPourpose"
+                        />
+                      </div>
+                    )}
                     <div title={t("print")}>
                       <ReactToPrint
                         documentTitle={t("expenseReport")}
@@ -500,33 +511,35 @@ export default function Expenditure() {
                       className=" mt-1"
                     >
                       <Tab eventKey="expenditure" title={t("expense")}>
-                        <div className="nameFilter d-flex">
-                          <select
-                            class="form-select"
-                            aria-label="Default select example"
-                            onChange={(event) =>
-                              setFilterOption({
-                                ...filterOptions,
-                                name: event.target.value,
-                              })
-                            }
-                          >
-                            <option value="Select" selected>
-                              {t("name")}
-                            </option>
-                            {ownerUsers.map((item) => {
-                              for (const key in item) {
-                                return (
-                                  (item[key].role === "manager" ||
-                                    item[key].role === "ispOwner") && (
-                                    <option value={key}>
-                                      {item[key].name}
-                                    </option>
-                                  )
-                                );
+                        <div className="nameFilter d-flex justify-content-center">
+                          {role !== "collector" && (
+                            <select
+                              class="form-select"
+                              aria-label="Default select example"
+                              onChange={(event) =>
+                                setFilterOption({
+                                  ...filterOptions,
+                                  name: event.target.value,
+                                })
                               }
-                            })}
-                          </select>
+                            >
+                              <option value="Select" selected>
+                                {t("name")}
+                              </option>
+                              {ownerUsers.map((item) => {
+                                for (const key in item) {
+                                  return (
+                                    (item[key].role === "manager" ||
+                                      item[key].role === "ispOwner") && (
+                                      <option value={key}>
+                                        {item[key].name}
+                                      </option>
+                                    )
+                                  );
+                                }
+                              })}
+                            </select>
+                          )}
 
                           <select
                             className="form-select ms-2"
@@ -588,19 +601,20 @@ export default function Expenditure() {
                           ></Table>
                         </div>
                       </Tab>
-
-                      <Tab
-                        eventKey="expenditurePurpose"
-                        title={t("expenseSector")}
-                      >
-                        <div className="table-section">
-                          <Table
-                            isLoading={isLoading}
-                            data={expenditurePurpose}
-                            columns={expenditurePurposeColumns}
-                          ></Table>
-                        </div>
-                      </Tab>
+                      {role !== "collector" && (
+                        <Tab
+                          eventKey="expenditurePurpose"
+                          title={t("expenseSector")}
+                        >
+                          <div className="table-section">
+                            <Table
+                              isLoading={isLoading}
+                              data={expenditurePurpose}
+                              columns={expenditurePurposeColumns}
+                            ></Table>
+                          </div>
+                        </Tab>
+                      )}
                     </Tabs>
                   </div>
                 </div>
