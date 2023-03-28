@@ -487,6 +487,12 @@
       "bn_name": "সীতাকুণ্ড"
     },
     {
+      "id": "552",
+      "district_id": "43",
+      "name": "Khatungonj",
+      "bn_name": "খাতুনগঞ্জ"
+    },
+    {
       "id": "06 ",
       "district_id": "43",
       "name": " Bayejid Bostami Thana",
@@ -653,6 +659,12 @@
       "district_id": "44",
       "name": "Titas",
       "bn_name": "তিতাস"
+    },
+    {
+      "id": "550",
+      "district_id": "44",
+      "name": "Lalmai",
+      "bn_name": "লালমাই"
     },
     {
       "id": "98",
@@ -1154,6 +1166,12 @@
       "bn_name": "রামপুর থানা"
     },
     {
+      "id": "553",
+      "district_id": "1",
+      "name": "Rupnagar Thana",
+      "bn_name": "রূপনগর থানা"
+    },
+    {
       "id": "529",
       "district_id": "1",
       "name": "Sabujbagh Thana",
@@ -1288,7 +1306,7 @@
     {
       "id": "162",
       "district_id": "3",
-      "name": "Sripur",
+      "name": "Sreepur",
       "bn_name": "শ্রীপুর"
     },
     {
@@ -1654,7 +1672,7 @@
     {
       "id": "223",
       "district_id": "11",
-      "name": "Naryanganj Sadar",
+      "name": "Narayanganj Sadar",
       "bn_name": "নারায়ানগঞ্জ সদর"
     },
     {
@@ -1696,7 +1714,7 @@
     {
       "id": "230",
       "district_id": "12",
-      "name": "Raipura, Narsingdi",
+      "name": "Raipura",
       "bn_name": "রায়পুর"
     },
     {
@@ -2488,8 +2506,8 @@
     {
       "id": "357",
       "district_id": "21",
-      "name": "Natore Sadar",
-      "bn_name": "নাটোর সদর"
+      "name": "Gurudaspur",
+      "bn_name": "গুরুদাসপুর"
     },
     {
       "id": "358",
@@ -3100,7 +3118,7 @@
     {
       "id": "454",
       "district_id": "51",
-      "name": "Baniachang",
+      "name": "Baniachong",
       "bn_name": "বানিয়াচং"
     },
     {
@@ -3149,7 +3167,7 @@
       "id": "462",
       "district_id": "52",
       "name": "Moulvibazar Sadar",
-      "bn_name": "মৌলভীবাজার"
+      "bn_name": "মৌলভীবাজার সদর"
     },
     {
       "id": "463",

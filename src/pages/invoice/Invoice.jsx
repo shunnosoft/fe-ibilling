@@ -41,6 +41,7 @@ function Invoice() {
   );
 
   const invoices = useSelector((state) => state?.invoice?.invoices);
+  console.log(invoices);
 
   // delete invoice
   const deleteInvoiceHandler = (invoiceId) => {

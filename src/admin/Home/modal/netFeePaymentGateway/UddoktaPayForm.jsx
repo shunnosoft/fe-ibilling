@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateOwner } from "../../../../features/apiCallAdmin";
 
 const UddoktaPayForm = ({ ispOwner }) => {
-  const [passType, setPassType] = useState("password");
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
