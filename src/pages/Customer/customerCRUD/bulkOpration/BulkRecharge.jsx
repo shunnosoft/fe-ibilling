@@ -82,6 +82,7 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
 
   const changePackage = (e) => {
     e.preventDefault();
+    const form = e.target;
 
     const rate = e.target.rate.value;
 
@@ -102,9 +103,14 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
       alert(t("selectMikrotik"));
     }
 
+    const filteredCustomer = customers
+      .map((item) => item.original)
+      .filter((temp) => temp.mikrotikPackage === mikrotikPackage)
+      .filter((temp) => temp.status !== "expired");
+
     if (singleMikrotik && mikrotikPackage) {
       const data = {
-        customerIds: customers.map((item) => item.original.id),
+        customerIds: filteredCustomer.map((item) => item.id),
         mikrotik: mikrotikId,
         mikrotikPackage,
         amount: rate,
@@ -115,6 +121,7 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
         user: currentUser?.user.id,
         collectorId: currentUserId, //when collector is logged in
       };
+      //   console.log(data);
 
       const confirm = window.confirm(
         t("areYouWantToUpdateStatus") +
@@ -126,6 +133,8 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
       );
       if (confirm) {
         bulkRecharge(dispatch, data, setIsLoading);
+        form.reset();
+        setMikrotikPackageRate("");
       }
     } else {
       alert(t("selectPackage"));
@@ -133,7 +142,7 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updatePackage")}>
+    <RootBulkModal modalId={modalId} header={t("bulkRecharge")}>
       <form onSubmit={changePackage}>
         <div className="mikrotikSection">
           {bpSettings?.hasMikrotik ? (
@@ -192,21 +201,26 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
             />
           </div>
 
-          <select
-            as="select"
-            id="receiver_type"
-            className="form-select mt-0 mw-100"
-            aria-label="Default select example"
-            onChange={(e) => setMedium(e.target.value)}
-          >
-            <option value="cash" selected>
-              {t("handCash")}
-            </option>
-            <option value="bKash"> {t("bKash")} </option>
-            <option value="rocket"> {t("rocket")} </option>
-            <option value="nagad"> {t("nagad")} </option>
-            <option value="others"> {t("others")} </option>
-          </select>
+          <div>
+            <label className="form-control-label changeLabelFontColor">
+              {t("medium")} <span className="text-danger">*</span>
+            </label>
+            <select
+              as="select"
+              id="receiver_type"
+              className="form-select mt-0 mw-100"
+              aria-label="Default select example"
+              onChange={(e) => setMedium(e.target.value)}
+            >
+              <option value="cash" selected>
+                {t("handCash")}
+              </option>
+              <option value="bKash"> {t("bKash")} </option>
+              <option value="rocket"> {t("rocket")} </option>
+              <option value="nagad"> {t("nagad")} </option>
+              <option value="others"> {t("others")} </option>
+            </select>
+          </div>
         </div>
 
         <div className="modal-footer" style={{ border: "none" }}>

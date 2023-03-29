@@ -707,5 +707,7 @@
   "title": "শিরোনাম",
   "selectMonthDate": "মাসের তারিখ নির্বাচন করুন",
   "time": "টাইম",
-  "bandwidthLive": "ব্যান্ডউইথ লাইভ"
+  "bandwidthLive": "ব্যান্ডউইথ লাইভ",
+  "bulkRecharge": "বাল্ক রিচার্জ",
+  "price": "মূল্য"
 }

@@ -700,5 +700,7 @@
   "title": "Title",
   "selectMonthDate": "Select Month Date",
   "time": "Time",
-  "bandwidthLive": "Bandwidth Live"
+  "bandwidthLive": "Bandwidth Live",
+  "bulkRecharge": "Bulk Recharge",
+  "price": "Price"
 }

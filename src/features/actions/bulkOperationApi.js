@@ -110,7 +110,7 @@ export const bulkRecharge = async (dispatch, data, setIsLoading) => {
     const res = await apiLink.patch("/customer/bulk-customer-recharge", data);
     document.querySelector("#bulkRecharge").click();
     dispatch(bulkUpdate(res.data.data));
-    toast.success("কাস্টমার প্যকেজ আপডেট সফল হয়েছে!");
+    toast.success("কাস্টমার বাল্ক রিচার্জ সফল হয়েছে!");
     setIsLoading(false);
   } catch (err) {
     if (err.response) {
