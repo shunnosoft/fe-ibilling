@@ -2451,3 +2451,29 @@ export const deleteNetFeeSupportData = async (
   }
   setIsLoading(false);
 };
+//admin/invoice/create+ispId , data
+
+// IspOwner invoice create
+export const ispOwnerInvoiceCreate = async (
+  dispatch,
+  setIsLoading,
+  invoiceData
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(
+      `/admin/invoice/create`,invoiceData
+    );
+    console.log(res.data);
+    // dispatch(deleteNetFeeSupport(res.data));
+    // document.querySelector("#supportDelete").click();
+    // langMessage(
+    //   "success",
+    //   "নেটফি সাপর্ট ডিলিট সফল হয়েছে",
+    //   "NetFee Support Delete Successfully"
+    // );
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
+};

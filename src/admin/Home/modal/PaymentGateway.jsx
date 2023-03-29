@@ -32,13 +32,13 @@ const PaymentGateway = ({ ispOwner }) => {
           <input
             className="form-check-input"
             type="radio"
-            id="uddokta-payment"
-            name="uddoktaPay"
-            value={"uddoktaPay"}
-            checked={paymentGatewayName === "uddoktaPay"}
+            id="uddoktapay-payment"
+            name="uddoktapay"
+            value={"uddoktapay"}
+            checked={paymentGatewayName === "uddoktapay"}
             onChange={(e) => setPaymentGatewayName(e.target.value)}
           />
-          <label className="form-check-label" for="uddokta-payment">
+          <label className="form-check-label" for="uddoktapay-payment">
             UddoktaPay
           </label>
         </div>
@@ -67,7 +67,7 @@ const PaymentGateway = ({ ispOwner }) => {
         )}
 
         {/* uddoktaPays payment page */}
-        {paymentGatewayName === "uddoktaPay" ? (
+        {paymentGatewayName === "uddoktapay" ? (
           <UddoktaPayForm ispOwner={ispOwner} />
         ) : (
           ""

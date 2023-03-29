@@ -605,7 +605,7 @@ export default function Home() {
                 onChange={(event) => setDistrict(event.target.value)}
               >
                 <option value="All" selected>
-                  All
+                  All District
                 </option>
                 {districts.map((item) => {
                   return <option value={item.id}>{item.name}</option>;

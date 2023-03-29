@@ -61,7 +61,9 @@ export default function CustomerModal() {
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
-  const [autoDisable, setAutoDisable] = useState(true);
+  const [autoDisable, setAutoDisable] = useState(
+    bpSettings.customerAutoConnection
+  );
   const [subArea, setSubArea] = useState("");
   const dispatch = useDispatch();
 
