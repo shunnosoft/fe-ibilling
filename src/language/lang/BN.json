@@ -702,5 +702,12 @@
   "hasPG": "পিজি আছে",
   "isTokenized": "টোকেনাইজ করা",
   "downloadQRCode": "ডাউনলোড কিউআর কোড",
-  "onlinePayment": "অনলাইন পেমেন্ট"
+  "onlinePayment": "অনলাইন পেমেন্ট",
+  "calenderAlert": "ক্যালেন্ডার অ্যালার্ট",
+  "title": "শিরোনাম",
+  "selectMonthDate": "মাসের তারিখ নির্বাচন করুন",
+  "time": "টাইম",
+  "bandwidthLive": "ব্যান্ডউইথ লাইভ",
+  "bulkRecharge": "বাল্ক রিচার্জ",
+  "price": "মূল্য"
 }

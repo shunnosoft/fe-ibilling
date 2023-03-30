@@ -72,6 +72,7 @@ import CustomerNote from "./customerCRUD/CustomerNote";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 import BulkMikrotikEdit from "./customerCRUD/bulkOpration/bulkMikrotikEdit";
+import BulkRecharge from "./customerCRUD/bulkOpration/BulkRecharge";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -1340,6 +1341,8 @@ const PPPOECustomer = () => {
       />
       <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
 
+      <BulkRecharge bulkCustomer={bulkCustomers} modalId="bulkRecharge" />
+
       <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
@@ -1489,6 +1492,23 @@ const PPPOECustomer = () => {
               >
                 <i className="fas fa-edit"></i>
                 <span className="button_title">{t("updatePackage")}</span>
+              </button>
+            )}
+
+          {bpSettings.hasMikrotik &&
+            ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
+              (bpSettings?.bulkPackageEdit &&
+                permission?.bulkPackageEdit &&
+                role === "manager")) && (
+              <button
+                className="bulk_action_button btn btn-warning btn-floating btn-sm"
+                title={t("package")}
+                data-bs-toggle="modal"
+                data-bs-target="#bulkRecharge"
+                type="button"
+              >
+                <i className="fas fa-dollar"></i>
+                <span className="button_title">{t("bulkRecharge")}</span>
               </button>
             )}
 

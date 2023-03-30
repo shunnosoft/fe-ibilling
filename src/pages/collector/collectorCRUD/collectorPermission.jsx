@@ -171,6 +171,13 @@ export const collectorPermission = (
       isChecked: permission?.dashboardCollectionData,
       disabled: !role === "ispOwner" ? true : false,
     },
+    {
+      id: 24,
+      value: "expenditure",
+      label: "খরচ",
+      isChecked: permission?.expenditure,
+      disabled: !role === "ispOwner" ? true : false,
+    },
   ];
 
   const permissionEn = [
@@ -338,6 +345,13 @@ export const collectorPermission = (
       label: "Dashboard Collection",
       isChecked: permission?.dashboardCollectionData,
       disabled: role === "ispOwner" ? true : false,
+    },
+    {
+      id: 24,
+      value: "expenditure",
+      label: "Expenditure",
+      isChecked: permission?.expenditure,
+      disabled: !role === "ispOwner" ? true : false,
     },
   ];
 

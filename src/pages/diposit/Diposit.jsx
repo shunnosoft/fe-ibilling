@@ -533,7 +533,7 @@ export default function Diposit() {
                     <div>{t("diposit")}</div>
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
                           onClick={() => reloadHandler()}
