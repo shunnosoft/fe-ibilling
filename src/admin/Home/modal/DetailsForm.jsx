@@ -13,7 +13,7 @@ import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import getName, { getNameId } from "../../../utils/getLocationName";
 import { useTranslation } from "react-i18next";
-import ReactDatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -363,10 +363,10 @@ const DetailsForm = ({ ispOwner }) => {
               <h6 className="customerFieldsTitle mb-0">{t("InvoiceDate")}</h6>
 
               <div className="timeDate">
-                <ReactDatePicker
+                <DatePicker
                   className="form-control mw-100"
-                  value={billDate}
-                  onChange={(e) => setBillDate(e.target.value)}
+                  value={moment(billDate).format("YYYY MMM DD")}
+                  onChange={(date) => setBillDate(date)}
                   type="date"
                   name="monthlyDueDate"
                 />

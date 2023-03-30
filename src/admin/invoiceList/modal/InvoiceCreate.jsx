@@ -55,7 +55,7 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   const validationSchema = Yup.object({
     monthlyPaymentStatus: Yup.string(),
     paymentStatus: Yup.string(),
-    amount: Yup.number(),
+    amount: Yup.number().required("Input Package Amount"),
   });
 
   //  set initial form values

@@ -42,11 +42,23 @@ const ISPOwnerEditModal = ({ ownerId }) => {
               <div className="modal-title" id="exampleModalLabel">
                 <div className="d-flex">
                   <h5>
+                    netFee Id:
+                    <span className="text-success"> {ispData?.netFeeId} </span>
+                  </h5>
+                  <h5 className="ms-3">
                     Id: <span className="text-success"> {ispData?.id} </span>
                   </h5>
-                  <h5 className="ms-5">
+                  <h5 className="ms-3">
                     Mobile:
                     <span className="text-success"> {ispData?.mobile}</span>
+                  </h5>
+                  <h5 className="ms-3">
+                    Company:
+                    <span className="text-success"> {ispData?.company}</span>
+                  </h5>
+                  <h5 className="ms-3">
+                    Name:
+                    <span className="text-success"> {ispData?.name}</span>
                   </h5>
                 </div>
               </div>

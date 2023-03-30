@@ -115,13 +115,22 @@ const DetailsModal = ({ ownerId }) => {
           <div className="modal-dialog modal-xl">
             <div className="modal-content">
               <div className="modal-header">
-                <h4
-                  style={{ color: "#0abb7a" }}
-                  className="modal-title"
-                  id="customerModalDetails"
-                >
-                  {ownerData?.name}
-                </h4>
+                <h5 className="modal-title me-3">
+                  netFee Id:
+                  <span className="text-success"> {ownerData?.netFeeId} </span>
+                </h5>
+                <h5 className="modal-title me-3">
+                  Mobile:
+                  <span className="text-success"> {ownerData?.mobile} </span>
+                </h5>
+                <h5 className="modal-title me-3" id="customerModalDetails">
+                  Name:
+                  <span className="text-success"> {ownerData?.name} </span>
+                </h5>
+                <h5 className="modal-title me-3" id="customerModalDetails">
+                  Company:
+                  <span className="text-success"> {ownerData?.company} </span>
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
