@@ -188,6 +188,13 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.billDiscount,
       disabled: false,
     },
+    {
+      id: 28,
+      value: "bulkCustomerRecharge",
+      label: "Bulk Customer Recharge",
+      isChecked: permission?.bulkCustomerRecharge,
+      disabled: !bpSettings?.bulkCustomerRecharge,
+    },
   ];
 
   const permissionBangla = [
@@ -379,6 +386,13 @@ export const managerPermission = (permission, bpSettings) => {
       label: "বিল দিসকাউন্ট",
       isChecked: permission?.billDiscount,
       disabled: false,
+    },
+    {
+      id: 28,
+      value: "bulkCustomerRecharge",
+      label: "বাল্ক গ্রাহক রিচার্জ",
+      isChecked: permission?.bulkCustomerRecharge,
+      disabled: !bpSettings?.bulkCustomerRecharge,
     },
   ];
 

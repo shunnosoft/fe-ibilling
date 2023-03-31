@@ -96,6 +96,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Customer Auto Connection",
       isChecked: perm?.customerAutoConnection,
     },
+    {
+      id: 17,
+      value: "bulkCustomerRecharge",
+      label: "Bulk Customer Recharge",
+      isChecked: perm?.bulkCustomerRecharge,
+    },
   ];
   return permission;
 };

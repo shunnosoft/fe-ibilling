@@ -1496,9 +1496,9 @@ const PPPOECustomer = () => {
             )}
 
           {bpSettings.hasMikrotik &&
-            ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
-              (bpSettings?.bulkPackageEdit &&
-                permission?.bulkPackageEdit &&
+            ((role === "ispOwner" && bpSettings?.bulkCustomerRecharge) ||
+              (bpSettings?.bulkCustomerRecharge &&
+                permission?.bulkCustomerRecharge &&
                 role === "manager")) && (
               <button
                 className="bulk_action_button btn btn-warning btn-floating btn-sm"

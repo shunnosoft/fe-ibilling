@@ -702,5 +702,6 @@
   "time": "Time",
   "bandwidthLive": "Bandwidth Live",
   "bulkRecharge": "Bulk Recharge",
-  "price": "Price"
+  "price": "Price",
+  "otherPackageUsers": "Other Package Users"
 }

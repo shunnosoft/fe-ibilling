@@ -52,6 +52,7 @@ import BulkStatusEdit from "./bulkOpration/bulkStatusEdit";
 import BulkSubAreaEdit from "./bulkOpration/bulkSubAreaEdit";
 import FormatNumber from "../../components/common/NumberFormat";
 import BandwidthModal from "../../pages/Customer/BandwidthModal";
+import BulkResellerRecharge from "./bulkOpration/BulkResellerRecharge";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -656,6 +657,10 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="customerBulkEdit"
               />
+              <BulkResellerRecharge
+                bulkCustomer={bulkCustomer}
+                modalId="bulkResellerRecharge"
+              />
               <BulkBillingCycleEdit
                 bulkCustomer={bulkCustomer}
                 modalId="customerBillingCycle"
@@ -816,6 +821,19 @@ export default function Customer() {
             >
               <i class="fas fa-edit"></i>
               <span className="button_title">{t("editArea")}</span>
+            </button>
+          )}
+          {permission?.bulkCustomerRecharge && (
+            <button
+              className="bulk_action_button btn btn-warning btn-floating btn-sm"
+              title={t("package")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkResellerRecharge"
+              type="button"
+              class="btn btn-primary btn-floating btn-sm"
+            >
+              <i className="fas fa-dollar"></i>
+              <span className="button_title">{t("bulkRecharge")}</span>
             </button>
           )}
           {permission?.bulkCustomerStatusEdit && (

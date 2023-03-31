@@ -45,6 +45,7 @@ export default function Manager() {
 
   const [userId, setUserId] = useState();
   const manager = useSelector((state) => state.manager?.manager);
+  console.log(manager.permissions);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id

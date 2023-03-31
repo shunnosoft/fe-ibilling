@@ -1,35 +1,30 @@
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../../../../components/common/Loader";
-import { bulkCustomerRecharge } from "../../../../features/actions/bulkOperationApi";
-import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
-import { fetchPackagefromDatabase } from "../../../../features/apiCalls";
 import { toast } from "react-toastify";
+import {
+  bulkCustomerRecharge,
+  bulkResellerRecharge,
+} from "../../../features/actions/bulkOperationApi";
+import RootBulkModal from "./bulkModal";
+import Loader from "../../../components/common/Loader";
+import { fetchpppoePackage } from "../../../features/apiCallReseller";
 
-const BulkRecharge = ({ bulkCustomer, modalId }) => {
+const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
 
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  // get reseller
+  const reseller = useSelector(
+    (state) => state.persistedReducer.auth?.userData
   );
 
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get pppoe Package
-  const ppPackage = useSelector((state) =>
-    bpSettings?.hasMikrotik
-      ? state?.mikrotik?.packagefromDatabase
-      : state?.package?.packages
-  );
+  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
   // get login user info
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
@@ -43,6 +38,15 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
   const currentUserId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
+  // get role
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  // get resellerId
+  const resellerId = useSelector((state) =>
+    role === "reseller"
+      ? state.persistedReducer.auth?.userData?.id
+      : state.persistedReducer.auth?.userData?.reseller
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -51,21 +55,17 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
   const [mikrotikId, setMikrotikId] = useState("");
   const [medium, setMedium] = useState("cash");
 
-  // select Getmikrotik
+  //Select Mikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && ispOwnerId) {
+    if (id && resellerId) {
       const IDs = {
-        ispOwner: ispOwnerId,
+        reseller: resellerId,
         mikrotikId: id,
       };
-      //ToDo
-      if (bpSettings?.hasMikrotik) {
-        fetchPackagefromDatabase(dispatch, IDs, setIsLoading);
-      }
+      fetchpppoePackage(dispatch, IDs);
     }
     setSingleMikrotik(id);
-    setMikrotikPackage("");
   };
 
   // select Mikrotik Package
@@ -162,7 +162,7 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
           t("otherPackageUsers")
       );
       if (confirm) {
-        bulkCustomerRecharge(dispatch, data, setIsLoading);
+        bulkResellerRecharge(dispatch, data, setIsLoading);
         form.reset(); //form reset
         setMikrotikPackageRate("");
       }
@@ -170,32 +170,33 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("bulkRecharge")}>
+    <RootBulkModal modalId={modalId} header={t("Bulk Reseller Recharge")}>
       <form onSubmit={changePackage}>
         <div className="mikrotikSection">
-          {bpSettings?.hasMikrotik ? (
-            <div>
-              <label className="form-control-label changeLabelFontColor">
-                {t("mikrotik")} <span className="text-danger">*</span>
-              </label>
-              <select
-                className="form-select mw-100 mt-0"
-                aria-label="Default select example"
-                onChange={selectMikrotik}
-              >
-                <option value="">...</option>
-                {Getmikrotik.length === undefined
-                  ? ""
-                  : Getmikrotik.map((val, key) => (
-                      <option key={key} value={val.id}>
-                        {val.name}
-                      </option>
-                    ))}
-              </select>
-            </div>
-          ) : (
-            ""
-          )}
+          <div>
+            <label className="form-control-label changeLabelFontColor">
+              {t("mikrotik")} <span className="text-danger">*</span>
+            </label>
+            <select
+              className="form-select mw-100 mt-0"
+              aria-label="Default select example"
+              onChange={selectMikrotik}
+            >
+              <option value="">...</option>
+              {Getmikrotik?.length === undefined
+                ? ""
+                : Getmikrotik?.map((val, key) =>
+                    reseller.mikrotiks.map(
+                      (item) =>
+                        val.id === item && (
+                          <option key={key} value={val.id}>
+                            {val.name}
+                          </option>
+                        )
+                    )
+                  )}
+            </select>
+          </div>
 
           {/* pppoe package */}
           <div>
@@ -208,12 +209,13 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
               onChange={selectMikrotikPackage}
             >
               <option value={"0"}>...</option>
-              {ppPackage &&
-                ppPackage?.map((val, key) => (
-                  <option key={key} value={val.id}>
-                    {val.name}
-                  </option>
-                ))}
+              {ppPackage.length === undefined
+                ? ""
+                : ppPackage?.map((val, key) => (
+                    <option key={key} value={val.id}>
+                      {val.name}
+                    </option>
+                  ))}
             </select>
           </div>
 
@@ -275,4 +277,4 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
   );
 };
 
-export default BulkRecharge;
+export default BulkResellerRecharge;

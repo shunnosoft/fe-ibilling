@@ -75,6 +75,12 @@ export const resellerPermissionEng = [
     value: "bulkCustomerBillingCycleEdit",
     isChecked: false,
   },
+  {
+    id: 13,
+    label: "Bulk Customer Recharge",
+    value: "bulkCustomerRecharge",
+    isChecked: false,
+  },
 ];
 
 export const resellerPermissionBan = [
@@ -128,6 +134,12 @@ export const resellerPermissionBan = [
     id: 12,
     label: "বাল্ক বিলিং সাইকেল এডিট",
     value: "bulkCustomerBillingCycleEdit",
+    isChecked: false,
+  },
+  {
+    id: 13,
+    label: "বাল্ক গ্রাহক রিচার্জ",
+    value: "bulkCustomerRecharge",
     isChecked: false,
   },
 
