@@ -19,6 +19,9 @@ const InvoiceCreate = ({ ispOwnerId }) => {
     (state) => state.netfeeSettings?.netfeeSettings
   );
 
+  //user role
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -232,20 +235,22 @@ const InvoiceCreate = ({ ispOwnerId }) => {
                         </Field>
                       </div>
 
-                      <div className="col-md-6 form-group px-2">
-                        <h6 className="mb-0">Status</h6>
-                        <Field
-                          className="form-select mw-100 mt-0"
-                          as="select"
-                          name="status"
-                          aria-label="Default select example"
-                        >
-                          <option value="paid">Paid</option>
-                          <option selected value="unpaid">
-                            Unpaid
-                          </option>
-                        </Field>
-                      </div>
+                      {role === "superadmin" && (
+                        <div className="col-md-6 form-group px-2">
+                          <h6 className="mb-0">Status</h6>
+                          <Field
+                            className="form-select mw-100 mt-0"
+                            as="select"
+                            name="status"
+                            aria-label="Default select example"
+                          >
+                            <option value="paid">Paid</option>
+                            <option selected value="unpaid">
+                              Unpaid
+                            </option>
+                          </Field>
+                        </div>
+                      )}
 
                       {type && type === "smsPurchase" && (
                         <>

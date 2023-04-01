@@ -7,10 +7,6 @@ import PaymentGateway from "./PaymentGateway";
 import { getSingleIspOwner } from "../../../features/apiCallAdmin";
 import TdLoader from "../../../components/common/TdLoader";
 
-// import { divisions } from "../../../bdAddress/bd-divisions.json";
-// import { districts } from "../../../bdAddress/bd-districts.json";
-// import { thana } from "../../../bdAddress/bd-upazilas.json";
-
 const ISPOwnerEditModal = ({ ownerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();

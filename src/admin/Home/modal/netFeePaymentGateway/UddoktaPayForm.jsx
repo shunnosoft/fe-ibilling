@@ -89,7 +89,7 @@ const UddoktaPayForm = ({ ispOwner }) => {
                 name="hasPG"
               />
               <label className="form-check-label" for="hasPG">
-                {t("hasPG")}
+                Has PG
               </label>
             </div>
           </div>
@@ -100,7 +100,7 @@ const UddoktaPayForm = ({ ispOwner }) => {
               className="btn btn-success"
               disabled={isLoading}
             >
-              {isLoading ? <Loader /> : t("submit")}
+              {isLoading ? <Loader /> : "Submit"}
             </button>
             <button
               type="button"
@@ -108,7 +108,7 @@ const UddoktaPayForm = ({ ispOwner }) => {
               data-bs-dismiss="modal"
               disabled={isLoading}
             >
-              {t("cancel")}
+              Cancel
             </button>
           </div>
         </Form>

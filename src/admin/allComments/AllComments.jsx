@@ -5,13 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { getComments } from "../../features/apiCallAdmin";
 import moment from "moment";
 import Table from "../../components/table/Table";
-import { PenFill, PersonFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  FileExcelFill,
+  PenFill,
+  PersonFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import useDash from "../../assets/css/dash.module.css";
 import "./allComments.css";
 import DetailsModal from "./modal/DetailsModal";
 import EditModal from "./modal/EditModal";
 import { badge } from "../../components/common/Utils";
 import Note from "../Home/modal/Note";
+import { CSVLink } from "react-csv";
 
 const AllComments = () => {
   // loading state
@@ -26,11 +32,15 @@ const AllComments = () => {
   // initial company name state
   const [companyName, setCompanyName] = useState();
 
+  //filter state
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+
   // import dispatch
   const dispatch = useDispatch();
 
   // get all note in redux
-  const comments = useSelector((state) => state.admin?.comments);
+  let comments = useSelector((state) => state.admin?.comments);
 
   // get note api call
   useEffect(() => {
@@ -51,10 +61,41 @@ const AllComments = () => {
   };
 
   const showIndividualComment = (ispOwnerId, companyName) => {
-    console.log(ispOwnerId, companyName);
     setOwnerId(ispOwnerId);
     setCompanyName(companyName);
   };
+
+  // comment type filter
+  if (type && type !== "All") {
+    comments = comments.filter((value) => value.commentType === type);
+  }
+
+  // comment status filter
+  if (status && status !== "All") {
+    comments = comments.filter((value) => value.status === status);
+  }
+
+  // comment data csv table header
+  const commentForCsVTableInfoHeader = [
+    { label: "Id", key: "ispOwner" },
+    { label: "Name", key: "name" },
+    { label: "Type", key: "commentType" },
+    { label: "Status", key: "status" },
+    { label: "Comment", key: "comment" },
+    { label: "Created Date", key: "createdAt" },
+  ];
+
+  //comment data
+  const commentForCsVTableInfo = comments.map((comment) => {
+    return {
+      ispOwner: comment.ispOwner,
+      name: comment.name,
+      commentType: comment.commentType,
+      status: comment.status,
+      comment: comment.comment,
+      createdAt: moment(comment.createdAt).format("DD MMM YY hh:mm a"),
+    };
+  });
 
   // table column
   const columns = React.useMemo(
@@ -208,9 +249,50 @@ const AllComments = () => {
           <div className={useDash.dashboardWrapper}>
             <div className="card">
               <div className="card-header">
-                <h2 className="dashboardTitle text-center">All Comments</h2>
+                <div className="d-flex justify-content-between">
+                  <h2 className="dashboardTitle">All Comments</h2>
+
+                  <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
+                    <CSVLink
+                      data={commentForCsVTableInfo}
+                      filename={company[comments?.ispOwner]?.company}
+                      headers={commentForCsVTableInfoHeader}
+                      title="Comment CSV"
+                    >
+                      <FileExcelFill className="addcutmButton" />
+                    </CSVLink>
+                  </div>
+                </div>
               </div>
+
               <div className="card-body">
+                <div className="d-flex">
+                  <select
+                    className="form-select mt-0 me-3"
+                    aria-label="Default select example"
+                    onChange={(event) => setType(event.target.value)}
+                  >
+                    <option value="All" selected>
+                      Type
+                    </option>
+                    <option value="support">Support</option>
+                    <option value="feature">Feature</option>
+                    <option value="migration">Migration</option>
+                  </select>
+
+                  <select
+                    className="form-select mt-0 me-3"
+                    aria-label="Default select example"
+                    onChange={(event) => setStatus(event.target.value)}
+                  >
+                    <option value="All" selected>
+                      Status
+                    </option>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
                 <div className="table-section-th">
                   <Table
                     columns={columns}

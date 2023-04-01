@@ -20,6 +20,7 @@ import {
   CreditCard2Front,
   KeyFill,
   Award,
+  FileExcelFill,
 } from "react-bootstrap-icons";
 import {
   getIspOwner,
@@ -40,6 +41,7 @@ import { badge } from "../../components/common/Utils";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import districtsJSON from "../../bdAddress/bd-districts.json";
 import getName from "../../utils/getLocationName";
+import { CSVLink } from "react-csv";
 
 const districts = districtsJSON.districts;
 
@@ -188,6 +190,44 @@ export default function Home() {
       getReseller(ispOwner, setResellerBillCycleData);
     }
   };
+
+  // ispOwner export data csv table header
+  const ispOwnerForCsVTableInfoHeader = [
+    { label: "Id", key: "netFeeId" },
+    { label: "Company", key: "company" },
+    { label: "Name", key: "name" },
+    { label: "Mobile", key: "mobile" },
+    { label: "MTK", key: "hasMikrotik" },
+    { label: "SMS", key: "smsBalance" },
+    { label: "Customer", key: "customerLimit" },
+    { label: "Rate", key: "packageRate" },
+    { label: "Payment", key: "paymentStatus" },
+    { label: "Status", key: "status" },
+    { label: "Address", key: "address" },
+    { label: "Created Date", key: "createdAt" },
+    { label: "Bill Date", key: "monthlyDueDate" },
+  ];
+
+  //ispOwner export data
+  const ispOwnerForCsVTableInfo = ispOwners.map((ispOwner) => {
+    return {
+      netFeeId: ispOwner.netFeeId,
+      company: ispOwner.company,
+      name: ispOwner.name,
+      mobile: ispOwner.mobile,
+      hasMikrotik: ispOwner.bpSettings.hasMikrotik ? "YES" : "NO",
+      smsBalance: ispOwner.smsBalance,
+      customerLimit: ispOwner.bpSettings.customerLimit,
+      packageRate: ispOwner.bpSettings.packageRate,
+      paymentStatus: ispOwner.bpSettings.paymentStatus,
+      status: ispOwner.status,
+      address: ispOwner.address,
+      createdAt: moment(ispOwner.createdAt).format("DD MMM YY hh:mm a"),
+      monthlyDueDate: moment(ispOwner.bpSettings.monthlyDueDate).format(
+        "DD MMM YY hh:mm a"
+      ),
+    };
+  });
 
   useEffect(() => {
     if (billingCycle) {
@@ -544,10 +584,21 @@ export default function Home() {
         <ToastContainer position="top-right" theme="colored" />
         <div className="card">
           <div className="card-header">
-            <div className="row">
-              <h2 className="dashboardTitle text-center">
+            <div className="d-flex justify-content-between">
+              <h2 className="dashboardTitle text-secondary">
                 {userRole === "admin" ? "Admin Dashborad" : "Super Admin"}
               </h2>
+
+              <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
+                <CSVLink
+                  data={ispOwnerForCsVTableInfo}
+                  filename={ispOwners.company}
+                  headers={ispOwnerForCsVTableInfoHeader}
+                  title="IspOwner Customer CSV"
+                >
+                  <FileExcelFill className="addcutmButton" />
+                </CSVLink>
+              </div>
             </div>
           </div>
           <div className="card-body">

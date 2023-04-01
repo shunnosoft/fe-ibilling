@@ -118,7 +118,9 @@ export default function CreatePackage() {
                             name="mikrotik"
                             aria-label="Default select example"
                           >
-                            <option disabled selected></option>
+                            <option value="" selected>
+                              ...
+                            </option>
                             {mikrotik.map((item) => (
                               <option value={item?.id}>{item?.name}</option>
                             ))}

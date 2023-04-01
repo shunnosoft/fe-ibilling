@@ -624,6 +624,7 @@ const DetailsModal = ({ ownerId }) => {
                         <tr>
                           <th scope="col">Mikrotik ID</th>
                           <th scope="col">Name</th>
+                          <th scope="col">User Name</th>
                           <th scope="col">host</th>
                           <th scope="col">port</th>
                           <th>Connection</th>
@@ -634,6 +635,7 @@ const DetailsModal = ({ ownerId }) => {
                           <tr key={key}>
                             <td scope="row">{item?.id}</td>
                             <td>{item?.name}</td>
+                            <td>{item?.username}</td>
                             <td>{item?.host}</td>
                             <td>{item?.port}</td>
                             <td>

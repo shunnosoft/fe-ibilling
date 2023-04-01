@@ -5,7 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getInvoices } from "../../features/apiCallAdmin";
 import moment from "moment";
 import Table from "../../components/table/Table";
-import { PenFill, PersonFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  FileExcelFill,
+  PenFill,
+  PersonFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import useDash from "../../assets/css/dash.module.css";
 import DatePicker from "react-datepicker";
 import "./allInvoices.css";
@@ -13,11 +18,13 @@ import DetailsModal from "./modal/DetailsModal";
 import InvoiceEditModal from "./modal/EditModal";
 import { badge } from "../../components/common/Utils";
 import FormatNumber from "../../components/common/NumberFormat";
+import { CSVLink } from "react-csv";
 
 const AllInvoices = () => {
   // get all note in redux
 
   let invoices = useSelector((state) => state.admin?.invoices);
+  console.log(invoices);
   // get Current date
   const today = new Date();
 
@@ -155,6 +162,32 @@ const AllInvoices = () => {
         {FormatNumber(totalStat.totalSms)} &nbsp;
       </div>
     ) : null;
+
+  //  all invoice data csv table header
+  const allInvoiceForCsVTableInfoHeader = [
+    { label: "Id", key: "ispOwner" },
+    { label: "Type", key: "type" },
+    { label: "Status", key: "status" },
+    { label: "SMS", key: "numberOfSms" },
+    { label: "Amount", key: "amount" },
+    { label: "Created Date", key: "createdAt" },
+    { label: "Last Date", key: "updatedAt" },
+    { label: "Paid Date", key: "paidAt" },
+  ];
+
+  // all invoice data
+  const allInvoiceForCsVTableInfo = mainData.map((invoice) => {
+    return {
+      ispOwner: invoice.ispOwner,
+      type: invoice.type,
+      status: invoice.status,
+      numberOfSms: invoice.numberOfSms,
+      amount: invoice.amount,
+      createdAt: moment(invoice.createdAt).format("DD MMM YY hh:mm a"),
+      updatedAt: moment(invoice.updatedAt).format("DD MMM YY hh:mm a"),
+      paidAt: moment(invoice.paidAt).format("DD MMM YY hh:mm a"),
+    };
+  });
 
   // table column
   const columns = React.useMemo(
@@ -325,7 +358,20 @@ const AllInvoices = () => {
           <div className={useDash.dashboardWrapper}>
             <div className="card">
               <div className="card-header">
-                <h2 className="dashboardTitle text-center">All Invoices</h2>
+                <div className="d-flex justify-content-between">
+                  <h2 className="dashboardTitle text-center">All Invoices</h2>
+
+                  <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
+                    <CSVLink
+                      data={allInvoiceForCsVTableInfo}
+                      // filename={company[comments?.ispOwner]?.company}
+                      headers={allInvoiceForCsVTableInfoHeader}
+                      title="All Invoice CSV"
+                    >
+                      <FileExcelFill className="addcutmButton" />
+                    </CSVLink>
+                  </div>
+                </div>
               </div>
               <div className="card-body">
                 <div className="d-flex">
