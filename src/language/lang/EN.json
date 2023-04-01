@@ -703,5 +703,8 @@
   "bandwidthLive": "Bandwidth Live",
   "bulkRecharge": "Bulk Recharge",
   "price": "Price",
-  "otherPackageUsers": "Other Package Users"
+  "otherPackageUsers": "Other Package Users",
+  "inactive": "Inactive",
+  "selectAll": "Select All",
+  "calenderAlertTemplate": "Calender Alert SMS Template"
 }

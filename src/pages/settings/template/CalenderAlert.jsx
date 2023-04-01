@@ -8,6 +8,7 @@ import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
+//All days in a month
 const dayOptions = [
   { value: "1", label: "1" },
   { value: "2", label: "2" },
@@ -46,34 +47,70 @@ function CalenderAlert() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
+  //get ISP Owner ID
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  //get settings
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  const title = settings.sms.template.calenderAlert.split("\n")[0];
+
+  //get title from settings
+  const title = settings?.sms?.template?.calenderAlert?.split("\n")[0];
+
+  //get botttom message from settings
+  const message = settings?.sms?.template?.calenderAlert?.split("\n").at(-1);
+
+  //get template Setting removing title and message from first and last
+  const templateSetting = settings?.sms?.template?.calenderAlert?.split("\n");
+  templateSetting.pop();
+  templateSetting.shift();
 
   const dispatch = useDispatch();
-  const [bottomText, setBottomText] = useState("");
+  const [bottomText, setBottomText] = useState(message);
   const [fontValue, setFontValue] = useState(title);
   const [upperText, setUpperText] = useState("");
-  const [numberOfDay, setnumberOfDay] = useState();
   const [days, setDays] = useState([]);
   const [calenderDays, setCalenderDays] = useState([]);
 
   const [billConfirmation, setBillConfirmation] = useState("");
-  // const [billconfarmationparametres, setbillconparametres] = useState([]);
-  // const [matchFound, setMatchFound] = useState([]);
 
   const [sendingType, setSendingType] = useState();
+
+  //initially getting the status from settings
+  const fetchedStatus = settings.sms.template.calenderAlertCustomerStatus;
+  const [status, setStatus] = useState(fetchedStatus);
+
+  //select all status button check
+  const [allSelect, setAllSelect] = useState(
+    fetchedStatus?.length === 5 ? true : false
+  );
 
   const textRef = useRef();
   const formRef = useRef();
 
-  const [smsTemplet, setTemplet] = useState([]);
+  const [smsTemplet, setTemplet] = useState(templateSetting);
 
-  const [alertNum, setAlertNum] = useState("");
+  //Status Handler
+  const statusHandler = (val) => {
+    if (!status.includes(val)) setStatus([...status, val]);
+    else {
+      const newStatus = status.filter((temp) => temp !== val);
+      setStatus(newStatus);
+    }
+  };
+
+  const allSelectHandler = () => {
+    if (!allSelect) {
+      setStatus(["active", "inactive", "paid", "unpaid", "expired"]);
+      setAllSelect(!allSelect);
+    } else {
+      setStatus([]);
+      setAllSelect(!allSelect);
+    }
+  };
 
   const itemSettingHandler = (item) => {
     if (smsTemplet.includes(item)) {
@@ -99,6 +136,7 @@ function CalenderAlert() {
 
     setTemplet(smsTemplet);
   };
+
   const onChangeHandler = (value) => {
     setCalenderDays([...value]);
   };
@@ -119,9 +157,9 @@ function CalenderAlert() {
     setBillConfirmation(e.target.value);
   };
 
-  useEffect(() => {
-    setnumberOfDay(Math.max(...days));
-  }, [days]);
+  const bottomTextHandler = (item) => {
+    setBottomText(item.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -148,9 +186,9 @@ function CalenderAlert() {
       template: {
         ...settings?.sms?.template,
         calenderAlert: fontValue + newUpperText + "\n" + bottomText,
+        calenderAlertCustomerStatus: status,
       },
     };
-
     setLoading(true);
 
     try {
@@ -188,7 +226,7 @@ function CalenderAlert() {
         <div className="writeMessageSection">
           <div className="messageStatus d-flex justify-content-between">
             <div className="sending-status">
-              <h4> {t("alertSMStemplate")} </h4>
+              <h4> {t("calenderAlertTemplate")} </h4>
               <input
                 name="billConfirmation"
                 type="radio"
@@ -256,81 +294,177 @@ function CalenderAlert() {
               }}
               className="displayFlexx"
             >
-              <div>
-                <div className="radioselect">
-                  <input
-                    id="1"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    value={"USER: USERNAME"}
-                    checked={smsTemplet.includes("USER: USERNAME")}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="1">
-                    {"USER: USERNAME"}
-                  </label>
+              <div className="d-flex">
+                <div className="displayFlexx me-4">
+                  <div className="radioselect">
+                    <input
+                      id="1"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      value={"USER: USERNAME"}
+                      checked={smsTemplet.includes("USER: USERNAME")}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="1">
+                      {"USER: USERNAME"}
+                    </label>
+                  </div>
+                  <div className="radioselect">
+                    <input
+                      id="2"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      checked={smsTemplet.includes("ID: CUSTOMER_ID")}
+                      value={"ID: CUSTOMER_ID"}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="2">
+                      {"ID: CUSTOMER_ID"}
+                    </label>
+                  </div>
+                  <div className="radioselect">
+                    <input
+                      id="3"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      checked={smsTemplet.includes("NAME: CUSTOMER_NAME")}
+                      value={"NAME: CUSTOMER_NAME"}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="3">
+                      {"NAME: CUSTOMER_NAME"}
+                    </label>
+                  </div>
+                  <div className="radioselect">
+                    <input
+                      id="4"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      checked={smsTemplet.includes("BILL: AMOUNT")}
+                      value={"BILL: AMOUNT"}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="4">
+                      {"BILL: AMOUNT"}
+                    </label>
+                  </div>
+                  <div className="radioselect">
+                    <input
+                      id="5"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      checked={smsTemplet.includes("LAST DATE: BILL_DATE")}
+                      value={"LAST DATE: BILL_DATE"}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="5">
+                      {"LAST DATE: BILL_DATE"}
+                    </label>
+                  </div>
                 </div>
-                <div className="radioselect">
-                  <input
-                    id="2"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("ID: CUSTOMER_ID")}
-                    value={"ID: CUSTOMER_ID"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="2">
-                    {"ID: CUSTOMER_ID"}
-                  </label>
-                </div>
-                <div className="radioselect">
-                  <input
-                    id="3"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("NAME: CUSTOMER_NAME")}
-                    value={"NAME: CUSTOMER_NAME"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="3">
-                    {"NAME: CUSTOMER_NAME"}
-                  </label>
-                </div>
-                <div className="radioselect">
-                  <input
-                    id="4"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("BILL: AMOUNT")}
-                    value={"BILL: AMOUNT"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="4">
-                    {"BILL: AMOUNT"}
-                  </label>
-                </div>
-                <div className="radioselect">
-                  <input
-                    id="5"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("LAST DATE: BILL_DATE")}
-                    value={"LAST DATE: BILL_DATE"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="5">
-                    {"LAST DATE: BILL_DATE"}
-                  </label>
+
+                <div>
+                  <div>
+                    <div className="radioselect">
+                      <input
+                        id="6"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        value="active"
+                        checked={status.includes("active")}
+                        onChange={(e) => {
+                          statusHandler(e.target.value);
+                        }}
+                      />
+                      <label className="templatelabel" htmlFor="5">
+                        {t("active")}
+                      </label>
+                    </div>
+                    <div className="radioselect">
+                      <input
+                        id="7"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        value="inactive"
+                        checked={status.includes("inactive")}
+                        onChange={(e) => {
+                          statusHandler(e.target.value);
+                        }}
+                      />
+                      <label className="templatelabel" htmlFor="6">
+                        {t("inactive")}
+                      </label>
+                    </div>
+
+                    <div className="radioselect">
+                      <input
+                        id="8"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        value="expired"
+                        checked={status.includes("expired")}
+                        onChange={(e) => {
+                          statusHandler(e.target.value);
+                        }}
+                      />
+                      <label className="templatelabel" htmlFor="7">
+                        {t("expired")}
+                      </label>
+                    </div>
+                    <div className="radioselect">
+                      <input
+                        id="9"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        checked={status.includes("paid")}
+                        value="paid"
+                        onChange={(e) => {
+                          statusHandler(e.target.value);
+                        }}
+                      />
+                      <label className="templatelabel" htmlFor="8">
+                        {t("paid")}
+                      </label>
+                    </div>
+                    <div className="radioselect">
+                      <input
+                        id="10"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        checked={status.includes("unpaid")}
+                        value="unpaid"
+                        onChange={(e) => {
+                          statusHandler(e.target.value);
+                        }}
+                      />
+                      <label className="templatelabel" htmlFor="9">
+                        {t("unpaid")}
+                      </label>
+                    </div>
+                    <div className="radioselect">
+                      <input
+                        id="11"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        checked={allSelect}
+                        value="selectAll"
+                        onChange={allSelectHandler}
+                      />
+                      <label className="templatelabel" htmlFor="9">
+                        {t("selectAll")}
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -378,10 +512,8 @@ function CalenderAlert() {
             value={bottomText}
             // onClick={insertMyText}
             maxLength={335 - upperText.length}
-            onChange={(e) => setBottomText(e.target.value)}
-          >
-            {" "}
-          </textarea>
+            onChange={bottomTextHandler}
+          ></textarea>
           <hr />
           <button
             type="submit"

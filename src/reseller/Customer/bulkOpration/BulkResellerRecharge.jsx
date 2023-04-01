@@ -3,10 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import {
-  bulkCustomerRecharge,
-  bulkResellerRecharge,
-} from "../../../features/actions/bulkOperationApi";
+import { bulkResellerRecharge } from "../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import Loader from "../../../components/common/Loader";
 import { fetchpppoePackage } from "../../../features/apiCallReseller";
@@ -141,6 +138,7 @@ const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
         collectedBy: currentUser?.user.role,
         user: currentUser?.user.id,
         collectorId: currentUserId, //when collector is logged in
+        resellerId,
       };
 
       //final customer number for bulk recharge
