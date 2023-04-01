@@ -65,8 +65,8 @@ function CalenderAlert() {
 
   //get template Setting removing title and message from first and last
   const templateSetting = settings?.sms?.template?.calenderAlert?.split("\n");
-  templateSetting.pop();
-  templateSetting.shift();
+  templateSetting?.pop();
+  templateSetting?.shift();
 
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState(message);
@@ -128,7 +128,7 @@ function CalenderAlert() {
     }
 
     var theText = "";
-    smsTemplet.map((i) => {
+    smsTemplet?.map((i) => {
       return (theText = theText + "\n" + i);
     });
 
@@ -276,7 +276,7 @@ function CalenderAlert() {
           <div className="billconfirm">
             <div className="showthesequence">
               <p className="endingText">{fontValue}</p>
-              {smsTemplet.map((item, key) => {
+              {smsTemplet?.map((item, key) => {
                 return <p key={key}>{item}</p>;
               })}
 
@@ -298,76 +298,79 @@ function CalenderAlert() {
                 <div className="displayFlexx me-4">
                   <div className="radioselect">
                     <input
-                      id="1"
+                      id="customerUserName"
                       type="checkbox"
                       className="getValueUsingClass"
                       value={"USER: USERNAME"}
-                      checked={smsTemplet.includes("USER: USERNAME")}
+                      checked={smsTemplet?.includes("USER: USERNAME")}
                       onChange={(e) => {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="1">
+                    <label className="templatelabel" htmlFor="customerUserName">
                       {"USER: USERNAME"}
                     </label>
                   </div>
                   <div className="radioselect">
                     <input
-                      id="2"
+                      id="customerUserId"
                       type="checkbox"
                       className="getValueUsingClass"
-                      checked={smsTemplet.includes("ID: CUSTOMER_ID")}
+                      checked={smsTemplet?.includes("ID: CUSTOMER_ID")}
                       value={"ID: CUSTOMER_ID"}
                       onChange={(e) => {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="2">
+                    <label className="templatelabel" htmlFor="customerUserId">
                       {"ID: CUSTOMER_ID"}
                     </label>
                   </div>
                   <div className="radioselect">
                     <input
-                      id="3"
+                      id="customerName"
                       type="checkbox"
                       className="getValueUsingClass"
-                      checked={smsTemplet.includes("NAME: CUSTOMER_NAME")}
+                      checked={smsTemplet?.includes("NAME: CUSTOMER_NAME")}
                       value={"NAME: CUSTOMER_NAME"}
                       onChange={(e) => {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="3">
+                    <label className="templatelabel" htmlFor="customerName">
                       {"NAME: CUSTOMER_NAME"}
                     </label>
                   </div>
                   <div className="radioselect">
                     <input
-                      id="4"
+                      id="customerBillAmount"
                       type="checkbox"
                       className="getValueUsingClass"
-                      checked={smsTemplet.includes("BILL: AMOUNT")}
+                      checked={smsTemplet?.includes("BILL: AMOUNT")}
                       value={"BILL: AMOUNT"}
                       onChange={(e) => {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="4">
+                    <label
+                      className="templatelabel"
+                      htmlFor="customerBillAmount"
+                    >
                       {"BILL: AMOUNT"}
                     </label>
                   </div>
                   <div className="radioselect">
                     <input
-                      id="5"
+                      id="customerBillData"
                       type="checkbox"
                       className="getValueUsingClass"
-                      checked={smsTemplet.includes("LAST DATE: BILL_DATE")}
+                      checked={smsTemplet?.includes("LAST DATE: BILL_DATE")}
                       value={"LAST DATE: BILL_DATE"}
                       onChange={(e) => {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="5">
+                    <label className="templatelabel" htmlFor="customerBillData">
                       {"LAST DATE: BILL_DATE"}
                     </label>
                   </div>
@@ -377,62 +380,68 @@ function CalenderAlert() {
                   <div>
                     <div className="radioselect">
                       <input
-                        id="6"
+                        id="activeCustomer"
                         type="checkbox"
                         className="getValueUsingClass"
                         value="active"
-                        checked={status.includes("active")}
+                        checked={status?.includes("active")}
                         onChange={(e) => {
                           statusHandler(e.target.value);
                         }}
                       />
-                      <label className="templatelabel" htmlFor="5">
+                      <label className="templatelabel" htmlFor="activeCustomer">
                         {t("active")}
                       </label>
                     </div>
                     <div className="radioselect">
                       <input
-                        id="7"
+                        id="inactiveCustomer"
                         type="checkbox"
                         className="getValueUsingClass"
                         value="inactive"
-                        checked={status.includes("inactive")}
+                        checked={status?.includes("inactive")}
                         onChange={(e) => {
                           statusHandler(e.target.value);
                         }}
                       />
-                      <label className="templatelabel" htmlFor="6">
+                      <label
+                        className="templatelabel"
+                        htmlFor="inactiveCustomer"
+                      >
                         {t("inactive")}
                       </label>
                     </div>
 
                     <div className="radioselect">
                       <input
-                        id="8"
+                        id="expiredCustomer"
                         type="checkbox"
                         className="getValueUsingClass"
                         value="expired"
-                        checked={status.includes("expired")}
+                        checked={status?.includes("expired")}
                         onChange={(e) => {
                           statusHandler(e.target.value);
                         }}
                       />
-                      <label className="templatelabel" htmlFor="7">
+                      <label
+                        className="templatelabel"
+                        htmlFor="expiredCustomer"
+                      >
                         {t("expired")}
                       </label>
                     </div>
                     <div className="radioselect">
                       <input
-                        id="9"
+                        id="paidCustomer"
                         type="checkbox"
                         className="getValueUsingClass"
-                        checked={status.includes("paid")}
+                        checked={status?.includes("paid")}
                         value="paid"
                         onChange={(e) => {
                           statusHandler(e.target.value);
                         }}
                       />
-                      <label className="templatelabel" htmlFor="8">
+                      <label className="templatelabel" htmlFor="paidCustomer">
                         {t("paid")}
                       </label>
                     </div>
@@ -441,26 +450,29 @@ function CalenderAlert() {
                         id="10"
                         type="checkbox"
                         className="getValueUsingClass"
-                        checked={status.includes("unpaid")}
+                        checked={status?.includes("unpaid")}
                         value="unpaid"
                         onChange={(e) => {
                           statusHandler(e.target.value);
                         }}
                       />
-                      <label className="templatelabel" htmlFor="9">
+                      <label className="templatelabel" htmlFor="10">
                         {t("unpaid")}
                       </label>
                     </div>
                     <div className="radioselect">
                       <input
-                        id="11"
+                        id="selectAllCustomerStatus"
                         type="checkbox"
                         className="getValueUsingClass"
                         checked={allSelect}
                         value="selectAll"
                         onChange={allSelectHandler}
                       />
-                      <label className="templatelabel" htmlFor="9">
+                      <label
+                        className="templatelabel"
+                        htmlFor="selectAllCustomerStatus"
+                      >
                         {t("selectAll")}
                       </label>
                     </div>

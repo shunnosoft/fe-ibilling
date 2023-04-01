@@ -499,7 +499,7 @@ export default function Customer() {
                   </li>
                 )}
 
-                {permission?.customerDelete && (
+                {/* {permission?.customerDelete && (
                   <li
                     onClick={() => {
                       let con = window.confirm(
@@ -515,7 +515,7 @@ export default function Customer() {
                       </div>
                     </div>
                   </li>
-                )}
+                )} */}
 
                 {original.mobile &&
                   (collectorPermission?.sendSMS || role !== "collector") && (

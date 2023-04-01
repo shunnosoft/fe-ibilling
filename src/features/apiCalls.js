@@ -2461,9 +2461,7 @@ export const ispOwnerInvoiceCreate = async (
 ) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.post(
-      `/admin/invoice/create`,invoiceData
-    );
+    const res = await apiLink.post(`/admin/invoice/create`, invoiceData);
     console.log(res.data);
     // dispatch(deleteNetFeeSupport(res.data));
     // document.querySelector("#supportDelete").click();
