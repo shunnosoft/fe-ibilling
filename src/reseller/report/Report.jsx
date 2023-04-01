@@ -5,19 +5,12 @@ import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
 
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
 // import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
-import arraySort from "array-sort";
-import {
-  ArrowClockwise,
-  ArrowDownUp,
-  PrinterFill,
-} from "react-bootstrap-icons";
+import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
 import {
   getAllBills,
   getSubAreas,
@@ -56,7 +49,6 @@ export default function Report() {
   const [mainData, setMainData] = useState(allBills);
   const [mainData2, setMainData2] = useState(allBills);
   const [collectors, setCollectors] = useState([]);
-  console.log(collectors);
   const [collectorIds, setCollectorIds] = useState([]);
   const [isSorted, setSorted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);

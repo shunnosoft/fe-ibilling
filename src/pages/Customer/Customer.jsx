@@ -340,7 +340,7 @@ const PPPOECustomer = () => {
         advance: paymentStatus
           ? c.monthlyFee <= c.balance && c.monthlyFee > 0
           : true,
-        overdue: paymentStatus
+        overDue: paymentStatus
           ? c.paymentStatus === "unpaid" && c.balance < 0
           : true,
         mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
