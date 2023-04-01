@@ -2462,6 +2462,7 @@ export const ispOwnerInvoiceCreate = async (
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/admin/invoice/create`, invoiceData);
+<<<<<<< HEAD
     console.log(res.data);
     // dispatch(deleteNetFeeSupport(res.data));
     // document.querySelector("#supportDelete").click();
@@ -2470,6 +2471,10 @@ export const ispOwnerInvoiceCreate = async (
     //   "নেটফি সাপর্ট ডিলিট সফল হয়েছে",
     //   "NetFee Support Delete Successfully"
     // );
+=======
+
+    document.querySelector("#ispOwnerInvoiceCreate").click();
+>>>>>>> 0bdf812232f23c2e6679836c7468896bc831d9d6
   } catch (error) {
     console.log(error.response?.data.message);
   }

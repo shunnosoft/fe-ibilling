@@ -91,13 +91,13 @@ const BkashForm = ({ ispOwner }) => {
             <FtextField
               required
               type="text"
-              label={t("userName")}
+              label="User Name"
               name="username"
             />
             <FtextField
               required
               type="text"
-              label={t("appSecret")}
+              label="App Secret"
               name="appSecret"
             />
 
@@ -105,7 +105,7 @@ const BkashForm = ({ ispOwner }) => {
               <FtextField
                 required
                 type={passType}
-                label={t("password")}
+                label="Password"
                 name="password"
               />
 
@@ -125,17 +125,12 @@ const BkashForm = ({ ispOwner }) => {
                   className="form-check-label text-mute"
                   htmlFor="showPass"
                 >
-                  &nbsp; {t("showPassword")}
+                  &nbsp; Show Password
                 </label>
               </div>
             </div>
 
-            <FtextField
-              required
-              type="text"
-              label={t("appKey")}
-              name="appKey"
-            />
+            <FtextField required type="text" label="App Key" name="appKey" />
           </div>
 
           <div className="displayGrid3">
@@ -147,7 +142,7 @@ const BkashForm = ({ ispOwner }) => {
                 name="isTokenized"
               />
               <label className="form-check-label" for="isTokenized">
-                {t("isTokenized")}
+                Is Tokenized
               </label>
             </div>
 
@@ -159,7 +154,7 @@ const BkashForm = ({ ispOwner }) => {
                 name="hasPG"
               />
               <label className="form-check-label" for="hasPG">
-                {t("hasPG")}
+                Has PG
               </label>
             </div>
           </div>
@@ -170,7 +165,7 @@ const BkashForm = ({ ispOwner }) => {
               className="btn btn-success"
               disabled={isLoading}
             >
-              {isLoading ? <Loader /> : t("submit")}
+              {isLoading ? <Loader /> : "Submit"}
             </button>
             <button
               type="button"
@@ -178,7 +173,7 @@ const BkashForm = ({ ispOwner }) => {
               data-bs-dismiss="modal"
               disabled={isLoading}
             >
-              {t("cancel")}
+              Cancel
             </button>
           </div>
         </Form>

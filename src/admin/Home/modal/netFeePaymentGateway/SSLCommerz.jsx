@@ -113,7 +113,7 @@ const SSLCommerz = ({ ispOwner }) => {
                   className="form-check-label text-mute"
                   htmlFor="showPass"
                 >
-                  &nbsp; {t("showPassword")}
+                  &nbsp; Show Password
                 </label>
               </div>
             </div>
@@ -128,7 +128,7 @@ const SSLCommerz = ({ ispOwner }) => {
                 name="hasPG"
               />
               <label className="form-check-label" for="hasPG">
-                {t("hasPG")}
+                Has PG
               </label>
             </div>
           </div>
@@ -139,7 +139,7 @@ const SSLCommerz = ({ ispOwner }) => {
               className="btn btn-success"
               disabled={isLoading}
             >
-              {isLoading ? <Loader /> : t("submit")}
+              {isLoading ? <Loader /> : "Submit"}
             </button>
             <button
               type="button"
@@ -147,7 +147,7 @@ const SSLCommerz = ({ ispOwner }) => {
               data-bs-dismiss="modal"
               disabled={isLoading}
             >
-              {t("cancel")}
+              Cancel
             </button>
           </div>
         </Form>

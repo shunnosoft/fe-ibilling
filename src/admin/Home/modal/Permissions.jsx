@@ -68,22 +68,51 @@ const Permissions = ({ ownerId }) => {
           <div className="modal-header">
             <div className="modal-title" id="exampleModalLabel">
               <div className="d-flex">
-                <h5>
-                  Changes Permission for{" "}
-                  <span className="text-success"> {ownerData?.name} </span>
-                </h5>
-                {/* <h5 className="ms-5">
-                    Mobile:
-                    <span className="text-success"> {ispOwner?.mobile}</span>
-                  </h5> */}
+                <div className="row">
+                  <h4 style={{ borderBottom: "2px solid grey" }}>
+                    Change Permissions
+                  </h4>
+                  <div className="d-flex">
+                    <div>
+                      <h5>
+                        netFee Id:
+                        <span className="text-success">
+                          {" "}
+                          {ownerData?.netFeeId}{" "}
+                        </span>
+                      </h5>
+                      <h5 className="me-3">
+                        Mobile:
+                        <span className="text-success">
+                          {" "}
+                          {ownerData?.mobile}
+                        </span>
+                      </h5>
+                    </div>
+                    <div>
+                      <h5 className="me-3">
+                        Company:
+                        <span className="text-success">
+                          {" "}
+                          {ownerData?.company}
+                        </span>
+                      </h5>
+                      <h5 className="me-3">
+                        Name:
+                        <span className="text-success"> {ownerData?.name}</span>
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="btn btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
             </div>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
           </div>
           <div className="modal-body">
             {/* model body here */}

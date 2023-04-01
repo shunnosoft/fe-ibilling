@@ -13,7 +13,7 @@ import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import getName, { getNameId } from "../../../utils/getLocationName";
 import { useTranslation } from "react-i18next";
-import ReactDatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -196,14 +196,14 @@ const DetailsForm = ({ ispOwner }) => {
   //divisional area format
   const divisionalAreaFormat = [
     {
-      text: t("selectDivision"),
+      text: "Select Division",
       name: "division",
       id: "division",
       value: divisionalArea.division,
       data: divisions,
     },
     {
-      text: t("selectDistrict"),
+      text: "Select District",
       name: "district",
       id: "district",
       value: divisionalArea.district,
@@ -212,7 +212,7 @@ const DetailsForm = ({ ispOwner }) => {
       ),
     },
     {
-      text: t("selectThana"),
+      text: "Select Thana",
       name: "thana",
       id: "thana",
       value: divisionalArea.thana,
@@ -256,34 +256,26 @@ const DetailsForm = ({ ispOwner }) => {
       {() => (
         <Form>
           <div className="displayGrid3">
-            <FtextField type="text" label={t("name")} name="name" />
-            <FtextField type="text" label={t("company")} name="company" />
-            <FtextField type="text" label={t("adress")} name="address" />
+            <FtextField type="text" label="Name" name="name" />
+            <FtextField type="text" label="Company" name="company" />
+            <FtextField type="text" label="Address" name="address" />
           </div>
 
           <div className="displayGrid3">
+            <FtextField type="text" label="Package Rate" name="packageRate" />
             <FtextField
               type="text"
-              label={t("packageRate")}
-              name="packageRate"
-            />
-            <FtextField
-              type="text"
-              label={t("customarLimit")}
+              label="Customer Limit"
               name="customerLimit"
             />
 
             {role === "superadmin" && (
-              <FtextField
-                type="text"
-                label={t("SMSBalance")}
-                name="smsBalance"
-              />
+              <FtextField type="text" label="SMS Balance" name="smsBalance" />
             )}
           </div>
           <div className="displayGrid3">
             <div>
-              <h6 className="mb-0">{t("packageType")}</h6>
+              <h6 className="mb-0">Package Type</h6>
               <Field
                 as="select"
                 name="packType"
@@ -294,19 +286,19 @@ const DetailsForm = ({ ispOwner }) => {
                   value="Basic"
                   selected={ispOwner?.bpSettings?.packType === "Basic"}
                 >
-                  {t("basic")}
+                  Basic
                 </option>
                 <option
                   value="Standard"
                   selected={ispOwner?.bpSettings?.packType === "Standard"}
                 >
-                  {t("standard")}
+                  Standard
                 </option>
               </Field>
             </div>
 
             <div>
-              <h6 className="mb-0">{t("package")}</h6>
+              <h6 className="mb-0">Package</h6>
               <Field
                 as="select"
                 className="form-select mw-100 mt-0"
@@ -333,40 +325,40 @@ const DetailsForm = ({ ispOwner }) => {
 
             {role === "superadmin" && (
               <div>
-                <h6 className="mb-0">{t("paidStatus")}</h6>
+                <h6 className="mb-0">Payment Status</h6>
                 <Field
                   as="select"
                   className="form-select mw-100 mt-0"
                   aria-label="Default select example"
                   name="paymentStatus"
                 >
-                  <option value="paid"> {t("paid")}</option>
-                  <option value="unpaid"> {t("unpaid")}</option>
+                  <option value="paid">Paid</option>
+                  <option value="unpaid">Unpaid</option>
                 </Field>
               </div>
             )}
 
             <div>
-              <h6 className="mb-0">{t("queueType")}</h6>
+              <h6 className="mb-0">Queue Type</h6>
               <Field
                 as="select"
                 className="form-select mw-100 mt-0"
                 aria-label="Default select example"
                 name="queueType"
               >
-                <option value="simple-queue">{t("simpleQueue")}</option>
-                <option value="firewall-queue">{t("firewallQueue")}</option>
+                <option value="simple-queue">Simple Queue</option>
+                <option value="firewall-queue">Firewall Queue</option>
               </Field>
             </div>
 
             <div>
-              <h6 className="customerFieldsTitle mb-0">{t("InvoiceDate")}</h6>
+              <h6 className="customerFieldsTitle mb-0">Invoice Date</h6>
 
               <div className="timeDate">
-                <ReactDatePicker
+                <DatePicker
                   className="form-control mw-100"
-                  value={billDate}
-                  onChange={(e) => setBillDate(e.target.value)}
+                  value={moment(billDate).format("YYYY MMM DD")}
+                  onChange={(date) => setBillDate(date)}
                   type="date"
                   name="monthlyDueDate"
                 />
@@ -374,7 +366,7 @@ const DetailsForm = ({ ispOwner }) => {
             </div>
 
             <div>
-              <h6 className="mb-0">{t("status")}</h6>
+              <h6 className="mb-0">Status</h6>
               <Field
                 as="select"
                 name="status"
@@ -382,25 +374,25 @@ const DetailsForm = ({ ispOwner }) => {
                 aria-label="Default select example"
               >
                 <option value="new" selected={ispOwner?.status === "new"}>
-                  {t("new")}
+                  New
                 </option>
                 <option value="active" selected={ispOwner?.status === "active"}>
-                  {t("active")}
+                  Active
                 </option>
                 <option
                   value="inactive"
                   selected={ispOwner?.status === "inactive"}
                 >
-                  {t("inactive")}
+                  Inactive
                 </option>
                 <option value="banned" selected={ispOwner?.status === "banned"}>
-                  {t("banned")}
+                  Banned
                 </option>
                 <option
                   value="deleted"
                   selected={ispOwner?.status === "deleted"}
                 >
-                  {t("deleted")}
+                  Deleted
                 </option>
               </Field>
             </div>
@@ -458,14 +450,14 @@ const DetailsForm = ({ ispOwner }) => {
             {role === "superadmin" && (
               <FtextField
                 type="text"
-                label={t("referenceName")}
+                label="Reference Name"
                 name="referenceName"
               />
             )}
 
             <FtextField
               type="text"
-              label={t("referenceMobile")}
+              label="Reference Mobile"
               name="referenceMobile"
             />
 
@@ -545,7 +537,7 @@ const DetailsForm = ({ ispOwner }) => {
               className="btn btn-success"
               disabled={isLoading}
             >
-              {isLoading ? <Loader /> : t("submit")}
+              {isLoading ? <Loader /> : "Submit"}
             </button>
             <button
               type="button"
@@ -553,7 +545,7 @@ const DetailsForm = ({ ispOwner }) => {
               data-bs-dismiss="modal"
               disabled={isLoading}
             >
-              {t("cancel")}
+              Cancel
             </button>
           </div>
         </Form>

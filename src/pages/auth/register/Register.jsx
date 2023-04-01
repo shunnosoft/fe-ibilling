@@ -277,7 +277,7 @@ export default function Register() {
                     {divisionalAreaFormat.map((item) => (
                       <div className="mb-3">
                         <label className="form-control-label">
-                          {item.text}
+                          {item.text} <span className="text-danger">*</span>
                         </label>
                         <select
                           className="form-select mw-100 mt-0"
