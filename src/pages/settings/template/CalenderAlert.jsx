@@ -56,6 +56,7 @@ function CalenderAlert() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+  console.log(settings);
 
   //get title from settings
   const title = settings?.sms?.template?.calenderAlert?.split("\n")[0];
@@ -72,6 +73,7 @@ function CalenderAlert() {
   const [bottomText, setBottomText] = useState(message);
   const [fontValue, setFontValue] = useState(title);
   const [upperText, setUpperText] = useState("");
+  console.log(upperText);
   const [days, setDays] = useState([]);
   const [calenderDays, setCalenderDays] = useState([]);
 
@@ -113,17 +115,17 @@ function CalenderAlert() {
   };
 
   const itemSettingHandler = (item) => {
-    if (smsTemplet.includes(item)) {
-      const index = smsTemplet.indexOf(item);
+    if (smsTemplet?.includes(item)) {
+      const index = smsTemplet?.indexOf(item);
       if (index > -1) {
-        smsTemplet.splice(index, 1);
+        smsTemplet?.splice(index, 1);
       }
     } else {
       if ((upperText + "\n" + bottomText).length + item.length > 334) {
         toast.error(t("exceedSMSLimit"));
         return;
       } else {
-        smsTemplet.push(item);
+        smsTemplet?.push(item);
       }
     }
 
@@ -170,9 +172,10 @@ function CalenderAlert() {
       monthDays.push(allDays[i].value);
     }
 
-    const temp = upperText.split("\n");
-    temp.length = smsTemplet.length + 1;
-    const newUpperText = temp.join("\n");
+    const temp = upperText?.split("\n");
+    console.log(temp);
+    temp.length = smsTemplet?.length + 1;
+    const newUpperText = temp?.join("\n");
     let data = {
       ...settings?.sms,
       calenderAlertSendBy: sendingType,
@@ -189,6 +192,7 @@ function CalenderAlert() {
         calenderAlertCustomerStatus: status,
       },
     };
+    console.log(data);
     setLoading(true);
 
     try {
@@ -200,7 +204,6 @@ function CalenderAlert() {
       setLoading(false);
       toast.success(t("alertSMStemplateSaveAlert"));
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
 
@@ -510,9 +513,13 @@ function CalenderAlert() {
 
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(smsTemplet + bottomText).length}
+              {t("letter")}{" "}
+              {smsTemplet && bottomText && (smsTemplet + bottomText).length}
             </span>
-            <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
+            <span>
+              SMS:{" "}
+              {smsTemplet && bottomText && smsCount(smsTemplet + bottomText)}
+            </span>
           </div>
 
           <textarea
