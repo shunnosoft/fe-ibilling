@@ -69,8 +69,8 @@ function CalenderAlert() {
   templateSetting?.shift();
 
   const dispatch = useDispatch();
-  const [bottomText, setBottomText] = useState(message);
-  const [fontValue, setFontValue] = useState(title);
+  const [bottomText, setBottomText] = useState(message ? message : "");
+  const [fontValue, setFontValue] = useState(title ? title : "");
   const [upperText, setUpperText] = useState("");
   const [days, setDays] = useState([]);
   const [calenderDays, setCalenderDays] = useState([]);
@@ -81,7 +81,7 @@ function CalenderAlert() {
 
   //initially getting the status from settings
   const fetchedStatus = settings.sms.template.calenderAlertCustomerStatus;
-  const [status, setStatus] = useState(fetchedStatus);
+  const [status, setStatus] = useState(fetchedStatus ? fetchedStatus : []);
 
   //select all status button check
   const [allSelect, setAllSelect] = useState(
@@ -91,7 +91,9 @@ function CalenderAlert() {
   const textRef = useRef();
   const formRef = useRef();
 
-  const [smsTemplet, setTemplet] = useState(templateSetting);
+  const [smsTemplet, setTemplet] = useState(
+    templateSetting ? templateSetting : []
+  );
 
   //Status Handler
   const statusHandler = (val) => {
@@ -119,7 +121,11 @@ function CalenderAlert() {
         smsTemplet.splice(index, 1);
       }
     } else {
-      if ((upperText + "\n" + bottomText).length + item.length > 334) {
+      if (
+        (fontValue + "\n" + upperText + "\n" + bottomText).length +
+          item.length >
+        334
+      ) {
         toast.error(t("exceedSMSLimit"));
         return;
       } else {
@@ -164,10 +170,9 @@ function CalenderAlert() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const allDays = e.target.day;
     let monthDays = [];
-    for (let i = 0; i < allDays.length; i++) {
-      monthDays.push(allDays[i].value);
+    for (let i = 0; i < calenderDays.length; i++) {
+      monthDays.push(calenderDays[i].value);
     }
 
     const temp = upperText.split("\n");
@@ -510,9 +515,9 @@ function CalenderAlert() {
 
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(smsTemplet + bottomText).length}
+              {t("letter")} {(fontValue + smsTemplet + bottomText).length}
             </span>
-            <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
+            <span>SMS: {smsCount(fontValue + smsTemplet + bottomText)}</span>
           </div>
 
           <textarea

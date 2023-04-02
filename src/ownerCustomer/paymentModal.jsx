@@ -57,7 +57,7 @@ const PaymentModal = () => {
           medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
           paymentStatus: "pending",
           package: userData.pppoe.profile,
-          collectedBy: 'customer'
+          collectedBy: "customer",
         },
         createRequest: async function (request) {
           try {
