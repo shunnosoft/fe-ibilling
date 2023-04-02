@@ -30,6 +30,9 @@ const PaymentModal = () => {
       paymentStatus: "pending",
       package: userData.pppoe.profile,
     };
+    if (userData.reseller) {
+      data.reseller = userData.reseller;
+    }
 
     if (paymentAmount < userData.monthlyFee) {
       return alert("You can't pay less than your monthly fee");
@@ -42,22 +45,29 @@ const PaymentModal = () => {
   useEffect(() => {
     let paymentID = "";
     if (userData) {
+      let paymentReq = {
+        amount: paymentAmount,
+        merchantInvoiceNumber: Date.now(),
+        intent: "sale",
+        ispOwnerId: userData.ispOwner.id,
+        name: userData.name,
+        billType: "bill",
+        customer: userData.id,
+        user: userData.id,
+        userType: userData.userType,
+        medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
+        paymentStatus: "pending",
+        package: userData.pppoe.profile,
+        collectedBy: "customer",
+      };
+      if (userData.reseller) {
+        paymentReq.reseller = userData.reseller;
+      }
+
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
-          amount: paymentAmount,
-          merchantInvoiceNumber: Date.now(),
-          intent: "sale",
-          ispOwnerId: userData.ispOwner.id,
-          name: userData.name,
-          billType: "bill",
-          customer: userData.id,
-          user: userData.id,
-          userType: userData.userType,
-          medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-          paymentStatus: "pending",
-          package: userData.pppoe.profile,
-          collectedBy: 'customer'
+          ...paymentReq,
         },
         createRequest: async function (request) {
           try {
@@ -94,6 +104,9 @@ const PaymentModal = () => {
             paymentStatus: "pending",
             package: userData.pppoe.profile,
           };
+          if (userData.reseller) {
+            billData.reseller = userData.reseller;
+          }
           try {
             const { data } = await apiLink.post(
               `bkash/executePayment?paymentID=${paymentID}`,
