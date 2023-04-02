@@ -181,10 +181,10 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   return (
     <>
       <div
-        className="modal fade"
+        className="modal"
         id="ispOwnerInvoiceCreate"
         tabindex="-1"
-        aria-labelledby="exampleModalLabel"
+        aria-labelledby="ispOwnerInvoice"
         aria-hidden="true"
       >
         <div className="modal-dialog">
@@ -193,7 +193,7 @@ const InvoiceCreate = ({ ispOwnerId }) => {
               <h5
                 style={{ color: "#0abb7a" }}
                 className="modal-title"
-                id="customerModalDetails"
+                id="ispOwnerInvoice"
               >
                 Company Name: {ispOwnerData?.company}
               </h5>
