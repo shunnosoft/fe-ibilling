@@ -577,33 +577,41 @@ const DetailsModal = ({ ownerId }) => {
                             </table>
                           </div>
                         ) : (
-                          <div>Reseller not Found</div>
+                          <div>Reseller not Found !</div>
                         )}
                       </div>
                     )}
                   </Tab>
 
                   <Tab eventKey="subAreas" title="Sub Areas">
-                    <h4 type="button" class="btn btn-primary">
-                      Total Sub Area{" "}
-                      <span class="badge bg-secondary">{subAreas.length}</span>
-                    </h4>
-                    <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Sub Area Name</th>
-                          <th>Sub Area Id</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {subAreas.map((item, key) => (
-                          <tr key={key}>
-                            <th scope="col">{item?.name}</th>
-                            <td>{item?.id}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    {subAreas && subAreas.length > 0 ? (
+                      <>
+                        <h4 type="button" class="btn btn-primary">
+                          Total Sub Area{" "}
+                          <span class="badge bg-secondary">
+                            {subAreas.length}
+                          </span>
+                        </h4>
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Sub Area Name</th>
+                              <th>Sub Area Id</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {subAreas.map((item, key) => (
+                              <tr key={key}>
+                                <th scope="col">{item?.name}</th>
+                                <td>{item?.id}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </>
+                    ) : (
+                      <div className="text-center">Sub Area not found !</div>
+                    )}
                   </Tab>
 
                   <Tab eventKey="Mikrotik" title="Mikrotik">
@@ -612,56 +620,65 @@ const DetailsModal = ({ ownerId }) => {
                         <Loader /> ...
                       </span>
                     )}
-                    <h4 className="text-primary fs-5">
-                      Total Mikrotik
-                      <span class="badge bg-secondary ms-2">
-                        {allmikrotiks.length}
-                      </span>
-                    </h4>
-                    <table class="table table-hover table-striped">
-                      <thead>
-                        <tr>
-                          <th scope="col">Mikrotik ID</th>
-                          <th scope="col">Name</th>
-                          <th scope="col">User Name</th>
-                          <th scope="col">host</th>
-                          <th scope="col">port</th>
-                          <th>Connection</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {allmikrotiks.map((item, key) => (
-                          <tr key={key}>
-                            <td scope="row">{item?.id}</td>
-                            <td>{item?.name}</td>
-                            <td>{item?.username}</td>
-                            <td>{item?.host}</td>
-                            <td>{item?.port}</td>
-                            <td>
-                              {" "}
-                              <button
-                                title="checkConnection"
-                                style={{ padding: "0.10rem .5rem" }}
-                                className="btn btn-sm btn-primary mx-1"
-                                onClick={() =>
-                                  mikrotikConnectionTest(item?.id, item?.name)
-                                }
-                              >
-                                <PlugFill />
-                              </button>
-                              <button
-                                title="deletekrotik"
-                                onClick={() => mikrotikDelete(item?.id)}
-                                style={{ padding: "0.10rem .5rem" }}
-                                className="btn btn-sm btn-danger"
-                              >
-                                <ArchiveFill />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    {allmikrotiks && allmikrotiks.length > 0 ? (
+                      <>
+                        <h4 className="text-primary fs-5">
+                          Total Mikrotik
+                          <span class="badge bg-secondary ms-2">
+                            {allmikrotiks.length}
+                          </span>
+                        </h4>
+                        <table class="table table-hover table-striped">
+                          <thead>
+                            <tr>
+                              <th scope="col">Mikrotik ID</th>
+                              <th scope="col">Name</th>
+                              <th scope="col">User Name</th>
+                              <th scope="col">host</th>
+                              <th scope="col">port</th>
+                              <th>Connection</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {allmikrotiks.map((item, key) => (
+                              <tr key={key}>
+                                <td scope="row">{item?.id}</td>
+                                <td>{item?.name}</td>
+                                <td>{item?.username}</td>
+                                <td>{item?.host}</td>
+                                <td>{item?.port}</td>
+                                <td>
+                                  {" "}
+                                  <button
+                                    title="checkConnection"
+                                    style={{ padding: "0.10rem .5rem" }}
+                                    className="btn btn-sm btn-primary mx-1"
+                                    onClick={() =>
+                                      mikrotikConnectionTest(
+                                        item?.id,
+                                        item?.name
+                                      )
+                                    }
+                                  >
+                                    <PlugFill />
+                                  </button>
+                                  <button
+                                    title="deletekrotik"
+                                    onClick={() => mikrotikDelete(item?.id)}
+                                    style={{ padding: "0.10rem .5rem" }}
+                                    className="btn btn-sm btn-danger"
+                                  >
+                                    <ArchiveFill />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </>
+                    ) : (
+                      <div className="text-center">Mikrotik not found !</div>
+                    )}
                   </Tab>
 
                   {/* start */}

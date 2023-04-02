@@ -88,7 +88,7 @@ const AllComments = () => {
   //comment data
   const commentForCsVTableInfo = comments.map((comment) => {
     return {
-      ispOwner: comment.ispOwner,
+      company: company[comment.ispOwner]?.company,
       name: comment.name,
       commentType: comment.commentType,
       status: comment.status,

@@ -24,7 +24,6 @@ const AllInvoices = () => {
   // get all note in redux
 
   let invoices = useSelector((state) => state.admin?.invoices);
-  console.log(invoices);
   // get Current date
   const today = new Date();
 
@@ -165,7 +164,7 @@ const AllInvoices = () => {
 
   //  all invoice data csv table header
   const allInvoiceForCsVTableInfoHeader = [
-    { label: "Id", key: "ispOwner" },
+    { label: "Company", key: "company" },
     { label: "Type", key: "type" },
     { label: "Status", key: "status" },
     { label: "SMS", key: "numberOfSms" },
@@ -178,7 +177,7 @@ const AllInvoices = () => {
   // all invoice data
   const allInvoiceForCsVTableInfo = mainData.map((invoice) => {
     return {
-      ispOwner: invoice.ispOwner,
+      company: company[invoice.ispOwner]?.company,
       type: invoice.type,
       status: invoice.status,
       numberOfSms: invoice.numberOfSms,
