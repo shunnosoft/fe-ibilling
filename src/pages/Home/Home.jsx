@@ -585,7 +585,6 @@ export default function Home() {
                     >
                       {FormatNumber(customerStat.paid)}
                     </h2>
-
                     <p
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
