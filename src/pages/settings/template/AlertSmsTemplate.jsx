@@ -45,7 +45,11 @@ function AlertSmsTemplate() {
         smsTemplet.splice(index, 1);
       }
     } else {
-      if ((upperText + "\n" + bottomText).length + item.length > 334) {
+      if (
+        (fontValue + "\n" + upperText + "\n" + bottomText).length +
+          item.length >
+        334
+      ) {
         toast.error(t("exceedSMSLimit"));
         return;
       } else {
@@ -412,7 +416,7 @@ function AlertSmsTemplate() {
               >
                 <option value=""> {t("selectTemplate")} </option>
                 {smstempletDay
-                  .filter((s, i) => days.includes(i + 1))
+                  ?.filter((s, i) => days.includes(i + 1))
                   .map((item, index) => {
                     return (
                       <option key={index} value={item.value}>
@@ -509,9 +513,9 @@ function AlertSmsTemplate() {
 
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(smsTemplet + bottomText).length}
+              {t("letter")} {(fontValue + smsTemplet + bottomText).length}
             </span>
-            <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
+            <span>SMS: {smsCount(fontValue + smsTemplet + bottomText)}</span>
           </div>
 
           <textarea
