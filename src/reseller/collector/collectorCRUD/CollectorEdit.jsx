@@ -184,6 +184,7 @@ export default function CollectorEdit({ collectorId }) {
                         <div key={key}>
                           <div key={key} className="displayFlex">
                             <input
+                              id={val.id + "AllArea"}
                               type="checkbox"
                               className="getValueUsingClass_Edit"
                               value={val.id}
@@ -192,7 +193,9 @@ export default function CollectorEdit({ collectorId }) {
                               }
                               onChange={setAreaHandler}
                             />
-                            <label>{val.name}</label>
+                            <label htmlFor={val.id + "AllArea"}>
+                              {val.name}
+                            </label>
                           </div>
                         </div>
                       ))}

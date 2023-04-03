@@ -153,12 +153,13 @@ export default function CollectorPost() {
                       {area?.map((val, key) => (
                         <div key={key} className="displayFlex">
                           <input
+                            id={val.id + "Area"}
                             type="checkbox"
                             className="getValueUsingClass"
                             value={val.id}
                             onChange={setAreaHandler}
                           />
-                          <label>{val.name}</label>
+                          <label htmlFor={val.id + "Area"}>{val.name}</label>
                         </div>
                       ))}
                     </div>
