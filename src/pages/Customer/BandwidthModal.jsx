@@ -8,7 +8,7 @@ import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
 import TdLoader from "../../components/common/TdLoader";
-import { Doughnut, Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
 
 // let callCount = 0;
@@ -35,6 +35,11 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         const res = await apiLink(
           "customer/mikrotik/currentSession?customerId=" + customerId
         );
+        if (bandwidth.length > 13) {
+          bandwidth.pop();
+          tx.pop();
+          time.pop();
+        }
         setBandWidth([
           parseInt(res.data.data[0].rxByte?.toFixed(2) / 1048576),
           ...bandwidth,
@@ -64,7 +69,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         // } else {
         //   clearInterval(interval);
         // }
-      }, 5000);
+      }, 1000);
       return () => {
         clearInterval(interval);
       };
@@ -95,19 +100,19 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
           label: "Rx",
           data: bandwidth,
           backgroundColor: "red",
-          borderWidth: 6,
+          borderWidth: 4,
+          barThickness: 16,
         },
         {
           label: "Tx",
           data: tx,
           backgroundColor: "green",
-          borderWidth: 6,
+          borderWidth: 4,
+          barThickness: 16,
         },
       ],
     });
   }, [time, bandwidth, tx]);
-
-  console.log(time, bandwidth, tx);
 
   return (
     <>
@@ -165,7 +170,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
                   </div>
                 </div>
               </div>
-              <Line data={chartData} />
+              <Bar data={chartData} />
             </>
           )}
         </Modal.Body>
