@@ -36,6 +36,9 @@ const Invoices = ({ invoiceId, companyName }) => {
   // set invoice id
   const [invoiceeEditId, setInvoiceEditId] = useState("");
 
+  // modal show state
+  const [show, setShow] = useState(false);
+
   // dispatch data to api
   useEffect(() => {
     if (invoiceId) getIspOwnerInvoice(invoiceId, dispatch, setIsLoading);
@@ -81,6 +84,12 @@ const Invoices = ({ invoiceId, companyName }) => {
       );
     };
   }
+
+  //modal handler
+  const modalHandler = () => {
+    document.querySelector("#ispOwnerInvoice").click();
+    setShow(true);
+  };
 
   // table column
   const columns = React.useMemo(
@@ -216,8 +225,7 @@ const Invoices = ({ invoiceId, companyName }) => {
               <div
                 title="Invoice Create"
                 className="header_icon mx-3"
-                data-bs-toggle="modal"
-                data-bs-target="#ispOwnerInvoiceCreate"
+                onClick={modalHandler}
               >
                 <FileEarmarkPlusFill />
               </div>
@@ -336,7 +344,7 @@ const Invoices = ({ invoiceId, companyName }) => {
         </div>
       </div>
       <InvoiceEditModal invoiceeEditId={invoiceeEditId} />
-      <InvoiceCreate ispOwnerId={invoiceId} />
+      <InvoiceCreate ispOwnerId={invoiceId} modal={show} />
     </>
   );
 };

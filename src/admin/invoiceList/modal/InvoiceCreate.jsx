@@ -7,8 +7,9 @@ import { Field, Form, Formik } from "formik";
 import { getSingleIspOwner } from "../../../features/apiCallAdmin";
 import { getNetfeeSettings } from "../../../features/netfeeSettingsApi";
 import { ispOwnerInvoiceCreate } from "../../../features/apiCalls";
+import { Button, Modal } from "react-bootstrap";
 
-const InvoiceCreate = ({ ispOwnerId }) => {
+const InvoiceCreate = ({ ispOwnerId, modal }) => {
   const dispatch = useDispatch();
 
   //get single ispOwner
@@ -21,6 +22,9 @@ const InvoiceCreate = ({ ispOwnerId }) => {
 
   //user role
   const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  //modal open and hide state
+  const [show, setShow] = useState(false);
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -89,6 +93,9 @@ const InvoiceCreate = ({ ispOwnerId }) => {
     }
   }
 
+  //modal handler
+  const handleClose = () => setShow(false);
+
   //  handle submit
   const invoiceCreateHandler = (values) => {
     // message invoice create
@@ -151,6 +158,9 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   };
 
   useEffect(() => {
+    if (modal) {
+      setShow(modal);
+    }
     // message purchase
     if (messageType === "nonMasking") {
       setSmsAmount(ispOwnerData.smsRate * smsCount);
@@ -163,7 +173,7 @@ const InvoiceCreate = ({ ispOwnerId }) => {
     if (allPackage) {
       setSubPackage(allPackage[0]?.subPackage);
     }
-  }, [messageType, allPackage]);
+  }, [messageType, allPackage, modal]);
 
   // get netFee settings api call
   useEffect(() => {
@@ -179,207 +189,185 @@ const InvoiceCreate = ({ ispOwnerId }) => {
   }, [ispOwnerId]);
 
   return (
-    <>
-      <div
-        className="modal"
-        id="ispOwnerInvoiceCreate"
-        tabindex="-1"
-        aria-labelledby="ispOwnerInvoice"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5
-                style={{ color: "#0abb7a" }}
-                className="modal-title"
-                id="ispOwnerInvoice"
-              >
-                Company Name: {ispOwnerData?.company}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={(values) => {
-                  invoiceCreateHandler(values);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form>
-                    <div className="row g-3">
-                      <div className="col-md-6 form-group px-2">
-                        <h6 className="mb-0">Select Type</h6>
-                        <Field
-                          className="form-select mw-100 mt-0"
-                          as="select"
-                          name="type"
-                          aria-label="Default select example"
-                          onChange={(e) => setType(e.target.value)}
-                        >
-                          <option value="">...</option>
-                          <option value="smsPurchase">SMS Purchase</option>
-                          <option value="registration">Registration</option>
-                          <option value="monthlyServiceCharge">
-                            Monthly Service Charge
-                          </option>
-                          <option value="migration">Migration</option>
-                        </Field>
-                      </div>
+    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <h5
+            style={{ color: "#0abb7a" }}
+            className="modal-title"
+            id="ispOwnerInvoice"
+          >
+            Company Name: {ispOwnerData?.company}
+          </h5>
+        </Modal.Title>
+      </Modal.Header>
 
-                      {role === "superadmin" && (
-                        <div className="col-md-6 form-group px-2">
-                          <h6 className="mb-0">Status</h6>
-                          <Field
-                            className="form-select mw-100 mt-0"
-                            as="select"
-                            name="status"
-                            aria-label="Default select example"
-                          >
-                            <option value="paid">Paid</option>
-                            <option selected value="unpaid">
-                              Unpaid
-                            </option>
-                          </Field>
-                        </div>
-                      )}
+      <Modal.Body>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            invoiceCreateHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <div className="row g-3">
+                <div className="col-md-6 form-group px-2">
+                  <h6 className="mb-0">Select Type</h6>
+                  <Field
+                    className="form-select mw-100 mt-0"
+                    as="select"
+                    name="type"
+                    aria-label="Default select example"
+                    onChange={(e) => setType(e.target.value)}
+                  >
+                    <option value="">...</option>
+                    <option value="smsPurchase">SMS Purchase</option>
+                    <option value="registration">Registration</option>
+                    <option value="monthlyServiceCharge">
+                      Monthly Service Charge
+                    </option>
+                    <option value="migration">Migration</option>
+                  </Field>
+                </div>
 
-                      {type && type === "smsPurchase" && (
-                        <>
-                          <div className="col-md-6 form-group ">
-                            <h6 className="mb-0">SMS Type</h6>
-                            <Field
-                              className="form-select mw-100 mt-0"
-                              as="select"
-                              name="smsType"
-                              aria-label="Default select example"
-                              onChange={(e) => setMessageType(e.target.value)}
-                            >
-                              <option selected value="nonMasking">
-                                Non Masking
-                              </option>
-                              <option value="masking">Masking</option>
-                              <option value="fixedNumber">Fixed</option>
-                            </Field>
-                          </div>
-
-                          <div className="col-md-6 form-group mt-3">
-                            <h6 className="mb-0">SMS</h6>
-                            <Field
-                              className="form-control"
-                              type="number"
-                              name="smsBalance"
-                              onChange={(e) => changeHandler(e.target.value)}
-                              value={smsCount}
-                            />
-                          </div>
-                        </>
-                      )}
-
-                      {type && type === "migration" && (
-                        <>
-                          <div className="col-md-6 form-group ">
-                            <h6 className="mb-0">Select Your Package</h6>
-                            <Field
-                              className="form-select mw-100 mt-0 fw-700"
-                              name="pack"
-                              aria-label="Default select example"
-                              as="select"
-                              onChange={handleSubPackage}
-                            >
-                              <option value="">Select Package</option>
-                              {supPackage?.map((pak, index) => {
-                                return (
-                                  <option
-                                    className="customOption"
-                                    key={index}
-                                    value={JSON.stringify(pak)}
-                                  >
-                                    {pak.subPackageName}
-                                  </option>
-                                );
-                              })}
-                            </Field>
-                          </div>
-
-                          <div className="col-md-6 form-group">
-                            <h6 className="mb-0">Customer Limit</h6>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="customerLimit"
-                              value={singlePackage[0].customer}
-                            />
-                          </div>
-                        </>
-                      )}
-
-                      <div className="col-md-6 form-group px-2">
-                        <h6 className="mb-0">Created Date</h6>
-                        <DatePicker
-                          className="form-control mw-100  me-3"
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={"To"}
-                          name="createdAt"
-                        />
-                      </div>
-
-                      <div className="col-md-6 form-group px-2">
-                        <h6 className="mb-0">Last Date</h6>
-                        <DatePicker
-                          className="form-control mw-100  me-3"
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={"From"}
-                          name="dueDate"
-                        />
-                      </div>
-
-                      <div className="col-md-12 form-group px-2">
-                        <h6 className="mb-0">Amount</h6>
-                        <Field
-                          type="number"
-                          name="amount"
-                          className="form-control"
-                        />
-                      </div>
-                    </div>
-                    <div className="modal-footer bg-whitesmoke br  mt-4">
-                      <button
-                        disabled={isLoading}
-                        type="button"
-                        className="btn btn-danger"
-                        data-bs-dismiss="modal"
-                      >
-                        cancel
-                      </button>
-                      <button
-                        disabled={isLoading}
-                        type="submit"
-                        className="btn btn-success"
-                      >
-                        {isLoading ? <Loader /> : "submit"}
-                      </button>
-                    </div>
-                  </Form>
+                {role === "superadmin" && (
+                  <div className="col-md-6 form-group px-2">
+                    <h6 className="mb-0">Status</h6>
+                    <Field
+                      className="form-select mw-100 mt-0"
+                      as="select"
+                      name="status"
+                      aria-label="Default select example"
+                    >
+                      <option value="paid">Paid</option>
+                      <option selected value="unpaid">
+                        Unpaid
+                      </option>
+                    </Field>
+                  </div>
                 )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+
+                {type && type === "smsPurchase" && (
+                  <>
+                    <div className="col-md-6 form-group ">
+                      <h6 className="mb-0">SMS Type</h6>
+                      <Field
+                        className="form-select mw-100 mt-0"
+                        as="select"
+                        name="smsType"
+                        aria-label="Default select example"
+                        onChange={(e) => setMessageType(e.target.value)}
+                      >
+                        <option selected value="nonMasking">
+                          Non Masking
+                        </option>
+                        <option value="masking">Masking</option>
+                        <option value="fixedNumber">Fixed</option>
+                      </Field>
+                    </div>
+
+                    <div className="col-md-6 form-group mt-3">
+                      <h6 className="mb-0">SMS</h6>
+                      <Field
+                        className="form-control"
+                        type="number"
+                        name="smsBalance"
+                        onChange={(e) => changeHandler(e.target.value)}
+                        value={smsCount}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {type && type === "migration" && (
+                  <>
+                    <div className="col-md-6 form-group ">
+                      <h6 className="mb-0">Select Your Package</h6>
+                      <Field
+                        className="form-select mw-100 mt-0 fw-700"
+                        name="pack"
+                        aria-label="Default select example"
+                        as="select"
+                        onChange={handleSubPackage}
+                      >
+                        <option value="">Select Package</option>
+                        {supPackage?.map((pak, index) => {
+                          return (
+                            <option
+                              className="customOption"
+                              key={index}
+                              value={JSON.stringify(pak)}
+                            >
+                              {pak.subPackageName}
+                            </option>
+                          );
+                        })}
+                      </Field>
+                    </div>
+
+                    <div className="col-md-6 form-group">
+                      <h6 className="mb-0">Customer Limit</h6>
+                      <Field
+                        className="form-control"
+                        type="text"
+                        name="customerLimit"
+                        value={singlePackage[0].customer}
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="col-md-6 form-group px-2">
+                  <h6 className="mb-0">Created Date</h6>
+                  <DatePicker
+                    className="form-control mw-100  me-3"
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    dateFormat="MMM dd yyyy"
+                    placeholderText={"To"}
+                    name="createdAt"
+                  />
+                </div>
+
+                <div className="col-md-6 form-group px-2">
+                  <h6 className="mb-0">Last Date</h6>
+                  <DatePicker
+                    className="form-control mw-100  me-3"
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    dateFormat="MMM dd yyyy"
+                    placeholderText={"From"}
+                    name="dueDate"
+                  />
+                </div>
+
+                <div className="col-md-12 form-group px-2">
+                  <h6 className="mb-0">Amount</h6>
+                  <Field type="number" name="amount" className="form-control" />
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button
+          disabled={isLoading}
+          type="button"
+          className="btn btn-danger"
+          onClick={handleClose}
+        >
+          cancel
+        </Button>
+        <Button disabled={isLoading} type="submit" className="btn btn-success">
+          {isLoading ? <Loader /> : "submit"}
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
