@@ -127,6 +127,18 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
       ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
     }
 
+    // registration invoice create
+    if (type === "registration") {
+      let data = {
+        amount: values.amount,
+        status: values.status,
+        ispOwner: ispOwnerData.id,
+        user: ispOwnerData.user,
+        type: "registration",
+      };
+      ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
+    }
+
     // ispOwner package change invoice create
     if (type === "migration") {
       let data = {
@@ -138,6 +150,7 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
       };
       ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
     }
+    setShow(false);
   };
 
   // message type change handler
@@ -206,13 +219,11 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            invoiceCreateHandler(values);
-          }}
+          onSubmit={(values) => invoiceCreateHandler(values)}
           enableReinitialize
         >
           {() => (
-            <Form>
+            <Form id="invoice">
               <div className="row g-3">
                 <div className="col-md-6 form-group px-2">
                   <h6 className="mb-0">Select Type</h6>
@@ -363,7 +374,12 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
         >
           cancel
         </Button>
-        <Button disabled={isLoading} type="submit" className="btn btn-success">
+        <Button
+          disabled={isLoading}
+          type="submit"
+          className="btn btn-success"
+          form="invoice"
+        >
           {isLoading ? <Loader /> : "submit"}
         </Button>
       </Modal.Footer>
