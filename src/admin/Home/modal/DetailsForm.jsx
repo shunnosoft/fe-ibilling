@@ -69,6 +69,7 @@ const DetailsForm = ({ ispOwner }) => {
     customerLimit: Yup.string().required("কাস্টমার লিমিট দিন"),
     packageRate: Yup.string().required("প্যাকেজ রেট দিন"),
     hasMikrotik: Yup.string(),
+    inventory: Yup.string(),
     executeBillingCycle: Yup.string(),
     customerType: Yup.array(),
   });
@@ -92,6 +93,7 @@ const DetailsForm = ({ ispOwner }) => {
       packageRate: ispOwner?.bpSettings?.packageRate,
       customerLimit: ispOwner?.bpSettings?.customerLimit,
       hasMikrotik: ispOwner?.bpSettings?.hasMikrotik,
+      inventory: ispOwner?.bpSettings?.inventory,
       executeBillingCycle: ispOwner?.bpSettings?.executeBillingCycle,
       pppoe: customerType,
       static: customerType,
@@ -120,6 +122,7 @@ const DetailsForm = ({ ispOwner }) => {
         pack: values.pack,
         queueType: values.queueType,
         hasMikrotik: values.hasMikrotik,
+        inventory: values.inventory,
         monthlyDueDate: billDate,
         executeBillingCycle: values.executeBillingCycle,
         customerType: customerType,
@@ -506,29 +509,31 @@ const DetailsForm = ({ ispOwner }) => {
               </div>
             </div>
 
-            <div className="form-check mt-4">
-              <Field
-                className="form-check-input"
-                type="checkbox"
-                id="flexCheckChecked"
-                name="hasMikrotik"
-              />
-              <label className="form-check-label" for="flexCheckChecked">
-                Has Mikrotik
-              </label>
-            </div>
+            <div className="d-flex justify-content-between mt-4">
+              <div className="form-check me-3 my-2">
+                <Field
+                  className="form-check-input"
+                  type="checkbox"
+                  id="flexCheckChecked"
+                  name="hasMikrotik"
+                />
+                <label className="form-check-label" for="flexCheckChecked">
+                  Has Mikrotik
+                </label>
+              </div>
 
-            {/* <div className="form-check mt-4">
-                        <Field
-                          className="form-check-input"
-                          type="checkbox"
-                          id="inventory"
-                          name="inventory"
-                        />
-                        <label className="form-check-label" for="inventory">
-                          Has Inventory
-                        </label>
-                      </div> */}
+              <div className="form-check me-3 my-2">
+                <Field
+                  className="form-check-input"
+                  type="checkbox"
+                  id="inventoryChecked"
+                  name="inventory"
+                />
+                <label className="form-check-label" for="inventoryChecked">
+                  Has Inventory
+                </label>
+              </div>
+            </div>
           </div>
 
           <div className="modal-footer" style={{ border: "none" }}>
