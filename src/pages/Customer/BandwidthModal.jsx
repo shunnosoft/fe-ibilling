@@ -36,10 +36,10 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
           "customer/mikrotik/currentSession?customerId=" + customerId
         );
         setBandWidth([
-          parseInt(res.data.data[0].rxByte.toFixed(2) / 1048576),
+          parseInt(res.data.data[0].rxByte?.toFixed(2) / 1048576),
           ...bandwidth,
         ]);
-        setTx([parseInt(res.data.data[0].txByte.toFixed(2) / 1048576), ...tx]);
+        setTx([parseInt(res.data.data[0].txByte?.toFixed(2) / 1048576), ...tx]);
 
         setTime([date, ...time]);
         // callCount++;
@@ -95,17 +95,19 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
           label: "Rx",
           data: bandwidth,
           backgroundColor: "red",
-          borderWidth: 8,
+          borderWidth: 6,
         },
         {
           label: "Tx",
           data: tx,
           backgroundColor: "green",
-          borderWidth: 8,
+          borderWidth: 6,
         },
       ],
     });
   }, [time, bandwidth, tx]);
+
+  console.log(time, bandwidth, tx);
 
   return (
     <>

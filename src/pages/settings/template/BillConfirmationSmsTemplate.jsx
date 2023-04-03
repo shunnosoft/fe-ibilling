@@ -49,7 +49,7 @@ function BillConfirmationSmsTemplate() {
         matchFound.splice(index, 1);
       }
     } else {
-      if (totalText.length + item.length > 334) {
+      if ((fontText + totalText + item).length > 334) {
         toast.error(t("exceedSMSLimit"));
         return;
       }
@@ -400,9 +400,9 @@ function BillConfirmationSmsTemplate() {
           {/* </div> */}
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(matchFound + bottomText).length}
+              {t("letter")} {(fontText + matchFound + bottomText).length}
             </span>
-            <span>SMS: {smsCount(matchFound + bottomText)}</span>
+            <span>SMS: {smsCount(fontText + matchFound + bottomText)}</span>
           </div>
 
           <textarea
