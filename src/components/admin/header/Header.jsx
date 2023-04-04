@@ -131,6 +131,16 @@ export default function Header(props) {
                     </strong>
                   </div>
                   <div
+                    style={{ backgroundColor: "inherit" }}
+                    className="balancetext"
+                  >
+                    {t("message")}
+                    <strong className="mainsmsbalance">
+                      {smsBalance?.toFixed()}
+                    </strong>
+                  </div>
+
+                  <div
                     title={t("refresh")}
                     style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
                     className="refreshIcon"

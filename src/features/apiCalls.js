@@ -2464,6 +2464,7 @@ export const ispOwnerInvoiceCreate = async (
     const res = await apiLink.post(`/admin/invoice/create`, invoiceData);
 
     document.querySelector("#ispOwnerInvoiceCreate").click();
+    langMessage("success", "Invoice create success");
   } catch (error) {
     console.log(error.response?.data.message);
   }
