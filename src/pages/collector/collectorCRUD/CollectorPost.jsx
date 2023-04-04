@@ -151,13 +151,17 @@ export default function CollectorPost() {
                         {role === "ispOwner" && (
                           <div className="autoDisable">
                             <input
+                              id="addStaffStatus"
                               type="checkBox"
                               checked={addStaffStatus}
                               onChange={(e) =>
                                 setAddStaffStatus(e.target.checked)
                               }
                             />
-                            <label className="ps-2"> {t("addStaff")} </label>
+                            <label htmlFor="addStaffStatus" className="ps-2">
+                              {" "}
+                              {t("addStaff")}{" "}
+                            </label>
                           </div>
                         )}
                       </div>
@@ -182,12 +186,15 @@ export default function CollectorPost() {
                           {val.subAreas.map((v, k) => (
                             <div key={k} className="displayFlex">
                               <input
+                                id={v.id + "subAreas"}
                                 type="checkbox"
                                 className="getValueUsingClass"
                                 value={v.id}
                                 onChange={setAreaHandler}
                               />
-                              <label>{v.name}</label>
+                              <label htmlFor={v.id + "subAreas"}>
+                                {v.name}
+                              </label>
                             </div>
                           ))}
                         </div>

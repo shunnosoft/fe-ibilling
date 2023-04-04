@@ -7,7 +7,6 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
   ThreeDots,
-  ArchiveFill,
   PenFill,
   PersonFill,
   CashStack,
@@ -305,7 +304,7 @@ export default function Customer() {
     let totalSumDue = 0;
     let totalMonthlyFee = 0;
 
-    Customers.map((item) => {
+    Customers?.map((item) => {
       if (item.paymentStatus === "unpaid") {
         // filter due ammount
         dueAmount = item.monthlyFee - item.balance;
@@ -556,7 +555,7 @@ export default function Customer() {
   );
 
   //export customer data
-  let customerForCsVTableInfo = Customers.map((customer) => {
+  let customerForCsVTableInfo = Customers?.map((customer) => {
     return {
       name: customer.name,
       customerAddress: customer.address,
@@ -720,18 +719,12 @@ export default function Customer() {
                               {t("mikrotik")}
                             </option>
 
-                            {Getmikrotik?.length === undefined
-                              ? ""
-                              : Getmikrotik?.map((val, key) =>
-                                  reseller.mikrotiks.map(
-                                    (item) =>
-                                      val.id === item && (
-                                        <option key={key} value={val.id}>
-                                          {val.name}
-                                        </option>
-                                      )
-                                  )
-                                )}
+                            {Getmikrotik?.length &&
+                              Getmikrotik?.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))}
                           </select>
 
                           <select

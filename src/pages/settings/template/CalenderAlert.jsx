@@ -57,20 +57,9 @@ function CalenderAlert() {
     (state) => state.persistedReducer.auth.userData?.settings
   );
 
-  //get title from settings
-  const title = settings?.sms?.template?.calenderAlert?.split("\n")[0];
-
-  //get botttom message from settings
-  const message = settings?.sms?.template?.calenderAlert?.split("\n").at(-1);
-
-  //get template Setting removing title and message from first and last
-  const templateSetting = settings?.sms?.template?.calenderAlert?.split("\n");
-  templateSetting?.pop();
-  templateSetting?.shift();
-
   const dispatch = useDispatch();
-  const [bottomText, setBottomText] = useState(message ? message : "");
-  const [fontValue, setFontValue] = useState(title ? title : "");
+  const [bottomText, setBottomText] = useState("");
+  const [fontValue, setFontValue] = useState("");
   const [upperText, setUpperText] = useState("");
   const [days, setDays] = useState([]);
   const [calenderDays, setCalenderDays] = useState([]);
@@ -78,9 +67,10 @@ function CalenderAlert() {
   const [billConfirmation, setBillConfirmation] = useState("");
 
   const [sendingType, setSendingType] = useState();
+  const [selected, setSelected] = useState(true);
 
   //initially getting the status from settings
-  const fetchedStatus = settings.sms.template.calenderAlertCustomerStatus;
+  const fetchedStatus = settings?.sms?.template?.calenderAlertCustomerStatus;
   const [status, setStatus] = useState(fetchedStatus ? fetchedStatus : []);
 
   //select all status button check
@@ -91,12 +81,11 @@ function CalenderAlert() {
   const textRef = useRef();
   const formRef = useRef();
 
-  const [smsTemplet, setTemplet] = useState(
-    templateSetting ? templateSetting : []
-  );
+  const [smsTemplet, setTemplet] = useState([]);
 
   //Status Handler
-  const statusHandler = (val) => {
+  const statusHandler = (e) => {
+    const val = e.target.value;
     if (!status.includes(val)) setStatus([...status, val]);
     else {
       const newStatus = status.filter((temp) => temp !== val);
@@ -114,12 +103,14 @@ function CalenderAlert() {
     }
   };
 
-  const itemSettingHandler = (item) => {
+  const itemSettingHandler = (e) => {
+    const item = e.target.value;
     if (smsTemplet.includes(item)) {
       const index = smsTemplet.indexOf(item);
       if (index > -1) {
         smsTemplet.splice(index, 1);
       }
+      smsTemplet.length === 0 ? setSelected(false) : setSelected(true);
     } else {
       if (
         (fontValue + "\n" + upperText + "\n" + bottomText).length +
@@ -130,6 +121,7 @@ function CalenderAlert() {
         return;
       } else {
         smsTemplet.push(item);
+        setSelected(true);
       }
     }
 
@@ -146,6 +138,45 @@ function CalenderAlert() {
   const onChangeHandler = (value) => {
     setCalenderDays([...value]);
   };
+
+  useEffect(() => {
+    const fixedValues = [
+      "USER: USERNAME",
+      "ID: CUSTOMER_ID",
+      "NAME: CUSTOMER_NAME",
+      "BILL: AMOUNT",
+      "LAST DATE: BILL_DATE",
+    ];
+    let found = [];
+    let messageBoxStr = settings?.sms?.template?.calenderAlert
+      ?.replace("USER: USERNAME", "")
+      .replace("ID: CUSTOMER_ID", "")
+      .replace("NAME: CUSTOMER_NAME", "")
+      .replace("BILL: AMOUNT", "")
+      .replace("LAST DATE: BILL_DATE", "");
+
+    let temp = messageBoxStr?.split("\n");
+
+    if (temp?.length > 0) {
+      setFontValue(temp[0] || "");
+
+      let temptxt = "";
+      temp?.map((value, index) => {
+        if (index > 1 && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
+    }
+
+    fixedValues.map((i) => {
+      if (settings?.sms?.template?.calenderAlert?.includes(i)) {
+        found.push(i);
+      }
+      return found;
+    });
+    setTemplet(found);
+  }, [settings]);
 
   useEffect(() => {
     setDays(settings?.sms?.calenderDays);
@@ -170,14 +201,37 @@ function CalenderAlert() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const form = e.target;
+
+    const user_name = form.user_name.checked ? form.user_name.value : "";
+    const customer_id = form.customer_id.checked ? form.customer_id.value : "";
+    const customer_name = form.customer_name.checked
+      ? form.customer_name.value
+      : "";
+    const amount = form.amount.checked ? form.amount.value : "";
+    const bill_date = form.bill_date.checked ? form.bill_date.value : "";
+    // const active = form.active.checked ? form.active.value : "";
+    // const inactive = form.inactive.checked ? form.inactive.value : "";
+    // const expired = form.expired.checked ? form.expired.value : "";
+    // const paid = form.paid.checked ? form.paid.value : "";
+    // const unpaid = form.unpaid.checked ? form.unpaid.value : "";
+
+    var tempu = [];
+    tempu.push(user_name, customer_id, customer_name, amount, bill_date);
+
+    var uppText = "";
+    tempu?.map((i) => {
+      if (i) return (uppText = uppText + "\n" + i);
+    });
+
     let monthDays = [];
     for (let i = 0; i < calenderDays.length; i++) {
       monthDays.push(calenderDays[i].value);
     }
-
-    const temp = upperText.split("\n");
+    const temp = uppText.split("\n");
     temp.length = smsTemplet.length + 1;
-    const newUpperText = temp.join("\n");
+    const newUppText = temp.join("\n");
+
     let data = {
       ...settings?.sms,
       calenderAlertSendBy: sendingType,
@@ -190,7 +244,7 @@ function CalenderAlert() {
       calenderDays: monthDays,
       template: {
         ...settings?.sms?.template,
-        calenderAlert: fontValue + newUpperText + "\n" + bottomText,
+        calenderAlert: fontValue + newUppText + "\n" + bottomText,
         calenderAlertCustomerStatus: status,
       },
     };
@@ -233,48 +287,63 @@ function CalenderAlert() {
             <div className="sending-status">
               <h4> {t("calenderAlertTemplate")} </h4>
               <input
+                id="on"
                 name="billConfirmation"
                 type="radio"
                 checked={billConfirmation === "on"}
                 value={"on"}
                 onChange={radioCheckHandler}
-              />{" "}
-              {t("on")} {"              "}
+              />
+              <label className="templatelabel" htmlFor="on">
+                {t("on")}
+              </label>
               <input
+                id="off"
                 name="billConfirmation"
                 type="radio"
                 checked={billConfirmation === "off"}
                 value={"off"}
                 onChange={radioCheckHandler}
-              />{" "}
-              {t("off")}
+              />
+              <label className="templatelabel" htmlFor="off">
+                {t("off")}
+              </label>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
               <input
+                id="nonMasking"
                 name="messageSendingType"
                 type="radio"
                 checked={sendingType === "nonMasking"}
                 value={"nonMasking"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("nonMasking")} {"              "}
+              />
+              <label className="templatelabel" htmlFor="nonMasking">
+                {t("nonMasking")}
+              </label>
               <input
+                id="masking"
                 name="messageSendingType"
                 type="radio"
                 checked={sendingType === "masking"}
                 value={"masking"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("masking")} {"              "}
+              />
+              <label className="templatelabel" htmlFor="masking">
+                {t("masking")}
+              </label>
               <input
+                id="fixedNumber"
                 name="messageSendingType"
                 type="radio"
                 checked={sendingType === "fixedNumber"}
                 value={"fixedNumber"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("fixedNumber")} {"              "}
+              />
+              <label className="templatelabel" htmlFor="fixedNumber">
+                {t("fixedNumber")}
+              </label>
             </div>
           </div>
 
@@ -308,9 +377,8 @@ function CalenderAlert() {
                       className="getValueUsingClass"
                       value={"USER: USERNAME"}
                       checked={smsTemplet?.includes("USER: USERNAME")}
-                      onChange={(e) => {
-                        itemSettingHandler(e.target.value);
-                      }}
+                      onChange={itemSettingHandler}
+                      name="user_name"
                     />
                     <label className="templatelabel" htmlFor="customerUserName">
                       {"USER: USERNAME"}
@@ -323,9 +391,8 @@ function CalenderAlert() {
                       className="getValueUsingClass"
                       checked={smsTemplet?.includes("ID: CUSTOMER_ID")}
                       value={"ID: CUSTOMER_ID"}
-                      onChange={(e) => {
-                        itemSettingHandler(e.target.value);
-                      }}
+                      onChange={itemSettingHandler}
+                      name="customer_id"
                     />
                     <label className="templatelabel" htmlFor="customerUserId">
                       {"ID: CUSTOMER_ID"}
@@ -338,9 +405,8 @@ function CalenderAlert() {
                       className="getValueUsingClass"
                       checked={smsTemplet?.includes("NAME: CUSTOMER_NAME")}
                       value={"NAME: CUSTOMER_NAME"}
-                      onChange={(e) => {
-                        itemSettingHandler(e.target.value);
-                      }}
+                      onChange={itemSettingHandler}
+                      name="customer_name"
                     />
                     <label className="templatelabel" htmlFor="customerName">
                       {"NAME: CUSTOMER_NAME"}
@@ -353,9 +419,8 @@ function CalenderAlert() {
                       className="getValueUsingClass"
                       checked={smsTemplet?.includes("BILL: AMOUNT")}
                       value={"BILL: AMOUNT"}
-                      onChange={(e) => {
-                        itemSettingHandler(e.target.value);
-                      }}
+                      onChange={itemSettingHandler}
+                      name="amount"
                     />
                     <label
                       className="templatelabel"
@@ -371,9 +436,8 @@ function CalenderAlert() {
                       className="getValueUsingClass"
                       checked={smsTemplet?.includes("LAST DATE: BILL_DATE")}
                       value={"LAST DATE: BILL_DATE"}
-                      onChange={(e) => {
-                        itemSettingHandler(e.target.value);
-                      }}
+                      onChange={itemSettingHandler}
+                      name="bill_date"
                     />
                     <label className="templatelabel" htmlFor="customerBillData">
                       {"LAST DATE: BILL_DATE"}
@@ -390,9 +454,8 @@ function CalenderAlert() {
                         className="getValueUsingClass"
                         value="active"
                         checked={status?.includes("active")}
-                        onChange={(e) => {
-                          statusHandler(e.target.value);
-                        }}
+                        onChange={statusHandler}
+                        name="active"
                       />
                       <label className="templatelabel" htmlFor="activeCustomer">
                         {t("active")}
@@ -405,9 +468,8 @@ function CalenderAlert() {
                         className="getValueUsingClass"
                         value="inactive"
                         checked={status?.includes("inactive")}
-                        onChange={(e) => {
-                          statusHandler(e.target.value);
-                        }}
+                        onChange={statusHandler}
+                        name="inactive"
                       />
                       <label
                         className="templatelabel"
@@ -424,9 +486,8 @@ function CalenderAlert() {
                         className="getValueUsingClass"
                         value="expired"
                         checked={status?.includes("expired")}
-                        onChange={(e) => {
-                          statusHandler(e.target.value);
-                        }}
+                        onChange={statusHandler}
+                        name="expired"
                       />
                       <label
                         className="templatelabel"
@@ -442,9 +503,8 @@ function CalenderAlert() {
                         className="getValueUsingClass"
                         checked={status?.includes("paid")}
                         value="paid"
-                        onChange={(e) => {
-                          statusHandler(e.target.value);
-                        }}
+                        onChange={statusHandler}
+                        name="paid"
                       />
                       <label className="templatelabel" htmlFor="paidCustomer">
                         {t("paid")}
@@ -452,16 +512,15 @@ function CalenderAlert() {
                     </div>
                     <div className="radioselect">
                       <input
-                        id="10"
+                        id="unPaidCustomer"
                         type="checkbox"
                         className="getValueUsingClass"
                         checked={status?.includes("unpaid")}
                         value="unpaid"
-                        onChange={(e) => {
-                          statusHandler(e.target.value);
-                        }}
+                        onChange={statusHandler}
+                        name="unpaid"
                       />
-                      <label className="templatelabel" htmlFor="10">
+                      <label className="templatelabel" htmlFor="unPaidCustomer">
                         {t("unpaid")}
                       </label>
                     </div>
@@ -473,6 +532,7 @@ function CalenderAlert() {
                         checked={allSelect}
                         value="selectAll"
                         onChange={allSelectHandler}
+                        name="selectAll"
                       />
                       <label
                         className="templatelabel"
@@ -497,15 +557,16 @@ function CalenderAlert() {
                 options={dayOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"
+                placeholder={t("select")}
               />
 
               <div className="mt-3">
                 <input
                   value={fontValue}
                   onChange={(event) => setFontValue(event.target.value)}
-                  class="form-control"
+                  className="form-control"
                   type="text"
-                  placeholder="Title"
+                  placeholder={t("title")}
                 />
               </div>
             </div>

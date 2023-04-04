@@ -128,7 +128,7 @@ const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
 
     if (singleMikrotik && mikrotikPackage) {
       const data = {
-        customerIds: filteredCus.map((item) => item.original.id),
+        customerIds: filteredCus?.map((item) => item.original.id),
         mikrotik: mikrotikId,
         mikrotikPackage,
         amount: rate,
@@ -181,18 +181,12 @@ const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
               onChange={selectMikrotik}
             >
               <option value="">...</option>
-              {Getmikrotik?.length === undefined
-                ? ""
-                : Getmikrotik?.map((val, key) =>
-                    reseller.mikrotiks.map(
-                      (item) =>
-                        val.id === item && (
-                          <option key={key} value={val.id}>
-                            {val.name}
-                          </option>
-                        )
-                    )
-                  )}
+              {Getmikrotik?.length &&
+                Getmikrotik?.map((val, key) => (
+                  <option key={key} value={val.id}>
+                    {val.name}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -207,13 +201,12 @@ const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
               onChange={selectMikrotikPackage}
             >
               <option value={"0"}>...</option>
-              {ppPackage.length === undefined
-                ? ""
-                : ppPackage?.map((val, key) => (
-                    <option key={key} value={val.id}>
-                      {val.name}
-                    </option>
-                  ))}
+              {ppPackage.length &&
+                ppPackage?.map((val, key) => (
+                  <option key={key} value={val.id}>
+                    {val.name}
+                  </option>
+                ))}
             </select>
           </div>
 
