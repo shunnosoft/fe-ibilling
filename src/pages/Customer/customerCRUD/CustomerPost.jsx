@@ -181,8 +181,16 @@ export default function CustomerModal() {
       Pprofile,
       Pcomment,
       balance,
+      mobile,
       ...rest
     } = data;
+
+    if (bpSettings.addCustomerWithMobile) {
+      if (mobile === "") {
+        setIsloading(false);
+        return alert(t("writeMobileNumber"));
+      }
+    }
 
     if (!genCustomerId) {
       if (!customerId) {
@@ -247,7 +255,8 @@ export default function CustomerModal() {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
-    addCustomer(dispatch, mainData, setIsloading, resetForm);
+    console.log(mainData);
+    // addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
   //divisional area formula
@@ -485,6 +494,7 @@ export default function CustomerModal() {
                         type="text"
                         label={t("mobile")}
                         name="mobile"
+                        validation={bpSettings.addCustomerWithMobile}
                         disabled={!mikrotikPackage}
                       />
                       <FtextField
