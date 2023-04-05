@@ -1,16 +1,35 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import "../customer.css";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 import { useTranslation } from "react-i18next";
+import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
 export default function CustomerDetails({ single }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
+  //get reseller all customer
   const customer = useSelector((state) => state?.customer?.customer);
 
   const data = customer.find((item) => item.id === single);
+
+  // find performer
+  const performer = ownerUsers.find((item) => item[data?.createdBy]);
+
+  useEffect(() => {
+    getOwnerUsers(dispatch, ispOwnerId);
+  }, []);
 
   return (
     <div>
@@ -88,23 +107,44 @@ export default function CustomerDetails({ single }) {
                   </h6>
                 </div>
                 <div>
-                  <h5>PPPoE</h5>
-                  <hr />
-                  <h6>
-                    {t("userName")} : <b>{data?.pppoe?.name}</b>
-                  </h6>
-                  <h6>
+                  <div className="pppoe">
+                    <h5>PPPoE</h5>
+                    <hr />
                     <h6>
-                      {t("password")} : <b>{data?.password}</b>
+                      {t("userName")} : <b>{data?.pppoe?.name}</b>
                     </h6>
-                    {t("profile")} : <b> {data?.pppoe?.profile}</b>
-                  </h6>
-                  <h6>
-                    {t("service")} : <b>{single?.pppoe?.service}</b>
-                  </h6>
-                  <h6>
-                    {t("comment")} : <b>{single?.pppoe?.comment}</b>
-                  </h6>
+                    <h6>
+                      {t("password")} : <b>{data?.pppoe?.password}</b>
+                    </h6>
+                    <h6>
+                      {t("profile")} : <b> {data?.pppoe?.profile}</b>
+                    </h6>
+                    <h6>
+                      {t("service")} : <b>{data?.pppoe?.service}</b>
+                    </h6>
+                    <h6>
+                      {t("comment")} : <b>{data?.pppoe?.comment}</b>
+                    </h6>
+                    <hr />
+                  </div>
+                  <div className="reference">
+                    <h5>{t("reference")}</h5>
+                    <hr />
+                    <h6>
+                      {t("referenceName")} : {data?.referenceName}
+                    </h6>
+                    <h6>
+                      {t("referenceMobile")} : {data?.referenceMobile}
+                    </h6>
+                    <h6>
+                      {t("createdBy")} :{" "}
+                      {performer && performer[data?.createdBy].name}
+                    </h6>
+                    <h6>
+                      {t("role")} :{" "}
+                      {performer && performer[data?.createdBy].role}
+                    </h6>
+                  </div>
                 </div>
               </div>
             </div>

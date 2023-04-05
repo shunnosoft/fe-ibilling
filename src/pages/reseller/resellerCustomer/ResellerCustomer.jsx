@@ -62,7 +62,7 @@ const ResellerCustomer = () => {
     (state) => state.persistedReducer.auth?.userData
   );
 
-  // // get isp owner data
+  // // get reseller data
   const reseller = useSelector((state) => state.reseller?.reseller);
 
   // get all data from redux state
