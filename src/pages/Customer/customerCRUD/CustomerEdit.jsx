@@ -144,7 +144,7 @@ export default function CustomerEdit(props) {
           item.name === data.thana &&
           item.district_id === divisionalInfo.district
       );
-      divisionalInfo.thana = findThana.id;
+      divisionalInfo.thana = findThana?.id;
     }
     setDivisionalArea({
       ...divisionalArea,
