@@ -30,9 +30,6 @@ import {
   EnvelopeOpen,
   PersonDash,
   Shop,
-  Basket2Fill,
-  CartFill,
-  Bag,
   Award,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
@@ -53,6 +50,9 @@ export default function Sidebar() {
   const getIspOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData
   );
+
+  // get reseller
+  const reseller = useSelector((state) => state.reseller);
 
   // get user permission
   const permission = useSelector(
@@ -529,6 +529,39 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink>
+
+                        {userRole === "ispOwner" &&
+                        reseller.reseller?.length ? (
+                          <NavLink
+                            key={124}
+                            to={
+                              userRole === "ispOwner" &&
+                              "/reseller/collection/report"
+                            }
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/reseller/collection/report"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("resellerCollection")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        ) : (
+                          ""
+                        )}
 
                         <NavLink
                           key={7}

@@ -105,6 +105,7 @@ import NetFeeIspOwnerSupport from "./admin/netFeeSupport/NetFeeIspOwnerSupport";
 import QRCodePay from "./pages/public-pages/QRCodePay";
 import ActiveStaticCustomer from "./reseller/activeStaticCustomer/ActiveStaticCustomer";
 import InactiveCustomer from "./pages/inactiveCustomer/InactiveCustomer";
+import ResellerCollection from "./pages/reseller/resellerCollection/ResellerCollection";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -567,6 +568,10 @@ function App() {
                 element={
                   userRole === "collector" ? <CollectorReport /> : <Report />
                 }
+              />
+              <Route
+                path="reseller/collection/report"
+                element={userRole === "ispOwner" && <ResellerCollection />}
               />
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
