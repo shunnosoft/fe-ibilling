@@ -531,37 +531,37 @@ export default function Sidebar() {
                         </NavLink>
 
                         {userRole === "ispOwner" &&
-                          reseller.reseller.length && (
-                            <NavLink
-                              key={124}
-                              to={
-                                userRole === "ispOwner" &&
-                                "/reseller/collection/report"
-                              }
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    "/reseller/collection/report"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<People />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("resellerCollection")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          )}
+                        reseller.reseller?.length ? (
+                          <NavLink
+                            key={124}
+                            to={
+                              userRole === "ispOwner" &&
+                              "/reseller/collection/report"
+                            }
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/reseller/collection/report"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("resellerCollection")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        ) : (
+                          ""
+                        )}
 
                         <NavLink
                           key={7}
