@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
-const ReportView = ({ reportId }) => {
+const ReportView = ({ reportId, status }) => {
   const { t } = useTranslation();
 
-  // get all report from redux
-  const report = useSelector((state) => state?.payment?.allBills);
+  let report = useSelector((state) =>
+    status === "resellerCustomerReport"
+      ? state.reseller?.resellerCollection
+      : state.payment?.allBills
+  );
 
   const data = report.find((item) => item.id === reportId);
 
@@ -45,7 +48,7 @@ const ReportView = ({ reportId }) => {
                   <b>{t("name")}</b> {data?.customer?.name}
                 </p>
                 <p>
-                  <b>{t("package")}</b> {data?.customer?.mikrotikPackage.name}
+                  <b>{t("package")}</b> {data?.customer?.mikrotikPackage?.name}
                 </p>
                 <p>
                   <b>{t("bill")}</b> {data?.amount}

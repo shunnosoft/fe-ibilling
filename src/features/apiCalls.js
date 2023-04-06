@@ -66,6 +66,7 @@ import {
   deleteResellerSuccess,
   editResellerforRecharge,
   editResellerSuccess,
+  getResellerCollectionReport,
   getResellerrSuccess,
 } from "./resellerSlice";
 import {
@@ -2465,6 +2466,22 @@ export const ispOwnerInvoiceCreate = async (
 
     document.querySelector("#ispOwnerInvoiceCreate").click();
     langMessage("success", "Invoice create success");
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+//get reseller coustomer collection report data
+export const resellerCustomerReport = async (
+  dispatch,
+  setIsLoading,
+  resellerId
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`bill/reseller/${resellerId}`);
+    dispatch(getResellerCollectionReport(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
   }
