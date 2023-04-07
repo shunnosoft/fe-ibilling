@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -13,14 +13,12 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
-import { useRef } from "react";
-import apiLink from "../../../api/apiLink";
+import ReactToPrint from "react-to-print";
+import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
 const animatedComponents = makeAnimated();
 
 export default function CustomerBillCollect({ single, customerData }) {
-  // console.log(single,customerData);
   const { t } = useTranslation();
-  const [responseData, setResponseData] = useState();
 
   const options = [
     { value: "January", label: t("january") },
@@ -51,23 +49,28 @@ export default function CustomerBillCollect({ single, customerData }) {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
-  const [billType, setBillType] = useState("bill");
-  const [amount, setAmount] = useState(null);
-  // const [defaultAmount, setDefault] = useState(single.monthlyFee);
-
+  // get bpSettings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+  // get ispOwner info
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // get userData
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
+  // get currentUser
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
 
+  // get currentUserId
   const currentUserId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
+
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
 
@@ -80,9 +83,23 @@ export default function CustomerBillCollect({ single, customerData }) {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
+  const [billType, setBillType] = useState("bill");
+  const [amount, setAmount] = useState(null);
   const totalAmount = Number(billAmount) + Number(balanceDue);
   const maxDiscount = totalAmount;
 
+  //response data after API call after payment
+  const [responseData, setResponseData] = useState({});
+  const rechargePrint = useRef();
+
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (responseData.id) {
+      document.getElementById("printButton").click();
+    }
+  }, [responseData]);
+
+  //Validation
   const BillValidatoin = Yup.object({
     amount: Yup.number()
       .min(0, t("billNotAcceptable"))
@@ -175,23 +192,6 @@ export default function CustomerBillCollect({ single, customerData }) {
 
     setAmount(data.amount);
   };
-
-  const [val, setCustomerReport] = useState([]);
-  useEffect(() => {
-    const getCustoemrReport = async () => {
-      setLoading(true);
-      try {
-        const res = await apiLink(`/bill/customer/${single}`);
-        const data = await res.data;
-        setCustomerReport(data[0]);
-        setLoading(false);
-      } catch (err) {
-        console.log("Error to get report: ", err);
-        setLoading(false);
-      }
-    };
-    single && getCustoemrReport();
-  }, [single]);
 
   return (
     <div
@@ -427,6 +427,40 @@ export default function CustomerBillCollect({ single, customerData }) {
                       </div>
                     </>
                   )}
+
+                  {/* Invoice Printer Page Component with button and they are hidden*/}
+
+                  <>
+                    {((role === "ispOwner" &&
+                      bpSettings?.instantRechargeBillPrint) ||
+                      ((role === "manager" || role === "collector") &&
+                        permission?.instantRechargeBillPrint &&
+                        bpSettings?.instantRechargeBillPrint)) && (
+                      <div className="d-none">
+                        <RechargePrintInvoice
+                          ref={rechargePrint}
+                          customerData={customerData}
+                          billingData={responseData}
+                          ispOwnerData={userData}
+                        />
+                      </div>
+                    )}
+
+                    <div className="d-none">
+                      <ReactToPrint
+                        documentTitle={t("billInvoice")}
+                        trigger={() => (
+                          <div
+                            title={t("printInvoiceBill")}
+                            style={{ cursor: "pointer" }}
+                          >
+                            <button id="printButton">Print</button>
+                          </div>
+                        )}
+                        content={() => rechargePrint.current}
+                      />
+                    </div>
+                  </>
 
                   <div className="mt-4">
                     <button type="submit" className="btn btn-success">

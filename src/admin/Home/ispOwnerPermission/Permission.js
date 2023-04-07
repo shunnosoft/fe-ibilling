@@ -102,6 +102,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Bulk Customer Recharge",
       isChecked: perm?.bulkCustomerRecharge,
     },
+    {
+      id: 18,
+      value: "instantRechargeBillPrint",
+      label: "Instant Recharge Bill Print",
+      isChecked: perm?.instantRechargeBillPrint,
+    },
   ];
   return permission;
 };

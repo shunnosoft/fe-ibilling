@@ -363,12 +363,14 @@ export const billCollect = async (
   dispatch,
   billData,
   setLoading,
-  resetForm
+  resetForm,
+  setResponseData
 ) => {
   setLoading(true);
   try {
     const res = await apiLink.post("/reseller/monthlyBill", billData);
     dispatch(updateBalance(res.data));
+    setResponseData(res.data);
     setLoading(false);
     langMessage(
       "success",

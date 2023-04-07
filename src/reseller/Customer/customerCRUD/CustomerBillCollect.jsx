@@ -17,6 +17,9 @@ import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
+import ReactToPrint from "react-to-print";
+import { useRef } from "react";
+import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
 const animatedComponents = makeAnimated();
 
 const options = [
@@ -34,7 +37,7 @@ const options = [
   { value: "December", label: "ডিসেম্বর" },
 ];
 
-export default function CustomerBillCollect({ single }) {
+export default function CustomerBillCollect({ single, customerData }) {
   const { t } = useTranslation();
   const customer = useSelector((state) => state?.customer?.customer);
 
@@ -51,12 +54,19 @@ export default function CustomerBillCollect({ single }) {
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
+
+  const resellerCommission = useSelector(
+    (state) => state.persistedReducer.auth?.userData.permissions
+  );
+
+  //have to work here since it is lost
   const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
-  const resellerCommission = useSelector(
-    (state) => state.persistedReducer.auth?.userData
+  // get user permission
+  const resellerPermission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permission
   );
 
   const currentUserId = useSelector(
@@ -74,15 +84,24 @@ export default function CustomerBillCollect({ single }) {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [packageRate, setPackageRate] = useState();
 
+  const [responseData, setResponseData] = useState({});
+  const resellerRechargePrint = useRef();
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (responseData.id) {
+      document.getElementById("printButtonReseller").click();
+    }
+  }, [responseData]);
+
   const BillValidatoin = Yup.object({
     amount: Yup.number()
       .min(
-        (resellerCommission.commissionType === "packageBased" &&
-          resellerCommission.commissionStyle === "fixedRate" &&
+        (resellerCommission?.commissionType === "packageBased" &&
+          resellerCommission?.commissionStyle === "fixedRate" &&
           packageRate?.ispOwnerRate) ||
           (!(
-            resellerCommission.commissionType === "packageBased" &&
-            resellerCommission.commissionStyle === "fixedRate"
+            resellerCommission?.commissionType === "packageBased" &&
+            resellerCommission?.commissionStyle === "fixedRate"
           ) && data?.balance < data?.monthlyFee
             ? data?.monthlyFee - data?.balance
             : data?.monthlyFee),
@@ -93,8 +112,8 @@ export default function CustomerBillCollect({ single }) {
 
   useEffect(() => {
     data &&
-      resellerCommission.commissionType === "packageBased" &&
-      resellerCommission.commissionStyle === "fixedRate" &&
+      resellerCommission?.commissionType === "packageBased" &&
+      resellerCommission?.commissionStyle === "fixedRate" &&
       getResellerPackageRate(
         data?.reseller,
         data?.mikrotikPackage,
@@ -114,8 +133,8 @@ export default function CustomerBillCollect({ single }) {
   // bill amount
   const customerBillHandler = (formValue) => {
     if (
-      resellerCommission.commissionType === "packageBased" &&
-      resellerCommission.commissionStyle === "fixedRate" &&
+      resellerCommission?.commissionType === "packageBased" &&
+      resellerCommission?.commissionStyle === "fixedRate" &&
       packageRate.ispOwnerRate > formValue.amount
     ) {
       toast.error(t("rechargeAmountMustBeUptoIspOwnerRate"));
@@ -124,8 +143,8 @@ export default function CustomerBillCollect({ single }) {
 
     if (
       !(
-        resellerCommission.commissionType === "packageBased" &&
-        resellerCommission.commissionStyle === "fixedRate"
+        resellerCommission?.commissionType === "packageBased" &&
+        resellerCommission?.commissionStyle === "fixedRate"
       ) &&
       data?.monthlyFee > formValue.amount + data?.balance
     ) {
@@ -156,7 +175,7 @@ export default function CustomerBillCollect({ single }) {
       });
       sendingData.month = monthValues.join(",");
     }
-    billCollect(dispatch, sendingData, setLoading, resetForm);
+    billCollect(dispatch, sendingData, setLoading, resetForm, setResponseData);
   };
 
   return (
@@ -373,6 +392,37 @@ export default function CustomerBillCollect({ single }) {
                           </div>
                         </>
                       )}
+
+                      <>
+                        {((role === "reseller" &&
+                          resellerPermission?.instantRechargeBillPrint) ||
+                          (role === "collector" &&
+                            collectorPermission?.instantRechargeBillPrint)) && (
+                          <div className="d-none">
+                            <RechargePrintInvoice
+                              ref={resellerRechargePrint}
+                              customerData={customerData}
+                              billingData={responseData}
+                              ispOwnerData={userData}
+                            />
+                          </div>
+                        )}
+
+                        <div className="d-none">
+                          <ReactToPrint
+                            documentTitle={t("billInvoice")}
+                            trigger={() => (
+                              <div
+                                title={t("printInvoiceBill")}
+                                style={{ cursor: "pointer" }}
+                              >
+                                <button id="printButtonReseller">Print</button>
+                              </div>
+                            )}
+                            content={() => resellerRechargePrint.current}
+                          />
+                        </div>
+                      </>
 
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">

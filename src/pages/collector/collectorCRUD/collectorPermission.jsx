@@ -178,6 +178,17 @@ export const collectorPermission = (
       isChecked: permission?.expenditure,
       disabled: !role === "ispOwner" ? true : false,
     },
+    {
+      id: 25,
+      value: "instantRechargeBillPrint",
+      label: "ইনস্ট্যান্ট রিচার্জ বিল প্রিন্ট",
+      isChecked: permission?.instantRechargeBillPrint,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.instantRechargeBillPrint
+        : role === "manager" &&
+          ispOwnerPermission?.instantRechargeBillPrint &&
+          managerPermission?.instantRechargeBillPrint),
+    },
   ];
 
   const permissionEn = [
@@ -352,6 +363,17 @@ export const collectorPermission = (
       label: "Expenditure",
       isChecked: permission?.expenditure,
       disabled: !role === "ispOwner" ? true : false,
+    },
+    {
+      id: 25,
+      value: "instantRechargeBillPrint",
+      label: "Instant Recharge Bill Print",
+      isChecked: permission?.instantRechargeBillPrint,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.instantRechargeBillPrint
+        : role === "manager" &&
+          ispOwnerPermission?.instantRechargeBillPrint &&
+          managerPermission?.instantRechargeBillPrint),
     },
   ];
 

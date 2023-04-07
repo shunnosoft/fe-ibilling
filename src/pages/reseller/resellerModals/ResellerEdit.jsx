@@ -27,6 +27,7 @@ import GlobalPackage, {
 import GlobalPackageEditWithOutMkt, {
   PackageBasedEditWithOutMkt,
 } from "./ResellerEdit/ResellerEditWihoutMkt";
+import { resellerPermissions } from "./resellerPermission";
 // import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerEdit({ resellerId }) {
@@ -38,12 +39,14 @@ export default function ResellerEdit({ resellerId }) {
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   const packages = useSelector((state) => state.package.packages);
@@ -62,13 +65,13 @@ export default function ResellerEdit({ resellerId }) {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
-    let resellerPermissionLang = [];
+    // let resellerPermissionLang = [];
 
-    if (localStorage.getItem("netFee:lang") === "en") {
-      resellerPermissionLang = resellerPermissionEng;
-    } else {
-      resellerPermissionLang = resellerPermissionBan;
-    }
+    // if (localStorage.getItem("netFee:lang") === "en") {
+    //   resellerPermissionLang = resellerPermissionEng;
+    // } else {
+    //   resellerPermissionLang = resellerPermissionBan;
+    // }
 
     if (reseller) {
       setMikrotikIds_Edit(reseller.mikrotiks);
@@ -80,10 +83,15 @@ export default function ResellerEdit({ resellerId }) {
       setPackageRateType(reseller.commissionStyle);
       setPackageCommission(reseller.resellerPackageRates);
       setClonePackageCommission(reseller.resellerPackageRates);
-      const temp = resellerPermissionLang.map((item) => {
-        return { ...item, isChecked: reseller.permission[item.value] };
-      });
-      setPermissions(temp);
+
+      const perms = resellerPermissions(reseller.permission, bpSettings);
+      const filterdPermission = perms.filter((p) => p.disabled === false);
+      setPermissions(filterdPermission);
+
+      // const temp = resellerPermissionLang.map((item) => {
+      //   return { ...item, isChecked: reseller.permission[item.value] };
+      // });
+      // setPermissions(temp);
     }
   }, [reseller]);
 
@@ -206,7 +214,6 @@ export default function ResellerEdit({ resellerId }) {
         toast.error("Please select a package");
         return;
       }
-      console.log(sendingData);
       editReseller(dispatch, sendingData, setIsLoading);
     }
   };
@@ -365,7 +372,7 @@ export default function ResellerEdit({ resellerId }) {
                                     className="displayFlex"
                                   >
                                     <input
-                                      id={key + "" + val}
+                                      id={key + "reseller" + val}
                                       key={val + "" + key}
                                       type="checkbox"
                                       className="form-check-input"
@@ -373,7 +380,7 @@ export default function ResellerEdit({ resellerId }) {
                                       onChange={handleChange}
                                       name={val.value}
                                     />
-                                    <label htmlFor={key + "" + val}>
+                                    <label htmlFor={key + "reseller" + val}>
                                       {val.label}
                                     </label>
                                   </div>

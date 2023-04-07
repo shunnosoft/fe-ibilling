@@ -195,6 +195,13 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.bulkCustomerRecharge,
       disabled: !bpSettings?.bulkCustomerRecharge,
     },
+    {
+      id: 29,
+      value: "instantRechargeBillPrint",
+      label: "Instant Recharge Bill Print",
+      isChecked: permission?.instantRechargeBillPrint,
+      disabled: !bpSettings?.instantRechargeBillPrint,
+    },
   ];
 
   const permissionBangla = [
@@ -393,6 +400,13 @@ export const managerPermission = (permission, bpSettings) => {
       label: "বাল্ক গ্রাহক রিচার্জ",
       isChecked: permission?.bulkCustomerRecharge,
       disabled: !bpSettings?.bulkCustomerRecharge,
+    },
+    {
+      id: 29,
+      value: "instantRechargeBillPrint",
+      label: "ইনস্ট্যান্ট রিচার্জ বিল প্রিন্ট",
+      isChecked: permission?.instantRechargeBillPrint,
+      disabled: !bpSettings?.instantRechargeBillPrint,
     },
   ];
 
