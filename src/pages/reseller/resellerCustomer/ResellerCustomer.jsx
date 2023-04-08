@@ -62,6 +62,9 @@ const ResellerCustomer = () => {
     (state) => state.persistedReducer.auth?.userData
   );
 
+  // // get reseller data
+  const reseller = useSelector((state) => state.reseller?.reseller);
+
   // get all data from redux state
   let resellerCustomer = useSelector(
     (state) => state?.resellerCustomer?.resellerCustomer
@@ -96,6 +99,8 @@ const ResellerCustomer = () => {
 
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
+
+  const resellerInfo = reseller.find((res) => res.id === resellerId);
 
   // reload handler method
   const reloadHandler = () => {
@@ -489,6 +494,8 @@ const ResellerCustomer = () => {
                       )}
                     </div>
                   </div>
+
+                  <h3 className="fs-2">{resellerInfo?.name}</h3>
 
                   <div className="d-flex">
                     <div className="addAndSettingIcon">

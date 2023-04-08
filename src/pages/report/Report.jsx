@@ -641,8 +641,13 @@ export default function Report() {
           </div>
         </div>
       </div>
-      <EditReport reportId={reportId} note={note} setNote={setNote} />
-      <ReportView reportId={viewId} />
+      <EditReport
+        reportId={reportId}
+        note={note}
+        setNote={setNote}
+        status="ispOwnerCustomerReport"
+      />
+      <ReportView reportId={viewId} status="ispOwnerCustomerReport" />
     </>
   );
 }
