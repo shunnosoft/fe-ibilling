@@ -73,10 +73,6 @@ export default function CustomerEdit(props) {
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
-  // generate Customer Id
-  const genCustomerId = useSelector(
-    (state) => state.persistedReducer.auth.userData?.bpSettings?.genCustomerId
-  );
 
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -241,9 +237,18 @@ export default function CustomerEdit(props) {
 
     const { customerId, Pname, Ppassword, Pprofile, Pcomment, ...rest } =
       formValue;
-    if (!genCustomerId) {
-      if (!customerId) {
+
+    if (!bpSettings.genCustomerId) {
+      if (customerId === "") {
+        setIsloading(false);
         return alert(t("writeCustomerId"));
+      }
+    }
+
+    if (bpSettings.addCustomerWithMobile) {
+      if (formValue.mobile === "") {
+        setIsloading(false);
+        return alert(t("writeMobileNumber"));
       }
     }
     const mainData = {
@@ -273,7 +278,7 @@ export default function CustomerEdit(props) {
     ) {
       delete mainData.balance;
     }
-    if (!genCustomerId) {
+    if (!bpSettings.genCustomerId) {
       mainData.customerId = customerId;
     }
 
@@ -460,11 +465,12 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="pppoeSection2">
-                      {!genCustomerId && (
+                      {!bpSettings.genCustomerId && (
                         <FtextField
                           type="text"
                           label="Customer Id"
                           name="customerId"
+                          validation={!bpSettings.genCustomerId}
                         />
                       )}
                       <FtextField
@@ -549,6 +555,7 @@ export default function CustomerEdit(props) {
                         type="text"
                         label={t("mobile")}
                         name="mobile"
+                        validation={bpSettings.addCustomerWithMobile}
                         disabled={
                           !permission?.customerMobileEdit &&
                           role === "collector"

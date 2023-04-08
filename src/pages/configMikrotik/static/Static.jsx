@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { PersonLinesFill } from "react-bootstrap-icons";
 import CustomerSync from "./staticOperation/CustomerSync";
 import { useEffect } from "react";
-import { getStaticCustomer } from "../../../features/apiCalls";
+import { getStaticCustomer, testFireWallApi } from "../../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Table from "../../../components/table/Table";
 import moment from "moment";
@@ -42,6 +42,15 @@ const Static = () => {
       setStatiCustomer(filterCustomer);
     }
   }, [customer]);
+
+  const testFirewall = () => {
+    const data = {
+      ispOwner: ispOwner,
+      mikrotikId: mikrotikId,
+    };
+
+    testFireWallApi(data);
+  };
 
   useEffect(() => {
     getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
@@ -125,6 +134,12 @@ const Static = () => {
                 className="btn btn-outline-primary me-2 "
               >
                 {t("staticCustomerSync")} <PersonLinesFill />
+              </button>
+              <button
+                className="btn btn-outline-primary me-2"
+                onClick={testFirewall}
+              >
+                sync
               </button>
             </div>
           </div>
