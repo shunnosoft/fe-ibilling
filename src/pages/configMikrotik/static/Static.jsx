@@ -43,15 +43,6 @@ const Static = () => {
     }
   }, [customer]);
 
-  const testFirewall = () => {
-    const data = {
-      ispOwner: ispOwner,
-      mikrotikId: mikrotikId,
-    };
-
-    testFireWallApi(data);
-  };
-
   useEffect(() => {
     getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
   }, []);
@@ -134,12 +125,6 @@ const Static = () => {
                 className="btn btn-outline-primary me-2 "
               >
                 {t("staticCustomerSync")} <PersonLinesFill />
-              </button>
-              <button
-                className="btn btn-outline-primary me-2"
-                onClick={testFirewall}
-              >
-                sync
               </button>
             </div>
           </div>

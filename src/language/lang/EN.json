@@ -707,5 +707,6 @@
   "otherPackageUsers": "Other Package Users",
   "inactive": "Inactive",
   "selectAll": "Select All",
-  "calenderAlertTemplate": "Calender Alert SMS Template"
+  "calenderAlertTemplate": "Calender Alert SMS Template",
+  "resellerCollection": "Reseller Collection"
 }

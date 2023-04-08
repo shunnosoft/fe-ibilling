@@ -2508,3 +2508,25 @@ export const resellerCustomerReport = async (
   }
   setIsLoading(false);
 };
+
+//post fire wall id filter drop
+export const fireWallIpFilterDrop = async (
+  dispatch,
+  setIsLoading,
+  ispOwner,
+  mikrotikId,
+  dropIp
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(
+      `mikrotik/dropFireWallFilterRule/${ispOwner}/${mikrotikId}`,
+      { dropIp }
+    );
+    document.querySelector("#fireWallIpFilter").click();
+    langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
