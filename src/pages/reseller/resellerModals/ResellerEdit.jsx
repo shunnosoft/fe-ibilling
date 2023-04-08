@@ -7,12 +7,7 @@ import * as Yup from "yup";
 import "../reseller.css";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import {
-  RADIO,
-  resellerPermissionBan,
-  resellerPermissionEng,
-  RPD,
-} from "../resellerData";
+import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
 import {
   editReseller,
@@ -27,6 +22,7 @@ import GlobalPackage, {
 import GlobalPackageEditWithOutMkt, {
   PackageBasedEditWithOutMkt,
 } from "./ResellerEdit/ResellerEditWihoutMkt";
+import { resellerPermissions } from "./resellerPermission";
 // import { editReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerEdit({ resellerId }) {
@@ -38,14 +34,18 @@ export default function ResellerEdit({ resellerId }) {
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
 
+  //get ispOwner Info
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
+  //get packages
   const packages = useSelector((state) => state.package.packages);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -61,14 +61,15 @@ export default function ResellerEdit({ resellerId }) {
 
   const [permissions, setPermissions] = useState([]);
 
+  //get all valid permissions from resellerPermissions
   useEffect(() => {
-    let resellerPermissionLang = [];
+    // let resellerPermissionLang = [];
 
-    if (localStorage.getItem("netFee:lang") === "en") {
-      resellerPermissionLang = resellerPermissionEng;
-    } else {
-      resellerPermissionLang = resellerPermissionBan;
-    }
+    // if (localStorage.getItem("netFee:lang") === "en") {
+    //   resellerPermissionLang = resellerPermissionEng;
+    // } else {
+    //   resellerPermissionLang = resellerPermissionBan;
+    // }
 
     if (reseller) {
       setMikrotikIds_Edit(reseller.mikrotiks);
@@ -80,10 +81,15 @@ export default function ResellerEdit({ resellerId }) {
       setPackageRateType(reseller.commissionStyle);
       setPackageCommission(reseller.resellerPackageRates);
       setClonePackageCommission(reseller.resellerPackageRates);
-      const temp = resellerPermissionLang.map((item) => {
-        return { ...item, isChecked: reseller.permission[item.value] };
-      });
-      setPermissions(temp);
+
+      const perms = resellerPermissions(reseller.permission, bpSettings);
+      const filterdPermission = perms.filter((p) => p.disabled === false);
+      setPermissions(filterdPermission);
+
+      // const temp = resellerPermissionLang.map((item) => {
+      //   return { ...item, isChecked: reseller.permission[item.value] };
+      // });
+      // setPermissions(temp);
     }
   }, [reseller]);
 
@@ -125,6 +131,7 @@ export default function ResellerEdit({ resellerId }) {
     }
   };
 
+  //submit handler
   const resellerHandler = (data) => {
     let commision = data.commissionRate;
     if (auth.ispOwner) {
@@ -206,11 +213,11 @@ export default function ResellerEdit({ resellerId }) {
         toast.error("Please select a package");
         return;
       }
-      console.log(sendingData);
       editReseller(dispatch, sendingData, setIsLoading);
     }
   };
 
+  //area handler
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass_Edit");
     let IDS_temp = [];
@@ -223,6 +230,7 @@ export default function ResellerEdit({ resellerId }) {
     setAreaIds_Edit(IDS_temp);
   };
 
+  //miktrotik handler
   const setMikrotikHandler = (e) => {
     const temp = document.querySelectorAll(".getValueUsingClassesforMikrotik");
     let IDS_temp = [];
@@ -365,7 +373,7 @@ export default function ResellerEdit({ resellerId }) {
                                     className="displayFlex"
                                   >
                                     <input
-                                      id={key + "" + val}
+                                      id={key + "reseller" + val}
                                       key={val + "" + key}
                                       type="checkbox"
                                       className="form-check-input"
@@ -373,7 +381,7 @@ export default function ResellerEdit({ resellerId }) {
                                       onChange={handleChange}
                                       name={val.value}
                                     />
-                                    <label htmlFor={key + "" + val}>
+                                    <label htmlFor={key + "reseller" + val}>
                                       {val.label}
                                     </label>
                                   </div>

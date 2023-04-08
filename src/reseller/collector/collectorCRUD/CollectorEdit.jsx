@@ -203,28 +203,31 @@ export default function CollectorEdit({ collectorId }) {
 
                     <b className="mt-2">{t("changePermission")}</b>
                     <div className="AllAreaClass">
-                      {permissions.map((val, key) => (
-                        // {
-                        //   console.log(val?.isDisabled);
-                        // }
-                        <div className="CheckboxContainer p-1" key={key}>
-                          <input
-                            type="checkbox"
-                            className="CheckBox"
-                            name={val.value}
-                            checked={val.isChecked}
-                            disabled={val?.isDisabled}
-                            onChange={handleChange}
-                            id={val.value + key}
-                          />
-                          <label
-                            htmlFor={val.value + key}
-                            className="checkboxLabel"
-                          >
-                            {val.label}
-                          </label>
-                        </div>
-                      ))}
+                      {permissions.map(
+                        (val, key) =>
+                          // {
+                          //   console.log(val?.isDisabled);
+                          // }
+                          !val?.isDisabled && (
+                            <div className="CheckboxContainer p-1" key={key}>
+                              <input
+                                type="checkbox"
+                                className="CheckBox"
+                                name={val.value}
+                                checked={val.isChecked}
+                                disabled={val?.isDisabled}
+                                onChange={handleChange}
+                                id={val.value + key}
+                              />
+                              <label
+                                htmlFor={val.value + key}
+                                className="checkboxLabel"
+                              >
+                                {val.label}
+                              </label>
+                            </div>
+                          )
+                      )}
                     </div>
                     {/* area */}
 

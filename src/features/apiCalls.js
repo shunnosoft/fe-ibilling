@@ -1711,6 +1711,7 @@ export const billCollect = async (
       setResponseData(res.data);
     } else {
       dispatch(updateBalanceStaticCustomer(res.data));
+      setResponseData(res.data);
     }
     setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();

@@ -63,6 +63,14 @@ export const collectorPermission = (permission, resellerPermission) => {
       isChecked: permission?.billPosting,
       isDisabled: false,
     },
+    {
+      id: 10,
+      value: "instantRechargeBillPrint",
+      label: "ইনস্ট্যান্ট রিচার্জ বিল প্রিন্ট",
+      isChecked: permission?.instantRechargeBillPrint,
+      // isDisabled: false,
+      isDisabled: !resellerPermission?.instantRechargeBillPrint,
+    },
   ];
 
   const permissionEn = [
@@ -128,6 +136,13 @@ export const collectorPermission = (permission, resellerPermission) => {
       label: "Bill Posting",
       isChecked: permission?.billPosting,
       isDisabled: false,
+    },
+    {
+      id: 10,
+      value: "instantRechargeBillPrint",
+      label: "Instant Recharge Bill Print",
+      isChecked: permission?.instantRechargeBillPrint,
+      isDisabled: !resellerPermission?.instantRechargeBillPrint,
     },
   ];
 

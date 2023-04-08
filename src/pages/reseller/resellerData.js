@@ -81,6 +81,13 @@ export const resellerPermissionEng = [
     value: "bulkCustomerRecharge",
     isChecked: false,
   },
+  {
+    id: 14,
+    label: "Instant Recharge Bill Print",
+    value: "instantRechargeBillPrint",
+    isChecked: false,
+    disable: false,
+  },
 ];
 
 export const resellerPermissionBan = [
@@ -141,6 +148,13 @@ export const resellerPermissionBan = [
     label: "বাল্ক গ্রাহক রিচার্জ",
     value: "bulkCustomerRecharge",
     isChecked: false,
+  },
+  {
+    id: 14,
+    label: "ইনস্ট্যান্ট রিচার্জ বিল প্রিন্ট",
+    value: "instantRechargeBillPrint",
+    isChecked: false,
+    disable: false,
   },
 
   // { id: 3, label: "কাস্টমার ডিলিট", value: "customerDelete", isChecked: false },

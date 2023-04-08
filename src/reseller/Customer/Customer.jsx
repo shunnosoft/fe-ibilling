@@ -60,6 +60,7 @@ export default function Customer() {
   const reseller = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
+
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
   const cus = useSelector((state) => state?.customer?.customer);
 
@@ -453,6 +454,7 @@ export default function Customer() {
                     data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      getSpecificCustomerReport(original);
                     }}
                   >
                     <div className="dropdown-item">
@@ -646,7 +648,10 @@ export default function Customer() {
               {/* Model start */}
               <CustomerPost />
               <CustomerEdit single={singleCustomer} />
-              <CustomerBillCollect single={singleCustomer} />
+              <CustomerBillCollect
+                single={singleCustomer}
+                customerData={customerReportData}
+              />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
               <SingleMessage single={singleCustomer} sendCustomer="customer" />

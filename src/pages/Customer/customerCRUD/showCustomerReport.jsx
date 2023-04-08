@@ -20,7 +20,11 @@ export default function CustomerReport(props) {
   const { t } = useTranslation();
   const billRefwithNote = useRef();
   const billRefwithOutNote = useRef();
+  const [printVal, setPrintVal] = useState({});
+  const [customerReport, setCustomerReport] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  //get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -37,10 +41,7 @@ export default function CustomerReport(props) {
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
-  const [customerReport, setCustomerReport] = useState([]);
-
-  // const [canDelete, setDelete] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  //get specific customer report
   useEffect(() => {
     const getCustoemrReport = async () => {
       setIsLoading(true);
@@ -57,6 +58,7 @@ export default function CustomerReport(props) {
     single?.id && getCustoemrReport();
   }, [single]);
 
+  //delete report
   const deletReport = async (reportId) => {
     const con = window.confirm(t("deleteAlert"));
     if (con) {
@@ -74,6 +76,14 @@ export default function CustomerReport(props) {
       }
     }
   };
+
+  //delaying the print click for 100 ms time
+  function handlePrint(val) {
+    setPrintVal(val);
+    setTimeout(function () {
+      document.getElementById("pressPrint").click();
+    }, 100);
+  }
 
   return (
     <div>
@@ -253,34 +263,43 @@ export default function CustomerReport(props) {
                                     ref={billRefwithNote}
                                     customerData={single}
                                     billingData={{
-                                      amount: val.amount,
-                                      due: val.due,
-                                      discount: val.discount,
-                                      billType: val.billType,
-                                      paymentDate: val.createdAt,
-                                      medium: val.medium,
-                                      startDate: val.start,
-                                      endDate: val.end,
-                                      note: val.note,
-                                      month: val.month,
+                                      amount: printVal.amount,
+                                      due: printVal.due,
+                                      discount: printVal.discount,
+                                      billType: printVal.billType,
+                                      paymentDate: printVal.createdAt,
+                                      medium: printVal.medium,
+                                      startDate: printVal.start,
+                                      endDate: printVal.end,
+                                      note: printVal.note,
+                                      month: printVal.month,
                                       billingCycle:
-                                        val?.prevState?.billingCycle,
-                                      promiseDate: val?.prevState?.promiseDate,
+                                        printVal?.prevState?.billingCycle,
+                                      promiseDate:
+                                        printVal?.prevState?.promiseDate,
                                     }}
                                     ispOwnerData={ispOwnerData}
+                                    paymentDate={printVal.createdAt}
                                   />
                                 </div>
                                 {permission?.billPrint ||
                                 role !== "collector" ? (
                                   <div>
+                                    <PrinterFill
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        handlePrint(val);
+                                      }}
+                                    />
                                     <ReactToPrint
                                       documentTitle={t("billIvoice")}
                                       trigger={() => (
                                         <div
+                                          className="d-none"
                                           title={t("printInvoiceBill")}
                                           style={{ cursor: "pointer" }}
                                         >
-                                          <PrinterFill />
+                                          <button id="pressPrint">btn</button>
                                         </div>
                                       )}
                                       content={() => billRefwithNote.current}
@@ -315,31 +334,40 @@ export default function CustomerReport(props) {
                                     ref={billRefwithOutNote}
                                     customerData={single}
                                     billingData={{
-                                      amount: val.amount,
-                                      due: val.due,
-                                      discount: val.discount,
-                                      billType: val.billType,
-                                      paymentDate: val.createdAt,
+                                      amount: printVal.amount,
+                                      due: printVal.due,
+                                      discount: printVal.discount,
+                                      billType: printVal.billType,
+                                      paymentDate: printVal.createdAt,
                                       billingCycle:
-                                        val?.prevState?.billingCycle,
-                                      promiseDate: val?.prevState?.promiseDate,
-                                      medium: val.medium,
+                                        printVal?.prevState?.billingCycle,
+                                      promiseDate:
+                                        printVal?.prevState?.promiseDate,
+                                      medium: printVal.medium,
                                     }}
                                     ispOwnerData={ispOwnerData}
+                                    paymentDate={printVal.createdAt}
                                   />
                                 </div>
                                 <div className="d-flex">
                                   {permission?.billPrint ||
                                   role !== "collector" ? (
                                     <div className="mx-2">
+                                      <PrinterFill //button for printing
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => {
+                                          handlePrint(val);
+                                        }}
+                                      />
                                       <ReactToPrint
                                         documentTitle={t("billIvoice")}
                                         trigger={() => (
                                           <div
+                                            className="d-none"
                                             title={t("printInvoiceBill")}
                                             style={{ cursor: "pointer" }}
                                           >
-                                            <PrinterFill />
+                                            <button id="pressPrint">btn</button>
                                           </div>
                                         )}
                                         content={() =>
