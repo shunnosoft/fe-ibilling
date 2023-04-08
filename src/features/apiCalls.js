@@ -755,6 +755,7 @@ export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/ispOwner/customer", data);
+    console.log(res.data);
     dispatch(addCustomerSuccess(res.data));
     setIsloading(false);
     langMessage(
@@ -911,6 +912,26 @@ export const syncMikrotikStaticUser = async (
     })
     .catch((error) => {
       setIsLoading(false);
+      toast.error(error.response?.data.message);
+    });
+};
+
+// get Mikrotik Sync user
+export const testFireWallApi = async (data) => {
+  await apiLink({
+    method: "GET",
+    url: `/mikrotik/syncSimpleQueueToFirewallFilterRule/${data.ispOwner}/${data.mikrotikId}`,
+  })
+    .then((res) => {
+      // dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
+      console.log(res.data);
+      langMessage(
+        "success",
+        "মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে",
+        "Static Customer Sync form Mikrotik is Successful"
+      );
+    })
+    .catch((error) => {
       toast.error(error.response?.data.message);
     });
 };

@@ -39,6 +39,7 @@ export default function CustomerModal() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
+  console.log(bpSettings);
 
   // const packages= useSelector(state=>state.package.packages)
   // const ispOwnerId = useSelector(
@@ -47,10 +48,6 @@ export default function CustomerModal() {
   const area = useSelector((state) => state?.area?.area);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  // generate Customer Id
-  const genCustomerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.bpSettings?.genCustomerId
-  );
   const ppPackage = useSelector((state) =>
     hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
@@ -105,19 +102,6 @@ export default function CustomerModal() {
       .min(0, t("billNotAcceptable"))
       .integer(t("decimalNumberNotAcceptable")),
   });
-
-  // select subArea
-  // const selectSubArea = (data) => {
-  //   const areaId = data.target.value;
-  //   if (area) {
-  //     const temp = area.find((val) => {
-  //       return val.id === areaId;
-  //     });
-  //     setSubArea(temp);
-  //   }
-  // };
-
-  // const [loadingPac, setLoadingPac] = useState(false);
 
   // select Getmikrotik
   const selectMikrotik = (e) => {
@@ -181,33 +165,22 @@ export default function CustomerModal() {
       Pprofile,
       Pcomment,
       balance,
-      mobile,
       ...rest
     } = data;
 
     if (bpSettings.addCustomerWithMobile) {
-      if (mobile === "") {
+      if (data.mobile === "") {
         setIsloading(false);
         return alert(t("writeMobileNumber"));
       }
     }
 
-    if (!genCustomerId) {
-      if (!customerId) {
+    if (!bpSettings.genCustomerId) {
+      if (customerId === "") {
+        setIsloading(false);
         return alert(t("writeCustomerId"));
       }
     }
-
-    // if (connectionFee) {
-    //   if (data.amount <= 0) {
-    //     setIsloading(false);
-    //     return alert(t("writeConnectionFee"));
-    //   }
-    //   if (medium === "") {
-    //     setIsloading(false);
-    //     return alert(t("selectMedium"));
-    //   }
-    // }
 
     const mainData = {
       paymentStatus: "unpaid",
@@ -219,8 +192,6 @@ export default function CustomerModal() {
       autoDisable: autoDisable,
       connectionDate: connectionDate?.toISOString(),
       billingCycle: billDate?.toISOString(),
-      // medium,
-      // connectionFeeStatus: connectionFee,
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -234,13 +205,9 @@ export default function CustomerModal() {
     if (!bpSettings?.hasMikrotik) {
       delete mainData.mikrotik;
     }
-    if (!genCustomerId) {
+    if (!bpSettings.genCustomerId) {
       mainData.customerId = customerId;
     }
-    // if (!connectionFee) {
-    //   delete mainData.amount;
-    //   delete mainData.medium;
-    // }
 
     if (
       divisionalArea.district ||
@@ -256,7 +223,7 @@ export default function CustomerModal() {
       if (thanaName) mainData.thana = thanaName;
     }
     console.log(mainData);
-    // addCustomer(dispatch, mainData, setIsloading, resetForm);
+    addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
   //divisional area formula
@@ -604,13 +571,13 @@ export default function CustomerModal() {
                       />
                     </div>
                     <div className="displayGrid3 mb-3">
-                      {!genCustomerId && (
+                      {!bpSettings.genCustomerId && (
                         <FtextField
                           type="text"
                           label={t("customerId")}
                           name="customerId"
                           disabled={!mikrotikPackage}
-                          validation={"true"}
+                          validation={!bpSettings.genCustomerId}
                         />
                       )}
                       {bpSettings?.hasMikrotik && (
