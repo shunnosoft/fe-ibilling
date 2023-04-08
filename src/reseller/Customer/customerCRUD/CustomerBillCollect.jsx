@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import {
   billCollect,
   getResellerPackageRate,
+  resellerInfo,
 } from "../../../features/apiCallReseller";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
@@ -20,6 +21,7 @@ import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
 import { useRef } from "react";
 import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
+import apiLink from "../../../api/apiLink";
 const animatedComponents = makeAnimated();
 
 const options = [
@@ -45,21 +47,33 @@ export default function CustomerBillCollect({ single, customerData }) {
 
   const [billType, setBillType] = useState("bill");
 
+  //get roles
   const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  //get userData info
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
+  //get userData
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
+  //get resellerId from userData store
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.reseller
+  );
+
+  //get current loggen in user
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
 
+  //get resellerCommission
   const resellerCommission = useSelector(
-    (state) => state.persistedReducer.auth?.userData.permissions
+    (state) => state.persistedReducer.auth?.userData
   );
 
-  //have to work here since it is lost
+  //get collectorPermission
   const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
@@ -69,6 +83,7 @@ export default function CustomerBillCollect({ single, customerData }) {
     (state) => state.persistedReducer.auth.userData.permission
   );
 
+  //get currentUserId
   const currentUserId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
@@ -83,15 +98,11 @@ export default function CustomerBillCollect({ single, customerData }) {
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [packageRate, setPackageRate] = useState();
-
-  const [responseData, setResponseData] = useState({});
   const resellerRechargePrint = useRef();
-  //print button is clicked after successful response
-  useEffect(() => {
-    if (responseData.id) {
-      document.getElementById("printButtonReseller").click();
-    }
-  }, [responseData]);
+
+  const [collectorResellerInfo, setCollectorResellerInfo] = useState({});
+  const [responseData, setResponseData] = useState({});
+  const [test, setTest] = useState(false);
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -109,6 +120,18 @@ export default function CustomerBillCollect({ single, customerData }) {
       )
       .integer(t("decimalNumberNotAcceptable")),
   });
+
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (test) {
+      document.getElementById("printButtonReseller").click();
+    }
+  }, [test]);
+
+  //api is called to get reseller info for the reseller collector customer
+  useEffect(() => {
+    resellerInfo(resellerId, setCollectorResellerInfo);
+  }, [resellerId]);
 
   useEffect(() => {
     data &&
@@ -175,7 +198,15 @@ export default function CustomerBillCollect({ single, customerData }) {
       });
       sendingData.month = monthValues.join(",");
     }
-    billCollect(dispatch, sendingData, setLoading, resetForm, setResponseData);
+
+    billCollect(
+      dispatch,
+      sendingData,
+      setLoading,
+      resetForm,
+      setResponseData,
+      setTest //to verify successful response
+    );
   };
 
   return (
@@ -397,7 +428,9 @@ export default function CustomerBillCollect({ single, customerData }) {
                         {((role === "reseller" &&
                           resellerPermission?.instantRechargeBillPrint) ||
                           (role === "collector" &&
-                            collectorPermission?.instantRechargeBillPrint)) && (
+                            collectorPermission?.instantRechargeBillPrint &&
+                            collectorResellerInfo?.permission
+                              .instantRechargeBillPrint)) && (
                           <div className="d-none">
                             <RechargePrintInvoice
                               ref={resellerRechargePrint}
@@ -410,7 +443,7 @@ export default function CustomerBillCollect({ single, customerData }) {
 
                         <div className="d-none">
                           <ReactToPrint
-                            documentTitle={t("billInvoice")}
+                            documentTitle={t("saddda")}
                             trigger={() => (
                               <div
                                 title={t("printInvoiceBill")}

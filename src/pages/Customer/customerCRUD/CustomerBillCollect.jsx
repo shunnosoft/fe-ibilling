@@ -174,7 +174,7 @@ export default function CustomerBillCollect({ single, customerData }) {
       collectorId: currentUserId, //when collector is logged in
       userType: data?.userType,
       medium,
-      package: data.pppoe.profile,
+      package: data?.pppoe.profile,
     };
     if (note) sendingData.note = note;
 

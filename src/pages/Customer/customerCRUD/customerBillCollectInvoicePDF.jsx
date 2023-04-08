@@ -106,9 +106,20 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
               <tr>
                 <th>{t("billComment")}</th>
                 <td>
-                  {moment(billingData?.startDate).format("MMM DD YYYY")} -
-                  {moment(billingData?.endDate).format("MMM DD YYYY")}{" "}
-                  {billingData?.month} {billingData?.note}
+                  {billingData?.startDate && (
+                    <span>
+                      {moment(billingData?.startDate).format("MMM DD YYYY")} -
+                    </span>
+                  )}
+
+                  {billingData?.endDate && (
+                    <span>
+                      {moment(billingData?.endDate).format("MMM DD YYYY")}
+                    </span>
+                  )}
+                  <span>
+                    {billingData?.month} {billingData?.note}
+                  </span>
                 </td>
               </tr>
             </tbody>

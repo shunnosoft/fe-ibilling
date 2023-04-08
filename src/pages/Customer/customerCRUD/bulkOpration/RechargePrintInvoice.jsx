@@ -7,6 +7,7 @@ const RechargePrintInvoice = React.forwardRef((props, ref) => {
   const { billingData, ispOwnerData, customerData } = props;
   return (
     <>
+      {/* will not render initially if no data is found */}
       {billingData?.id && ispOwnerData?.id && customerData.id && (
         <div ref={ref}>
           <div className="text-center mb-1">{t("officeCopy")}</div>

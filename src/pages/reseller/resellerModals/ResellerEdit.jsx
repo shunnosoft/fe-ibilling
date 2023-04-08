@@ -7,12 +7,7 @@ import * as Yup from "yup";
 import "../reseller.css";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import {
-  RADIO,
-  resellerPermissionBan,
-  resellerPermissionEng,
-  RPD,
-} from "../resellerData";
+import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
 import {
   editReseller,
@@ -40,6 +35,7 @@ export default function ResellerEdit({ resellerId }) {
     return val.id === resellerId;
   });
 
+  //get ispOwner Info
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -49,6 +45,7 @@ export default function ResellerEdit({ resellerId }) {
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
+  //get packages
   const packages = useSelector((state) => state.package.packages);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +61,7 @@ export default function ResellerEdit({ resellerId }) {
 
   const [permissions, setPermissions] = useState([]);
 
+  //get all valid permissions from resellerPermissions
   useEffect(() => {
     // let resellerPermissionLang = [];
 
@@ -133,6 +131,7 @@ export default function ResellerEdit({ resellerId }) {
     }
   };
 
+  //submit handler
   const resellerHandler = (data) => {
     let commision = data.commissionRate;
     if (auth.ispOwner) {
@@ -218,6 +217,7 @@ export default function ResellerEdit({ resellerId }) {
     }
   };
 
+  //area handler
   const setAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass_Edit");
     let IDS_temp = [];
@@ -230,6 +230,7 @@ export default function ResellerEdit({ resellerId }) {
     setAreaIds_Edit(IDS_temp);
   };
 
+  //miktrotik handler
   const setMikrotikHandler = (e) => {
     const temp = document.querySelectorAll(".getValueUsingClassesforMikrotik");
     let IDS_temp = [];

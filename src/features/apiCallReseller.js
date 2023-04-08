@@ -342,6 +342,17 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
   }
 };
 
+//get reseller info
+export const resellerInfo = async (resellerId, setCollectorResellerInfo) => {
+  try {
+    const res = await apiLink.get(`/reseller/${resellerId}`);
+    // console.log(res.data);
+    setCollectorResellerInfo(res.data);
+  } catch (error) {
+    //saddd
+  }
+};
+
 // get reseller package rate
 export const getResellerPackageRate = async (
   resellerId,
@@ -364,13 +375,15 @@ export const billCollect = async (
   billData,
   setLoading,
   resetForm,
-  setResponseData
+  setResponseData,
+  setTest
 ) => {
   setLoading(true);
   try {
     const res = await apiLink.post("/reseller/monthlyBill", billData);
     dispatch(updateBalance(res.data));
     setResponseData(res.data);
+    setTest(true);
     setLoading(false);
     langMessage(
       "success",
