@@ -303,10 +303,10 @@ const ResellerCollection = () => {
               <FourGround>
                 <div className="collectorWrapper p-4">
                   <div className="d-flex justify-content-center">
-                    <div className="form-group px-2">
+                    <div className="col-md-2 form-group mx-2">
                       <h6 className="mb-0">{t("reseller")}</h6>
                       <select
-                        className="form-select mt-0"
+                        className="form-select mt-0 mw-100"
                         id="resellerCollection"
                         onChange={resellerCollectionReport}
                       >
@@ -315,10 +315,10 @@ const ResellerCollection = () => {
                         ))}
                       </select>
                     </div>
-                    <div className="form-group px-2">
+                    <div className="col-md-2 form-group">
                       <h6 className="mb-0">{t("paymentType")}</h6>
                       <select
-                        className="form-select mt-0"
+                        className="form-select mt-0 mw-100"
                         onChange={(e) => setPaymentType(e.target.value)}
                       >
                         <option value="All" selected>
@@ -336,7 +336,7 @@ const ResellerCollection = () => {
                       </select>
                     </div>
 
-                    <div className="ms-2">
+                    <div className="ms-2 ">
                       <h6 className="mb-0">{t("startDate")}</h6>
                       <DatePicker
                         className="form-control w-140 mt-0"
@@ -346,7 +346,7 @@ const ResellerCollection = () => {
                         placeholderText={t("selectBillDate")}
                       />
                     </div>
-                    <div className="mx-2">
+                    <div className="mx-2 ">
                       <h6 className="mb-0">{t("endDate")}</h6>
                       <DatePicker
                         className="form-control w-140 mt-0"
@@ -357,7 +357,7 @@ const ResellerCollection = () => {
                       />
                     </div>
 
-                    <div>
+                    <div className="d-flex align-items-end">
                       <button
                         className="btn btn-outline-primary w-110 mt-2"
                         type="button"

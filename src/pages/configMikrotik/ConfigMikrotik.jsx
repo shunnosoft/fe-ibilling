@@ -21,6 +21,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import PPPoE from "./pppoe/PPPoE";
 import Hotspot from "./hotspot/Hotspot";
 import Static from "./static/Static";
+import FireWallFilter from "./FireWallQueue/FireWallFilter";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -132,6 +133,9 @@ export default function ConfigMikrotik() {
                   </Tab>
                   <Tab eventKey="hotspot" title={t("hotspot")}>
                     <Hotspot />
+                  </Tab>
+                  <Tab eventKey="fireWallFilter" title="Fire Wall Filter">
+                    <FireWallFilter />
                   </Tab>
                 </Tabs>
               </FourGround>

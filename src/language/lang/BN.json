@@ -272,6 +272,7 @@
   "email": "ইমেইল",
   "userType": "ইউজারের ধরণ",
   "monthlyPayment": "মাসিক বেতন",
+  "paymentType": "পরিশোধের ধরণ",
   "customerProfile": "গ্রাহক প্রোফাইল",
   "billPaymentType": "বিল পরিশোধের ধরণ",
   "informationEdit": "এর তথ্য এডিট করুন",

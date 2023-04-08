@@ -312,6 +312,7 @@
   "email": "Email",
   "userType": "User Type",
   "monthlyPayment": "Monthly Payment",
+  "paymentType": "Payment Type",
   "customerProfile": "Customer Profile",
   "billPaymentType": "Bill Payment Type",
   "informationEdit": "'s Information Edit",
