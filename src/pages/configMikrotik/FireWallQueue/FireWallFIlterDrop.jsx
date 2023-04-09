@@ -37,7 +37,7 @@ const FireWallFIlterDrop = ({ ispOwner, mikrotikId }) => {
               className="modal-title"
               id="fireWallIpDrop"
             >
-              Fire Wall Ip Filter Drop
+              {t("fireWallIpFilterDrop")}
             </h5>
             <button
               type="button"
@@ -53,7 +53,7 @@ const FireWallFIlterDrop = ({ ispOwner, mikrotikId }) => {
                   class="form-label mb-0 text-secondary"
                   for="singleIpDrop"
                 >
-                  Input Fire Wall Ip Filter Drop
+                  {t("inputFireWallIpFilterDrop")}
                 </label>
                 <input
                   class="form-control"

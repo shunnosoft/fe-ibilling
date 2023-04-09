@@ -708,5 +708,9 @@
   "inactive": "Inactive",
   "selectAll": "Select All",
   "calenderAlertTemplate": "Calender Alert SMS Template",
-  "resellerCollection": "Reseller Collection"
+  "resellerCollection": "Reseller Collection",
+  "fireWllFilter": "Fire Wall Filter",
+  "fireWallIpFilterDrop": "Fire Wall Ip Filter Drop",
+  "syncFireWallFilter": "Sync Fire Wall Filter",
+  "inputFireWallIpFilterDrop": "Input Fire Wll Filter Drop"
 }
