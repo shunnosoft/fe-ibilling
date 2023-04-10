@@ -125,7 +125,7 @@ export default function ConfigMikrotik() {
                   id="uncontrolled-tab-example"
                   className="mb-3"
                 >
-                  <Tab eventKey="pppoe" title={t("PPPoE")}>
+                  <Tab eventKey="pppoe" title={t("pppoe")}>
                     <PPPoE />
                   </Tab>
                   <Tab eventKey="static" title={t("static")}>
@@ -134,7 +134,7 @@ export default function ConfigMikrotik() {
                   <Tab eventKey="hotspot" title={t("hotspot")}>
                     <Hotspot />
                   </Tab>
-                  <Tab eventKey="fireWallFilter" title="Fire Wall Filter">
+                  <Tab eventKey="fireWallFilter" title={t("fireWllFilter")}>
                     <FireWallFilter />
                   </Tab>
                 </Tabs>

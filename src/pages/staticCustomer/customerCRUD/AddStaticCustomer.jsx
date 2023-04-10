@@ -159,6 +159,12 @@ export default function AddStaticCustomer() {
         setMonthlyFee(temp.rate);
       }
 
+      if (target.name === "corePackage") {
+        setMikrotikPackage(target.value);
+        const temp = ppPackage.find((val) => val.id === target.value);
+        setMonthlyFee(temp.rate);
+      }
+
       if (target.name === "upPackage") {
         const getLimit = setPackageLimit(target.value, false);
         getLimit && setUpMaxLimit(getLimit);
@@ -181,7 +187,15 @@ export default function AddStaticCustomer() {
       setIsloading(false);
       return alert(t("selectDownloadPackage"));
     }
-    const { balance, ipAddress, queueName, target, customerId, ...rest } = data;
+    const {
+      balance,
+      ipAddress,
+      queueName,
+      target,
+      customerId,
+      srcAddress,
+      ...rest
+    } = data;
     if (!bpSettings.genCustomerId) {
       if (!customerId) {
         return alert(t("writeCustomerId"));
@@ -217,6 +231,15 @@ export default function AddStaticCustomer() {
         list: "allow_ip",
       };
     }
+
+    if (userType === "core-queue") {
+      sendingData.userType = "core-queue";
+      sendingData.queue = {
+        type: userType,
+        srcAddress: srcAddress,
+      };
+    }
+
     if (userType === "simple-queue") {
       sendingData.userType = "simple-queue";
       sendingData.queue = {
@@ -314,6 +337,7 @@ export default function AddStaticCustomer() {
                   nid: "",
                   balance: "",
                   ipAddress: "",
+                  srcAddress: "",
                   queueName: "",
                   target: "",
                   referenceName: "",
@@ -411,12 +435,23 @@ export default function AddStaticCustomer() {
                           />
                         </div>
                       )}
+
                       {userType === "firewall-queue" && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <FtextField
                             type="text"
                             label={t("ipAddress")}
                             name="ipAddress"
+                          />
+                        </div>
+                      )}
+
+                      {userType === "core-queue" && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <FtextField
+                            type="text"
+                            label={t("ipAddress")}
+                            name="srcAddress"
                           />
                         </div>
                       )}
@@ -448,6 +483,33 @@ export default function AddStaticCustomer() {
                             </>
                           </div>
                         )}
+
+                      {bpSettings?.hasMikrotik && userType === "core-queue" && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}{" "}
+                            </label>
+                            <select
+                              name="corePackage"
+                              className="form-select mw-100 mb-3 mt-0"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value={"0"}>...</option>
+                              {ppPackage &&
+                                ppPackage?.map(
+                                  (val, key) =>
+                                    val.packageType === "queue" && (
+                                      <option key={key} value={val.id}>
+                                        {val.name}
+                                      </option>
+                                    )
+                                )}
+                            </select>
+                          </>
+                        </div>
+                      )}
 
                       {bpSettings?.hasMikrotik &&
                         userType === "simple-queue" && (

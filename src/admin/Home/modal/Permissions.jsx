@@ -69,9 +69,8 @@ const Permissions = ({ ownerId }) => {
             <div className="modal-title" id="exampleModalLabel">
               <div className="d-flex">
                 <div className="row">
-                  <h4 style={{ borderBottom: "2px solid grey" }}>
-                    Change Permissions
-                  </h4>
+                  <h4>Change Permissions</h4>
+                  <hr />
                   <div className="d-flex">
                     <div>
                       <h5>

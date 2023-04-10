@@ -286,7 +286,8 @@ export default function StaticCustomerEdit({ single }) {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    const { customerId, ipAddress, queueName, target, ...rest } = data;
+    const { customerId, ipAddress, queueName, target, srcAddress, ...rest } =
+      data;
     if (!bpSettings.genCustomerId) {
       if (!customerId) {
         return alert(t("writeCustomerId"));
@@ -333,6 +334,15 @@ export default function StaticCustomerEdit({ single }) {
         disabled: qDisable,
       };
     }
+
+    if (userType === "core-queue") {
+      sendingData.userType = "core-queue";
+      sendingData.queue = {
+        srcAddress: srcAddress,
+        disabled: status === "active" ? false : true,
+      };
+    }
+
     if (userType === "simple-queue") {
       sendingData.userType = "simple-queue";
       sendingData.queue = {
@@ -343,6 +353,7 @@ export default function StaticCustomerEdit({ single }) {
         disabled: status === "active" ? false : true,
       };
     }
+
     if (status === "active") {
       sendingData.status = status;
     } else if (status === "inactive") {
@@ -399,6 +410,7 @@ export default function StaticCustomerEdit({ single }) {
                   balance: customer?.balance || "",
                   ipAddress: customer?.queue.address || "",
                   queueName: customer?.queue.name || "",
+                  srcAddress: customer?.queue.srcAddress || "",
                   target: customer?.queue.target || "",
                   customerId: customer?.customerId,
                   customerBillingType: customer?.customerBillingType,
@@ -489,6 +501,16 @@ export default function StaticCustomerEdit({ single }) {
                         </select>
                       </div>
 
+                      {userType === "core-queue" && (
+                        <div className="static_edit_item">
+                          <FtextField
+                            type="text"
+                            label={t("ipAddress")}
+                            name="srcAddress"
+                          />
+                        </div>
+                      )}
+
                       {userType === "simple-queue" && (
                         <div className="static_edit_item">
                           <FtextField
@@ -552,6 +574,39 @@ export default function StaticCustomerEdit({ single }) {
                             </>
                           </div>
                         )}
+
+                      {bpSettings?.hasMikrotik && userType === "core-queue" && (
+                        <div className="static_edit_item">
+                          <>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}{" "}
+                            </label>
+                            <select
+                              name="corePackage"
+                              className="form-select mw-100 mt-0"
+                              aria-label="Default select example"
+                              onChange={selectMikrotikPackage}
+                            >
+                              {/* <option value={"0"}>...</option> */}
+                              {ppPackage &&
+                                ppPackage?.map(
+                                  (val, key) =>
+                                    val.packageType === "queue" && (
+                                      <option
+                                        selected={
+                                          val.id === customer?.mikrotikPackage
+                                        }
+                                        key={key}
+                                        value={val.id}
+                                      >
+                                        {val.name}
+                                      </option>
+                                    )
+                                )}
+                            </select>
+                          </>
+                        </div>
+                      )}
 
                       {bpSettings?.hasMikrotik &&
                         userType === "simple-queue" && (

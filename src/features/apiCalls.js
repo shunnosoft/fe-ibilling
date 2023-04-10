@@ -917,7 +917,8 @@ export const syncMikrotikStaticUser = async (
 };
 
 // get Mikrotik Sync user
-export const testFireWallApi = async (data) => {
+export const testFireWallApi = async (setIsLoading, data) => {
+  setIsLoading(true);
   await apiLink({
     method: "GET",
     url: `/mikrotik/syncSimpleQueueToFirewallFilterRule/${data.ispOwner}/${data.mikrotikId}`,
@@ -934,6 +935,7 @@ export const testFireWallApi = async (data) => {
     .catch((error) => {
       toast.error(error.response?.data.message);
     });
+  setIsLoading(false);
 };
 
 // GET mikrotik

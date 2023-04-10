@@ -568,6 +568,8 @@ export default function Customer() {
         accessor: (field) =>
           field.userType === "firewall-queue"
             ? field.queue.address
+            : field.userType === "core-queue"
+            ? field.queue.srcAddress
             : field.queue.target,
       },
 
@@ -850,7 +852,7 @@ export default function Customer() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
-                    <h2> {t("staticCustomer")} </h2>
+                    <h2> {t("staticCustomer")}</h2>
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>

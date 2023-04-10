@@ -351,6 +351,7 @@ const DetailsForm = ({ ispOwner }) => {
               >
                 <option value="simple-queue">Simple Queue</option>
                 <option value="firewall-queue">Firewall Queue</option>
+                <option value="core-queue">Core Queue</option>
               </Field>
             </div>
 

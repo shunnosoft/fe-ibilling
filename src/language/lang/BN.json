@@ -714,5 +714,9 @@
   "otherPackageUsers": "অন্যান্য প্যাকেজ ব্যবহারকারী",
   "selectAll": "সব নির্বাচন করুন",
   "calenderAlertTemplate": "ক্যালেন্ডার অ্যালার্ট SMS টেমপ্লেট",
-  "resellerCollection": "রিসেলার কালেকশন"
+  "resellerCollection": "রিসেলার কালেকশন",
+  "fireWllFilter": "ফায়ার ওয়াল ফিল্টার",
+  "fireWallIpFilterDrop": "ফায়ার ওয়াল আইপি ফিল্টার ড্রপ",
+  "syncFireWallFilter": "ফায়ার ওয়াল ফিল্টার সিঙ্ক করুন",
+  "inputFireWallIpFilterDrop": "ইনপুট ফায়ার ওয়াল আইপি ফিল্টার ড্রপ"
 }

@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { PencilFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import FireWallFIlterDrop from "./FireWallFIlterDrop";
 import { testFireWallApi } from "../../../features/apiCalls";
+import Loader from "../../../components/common/Loader";
 
 const FireWallFilter = () => {
   const { t } = useTranslation();
   const { ispOwner, mikrotikId } = useParams();
+
+  //loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   //get all mikrotik
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -24,6 +28,7 @@ const FireWallFilter = () => {
     };
 
     testFireWallApi(data);
+    testFireWallApi(setIsLoading, data);
   };
 
   return (
@@ -54,7 +59,7 @@ const FireWallFilter = () => {
                   title="Block Ip"
                   className="btn btn-outline-primary my-2"
                 >
-                  Fire Wall Ip Filter Drop &nbsp;
+                  {t("fireWallIpFilterDrop")} &nbsp;
                   <PencilFill />
                 </button>
               </div>
@@ -63,7 +68,7 @@ const FireWallFilter = () => {
                   className="btn btn-outline-primary me-2"
                   onClick={syncSimpleQueueToFirewallFilterRuleHandler}
                 >
-                  sync Fire Wall Filter
+                  {isLoading ? <Loader /> : t("syncFireWallFilter")}
                 </button>
               </div>
             </div>
