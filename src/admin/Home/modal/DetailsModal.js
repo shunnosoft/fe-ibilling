@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import {
   ArchiveFill,
+  KeyFill,
+  PenFill,
   Person,
   PlugFill,
   Telephone,
@@ -22,6 +24,8 @@ import {
   deleteSingleMikrotik,
   fetchMikrotik,
 } from "../../../features/apiCalls";
+import { PasswordResetApi } from "../../../features/resetPasswordApi";
+import { NumberChangeApi } from "../../../features/modifyNumberApi";
 
 const DetailsModal = ({ ownerId }) => {
   // import dispatch
@@ -32,6 +36,7 @@ const DetailsModal = ({ ownerId }) => {
 
   // get ispOwner staffs
   const staffs = useSelector((state) => state.admin?.staffs);
+  console.log(staffs);
 
   // get all subareas
   const subAreas = useSelector((state) => state.area?.subArea);
@@ -100,6 +105,35 @@ const DetailsModal = ({ ownerId }) => {
       fetchMikrotik(dispatch, ownerId, setIsLoading);
     }
   }, [ownerId]);
+
+  const resetPassHandler = (id) => {
+    const confirm = window.confirm("Do you want to reset Password?");
+    if (confirm) {
+      PasswordResetApi(id, setIsLoading);
+    }
+  };
+
+  const [editToggle, setEditToggle] = useState("");
+  const [editNumber, setEditNumber] = useState("");
+
+  const editNumberHandler = (MobileId, MobileRole) => {
+    const data = {
+      mobile: editNumber,
+      profileId: MobileId,
+      role: MobileRole,
+    };
+    console.log(data);
+
+    const confirm = window.confirm("Do you want to update Number?");
+
+    if (confirm) {
+      NumberChangeApi(data, setIsLoading);
+    }
+  };
+
+  const editHandler = (Pid) => {
+    setEditToggle(Pid);
+  };
 
   return (
     <>
@@ -530,9 +564,55 @@ const DetailsModal = ({ ownerId }) => {
                             <h6 className="mt-3">
                               <Person /> {staffs.manager.name}
                             </h6>
+
                             <h6>
                               <Telephone /> {staffs.manager.mobile}
+                              {"  "}
+                              <PenFill
+                                className="text-primary"
+                                onClick={() => editHandler(staffs?.manager.id)}
+                              />{" "}
+                              <KeyFill
+                                className="text-danger"
+                                size={25}
+                                onClick={() =>
+                                  resetPassHandler(staffs.manager.id)
+                                }
+                              />
                             </h6>
+
+                            {editToggle === staffs?.manager.id && (
+                              <>
+                                <h6>
+                                  <input
+                                    type="number"
+                                    className="w-75 me-2"
+                                    onChange={(e) =>
+                                      setEditNumber(e.target.value)
+                                    }
+                                  />
+                                </h6>
+                                <h6>
+                                  <button
+                                    onClick={() =>
+                                      editNumberHandler(
+                                        staffs.manager.id,
+                                        "manager"
+                                      )
+                                    }
+                                    class="btn btn-primary btn-sm py-0 me-3"
+                                  >
+                                    Submit
+                                  </button>
+                                  <button
+                                    class="btn btn-primary btn-sm py-0"
+                                    onClick={() => setEditToggle("")}
+                                  >
+                                    Cancel
+                                  </button>
+                                </h6>
+                              </>
+                            )}
                           </div>
                         ) : (
                           <div>Manager not found !</div>
@@ -548,7 +628,51 @@ const DetailsModal = ({ ownerId }) => {
                                 <h6>
                                   {" "}
                                   <Telephone /> {item?.mobile}
+                                  {"  "}
+                                  <PenFill
+                                    className="text-primary"
+                                    onClick={() => editHandler(item?.id)}
+                                  />
+                                  {"  "}
+                                  <KeyFill
+                                    className="text-danger"
+                                    size={25}
+                                    onClick={() => resetPassHandler(item.id)}
+                                  />
                                 </h6>
+
+                                {editToggle === item?.id && (
+                                  <>
+                                    <h6>
+                                      <input
+                                        type="number"
+                                        className="w-75 me-2"
+                                        onChange={(e) =>
+                                          setEditNumber(e.target.value)
+                                        }
+                                      />
+                                    </h6>
+                                    <h6>
+                                      <button
+                                        onClick={() =>
+                                          editNumberHandler(
+                                            item.id,
+                                            "collector"
+                                          )
+                                        }
+                                        class="btn btn-primary btn-sm py-0 me-3"
+                                      >
+                                        Submit
+                                      </button>
+                                      <button
+                                        class="btn btn-primary btn-sm py-0"
+                                        onClick={() => setEditToggle("")}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </h6>
+                                  </>
+                                )}
                               </>
                             ))}
                           </div>
@@ -560,19 +684,64 @@ const DetailsModal = ({ ownerId }) => {
                             <h5 className="text-primary">Resellers</h5>
                             <table class="table table-bordered">
                               <tbody>
-                                {staffs.resellerCustomerCount?.map(
-                                  (item, key) => (
-                                    <tr>
-                                      <td key={key} className="mt-3">
-                                        <Person /> {item?.name}
-                                      </td>
-                                      <td>
-                                        <Telephone /> {item?.mobile}
-                                      </td>
-                                      <td>{item?.customerCount}</td>
-                                    </tr>
-                                  )
-                                )}
+                                {staffs.resellers?.map((item, key) => (
+                                  <tr>
+                                    <td key={key} className="mt-3">
+                                      <Person /> {item?.name}
+                                      {"  "}
+                                    </td>
+                                    <td>
+                                      <Telephone /> {item?.mobile}
+                                      {"  "}
+                                      <PenFill
+                                        className="text-primary"
+                                        onClick={() => editHandler(item.id)}
+                                      />
+                                      {editToggle === item?.id && (
+                                        <>
+                                          <h6>
+                                            <input
+                                              type="number"
+                                              className="w-75 me-2"
+                                              onChange={(e) =>
+                                                setEditNumber(e.target.value)
+                                              }
+                                            />
+                                          </h6>
+                                          <h6>
+                                            <button
+                                              onClick={() =>
+                                                editNumberHandler(
+                                                  item.id,
+                                                  "reseller"
+                                                )
+                                              }
+                                              class="btn btn-primary btn-sm py-0 me-3"
+                                            >
+                                              Submit
+                                            </button>
+                                            <button
+                                              class="btn btn-primary btn-sm py-0"
+                                              onClick={() => setEditToggle("")}
+                                            >
+                                              Cancel
+                                            </button>
+                                          </h6>
+                                        </>
+                                      )}
+                                    </td>
+                                    {/* <td>{item?.customerCount}</td> */}
+                                    <td>
+                                      <KeyFill
+                                        className="text-danger"
+                                        size={25}
+                                        onClick={() =>
+                                          resetPassHandler(item?.id)
+                                        }
+                                      />
+                                    </td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
                           </div>
