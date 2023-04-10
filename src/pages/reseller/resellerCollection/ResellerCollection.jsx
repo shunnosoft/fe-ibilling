@@ -40,12 +40,13 @@ const ResellerCollection = () => {
   const collectionReport = useSelector(
     (state) => state.reseller?.resellerCollection
   );
+  console.log(collectionReport);
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);
 
   //reseller id state
-  const [resellerId, setResellerId] = useState(reseller[0]?.id);
+  const [resellerId, setResellerId] = useState();
 
   // reseller customer collection main data state
   const [currentData, setCurrentData] = useState(collectionReport);
@@ -68,7 +69,7 @@ const ResellerCollection = () => {
   const filterHandler = () => {
     let mainData = [...collectionReport];
 
-    if (paymentType !== "All") {
+    if (paymentType) {
       if (paymentType === "onlinePayment") {
         mainData = mainData.filter(
           (paymentStatus) =>
@@ -85,9 +86,9 @@ const ResellerCollection = () => {
     mainData = mainData.filter(
       (item) =>
         new Date(moment(item.createdAt).format("YYYY-DD-MM")).getTime() >=
-          new Date(moment(firstDate).format("YYYY-DD-MM")).getTime() &&
+          new Date(moment(startDate).format("YYYY-DD-MM")).getTime() &&
         new Date(moment(item.createdAt).format("YYYY-DD-MM")).getTime() <=
-          new Date(moment(lastDate).format("YYYY-DD-MM")).getTime()
+          new Date(moment(endDate).format("YYYY-DD-MM")).getTime()
     );
     setCurrentData(mainData);
   };
@@ -123,7 +124,7 @@ const ResellerCollection = () => {
       {
         width: "10%",
         Header: t("package"),
-        accessor: "customer.mikrotikPackage.name",
+        accessor: "package",
       },
       {
         width: "7%",
@@ -250,10 +251,15 @@ const ResellerCollection = () => {
   };
 
   useEffect(() => {
+    setResellerId(reseller[0]?.id);
+  }, [reseller]);
+
+  useEffect(() => {
     fetchReseller(dispatch, ispOwnerId, setIsLoading);
-    if (resellerId) {
-      resellerCustomerReport(dispatch, setIsLoading, resellerId);
-    }
+  }, []);
+
+  useEffect(() => {
+    resellerCustomerReport(dispatch, setIsLoading, resellerId);
   }, [resellerId]);
 
   useEffect(() => {
@@ -321,7 +327,7 @@ const ResellerCollection = () => {
                         className="form-select mt-0 mw-100"
                         onChange={(e) => setPaymentType(e.target.value)}
                       >
-                        <option value="All" selected>
+                        <option value="" selected>
                           {t("medium")}
                         </option>
 

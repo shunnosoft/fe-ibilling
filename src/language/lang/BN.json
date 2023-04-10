@@ -71,6 +71,7 @@
   "smsHistory": "এসএমএস হিস্ট্রি",
   "message request": "মেসেজ রিকোয়েস্ট",
   "message": "মেসেজ",
+  "messageDetails": "মেসেজ ডিটেলস",
   "bulk message": "বাল্ক মেসেজ",
   "message setting": "মেসেজ সেটিংস",
   "messageLog": "মেসেজ লগ",
@@ -718,5 +719,11 @@
   "fireWllFilter": "ফায়ার ওয়াল ফিল্টার",
   "fireWallIpFilterDrop": "ফায়ার ওয়াল আইপি ফিল্টার ড্রপ",
   "syncFireWallFilter": "ফায়ার ওয়াল ফিল্টার সিঙ্ক করুন",
-  "inputFireWallIpFilterDrop": "ইনপুট ফায়ার ওয়াল আইপি ফিল্টার ড্রপ"
+  "inputFireWallIpFilterDrop": "ইনপুট ফায়ার ওয়াল আইপি ফিল্টার ড্রপ",
+  "syncFireWallFilterDrop": "সিঙ্ক ফায়ার ওয়াল ফিল্টার ড্রপ",
+  "filterAction": "ফিল্টার একশন",
+  "srcAddress": "এসআরসি এড্রেস",
+  "fireWallIpUpdate": "ফায়ার ওয়াল আইপি আপডেট",
+  "srcAddressDelete": "এসআরসি এড্রেস ডিলিট",
+  "fireWallIpDelete": "ফায়ার ওয়াল আইপি ডিলিট"
 }

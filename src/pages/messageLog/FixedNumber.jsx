@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getFixedNumberMessageLog } from "../../features/messageLogApi";
+import MessageDetails from "./MessageDetails";
 
 const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   const { t } = useTranslation();
@@ -43,6 +44,9 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
 
   //message id state
   const [fxNumberId, setFxNumberId] = useState();
+
+  // message details id
+  const [fixedId, setFixedId] = useState();
 
   // filter function
   const onClickFilter = () => {
@@ -132,6 +136,23 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
         width: "45%",
         Header: t("message"),
         accessor: "message",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original.message && original.message.slice(0, 80)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#messageLogDetails"
+                onClick={() => {
+                  setFixedId(original.id);
+                }}
+              >
+                {original.message.length > 80 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
       },
     ],
     [t]
@@ -204,6 +225,7 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
           data={fixedNumber}
         ></Table>
       </div>
+      <MessageDetails fixedId={fixedId} status="fixedNumber" />
     </>
   );
 };
