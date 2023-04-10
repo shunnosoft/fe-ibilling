@@ -1715,7 +1715,6 @@ export const billCollect = async (
       dispatch(updateBalanceStaticCustomer(res.data));
       setResponseData(res.data);
     }
-    setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
     langMessage(
       "success",
@@ -1724,10 +1723,10 @@ export const billCollect = async (
     );
     resetForm();
   } catch (error) {
-    setLoading(false);
     document.querySelector("#collectCustomerBillModal").click();
     toast.error(error.response?.data.message);
   }
+  setLoading(false);
 };
 
 export const addDeposit = async (dispatch, data, setLoading) => {

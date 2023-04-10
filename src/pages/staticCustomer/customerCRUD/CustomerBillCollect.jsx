@@ -64,6 +64,8 @@ export default function CustomerBillCollect({ single }) {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
+  const [responseData, setResponseData] = useState({});
+
   const totalAmount = Number(billAmount) + Number(balanceDue);
 
   const maxDiscount = totalAmount;
@@ -154,7 +156,7 @@ export default function CustomerBillCollect({ single }) {
       });
       sendingData.month = monthValues.join(",");
     }
-    billCollect(dispatch, sendingData, setLoading, resetForm);
+    billCollect(dispatch, sendingData, setLoading, resetForm, setResponseData);
   };
 
   return (
