@@ -67,6 +67,7 @@
   "recharge history": "Recharge",
   "message request": "SMS Request",
   "message": "Message",
+  "messageDetails": "Message Detail's",
   "bulk message": "Bulk Message",
   "message setting": "SMS Template",
   "messageLog": "Message Log",
@@ -712,5 +713,11 @@
   "fireWllFilter": "Fire Wall Filter",
   "fireWallIpFilterDrop": "Fire Wall Ip Filter Drop",
   "syncFireWallFilter": "Sync Fire Wall Filter",
-  "inputFireWallIpFilterDrop": "Input Fire Wll Filter Drop"
+  "inputFireWallIpFilterDrop": "Input Fire Wll Filter Drop",
+  "syncFireWallFilterDrop": "Sync Fire Wall Filter Drop",
+  "filterAction": "Filter Action",
+  "srcAddress": "SRC Address",
+  "fireWallIpUpdate": "Fire Wall Ip Update",
+  "srcAddressDelete": "SRC Address Delete",
+  "fireWallIpDelete": "Fire Wall Ip Delete"
 }

@@ -36,6 +36,8 @@ const addClass = {
 
   feature: "secondary",
   complain: "warning",
+
+  drop: "primary",
 };
 
 export const badge = (item) => {
