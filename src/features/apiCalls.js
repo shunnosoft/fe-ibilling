@@ -42,6 +42,7 @@ import {
   getDueCustomerSuccess,
   getStaticDueCustomerSuccess,
   getFireWllFilterDrop,
+  postFireWllFilterDrop,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -2526,6 +2527,7 @@ export const fireWallIpFilterDrop = async (
       `mikrotik/dropFireWallFilterRule/${ispOwner}/${mikrotikId}`,
       { dropIp }
     );
+    dispatch(postFireWllFilterDrop(res.data));
     document.querySelector("#fireWallIpFilter").click();
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
@@ -2561,6 +2563,41 @@ export const deleteFireWallIpDrop = async (dispatch, setIsLoading, data) => {
       `mikrotik/firewallFilterDrop/${data.ispOwner}/${data.id}?mikrotikCheck=${data.mikrotik}`
     );
     console.log(res.data);
+    document.querySelector("#fireWallFilterIpDropDelete").click();
+    langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+//get fire wall ip filter drop
+export const getFireWallIpDrop = async (dispatch, setIpLoading, ispOwner) => {
+  setIpLoading(true);
+  try {
+    const res = await apiLink.get(`mikrotik/firewall/filter/drop/${ispOwner}`);
+    dispatch(getFireWllFilterDrop(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIpLoading(false);
+};
+
+// update fire wall ip drop
+export const updateFireWallIpDrop = async (
+  dispatch,
+  setIsLoading,
+  fireWallIp
+) => {
+  console.log(fireWallIp);
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(
+      `mikrotik/firewallFilterDrop/${fireWallIp.ispOwner}/${fireWallIp.id}`,
+      fireWallIp
+    );
+    dispatch(updateFireWallIpDrop(res.data));
+    document.querySelector("#fireWallIpFilterDropUpdate").click();
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
     toast.error(error.response?.data?.message);
