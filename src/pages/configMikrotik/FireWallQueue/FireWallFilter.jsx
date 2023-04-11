@@ -21,6 +21,7 @@ import Table from "../../../components/table/Table";
 import { badge } from "../../../components/common/Utils";
 import FireWallFilterIpUpdate from "./FireWallFilterIpUpdate";
 import FireWallFilterIpDelete from "./FireWallFilterIpDelete";
+import moment from "moment";
 
 const FireWallFilter = () => {
   const { t } = useTranslation();
@@ -122,6 +123,9 @@ const FireWallFilter = () => {
         width: "15%",
         Header: t("createdAt"),
         accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm A");
+        },
       },
       {
         width: "15%",
