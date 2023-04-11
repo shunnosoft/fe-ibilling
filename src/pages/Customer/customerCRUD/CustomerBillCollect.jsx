@@ -454,7 +454,9 @@ export default function CustomerBillCollect({ single, customerData }) {
                             title={t("printInvoiceBill")}
                             style={{ cursor: "pointer" }}
                           >
-                            <button id="printButton">Print</button>
+                            <button type="button" id="printButton">
+                              Print
+                            </button>
                           </div>
                         )}
                         content={() => rechargePrint.current}

@@ -262,7 +262,6 @@ export const updateAdminNetFeeSupport = async (
   setIsLoading,
   updateData
 ) => {
-  console.log(updateData);
   setIsLoading(true);
   try {
     const res = await apiLink.patch(

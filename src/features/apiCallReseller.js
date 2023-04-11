@@ -381,10 +381,10 @@ export const billCollect = async (
   setLoading(true);
   try {
     const res = await apiLink.post("/reseller/monthlyBill", billData);
-    console.log(res.data);
     dispatch(updateBalance(res.data));
-    // setResponseData(res.data);
-    // setTest(true);
+    setResponseData(res.data);
+    setTest(true);
+    // document.getElementById("printButtonReseller").click();
     setLoading(false);
     langMessage(
       "success",
