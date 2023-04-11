@@ -82,7 +82,7 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
               </tr>
               <tr>
                 <th>{t("due")}</th>
-                <td>{billingData.due}</td>
+                <td>{billingData.due ? billingData.due : 0}</td>
               </tr>
               <tr>
                 <th>{t("medium")}</th>
@@ -198,7 +198,7 @@ const BillCollectInvoiceWithoutNote = React.forwardRef((props, ref) => {
                 </tr>
                 <tr>
                   <th>{t("due")}</th>
-                  <td>{billingData.due}</td>
+                  <td>{billingData.due ? billingData.due : 0}</td>
                 </tr>
                 <tr>
                   <th>{t("medium")}</th>

@@ -4,8 +4,10 @@ import {
   SearchByNumber,
 } from "../../../features/modifyNumberApi";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const DeleteByMobileModal = () => {
+  const { t } = useTranslation();
   const [customer, setCustomer] = useState("");
 
   const [mobile, setMobile] = useState("");
@@ -32,7 +34,7 @@ const DeleteByMobileModal = () => {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="numberDeleteModal">
-              Enter Number to Delete
+              {t("enterNumber")}
             </h5>
             <button
               type="button"
@@ -52,7 +54,7 @@ const DeleteByMobileModal = () => {
               onClick={SearchHandler}
               className="btn btn-primary btn-sm"
             >
-              Search
+              {t("search")}
             </span>
 
             <br />
@@ -60,15 +62,19 @@ const DeleteByMobileModal = () => {
 
             {customer?.profile?.id && (
               <>
-                <h5>Customer Found</h5>
-                <h5>Name: {customer?.profile?.name}</h5>
-                <h5>Mobile: {customer?.profile?.mobile}</h5>
+                <h5>{t("customerFound")}</h5>
+                <h5>
+                  {t("name")} : {customer?.profile?.name}
+                </h5>
+                <h5>
+                  {t("mobile")} : {customer?.profile?.mobile}
+                </h5>
                 <button
                   type="button"
                   onClick={deleteHandler}
-                  className="btn btn-danger btn-sm py-0"
+                  className="btn btn-danger btn-sm py-1"
                 >
-                  Delete
+                  {t("delete")}
                 </button>
               </>
             )}
@@ -79,7 +85,7 @@ const DeleteByMobileModal = () => {
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              Close
+              {t("close")}
             </button>
           </div>
         </div>

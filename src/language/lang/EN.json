@@ -712,5 +712,7 @@
   "fireWllFilter": "Fire Wall Filter",
   "fireWallIpFilterDrop": "Fire Wall Ip Filter Drop",
   "syncFireWallFilter": "Sync Fire Wall Filter",
-  "inputFireWallIpFilterDrop": "Input Fire Wll Filter Drop"
+  "inputFireWallIpFilterDrop": "Input Fire Wll Filter Drop",
+  "enterNumber": "Enter Number",
+  "customerFound": "Customer Found"
 }

@@ -80,14 +80,16 @@ export default function CustomerBillCollect({ single, customerData }) {
 
   //response data after API call after payment
   const [responseData, setResponseData] = useState({});
+  const [test, setTest] = useState(false);
   const rechargePrint = useRef();
 
   //print button is clicked after successful response
   useEffect(() => {
-    if (responseData.id) {
+    if (test) {
       document.getElementById("printButton").click();
+      setTest(!test);
     }
-  }, [responseData]);
+  }, [test]);
 
   const totalAmount = Number(billAmount) + Number(balanceDue);
 
@@ -179,7 +181,14 @@ export default function CustomerBillCollect({ single, customerData }) {
       });
       sendingData.month = monthValues.join(",");
     }
-    billCollect(dispatch, sendingData, setLoading, resetForm, setResponseData);
+    billCollect(
+      dispatch,
+      sendingData,
+      setLoading,
+      resetForm,
+      setResponseData,
+      setTest
+    );
   };
 
   return (

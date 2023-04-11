@@ -718,5 +718,7 @@
   "fireWllFilter": "ফায়ার ওয়াল ফিল্টার",
   "fireWallIpFilterDrop": "ফায়ার ওয়াল আইপি ফিল্টার ড্রপ",
   "syncFireWallFilter": "ফায়ার ওয়াল ফিল্টার সিঙ্ক করুন",
-  "inputFireWallIpFilterDrop": "ইনপুট ফায়ার ওয়াল আইপি ফিল্টার ড্রপ"
+  "inputFireWallIpFilterDrop": "ইনপুট ফায়ার ওয়াল আইপি ফিল্টার ড্রপ",
+  "enterNumber": "মোবাইল নম্বর দিন",
+  "customerFound": "গ্রাহক পাওয়া গেছে"
 }

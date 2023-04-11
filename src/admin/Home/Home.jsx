@@ -21,6 +21,7 @@ import {
   KeyFill,
   Award,
   FileExcelFill,
+  TrashFill,
 } from "react-bootstrap-icons";
 import {
   getIspOwner,
@@ -43,10 +44,12 @@ import districtsJSON from "../../bdAddress/bd-districts.json";
 import getName from "../../utils/getLocationName";
 import { CSVLink } from "react-csv";
 import DeleteByMobileModal from "./modal/DeleteByMobileModal";
+import { useTranslation } from "react-i18next";
 
 const districts = districtsJSON.districts;
 
 export default function Home() {
+  const { t } = useTranslation();
   // loading
   const [isLoading, setIsLoading] = useState(false);
 
@@ -591,14 +594,14 @@ export default function Home() {
               </h2>
 
               <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
-                <button
+                <TrashFill
+                  size={23}
                   type="button"
                   data-bs-toggle="modal"
                   data-bs-target="#numberDeleteModal"
-                  className="btn btn-danger btn-sm me-3"
-                >
-                  Delete
-                </button>
+                  className="me-4 text-danger"
+                />
+
                 <CSVLink
                   data={ispOwnerForCsVTableInfo}
                   filename={ispOwners.company}

@@ -453,6 +453,7 @@ export default function RstaticCustomer() {
                     data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      getSpecificCustomerReport(original);
                     }}
                   >
                     <div className="dropdown-item">
@@ -536,7 +537,10 @@ export default function RstaticCustomer() {
               </FourGround>
 
               {/* Model start */}
-              <CustomerBillCollect single={singleCustomer} />
+              <CustomerBillCollect
+                single={singleCustomer}
+                customerData={customerReportData}
+              />
               <AddStaticCustomer />
               <CustomerEdit single={singleCustomer} />
               <CustomerDetails single={singleCustomer} />
