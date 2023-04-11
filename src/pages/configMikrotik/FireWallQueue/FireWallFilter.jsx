@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArchiveFill,
   PenFill,
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import FireWallFIlterDrop from "./FireWallFIlterDrop";
 import {
+  getFireWallIpDrop,
   syncFireWallFilterDrop,
   testFireWallApi,
 } from "../../../features/apiCalls";
@@ -33,13 +34,21 @@ const FireWallFilter = () => {
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [ipLoading, setIpLoading] = useState(false);
   const [syncLoading, setSyncLoading] = useState(false);
+
+  // filter wall filter ip update
+  const [updateIp, setUpdateIp] = useState();
 
   // fire wall filter ip delete state
   const [deleteIp, setDeleteIp] = useState();
 
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
+  // api call change handler
+  const [apiCall, setApiCall] = useState("");
+  console.log(apiCall);
 
   //get all mikrotik
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -65,6 +74,11 @@ const FireWallFilter = () => {
     };
 
     syncFireWallFilterDrop(dispatch, setSyncLoading, data);
+  };
+
+  // fire wall filter ip drop update handler
+  const fireWallFilterIpUpdateHandler = (ip) => {
+    setUpdateIp(ip);
   };
 
   // fire wall filter ip delete handler
@@ -124,9 +138,10 @@ const FireWallFilter = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                {/* <li
+                <li
                   data-bs-toggle="modal"
                   data-bs-target="#fireWallIpFilterDropUpdate"
+                  onClick={() => fireWallFilterIpUpdateHandler(original)}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -134,7 +149,7 @@ const FireWallFilter = () => {
                       <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
-                </li> */}
+                </li>
 
                 <li
                   data-bs-toggle="modal"
@@ -157,6 +172,10 @@ const FireWallFilter = () => {
     [t]
   );
 
+  useEffect(() => {
+    getFireWallIpDrop(dispatch, setIpLoading, ispOwner);
+  }, []);
+
   return (
     <>
       <div className="collectorWrapper py-2">
@@ -178,6 +197,20 @@ const FireWallFilter = () => {
             </div>
 
             <div className="addAndSettingIcon d-flex flex-column align-items-start">
+              {/* <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckDefault"
+                  checked={apiCall}
+                  onChange={(e) => setApiCall(e.target.checked)}
+                ></input>
+                <label class="form-check-label" for="flexSwitchCheckDefault">
+                  Default switch checkbox input
+                </label>
+              </div> */}
+
               <div className="">
                 <button
                   data-bs-toggle="modal"
@@ -218,7 +251,7 @@ const FireWallFilter = () => {
         </div>
       </div>
       <FireWallFIlterDrop ispOwner={ispOwner} mikrotikId={mikrotikId} />
-      <FireWallFilterIpUpdate />
+      <FireWallFilterIpUpdate updateIp={updateIp} />
       <FireWallFilterIpDelete
         deleteIp={deleteIp}
         mikrotikCheck={mikrotikCheck}

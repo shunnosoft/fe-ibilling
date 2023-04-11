@@ -154,6 +154,16 @@ const customerSliec = createSlice({
     getFireWllFilterDrop: (state, action) => {
       state.fireWallFilterDrop = action.payload;
     },
+
+    postFireWllFilterDrop: (state, action) => {
+      state.fireWallFilterDrop.push(action.payload);
+    },
+
+    updateFireWallFilterDrop: (state, action) => {
+      state.fireWallFilterDrop[
+        state.fireWallFilterDrop.find((item) => item.id === action.payload.id)
+      ] = action.payload;
+    },
   },
 });
 
@@ -175,6 +185,8 @@ export const {
   bulkDelete,
   bulkUpdate,
   getFireWllFilterDrop,
+  postFireWllFilterDrop,
+  updateFireWallFilterDrop,
 } = customerSliec.actions;
 
 export default customerSliec.reducer;

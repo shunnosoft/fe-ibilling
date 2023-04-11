@@ -328,7 +328,7 @@ export default function Report() {
       {
         width: "10%",
         Header: t("package"),
-        accessor: "customer.mikrotikPackage.name",
+        accessor: "package",
       },
       {
         width: "7%",

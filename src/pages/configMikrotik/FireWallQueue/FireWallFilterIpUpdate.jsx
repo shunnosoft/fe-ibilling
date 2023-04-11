@@ -1,18 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loader from "../../../components/common/Loader";
+import { updateFireWallIpDrop } from "../../../features/apiCalls";
+import { useDispatch } from "react-redux";
 
-const FireWallFilterIpUpdate = () => {
+const FireWallFilterIpUpdate = ({ updateIp }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // customer block ip state
-  const [dropIp, setDropIp] = useState();
+  // update fire wall ip state
+  const [fireWallIp, setFireWallIp] = useState("");
 
   // fire wall id drop handler
-  const fireWallIpDropHandler = () => {};
+  const fireWallIpDropHandler = (e) => {
+    e.preventDefault();
+    updateFireWallIpDrop(dispatch, setIsLoading, fireWallIp);
+  };
+
+  // change fire wall ip
+  const changeFireWallIp = (e) => {
+    setFireWallIp({ ...fireWallIp, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    setFireWallIp(updateIp);
+  }, [updateIp]);
+
+  // const { srcAddress, ispOwner, id } = fireWallIp;
 
   return (
     <div
@@ -52,7 +69,9 @@ const FireWallFilterIpUpdate = () => {
                   class="form-control"
                   type="text"
                   id="singleIpDrop"
-                  onChange={(e) => setDropIp(e.target.value)}
+                  name="srcAddress"
+                  value={fireWallIp?.srcAddress}
+                  onChange={changeFireWallIp}
                 />
               </div>
               <div className="modal-footer">
