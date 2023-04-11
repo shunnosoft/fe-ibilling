@@ -36,7 +36,6 @@ const DetailsModal = ({ ownerId }) => {
 
   // get ispOwner staffs
   const staffs = useSelector((state) => state.admin?.staffs);
-  console.log(staffs);
 
   // get all subareas
   const subAreas = useSelector((state) => state.area?.subArea);
@@ -98,6 +97,7 @@ const DetailsModal = ({ ownerId }) => {
     staffs.firewallQueueCustomerCount +
     staffs.simpleQueueCustomerCount;
 
+  //API call
   useEffect(() => {
     if (ownerId) {
       getIspOwnersStaffs(ownerId, dispatch, setIsLoading);
@@ -106,6 +106,7 @@ const DetailsModal = ({ ownerId }) => {
     }
   }, [ownerId]);
 
+  //Reset Password
   const resetPassHandler = (id) => {
     const confirm = window.confirm("Do you want to reset Password?");
     if (confirm) {
@@ -116,21 +117,22 @@ const DetailsModal = ({ ownerId }) => {
   const [editToggle, setEditToggle] = useState("");
   const [editNumber, setEditNumber] = useState("");
 
+  //Mobile change handler
   const editNumberHandler = (MobileId, MobileRole) => {
     const data = {
       mobile: editNumber,
       profileId: MobileId,
       role: MobileRole,
     };
-    console.log(data);
 
     const confirm = window.confirm("Do you want to update Number?");
 
     if (confirm) {
-      NumberChangeApi(data, setIsLoading);
+      NumberChangeApi(data, setIsLoading, setEditToggle, dispatch);
     }
   };
 
+  //edit toggle handler
   const editHandler = (Pid) => {
     setEditToggle(Pid);
   };
@@ -576,7 +578,7 @@ const DetailsModal = ({ ownerId }) => {
                                 className="text-danger"
                                 size={25}
                                 onClick={() =>
-                                  resetPassHandler(staffs.manager.id)
+                                  resetPassHandler(staffs.manager.user)
                                 }
                               />
                             </h6>
@@ -637,7 +639,7 @@ const DetailsModal = ({ ownerId }) => {
                                   <KeyFill
                                     className="text-danger"
                                     size={25}
-                                    onClick={() => resetPassHandler(item.id)}
+                                    onClick={() => resetPassHandler(item.user)}
                                   />
                                 </h6>
 
@@ -736,7 +738,7 @@ const DetailsModal = ({ ownerId }) => {
                                         className="text-danger"
                                         size={25}
                                         onClick={() =>
-                                          resetPassHandler(item?.id)
+                                          resetPassHandler(item?.user)
                                         }
                                       />
                                     </td>

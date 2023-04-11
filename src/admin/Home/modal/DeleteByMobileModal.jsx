@@ -17,7 +17,8 @@ const DeleteByMobileModal = () => {
   };
 
   const deleteHandler = () => {
-    DeleteByNumber(mobile, setIsLoading);
+    const confirm = window.confirm("Are you sure to Delete");
+    if (confirm) DeleteByNumber(mobile, setIsLoading);
   };
   return (
     <div

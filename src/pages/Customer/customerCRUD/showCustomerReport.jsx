@@ -78,12 +78,12 @@ export default function CustomerReport(props) {
   };
 
   //delaying the print click for 100 ms time
-  function handlePrint(val) {
+  const handlePrint = (val) => {
     setPrintVal(val);
     setTimeout(function () {
-      document.getElementById("pressPrint").click();
+      document.getElementById("pressPrintCustomer").click();
     }, 100);
-  }
+  };
 
   return (
     <div>
@@ -299,7 +299,9 @@ export default function CustomerReport(props) {
                                           title={t("printInvoiceBill")}
                                           style={{ cursor: "pointer" }}
                                         >
-                                          <button id="pressPrint">btn</button>
+                                          <button id="pressPrintCustomer">
+                                            btn
+                                          </button>
                                         </div>
                                       )}
                                       content={() => billRefwithNote.current}
@@ -367,7 +369,9 @@ export default function CustomerReport(props) {
                                             title={t("printInvoiceBill")}
                                             style={{ cursor: "pointer" }}
                                           >
-                                            <button id="pressPrint">btn</button>
+                                            <button id="pressPrintCustomer">
+                                              btn
+                                            </button>
                                           </div>
                                         )}
                                         content={() =>

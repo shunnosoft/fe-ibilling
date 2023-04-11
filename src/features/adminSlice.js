@@ -15,9 +15,15 @@ const adminSlice = createSlice({
     getIspOwnersSuccess: (state, action) => {
       state.ispOwners = action.payload;
       const ids = {};
-      action.payload.map((ispOwner) => (ids[ispOwner.id] = {
-        company: ispOwner.company, netFeeId: ispOwner.netFeeId, name: ispOwner.name, mobile: ispOwner.mobile 
-      }));
+      action.payload.map(
+        (ispOwner) =>
+          (ids[ispOwner.id] = {
+            company: ispOwner.company,
+            netFeeId: ispOwner.netFeeId,
+            name: ispOwner.name,
+            mobile: ispOwner.mobile,
+          })
+      );
       state.ispOwnerIds = ids;
     },
     getIspOwnerStaffsSuccess: (state, action) => {
@@ -57,6 +63,28 @@ const adminSlice = createSlice({
     getSingleIspOwnerData: (state, action) => {
       state.singleIspOwner = action.payload;
     },
+
+    //change number for manager collector and reseller of ISPOnwer from admin page
+    changeStaffsMobile: (state, action) => {
+      const id = action.payload.profileId;
+      const role = action.payload.role;
+      const mobile = action.payload.mobile;
+      if (role === "manager") state.staffs.manager.mobile = mobile;
+      if (role === "collector") {
+        const newCollectors = state.staffs.collectors.map((collector) => {
+          if (collector.id === id) collector.mobile = mobile;
+          return collector;
+        });
+        state.staffs.collectors = newCollectors;
+      }
+      if (role === "reseller") {
+        const newResellers = state.staffs.resellers.map((reseller) => {
+          if (reseller.id === id) reseller.mobile = mobile;
+          return reseller;
+        });
+        state.staffs.resellers = newResellers;
+      }
+    },
   },
 });
 
@@ -71,6 +99,7 @@ export const {
   getInvoicesSuccess,
   editInvoiceSuccessSuper,
   getSingleIspOwnerData,
+  changeStaffsMobile,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;

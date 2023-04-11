@@ -1,11 +1,20 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
+import { changeStaffsMobile } from "./adminSlice";
 
-export const NumberChangeApi = async (data, setIsLoading) => {
+//Change by number API call
+export const NumberChangeApi = async (
+  data,
+  setIsLoading,
+  setEditToggle,
+  dispatch
+) => {
   setIsLoading(true);
   apiLink
     .put(`/admin/user/update/`, data)
     .then((res) => {
+      setEditToggle("");
+      dispatch(changeStaffsMobile(data));
       toast.success(res.data.msg);
     })
 
@@ -16,6 +25,7 @@ export const NumberChangeApi = async (data, setIsLoading) => {
   setIsLoading(false);
 };
 
+//Delete By Number API call
 export const SearchByNumber = async (number, setCustomer, setIsLoading) => {
   setIsLoading(true);
   apiLink
@@ -27,12 +37,13 @@ export const SearchByNumber = async (number, setCustomer, setIsLoading) => {
 
     .catch((error) => {
       console.log(error);
-      toast.error(error.response.data.msg);
+      toast.error(error.response.data.message);
     });
 
   setIsLoading(false);
 };
 
+//Delete By Number API call
 export const DeleteByNumber = async (number) => {
   apiLink
     .delete(`/admin/user/update/${number}?isDelete=true`)
