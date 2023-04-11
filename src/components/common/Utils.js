@@ -38,6 +38,7 @@ const addClass = {
   complain: "warning",
 
   drop: "primary",
+  delete: "danger",
 };
 
 export const badge = (item) => {

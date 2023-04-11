@@ -41,8 +41,9 @@ import {
   getStaticCustomerActiveSuccess,
   getDueCustomerSuccess,
   getStaticDueCustomerSuccess,
-  getFireWllFilterDrop,
-  postFireWllFilterDrop,
+  getFireWllFilterIpDrop,
+  updateFireWallFilterIpDrop,
+  postFireWllFilterIpDrop,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -2527,7 +2528,7 @@ export const fireWallIpFilterDrop = async (
       `mikrotik/dropFireWallFilterRule/${ispOwner}/${mikrotikId}`,
       { dropIp }
     );
-    dispatch(postFireWllFilterDrop(res.data));
+    dispatch(postFireWllFilterIpDrop(res.data));
     document.querySelector("#fireWallIpFilter").click();
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
@@ -2547,7 +2548,7 @@ export const syncFireWallFilterDrop = async (
     const res = await apiLink.get(
       `mikrotik/sync/firewallFilterDrop/${data.ispOwner}/${data.mikrotikId}`
     );
-    dispatch(getFireWllFilterDrop(res.data));
+    dispatch(getFireWllFilterIpDrop(res.data));
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
     toast.error(error.response?.data?.message);
@@ -2562,7 +2563,7 @@ export const deleteFireWallIpDrop = async (dispatch, setIsLoading, data) => {
     const res = await apiLink.delete(
       `mikrotik/firewallFilterDrop/${data.ispOwner}/${data.id}?mikrotikCheck=${data.mikrotik}`
     );
-    console.log(res.data);
+
     document.querySelector("#fireWallFilterIpDropDelete").click();
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
@@ -2576,7 +2577,7 @@ export const getFireWallIpDrop = async (dispatch, setIpLoading, ispOwner) => {
   setIpLoading(true);
   try {
     const res = await apiLink.get(`mikrotik/firewall/filter/drop/${ispOwner}`);
-    dispatch(getFireWllFilterDrop(res.data));
+    dispatch(getFireWllFilterIpDrop(res.data));
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
@@ -2589,18 +2590,65 @@ export const updateFireWallIpDrop = async (
   setIsLoading,
   fireWallIp
 ) => {
-  console.log(fireWallIp);
   setIsLoading(true);
   try {
     const res = await apiLink.patch(
       `mikrotik/firewallFilterDrop/${fireWallIp.ispOwner}/${fireWallIp.id}`,
       fireWallIp
     );
-    dispatch(updateFireWallIpDrop(res.data));
-    document.querySelector("#fireWallIpFilterDropUpdate").click();
+    document.querySelector("#fireWallFilterIpDropUpdate").click();
+    dispatch(updateFireWallFilterIpDrop(res.data));
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
   setIsLoading(false);
+};
+
+// remove fire wall ip drop from mikrotik
+export const removeFireWallAllIpDrop = async (
+  dispatch,
+  setIpLoading,
+  ispOwner,
+  mikrotikId
+) => {
+  setIpLoading(true);
+  try {
+    const res = await apiLink.delete(
+      `mikrotik/firewall/filter/bulk-delete-mikrotik/${ispOwner}/${mikrotikId}`
+    );
+    dispatch(getFireWllFilterIpDrop(res.data));
+    langMessage(
+      "success",
+      "ফায়ারওয়াল ফিল্টার আইপি ড্রপ ডিলিট সফল হয়েছে",
+      "Fire Wall Filter Ip Drop Delete Success"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIpLoading(false);
+};
+
+// update fire wall ip drop
+export const resetFireWallAllIpDrop = async (
+  dispatch,
+  setIpLoading,
+  ispOwner,
+  mikrotikId
+) => {
+  setIpLoading(true);
+  try {
+    const res = await apiLink.post(
+      `mikrotik/firewall/filter/bulk-add-mikrotik/${ispOwner}/${mikrotikId}`
+    );
+    dispatch(getFireWllFilterIpDrop(res.data));
+    langMessage(
+      "success",
+      "ফায়ারওয়াল ফিল্টার আইপি ড্রপ সফলভাবে যুক্ত হয়েছে",
+      "Added Fire Wll Filter Ip Drop Successfully"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIpLoading(false);
 };

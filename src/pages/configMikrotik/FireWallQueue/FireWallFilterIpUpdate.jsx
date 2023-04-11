@@ -29,12 +29,10 @@ const FireWallFilterIpUpdate = ({ updateIp }) => {
     setFireWallIp(updateIp);
   }, [updateIp]);
 
-  // const { srcAddress, ispOwner, id } = fireWallIp;
-
   return (
     <div
       className="modal fade"
-      id="fireWallIpFilterDropUpdate"
+      id="fireWallFilterIpDropUpdate"
       tabIndex="-1"
       aria-labelledby="fireWallIpDrop"
       aria-hidden="true"
@@ -83,7 +81,11 @@ const FireWallFilterIpUpdate = ({ updateIp }) => {
                 >
                   {t("cancel")}
                 </button>
-                <button className="btn btn-success" disabled={isLoading}>
+                <button
+                  className="btn btn-success"
+                  type="submit"
+                  disabled={isLoading}
+                >
                   {isLoading ? <Loader /> : t("submit")}
                 </button>
               </div>

@@ -13,6 +13,8 @@ import { useParams } from "react-router-dom";
 import FireWallFIlterDrop from "./FireWallFIlterDrop";
 import {
   getFireWallIpDrop,
+  removeFireWallAllIpDrop,
+  resetFireWallAllIpDrop,
   syncFireWallFilterDrop,
   testFireWallApi,
 } from "../../../features/apiCalls";
@@ -21,6 +23,7 @@ import Table from "../../../components/table/Table";
 import { badge } from "../../../components/common/Utils";
 import FireWallFilterIpUpdate from "./FireWallFilterIpUpdate";
 import FireWallFilterIpDelete from "./FireWallFilterIpDelete";
+import TdLoader from "../../../components/common/TdLoader";
 
 const FireWallFilter = () => {
   const { t } = useTranslation();
@@ -31,6 +34,7 @@ const FireWallFilter = () => {
   const fireWallIpFilterDrop = useSelector(
     (state) => state.customer?.fireWallFilterDrop
   );
+  console.log(fireWallIpFilterDrop);
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +52,6 @@ const FireWallFilter = () => {
 
   // api call change handler
   const [apiCall, setApiCall] = useState("");
-  console.log(apiCall);
 
   //get all mikrotik
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -86,6 +89,15 @@ const FireWallFilter = () => {
     setDeleteIp(ip);
 
     setMikrotikCheck(false);
+  };
+
+  const apiCallChangeHandler = (value) => {
+    if (value === true) {
+      setApiCall("removeRequest");
+    }
+    if (value === false) {
+      setApiCall("resetRequest");
+    }
   };
 
   // fire wall ip drop column
@@ -140,7 +152,7 @@ const FireWallFilter = () => {
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#fireWallIpFilterDropUpdate"
+                  data-bs-target="#fireWallFilterIpDropUpdate"
                   onClick={() => fireWallFilterIpUpdateHandler(original)}
                 >
                   <div className="dropdown-item">
@@ -172,6 +184,18 @@ const FireWallFilter = () => {
     [t]
   );
 
+  // fire wall filter all ip drop delete and reset api call handler
+
+  useEffect(() => {
+    if (apiCall === "removeRequest") {
+      removeFireWallAllIpDrop(dispatch, setIpLoading, ispOwner, mikrotikId);
+    }
+
+    if (apiCall === "resetRequest") {
+      resetFireWallAllIpDrop(dispatch, setIpLoading, ispOwner, mikrotikId);
+    }
+  }, [apiCall]);
+
   useEffect(() => {
     getFireWallIpDrop(dispatch, setIpLoading, ispOwner);
   }, []);
@@ -197,19 +221,24 @@ const FireWallFilter = () => {
             </div>
 
             <div className="addAndSettingIcon d-flex flex-column align-items-start">
-              {/* <div class="form-check form-switch">
+              <div class="form-check form-switch">
                 <input
                   class="form-check-input"
                   type="checkbox"
                   role="switch"
-                  id="flexSwitchCheckDefault"
-                  checked={apiCall}
-                  onChange={(e) => setApiCall(e.target.checked)}
+                  id="fireWallIpDropApiCall"
+                  checked={
+                    fireWallIpFilterDrop[0]?.status === "delete" ||
+                    fireWallIpFilterDrop[0]?.status !== "drop"
+                  }
+                  onChange={(e) => apiCallChangeHandler(e.target.checked)}
                 ></input>
-                <label class="form-check-label" for="flexSwitchCheckDefault">
-                  Default switch checkbox input
+                <label class="form-check-label" for="fireWallIpDropApiCall">
+                  {fireWallIpFilterDrop[0]?.status === "delete"
+                    ? "Reverse Fire Wall Ip Drop"
+                    : "Delete Fire Wall Ip Drop"}
                 </label>
-              </div> */}
+              </div>
 
               <div className="">
                 <button
@@ -231,7 +260,7 @@ const FireWallFilter = () => {
                   <PersonLinesFill />
                 </button>
               </div>
-              <div>
+              {/* <div>
                 <button
                   className="btn btn-outline-primary me-2 mt-2"
                   onClick={syncFireWallFilterDropHandler}
@@ -240,14 +269,16 @@ const FireWallFilter = () => {
                   &nbsp;
                   <PersonCheckFill />
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
-          <Table
-            isLoading={syncLoading}
-            columns={fireWallIpDrop}
-            data={fireWallIpFilterDrop}
-          ></Table>
+          <div className="table-section">
+            <Table
+              isLoading={syncLoading || ipLoading || isLoading}
+              columns={fireWallIpDrop}
+              data={fireWallIpFilterDrop}
+            ></Table>
+          </div>
         </div>
       </div>
       <FireWallFIlterDrop ispOwner={ispOwner} mikrotikId={mikrotikId} />
