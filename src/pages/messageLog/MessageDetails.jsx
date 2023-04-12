@@ -3,14 +3,16 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
-const MessageDetails = ({ fixedId, status }) => {
+const MessageDetails = ({ messageId, status }) => {
   const { t } = useTranslation();
 
   let message = useSelector((state) =>
-    status === "fixedNumber" ? state?.messageLog?.fixedNumber : ""
+    status === "fixedNumber"
+      ? state?.messageLog?.fixedNumber
+      : state?.messageLog?.masking
   );
 
-  const findMessage = message.find((item) => item.id === fixedId);
+  const findMessage = message.find((item) => item.id === messageId);
 
   return (
     <div

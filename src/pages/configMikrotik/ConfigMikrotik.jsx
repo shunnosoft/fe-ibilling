@@ -33,6 +33,11 @@ export default function ConfigMikrotik() {
 
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
 
+  // get ispOwner bpSetting
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   let pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
   const [isChecking, setIsChecking] = useState(false);
@@ -59,7 +64,6 @@ export default function ConfigMikrotik() {
   }, [pppoePackage]);
 
   // fetch Active user
-
   const gotoAllMiktorik = () => {
     navigate("/mikrotik");
   };
@@ -125,18 +129,33 @@ export default function ConfigMikrotik() {
                   id="uncontrolled-tab-example"
                   className="mb-3"
                 >
-                  <Tab eventKey="pppoe" title={t("pppoe")}>
-                    <PPPoE />
-                  </Tab>
-                  <Tab eventKey="static" title={t("static")}>
-                    <Static />
-                  </Tab>
-                  <Tab eventKey="hotspot" title={t("hotspot")}>
-                    <Hotspot />
-                  </Tab>
-                  <Tab eventKey="fireWallFilter" title={t("fireWllFilter")}>
-                    <FireWallFilter />
-                  </Tab>
+                  {bpSettings?.customerType &&
+                    bpSettings?.customerType.map(
+                      (type) =>
+                        (type === "pppoe" && (
+                          <Tab eventKey="pppoe" title={t("pppoe")}>
+                            <PPPoE />
+                          </Tab>
+                        )) ||
+                        (type === "static" && (
+                          <Tab eventKey="static" title={t("static")}>
+                            <Static />
+                          </Tab>
+                        )) ||
+                        (type === "hotspot" && (
+                          <Tab eventKey="hotspot" title={t("hotspot")}>
+                            <Hotspot />
+                          </Tab>
+                        ))
+                    )}
+
+                  {bpSettings?.queueType &&
+                    (bpSettings?.queueType === "core-queue" ||
+                      bpSettings?.queueType === "firewall-queue") && (
+                      <Tab eventKey="fireWallFilter" title={t("fireWllFilter")}>
+                        <FireWallFilter />
+                      </Tab>
+                    )}
                 </Tabs>
               </FourGround>
               <Footer />

@@ -24,6 +24,7 @@ import { badge } from "../../../components/common/Utils";
 import FireWallFilterIpUpdate from "./FireWallFilterIpUpdate";
 import FireWallFilterIpDelete from "./FireWallFilterIpDelete";
 import TdLoader from "../../../components/common/TdLoader";
+import moment from "moment";
 
 const FireWallFilter = () => {
   const { t } = useTranslation();
@@ -34,7 +35,6 @@ const FireWallFilter = () => {
   const fireWallIpFilterDrop = useSelector(
     (state) => state.customer?.fireWallFilterDrop
   );
-  console.log(fireWallIpFilterDrop);
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -134,6 +134,9 @@ const FireWallFilter = () => {
         width: "15%",
         Header: t("createdAt"),
         accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm A");
+        },
       },
       {
         width: "15%",
@@ -205,7 +208,7 @@ const FireWallFilter = () => {
       <div className="collectorWrapper py-2">
         <div className="addCollector">
           <div className=" d-flex justify-content-around">
-            <div className="mikrotikDetails">
+            <div className="mikrotikDetails d-flex flex-column justify-content-evenly">
               <p className="lh-sm">
                 {t("name")}: <b>{configMikrotik?.name || "..."}</b>
               </p>
@@ -233,10 +236,13 @@ const FireWallFilter = () => {
                   }
                   onChange={(e) => apiCallChangeHandler(e.target.checked)}
                 ></input>
-                <label class="form-check-label" for="fireWallIpDropApiCall">
+                <label
+                  class="form-check-label text-secondary"
+                  for="fireWallIpDropApiCall"
+                >
                   {fireWallIpFilterDrop[0]?.status === "delete"
-                    ? "Reverse Fire Wall Ip Drop"
-                    : "Delete Fire Wall Ip Drop"}
+                    ? t("bringBackFireWallIpDrop")
+                    : t("deleteFireWallIpDrop")}
                 </label>
               </div>
 
@@ -274,7 +280,7 @@ const FireWallFilter = () => {
           </div>
           <div className="table-section">
             <Table
-              isLoading={syncLoading || ipLoading || isLoading}
+              isLoading={ipLoading}
               columns={fireWallIpDrop}
               data={fireWallIpFilterDrop}
             ></Table>

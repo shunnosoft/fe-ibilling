@@ -725,5 +725,7 @@
   "srcAddress": "এসআরসি এড্রেস",
   "fireWallIpUpdate": "ফায়ার ওয়াল আইপি আপডেট",
   "srcAddressDelete": "এসআরসি এড্রেস ডিলিট",
-  "fireWallIpDelete": "ফায়ার ওয়াল আইপি ডিলিট"
+  "fireWallIpDelete": "ফায়ার ওয়াল আইপি ডিলিট",
+  "deleteFireWallIpDrop": "ফায়ার ওয়াল আইপি ড্রপ মুছুন",
+  "bringBackFireWallIpDrop": "ফায়ার ওয়াল আইপি ড্রপ ফিরিয়ে আনুন"
 }

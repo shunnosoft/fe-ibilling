@@ -12,6 +12,9 @@ import DatePicker from "react-datepicker";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
+import { useRef } from "react";
+import ReactToPrint from "react-to-print";
+import RechargePrintInvoice from "../../Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
 const animatedComponents = makeAnimated();
 
 const options = [
@@ -28,7 +31,7 @@ const options = [
   { value: "November", label: "নভেম্বর" },
   { value: "December", label: "ডিসেম্বর" },
 ];
-export default function CustomerBillCollect({ single }) {
+export default function CustomerBillCollect({ single, customerData }) {
   const { t } = useTranslation();
   // get all customer
   const customer = useSelector((state) => state?.customer?.staticCustomer);
@@ -40,6 +43,16 @@ export default function CustomerBillCollect({ single }) {
 
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
+  );
+
+  // get bpSettings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // get all role
@@ -64,7 +77,17 @@ export default function CustomerBillCollect({ single }) {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
+
+  //response data after API call after payment
   const [responseData, setResponseData] = useState({});
+  const rechargePrint = useRef();
+
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (responseData.id) {
+      document.getElementById("printButton").click();
+    }
+  }, [responseData]);
 
   const totalAmount = Number(billAmount) + Number(balanceDue);
 
@@ -399,6 +422,43 @@ export default function CustomerBillCollect({ single }) {
                           </div>
                         </>
                       )}
+
+                      {/* Invoice Printer Page Component with button and they are hidden*/}
+
+                      <>
+                        {((role === "ispOwner" &&
+                          bpSettings?.instantRechargeBillPrint) ||
+                          ((role === "manager" || role === "collector") &&
+                            permission?.instantRechargeBillPrint &&
+                            bpSettings?.instantRechargeBillPrint)) && (
+                          <div className="d-none">
+                            <RechargePrintInvoice
+                              ref={rechargePrint}
+                              customerData={customerData}
+                              billingData={responseData}
+                              ispOwnerData={userData}
+                            />
+                          </div>
+                        )}
+
+                        <div className="d-none">
+                          <ReactToPrint
+                            documentTitle={t("billInvoice")}
+                            trigger={() => (
+                              <div
+                                title={t("printInvoiceBill")}
+                                style={{ cursor: "pointer" }}
+                              >
+                                <button type="button" id="printButton">
+                                  Print
+                                </button>
+                              </div>
+                            )}
+                            content={() => rechargePrint.current}
+                          />
+                        </div>
+                      </>
+
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : t("submit")}

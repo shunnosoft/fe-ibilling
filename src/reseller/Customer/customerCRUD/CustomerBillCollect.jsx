@@ -101,8 +101,8 @@ export default function CustomerBillCollect({ single, customerData }) {
   const resellerRechargePrint = useRef();
 
   const [collectorResellerInfo, setCollectorResellerInfo] = useState({});
-  // const [responseData, setResponseData] = useState({});
-  // const [test, setTest] = useState(false);
+  const [responseData, setResponseData] = useState({});
+  const [test, setTest] = useState(false);
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -122,11 +122,11 @@ export default function CustomerBillCollect({ single, customerData }) {
   });
 
   //print button is clicked after successful response
-  // useEffect(() => {
-  //   if (test) {
-  //     document.getElementById("printButtonReseller").click();
-  //   }
-  // }, [test]);
+  useEffect(() => {
+    if (test) {
+      document.getElementById("printButtonReseller").click();
+    }
+  }, [test]);
 
   //api is called to get reseller info for the reseller collector customer
   useEffect(() => {
@@ -203,11 +203,10 @@ export default function CustomerBillCollect({ single, customerData }) {
       dispatch,
       sendingData,
       setLoading,
-      resetForm
-      // setResponseData,
-      // setTest //to verify successful response
+      resetForm,
+      setResponseData,
+      setTest //to verify successful response
     );
-    console.log(sendingData);
   };
 
   return (
@@ -425,7 +424,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                         </>
                       )}
 
-                      {/* <>
+                      <>
                         {((role === "reseller" &&
                           resellerPermission?.instantRechargeBillPrint) ||
                           (role === "collector" &&
@@ -450,13 +449,15 @@ export default function CustomerBillCollect({ single, customerData }) {
                                 title={t("printInvoiceBill")}
                                 style={{ cursor: "pointer" }}
                               >
-                                <button id="printButtonReseller">Print</button>
+                                <button type="button" id="printButtonReseller">
+                                  Print
+                                </button>
                               </div>
                             )}
                             content={() => resellerRechargePrint.current}
                           />
                         </div>
-                      </> */}
+                      </>
 
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">

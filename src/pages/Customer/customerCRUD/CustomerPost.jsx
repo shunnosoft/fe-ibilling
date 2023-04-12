@@ -39,7 +39,6 @@ export default function CustomerModal() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
-  console.log(bpSettings);
 
   // const packages= useSelector(state=>state.package.packages)
   // const ispOwnerId = useSelector(
@@ -222,7 +221,6 @@ export default function CustomerModal() {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
-    console.log(mainData);
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 

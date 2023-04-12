@@ -656,6 +656,7 @@ export default function Customer() {
                     data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      getSpecificCustomerReport(original);
                     }}
                   >
                     <div className="dropdown-item">
@@ -946,7 +947,10 @@ export default function Customer() {
               {/* Model start */}
               <AddStaticCustomer />
               <StaticCustomerEdit single={singleCustomer} />
-              <CustomerBillCollect single={singleCustomer} />
+              <CustomerBillCollect
+                single={singleCustomer}
+                customerData={customerReportData}
+              />
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
               {/* customer note modal */}

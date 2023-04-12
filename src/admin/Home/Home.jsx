@@ -42,6 +42,7 @@ import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import districtsJSON from "../../bdAddress/bd-districts.json";
 import getName from "../../utils/getLocationName";
 import { CSVLink } from "react-csv";
+import DeleteByMobileModal from "./modal/DeleteByMobileModal";
 
 const districts = districtsJSON.districts;
 
@@ -590,6 +591,14 @@ export default function Home() {
               </h2>
 
               <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
+                <button
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#numberDeleteModal"
+                  className="btn btn-danger btn-sm me-3"
+                >
+                  Delete
+                </button>
                 <CSVLink
                   data={ispOwnerForCsVTableInfo}
                   filename={ispOwners.company}
@@ -693,6 +702,7 @@ export default function Home() {
               <Invoices invoiceId={invoiceId} companyName={companyName} />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
+              <DeleteByMobileModal />
 
               {/* password reset modal */}
               <PasswordReset resetCustomerId={userId} />
