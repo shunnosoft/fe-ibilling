@@ -69,7 +69,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         // } else {
         //   clearInterval(interval);
         // }
-      }, 1000);
+      }, 4000);
       return () => {
         clearInterval(interval);
       };
@@ -113,6 +113,8 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
       ],
     });
   }, [time, bandwidth, tx]);
+
+  console.log(time, bandwidth, tx);
 
   return (
     <>

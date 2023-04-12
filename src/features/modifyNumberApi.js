@@ -31,16 +31,16 @@ export const SearchByNumber = async (number, setCustomer, setIsLoading) => {
   apiLink
     .delete(`/admin/user/update/${number}?isDelete=false`)
     .then((res) => {
+      setIsLoading(false);
       setCustomer(res.data);
       toast.success(res.data.msg);
     })
 
     .catch((error) => {
+      setIsLoading(false);
       console.log(error);
       toast.error(error.response.data.message);
     });
-
-  setIsLoading(false);
 };
 
 //Delete By Number API call
