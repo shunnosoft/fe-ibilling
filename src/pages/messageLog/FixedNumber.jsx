@@ -225,7 +225,7 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
           data={fixedNumber}
         ></Table>
       </div>
-      <MessageDetails fixedId={fixedId} status="fixedNumber" />
+      <MessageDetails messageId={fixedId} status="fixedNumber" />
     </>
   );
 };

@@ -133,7 +133,7 @@ export default function StaticCustomerEdit({ single }) {
           item.name === customer.thana &&
           item.district_id === divisionalInfo.district
       );
-      divisionalInfo.thana = findThana.id;
+      divisionalInfo.thana = findThana?.id;
     }
     setDivisionalArea({
       ...divisionalArea,

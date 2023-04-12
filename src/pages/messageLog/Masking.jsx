@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getMaskingMessageLog } from "../../features/messageLogApi";
+import MessageDetails from "./MessageDetails";
 
 const Masking = ({ maskingLoading, setMaskingLoading }) => {
   const { t } = useTranslation();
@@ -132,6 +133,23 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
         width: "45%",
         Header: t("message"),
         accessor: "message",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original.message && original.message.slice(0, 80)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#messageLogDetails"
+                onClick={() => {
+                  setMaskingId(original.id);
+                }}
+              >
+                {original.message.length > 80 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
       },
     ],
     [t]
@@ -204,6 +222,7 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
           data={masking}
         ></Table>
       </div>
+      <MessageDetails messageId={maskingId} status="maskingNumber" />
     </>
   );
 };

@@ -151,15 +151,15 @@ const customerSliec = createSlice({
     },
 
     // fire wall ip filter drop
-    getFireWllFilterDrop: (state, action) => {
+    getFireWllFilterIpDrop: (state, action) => {
       state.fireWallFilterDrop = action.payload;
     },
 
-    postFireWllFilterDrop: (state, action) => {
+    postFireWllFilterIpDrop: (state, action) => {
       state.fireWallFilterDrop.push(action.payload);
     },
 
-    updateFireWallFilterDrop: (state, action) => {
+    updateFireWallFilterIpDrop: (state, action) => {
       state.fireWallFilterDrop[
         state.fireWallFilterDrop.find((item) => item.id === action.payload.id)
       ] = action.payload;
@@ -184,9 +184,9 @@ export const {
   getStaticCustomerActiveSuccess,
   bulkDelete,
   bulkUpdate,
-  getFireWllFilterDrop,
-  postFireWllFilterDrop,
-  updateFireWallFilterDrop,
+  getFireWllFilterIpDrop,
+  postFireWllFilterIpDrop,
+  updateFireWallFilterIpDrop,
 } = customerSliec.actions;
 
 export default customerSliec.reducer;

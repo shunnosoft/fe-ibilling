@@ -721,5 +721,7 @@
   "srcAddressDelete": "SRC Address Delete",
   "fireWallIpDelete": "Fire Wall Ip Delete",
   "enterNumber": "Enter Number",
-  "customerFound": "Customer Found"
+  "customerFound": "Customer Found",
+  "deleteFireWallIpDrop": "Delete Fire Wall Ip Drop",
+  "bringBackFireWallIpDrop": "Bring Back Fire Wall Ip Drop"
 }
