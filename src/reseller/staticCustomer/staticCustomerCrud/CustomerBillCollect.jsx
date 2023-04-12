@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -6,12 +6,14 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCallReseller";
+import { billCollect, resellerInfo } from "../../../features/apiCallReseller";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
 const animatedComponents = makeAnimated();
 
 const options = [
@@ -29,7 +31,7 @@ const options = [
   { value: "December", label: "ডিসেম্বর" },
 ];
 
-export default function CustomerBillCollect({ single }) {
+export default function CustomerBillCollect({ single, customerData }) {
   const { t } = useTranslation();
   const customer = useSelector((state) => state?.customer?.staticCustomer);
 
@@ -48,6 +50,24 @@ export default function CustomerBillCollect({ single }) {
   const currentUserId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
+
+  //get collectorPermission
+  const collectorPermission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permissions
+  );
+
+  //get resellerId from userData store
+  const resellerId = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.reseller
+  );
+
+  // get user permission
+  const resellerPermission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permission
+  );
+
+  //get roles
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
 
@@ -58,6 +78,11 @@ export default function CustomerBillCollect({ single }) {
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const resellerRechargePrint = useRef();
+
+  const [collectorResellerInfo, setCollectorResellerInfo] = useState({});
+  const [responseData, setResponseData] = useState({});
+  const [test, setTest] = useState(false);
 
   const BillValidatoin = Yup.object({
     amount: Yup.number()
@@ -72,6 +97,19 @@ export default function CustomerBillCollect({ single }) {
     setNoteCheck(false);
     setSelectedMonth(null);
   };
+
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (test) {
+      document.getElementById("printButtonReseller").click();
+      setTest(!test);
+    }
+  }, [test]);
+
+  //api is called to get reseller info for the reseller collector customer
+  useEffect(() => {
+    resellerInfo(resellerId, setCollectorResellerInfo);
+  }, [resellerId]);
 
   // bill amount
   const customerBillHandler = (formValue) => {
@@ -98,7 +136,14 @@ export default function CustomerBillCollect({ single }) {
       });
       sendingData.month = monthValues.join(",");
     }
-    billCollect(dispatch, sendingData, setLoading, resetForm);
+    billCollect(
+      dispatch,
+      sendingData,
+      setLoading,
+      resetForm,
+      setResponseData,
+      setTest
+    );
   };
 
   return (
@@ -312,6 +357,42 @@ export default function CustomerBillCollect({ single }) {
                           </div>
                         </>
                       )}
+
+                      {/* Print the report after instant payment component and button */}
+                      <>
+                        {((role === "reseller" &&
+                          resellerPermission?.instantRechargeBillPrint) ||
+                          (role === "collector" &&
+                            collectorPermission?.instantRechargeBillPrint &&
+                            collectorResellerInfo?.permission
+                              .instantRechargeBillPrint)) && (
+                          <div className="d-none">
+                            <RechargePrintInvoice
+                              ref={resellerRechargePrint}
+                              customerData={customerData}
+                              billingData={responseData}
+                              ispOwnerData={userData}
+                            />
+                          </div>
+                        )}
+
+                        <div className="d-none">
+                          <ReactToPrint
+                            documentTitle={t("saddda")}
+                            trigger={() => (
+                              <div
+                                title={t("printInvoiceBill")}
+                                style={{ cursor: "pointer" }}
+                              >
+                                <button type="button" id="printButtonReseller">
+                                  Print
+                                </button>
+                              </div>
+                            )}
+                            content={() => resellerRechargePrint.current}
+                          />
+                        </div>
+                      </>
                       <div className="mt-4">
                         <button type="submit" className="btn btn-success">
                           {isLoading ? <Loader /> : t("submit")}

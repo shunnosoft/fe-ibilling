@@ -719,5 +719,7 @@
   "srcAddress": "SRC Address",
   "fireWallIpUpdate": "Fire Wall Ip Update",
   "srcAddressDelete": "SRC Address Delete",
-  "fireWallIpDelete": "Fire Wall Ip Delete"
+  "fireWallIpDelete": "Fire Wall Ip Delete",
+  "enterNumber": "Enter Number",
+  "customerFound": "Customer Found"
 }

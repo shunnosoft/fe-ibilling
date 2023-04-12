@@ -1705,7 +1705,8 @@ export const billCollect = async (
   billData,
   setLoading,
   resetForm = null,
-  setResponseData
+  setResponseData,
+  setTest
 ) => {
   setLoading(true);
   try {
@@ -1713,9 +1714,11 @@ export const billCollect = async (
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
       setResponseData(res.data);
+      setTest(true);
     } else {
       dispatch(updateBalanceStaticCustomer(res.data));
       setResponseData(res.data);
+      setTest(true);
     }
     document.querySelector("#collectCustomerBillModal").click();
     langMessage(

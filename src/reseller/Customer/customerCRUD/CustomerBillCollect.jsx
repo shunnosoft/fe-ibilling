@@ -125,6 +125,7 @@ export default function CustomerBillCollect({ single, customerData }) {
   useEffect(() => {
     if (test) {
       document.getElementById("printButtonReseller").click();
+      setTest(!test);
     }
   }, [test]);
 
@@ -424,6 +425,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                         </>
                       )}
 
+                      {/* Print the report after instant payment component and button */}
                       <>
                         {((role === "reseller" &&
                           resellerPermission?.instantRechargeBillPrint) ||

@@ -179,6 +179,7 @@ export default function CustomerReport({ single }) {
                                 </div>
                                 <div>
                                   <PrinterFill
+                                    style={{ cursor: "pointer" }}
                                     onClick={() => {
                                       handlePrint(val);
                                     }}
@@ -225,6 +226,7 @@ export default function CustomerReport({ single }) {
                                 <div className="d-flex">
                                   <div className="mx-2">
                                     <PrinterFill
+                                      style={{ cursor: "pointer" }}
                                       onClick={() => {
                                         handlePrint(val);
                                       }}
