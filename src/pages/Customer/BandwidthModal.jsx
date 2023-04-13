@@ -114,8 +114,6 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
     });
   }, [time, bandwidth, tx]);
 
-  console.log(time, bandwidth, tx);
-
   return (
     <>
       <Modal
