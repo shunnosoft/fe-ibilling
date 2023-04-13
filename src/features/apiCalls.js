@@ -1188,8 +1188,23 @@ export const fetchpppoeUserForReseller = async (
     });
 
     const pppsecretUsers = res.data?.secretCustomers;
-    const interfaaceList = res.data?.interfaceList;
+    let interfaaceList = res.data?.interfaceList;
+    let activepppSecretUsers = res.data?.activepppSecretUsers;
+
     const temp = [];
+
+    interfaaceList = interfaaceList.map((interfaceItem) => {
+      const ipAddress = activepppSecretUsers.find(
+        (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
+      );
+      if (ipAddress) {
+        interfaceItem = {
+          ...interfaceItem,
+          ip: ipAddress.address,
+        };
+      }
+      return interfaceItem;
+    });
 
     pppsecretUsers.forEach((i) => {
       let match = false;
@@ -1205,6 +1220,7 @@ export const fetchpppoeUserForReseller = async (
       });
       if (!match) temp.push(i);
     });
+
     dispatch(getpppoeUserSuccess(temp));
     dispatch(mtkIsLoading(false));
     setIsLoading(false);
