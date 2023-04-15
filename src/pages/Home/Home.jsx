@@ -64,6 +64,14 @@ export default function Home() {
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
 
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData
+  );
+
+  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
+
+  const area = useSelector((state) => state.area.area);
+
   // get user permission
   const permissions = useSelector(
     (state) => state.persistedReducer.auth.userData.permissions
@@ -147,29 +155,35 @@ export default function Home() {
   }, [allCollector, manager]);
 
   useEffect(() => {
-    getIspOwnerData(dispatch, ispOwnerId, setIsloading);
+    Object.keys(ispOwner)?.length === 0 &&
+      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
 
     if (role === "ispOwner") {
-      getManger(dispatch, ispOwnerId);
-      fetchReseller(dispatch, ispOwnerId, setIsloading);
+      Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
+      reseller?.reseller.length === 0 &&
+        fetchReseller(dispatch, ispOwnerId, setIsloading);
     }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
+      Object.keys(ispOwner)?.length === 0 &&
+        getIspOwnerData(dispatch, ispOwnerId, setIsloading);
     }
-
     if (role === "ispOwner" || role === "manager" || role === "reseller") {
-      getCollector(dispatch, ispOwnerId, setIsloading);
+      allCollector?.length === 0 &&
+        getCollector(dispatch, ispOwnerId, setIsloading);
 
-      fetchMikrotik(dispatch, ispOwnerId, setIsloading);
-      getArea(dispatch, ispOwnerId, setIsloading);
+      mikrotik.length === 0 &&
+        fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+      area?.length === 0 && getArea(dispatch, ispOwnerId, setIsloading);
     }
 
     //for all roles
     // getArea(dispatch, IDBOpenDBRequest)
     if (role === "collector") {
       getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
-      fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+
+      mikrotik?.length === 0 &&
+        fetchMikrotik(dispatch, ispOwnerId, setIsloading);
 
       let areas = [];
 
@@ -196,18 +210,19 @@ export default function Home() {
         }
       });
       dispatch(FetchAreaSuccess(areas));
-      getDashboardCardData(
-        dispatch,
-        setLoadingDashboardData,
-        ispOwnerId,
-        null,
-        userData?.id
-      );
+      Object.keys(customerStat)?.length === 0 &&
+        getDashboardCardData(
+          dispatch,
+          setLoadingDashboardData,
+          ispOwnerId,
+          null,
+          userData?.id
+        );
     } else {
       getCharts(dispatch, ispOwnerId, Year, Month);
-      getDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
+      Object.keys(customerStat)?.length === 0 &&
+        getDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
     }
-
     // if (!invoice) getUnpaidInvoice(dispatch, ispOwnerId, setIsloading);
   }, []);
 
