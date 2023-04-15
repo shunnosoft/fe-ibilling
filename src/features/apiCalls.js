@@ -2071,10 +2071,10 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
 };
 
 //get ispwoner with
-export const getIspownerwitSMS = async (ispOwnerId) => {
+export const getIspOwnerWitSMS = async (ispOwnerId, setIspOwner) => {
   try {
     const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
-    // console.log(res.data);
+    setIspOwner(res.data);
   } catch (error) {
     console.log(error.response?.data.message);
   }
@@ -2648,7 +2648,7 @@ export const resetFireWallAllIpDrop = async (
     langMessage(
       "success",
       "ফায়ারওয়াল ফিল্টার আইপি ড্রপ সফলভাবে যুক্ত হয়েছে",
-      "Added Fire Wll Filter Ip Drop Successfully"
+      "Added Fire Wall Filter Ip Drop Successfully"
     );
   } catch (error) {
     toast.error(error.response?.data?.message);

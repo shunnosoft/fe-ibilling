@@ -14,10 +14,15 @@ import "./header.css";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 import Loader from "../../common/Loader";
-import { getResellerBalance, getTotalbal } from "../../../features/apiCalls";
+import {
+  getIspOwnerWitSMS,
+  getResellerBalance,
+  getTotalbal,
+} from "../../../features/apiCalls";
 import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
+import MessageAlert from "../../../pages/message/MessageAlert";
 
 export default function Header(props) {
   const { t } = useTranslation();
@@ -26,6 +31,12 @@ export default function Header(props) {
   const [isLoading, setLoading] = useState(false);
   const [rechargeBalnace, setRechargeBalance] = useState(0);
   const [smsBalance, setSmsBalance] = useState(0);
+  const [ispOwner, setIspOwner] = useState("");
+
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
@@ -47,6 +58,9 @@ export default function Header(props) {
   };
 
   useEffect(() => {
+    if (userRole === "ispOwner") {
+      getIspOwnerWitSMS(ispOwnerId, setIspOwner);
+    }
     if (userRole === "reseller") {
       getResellerBalance(
         userData.id,
@@ -111,7 +125,24 @@ export default function Header(props) {
             <div className="logo_section company_logo">
               {/* <img src="./assets/img/logo.png" alt="" /> */}
             </div>
+
             <div className="headerLinks">
+              {currentUser && userRole === "ispOwner" ? (
+                <div style={{ marginRight: "20px" }} className="refreshDiv">
+                  <div
+                    style={{ backgroundColor: "inherit" }}
+                    className="balancetext"
+                  >
+                    {t("message")}
+                    <strong className="mainsmsbalance">
+                      {smsBalance?.toFixed()}
+                    </strong>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
               {currentUser && userRole === "reseller" ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">
                   {/* <div
@@ -310,6 +341,7 @@ export default function Header(props) {
           </header>
         </div>
       </FourGround>
+      {/* <MessageAlert ispOwner={ispOwner} /> */}
     </div>
   );
 }

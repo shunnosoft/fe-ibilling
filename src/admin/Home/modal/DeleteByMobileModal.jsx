@@ -52,21 +52,20 @@ const DeleteByMobileModal = () => {
             ></button>
           </div>
           <div class="modal-body">
-            <input
-              onChange={(e) => setMobile(e.target.value)}
-              type="number"
-              className="me-3"
-            />
-            <span
-              type="button"
-              onClick={SearchHandler}
-              className="btn btn-primary btn-sm"
-            >
-              {isLoading ? <Loader /> : t("search")}
-            </span>
-
-            <br />
-            <br />
+            <div className="form-group d-flex">
+              <input
+                onChange={(e) => setMobile(e.target.value)}
+                type="number"
+                className="form-control me-3"
+              />
+              <button
+                type="button"
+                onClick={SearchHandler}
+                className="btn btn-primary btn-sm float-end"
+              >
+                {isLoading ? <Loader /> : t("search")}
+              </button>
+            </div>
 
             {customer?.profile?.id && (
               <>
