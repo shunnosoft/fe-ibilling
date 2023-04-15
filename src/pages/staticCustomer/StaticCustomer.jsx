@@ -23,6 +23,7 @@ import {
   CardChecklist,
   Newspaper,
   ArrowRightSquareFill,
+  ReceiptCutoff,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -66,6 +67,7 @@ import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 import BulkCustomerTransfer from "../Customer/customerCRUD/bulkOpration/bulkCustomerTransfer";
 import TransferToReseller from "./customerCRUD/TransferToReseller";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import FireWallFilterIpDropControl from "./FireWallFilterIpDropControl";
 
 export default function Customer() {
   //call hooks
@@ -893,6 +895,24 @@ export default function Customer() {
                       )}
                       {permission?.viewCustomerList || role !== "collector" ? (
                         <>
+                          {bpSettings?.queueType === "simple-queue" ||
+                            (bpSettings?.queueType === "core-queue" && (
+                              <div className="addAndSettingIcon">
+                                <button
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#fireWallFilterIpDropControl"
+                                  className="btn btn-light btn-outline-success"
+                                  style={{
+                                    fontSize: "17px",
+                                    marginRight: "14px",
+                                  }}
+                                  title={t("fireWallFilterIpDrop")}
+                                >
+                                  <ReceiptCutoff />
+                                </button>
+                              </div>
+                            ))}
+
                           <div className="addAndSettingIcon">
                             <CSVLink
                               data={customerForCsVTableInfo}
@@ -913,7 +933,6 @@ export default function Customer() {
                               <FileExcelFill className="addcutmButton" />
                             </CSVLink>
                           </div>
-
                           <div className="addAndSettingIcon">
                             <ReactToPrint
                               documentTitle={t("CustomerList")}
@@ -1015,6 +1034,8 @@ export default function Customer() {
                 ispOwner={ispOwner}
                 reseller=""
               />
+
+              <FireWallFilterIpDropControl />
               {/* bulk Modal end */}
 
               {/* Model finish */}

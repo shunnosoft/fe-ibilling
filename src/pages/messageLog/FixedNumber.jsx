@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getFixedNumberMessageLog } from "../../features/messageLogApi";
-import MessageDetails from "./MessageDetails";
+import MessageDetails from "./messageModal/MessageDetails";
 
 const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   const { t } = useTranslation();
@@ -142,10 +142,8 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
               {original.message && original.message.slice(0, 80)}
               <span
                 className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#messageLogDetails"
                 onClick={() => {
-                  setFixedId(original.id);
+                  setFixedId(original._id);
                 }}
               >
                 {original.message.length > 80 ? "...see more" : ""}
@@ -225,7 +223,7 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
           data={fixedNumber}
         ></Table>
       </div>
-      <MessageDetails messageId={fixedId} status="fixedNumber" />
+      <MessageDetails messageId={fixedId} status="fixedNumberMessage" />
     </>
   );
 };

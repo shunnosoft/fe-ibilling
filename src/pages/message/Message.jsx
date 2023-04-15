@@ -20,8 +20,8 @@ import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
 import { getArea } from "../../features/apiCalls";
 import { Button } from "react-bootstrap";
-import MessageAlert from "./MessageAlert";
 import SMSPurchase from "./SMSPurchase";
+import MessageAlert from "./MessageAlert";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -411,10 +411,6 @@ export default function Message() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              {/* <FourGround>
-                <h2 className="collectorTitle"> {t("SMSboard")} </h2>
-              </FourGround> */}
-
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
@@ -965,8 +961,7 @@ export default function Message() {
           </div>
         </div>
       </div>
-
-      {/* <MessageAlert sms={sms} /> */}
+      <MessageAlert ispOwner={sms} />
       <SMSPurchase show={show} />
     </>
   );

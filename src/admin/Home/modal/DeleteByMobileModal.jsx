@@ -4,13 +4,10 @@ import {
   SearchByNumber,
 } from "../../../features/modifyNumberApi";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 
 const DeleteByMobileModal = () => {
-  const { t } = useTranslation();
-
   //get current use Role
   const currentUserRole = useSelector(
     (state) => state.persistedReducer.auth.role
@@ -42,7 +39,7 @@ const DeleteByMobileModal = () => {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="numberDeleteModal">
-              {t("enterNumber")}
+              Enter Number
             </h5>
             <button
               type="button"
@@ -52,31 +49,26 @@ const DeleteByMobileModal = () => {
             ></button>
           </div>
           <div class="modal-body">
-            <input
-              onChange={(e) => setMobile(e.target.value)}
-              type="number"
-              className="me-3"
-            />
-            <span
-              type="button"
-              onClick={SearchHandler}
-              className="btn btn-primary btn-sm"
-            >
-              {isLoading ? <Loader /> : t("search")}
-            </span>
-
-            <br />
-            <br />
+            <div className="form-group d-flex">
+              <input
+                onChange={(e) => setMobile(e.target.value)}
+                type="number"
+                className="form-control me-3"
+              />
+              <button
+                type="button"
+                onClick={SearchHandler}
+                className="btn btn-primary btn-sm float-end"
+              >
+                {isLoading ? <Loader /> : "Search"}
+              </button>
+            </div>
 
             {customer?.profile?.id && (
               <>
-                <h5>{t("customerFound")}</h5>
-                <h5>
-                  {t("name")} : {customer?.profile?.name}
-                </h5>
-                <h5>
-                  {t("mobile")} : {customer?.profile?.mobile}
-                </h5>
+                <h5>Customer Found</h5>
+                <h5>Name : {customer?.profile?.name}</h5>
+                <h5>Mobile : {customer?.profile?.mobile}</h5>
                 {(currentUserRole === "superAdmin" ||
                   (currentUserRole === "admin" &&
                     customer?.user?.role === "customer")) && (
@@ -85,7 +77,7 @@ const DeleteByMobileModal = () => {
                     onClick={deleteHandler}
                     className="btn btn-danger btn-sm py-1"
                   >
-                    {t("delete")}
+                    Delete
                   </button>
                 )}
               </>
@@ -98,7 +90,7 @@ const DeleteByMobileModal = () => {
               data-bs-dismiss="modal"
               onClick={() => setCustomer("")}
             >
-              {t("close")}
+              Close
             </button>
           </div>
         </div>

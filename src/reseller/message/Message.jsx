@@ -411,7 +411,7 @@ export default function RMessage() {
                       <div className="refreshDiv">
                         <div className="balancetext px-3">
                           <div className="mx-content">
-                            {t("nonMasking")}&nbsp;
+                            {t("nonMasking")} &nbsp;
                           </div>
                           {FormatNumber(sms?.smsBalance)}
                         </div>

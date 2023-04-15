@@ -679,7 +679,8 @@
   "changeMikrotik": "Change Mikrotik",
   "connectionFeeCollected": "Connection Fee Collected",
   "messageBoardAlert": "Message Board Alert",
-  "purchaseSMSYouDoNotHaveEnoughSMS": "Purchase SMS, You Do Not Have Enough SMS",
+  "youDoNotHaveEnoughSMSBalance": "You Don't Have Enough SMS Balance",
+  "messageBalance": "Message Balance",
   "bkash": "Bkash",
   "appSecret": "App Secret",
   "appKey": "App Key",
@@ -723,5 +724,6 @@
   "enterNumber": "Enter Number",
   "customerFound": "Customer Found",
   "deleteFireWallIpDrop": "Delete Fire Wall Ip Drop",
-  "bringBackFireWallIpDrop": "Bring Back Fire Wall Ip Drop"
+  "bringBackFireWallIpDrop": "Bring Back Fire Wall Ip Drop",
+  "fireWallFilterIpDrop": "Fire Wall Filter Ip Drop"
 }
