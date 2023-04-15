@@ -131,7 +131,7 @@ export default function CustomerBillCollect({ single, customerData }) {
 
   //api is called to get reseller info for the reseller collector customer
   useEffect(() => {
-    resellerInfo(resellerId, setCollectorResellerInfo);
+    role === "collector" && resellerInfo(resellerId, setCollectorResellerInfo);
   }, [resellerId]);
 
   useEffect(() => {

@@ -44,11 +44,12 @@ export const SearchByNumber = async (number, setCustomer, setIsLoading) => {
 };
 
 //Delete By Number API call
-export const DeleteByNumber = async (number) => {
+export const DeleteByNumber = async (number, setCustomer) => {
   apiLink
     .delete(`/admin/user/update/${number}?isDelete=true`)
     .then((res) => {
       toast.success(res.data.msg);
+      setCustomer("");
       document.getElementById("numberDeleteModal").click();
     })
 
