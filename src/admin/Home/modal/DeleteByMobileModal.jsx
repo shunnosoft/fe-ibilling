@@ -28,7 +28,7 @@ const DeleteByMobileModal = () => {
   //delete api call function
   const deleteHandler = () => {
     const confirm = window.confirm("Are you sure to Delete");
-    if (confirm) DeleteByNumber(mobile, setIsLoading);
+    if (confirm) DeleteByNumber(mobile, setIsLoading, setCustomer);
   };
   return (
     <div
@@ -96,6 +96,7 @@ const DeleteByMobileModal = () => {
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
+              onClick={() => setCustomer("")}
             >
               {t("close")}
             </button>
