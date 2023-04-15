@@ -104,7 +104,7 @@ const ResellserActiveCustomer = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "9%",
+        width: "7%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -118,7 +118,7 @@ const ResellserActiveCustomer = () => {
         ),
       },
       {
-        width: "14%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
@@ -133,12 +133,12 @@ const ResellserActiveCustomer = () => {
         accessor: "ip",
       },
       {
-        width: "11%",
+        width: "12%",
         Header: t("package"),
-        accessor: "profile",
+        accessor: "pppoe.profile",
       },
       {
-        width: "12%",
+        width: "8%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -154,7 +154,7 @@ const ResellserActiveCustomer = () => {
         ),
       },
       {
-        width: "12%",
+        width: "8%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -165,14 +165,14 @@ const ResellserActiveCustomer = () => {
         ),
       },
       {
-        width: "17%",
+        width: "12%",
         Header: "Last Link Up",
         accessor: "lastLinkUpTime",
       },
       {
-        width: "17%",
+        width: "12%",
         Header: "Last Logout",
-        accessor: "lastLoggedOut",
+        accessor: "lastLogoutTime",
       },
     ],
     [t]

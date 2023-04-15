@@ -78,11 +78,13 @@ const adminSlice = createSlice({
         state.staffs.collectors = newCollectors;
       }
       if (role === "reseller") {
-        const newResellers = state.staffs.resellers.map((reseller) => {
-          if (reseller.id === id) reseller.mobile = mobile;
-          return reseller;
-        });
-        state.staffs.resellers = newResellers;
+        const newResellers = state.staffs.resellerCustomerCount.map(
+          (reseller) => {
+            if (reseller.id === id) reseller.mobile = mobile;
+            return reseller;
+          }
+        );
+        state.staffs.resellerCustomerCount = newResellers;
       }
     },
   },
