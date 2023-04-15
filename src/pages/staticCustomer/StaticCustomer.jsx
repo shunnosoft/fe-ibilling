@@ -895,16 +895,23 @@ export default function Customer() {
                       )}
                       {permission?.viewCustomerList || role !== "collector" ? (
                         <>
-                          <div className="addAndSettingIcon">
-                            <button
-                              data-bs-toggle="modal"
-                              data-bs-target="#fireWallFilterIpDropControl"
-                              className="btn btn-light btn-outline-success"
-                              style={{ fontSize: "17px", marginRight: "14px" }}
-                            >
-                              <ReceiptCutoff />
-                            </button>
-                          </div>
+                          {bpSettings?.queueType === "simple-queue" ||
+                            (bpSettings?.queueType === "core-queue" && (
+                              <div className="addAndSettingIcon">
+                                <button
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#fireWallFilterIpDropControl"
+                                  className="btn btn-light btn-outline-success"
+                                  style={{
+                                    fontSize: "17px",
+                                    marginRight: "14px",
+                                  }}
+                                  title={t("fireWallFilterIpDrop")}
+                                >
+                                  <ReceiptCutoff />
+                                </button>
+                              </div>
+                            ))}
 
                           <div className="addAndSettingIcon">
                             <CSVLink

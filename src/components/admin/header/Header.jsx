@@ -59,7 +59,7 @@ export default function Header(props) {
 
   useEffect(() => {
     if (userRole === "ispOwner") {
-      getIspOwnerWitSMS(ispOwnerId, setIspOwner);
+      getIspOwnerWitSMS(ispOwnerId, setIspOwner, setLoading);
     }
     if (userRole === "reseller") {
       getResellerBalance(
@@ -133,10 +133,31 @@ export default function Header(props) {
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    {t("message")}
                     <strong className="mainsmsbalance">
-                      {smsBalance?.toFixed()}
+                      {ispOwner?.smsBalance < 0
+                        ? `${t("masking")} ${ispOwner.smsBalance} `
+                        : ispOwner?.maskingSmsBalance < 0
+                        ? `${t("nonMasking")} ${ispOwner.maskingSmsBalance}`
+                        : ispOwner?.fixedNumberSmsBalance < 0
+                        ? `${t("fixedNumber")} ${ispOwner.maskingSmsBalance}`
+                        : ""}
                     </strong>
+                  </div>
+
+                  <div
+                    title={t("refresh")}
+                    style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
+                    className="refreshIcon"
+                  >
+                    {isLoading ? (
+                      <Loader />
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() =>
+                          getIspOwnerWitSMS(ispOwnerId, setIspOwner, setLoading)
+                        }
+                      ></ArrowClockwise>
+                    )}
                   </div>
                 </div>
               ) : (

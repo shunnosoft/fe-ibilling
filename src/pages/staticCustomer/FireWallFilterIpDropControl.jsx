@@ -97,7 +97,7 @@ const FireWallFilterIpDropControl = () => {
                   class="form-label mb-0 text-secondary"
                   for="singleIpDrop"
                 >
-                  select Your Mikrotik
+                  {t("selectMikrotik")}
                 </label>
                 <select
                   className="form-select mw-100 mt-0"

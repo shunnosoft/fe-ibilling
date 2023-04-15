@@ -26,9 +26,8 @@ const MessageAlert = ({ ispOwner }) => {
     if (
       ispOwner?.smsBalance +
         ispOwner?.fixedNumberSmsBalance +
-        ispOwner?.maskingSmsBalance -
-        (customerCount?.customersCount * 50) / 100 <=
-      100
+        ispOwner?.maskingSmsBalance <
+      (customerCount?.customersCount * 50) / 100
     ) {
       setShow(true);
     }

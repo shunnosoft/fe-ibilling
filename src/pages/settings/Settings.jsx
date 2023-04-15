@@ -12,20 +12,35 @@ import AlertSmsTemplate from "./template/AlertSmsTemplate";
 import CalenderAlert from "./template/CalenderAlert";
 import CreateCustomerSmsTemplate from "./template/CreateCustomerSmsTemplate";
 import CustomerInactiveSmsTemplate from "./template/CustomerInactiveSmsTemplate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import SalarySMSTemplate from "./template/SalarySMSTemplate";
 import ResellerRechargeSmsTemplate from "./template/ResellerRechargeSmsTemplate";
 import SMSPurchase from "../message/SMSPurchase";
 import { Button } from "react-bootstrap";
+import { getIspOwnerWitSMS } from "../../features/apiCalls";
+import MessageAlert from "../message/MessageAlert";
+import { useSelector } from "react-redux";
 export default function Settings() {
   const { t } = useTranslation();
+
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
   const [settingSelect, setSettingSelect] = useState("confirmation");
   const [show, setShow] = useState(false);
   const selectSettingHandler = (e) => {
     setSettingSelect(e.target.value);
   };
+  const [loading, setLoading] = useState(false);
+  const [ispOwner, setIspOwner] = useState("");
+
+  useEffect(() => {
+    getIspOwnerWitSMS(ispOwnerId, setIspOwner, setLoading);
+  }, [ispOwnerId]);
+
   return (
     <>
       <Sidebar />
@@ -141,6 +156,7 @@ export default function Settings() {
         </div>
       </div>
       <SMSPurchase show={show} />
+      <MessageAlert ispOwner={ispOwner} />
     </>
   );
 }

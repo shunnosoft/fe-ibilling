@@ -730,5 +730,6 @@
   "enterNumber": "মোবাইল নম্বর দিন",
   "customerFound": "গ্রাহক পাওয়া গেছে",
   "deleteFireWallIpDrop": "ফায়ার ওয়াল আইপি ড্রপ মুছুন",
-  "bringBackFireWallIpDrop": "ফায়ার ওয়াল আইপি ড্রপ ফিরিয়ে আনুন"
+  "bringBackFireWallIpDrop": "ফায়ার ওয়াল আইপি ড্রপ ফিরিয়ে আনুন",
+  "fireWallFilterIpDrop": "ফায়ার ওয়াল ফিল্টার আইপি ড্রপ"
 }

@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { getArea } from "../../features/apiCalls";
 import { Button } from "react-bootstrap";
 import SMSPurchase from "./SMSPurchase";
+import MessageAlert from "./MessageAlert";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -960,7 +961,7 @@ export default function Message() {
           </div>
         </div>
       </div>
-
+      <MessageAlert ispOwner={sms} />
       <SMSPurchase show={show} />
     </>
   );

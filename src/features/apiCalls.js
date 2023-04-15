@@ -133,6 +133,7 @@ import {
   getPaidCustomerSuccess,
   getUnpaidCustomerSuccess,
 } from "./dashboardInformationSlice";
+import { Flag } from "react-bootstrap-icons";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -2133,13 +2134,19 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
 };
 
 //get ispwoner with
-export const getIspOwnerWitSMS = async (ispOwnerId, setIspOwner) => {
+export const getIspOwnerWitSMS = async (
+  ispOwnerId,
+  setIspOwner,
+  setLoading
+) => {
+  setLoading(true);
   try {
     const res = await apiLink.get(`/ispOwner/${ispOwnerId}`);
     setIspOwner(res.data);
   } catch (error) {
     console.log(error.response?.data.message);
   }
+  setLoading(false);
 };
 
 //mikrotik packages without mikrotik access

@@ -724,5 +724,6 @@
   "enterNumber": "Enter Number",
   "customerFound": "Customer Found",
   "deleteFireWallIpDrop": "Delete Fire Wall Ip Drop",
-  "bringBackFireWallIpDrop": "Bring Back Fire Wall Ip Drop"
+  "bringBackFireWallIpDrop": "Bring Back Fire Wall Ip Drop",
+  "fireWallFilterIpDrop": "Fire Wall Filter Ip Drop"
 }
