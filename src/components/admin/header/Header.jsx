@@ -143,22 +143,32 @@ export default function Header(props) {
                         : ""}
                     </strong>
                   </div>
-
-                  <div
-                    title={t("refresh")}
-                    style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
-                    className="refreshIcon"
-                  >
-                    {isLoading ? (
-                      <Loader />
-                    ) : (
-                      <ArrowClockwise
-                        onClick={() =>
-                          getIspOwnerWitSMS(ispOwnerId, setIspOwner, setLoading)
-                        }
-                      ></ArrowClockwise>
-                    )}
-                  </div>
+                  {ispOwner?.smsBalance ||
+                    ispOwner?.maskingSmsBalance ||
+                    (ispOwner?.fixedNumberSmsBalance && (
+                      <div
+                        title={t("refresh")}
+                        style={{
+                          borderRadius: "10%",
+                          backgroundColor: "#F7E9D7",
+                        }}
+                        className="refreshIcon"
+                      >
+                        {isLoading ? (
+                          <Loader />
+                        ) : (
+                          <ArrowClockwise
+                            onClick={() =>
+                              getIspOwnerWitSMS(
+                                ispOwnerId,
+                                setIspOwner,
+                                setLoading
+                              )
+                            }
+                          ></ArrowClockwise>
+                        )}
+                      </div>
+                    ))}
                 </div>
               ) : (
                 ""
