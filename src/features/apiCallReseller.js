@@ -564,7 +564,6 @@ export const withMtkPackage = async (dispatch, resellerId) => {
       method: "GET",
       url: `/reseller/package/${resellerId}`,
     });
-    console.log(res.data);
     dispatch(getpppoePackageSuccess(res.data.packages));
   } catch (error) {
     console.log(error.response);

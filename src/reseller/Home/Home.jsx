@@ -47,6 +47,11 @@ export default function Home() {
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
+
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData
+  );
+
   const ChartsData = useSelector((state) => state.chart.charts);
   const customerStat = useSelector((state) => state.chart.customerStat);
   const [showGraphData, setShowGraphData] = useState("amount");
@@ -91,7 +96,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
+    Object.keys(ispOwner)?.length === 0 &&
+      getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
 
     if (role === "collector") {
       const areas = [];
@@ -117,24 +123,27 @@ export default function Home() {
         Month,
         userData?.collector.user
       );
-      getDashboardCardData(
-        dispatch,
-        setIsLoading,
-        ispOwnerId,
-        userData.collector.reseller,
-        userData.collector.id
-      );
+      Object.keys(customerStat)?.length === 0 &&
+        getDashboardCardData(
+          dispatch,
+          setIsLoading,
+          ispOwnerId,
+          userData.collector.reseller,
+          userData.collector.id
+        );
     } else {
-      getCollector(dispatch, userData?.reseller.id, setIsLoading);
+      allCollector.length === 0 &&
+        getCollector(dispatch, userData?.reseller.id, setIsLoading);
       getChartsReseller(dispatch, resellerId, Year, Month);
-      getDashboardCardData(
-        dispatch,
-        setIsLoading,
-        ispOwnerId,
-        resellerId,
-        null,
-        filterDate
-      );
+      Object.keys(customerStat)?.length === 0 &&
+        getDashboardCardData(
+          dispatch,
+          setIsLoading,
+          ispOwnerId,
+          resellerId,
+          null,
+          filterDate
+        );
     }
   }, []);
 
