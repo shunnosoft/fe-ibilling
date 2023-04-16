@@ -53,7 +53,7 @@ const DeleteByMobileModal = () => {
               <input
                 onChange={(e) => setMobile(e.target.value)}
                 type="number"
-                className="form-control me-3"
+                className="form-control me-3 w-50"
               />
               <button
                 type="button"
@@ -66,7 +66,7 @@ const DeleteByMobileModal = () => {
 
             {customer?.profile?.id && (
               <>
-                <h5>Customer Found</h5>
+                <h5 className="mt-3">Customer Found</h5>
                 <h5>Name : {customer?.profile?.name}</h5>
                 <h5>Mobile : {customer?.profile?.mobile}</h5>
                 {(currentUserRole === "superAdmin" ||

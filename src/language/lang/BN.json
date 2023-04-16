@@ -731,5 +731,8 @@
   "customerFound": "গ্রাহক পাওয়া গেছে",
   "deleteFireWallIpDrop": "ফায়ার ওয়াল আইপি ড্রপ মুছুন",
   "bringBackFireWallIpDrop": "ফায়ার ওয়াল আইপি ড্রপ ফিরিয়ে আনুন",
-  "fireWallFilterIpDrop": "ফায়ার ওয়াল ফিল্টার আইপি ড্রপ"
+  "fireWallFilterIpDrop": "ফায়ার ওয়াল ফিল্টার আইপি ড্রপ",
+  "migration": "মাইগ্রেশন",
+  "smsPurchase": "এসএমএস ক্রয়",
+  "monthlyServiceCharge": "মাসিক সার্ভিস চার্জ"
 }
