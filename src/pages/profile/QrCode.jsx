@@ -1,7 +1,7 @@
 //External Lib Import
 import QRCode from "qrcode.react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ToastContainer } from "react-toastify";
 
 const QrCode = ({ ispInfo }) => {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ const QrCode = ({ ispInfo }) => {
     <div>
       <QRCode
         id="qr-gen"
-        value={JSON.stringify(ispInfo)}
+        value={`http://192.168.1.48:3000/isp/${ispInfo.netFeeId}`}
         size={290}
         level={"H"}
         includeMargin={true}

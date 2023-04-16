@@ -4,18 +4,28 @@ import { useSelector } from "react-redux";
 import Loader from "../components/common/Loader";
 import { billPayment } from "../features/getIspOwnerUsersApi";
 import apiLink from "../api/apiLink";
+import { publicRequest } from "../api/apiLink";
 
-const PaymentModal = () => {
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser.customer
+const PaymentModal = (props) => {
+  const customerData = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser?.customer
   );
   const [paymentAmount, setPaymentAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [agreement, setAgreement] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    setPaymentAmount(userData?.monthlyFee);
-  }, [userData]);
+    if (!props.customerData && customerData) {
+      setPaymentAmount(customerData.monthlyFee);
+      setUserData(customerData);
+    }
+    //for handling qr payment
+    if (props.customerData) {
+      setPaymentAmount(props.customerData.monthlyFee); //handle qr payment
+      setUserData(props.customerData);
+    }
+  }, [customerData, props.customerData]);
 
   const billPaymentController = async () => {
     const data = {
@@ -28,7 +38,7 @@ const PaymentModal = () => {
       userType: userData.userType,
       medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
       paymentStatus: "pending",
-      package: userData.pppoe.profile,
+      mikrotikPackage: userData.mikrotikPackage,
     };
 
     if (paymentAmount < userData.monthlyFee) {
@@ -38,6 +48,19 @@ const PaymentModal = () => {
   };
 
   const bKash = window.bkash;
+
+  let URL = {
+    create: "bkash/createPayment",
+    execute: "bkash/executePayment",
+    baseURL: apiLink,
+  };
+  if (props.isPublic) {
+    URL = {
+      create: "bkash/createPublicPayment",
+      execute: "bkash/executePublicPayment",
+      baseURL: publicRequest,
+    };
+  }
 
   useEffect(() => {
     let paymentID = "";
@@ -56,13 +79,11 @@ const PaymentModal = () => {
           userType: userData.userType,
           medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
           paymentStatus: "pending",
-          package: userData.pppoe.profile,
           collectedBy: "customer",
         },
         createRequest: async function (request) {
           try {
-            const { data } = await apiLink.post(`bkash/createPayment`, request);
-
+            const { data } = await URL.baseURL.post(URL.create, request);
             if (data?.statusCode === "0000") {
               localStorage.setItem("paymentAmount", paymentAmount);
               window.location.href = data?.bkashURL;
@@ -73,11 +94,11 @@ const PaymentModal = () => {
               bKash.create().onSuccess(data);
             } else {
               bKash.create().onError();
-              // window.location.href = "/payment/failed";
+              window.location.href = "/payment/failed";
             }
           } catch (error) {
             bKash.create().onError();
-            // window.location.href = "/payment/failed";
+            window.location.href = "/payment/failed";
             console.log(error);
           }
         },
@@ -92,13 +113,14 @@ const PaymentModal = () => {
             userType: userData.userType,
             medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
             paymentStatus: "pending",
-            package: userData.pppoe.profile,
+            mikrotikPackage: userData.mikrotikPackage,
           };
           try {
-            const { data } = await apiLink.post(
-              `bkash/executePayment?paymentID=${paymentID}`,
+            const { data } = await URL.baseURL.post(
+              `${URL.execute}?paymentID=${paymentID}`,
               billData
             );
+            console.log(data);
             if (data.bill.paymentStatus === "paid") {
               window.location.href = "/payment/success";
             } else {
@@ -134,7 +156,7 @@ const PaymentModal = () => {
           <div className="modal-body">
             <input
               onChange={(e) => setPaymentAmount(e.target.value)}
-              min={userData.monthlyFee}
+              min={userData?.monthlyFee}
               className="form-control "
               type="number"
               value={paymentAmount}
@@ -143,7 +165,7 @@ const PaymentModal = () => {
             <div class="form-check mt-4">
               <input
                 onChange={(e) => setAgreement(e.target.checked)}
-                min={userData.monthlyFee}
+                min={userData?.monthlyFee}
                 className="form-check-input "
                 type="checkbox"
                 id="agreement"
