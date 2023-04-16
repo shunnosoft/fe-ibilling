@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Loader from "../../../components/common/Loader";
 import { uploadCsvFile } from "../../../features/apiCallAdmin";
 
 const FileUpload = ({ ownerID, mikrotikStatus }) => {
+  const ref = useRef();
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -12,6 +14,11 @@ const FileUpload = ({ ownerID, mikrotikStatus }) => {
   // set file in state handler
   const handleChange = (event) => {
     setSelectedFile(event.target.files[0]);
+  };
+
+  // modal close handler
+  const closeHandler = () => {
+    ref.current.value = "";
   };
 
   // handle submit
@@ -52,6 +59,7 @@ const FileUpload = ({ ownerID, mikrotikStatus }) => {
             <label>CSV File</label>
             <form>
               <input
+                ref={ref}
                 type={"file"}
                 id={"csvFileInput"}
                 accept={".csv"}
@@ -72,7 +80,7 @@ const FileUpload = ({ ownerID, mikrotikStatus }) => {
               type="button"
               className="btn btn-secondary"
               data-bs-dismiss="modal"
-              disabled={isLoading}
+              onClick={closeHandler}
             >
               Cancel
             </button>

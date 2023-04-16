@@ -219,31 +219,27 @@ const DetailsModal = ({ ownerId }) => {
                           <table class="table table-bordered">
                             <tbody>
                               <tr>
-                                <th scope="col">ISP ID</th>
+                                <td scope="col">ISP ID</td>
                                 <td>{ownerData?.id}</td>
                               </tr>
                               <tr>
-                                <th scope="col">Name</th>
+                                <td scope="col">Name</td>
                                 <td>{ownerData?.name}</td>
                               </tr>
                               <tr>
-                                <th scope="col">Mobile</th>
-                                <td>
-                                  <i className="text-body">
-                                    {ownerData?.mobile}
-                                  </i>
-                                </td>
+                                <td scope="col">Company</td>
+                                <td>{ownerData?.company}</td>
                               </tr>
                               <tr>
-                                <th scope="col">Address</th>
-                                <td>
-                                  <i className="text-body">
-                                    {ownerData?.address}
-                                  </i>
-                                </td>
+                                <td scope="col">Mobile</td>
+                                <td>{ownerData?.mobile}</td>
                               </tr>
                               <tr>
-                                <th scope="col">Email</th>
+                                <td scope="col">Address</td>
+                                <td>{ownerData?.address}</td>
+                              </tr>
+                              <tr>
+                                <td scope="col">Email</td>
                                 <td>
                                   <i className="text-body">
                                     {" "}
@@ -252,7 +248,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Status</th>
+                                <td scope="col">Status</td>
                                 <td>
                                   <i className="text-body">
                                     <span class="badge bg-info">
@@ -262,7 +258,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Signature</th>
+                                <td scope="col">Signature</td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.signature}
@@ -270,7 +266,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">SMS Balance</th>
+                                <td scope="col">SMS Balance</td>
                                 <td>
                                   <i className="text-body">
                                     <span class="badge  bg-info">
@@ -280,7 +276,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">SMS Rate</th>
+                                <td scope="col">SMS Rate</td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.smsRate}
@@ -288,7 +284,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">SMS Type</th>
+                                <td scope="col">SMS Type</td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.smsType}
@@ -296,7 +292,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Bill Collection Type</th>
+                                <td scope="col">Bill Collection Type</td>
                                 <td>
                                   <i className="text-body">
                                     <span class="badge bg-info">
@@ -306,12 +302,24 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Create At</th>
+                                <td scope="col">Create At</td>
                                 <td>
                                   <i className="text-secondary">
                                     {moment(ownerData?.createdAt).format("lll")}
                                   </i>
                                 </td>
+                              </tr>
+                              <tr>
+                                <td scope="col">Division</td>
+                                <td>{ownerData?.division}</td>
+                              </tr>
+                              <tr>
+                                <td scope="col">District</td>
+                                <td>{ownerData?.district}</td>
+                              </tr>
+                              <tr>
+                                <td scope="col">Upazila</td>
+                                <td>{ownerData?.upazila}</td>
                               </tr>
                             </tbody>
                           </table>
@@ -339,7 +347,7 @@ const DetailsModal = ({ ownerId }) => {
                           <table class="table table-bordered">
                             <tbody>
                               <tr>
-                                <th scope="col">Complain Management</th>
+                                <td scope="col">Complain Management</td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings
@@ -356,7 +364,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Customer Limit</th>
+                                <td scope="col">Customer Limit</td>
                                 <td>
                                   <i className="text-body">
                                     <span class="badge bg-info">
@@ -366,7 +374,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Customer Portal</th>
+                                <td scope="col">Customer Portal</td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings?.customerPortal ? (
@@ -382,7 +390,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Execute Billing Cycle </th>
+                                <td scope="col">Execute Billing Cycle </td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings
@@ -399,7 +407,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Mikrotik </th>
+                                <td scope="col">Mikrotik </td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings?.hasMikrotik ? (
@@ -415,7 +423,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Mikrotik Length </th>
+                                <td scope="col">Mikrotik Length </td>
                                 <td>
                                   <i className="text-primary">
                                     <span class="badge bg-info">
@@ -425,7 +433,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">PG</th>
+                                <td scope="col">PG</td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings?.hasPG ? (
@@ -441,7 +449,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Reseller </th>
+                                <td scope="col">Reseller </td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings?.hasReseller ? (
@@ -457,7 +465,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Inventory </th>
+                                <td scope="col">Inventory </td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings?.inventory ? (
@@ -473,7 +481,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Invoice Date </th>
+                                <td scope="col">Invoice Date </td>
                                 <td>
                                   <i className="text-danger">
                                     {ownerData?.bpSettings?.monthlyDueDate &&
@@ -484,9 +492,9 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">
+                                <td scope="col">
                                   Registration Payment Status{" "}
-                                </th>
+                                </td>
                                 <td>
                                   {" "}
                                   <i className="text-body">
@@ -504,7 +512,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Monthly Payment Status </th>
+                                <td scope="col">Monthly Payment Status </td>
                                 <td>
                                   <i className="text-body">
                                     <span
@@ -524,7 +532,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Package </th>
+                                <td scope="col">Package </td>
                                 <td>
                                   <i className="text-body">
                                     <span class="badge bg-info">
@@ -534,7 +542,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Package Type </th>
+                                <td scope="col">Package Type </td>
                                 <td>
                                   <i className="text-body">
                                     <span class="badge bg-info">
@@ -544,7 +552,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Package Rate </th>
+                                <td scope="col">Package Rate </td>
                                 <td>
                                   <i className="text-body">
                                     <span class="badge bg-info">
@@ -554,7 +562,7 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <th scope="col">Queue Type </th>
+                                <td scope="col">Queue Type </td>
                                 <td>
                                   <i className="text-body">
                                     {ownerData?.bpSettings?.queueType}
@@ -857,14 +865,14 @@ const DetailsModal = ({ ownerId }) => {
                                     >
                                       <PlugFill />
                                     </button>
-                                    <button
+                                    {/* <button
                                       title="deletekrotik"
                                       onClick={() => mikrotikDelete(item?.id)}
                                       style={{ padding: "0.10rem .5rem" }}
                                       className="btn btn-sm btn-danger"
                                     >
                                       <ArchiveFill />
-                                    </button>
+                                    </button> */}
                                   </td>
                                 </tr>
                               ))}
