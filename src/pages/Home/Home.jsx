@@ -801,7 +801,7 @@ export default function Home() {
             </FourGround>
 
             <Accordion alwaysOpen>
-              {role === "ispOwner" && (
+              {role === "ispOwner" ? (
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>
                     <h4 className="mb-0">{t("roleAdmin")}</h4>
@@ -971,8 +971,10 @@ export default function Home() {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
+              ) : (
+                ""
               )}
-              {(role === "ispOwner" || role === "manager") && (
+              {role === "ispOwner" || role === "manager" ? (
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>
                     <h4 className="mb-0">{t("roleManager")}</h4>
@@ -1151,8 +1153,10 @@ export default function Home() {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
+              ) : (
+                ""
               )}
-              {role === "ispOwner" && customerStat?.totalCollector && (
+              {role === "ispOwner" && customerStat?.totalCollector ? (
                 <>
                   <Accordion.Item eventKey="2">
                     <Accordion.Header className="shadow-none">
@@ -1312,6 +1316,8 @@ export default function Home() {
                     </Accordion.Item>
                   )}
                 </>
+              ) : (
+                ""
               )}
             </Accordion>
             {/* chart section */}

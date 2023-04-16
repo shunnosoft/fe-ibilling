@@ -725,5 +725,8 @@
   "customerFound": "Customer Found",
   "deleteFireWallIpDrop": "Delete Fire Wall Ip Drop",
   "bringBackFireWallIpDrop": "Bring Back Fire Wall Ip Drop",
-  "fireWallFilterIpDrop": "Fire Wall Filter Ip Drop"
+  "fireWallFilterIpDrop": "Fire Wall Filter Ip Drop",
+  "migration": "Migration",
+  "smsPurchase": "SMS Purchase",
+  "monthlyServiceCharge": "Monthly Service Charge"
 }

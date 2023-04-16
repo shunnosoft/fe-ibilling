@@ -7,6 +7,7 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
+import DatePicker from "react-datepicker";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -32,15 +33,29 @@ function Invoice() {
   const componentRef = useRef(); //reference of pdf export component
   const [isLoading, setIsloading] = useState(false);
 
+  const invoices = useSelector((state) => state?.invoice?.invoices);
+
   // invoice delete loading state
   const [deleteInvoiceLoading, setDeleteInvoiceLoading] = useState(false);
 
+  const [mainData, setMainData] = useState([]);
+
+  const [type, setType] = useState("");
+
+  //date filter section
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
+  const [dateStart, setStartDate] = useState(firstDay);
+  const [dateEnd, setEndDate] = useState(today);
+
   const dispatch = useDispatch();
+
+  //get ISPOwner ID
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
-
-  const invoices = useSelector((state) => state?.invoice?.invoices);
 
   // delete invoice
   const deleteInvoiceHandler = (invoiceId) => {
@@ -55,10 +70,17 @@ function Invoice() {
     getInvoices(dispatch, ispOwnerId, setIsloading);
   };
 
+  //invoices set to Main Data
+  useEffect(() => {
+    setMainData(invoices);
+  }, [invoices]);
+
+  //get invoices
   useEffect(() => {
     if (invoices.length === 0) getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
 
+  //react memo
   const columns = React.useMemo(
     () => [
       {
@@ -187,6 +209,27 @@ function Invoice() {
     [t]
   );
 
+  //filter handler
+  const onClickFilter = () => {
+    let arr = [...invoices];
+
+    //date filter
+    arr = arr.filter(
+      (item) =>
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
+    );
+
+    //type filter
+    if (type) {
+      arr = arr.filter((item) => item.type === type);
+    }
+
+    setMainData(arr);
+  };
+
   return (
     <>
       <Sidebar />
@@ -227,18 +270,67 @@ function Invoice() {
               </FourGround>
 
               <FourGround>
+                {/* filter div */}
+                <div className="selectFilteringg pt-2">
+                  <select
+                    className="form-select mx-2"
+                    onChange={(e) => setType(e.target.value)}
+                  >
+                    <option value="" defaultValue>
+                      {t("type")}
+                    </option>
+
+                    <option value="registration"> {t("registration")}</option>
+                    <option value="migration"> {t("migration")} </option>
+                    <option value="smsPurchase"> {t("smsPurchase")} </option>
+                    <option value="monthlyServiceCharge">
+                      {" "}
+                      {t("monthlyServiceCharge")}{" "}
+                    </option>
+                  </select>
+
+                  <div className="ms-2">
+                    <DatePicker
+                      className="form-control w-140 mt-2"
+                      selected={dateStart}
+                      onChange={(date) => setStartDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={t("selectBillDate")}
+                    />
+                  </div>
+                  <div className="mx-2">
+                    <DatePicker
+                      className="form-control w-140 mt-2"
+                      selected={dateEnd}
+                      onChange={(date) => setEndDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={t("selectBillDate")}
+                    />
+                  </div>
+
+                  <div>
+                    <button
+                      className="btn btn-outline-primary w-110 mt-2"
+                      type="button"
+                      onClick={onClickFilter}
+                    >
+                      {t("filter")}
+                    </button>
+                  </div>
+                </div>
+
                 <div style={{ display: "none" }}>
                   <PrintInvoice
                     currentCustomers={invoices}
                     ref={componentRef}
                   />
                 </div>
-                <div className="collectorWrapper mt-2 py-2">
+                <div className="collectorWrapper ">
                   {/* table */}
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
-                      data={invoices}
+                      data={mainData}
                       columns={columns}
                     ></Table>
                   </div>
