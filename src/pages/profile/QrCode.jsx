@@ -24,7 +24,7 @@ const QrCode = ({ ispInfo }) => {
     <div>
       <QRCode
         id="qr-gen"
-        value={`http://192.168.1.48:3000/isp/${ispInfo.netFeeId}`}
+        value={`https://netfeebd.com/isp/${ispInfo.netFeeId}`}
         size={290}
         level={"H"}
         includeMargin={true}

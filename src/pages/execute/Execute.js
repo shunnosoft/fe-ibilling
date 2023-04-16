@@ -1,7 +1,7 @@
 import React from "react";
 import "./execute.css";
 import { useEffect } from "react";
-import apiLink from "../../api/apiLink";
+import apiLink, { publicRequest } from "../../api/apiLink";
 import { useSelector } from "react-redux";
 import Loader from "../../components/common/Loader";
 
@@ -11,14 +11,29 @@ export default function Execute() {
   const status = urlParams.get("status");
 
   const userData = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser.customer
+    (state) => state.persistedReducer.auth?.currentUser?.customer
   );
 
   const paymentExecute = async () => {
-    return await apiLink.post(
-      `bkash/executePayment?paymentID=${paymentID}&status=${status}`,
+    let URL = {
+      execute: "bkash/executePayment",
+      baseURL: apiLink,
+    };
+    if (!userData) {
+      URL = {
+        execute: "bkash/executePublicPayment",
+        baseURL: publicRequest,
+      };
+    }
+
+    const ispOwnerId = userData
+      ? userData.ispOwner.id
+      : sessionStorage.getItem("qrispid");
+
+    return await URL.baseURL.post(
+      `${URL.execute}?paymentID=${paymentID}&status=${status}`,
       {
-        ispOwner: userData.ispOwner.id,
+        ispOwner: ispOwnerId,
       }
     );
   };
@@ -27,12 +42,17 @@ export default function Execute() {
     paymentExecute()
       .then((response) => {
         if (response.data.bill.paymentStatus === "paid") {
+          sessionStorage.removeItem("qrispid");
           window.location.href = "/payment/success";
         } else {
+          sessionStorage.removeItem("qrispid");
           window.location.href = "/payment/failed";
         }
       })
-      .catch((err) => (window.location.href = "/payment/failed"));
+      .catch((err) => {
+        sessionStorage.removeItem("qrispid");
+        window.location.href = "/payment/failed";
+      });
   }, []);
 
   return <Loader />;

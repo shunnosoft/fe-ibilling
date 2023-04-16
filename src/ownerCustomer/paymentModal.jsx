@@ -86,6 +86,7 @@ const PaymentModal = (props) => {
             const { data } = await URL.baseURL.post(URL.create, request);
             if (data?.statusCode === "0000") {
               localStorage.setItem("paymentAmount", paymentAmount);
+              sessionStorage.setItem("qrispid", userData.ispOwner.id);
               window.location.href = data?.bkashURL;
             }
 
