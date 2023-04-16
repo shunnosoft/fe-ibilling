@@ -758,8 +758,8 @@ const PPPOECustomer = () => {
 
   const sortingCustomer = useMemo(() => {
     return [...pppoeCustomers].sort((a, b) => {
-      a = parseInt(a.customerId.replace(/[^0-9]/g, ""));
-      b = parseInt(b.customerId.replace(/[^0-9]/g, ""));
+      a = parseInt(a.customerId?.replace(/[^0-9]/g, ""));
+      b = parseInt(b.customerId?.replace(/[^0-9]/g, ""));
 
       return a - b;
     });
@@ -787,7 +787,7 @@ const PPPOECustomer = () => {
           area: ispOwnerData?.fullAddress?.area || "",
           district: ispOwnerData?.fullAddress?.district || "",
           thana: ispOwnerData?.fullAddress?.thana || "",
-          mobile: customer?.mobile.slice(1) || "",
+          mobile: customer?.mobile?.slice(1) || "",
           email: customer.email || "",
           monthlyFee: customer.monthlyFee,
         };
@@ -824,7 +824,7 @@ const PPPOECustomer = () => {
         return {
           customerId: customer.customerId,
           name: customer.name,
-          pppoeName: customer.pppoe.name,
+          pppoeName: customer.pppoe?.name,
           customerAddress: customer.address,
           createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
           package: customer?.pppoe?.profile,

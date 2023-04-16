@@ -511,7 +511,7 @@ const DetailsForm = ({ ispOwner }) => {
             </div>
 
             <div className="d-flex justify-content-between mt-4">
-              <div className="form-check me-3 my-2">
+              <div className="form-check my-2">
                 <Field
                   className="form-check-input"
                   type="checkbox"
@@ -523,7 +523,7 @@ const DetailsForm = ({ ispOwner }) => {
                 </label>
               </div>
 
-              <div className="form-check me-3 my-2">
+              <div className="form-check my-2">
                 <Field
                   className="form-check-input"
                   type="checkbox"

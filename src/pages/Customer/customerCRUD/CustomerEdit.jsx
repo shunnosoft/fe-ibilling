@@ -132,7 +132,7 @@ export default function CustomerEdit(props) {
     }
     if (data?.district) {
       const district = districts.find((item) => item.name === data.district);
-      divisionalInfo.district = district.id;
+      divisionalInfo.district = district?.id;
     }
     if (data?.thana) {
       const findThana = thana.find(

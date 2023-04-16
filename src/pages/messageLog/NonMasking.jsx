@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getMessageLog } from "../../features/messageLogApi";
+import MessageDetails from "./messageModal/MessageDetails";
 
 const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
   const { t } = useTranslation();
@@ -22,6 +23,9 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
 
   // main data state
   const [mainData, setMainData] = useState([]);
+
+  // message id state
+  const [nonMaskingId, setNonMaskingId] = useState("");
 
   // get Current date
   const today = new Date();
@@ -129,6 +133,21 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
         width: "45%",
         Header: t("message"),
         accessor: "message",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original.message && original.message.slice(0, 80)}
+              <span
+                className="text-primary see-more"
+                onClick={() => {
+                  setNonMaskingId(original._id);
+                }}
+              >
+                {original.message.length > 80 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
       },
     ],
     [t]
@@ -201,6 +220,7 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
           data={mainData}
         ></Table>
       </div>
+      <MessageDetails messageId={nonMaskingId} status="nonMaskingMessage" />
     </>
   );
 };

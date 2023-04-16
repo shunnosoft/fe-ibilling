@@ -192,8 +192,8 @@ const Supports = () => {
   );
 
   useEffect(() => {
-    getAllNetFeeSupport(dispatch, setIsLoading);
-  }, []);
+    supportAllData.length === 0 && getAllNetFeeSupport(dispatch, setIsLoading);
+  }, [supportAllData]);
 
   return (
     <>
