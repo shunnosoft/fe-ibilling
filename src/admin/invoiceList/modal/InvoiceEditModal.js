@@ -85,15 +85,15 @@ const InvoiceEditModal = ({ invoiceId }) => {
                 {() => (
                   <Form>
                     {role === "superadmin" && (
-                      <div className="row">
-                        <div className="col-md-6">
+                      <div className="row g-3">
+                        <div className="col-md-6 form-group">
                           <FtextField
                             type="number"
                             name="amount"
                             label="Amount"
                           />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 form-group">
                           <h6 className="mb-0">Payment Status</h6>
                           <Field
                             as="select"
@@ -108,11 +108,11 @@ const InvoiceEditModal = ({ invoiceId }) => {
                       </div>
                     )}
 
-                    <div className="row timeDate">
-                      <div className="col-md-6">
+                    <div className="row g-3">
+                      <div className="col-md-6 form-group">
                         <FtextField type="date" name="dueDate" label="Date" />
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-6 form-group">
                         <FtextField type="time" name="time" label="Time" />
                       </div>
                     </div>

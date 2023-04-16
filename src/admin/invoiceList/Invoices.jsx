@@ -95,7 +95,7 @@ const Invoices = ({ invoiceId, companyName }) => {
   const columns = React.useMemo(
     () => [
       {
-        width: "10%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -108,7 +108,7 @@ const Invoices = ({ invoiceId, companyName }) => {
         Header: "Type",
       },
       {
-        width: "15%",
+        width: "10%",
         accessor: "amount",
         Header: "Amount",
       },
@@ -125,6 +125,15 @@ const Invoices = ({ invoiceId, companyName }) => {
         Header: "Due Date",
         Cell: ({ row: { original } }) =>
           moment(original.dueDate).format("DD MMM YY hh:mm a"),
+      },
+      {
+        width: "15%",
+        accessor: "paidAt",
+        Header: "Paid Date",
+        Cell: ({ row: { original } }) =>
+          moment(original.paidAt ? original.paidAt : original.updatedAt).format(
+            "DD MMM YY hh:mm a"
+          ),
       },
       {
         width: "15%",
@@ -150,7 +159,7 @@ const Invoices = ({ invoiceId, companyName }) => {
       },
 
       {
-        width: "15%",
+        width: "10%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
