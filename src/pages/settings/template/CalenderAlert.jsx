@@ -105,6 +105,7 @@ function CalenderAlert() {
 
   const itemSettingHandler = (e) => {
     const item = e.target.value;
+    console.log(item);
     if (smsTemplet.includes(item)) {
       const index = smsTemplet.indexOf(item);
       if (index > -1) {
