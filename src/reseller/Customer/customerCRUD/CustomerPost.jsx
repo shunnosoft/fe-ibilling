@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,6 +11,7 @@ import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
   fetchpppoePackage,
+  getResellerPackageRate,
 } from "../../../features/apiCallReseller";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
@@ -63,6 +64,10 @@ export default function CustomerModal() {
     (state) => state.persistedReducer.auth?.userData
   );
 
+  // package commission rate
+  const [packageCommission, setPackageCommission] = useState();
+  console.log(packageCommission);
+
   //sub area id state
   const [subAreaId, setsubAreaId] = useState("");
 
@@ -74,6 +79,7 @@ export default function CustomerModal() {
 
   // package rate sate
   const [packageRate, setPackageRate] = useState("");
+  console.log(packageRate);
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
@@ -132,6 +138,12 @@ export default function CustomerModal() {
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
+
+  useEffect(() => {
+    reseller?.commissionType === "packageBased" &&
+      reseller?.commissionStyle === "fixedRate" &&
+      getResellerPackageRate(resellerId, mikrotikPackage, setPackageCommission);
+  }, [mikrotikPackage]);
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
