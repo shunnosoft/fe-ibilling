@@ -283,6 +283,36 @@ const ResellerSummary = () => {
     </div>
   );
 
+  //function to calculate total paid Commision,unpaid and others
+  const getTotal = (type) => {
+    let temp = 0;
+    if (type === "paidCommision") {
+      temp = data.reduce(
+        (prev, current) =>
+          prev +
+          current.paidCustomerBillIspOwnerCommission +
+          current.paidCustomerBillResellerCommission,
+        0
+      );
+    }
+    if (type === "unpaid") {
+      temp = data.reduce(
+        (prev, current) =>
+          prev + current.unpaidCustomer + current.unpaidCustomerBillSum,
+        0
+      );
+    }
+    if (type === "others") {
+      temp = data.reduce(
+        (prev, current) =>
+          prev + current.otherCustomer + current.otherCustomerMonthlyFeeSum,
+        0
+      );
+    }
+
+    return temp;
+  };
+
   return (
     <>
       <Sidebar />
@@ -311,7 +341,27 @@ const ResellerSummary = () => {
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  <div className="d-flex justify-content-end">
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <h6>
+                        {t("paidCommission")}:{" "}
+                        <span className="fw-bolder">
+                          {getTotal("paidCommision")} {t("tk")}
+                        </span>
+                      </h6>
+                      <h6>
+                        {t("unpaid")}:{" "}
+                        <span className="fw-bolder">
+                          {getTotal("unpaid")} {t("tk")}
+                        </span>
+                      </h6>
+                      <h6>
+                        {t("other")}:{" "}
+                        <span className="fw-bolder">
+                          {getTotal("others")} {t("tk")}
+                        </span>
+                      </h6>
+                    </div>
                     <div>
                       <ReactDatePicker
                         selected={filterDate}
@@ -325,13 +375,15 @@ const ResellerSummary = () => {
                         maxDate={new Date()}
                         minDate={new Date(reseller?.createdAt)}
                       />
+                      <div className="d-flex justify-content-end">
+                        <button
+                          className="btn btn-primary mt-2"
+                          onClick={summaryFilterHandler}
+                        >
+                          {isLoading ? <Loader /> : t("filter")}
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      className="btn btn-primary w-140 ms-1"
-                      onClick={summaryFilterHandler}
-                    >
-                      {isLoading ? <Loader /> : t("filter")}
-                    </button>
                   </div>
                   <Table
                     isLoading={isLoading}

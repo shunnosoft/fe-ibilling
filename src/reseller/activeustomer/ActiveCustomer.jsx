@@ -13,6 +13,7 @@ import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import { getMikrotik } from "../../features/apiCallReseller";
 import Footer from "../../components/admin/footer/Footer";
+import moment from "moment";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
@@ -168,11 +169,23 @@ const ResellserActiveCustomer = () => {
         width: "12%",
         Header: "Last Link Up",
         accessor: "lastLinkUpTime",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.lastLinkUpTime &&
+              moment(original.lastLinkUpTime).format("MMM DD YYYY hh:mm A")}
+          </div>
+        ),
       },
       {
         width: "12%",
         Header: "Last Logout",
         accessor: "lastLogoutTime",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.lastLogoutTime &&
+              moment(original.lastLogoutTime).format("MMM DD YYYY hh:mm A")}
+          </div>
+        ),
       },
     ],
     [t]

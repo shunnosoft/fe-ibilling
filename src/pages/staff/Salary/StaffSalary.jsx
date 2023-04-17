@@ -38,14 +38,12 @@ export default function StaffSalary() {
 
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
-  console.log(ownerUsers);
 
   const staff = useSelector((state) =>
     state.staff.staff.find((item) => item.id == staffId)
   );
 
   const getSalaries = useSelector((state) => state.staff?.salary);
-  console.log(getSalaries);
 
   const [salaryId, setSalaryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
