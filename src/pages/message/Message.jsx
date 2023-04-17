@@ -193,7 +193,6 @@ export default function Message() {
             items.push(sms);
           }
         }
-        console.log(items);
 
         // send sms to all customer
         if (smsReceiverType === "allCustomer" && customer.mobile) {
