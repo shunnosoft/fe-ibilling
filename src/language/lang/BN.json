@@ -734,5 +734,6 @@
   "fireWallFilterIpDrop": "ফায়ার ওয়াল ফিল্টার আইপি ড্রপ",
   "migration": "মাইগ্রেশন",
   "smsPurchase": "এসএমএস ক্রয়",
-  "monthlyServiceCharge": "মাসিক সার্ভিস চার্জ"
+  "monthlyServiceCharge": "মাসিক সার্ভিস চার্জ",
+  "areYouWantToInactiveResellerCustomer": "রিসেলারের গ্রাহক ইন-এক্টিভ করতে চান?"
 }

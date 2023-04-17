@@ -728,5 +728,6 @@
   "fireWallFilterIpDrop": "Fire Wall Filter Ip Drop",
   "migration": "Migration",
   "smsPurchase": "SMS Purchase",
-  "monthlyServiceCharge": "Monthly Service Charge"
+  "monthlyServiceCharge": "Monthly Service Charge",
+  "areYouWantToInactiveResellerCustomer": "Are you want to Inactive Reseller Customer?"
 }
