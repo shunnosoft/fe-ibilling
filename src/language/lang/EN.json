@@ -729,5 +729,6 @@
   "migration": "Migration",
   "smsPurchase": "SMS Purchase",
   "monthlyServiceCharge": "Monthly Service Charge",
-  "areYouWantToInactiveResellerCustomer": "Are you want to Inactive Reseller Customer?"
+  "areYouWantToInactiveResellerCustomer": "Are you want to Inactive Reseller Customer?",
+  "packageRateMustBeUpToIspOwnerCommission": "Package Rate Must Be Up To IspOwner Commission"
 }

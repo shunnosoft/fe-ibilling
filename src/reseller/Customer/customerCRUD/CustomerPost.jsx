@@ -66,7 +66,6 @@ export default function CustomerModal() {
 
   // package commission rate
   const [packageCommission, setPackageCommission] = useState();
-  console.log(packageCommission);
 
   //sub area id state
   const [subAreaId, setsubAreaId] = useState("");
@@ -79,7 +78,6 @@ export default function CustomerModal() {
 
   // package rate sate
   const [packageRate, setPackageRate] = useState("");
-  console.log(packageRate);
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
@@ -111,7 +109,14 @@ export default function CustomerModal() {
     address: Yup.string(),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
-    monthlyFee: Yup.string().required(t("writeMonthFee")),
+    monthlyFee: Yup.number()
+      .required(t("writeMonthFee"))
+      .min(
+        packageCommission && packageCommission?.ispOwnerRate
+          ? packageCommission?.ispOwnerRate
+          : packageRate?.rate,
+        t("packageRateMustBeUpToIspOwnerCommission")
+      ),
     Pname: Yup.string().required(t("writePPPoEName")),
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
@@ -140,7 +145,8 @@ export default function CustomerModal() {
   };
 
   useEffect(() => {
-    reseller?.commissionType === "packageBased" &&
+    mikrotikPackage &&
+      reseller?.commissionType === "packageBased" &&
       reseller?.commissionStyle === "fixedRate" &&
       getResellerPackageRate(resellerId, mikrotikPackage, setPackageCommission);
   }, [mikrotikPackage]);
@@ -419,7 +425,6 @@ export default function CustomerModal() {
                         type="text"
                         label={t("monthFee")}
                         name="monthlyFee"
-                        min={packageRate?.rate}
                         disabled={!permission?.monthlyFeeEdit}
                       />
                     </div>
