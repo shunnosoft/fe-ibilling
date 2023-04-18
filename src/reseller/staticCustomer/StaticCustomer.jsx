@@ -570,7 +570,7 @@ export default function RstaticCustomer() {
                           {Getmikrotik?.length === undefined
                             ? ""
                             : Getmikrotik?.map((val, key) =>
-                                reseller.mikrotiks.map(
+                                reseller.mikrotiks?.map(
                                   (item) =>
                                     val.id === item && (
                                       <option key={key} value={val.id}>
