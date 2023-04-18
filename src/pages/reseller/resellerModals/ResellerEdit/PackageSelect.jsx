@@ -6,7 +6,7 @@ const PackageSelect = ({
   packageInfo,
 }) => {
   return (
-    <div className="form-check">
+    <div>
       <input
         id={id}
         type="checkbox"
@@ -14,7 +14,7 @@ const PackageSelect = ({
         onChange={onChangeHandler}
         disabled={isDisabled}
         checked={isChecked}
-        className="form-check-input"
+        className="me-2"
       />
       <label className="form-check-label" htmlFor={id}>
         {packageInfo.name}
