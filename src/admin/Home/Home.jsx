@@ -92,6 +92,9 @@ export default function Home() {
   //district filter data state
   const [district, setDistrict] = useState("");
 
+  // customer type state
+  const [queueType, setQueueType] = useState("");
+
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
@@ -120,6 +123,13 @@ export default function Home() {
 
     ispOwners = ispOwners.filter(
       (value) => value.bpSettings.executeBillingCycle === billCycle
+    );
+  }
+
+  // ispOwner queue type filter
+  if (queueType && queueType !== "All") {
+    ispOwners = ispOwners.filter(
+      (value) => value.bpSettings.queueType === queueType
     );
   }
 
@@ -614,81 +624,109 @@ export default function Home() {
             </div>
           </div>
           <div className="card-body">
-            <div className="d-flex">
-              <select
-                className="form-select mt-0 me-3"
-                aria-label="Default select example"
-                onChange={(event) => setFilterStatus(event.target.value)}
-              >
-                <option value="All" selected>
-                  All
-                </option>
-                <option value="paid">Paid</option>
-                <option value="unpaid">Unpaid</option>
-              </select>
-              <select
-                className="form-select mt-0 me-3"
-                aria-label="Default select example"
-                onChange={(event) => setStatus(event.target.value)}
-              >
-                <option value="status" selected>
-                  Status
-                </option>
-                <option value="new">New</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="banned">Banned</option>
-                <option value="deleted">Deleted</option>
-              </select>
-              <select
-                className="form-select mt-0 me-3"
-                aria-label="Default select example"
-                onChange={(event) => setExecuteBill(event.target.value)}
-              >
-                <option value="All" selected>
-                  Execute Billing Cycle
-                </option>
-                <option value="true">Run Billing Cycle</option>
-                <option value="false">Don't Billing Cycle</option>
-              </select>
-              <select
-                className="form-select mt-0 me-3"
-                aria-label="Default select example"
-                onChange={(event) => setMikrotik(event.target.value)}
-              >
-                <option value="All" selected>
-                  Mikrotik
-                </option>
-                <option value="true">With Mikrotik</option>
-                <option value="false">WithOut Mikrotik</option>
-              </select>
-              <select
-                className="form-select mt-0 me-3"
-                aria-label="Default select example"
-                onChange={(event) => setDistrict(event.target.value)}
-              >
-                <option value="All" selected>
-                  All District
-                </option>
-                {districts.map((item) => {
-                  return <option value={item.id}>{item.name}</option>;
-                })}
-              </select>
-              <Link to={"/admin/all-comments"}>
-                <div className="all-comment-btn">
-                  <button className="btn btn-outline-success">
-                    All Comment
-                  </button>
-                </div>
-              </Link>
-              &nbsp;
-              {userRole === "superadmin" && (
-                <Link to={"/admin/invoices"}>
+            <div className="row g-6">
+              <div className="col col-md-2 mb-3">
+                <select
+                  className="form-select mt-0"
+                  aria-label="Default select example"
+                  onChange={(event) => setFilterStatus(event.target.value)}
+                >
+                  <option value="All" selected>
+                    All
+                  </option>
+                  <option value="paid">Paid</option>
+                  <option value="unpaid">Unpaid</option>
+                </select>
+              </div>
+              <div className="col col-md-2 mb-3">
+                <select
+                  className="form-select mt-0"
+                  aria-label="Default select example"
+                  onChange={(event) => setStatus(event.target.value)}
+                >
+                  <option value="status" selected>
+                    Status
+                  </option>
+                  <option value="new">New</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="banned">Banned</option>
+                  <option value="deleted">Deleted</option>
+                </select>
+              </div>
+              <div className="col col-md-2 mb-3">
+                <select
+                  className="form-select mt-0"
+                  aria-label="Default select example"
+                  onChange={(event) => setExecuteBill(event.target.value)}
+                >
+                  <option value="All" selected>
+                    Execute Billing Cycle
+                  </option>
+                  <option value="true">Run Billing Cycle</option>
+                  <option value="false">Don't Billing Cycle</option>
+                </select>
+              </div>
+              <div className="col col-md-2 mb-3">
+                <select
+                  className="form-select mt-0"
+                  aria-label="Default select example"
+                  onChange={(event) => setQueueType(event.target.value)}
+                >
+                  <option value="All">Queue Type</option>
+                  <option value="simple-queue">Simple Queue</option>
+                  <option value="firewall-queue">Firewall Queue</option>
+                  <option value="core-queue">Core Queue</option>
+                </select>
+              </div>
+              <div className="col col-md-2 mb-3">
+                <select
+                  className="form-select mt-0"
+                  aria-label="Default select example"
+                  onChange={(event) => setMikrotik(event.target.value)}
+                >
+                  <option value="All" selected>
+                    Mikrotik
+                  </option>
+                  <option value="true">With Mikrotik</option>
+                  <option value="false">WithOut Mikrotik</option>
+                </select>
+              </div>
+              <div className="col col-md-2 mb-3">
+                <select
+                  className="form-select mt-0"
+                  aria-label="Default select example"
+                  onChange={(event) => setDistrict(event.target.value)}
+                >
+                  <option value="All" selected>
+                    All District
+                  </option>
+                  {districts.map((item) => {
+                    return <option value={item.id}>{item.name}</option>;
+                  })}
+                </select>
+              </div>
+              <div className="col col-md-2 mb-3">
+                <Link to={"/admin/all-comments"}>
                   <div className="all-comment-btn">
-                    <button className="btn btn-outline-primary">Invoice</button>
+                    <button className="btn btn-outline-success w-100">
+                      All Comment
+                    </button>
                   </div>
                 </Link>
-              )}
+              </div>
+
+              <div className="col col-md-2 mb-3">
+                {userRole === "superadmin" && (
+                  <Link to={"/admin/invoices"}>
+                    <div className="all-comment-btn">
+                      <button className="btn btn-outline-primary w-100">
+                        Invoice
+                      </button>
+                    </div>
+                  </Link>
+                )}
+              </div>
             </div>
 
             <FontColor>

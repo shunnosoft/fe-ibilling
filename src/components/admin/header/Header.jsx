@@ -133,17 +133,52 @@ export default function Header(props) {
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
                   >
-                    <p className="mainsmsbalance">
-                      {ispOwner?.smsBalance > 0
-                        ? `${t("masking")}  ${ispOwner.smsBalance} `
-                        : ispOwner?.maskingSmsBalance > 0
-                        ? `${t("nonMasking")}  ${ispOwner.maskingSmsBalance}`
-                        : ispOwner?.fixedNumberSmsBalance > 0
-                        ? `${t("fixedNumber")}  ${
-                            ispOwner.fixedNumberSmsBalance
-                          }`
-                        : ""}
-                    </p>
+                    {ispOwner?.smsBalance > 0 && (
+                      <p className="me-2">
+                        {t("nonMasking")}
+                        <strong className="mainsmsbalance">
+                          {ispOwner.smsBalance}
+                        </strong>
+                      </p>
+                    )}
+
+                    {ispOwner?.maskingSmsBalance > 0 && (
+                      <p className="me-2">
+                        {t("masking")}
+                        <strong className="mainsmsbalance">
+                          {ispOwner.maskingSmsBalance}
+                        </strong>
+                      </p>
+                    )}
+
+                    {ispOwner?.fixedNumberSmsBalance > 0 && (
+                      <p className="me-2">
+                        {t("fixed")}
+                        <strong className="mainsmsbalance">
+                          {ispOwner.fixedNumberSmsBalance}
+                        </strong>
+                      </p>
+                    )}
+                    {/* {(ispOwner?.smsBalance > 0 ||
+                      ispOwner?.maskingSmsBalance > 0 ||
+                      ispOwner?.fixedNumberSmsBalance) > 0 ? (
+                      <div>
+                        <p>
+                          {t("nonMasking")}
+                          <strong>{ispOwner.smsBalance}</strong>
+                        </p>
+                        <p>
+                          {t("masking")}
+                          <strong>{ispOwner.maskingSmsBalance}</strong>
+                        </p>
+                        <p>
+                          {t("fixed")}
+                          <strong>{ispOwner.fixedNumberSmsBalance}</strong>
+                        </p>
+                      </div>
+                    ) : (
+                      ""
+                    )} */}
                   </div>
                   {(ispOwner?.smsBalance ||
                     ispOwner?.maskingSmsBalance ||
