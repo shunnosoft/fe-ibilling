@@ -17,6 +17,7 @@ import { fetchMikrotik, fetchpppoeUser } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import BandwidthModal from "../Customer/BandwidthModal";
+import moment from "moment";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -174,11 +175,23 @@ export default function ConfigMikrotik() {
         width: "12%",
         Header: "Last Link Up",
         accessor: "lastLinkUpTime",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.lastLinkUpTime &&
+              moment(original.lastLinkUpTime).format("MMM DD YYYY hh:mm A")}
+          </div>
+        ),
       },
       {
         width: "12%",
         Header: "Last Logout",
         accessor: "lastLogoutTime",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.lastLogoutTime &&
+              moment(original.lastLogoutTime).format("MMM DD YYYY hh:mm A")}
+          </div>
+        ),
       },
     ],
     [t]

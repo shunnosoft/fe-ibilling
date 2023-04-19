@@ -150,6 +150,15 @@ export default function ResellerEdit({ resellerId }) {
         commissionType,
       };
 
+      if (data.status === "inactive") {
+        const customerInActiveConfirm = window.confirm(
+          t("areYouWantToInactiveResellerCustomer")
+        );
+        if (customerInActiveConfirm) {
+          sendingData.customerInactive = true;
+        }
+      }
+
       if (bpSettings.hasMikrotik) {
         sendingData.mikrotiks = mikrotikIds_Edit;
       }

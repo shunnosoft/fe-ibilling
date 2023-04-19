@@ -1,84 +1,4 @@
 export const resellerPermissions = (permission, bpSettings) => {
-  // const per = [
-  //   {
-  //     id: 1,
-  //     value: "customerAdd",
-  //     label: "গ্রাহক সংযোগ",
-  //     isChecked: permission?.customerAdd,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 2,
-  //     value: "customerEdit",
-  //     label: "গ্রাহক আপডেট",
-  //     isChecked: permission?.customerEdit,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 3,
-  //     value: "customerActivate",
-  //     label: "গ্রাহক এক্টিভেট",
-  //     isChecked: permission?.customerActivate,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 4,
-  //     value: "customerDeactivate",
-  //     label: "গ্রাহক বন্ধ",
-  //     isChecked: permission?.customerDeactivate,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 5,
-  //     value: "viewCustomer",
-  //     label: "গ্রাহক দেখবে",
-  //     isChecked: permission?.viewCustomerList,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 6,
-  //     value: "connectionFee",
-  //     label: "কানেকশন ফি",
-  //     isChecked: permission?.connectionFee, //ToDo
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 7,
-  //     value: "CustomerMobileEdit",
-  //     label: "মোবাইল পরিবর্তন",
-  //     isChecked: permission?.customerMobileEdit, //ToDo
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 8,
-  //     value: "sendSMS",
-  //     label: "ম্যাসেজ বোর্ড",
-  //     isChecked: permission?.sendSMS,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 10,
-  //     value: "billPosting",
-  //     label: "বিল পোস্টিং",
-  //     isChecked: permission?.billPosting,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 11,
-  //     value: "billPosting",
-  //     label: "বিল প্রিন্ট",
-  //     isChecked: permission?.billPrint,
-  //     disabled: false,
-  //   },
-  //   {
-  //     id: 12,
-  //     value: "instantRechargeBillPrint",
-  //     label: "ইনস্ট্যান্ট রিচার্জ বিল প্রিন্ট",
-  //     isChecked: permission?.instantRechargeBillPrint,
-  //     disabled: !bpSettings?.instantRechargeBillPrint,
-  //   },
-  // ];
-
   const permissionEn = [
     {
       id: 1,
@@ -151,7 +71,7 @@ export const resellerPermissions = (permission, bpSettings) => {
       label: "Bulk Status Edit",
       value: "bulkCustomerStatusEdit",
       isChecked: permission?.bulkCustomerStatusEdit,
-      disabled: false,
+      disabled: !bpSettings?.bulkStatusEdit,
     },
     {
       id: 12,
@@ -248,7 +168,7 @@ export const resellerPermissions = (permission, bpSettings) => {
       label: "বাল্ক স্ট্যাটাস এডিট",
       value: "bulkCustomerStatusEdit",
       isChecked: permission?.bulkCustomerStatusEdit,
-      disabled: false,
+      disabled: !bpSettings?.bulkStatusEdit,
     },
     {
       id: 12,

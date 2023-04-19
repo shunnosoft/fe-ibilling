@@ -284,7 +284,7 @@ export default function Customer() {
       if (cus.length === 0)
         getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
     }
-  }, [dispatch, resellerId, userData, role]);
+  }, [userData, role]);
 
   const [subAreaIds, setSubArea] = useState([]);
 

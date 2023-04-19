@@ -89,6 +89,7 @@ export default function Message() {
   const area = useSelector((state) => state.area.area);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
+  const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
@@ -158,7 +159,7 @@ export default function Message() {
   const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
-    let messageTemplate = upperText + "\n" + bottomText;
+    let messageTemplate = title + upperText + "\n" + bottomText;
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
@@ -322,6 +323,7 @@ export default function Message() {
         let con = window.confirm(
           `${items.length}  ${t("getSMS")} ${totalSmsCount}  ${t("expenseSMS")}`
         );
+
         if (con && items.length) {
           // post
           const res = await apiLink.post(`sms/bulk/${ispOwnerId}`, {
@@ -356,7 +358,10 @@ export default function Message() {
         smsTemplet.splice(index, 1);
       }
     } else {
-      if ((upperText + "\n" + bottomText).length + item.length > 480) {
+      if (
+        (title + "\n" + upperText + "\n" + bottomText).length + item.length >
+        480
+      ) {
         toast.error(t("exceedSMSLimit"));
         return;
       } else {
@@ -795,6 +800,17 @@ export default function Message() {
                               </div>
                             </div>
                             <div>
+                              <div className="mt-3">
+                                <input
+                                  value={title}
+                                  onChange={(event) =>
+                                    setTitle(event.target.value)
+                                  }
+                                  className="form-control"
+                                  type="text"
+                                  placeholder={t("title")}
+                                />
+                              </div>
                               <div className="radioselect">
                                 <input
                                   id="1"
@@ -923,6 +939,7 @@ export default function Message() {
                         <br />
                       </p> */}
                       <div className="showthesequence">
+                        <p className="endingText">{title}</p>
                         {smsTemplet.map((item, key) => {
                           return <p key={key}>{item}</p>;
                         })}
@@ -931,9 +948,12 @@ export default function Message() {
                       </div>
                       <div className="smsCount">
                         <span className="smsLength">
-                          {t("letter")} {(smsTemplet + bottomText).length}
+                          {t("letter")}{" "}
+                          {(title + smsTemplet + bottomText).length}
                         </span>
-                        <span>SMS: {smsCount(smsTemplet + bottomText)}</span>
+                        <span>
+                          SMS: {smsCount(title + smsTemplet + bottomText)}
+                        </span>
                       </div>
                       <textarea
                         id="messageTextArea"

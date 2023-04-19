@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,6 +11,7 @@ import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
   fetchpppoePackage,
+  getResellerPackageRate,
 } from "../../../features/apiCallReseller";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
@@ -63,6 +64,9 @@ export default function CustomerModal() {
     (state) => state.persistedReducer.auth?.userData
   );
 
+  // package commission rate
+  const [packageCommission, setPackageCommission] = useState();
+
   //sub area id state
   const [subAreaId, setsubAreaId] = useState("");
 
@@ -105,7 +109,14 @@ export default function CustomerModal() {
     address: Yup.string(),
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
-    monthlyFee: Yup.string().required(t("writeMonthFee")),
+    monthlyFee: Yup.number()
+      .required(t("writeMonthFee"))
+      .min(
+        packageCommission && packageCommission?.ispOwnerRate
+          ? packageCommission?.ispOwnerRate
+          : packageRate?.rate,
+        t("packageRateMustBeUpToIspOwnerCommission")
+      ),
     Pname: Yup.string().required(t("writePPPoEName")),
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
@@ -132,6 +143,13 @@ export default function CustomerModal() {
     const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
     setPackageRate(temp);
   };
+
+  useEffect(() => {
+    mikrotikPackage &&
+      reseller?.commissionType === "packageBased" &&
+      reseller?.commissionStyle === "fixedRate" &&
+      getResellerPackageRate(resellerId, mikrotikPackage, setPackageCommission);
+  }, [mikrotikPackage]);
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
@@ -407,7 +425,6 @@ export default function CustomerModal() {
                         type="text"
                         label={t("monthFee")}
                         name="monthlyFee"
-                        min={packageRate?.rate}
                         disabled={!permission?.monthlyFeeEdit}
                       />
                     </div>

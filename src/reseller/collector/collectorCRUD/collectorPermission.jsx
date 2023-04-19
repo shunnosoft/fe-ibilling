@@ -71,6 +71,13 @@ export const collectorPermission = (permission, resellerPermission) => {
       // isDisabled: false,
       isDisabled: !resellerPermission?.instantRechargeBillPrint,
     },
+    {
+      id: 11,
+      value: "bulkStatusEdit",
+      label: "বাল্ক স্ট্যাটাস এডিট",
+      isChecked: permission?.bulkStatusEdit,
+      isDisabled: !resellerPermission?.bulkCustomerStatusEdit,
+    },
   ];
 
   const permissionEn = [
@@ -143,6 +150,13 @@ export const collectorPermission = (permission, resellerPermission) => {
       label: "Instant Recharge Bill Print",
       isChecked: permission?.instantRechargeBillPrint,
       isDisabled: !resellerPermission?.instantRechargeBillPrint,
+    },
+    {
+      id: 11,
+      value: "bulkStatusEdit",
+      label: "Bulk Status Edit",
+      isChecked: permission?.bulkStatusEdit,
+      isDisabled: !resellerPermission?.bulkCustomerStatusEdit,
     },
   ];
 
