@@ -893,26 +893,26 @@ export default function Customer() {
                           </Link>
                         </div>
                       )}
+                      {role === "ispOwner" &&
+                        (bpSettings?.queueType === "simple-queue" ||
+                          bpSettings?.queueType === "core-queue") && (
+                          <div className="addAndSettingIcon">
+                            <button
+                              data-bs-toggle="modal"
+                              data-bs-target="#fireWallFilterIpDropControl"
+                              className="btn btn-light btn-outline-success"
+                              style={{
+                                fontSize: "17px",
+                                marginRight: "14px",
+                              }}
+                              title={t("fireWallFilterIpDrop")}
+                            >
+                              <ReceiptCutoff />
+                            </button>
+                          </div>
+                        )}
                       {permission?.viewCustomerList || role !== "collector" ? (
                         <>
-                          {bpSettings?.queueType === "simple-queue" ||
-                            (bpSettings?.queueType === "core-queue" && (
-                              <div className="addAndSettingIcon">
-                                <button
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#fireWallFilterIpDropControl"
-                                  className="btn btn-light btn-outline-success"
-                                  style={{
-                                    fontSize: "17px",
-                                    marginRight: "14px",
-                                  }}
-                                  title={t("fireWallFilterIpDrop")}
-                                >
-                                  <ReceiptCutoff />
-                                </button>
-                              </div>
-                            ))}
-
                           <div className="addAndSettingIcon">
                             <CSVLink
                               data={customerForCsVTableInfo}

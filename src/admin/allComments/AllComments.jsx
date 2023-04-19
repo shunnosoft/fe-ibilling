@@ -24,7 +24,7 @@ const AllComments = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // initial customer id state
-  const [commentID, setCommentID] = useState();
+  const [commentID, setCommentID] = useState("");
 
   // initial owner Id state
   const [ownerId, setOwnerId] = useState();
@@ -53,6 +53,7 @@ const AllComments = () => {
   // handle delete
   const detailsModal = (commentId) => {
     setCommentID(commentId);
+    // console.log(commentId);
   };
 
   // handle edit
@@ -168,7 +169,7 @@ const AllComments = () => {
                 data-bs-toggle="modal"
                 data-bs-target="#detailsComment"
                 onClick={() => {
-                  detailsModal(original.id);
+                  detailsModal(original);
                 }}
               >
                 {" "}
@@ -208,7 +209,7 @@ const AllComments = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#detailsComment"
                   onClick={() => {
-                    detailsModal(original.id);
+                    detailsModal(original);
                   }}
                 >
                   <div className="dropdown-item">
@@ -223,7 +224,7 @@ const AllComments = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#editComment"
                   onClick={() => {
-                    handleEdit(original.id);
+                    handleEdit(original);
                   }}
                 >
                   <div className="dropdown-item">
@@ -306,8 +307,8 @@ const AllComments = () => {
         </div>
       </FontColor>
       <Note ownerId={ownerId} companyName={companyName} />
-      <DetailsModal id={commentID} isLoading={isLoading} />
-      <EditModal id={commentID} />
+      <DetailsModal message={commentID} isLoading={isLoading} />
+      <EditModal message={commentID} />
     </>
   );
 };

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { editComments } from "../../../features/apiCallAdmin";
 
-const EditModal = ({ id }) => {
+const EditModal = ({ message }) => {
   // import dispatch
   const dispatch = useDispatch();
 
@@ -19,10 +19,10 @@ const EditModal = ({ id }) => {
   const company = useSelector((state) => state?.companyName?.ispOwnerIds);
 
   // get all note in redux
-  const comments = useSelector((state) => state.admin?.comments);
+  // const comments = useSelector((state) => state.admin?.comments);
 
   // find single data
-  const data = comments.find((item) => item.id === id);
+  // const data = comments.find((item) => item.id === id);
 
   // set status in state
   const statusHandle = (event) => {
@@ -34,7 +34,7 @@ const EditModal = ({ id }) => {
     const data = {
       status,
     };
-    editComments(dispatch, setIsLoading, data, id);
+    editComments(dispatch, setIsLoading, data, message.id);
   };
 
   return (
@@ -53,7 +53,7 @@ const EditModal = ({ id }) => {
               className="modal-title"
               id="customerModalDetails"
             >
-              {company[data?.ispOwner]}
+              {company[message?.ispOwner]?.company}
             </h4>
             <button
               type="button"
@@ -69,18 +69,21 @@ const EditModal = ({ id }) => {
                 aria-label="Default select example"
                 onChange={statusHandle}
               >
-                <option value="pending" selected={data?.status === "pending"}>
+                <option
+                  value="pending"
+                  selected={message?.status === "pending"}
+                >
                   Pending
                 </option>
                 <option
                   value="processing"
-                  selected={data?.status === "processing"}
+                  selected={message?.status === "processing"}
                 >
                   Processing
                 </option>
                 <option
                   value="completed"
-                  selected={data?.status === "completed"}
+                  selected={message?.status === "completed"}
                 >
                   Completed
                 </option>
