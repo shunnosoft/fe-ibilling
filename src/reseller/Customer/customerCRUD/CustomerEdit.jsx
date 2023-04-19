@@ -70,6 +70,11 @@ export default function CustomerEdit({ single }) {
   //   (state) => state.persistedReducer.auth?.userData.areas
   // );
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+
+  const collectorResellerInfo = useSelector(
+    (state) => state.resellerProfile.reseller
+  );
+
   const [ppPackage, setppPackage] = useState([]);
 
   const [packageRate, setPackageRate] = useState("");
@@ -226,6 +231,18 @@ export default function CustomerEdit({ single }) {
     } else if (Number(monthlyFee) < Number(packageRate.rate)) {
       return alert(t("billCannotBeReduced"));
     }
+
+    if (
+      (role === "reseller" && permission.addCustomerWithMobile) ||
+      (role === "collector" &&
+        collectorResellerInfo.permission?.addCustomerWithMobile)
+    ) {
+      if (formValue.mobile === "") {
+        setIsloading(false);
+        return alert(t("writeMobileNumber"));
+      }
+    }
+
     const mainData = {
       singleCustomerID: data?.id,
       subArea: subArea,
@@ -362,7 +379,8 @@ export default function CustomerEdit({ single }) {
                       {Getmikrotik.length > 0 && (
                         <div>
                           <label className="form-control-label changeLabelFontColor">
-                            {t("selectMikrotik")}
+                            {t("selectMikrotik")}{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <select
                             className="form-select mw-100 mt-0"
@@ -380,7 +398,8 @@ export default function CustomerEdit({ single }) {
                       {/* pppoe package */}
                       <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {t("selectPackage")}
+                          {t("selectPackage")}{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           className="form-select mb-3 mw-100 mt-0"
@@ -409,6 +428,7 @@ export default function CustomerEdit({ single }) {
                         name="monthlyFee"
                         min={packageRate?.rate || data?.monthlyFee}
                         disabled={!permission?.monthlyFeeEdit}
+                        validation={"true"}
                       />
                     </div>
 
@@ -419,6 +439,7 @@ export default function CustomerEdit({ single }) {
                           type="text"
                           label={t("PPPoEName")}
                           name="Pname"
+                          validation={"true"}
                           disabled
                         />
                       ) : (
@@ -426,6 +447,7 @@ export default function CustomerEdit({ single }) {
                           type="text"
                           label={t("PPPoEName")}
                           name="Pname"
+                          validation={"true"}
                         />
                       )}
                       {/* PPPoE Name End */}
@@ -438,12 +460,14 @@ export default function CustomerEdit({ single }) {
                           label={t("password")}
                           name="Ppassword"
                           disabled
+                          validation={"true"}
                         />
                       ) : (
                         <FtextField
                           type="text"
                           label={t("password")}
                           name="Ppassword"
+                          validation={"true"}
                         />
                       )}
                       {/* Password end */}
@@ -469,7 +493,8 @@ export default function CustomerEdit({ single }) {
                     <div className="displayGrid3">
                       <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {t("selectArea")}
+                          {t("selectArea")}{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           className="form-select mw-100 mt-0"
@@ -490,7 +515,12 @@ export default function CustomerEdit({ single }) {
                       </div>
 
                       <FtextField type="text" label={t("NIDno")} name="nid" />
-                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("name")}
+                        name="name"
+                        validation={"true"}
+                      />
                     </div>
 
                     <div className="displayGrid3">
@@ -498,6 +528,11 @@ export default function CustomerEdit({ single }) {
                         disabled={
                           !collectorPermission?.customerMobileEdit &&
                           role === "collector"
+                        }
+                        validation={
+                          permission?.addCustomerWithMobile ||
+                          collectorResellerInfo.permission
+                            ?.addCustomerWithMobile
                         }
                         type="text"
                         label={t("mobile")}
@@ -515,7 +550,6 @@ export default function CustomerEdit({ single }) {
                         <div className="mb-2">
                           <label className="form-control-label changeLabelFontColor">
                             {item.text}
-                            <span className="text-danger">*</span>
                           </label>
                           <select
                             className="form-select mw-100 mt-0"
@@ -541,6 +575,7 @@ export default function CustomerEdit({ single }) {
                         id="exampleSelect"
                         name="customerBillingType"
                         className="form-select mw-100 mt-0"
+                        validation={"true"}
                       >
                         <option value="">{t("customerBillType")}</option>
 

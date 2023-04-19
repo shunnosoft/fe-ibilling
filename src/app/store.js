@@ -38,6 +38,7 @@ import netFeeSupportSlice from "../features/netFeeSupportSlice";
 import adminNetFeeSupportSlice from "../features/adminNetFeeSupportSlice";
 import resellerSupportSlice from "../features/resellerSupportSlice";
 import dashboardInformationSlice from "../features/dashboardInformationSlice";
+import resellerProfileSlice from "../features/resellerProfileSlice";
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
   key: "root",
@@ -87,6 +88,7 @@ const store = configureStore({
     adminNetFeeSupport: adminNetFeeSupportSlice,
     resellerSupport: resellerSupportSlice,
     dashboardInformation: dashboardInformationSlice,
+    resellerProfile: resellerProfileSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

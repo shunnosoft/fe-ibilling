@@ -35,6 +35,7 @@ import {
   getCustomer,
   getMikrotik,
   getSubAreas,
+  resellerInfo,
   withMtkPackage,
 } from "../../features/apiCallReseller";
 import CustomerReport from "./customerCRUD/showCustomerReport";
@@ -275,6 +276,7 @@ export default function Customer() {
 
     if (role === "collector") {
       getMikrotik(dispatch, userData.collector.reseller);
+      resellerInfo(resellerId, dispatch);
     }
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);

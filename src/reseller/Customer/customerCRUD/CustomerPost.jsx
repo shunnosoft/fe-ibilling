@@ -41,6 +41,10 @@ export default function CustomerModal() {
     (state) => state.persistedReducer.auth?.userData?.permission
   );
 
+  const collectorResellerInfo = useSelector(
+    (state) => state.resellerProfile.reseller
+  );
+
   // get user data from redux
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.userData
@@ -162,6 +166,18 @@ export default function CustomerModal() {
     }
 
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
+
+    if (
+      (userRole === "reseller" && permission.addCustomerWithMobile) ||
+      (userRole === "collector" &&
+        collectorResellerInfo.permission?.addCustomerWithMobile)
+    ) {
+      if (data.mobile === "") {
+        setIsloading(false);
+        return alert(t("writeMobileNumber"));
+      }
+    }
+
     const mainData = {
       // customerId: "randon123",
       paymentStatus: "unpaid",
@@ -299,6 +315,7 @@ export default function CustomerModal() {
                           <div>
                             <label className="form-control-label changeLabelFontColor">
                               {t("selectMikrotik")}
+                              <span className="text-danger">*</span>
                             </label>
                             <select
                               className="form-select mw-100 mt-0"
@@ -317,9 +334,10 @@ export default function CustomerModal() {
                           </div>
 
                           <div>
-                            <p style={{ marginBottom: "0rem" }}>
-                              {t("selectPPPoEPackage")}
-                            </p>
+                            <label className="form-control-label changeLabelFontColor">
+                              {t("selectPackage")}{" "}
+                              <span className="text-danger">*</span>
+                            </label>
                             <select
                               style={{ width: "22rem" }}
                               className="form-select mb-3 mw-100"
@@ -344,6 +362,7 @@ export default function CustomerModal() {
                           <div>
                             <label className="form-control-label changeLabelFontColor">
                               {t("selectMikrotik")}
+                              <span className="text-danger">*</span>
                             </label>
                             <select
                               className="form-select mw-100 mt-0"
@@ -368,6 +387,7 @@ export default function CustomerModal() {
                           <div>
                             <label className="form-control-label changeLabelFontColor">
                               {t("selectPackage")}
+                              <span className="text-danger">*</span>
                             </label>
                             <select
                               className="form-select mb-3 mw-100 mt-0"
@@ -396,7 +416,8 @@ export default function CustomerModal() {
                         <>
                           <div>
                             <label className="form-control-label changeLabelFontColor">
-                              {t("selectPPPoEPackage")}
+                              {t("selectPPPoEPackage")}{" "}
+                              <span className="text-danger">*</span>
                             </label>
                             <select
                               className="form-select mb-3 mt-0 mw-100"
@@ -425,6 +446,7 @@ export default function CustomerModal() {
                         type="text"
                         label={t("monthFee")}
                         name="monthlyFee"
+                        validation={"true"}
                         disabled={!permission?.monthlyFeeEdit}
                       />
                     </div>
@@ -434,11 +456,13 @@ export default function CustomerModal() {
                         type="text"
                         label={t("PPPoEName")}
                         name="Pname"
+                        validation={"true"}
                       />
                       <FtextField
                         type="text"
                         label={t("password")}
                         name="Ppassword"
+                        validation={"true"}
                       />
                       <FtextField
                         type="text"
@@ -450,7 +474,8 @@ export default function CustomerModal() {
                     <div className="displayGrid3">
                       <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {t("selectArea")}
+                          {t("selectArea")}{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           className="form-select mw-100 mt-0"
@@ -469,13 +494,23 @@ export default function CustomerModal() {
                       </div>
 
                       <FtextField type="text" label={t("NIDno")} name="nid" />
-                      <FtextField type="text" label={t("name")} name="name" />
+                      <FtextField
+                        type="text"
+                        label={t("name")}
+                        name="name"
+                        validation={"true"}
+                      />
                     </div>
 
                     <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("mobile")}
+                        validation={
+                          permission?.addCustomerWithMobile ||
+                          collectorResellerInfo.permission
+                            ?.addCustomerWithMobile
+                        }
                         name="mobile"
                       />
                       <FtextField
@@ -547,6 +582,7 @@ export default function CustomerModal() {
                         id="exampleSelect"
                         name="customerBillingType"
                         className="form-select mw-100 mt-0"
+                        validation={"true"}
                       >
                         <option value="">{t("customerBillType")}</option>
 

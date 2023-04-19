@@ -15,6 +15,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.customerEdit,
       disabled: false,
     },
+    {
+      id: 3,
+      label: "Add Customer With Mobile Number",
+      value: "addCustomerWithMobile",
+      isChecked: permission?.addCustomerWithMobile,
+      disabled: bpSettings?.addCustomerWithMobile,
+    },
 
     {
       id: 4,
@@ -111,6 +118,14 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "customerEdit",
       isChecked: permission?.customerEdit,
       disabled: false,
+    },
+
+    {
+      id: 3,
+      label: "মোবাইল নাম্বার সহ কাস্টমার অ্যাড",
+      value: "addCustomerWithMobile",
+      isChecked: permission?.addCustomerWithMobile,
+      disabled: bpSettings?.addCustomerWithMobile,
     },
 
     {

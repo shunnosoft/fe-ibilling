@@ -88,6 +88,11 @@ export default function CustomerBillCollect({ single, customerData }) {
     (state) => state.persistedReducer.auth?.userData?.id
   );
   const dispatch = useDispatch();
+
+  const collectorResellerInfo = useSelector(
+    (state) => state.resellerProfile.reseller
+  );
+
   const [isLoading, setLoading] = useState(false);
 
   //billing date
@@ -100,7 +105,6 @@ export default function CustomerBillCollect({ single, customerData }) {
   const [packageRate, setPackageRate] = useState();
   const resellerRechargePrint = useRef();
 
-  const [collectorResellerInfo, setCollectorResellerInfo] = useState({});
   const [responseData, setResponseData] = useState({});
   const [test, setTest] = useState(false);
 
@@ -131,7 +135,7 @@ export default function CustomerBillCollect({ single, customerData }) {
 
   //api is called to get reseller info for the reseller collector customer
   useEffect(() => {
-    role === "collector" && resellerInfo(resellerId, setCollectorResellerInfo);
+    role === "collector" && resellerInfo(resellerId, dispatch);
   }, [resellerId]);
 
   useEffect(() => {

@@ -40,6 +40,7 @@ import {
   getResellerSupport,
   updateResellerSupport,
 } from "./resellerSupportSlice";
+import { getResellerProfile } from "./resellerProfileSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -343,13 +344,16 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 };
 
 //get reseller info
-export const resellerInfo = async (resellerId, setCollectorResellerInfo) => {
+export const resellerInfo = async (
+  resellerId,
+  dispatch,
+  setCollectorResellerInfo
+) => {
   try {
     const res = await apiLink.get(`/reseller/${resellerId}`);
-    // console.log(res.data);
-    setCollectorResellerInfo(res.data);
+    dispatch(getResellerProfile(res.data));
   } catch (error) {
-    //saddd
+    console.log(error);
   }
 };
 

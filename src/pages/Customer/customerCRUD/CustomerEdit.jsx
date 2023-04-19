@@ -245,7 +245,7 @@ export default function CustomerEdit(props) {
       }
     }
 
-    if (bpSettings.addCustomerWithMobile) {
+    if (bpSettings?.addCustomerWithMobile) {
       if (formValue.mobile === "") {
         setIsloading(false);
         return alert(t("writeMobileNumber"));
@@ -555,7 +555,7 @@ export default function CustomerEdit(props) {
                         type="text"
                         label={t("mobile")}
                         name="mobile"
-                        validation={bpSettings.addCustomerWithMobile}
+                        validation={bpSettings?.addCustomerWithMobile}
                         disabled={
                           !permission?.customerMobileEdit &&
                           role === "collector"

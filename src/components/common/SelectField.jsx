@@ -1,12 +1,12 @@
 import React from "react";
 import { useField, ErrorMessage } from "formik";
 
-const SelectField = ({ label, ...props }) => {
+const SelectField = ({ label, validation, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <div>
       <label className="changeLabelFontColor" htmlFor={props.id || props.name}>
-        {label}
+        {label} {validation && <span className="text-danger">*</span>}
       </label>
       <select
         style={{ display: "inline-block" }}
