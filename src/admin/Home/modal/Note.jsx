@@ -264,8 +264,14 @@ const Note = ({ ownerId, companyName }) => {
                       <option value="Shahriar Alam">Shahriar Alam</option>
                       <option value="Towkir Hossain">Towkir Hossain</option>
                       <option value="Ashim Mondol">Ashim Mondol</option>
+                      <option value="Firoj Mahmud">Firoj Mahmud</option>
+                      <option value="Marof">Marof</option>
+                      <option value="Hasibul Hasan">Hasibul Hasan</option>
+                      <option value="Farabi Farhad">Farabi Farhad</option>
+                      <option value="Fakhrul Alam">Fakhrul Alam</option>
                       <option value="Sharmin Akter">Sharmin Akter</option>
                       <option value="Taposy Chowdhury">Taposy Chowdhury</option>
+                      <option value="Mohua Mim">Mohua Mim</option>
                       <option value="Others">Others</option>
                     </select>
                   </div>

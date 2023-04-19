@@ -2,15 +2,15 @@ import moment from "moment";
 import React from "react";
 import { useSelector } from "react-redux";
 
-const DetailsModal = ({ id }) => {
+const DetailsModal = ({ message }) => {
   // get all company name from redux
   const company = useSelector((state) => state?.companyName?.ispOwnerIds);
 
   // get all note in redux
-  const comments = useSelector((state) => state.admin?.comments);
+  // const comments = useSelector((state) => state.admin?.comments);
 
   // find single data
-  const data = comments.find((item) => item.id === id);
+  // const data = comments.find((item) => item.id === id);
 
   return (
     <div>
@@ -29,7 +29,7 @@ const DetailsModal = ({ id }) => {
                 className="modal-title"
                 id="customerModalDetails"
               >
-                {company[data?.ispOwner]?.company}
+                {company[message?.ispOwner]?.company}
               </h4>
               <button
                 type="button"
@@ -43,16 +43,18 @@ const DetailsModal = ({ id }) => {
                 <div className="comment-show">
                   <div className="d-flex">
                     <h5 className="mb-1">
-                      <b>{data?.name}</b>
+                      <b>{message?.name}</b>
                     </h5>
 
                     <small className="ms-2">
-                      {moment(data?.createdAt).format("DD-MMM-YYYY hh:mm:ss A")}
+                      {moment(message?.createdAt).format(
+                        "DD-MMM-YYYY hh:mm:ss A"
+                      )}
                     </small>
                   </div>
                   <div className="comment-info" style={{ marginTop: "-10px" }}>
-                    <i class="badge bg-primary me-1">{data?.commentType}</i>
-                    <i class="badge bg-info">{data?.status}</i>
+                    <i class="badge bg-primary me-1">{message?.commentType}</i>
+                    <i class="badge bg-info">{message?.status}</i>
                     {/* <span
                               class="badge text-dark"
                               data-bs-toggle="modal"
@@ -64,7 +66,7 @@ const DetailsModal = ({ id }) => {
                               <Pencil />
                             </span> */}
                   </div>
-                  <p className="mt-2">{data?.comment}</p>
+                  <p className="mt-2">{message?.comment}</p>
                 </div>
                 <br />
               </>
