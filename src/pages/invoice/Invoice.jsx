@@ -321,7 +321,7 @@ function Invoice() {
 
                 <div style={{ display: "none" }}>
                   <PrintInvoice
-                    currentCustomers={invoices}
+                    currentCustomers={mainData}
                     ref={componentRef}
                   />
                 </div>
