@@ -48,6 +48,9 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
   // message details id
   const [fixedId, setFixedId] = useState();
 
+  //details modal show state
+  const [modalShow, setModalShow] = useState(false);
+
   // filter function
   const onClickFilter = () => {
     let filterData = [...fixedNumber];
@@ -144,6 +147,7 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
                 className="text-primary see-more"
                 onClick={() => {
                   setFixedId(original._id);
+                  setModalShow({ ...modalShow, [false]: true });
                 }}
               >
                 {original.message.length > 80 ? "...see more" : ""}
@@ -223,7 +227,11 @@ const FixedNumber = ({ fixedNumberLoading, setFixedNumberLoading }) => {
           data={fixedNumber}
         ></Table>
       </div>
-      <MessageDetails messageId={fixedId} status="fixedNumberMessage" />
+      <MessageDetails
+        messageId={fixedId}
+        status="fixedNumberMessage"
+        modalShow={modalShow}
+      />
     </>
   );
 };
