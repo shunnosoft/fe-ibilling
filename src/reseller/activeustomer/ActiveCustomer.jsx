@@ -45,6 +45,12 @@ const ResellserActiveCustomer = () => {
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
 
+  // offline state
+  let [offline, setOffline] = useState(false);
+
+  // offline state
+  let [allOfflineUsers, setAllOfflineUsers] = useState("");
+
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
     setMikrotikId(event.target.value);
@@ -55,11 +61,21 @@ const ResellserActiveCustomer = () => {
     let temp;
     if (e.target.value === "allCustomer") {
       setAllUsers(allMikrotikUsers);
+      setOffline(false);
     } else if (e.target.value === "online") {
       temp = allMikrotikUsers.filter((item) => item.running == true);
       setAllUsers(temp);
+      setOffline(false);
     } else if (e.target.value === "offline") {
+      setOffline(true);
       temp = allMikrotikUsers.filter((item) => item.running != true);
+      setAllUsers(temp);
+      setAllOfflineUsers(temp);
+    } else if (e.target.value === "offlineActive") {
+      temp = allOfflineUsers.filter((item) => item.status === "active");
+      setAllUsers(temp);
+    } else if (e.target.value === "offlineInactive") {
+      temp = allOfflineUsers.filter((item) => item.status === "inactive");
       setAllUsers(temp);
     }
   };
@@ -247,6 +263,25 @@ const ResellserActiveCustomer = () => {
                         <option value="offline">{t("ofline")}</option>
                       </select>
                     </div>
+
+                    {offline && (
+                      <div className="mikrotik-filter ms-4">
+                        <h6 className="mb-0"> {t("ofline")} </h6>
+                        <select
+                          id="selectOfflineOption"
+                          onChange={filterIt}
+                          className="form-select mt-0"
+                        >
+                          <option value="offline">{t("ofline")}</option>
+                          <option value="offlineActive">
+                            {t("offlineActive")}
+                          </option>
+                          <option value="offlineInactive">
+                            {t("offlineInactive")}
+                          </option>
+                        </select>
+                      </div>
+                    )}
                   </div>
 
                   {/* Active PPPoE users */}
