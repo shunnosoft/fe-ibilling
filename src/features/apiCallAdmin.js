@@ -237,11 +237,11 @@ export const getInvoices = async (dispatch, setIsLoading) => {
     const res = await apiLink.get(
       `admin/all-invoice?limit=${5000}&sortBy=${"createdAt:desc"}`
     );
-    setIsLoading(false);
     dispatch(getInvoicesSuccess(res.data?.invoices.results));
   } catch (error) {
     console.log(error.response);
   }
+  setIsLoading(false);
 };
 
 //get all netFee support
