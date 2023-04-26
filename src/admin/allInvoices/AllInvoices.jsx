@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { FontColor } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import { getInvoices } from "../../features/apiCallAdmin";
+import { getInvoices, getIspOwners } from "../../features/apiCallAdmin";
 import moment from "moment";
 import Table from "../../components/table/Table";
 import {
@@ -23,7 +23,10 @@ import { CSVLink } from "react-csv";
 const AllInvoices = () => {
   // get all note in redux
 
-  let invoices = useSelector((state) => state.admin?.invoices);
+  // get isp owner
+  let ispOwners = useSelector((state) => state.admin?.ispOwners);
+
+  let invoices = useSelector((state) => state.companyName?.invoices);
   // get Current date
   const today = new Date();
 
@@ -31,6 +34,7 @@ const AllInvoices = () => {
   const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [ispOwnerLoading, setIspOwnerLoading] = useState(false);
 
   // initial customer id state
   const [invoiceId, setInvoiceId] = useState();
@@ -62,6 +66,7 @@ const AllInvoices = () => {
     if (invoices.length > 0) {
       setMainData(invoices);
     }
+    if (!ispOwners.length) getIspOwners(dispatch, setIspOwnerLoading);
   }, [invoices]);
 
   // get all company name from redux
@@ -192,61 +197,29 @@ const AllInvoices = () => {
   const columns = React.useMemo(
     () => [
       {
-        // width: "5%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+        // width: "10%",
+        Header: "ID",
+        Cell: ({ row: { original } }) => (
+          <div>{company && company[original.ispOwner]?.netFeeId}</div>
+        ),
       },
       {
         // width: "10%",
         Header: "Company",
         accessor: "ispOwner",
-        Cell: ({ cell: { value } }) => {
-          return (
-            <div
-            //       className="company-name"
-            //       data-bs-toggle="modal"
-            //       data-bs-target="#clientNoteModal"
-            //       onClick={() => {
-            //         // showIndividualInvoice(value, company[value]);
-            //       }}
-            >
-              {company[value]?.company}
-            </div>
-          );
-        },
+        Cell: ({ cell: { value } }) => (
+          <div>{company && company[value]?.company}</div>
+        ),
       },
-      // {
-      //   Header: "Company",
-      //   accessor: "ispOwner",
-      //   Cell: ({ cell: { value } }) => {
-      //     return (<div>{company[value]?.company}</div>)
-      //     // return (
-      //     //   <div
-      //     //     className="company-name"
-      //     //     data-bs-toggle="modal"
-      //     //     data-bs-target="#clientNoteModal"
-      //     //     onClick={() => {
-      //     //       // showIndividualInvoice(value, company[value]);
-      //     //     }}
-      //     //   >
-      //     //     {company[value]}
-      //     //   </div>
-      //     // );
-      //   },
-      // },
       {
         // width: "15%",
         Header: "Type",
         accessor: "type",
-        Cell: ({ cell: { value } }) => {
-          return (
-            <div>
-              <span>{badge(value)}</span>
-            </div>
-          );
-        },
+        Cell: ({ cell: { value } }) => (
+          <div>
+            <span>{badge(value)}</span>
+          </div>
+        ),
       },
       {
         // width: "10%",
@@ -300,7 +273,6 @@ const AllInvoices = () => {
         // width: "10%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => (
           <div className="text-center">
             <>
@@ -347,7 +319,7 @@ const AllInvoices = () => {
         ),
       },
     ],
-    []
+    [company]
   );
   return (
     <>

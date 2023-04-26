@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FontColor } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import { getComments } from "../../features/apiCallAdmin";
+import { getComments, getIspOwners } from "../../features/apiCallAdmin";
 import moment from "moment";
 import Table from "../../components/table/Table";
 import {
@@ -22,6 +22,7 @@ import { CSVLink } from "react-csv";
 const AllComments = () => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [ispOwnerLoading, setIspOwnerLoading] = useState(false);
 
   // initial customer id state
   const [commentID, setCommentID] = useState("");
@@ -39,12 +40,16 @@ const AllComments = () => {
   // import dispatch
   const dispatch = useDispatch();
 
+  // get isp owner
+  let ispOwners = useSelector((state) => state.admin?.ispOwners);
+
   // get all note in redux
   let comments = useSelector((state) => state.admin?.comments);
 
   // get note api call
   useEffect(() => {
     if (!comments.length) getComments(dispatch, setIsLoading);
+    if (!ispOwners.length) getIspOwners(dispatch, setIspOwnerLoading);
   }, []);
 
   // get all company name from redux
@@ -101,12 +106,20 @@ const AllComments = () => {
   // table column
   const columns = React.useMemo(
     () => [
+      // {
+      //   width: "8%",
+      //   Header: "#",
+      //   id: "row",
+      //   accessor: (row) => Number(row.id + 1),
+      //   Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      // },
+
       {
-        width: "8%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+        // width: "10%",
+        Header: "ID",
+        Cell: ({ row: { original } }) => (
+          <div>{company && company[original.ispOwner]?.netFeeId}</div>
+        ),
       },
 
       {
@@ -118,20 +131,9 @@ const AllComments = () => {
         width: "12%",
         Header: "Company",
         accessor: "ispOwner",
-        Cell: ({ cell: { value } }) => {
-          return (
-            <div
-              className="company-name"
-              // data-bs-toggle="modal"
-              // data-bs-target="#clientNoteModal"
-              // onClick={() => {
-              //   showIndividualComment(value, company[value]);
-              // }}
-            >
-              {company[value]?.company}
-            </div>
-          );
-        },
+        Cell: ({ cell: { value } }) => (
+          <div>{company && company[value]?.company}</div>
+        ),
       },
       {
         width: "10%",
@@ -240,7 +242,7 @@ const AllComments = () => {
         ),
       },
     ],
-    []
+    [company]
   );
   return (
     <>
