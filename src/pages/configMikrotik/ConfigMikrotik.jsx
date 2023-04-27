@@ -149,13 +149,19 @@ export default function ConfigMikrotik() {
                         ))
                     )}
 
-                  {bpSettings?.queueType &&
-                    (bpSettings?.queueType === "core-queue" ||
-                      bpSettings?.queueType === "simple-queue") && (
-                      <Tab eventKey="fireWallFilter" title={t("fireWllFilter")}>
-                        <FireWallFilter />
-                      </Tab>
-                    )}
+                  {bpSettings?.customerType.map(
+                    (type) =>
+                      type === "static" &&
+                      (bpSettings?.queueType === "core-queue" ||
+                        bpSettings?.queueType === "simple-queue") && (
+                        <Tab
+                          eventKey="fireWallFilter"
+                          title={t("fireWllFilter")}
+                        >
+                          <FireWallFilter />
+                        </Tab>
+                      )
+                  )}
                 </Tabs>
               </FourGround>
               <Footer />

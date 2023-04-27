@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
-import { ArrowClockwise, WifiOff, Wifi } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  WifiOff,
+  Wifi,
+  ThreeDots,
+  ArchiveFill,
+  Server,
+} from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 // internal imports
@@ -18,6 +25,7 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import BandwidthModal from "../Customer/BandwidthModal";
 import moment from "moment";
+import CustomerDelete from "../Customer/customerCRUD/CustomerDelete";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -34,14 +42,20 @@ export default function ConfigMikrotik() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+  console.log(bpSettings);
+
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
 
   // customer id state
   const [customerId, setCustomerId] = useState("");
-
-  //bandwidth modal state
-  const [bandWidthModal, setBandWidthModal] = useState(false);
 
   // customer loading state
   const [mtkLoading, setMtkLoading] = useState(false);
@@ -51,6 +65,18 @@ export default function ConfigMikrotik() {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+
+  // customer id state
+  const [customerDeleteId, setCustomerDeleteId] = useState("");
+
+  // customer id state
+  const [bandWidthCustomerId, setBandWidthCustomerId] = useState("");
+
+  //bandwidth modal state
+  const [bandWidthModal, setBandWidthModal] = useState(false);
+
+  // check uncheck mikrotik state when delete customer
+  const [checkMikrotik, setMikrotikCheck] = useState(false);
 
   // customer filter state
   const [customerIt, setCustomerIt] = useState("");
@@ -98,6 +124,18 @@ export default function ConfigMikrotik() {
     }
   };
 
+  // customer delete controller
+  const customerDelete = (customerId) => {
+    setMikrotikCheck(false);
+    setCustomerDeleteId(customerId);
+  };
+
+  // customer bandwidth handler
+  const bandwidthModalController = (customerID) => {
+    setBandWidthCustomerId(customerID);
+    setBandWidthModal(true);
+  };
+
   // initialize id
   const IDs = {
     ispOwner: ispOwnerId,
@@ -128,7 +166,7 @@ export default function ConfigMikrotik() {
   const columns = React.useMemo(
     () => [
       {
-        width: "6%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -154,17 +192,17 @@ export default function ConfigMikrotik() {
         accessor: "name",
       },
       {
-        width: "13%",
+        width: "12%",
         Header: t("PPPoEName"),
         accessor: "pppoe.name",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("ip"),
         accessor: "ip",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
@@ -216,6 +254,60 @@ export default function ConfigMikrotik() {
               moment(original.lastLogoutTime).format("MMM DD YYYY hh:mm A")}
           </div>
         ),
+      },
+      {
+        width: "5%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => {
+          return (
+            <div className="text-center">
+              <div className="dropdown">
+                <ThreeDots
+                  className="dropdown-toggle ActionDots"
+                  id="areaDropdown"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                />
+
+                <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                  {bpSettings?.inActiveCustomerDelete &&
+                    original?.running !== true && (
+                      <li
+                        data-bs-toggle="modal"
+                        data-bs-target="#customerDelete"
+                        onClick={() => {
+                          customerDelete(original.id);
+                        }}
+                      >
+                        <div className="dropdown-item">
+                          <div className="customerAction">
+                            <ArchiveFill />
+                            <p className="actionP">{t("delete")}</p>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+
+                  {(role === "ispOwner" || role === "manager") &&
+                    bpSettings?.hasMikrotik &&
+                    original?.running === true && (
+                      <li onClick={() => bandwidthModalController(original.id)}>
+                        <div className="dropdown-item">
+                          <div className="customerAction">
+                            <Server />
+                            <p className="actionP">{t("bandwidth")}</p>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+                </ul>
+              </div>
+            </div>
+          );
+        },
       },
     ],
     [t]
@@ -308,11 +400,6 @@ export default function ConfigMikrotik() {
                       data={allUsers}
                     ></Table>
                   </div>
-                  <BandwidthModal
-                    setModalShow={setBandWidthModal}
-                    modalShow={bandWidthModal}
-                    customerId={customerId}
-                  />
                 </div>
               </FourGround>
               <Footer />
@@ -320,6 +407,18 @@ export default function ConfigMikrotik() {
           </div>
         </div>
       </div>
+      <CustomerDelete
+        single={customerDeleteId}
+        mikrotikCheck={checkMikrotik}
+        setMikrotikCheck={setMikrotikCheck}
+        status="customerDelete"
+      />
+
+      <BandwidthModal
+        setModalShow={setBandWidthModal}
+        modalShow={bandWidthModal}
+        customerId={bandWidthCustomerId}
+      />
     </>
   );
 }

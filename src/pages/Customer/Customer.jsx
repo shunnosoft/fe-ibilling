@@ -1288,6 +1288,7 @@ const PPPOECustomer = () => {
         single={customerId}
         mikrotikCheck={checkMikrotik}
         setMikrotikCheck={setMikrotikCheck}
+        status="customerDelete"
       />
 
       {/* single message send modal  */}
