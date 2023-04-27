@@ -75,6 +75,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   const [autoDisable, setAutoDisable] = useState("");
   const [billDate, setBillDate] = useState(new Date());
   const [monthlyFee, setMonthlyFee] = useState("");
+  const [promiseDate, setPromiseDate] = useState(new Date());
   const monthlyFeeRef = useRef();
 
   useEffect(() => {
@@ -85,6 +86,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
     setStatus(data?.status);
     setAutoDisable(data?.autoDisable);
     data?.billingCycle && setBillDate(moment(data.billingCycle).toDate());
+    data?.promiseDate && setPromiseDate(moment(data.promiseDate).toDate());
     setMonthlyFee(data?.monthlyFee);
   }, [data]);
 
@@ -257,6 +259,19 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
                   />
                 </div>
               </div>
+
+              <div className="mt-2">
+                <label className="form-control-label">{t("promiseDate")}</label>
+                <ReactDatePicker
+                  className="form-control"
+                  selected={promiseDate}
+                  onChange={(date) => setPromiseDate(date)}
+                  dateFormat="MMM dd yyyy h:mm"
+                  showTimeSelect
+                  minDate={promiseDate}
+                />
+              </div>
+
               <div className="d-flex justify-content-evenly align-items-center">
                 <div className="pppoeStatus mt-4 d-flex">
                   {/* <p>স্ট্যাটাস পরিবর্তন</p> */}

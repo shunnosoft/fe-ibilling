@@ -45,6 +45,9 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
   //message id state
   const [maskingId, setMaskingId] = useState();
 
+  //details modal show state
+  const [modalShow, setModalShow] = useState(false);
+
   // filter function
   const onClickFilter = () => {
     let filterData = [...masking];
@@ -141,6 +144,7 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
                 className="text-primary see-more"
                 onClick={() => {
                   setMaskingId(original._id);
+                  setModalShow({ ...modalShow, [false]: true });
                 }}
               >
                 {original.message.length > 80 ? "...see more" : ""}
@@ -220,7 +224,11 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
           data={masking}
         ></Table>
       </div>
-      <MessageDetails messageId={maskingId} status="maskingNumberMessage" />
+      <MessageDetails
+        messageId={maskingId}
+        status="maskingNumberMessage"
+        modalShow={modalShow}
+      />
     </>
   );
 };

@@ -732,6 +732,6 @@
   "monthlyServiceCharge": "Monthly Service Charge",
   "areYouWantToInactiveResellerCustomer": "Are you want to Inactive Reseller Customer?",
   "packageRateMustBeUpToIspOwnerCommission": "Package Rate Must Be Up To IspOwner Commission",
-  "offlineActive": "Offline Active",
-  "offlineInactive": "Offline Inactive"
+  "activeOffline": "Active Offline",
+  "inactiveOffline": "In-Active Offline"
 }

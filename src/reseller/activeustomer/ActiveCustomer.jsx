@@ -266,18 +266,18 @@ const ResellserActiveCustomer = () => {
 
                     {offline && (
                       <div className="mikrotik-filter ms-4">
-                        <h6 className="mb-0"> {t("ofline")} </h6>
+                        <h6 className="mb-0"> {t("selectStatus")} </h6>
                         <select
                           id="selectOfflineOption"
                           onChange={filterIt}
                           className="form-select mt-0"
                         >
-                          <option value="offline">{t("ofline")}</option>
+                          <option value="offline">{t("status")}</option>
                           <option value="offlineActive">
-                            {t("offlineActive")}
+                            {t("activeOffline")}
                           </option>
                           <option value="offlineInactive">
-                            {t("offlineInactive")}
+                            {t("inactiveOffline")}
                           </option>
                         </select>
                       </div>
