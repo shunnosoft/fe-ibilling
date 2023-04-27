@@ -733,5 +733,6 @@
   "areYouWantToInactiveResellerCustomer": "Are you want to Inactive Reseller Customer?",
   "packageRateMustBeUpToIspOwnerCommission": "Package Rate Must Be Up To IspOwner Commission",
   "activeOffline": "Active Offline",
-  "inactiveOffline": "In-Active Offline"
+  "inactiveOffline": "In-Active Offline",
+  "othersCommission": "Others Commission"
 }

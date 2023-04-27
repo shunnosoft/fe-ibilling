@@ -288,9 +288,12 @@ const ResellerSummary = () => {
     const initialValue = {
       paidCommissionOwner: 0,
       paidCommissionReseller: 0,
-      unpaidCustomers: 0,
+      paidBillSum: 0,
+      unpaidCommissionOwner: 0,
+      unpaidCommissionReseller: 0,
       unpaidBillSum: 0,
-      othersCustomers: 0,
+      othersCommissionOwner: 0,
+      othersCommissionReseller: 0,
       othersBillSum: 0,
     };
 
@@ -303,16 +306,29 @@ const ResellerSummary = () => {
       previous.paidCommissionReseller +=
         current.paidCustomerBillResellerCommission;
 
-      // sum of all unpaid Customer
-      previous.unpaidCustomers += current.unpaidCustomer;
+      // sum of all paid Bill Sum
+      previous.paidBillSum += current.paidCustomerBillSum;
+
+      // sum of all unpaid commission Owner
+      previous.unpaidCommissionOwner +=
+        current.unpaidCustomerBillIspOwnerCommission;
+
+      // sum of all unpaid commission Reseller
+      previous.unpaidCommissionReseller +=
+        current.unpaidCustomerBillResellerCommission;
 
       // sum of all unpaid Bill Sum
       previous.unpaidBillSum += current.unpaidCustomerBillSum;
 
-      // sum of all other customers
-      previous.othersCustomers += current.otherCustomer;
+      // sum of all other commission owner
+      previous.othersCommissionOwner +=
+        current.otherCustomerBillIspOwnerCommission;
 
-      // sum of all other unpaid Bill Sum
+      // sum of all other commission reseller
+      previous.othersCommissionReseller +=
+        current.otherCustomerBillResellerCommission;
+
+      // sum of all other Bill Sum
       previous.othersBillSum += current.otherCustomerMonthlyFeeSum;
 
       return previous;
@@ -349,35 +365,26 @@ const ResellerSummary = () => {
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="d-flex justify-content-between">
-                    <div>
+                    <div style={{ marginBottom: "-23px" }}>
                       <table
                         className="table table-bordered"
-                        style={{ lineHeight: "12px" }}
+                        style={{ lineHeight: "8px" }}
                       >
                         <tbody>
                           <tr>
-                            <td>{t("paidCommission")}</td>
-                            <td>{t("unpaid")}</td>
-                            <td>{t("other")}</td>
-                          </tr>
-                          <tr>
                             <td>
-                              {t("own")}:{" "}
-                              <b>{totalSum().paidCommissionOwner}</b> {t("tk")}
+                              <b>{t("paidCommission")}</b>
                             </td>
                             <td>
-                              {t("customer")}:{" "}
-                              <b>{totalSum().unpaidCustomers}</b>
+                              <b>{t("unpaidCommission")}</b>
                             </td>
                             <td>
-                              {t("customer")}:{" "}
-                              <b>{totalSum().othersCustomers}</b>
+                              <b>{t("othersCommission")}</b>
                             </td>
                           </tr>
                           <tr>
                             <td>
-                              {t("reseller")}:{" "}
-                              <b>{totalSum().paidCommissionReseller}</b>{" "}
+                              {t("sumBill")}: <b>{totalSum().paidBillSum}</b>{" "}
                               {t("tk")}
                             </td>
                             <td>
@@ -389,10 +396,44 @@ const ResellerSummary = () => {
                               {t("tk")}
                             </td>
                           </tr>
+                          <tr>
+                            <td>
+                              {t("own")}:{" "}
+                              <b>{totalSum().paidCommissionOwner}</b> {t("tk")}
+                            </td>
+                            <td>
+                              {t("own")}:{" "}
+                              <b>{totalSum().unpaidCommissionOwner}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("own")}:{" "}
+                              <b>{totalSum().othersCommissionOwner}</b>{" "}
+                              {t("tk")}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              {t("reseller")}:{" "}
+                              <b>{totalSum().paidCommissionReseller}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("reseller")}:{" "}
+                              <b>{totalSum().unpaidCommissionReseller}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("reseller")}:{" "}
+                              <b>{totalSum().othersCommissionReseller}</b>{" "}
+                              {t("tk")}
+                            </td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
-                    <div>
+
+                    <div className="d-flex justify-content-center align-items-center gap-2 me-3">
                       <ReactDatePicker
                         selected={filterDate}
                         className="form-control shadow-none"
@@ -405,14 +446,13 @@ const ResellerSummary = () => {
                         maxDate={new Date()}
                         minDate={new Date(reseller?.createdAt)}
                       />
-                      <div className="d-flex justify-content-end">
-                        <button
-                          className="btn btn-primary mt-2"
-                          onClick={summaryFilterHandler}
-                        >
-                          {isLoading ? <Loader /> : t("filter")}
-                        </button>
-                      </div>
+
+                      <button
+                        className="btn btn-primary"
+                        onClick={summaryFilterHandler}
+                      >
+                        {isLoading ? <Loader /> : t("filter")}
+                      </button>
                     </div>
                   </div>
                   <Table

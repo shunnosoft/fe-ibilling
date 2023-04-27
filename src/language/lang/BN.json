@@ -739,5 +739,6 @@
   "areYouWantToInactiveResellerCustomer": "রিসেলারের গ্রাহক ইন-এক্টিভ করতে চান?",
   "packageRateMustBeUpToIspOwnerCommission": "প্যকেজ রেট অবশ্যয় আইএসপি থেকে বেশি হতে হবে",
   "activeOffline": "এক্টিভ অফলাইন",
-  "inactiveOffline": "ইন-এক্টিভ অফলাইন"
+  "inactiveOffline": "ইন-এক্টিভ অফলাইন",
+  "othersCommission": "অন্যান্য কমিশন"
 }
