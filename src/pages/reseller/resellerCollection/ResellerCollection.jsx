@@ -40,7 +40,6 @@ const ResellerCollection = () => {
   const collectionReport = useSelector(
     (state) => state.reseller?.resellerCollection
   );
-  console.log(collectionReport);
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);

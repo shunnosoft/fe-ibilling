@@ -52,6 +52,12 @@ export default function ConfigMikrotik() {
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
 
+  // customer filter state
+  const [customerIt, setCustomerIt] = useState("");
+
+  // offline customer state
+  const [customerItData, setCustomerItData] = useState("");
+
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
 
@@ -65,12 +71,30 @@ export default function ConfigMikrotik() {
     let temp;
     if (e.target.value === "allCustomer") {
       setAllUsers(allMikrotikUsers);
+      setCustomerIt("");
     } else if (e.target.value === "online") {
       temp = allMikrotikUsers.filter((item) => item.running == true);
       setAllUsers(temp);
+      setCustomerIt("");
     } else if (e.target.value === "offline") {
       temp = allMikrotikUsers.filter((item) => item.running != true);
       setAllUsers(temp);
+      setCustomerIt("offline");
+    }
+    setCustomerItData(temp);
+  };
+
+  // customer online offline filter handler
+  const customerItFilter = (e) => {
+    let customer;
+    if (e.target.value === "All") {
+      setAllUsers(customerItData);
+    } else if (e.target.value === "activeOffline") {
+      customer = customerItData.filter((item) => item.status == "active");
+      setAllUsers(customer);
+    } else if (e.target.value === "inactiveOffline") {
+      customer = customerItData.filter((item) => item.status === "inactive");
+      setAllUsers(customer);
     }
   };
 
@@ -253,6 +277,27 @@ export default function ConfigMikrotik() {
                         <option value="offline">{t("ofline")}</option>
                       </select>
                     </div>
+
+                    {customerIt && customerIt === "offline" ? (
+                      <div className="mikrotik-filter ms-4">
+                        <h6 className="mb-0"> {t("selectStatus")} </h6>
+                        <select
+                          id="selectMikrotikOption"
+                          className="form-select mt-0"
+                          onChange={customerItFilter}
+                        >
+                          <option value="All">{t("status")}</option>
+                          <option value="activeOffline">
+                            {t("activeOffline")}
+                          </option>
+                          <option value="inactiveOffline">
+                            {t("inactiveOffline")}
+                          </option>
+                        </select>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
 
                   {/* Active PPPoE users */}

@@ -45,6 +45,9 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
   // status state
   const [status, setStatus] = useState("");
 
+  //details modal show state
+  const [modalShow, setModalShow] = useState(false);
+
   // filter function
   const onClickFilter = () => {
     let filterData = [...data];
@@ -141,6 +144,7 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
                 className="text-primary see-more"
                 onClick={() => {
                   setNonMaskingId(original._id);
+                  setModalShow({ ...modalShow, [false]: true });
                 }}
               >
                 {original.message.length > 80 ? "...see more" : ""}
@@ -220,7 +224,11 @@ const NonMasking = ({ nonMaskingLoading, setNonMaskingLoading }) => {
           data={mainData}
         ></Table>
       </div>
-      <MessageDetails messageId={nonMaskingId} status="nonMaskingMessage" />
+      <MessageDetails
+        messageId={nonMaskingId}
+        status="nonMaskingMessage"
+        modalShow={modalShow}
+      />
     </>
   );
 };

@@ -4,7 +4,7 @@ import { Button, Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
-const MessageDetails = ({ messageId, status }) => {
+const MessageDetails = ({ messageId, status, modalShow }) => {
   const [show, setShow] = useState(false);
 
   const { t } = useTranslation();
@@ -24,10 +24,10 @@ const MessageDetails = ({ messageId, status }) => {
   const handleClose = () => setShow(false);
 
   useEffect(() => {
-    if (findMessage) {
-      setShow(true);
+    if (modalShow) {
+      setShow(modalShow);
     }
-  }, [findMessage, messageId]);
+  }, [modalShow]);
 
   return (
     <>
