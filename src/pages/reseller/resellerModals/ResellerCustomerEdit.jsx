@@ -133,6 +133,7 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
       monthlyFee: monthlyFee,
       autoDisable: autoDisable,
       billingCycle: billDate.toISOString(),
+      promiseDate: promiseDate.toISOString(),
       status,
       pppoe: {
         name: data?.pppoe?.name,

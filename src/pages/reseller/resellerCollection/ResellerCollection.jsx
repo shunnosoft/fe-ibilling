@@ -43,6 +43,7 @@ const ResellerCollection = () => {
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [resellerLoading, setResellerLoading] = useState(false);
 
   //reseller id state
   const [resellerId, setResellerId] = useState();
@@ -254,7 +255,7 @@ const ResellerCollection = () => {
   }, [reseller]);
 
   useEffect(() => {
-    fetchReseller(dispatch, ispOwnerId, setIsLoading);
+    fetchReseller(dispatch, ispOwnerId, setResellerLoading);
   }, []);
 
   useEffect(() => {
