@@ -114,6 +114,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Instant Recharge Bill Print",
       isChecked: perm?.instantRechargeBillPrint,
     },
+    {
+      id: 20,
+      value: "inActiveCustomerDelete",
+      label: "In-Active Customer Delete",
+      isChecked: perm?.inActiveCustomerDelete,
+    },
   ];
   return permission;
 };

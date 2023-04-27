@@ -248,8 +248,11 @@ const InactiveCustomer = () => {
                           <option selected value="all">
                             {t("userType")}
                           </option>
-                          <option value="pppoe">{t("pppoe")}</option>
-                          <option value="static">{t("static")}</option>
+                          {ispOwnerData?.bpSettings?.customerType.map(
+                            (cType) => (
+                              <option value={cType}>{t(`${cType}`)}</option>
+                            )
+                          )}
                         </select>
                       </div>
                     </div>

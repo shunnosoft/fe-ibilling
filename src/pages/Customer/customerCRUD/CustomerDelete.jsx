@@ -4,7 +4,12 @@ import Loader from "../../../components/common/Loader";
 import { deleteACustomer } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 
-const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
+const CustomerDelete = ({
+  single,
+  mikrotikCheck,
+  setMikrotikCheck,
+  status,
+}) => {
   const { t } = useTranslation();
   // get ispOwner bp settings
   const bpSettings = useSelector(
@@ -12,7 +17,9 @@ const CustomerDelete = ({ single, mikrotikCheck, setMikrotikCheck }) => {
   );
 
   // get all customer
-  const customers = useSelector((state) => state?.customer?.customer);
+  const customers = useSelector((state) =>
+    status === "customerDelete" ? state?.customer?.customer : ""
+  );
 
   // find deletable customer
   const singleData = customers.find((item) => item.id === single);

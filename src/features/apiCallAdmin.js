@@ -107,7 +107,7 @@ export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
     dispatch(editOwner(res.data));
     setIsLoading(false);
     document.querySelector("#clientEditModal").click();
-    // document.querySelector("#clientParmissionModal").click();
+    document.querySelector("#clientParmissionModal").click();
     toast.success(`${data.company} IspOwner update success`);
   } catch (err) {
     console.log(err);
