@@ -274,6 +274,59 @@ const Summary = () => {
     </div>
   );
 
+  //function to calculate total paid Commision,unpaid and others
+  const totalSum = () => {
+    const initialValue = {
+      paidCommissionOwner: 0,
+      paidCommissionReseller: 0,
+      paidBillSum: 0,
+      unpaidCommissionOwner: 0,
+      unpaidCommissionReseller: 0,
+      unpaidBillSum: 0,
+      othersCommissionOwner: 0,
+      othersCommissionReseller: 0,
+      othersBillSum: 0,
+    };
+
+    const calculatedValue = data.reduce((previous, current) => {
+      // sum of all paid commission ISP Owner
+      previous.paidCommissionOwner +=
+        current.paidCustomerBillIspOwnerCommission;
+
+      // sum of all paid commission Reseller
+      previous.paidCommissionReseller +=
+        current.paidCustomerBillResellerCommission;
+
+      // sum of all paid Bill Sum
+      previous.paidBillSum += current.paidCustomerBillSum;
+
+      // sum of all unpaid commission Owner
+      previous.unpaidCommissionOwner +=
+        current.unpaidCustomerBillIspOwnerCommission;
+
+      // sum of all unpaid commission Reseller
+      previous.unpaidCommissionReseller +=
+        current.unpaidCustomerBillResellerCommission;
+
+      // sum of all unpaid Bill Sum
+      previous.unpaidBillSum += current.unpaidCustomerBillSum;
+
+      // sum of all other commission owner
+      previous.othersCommissionOwner +=
+        current.otherCustomerBillIspOwnerCommission;
+
+      // sum of all other commission reseller
+      previous.othersCommissionReseller +=
+        current.otherCustomerBillResellerCommission;
+
+      // sum of all other Bill Sum
+      previous.othersBillSum += current.otherCustomerMonthlyFeeSum;
+
+      return previous;
+    }, initialValue);
+    return calculatedValue;
+  };
+
   return (
     <>
       <Sidebar />
@@ -289,8 +342,76 @@ const Summary = () => {
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  <div className="d-flex justify-content-end">
-                    <div>
+                  <div className="d-md-flex justify-content-between">
+                    <div style={{ marginBottom: "-13px" }}>
+                      <table
+                        className="table table-bordered"
+                        style={{ lineHeight: "8px" }}
+                      >
+                        <tbody>
+                          <tr>
+                            <td>
+                              <b>{t("paidCommission")}</b>
+                            </td>
+                            <td>
+                              <b>{t("unpaidCommission")}</b>
+                            </td>
+                            <td>
+                              <b>{t("othersCommission")}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              {t("sumBill")}: <b>{totalSum().paidBillSum}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("sumBill")}: <b>{totalSum().unpaidBillSum}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("sumBill")}: <b>{totalSum().othersBillSum}</b>{" "}
+                              {t("tk")}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              {t("own")}:{" "}
+                              <b>{totalSum().paidCommissionOwner}</b> {t("tk")}
+                            </td>
+                            <td>
+                              {t("own")}:{" "}
+                              <b>{totalSum().unpaidCommissionOwner}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("own")}:{" "}
+                              <b>{totalSum().othersCommissionOwner}</b>{" "}
+                              {t("tk")}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              {t("reseller")}:{" "}
+                              <b>{totalSum().paidCommissionReseller}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("reseller")}:{" "}
+                              <b>{totalSum().unpaidCommissionReseller}</b>{" "}
+                              {t("tk")}
+                            </td>
+                            <td>
+                              {t("reseller")}:{" "}
+                              <b>{totalSum().othersCommissionReseller}</b>{" "}
+                              {t("tk")}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="d-flex justify-content-center align-items-center gap-2 me-3">
                       <ReactDatePicker
                         selected={filterDate}
                         className="form-control shadow-none"
@@ -303,13 +424,14 @@ const Summary = () => {
                         maxDate={new Date()}
                         minDate={new Date(currentUser?.createdAt)}
                       />
+
+                      <button
+                        className="btn btn-primary"
+                        onClick={summaryFilterHandler}
+                      >
+                        {isLoading ? <Loader /> : t("filter")}
+                      </button>
                     </div>
-                    <button
-                      className="btn btn-primary w-140 ms-1"
-                      onClick={summaryFilterHandler}
-                    >
-                      {isLoading ? <Loader /> : t("filter")}
-                    </button>
                   </div>
                   <Table
                     isLoading={isLoading}

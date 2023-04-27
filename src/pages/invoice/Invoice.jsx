@@ -42,6 +42,8 @@ function Invoice() {
 
   const [type, setType] = useState("");
 
+  const [status, setStatus] = useState("");
+
   //date filter section
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -227,6 +229,11 @@ function Invoice() {
       arr = arr.filter((item) => item.type === type);
     }
 
+    //status Filter
+    if (status) {
+      arr = arr.filter((item) => item.status === status);
+    }
+
     setMainData(arr);
   };
 
@@ -287,6 +294,18 @@ function Invoice() {
                       {" "}
                       {t("monthlyServiceCharge")}{" "}
                     </option>
+                  </select>
+
+                  <select
+                    className="form-select mx-2"
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    <option value="" defaultValue>
+                      {t("status")}
+                    </option>
+
+                    <option value="paid"> {t("paid")}</option>
+                    <option value="unpaid"> {t("unpaid")} </option>
                   </select>
 
                   <div className="ms-2">
