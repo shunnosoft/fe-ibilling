@@ -34,7 +34,6 @@ export default function ResellerEdit({ resellerId }) {
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
-  console.log(reseller);
 
   //get ispOwner Info
   const ispOwnerId = useSelector(

@@ -1202,6 +1202,7 @@ export const fetchpppoeUserForReseller = async (
         customerItem = {
           ...customerItem,
           lastLogoutTime: lastLogout.lastLoggedOut,
+          status: customerItem.status,
         };
       }
       return customerItem;

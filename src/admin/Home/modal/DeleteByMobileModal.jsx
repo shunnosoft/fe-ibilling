@@ -51,6 +51,7 @@ const DeleteByMobileModal = () => {
           <div class="modal-body">
             <div className="form-group d-flex">
               <input
+                value={mobile}
                 onChange={(e) => setMobile(e.target.value)}
                 type="number"
                 className="form-control me-3 w-50"
@@ -64,9 +65,11 @@ const DeleteByMobileModal = () => {
               </button>
             </div>
 
-            {customer?.profile?.id && (
+            {Object.keys(customer)?.length !== 0 ? (
               <>
-                <h5 className="mt-3">Customer Found</h5>
+                <h5 className="mt-3">
+                  {customer?.user?.role.toUpperCase()} Found
+                </h5>
                 <h5>Name : {customer?.profile?.name}</h5>
                 <h5>Mobile : {customer?.profile?.mobile}</h5>
                 {(currentUserRole === "superAdmin" ||
@@ -81,6 +84,8 @@ const DeleteByMobileModal = () => {
                   </button>
                 )}
               </>
+            ) : (
+              ""
             )}
           </div>
           <div class="modal-footer">
@@ -88,7 +93,10 @@ const DeleteByMobileModal = () => {
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
-              onClick={() => setCustomer("")}
+              onClick={() => {
+                setCustomer("");
+                setMobile("");
+              }}
             >
               Close
             </button>
