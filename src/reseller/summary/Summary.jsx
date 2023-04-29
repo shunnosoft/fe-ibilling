@@ -277,18 +277,26 @@ const Summary = () => {
   //function to calculate total paid Commision,unpaid and others
   const totalSum = () => {
     const initialValue = {
+      paidCommissionCustomer: 0,
       paidCommissionOwner: 0,
       paidCommissionReseller: 0,
       paidBillSum: 0,
+
+      unpaidCommissionCustomer: 0,
       unpaidCommissionOwner: 0,
       unpaidCommissionReseller: 0,
       unpaidBillSum: 0,
+
+      othersCommissionCustomer: 0,
       othersCommissionOwner: 0,
       othersCommissionReseller: 0,
       othersBillSum: 0,
     };
 
     const calculatedValue = data.reduce((previous, current) => {
+      // sum of all paid commission Customer
+      previous.paidCommissionCustomer += current.paidCustomer;
+
       // sum of all paid commission ISP Owner
       previous.paidCommissionOwner +=
         current.paidCustomerBillIspOwnerCommission;
@@ -299,6 +307,9 @@ const Summary = () => {
 
       // sum of all paid Bill Sum
       previous.paidBillSum += current.paidCustomerBillSum;
+
+      // sum of all unpaid commission Customer
+      previous.unpaidCommissionCustomer += current.unpaidCustomer;
 
       // sum of all unpaid commission Owner
       previous.unpaidCommissionOwner +=
@@ -312,6 +323,9 @@ const Summary = () => {
       previous.unpaidBillSum += current.unpaidCustomerBillSum;
 
       // sum of all other commission owner
+      previous.othersCommissionCustomer += current.otherCustomer;
+
+      // sum of all other commission customer
       previous.othersCommissionOwner +=
         current.otherCustomerBillIspOwnerCommission;
 
@@ -346,7 +360,7 @@ const Summary = () => {
                     <div style={{ marginBottom: "-13px" }}>
                       <table
                         className="table table-bordered"
-                        style={{ lineHeight: "8px" }}
+                        style={{ lineHeight: "7px" }}
                       >
                         <tbody>
                           <tr>
@@ -358,6 +372,20 @@ const Summary = () => {
                             </td>
                             <td>
                               <b>{t("othersCommission")}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              {t("customer")}:{" "}
+                              <b>{totalSum().paidCommissionCustomer}</b>
+                            </td>
+                            <td>
+                              {t("customer")}:{" "}
+                              <b>{totalSum().unpaidCommissionCustomer}</b>
+                            </td>
+                            <td>
+                              {t("customer")}:{" "}
+                              <b>{totalSum().othersCommissionCustomer}</b>
                             </td>
                           </tr>
                           <tr>
