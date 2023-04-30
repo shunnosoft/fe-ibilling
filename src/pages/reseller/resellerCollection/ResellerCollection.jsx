@@ -86,10 +86,10 @@ const ResellerCollection = () => {
 
     mainData = mainData.filter(
       (item) =>
-        new Date(moment(item.createdAt).format("YYYY-DD-MM")).getTime() >=
-          new Date(moment(startDate).format("YYYY-DD-MM")).getTime() &&
-        new Date(moment(item.createdAt).format("YYYY-DD-MM")).getTime() <=
-          new Date(moment(endDate).format("YYYY-DD-MM")).getTime()
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
     );
     setCurrentData(mainData);
   };
