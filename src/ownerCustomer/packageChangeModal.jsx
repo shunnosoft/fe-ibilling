@@ -18,7 +18,11 @@ const PackageChangeModal = () => {
 
   // package select option
   const options = packages.map((item) => {
-    return { value: item.id, label: item?.aliasName || item.name };
+    if (userData?.reseller) {
+      return { value: item.id, label: item.name };
+    } else {
+      return { value: item.id, label: item?.aliasName || item.name };
+    }
   });
 
   // loading state
