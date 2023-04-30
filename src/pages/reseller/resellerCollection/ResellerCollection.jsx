@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-bootstrap";
 import useDash from "../../../assets/css/dash.module.css";
@@ -17,6 +17,7 @@ import moment from "moment";
 import ReportView from "../../report/modal/ReportView";
 import EditReport from "../../report/modal/EditReport";
 import DatePicker from "react-datepicker";
+import FormatNumber from "../../../components/common/NumberFormat";
 
 const ResellerCollection = () => {
   const { t } = useTranslation();
@@ -34,32 +35,32 @@ const ResellerCollection = () => {
   );
 
   // get reseller
-  const reseller = useSelector((state) => state.reseller?.reseller);
+  const reseller = useSelector((state) => state?.reseller?.reseller);
 
   //get reseller collection report data
   const collectionReport = useSelector(
-    (state) => state.reseller?.resellerCollection
+    (state) => state?.reseller?.resellerCollection
   );
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);
-  const [resellerLoading, setResellerLoading] = useState(false);
+  const [dataLoader, setDataLoader] = useState(false);
 
   //reseller id state
-  const [resellerId, setResellerId] = useState();
+  const [resellerId, setResellerId] = useState("");
 
   // reseller customer collection main data state
   const [currentData, setCurrentData] = useState(collectionReport);
 
   //payment type state
-  const [paymentType, setPaymentType] = useState();
+  const [paymentType, setPaymentType] = useState("");
 
   // report id state
-  const [viewId, setViewId] = useState();
-  const [reportId, setReportId] = useState();
+  const [viewId, setViewId] = useState("");
+  const [reportId, setReportId] = useState("");
 
   // note state
-  const [note, setNote] = useState();
+  const [note, setNote] = useState("");
 
   // set date state
   const [startDate, setStartDate] = useState(firstDate);
@@ -255,11 +256,13 @@ const ResellerCollection = () => {
   }, [reseller]);
 
   useEffect(() => {
-    fetchReseller(dispatch, ispOwnerId, setResellerLoading);
+    fetchReseller(dispatch, ispOwnerId, setDataLoader);
   }, []);
 
   useEffect(() => {
-    resellerCustomerReport(dispatch, setIsLoading, resellerId);
+    if (resellerId) {
+      resellerCustomerReport(dispatch, setIsLoading, resellerId);
+    }
   }, [resellerId]);
 
   useEffect(() => {
@@ -280,6 +283,20 @@ const ResellerCollection = () => {
       )
     );
   }, [collectionReport]);
+
+  const addAllBills = useCallback(() => {
+    var count = 0;
+    currentData.forEach((item) => {
+      count = count + item.amount;
+    });
+    return FormatNumber(count);
+  }, [currentData]);
+
+  const customComponent = (
+    <div style={{ fontSize: "18px" }}>
+      {t("totalBill")} {addAllBills()} {t("tk")}
+    </div>
+  );
 
   return (
     <>
@@ -376,7 +393,8 @@ const ResellerCollection = () => {
 
                   <div className="table-section">
                     <Table
-                      isLoading={isLoading}
+                      isLoading={isLoading || dataLoader}
+                      customComponent={customComponent}
                       columns={columns}
                       data={currentData}
                     ></Table>
