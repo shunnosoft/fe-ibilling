@@ -33,10 +33,17 @@ export default function Packages() {
       <div className="packages_info_wraper mw-75 ">
         <p>
           Package:{" "}
-          <span className="badge bg-secondary">
-            {findAliasName(userData?.pppoe.profile)?.aliasName ||
-              findAliasName(userData?.pppoe.profile)?.name}
-          </span>
+          {!userData?.reseller && (
+            <span className="badge bg-secondary">
+              {findAliasName(userData?.pppoe.profile)?.aliasName ||
+                findAliasName(userData?.pppoe.profile)?.name}
+            </span>
+          )}
+          {userData?.reseller && (
+            <span className="badge bg-secondary">
+              {findAliasName(userData?.pppoe.profile)?.name}
+            </span>
+          )}
         </p>
         <p>
           Package rate:{" "}
@@ -65,7 +72,14 @@ export default function Packages() {
               >
                 <div className="card-header">Package</div>
                 <div className="card-body " style={{ color: "#3eff00" }}>
-                  <h5 className="card-title">{item.aliasName || item.name}</h5>
+                  {!userData?.reseller && (
+                    <h5 className="card-title">
+                      {item.aliasName || item.name}
+                    </h5>
+                  )}
+                  {userData?.reseller && (
+                    <h5 className="card-title">{item.name}</h5>
+                  )}
                   <p className="card-text">
                     {item.rate} TK /{" "}
                     <span className="badge bg-secondary">Month</span>

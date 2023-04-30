@@ -286,18 +286,26 @@ const ResellerSummary = () => {
   //function to calculate total paid Commision,unpaid and others
   const totalSum = () => {
     const initialValue = {
+      paidCommissionCustomer: 0,
       paidCommissionOwner: 0,
       paidCommissionReseller: 0,
       paidBillSum: 0,
+
+      unpaidCommissionCustomer: 0,
       unpaidCommissionOwner: 0,
       unpaidCommissionReseller: 0,
       unpaidBillSum: 0,
+
+      othersCommissionCustomer: 0,
       othersCommissionOwner: 0,
       othersCommissionReseller: 0,
       othersBillSum: 0,
     };
 
     const calculatedValue = data.reduce((previous, current) => {
+      // sum of all paid commission Customer
+      previous.paidCommissionCustomer += current.paidCustomer;
+
       // sum of all paid commission ISP Owner
       previous.paidCommissionOwner +=
         current.paidCustomerBillIspOwnerCommission;
@@ -308,6 +316,9 @@ const ResellerSummary = () => {
 
       // sum of all paid Bill Sum
       previous.paidBillSum += current.paidCustomerBillSum;
+
+      // sum of all unpaid commission Customer
+      previous.unpaidCommissionCustomer += current.unpaidCustomer;
 
       // sum of all unpaid commission Owner
       previous.unpaidCommissionOwner +=
@@ -321,6 +332,9 @@ const ResellerSummary = () => {
       previous.unpaidBillSum += current.unpaidCustomerBillSum;
 
       // sum of all other commission owner
+      previous.othersCommissionCustomer += current.otherCustomer;
+
+      // sum of all other commission customer
       previous.othersCommissionOwner +=
         current.otherCustomerBillIspOwnerCommission;
 
@@ -364,11 +378,11 @@ const ResellerSummary = () => {
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  <div className="d-flex justify-content-between">
+                  <div className="d-md-flex justify-content-between">
                     <div style={{ marginBottom: "-23px" }}>
                       <table
                         className="table table-bordered"
-                        style={{ lineHeight: "8px" }}
+                        style={{ lineHeight: "7px" }}
                       >
                         <tbody>
                           <tr>
@@ -380,6 +394,20 @@ const ResellerSummary = () => {
                             </td>
                             <td>
                               <b>{t("othersCommission")}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              {t("customer")}:{" "}
+                              <b>{totalSum().paidCommissionCustomer}</b>
+                            </td>
+                            <td>
+                              {t("customer")}:{" "}
+                              <b>{totalSum().unpaidCommissionCustomer}</b>
+                            </td>
+                            <td>
+                              {t("customer")}:{" "}
+                              <b>{totalSum().othersCommissionCustomer}</b>
                             </td>
                           </tr>
                           <tr>

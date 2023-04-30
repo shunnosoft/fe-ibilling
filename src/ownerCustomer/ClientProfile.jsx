@@ -55,7 +55,10 @@ export default function ClientProfile() {
                 <td>Package</td>
                 {userData.userType === "pppoe" && (
                   <td>
-                    {findAliasName(userData?.pppoe.profile)?.aliasName ||
+                    {!userData?.reseller &&
+                      (findAliasName(userData?.pppoe.profile)?.aliasName ||
+                        findAliasName(userData?.pppoe.profile)?.name)}
+                    {userData?.reseller &&
                       findAliasName(userData?.pppoe.profile)?.name}
                   </td>
                 )}
@@ -134,7 +137,10 @@ export default function ClientProfile() {
             )}
             {userData.userType === "pppoe" && (
               <h3>
-                {findAliasName(userData?.pppoe.profile)?.aliasName ||
+                {!userData?.reseller &&
+                  (findAliasName(userData?.pppoe.profile)?.aliasName ||
+                    findAliasName(userData?.pppoe.profile)?.name)}
+                {userData?.reseller &&
                   findAliasName(userData?.pppoe.profile)?.name}
               </h3>
             )}
@@ -143,7 +149,10 @@ export default function ClientProfile() {
             <p className="text-white">Downlaod</p>
             {userData.userType === "pppoe" && (
               <h3>
-                {findAliasName(userData?.pppoe.profile)?.aliasName ||
+                {!userData?.reseller &&
+                  (findAliasName(userData?.pppoe.profile)?.aliasName ||
+                    findAliasName(userData?.pppoe.profile)?.name)}
+                {userData?.reseller &&
                   findAliasName(userData?.pppoe.profile)?.name}
               </h3>
             )}

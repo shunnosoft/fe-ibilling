@@ -53,7 +53,9 @@ import BulkSubAreaEdit from "./bulkOpration/bulkSubAreaEdit";
 import FormatNumber from "../../components/common/NumberFormat";
 import BandwidthModal from "../../pages/Customer/BandwidthModal";
 import BulkResellerRecharge from "./bulkOpration/BulkResellerRecharge";
-import CustomersNumber from "../../pages/Customer/CustomersNumber";
+import ResellerBulkAutoConnectionEdit from "./bulkOpration/ResellerBulkAutoConnectionEdit";
+import BulkPackageEdit from "./bulkOpration/bulkPackageEdit";
+// import CustomersNumber from "../../pages/Customer/CustomersNumber";
 
 export default function Customer() {
   const { t } = useTranslation();
@@ -704,6 +706,16 @@ export default function Customer() {
                 bulkCustomer={bulkCustomer}
                 modalId="bulkStatusEdit"
               />
+
+              <ResellerBulkAutoConnectionEdit
+                bulkCustomer={bulkCustomer}
+                modalId="autoDisableEditModal"
+              />
+
+              <BulkPackageEdit
+                bulkCustomer={bulkCustomer}
+                modalId="bulkPackageEdit"
+              />
               {/*  bulk operation modal section */}
 
               {/* customers number update or delete modal */}
@@ -891,6 +903,34 @@ export default function Customer() {
             >
               <i class="fas fa-edit"></i>
               <span className="button_title"> {t("editBillingCycle")} </span>
+            </button>
+          )}
+
+          {permission?.customerAutoDisableEdit && (
+            <button
+              className="bulk_action_button btn btn-primary btn-floating btn-sm"
+              title={t("autoConnectOnOff")}
+              data-bs-toggle="modal"
+              data-bs-target="#autoDisableEditModal"
+              type="button"
+            >
+              <i className="fas fa-edit"></i>
+              <span className="button_title">
+                {t("automaticConnectionOff")}
+              </span>
+            </button>
+          )}
+
+          {permission?.customerMikrotikPackageEdit && (
+            <button
+              className="bulk_action_button btn btn-warning btn-floating btn-sm"
+              title={t("package")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkPackageEdit"
+              type="button"
+            >
+              <i className="fas fa-edit"></i>
+              <span className="button_title">{t("updatePackage")}</span>
             </button>
           )}
         </div>
