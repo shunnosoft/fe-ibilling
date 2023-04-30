@@ -80,7 +80,7 @@
   "ownCost": "নিজ খরচ",
   "ownBalance": "নিজ ব্যালেন্স",
   "expenseDefination": "খরচের বিবরণ",
-  "search": "সার্চ করুন",
+  "search": "সার্চ",
   "invoice": "ইনভয়েস",
   "invoiceDate": "ইনভয়েস তৈরির তারিখ",
   "moneyAmount": "টাকার পরিমান",
@@ -740,5 +740,8 @@
   "packageRateMustBeUpToIspOwnerCommission": "প্যকেজ রেট অবশ্যয় আইএসপি থেকে বেশি হতে হবে",
   "activeOffline": "এক্টিভ অফলাইন",
   "inactiveOffline": "ইন-এক্টিভ অফলাইন",
-  "othersCommission": "অন্যান্য কমিশন"
+  "othersCommission": "অন্যান্য কমিশন",
+  "customerNumberUpdateOrDelete": "গ্রাহকদের নম্বর আপডেট বা মুছুন",
+  "inputYourCustomerNumber": "আপনার গ্রাহক নম্বর ইনপুট করুন",
+  "doYouWantToDeleteMobileNumber": "আপনি কি মোবাইল নম্বর ডিলিট করতে চান"
 }

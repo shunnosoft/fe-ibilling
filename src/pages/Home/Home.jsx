@@ -462,28 +462,57 @@ export default function Home() {
                   </div>
                 )}
 
-                <div className="d-flex justify-content-end">
-                  <div>
-                    <ReactDatePicker
-                      selected={filterDate}
-                      className="form-control shadow-none"
-                      onChange={(date) => setFilterDate(date)}
-                      dateFormat="MMM/yyyy"
-                      showMonthYearPicker
-                      showFullMonthYearPicker
-                      endDate={"2014/04/08"}
-                      placeholderText={t("filterDashboard")}
-                      maxDate={new Date()}
-                      minDate={new Date(ispOwnerData?.createdAt)}
-                    />
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <p
+                      className="fw-700 me-3"
+                      data-bs-toggle="modal"
+                      data-bs-target="#activeCustomer"
+                      style={{ fontSize: "20px" }}
+                    >
+                      {t("active")} &nbsp;
+                      <span className="text-secondary fw-bold">
+                        ৳{FormatNumber(customerStat.totalActiveAmount)}
+                      </span>
+                    </p>
+
+                    <p
+                      className="fw-700"
+                      data-bs-toggle="modal"
+                      data-bs-target="#expiredCustomer"
+                      style={{ fontSize: "20px" }}
+                    >
+                      {t("expired")} &nbsp;
+                      <span className="text-secondary fw-bold">
+                        ৳{FormatNumber(customerStat.totalExpiredAmount)}
+                      </span>
+                    </p>
                   </div>
-                  <button
-                    className="btn btn-primary w-140 ms-1"
-                    onClick={dashboardFilterController}
-                  >
-                    {isLoading ? <Loader /> : t("filter")}
-                  </button>
+
+                  <div className="d-flex justify-content-end">
+                    <div>
+                      <ReactDatePicker
+                        selected={filterDate}
+                        className="form-control shadow-none"
+                        onChange={(date) => setFilterDate(date)}
+                        dateFormat="MMM/yyyy"
+                        showMonthYearPicker
+                        showFullMonthYearPicker
+                        endDate={"2014/04/08"}
+                        placeholderText={t("filterDashboard")}
+                        maxDate={new Date()}
+                        minDate={new Date(ispOwnerData?.createdAt)}
+                      />
+                    </div>
+                    <button
+                      className="btn btn-primary w-140 ms-1"
+                      onClick={dashboardFilterController}
+                    >
+                      {isLoading ? <Loader /> : t("filter")}
+                    </button>
+                  </div>
                 </div>
+
                 {/* </div> */}
               </div>
 

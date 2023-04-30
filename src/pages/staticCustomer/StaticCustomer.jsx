@@ -68,6 +68,7 @@ import BulkCustomerTransfer from "../Customer/customerCRUD/bulkOpration/bulkCust
 import TransferToReseller from "./customerCRUD/TransferToReseller";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import FireWallFilterIpDropControl from "./FireWallFilterIpDropControl";
+import CustomersNumber from "../Customer/CustomersNumber";
 
 export default function Customer() {
   //call hooks
@@ -136,6 +137,9 @@ export default function Customer() {
   const [singleData, setSingleData] = useState();
 
   const [allArea, setAreas] = useState([]);
+
+  // customers number update or delete modal show state
+  const [numberModalShow, setNumberModalShow] = useState(false);
 
   useEffect(() => {
     if (role === "collector") {
@@ -896,21 +900,55 @@ export default function Customer() {
                       {role === "ispOwner" &&
                         (bpSettings?.queueType === "simple-queue" ||
                           bpSettings?.queueType === "core-queue") && (
-                          <div className="addAndSettingIcon">
-                            <button
+                          <div
+                            className="addAndSettingIcon"
+                            title={t("fireWallFilterIpDrop")}
+                          >
+                            <svg
                               data-bs-toggle="modal"
                               data-bs-target="#fireWallFilterIpDropControl"
-                              className="btn btn-light btn-outline-success"
-                              style={{
-                                fontSize: "17px",
-                                marginRight: "14px",
-                              }}
-                              title={t("fireWallFilterIpDrop")}
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              fill="currentColor"
+                              className="bi bi-receipt-cutoff addcutmButton"
+                              viewBox="0 0 16 16"
                             >
-                              <ReceiptCutoff />
-                            </button>
+                              <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
+                              <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z" />
+                            </svg>
                           </div>
                         )}
+
+                      {((role === "manager" && permission?.customerEdit) ||
+                        role === "ispOwner") && (
+                        <div
+                          className="addAndSettingIcon"
+                          title={t("customerNumberUpdateOrDelete")}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            className="bi bi-pencil-square addcutmButton"
+                            viewBox="0 0 16 16"
+                            onClick={() =>
+                              setNumberModalShow({
+                                ...numberModalShow,
+                                [false]: true,
+                              })
+                            }
+                          >
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path
+                              fill-rule="evenodd"
+                              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                            />
+                          </svg>
+                        </div>
+                      )}
+
                       {permission?.viewCustomerList || role !== "collector" ? (
                         <>
                           <div className="addAndSettingIcon">
@@ -1037,6 +1075,9 @@ export default function Customer() {
 
               <FireWallFilterIpDropControl />
               {/* bulk Modal end */}
+
+              {/* customers number update or delete modal */}
+              <CustomersNumber showModal={numberModalShow} />
 
               {/* Model finish */}
 

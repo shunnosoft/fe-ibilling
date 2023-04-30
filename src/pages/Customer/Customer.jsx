@@ -73,6 +73,7 @@ import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 import BulkMikrotikEdit from "./customerCRUD/bulkOpration/bulkMikrotikEdit";
 import BulkRecharge from "./customerCRUD/bulkOpration/BulkRecharge";
+import CustomersNumber from "./CustomersNumber";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -202,6 +203,9 @@ const PPPOECustomer = () => {
     filterDate: null,
     dayFilter: "",
   });
+
+  // customers number update or delete modal show state
+  const [numberModalShow, setNumberModalShow] = useState(false);
 
   //initial api calls
   useEffect(() => {
@@ -1101,7 +1105,6 @@ const PPPOECustomer = () => {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
-
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -1121,6 +1124,35 @@ const PPPOECustomer = () => {
                   {/* customer page header area  */}
 
                   <div className="d-flex align-items-center justify-content-center">
+                    {((role === "manager" && permission?.customerEdit) ||
+                      role === "ispOwner") && (
+                      <div
+                        className="addAndSettingIcon"
+                        title={t("customerNumberUpdateOrDelete")}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          className="bi bi-pencil-square addcutmButton"
+                          viewBox="0 0 16 16"
+                          onClick={() =>
+                            setNumberModalShow({
+                              ...numberModalShow,
+                              [false]: true,
+                            })
+                          }
+                        >
+                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                          <path
+                            fill-rule="evenodd"
+                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                          />
+                        </svg>
+                      </div>
+                    )}
+
                     {((permission?.viewCustomerList && role === "manager") ||
                       role === "ispOwner") && (
                       <>
@@ -1267,22 +1299,16 @@ const PPPOECustomer = () => {
       {/* all modal */}
       {/* customer create modal  */}
       <CustomerPost />
-
       {/* customer edit modal  */}
       <CustomerEdit single={customerId} />
-
       {/* bill collection modal  */}
       <CustomerBillCollect single={customerId} customerData={customerData} />
-
       {/* customer details modal  */}
       <CustomerDetails single={customerId} />
-
       {/* customer report modal  */}
       <CustomerReport single={customerData} />
-
       {/* customer note modal */}
       <CustomerNote customerId={customerNoteId} customerName={customerName} />
-
       {/* customer delete modal  */}
       <CustomerDelete
         single={customerId}
@@ -1290,16 +1316,12 @@ const PPPOECustomer = () => {
         setMikrotikCheck={setMikrotikCheck}
         status="customerDelete"
       />
-
       {/* single message send modal  */}
       <SingleMessage single={customerId} sendCustomer="customer" />
-
       {/* transferReseller modal */}
       <TransferToReseller customerId={customerId} />
-
       {/* password reset modal */}
       <PasswordReset resetCustomerId={userId} />
-
       {/* bulk Modal */}
       {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
         permission?.bulkAreaEdit) && (
@@ -1308,7 +1330,6 @@ const PPPOECustomer = () => {
           modalId="customerBulkEdit"
         />
       )}
-
       <BulkBalanceEdit
         bulkCustomer={bulkCustomers}
         modalId="customerBalanceEdit"
@@ -1321,7 +1342,6 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="bulkPromiseDateEdit"
       />
-
       {bpSettings.hasMikrotik && (
         <>
           <BulkStatusEdit
@@ -1343,9 +1363,7 @@ const PPPOECustomer = () => {
         modalId="autoDisableEditModal"
       />
       <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
-
       <BulkRecharge bulkCustomer={bulkCustomers} modalId="bulkRecharge" />
-
       <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
@@ -1362,6 +1380,10 @@ const PPPOECustomer = () => {
         ispOwner={ispOwner}
         reseller=""
       />
+
+      {/* customers number update or delete modal */}
+      <CustomersNumber showModal={numberModalShow} />
+
       {bulkCustomers.length > 0 && (
         <div className="bulkActionButton">
           {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
@@ -1548,7 +1570,6 @@ const PPPOECustomer = () => {
           )}
         </div>
       )}
-
       {/* print option modal */}
       <Modal
         show={modalShow}
