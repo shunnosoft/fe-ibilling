@@ -44,6 +44,7 @@ import {
   getFireWllFilterIpDrop,
   updateFireWallFilterIpDrop,
   postFireWllFilterIpDrop,
+  getSearchCustomer,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -2725,4 +2726,77 @@ export const resetFireWallAllIpDrop = async (
     toast.error(error.response?.data?.message);
   }
   setIpLoading(false);
+};
+
+// ispOwner customer search
+export const customerNumber = async (
+  dispatch,
+  setIsLoading,
+  ispOwner,
+  mobile
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/find-customer-by-mobile/${ispOwner}?mobile=${mobile}`
+    );
+    dispatch(getSearchCustomer(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// ispOwner customer number delete
+export const customerNumberDelete = async (
+  dispatch,
+  setIsDelete,
+  ispOwner,
+  mobile
+) => {
+  setIsDelete(true);
+  try {
+    const res = await apiLink.delete(
+      `ispOwner/delete-customer-by-mobile/${ispOwner}?mobile=${mobile}`
+    );
+    dispatch(editCustomerSuccess(res.data));
+    langMessage(
+      "success",
+      "কাস্টমার মোবাইল নম্বর ডিলিট সফল হয়েছে",
+      "Customer mobile number deletion is successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsDelete(false);
+};
+
+// ispOwner customer number update
+export const customerNumberUpdate = async (
+  dispatch,
+  setIsDelete,
+  setShow,
+  setData,
+  ispOwner,
+  number,
+  mobile
+) => {
+  setIsDelete(true);
+  try {
+    const res = await apiLink.patch(
+      `ispOwner/update-customer-by-mobile/${ispOwner}?mobile=${number}`,
+      { mobile }
+    );
+    dispatch(editCustomerSuccess(res.data));
+    setData("");
+    setShow(false);
+    langMessage(
+      "success",
+      "কাস্টমার মোবাইল নম্বর ডিলিট সফল হয়েছে",
+      "Customer mobile number deletion is successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsDelete(false);
 };

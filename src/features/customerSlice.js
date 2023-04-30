@@ -8,6 +8,7 @@ const customerSliec = createSlice({
     staticCustomer: [],
     staticDueCustomer: [],
     staticActiveCustomer: [],
+    searchCustomer: [],
     fireWallFilterDrop: [],
   },
   reducers: {
@@ -150,6 +151,11 @@ const customerSliec = createSlice({
       }
     },
 
+    // search mobile number update or delete customer
+    getSearchCustomer: (state, action) => {
+      state.searchCustomer = action.payload;
+    },
+
     // fire wall ip filter drop
     getFireWllFilterIpDrop: (state, action) => {
       state.fireWallFilterDrop = action.payload;
@@ -184,6 +190,8 @@ export const {
   getStaticCustomerActiveSuccess,
   bulkDelete,
   bulkUpdate,
+  getSearchCustomer,
+  deleteSearchCustomer,
   getFireWllFilterIpDrop,
   postFireWllFilterIpDrop,
   updateFireWallFilterIpDrop,
