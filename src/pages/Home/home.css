@@ -66,6 +66,17 @@
   flex-direction: row;
   width: 100%;
 }
+.dashboardButton {
+  border-radius: 9px;
+  font-size: 22px;
+  color: green;
+  margin: 2px 10px;
+  cursor: pointer;
+}
+.dashboardLoader {
+  font-size: 22px;
+  margin: 2px 10px;
+}
 .chartFilteritem {
   margin-right: 10px !important;
 }
