@@ -128,14 +128,14 @@ const Table = (props) => {
 
             <div className={`toggle-column-modal ${isPagination && "active"}`}>
               <select
-                className="form-select mw-100"
+                className="form-select"
                 aria-label="Default select example"
                 value={pageSize}
                 onChange={(event) => setPageSize(Number(event.target.value))}
               >
-                {[100, 200, 500, 1000, 5000].map((pageSize) => (
+                {[100, 200, 500, 1000, 5000, data.length].map((pageSize) => (
                   <option key={pageSize} value={pageSize}>
-                    {pageSize}
+                    {pageSize === data.length ? "All" : pageSize}
                   </option>
                 ))}
               </select>
