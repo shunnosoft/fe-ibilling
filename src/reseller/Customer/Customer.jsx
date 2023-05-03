@@ -16,6 +16,7 @@ import {
   ChatText,
   CurrencyDollar,
   Server,
+  GearFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -139,6 +140,9 @@ export default function Customer() {
 
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
+
+  //bulk menu show and hide
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   //   filter
   const handleSubAreaChange = (id) => {
@@ -852,6 +856,163 @@ export default function Customer() {
       </div>
 
       {bulkCustomer.length > 0 && (
+        <div className="client_wraper2">
+          <div
+            className={`settings_wraper2 ${
+              isMenuOpen ? "show-menu2" : "hide-menu2"
+            }`}
+          >
+            <ul className="client_service_list2 ps-0">
+              {permission?.bulkAreaEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerBulkEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("editArea")}
+                    >
+                      <i class="fas fa-map-marked-alt fa-xs"></i>
+                      <span className="button_title">{t("editArea")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editArea")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {permission?.bulkCustomerRecharge && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkResellerRecharge"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-warning"
+                      title={t("package")}
+                    >
+                      <i className="fas fa-dollar fa-xs "></i>
+                      <span className="button_title">{t("bulkRecharge")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("bulkRecharge")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {permission?.bulkCustomerStatusEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkStatusEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                      title={t("editStatus")}
+                    >
+                      <i className="fas fa-edit fa-xs  "></i>
+                      <span className="button_title"> {t("editStatus")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editStatus")}</div>
+                </li>
+              )}
+              <hr className="mt-0 mb-0" />
+
+              {permission?.bulkCustomerBillingCycleEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerBillingCycle"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-secondary"
+                      title={t("editBillingCycle")}
+                    >
+                      <i class="far fa-calendar-alt fa-xs"></i>
+                      <span className="button_title">
+                        {" "}
+                        {t("editBillingCycle")}{" "}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editBillingCycle")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {permission?.customerAutoDisableEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#autoDisableEditModal"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
+                      title={t("autoConnectOnOff")}
+                    >
+                      <i class="fas fa-power-off fa-xs"></i>
+                      <span className="button_title">
+                        {t("automaticConnectionOff")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">
+                    {" "}
+                    {t("automaticConnectionOff")}
+                  </div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {permission?.customerMikrotikPackageEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkPackageEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("package")}
+                    >
+                      <i class="fas fa-wifi fa-xs"></i>
+                      <span className="button_title">{t("updatePackage")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("updatePackage")}</div>
+                </li>
+              )}
+            </ul>
+
+            <div className="setting_icon_wraper2">
+              <div
+                onClick={() => setMenuOpen(!isMenuOpen)}
+                className="client_setting_icon2"
+              >
+                <GearFill />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* {bulkCustomer.length > 0 && (
         <div className="bulkActionButton">
           {permission?.bulkAreaEdit && (
             <button
@@ -934,7 +1095,7 @@ export default function Customer() {
             </button>
           )}
         </div>
-      )}
+      )} */}
 
       <BandwidthModal
         setModalShow={setBandWidthModal}
