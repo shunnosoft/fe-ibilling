@@ -13,6 +13,7 @@ import {
   Coin,
   CurrencyDollar,
   ChatSquareDots,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
@@ -346,6 +347,34 @@ export default function Home() {
   //   }
   //   return 0;
   // };
+
+  const dashboardReloadHandler = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    if (role === "collector") {
+      getDashboardCardData(
+        dispatch,
+        setIsloading,
+        ispOwnerId,
+        null,
+        userData?.id,
+        filterData
+      );
+    } else {
+      getDashboardCardData(
+        dispatch,
+        setIsloading,
+        ispOwnerId,
+        null,
+        null,
+        filterData
+      );
+    }
+  };
+
   const dashboardFilterController = () => {
     const filterData = {
       year: filterDate.getFullYear(),
@@ -468,7 +497,7 @@ export default function Home() {
                       className="fw-700 me-3"
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
-                      style={{ fontSize: "20px" }}
+                      style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("active")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -480,7 +509,7 @@ export default function Home() {
                       className="fw-700"
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
-                      style={{ fontSize: "20px" }}
+                      style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("expired")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -490,6 +519,37 @@ export default function Home() {
                   </div>
 
                   <div className="d-flex justify-content-end">
+                    <div
+                      className="d-flex justify-content-center align-items-center me-2"
+                      title={t("refresh")}
+                      style={{
+                        borderRadius: "10%",
+                        backgroundColor: "#F7E9D7",
+                      }}
+                    >
+                      {isLoading ? (
+                        <div className="dashboardLoader">
+                          <Loader />
+                        </div>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="23"
+                          height="23"
+                          fill="currentColor"
+                          className="bi bi-arrow-clockwise dashboardButton"
+                          viewBox="0 0 16 16"
+                          onClick={dashboardReloadHandler}
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+                          />
+                          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                        </svg>
+                      )}
+                    </div>
+
                     <div>
                       <ReactDatePicker
                         selected={filterDate}

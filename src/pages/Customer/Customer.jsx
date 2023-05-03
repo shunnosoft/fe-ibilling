@@ -290,9 +290,7 @@ const PPPOECustomer = () => {
       try {
         const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
         setMikrotikPackages(res.data);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     }
   };
 

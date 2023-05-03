@@ -17,6 +17,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye } from "react-bootstrap-icons";
 import { fetchReseller } from "../../../features/apiCalls";
 import AllCustomer from "../resellerModals/summaryData/AllCustomer";
+import moment from "moment";
 
 const ResellerSummary = () => {
   const { t } = useTranslation();
@@ -469,10 +470,13 @@ const ResellerSummary = () => {
                         dateFormat="MMM/yyyy"
                         showMonthYearPicker
                         showFullMonthYearPicker
-                        endDate={"2014/04/08"}
                         placeholderText={t("filterDashboard")}
                         maxDate={new Date()}
-                        minDate={new Date(reseller?.createdAt)}
+                        minDate={
+                          new Date(
+                            moment(reseller?.createdAt).format("MMM/yyyy")
+                          )
+                        }
                       />
 
                       <button

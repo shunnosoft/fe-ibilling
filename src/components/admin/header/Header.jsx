@@ -137,7 +137,7 @@ export default function Header(props) {
                       <p className="me-2">
                         {t("nonMasking")}
                         <strong className="mainsmsbalance">
-                          {ispOwner.smsBalance}
+                          {FormatNumber(ispOwner.smsBalance)}
                         </strong>
                       </p>
                     )}
@@ -146,7 +146,7 @@ export default function Header(props) {
                       <p className="me-2">
                         {t("masking")}
                         <strong className="mainsmsbalance">
-                          {ispOwner.maskingSmsBalance}
+                          {FormatNumber(ispOwner.maskingSmsBalance)}
                         </strong>
                       </p>
                     )}
@@ -155,31 +155,12 @@ export default function Header(props) {
                       <p className="me-2">
                         {t("fixed")}
                         <strong className="mainsmsbalance">
-                          {ispOwner.fixedNumberSmsBalance}
+                          {FormatNumber(ispOwner.fixedNumberSmsBalance)}
                         </strong>
                       </p>
                     )}
-                    {/* {(ispOwner?.smsBalance > 0 ||
-                      ispOwner?.maskingSmsBalance > 0 ||
-                      ispOwner?.fixedNumberSmsBalance) > 0 ? (
-                      <div>
-                        <p>
-                          {t("nonMasking")}
-                          <strong>{ispOwner.smsBalance}</strong>
-                        </p>
-                        <p>
-                          {t("masking")}
-                          <strong>{ispOwner.maskingSmsBalance}</strong>
-                        </p>
-                        <p>
-                          {t("fixed")}
-                          <strong>{ispOwner.fixedNumberSmsBalance}</strong>
-                        </p>
-                      </div>
-                    ) : (
-                      ""
-                    )} */}
                   </div>
+
                   {(ispOwner?.smsBalance ||
                     ispOwner?.maskingSmsBalance ||
                     ispOwner?.fixedNumberSmsBalance) > 0 && (
