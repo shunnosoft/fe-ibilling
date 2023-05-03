@@ -24,6 +24,7 @@ import {
   Newspaper,
   ArrowRightSquareFill,
   ReceiptCutoff,
+  GearFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -184,6 +185,9 @@ export default function Customer() {
 
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
+  //bulk menu show and hide
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   // cutomer delete
   const customerDelete = (customerId) => {
@@ -1434,126 +1438,212 @@ export default function Customer() {
         </div>
       </div>
       {bulkCustomer.length > 0 && (
-        <div className="bulkActionButton">
-          {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
-            (bpSettings?.bulkAreaEdit &&
-              permission?.bulkAreaEdit &&
-              role === "manager")) && (
-            <button
-              className="bulk_action_button"
-              title={t("editArea")}
-              data-bs-toggle="modal"
-              data-bs-target="#customerBulkEdit"
-              type="button"
-              class="btn btn-primary btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title">{t("editArea")}</span>
-            </button>
-          )}
+        <div className="client_wraper2">
+          <div
+            className={`settings_wraper2 ${
+              isMenuOpen ? "show-menu2" : "hide-menu2"
+            }`}
+          >
+            <ul className="client_service_list2 ps-0">
+              {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
+                (bpSettings?.bulkAreaEdit &&
+                  permission?.bulkAreaEdit &&
+                  role !== "manager")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerBulkEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("editArea")}
+                    >
+                      <i class="fas fa-map-marked-alt fa-xs"></i>
+                      <span className="button_title">{t("editArea")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editArea")}</div>
+                </li>
+              )}
 
-          {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
-            (bpSettings?.bulkStatusEdit &&
-              permission?.bulkStatusEdit &&
-              role === "manager")) && (
-            <button
-              className="bulk_action_button"
-              title={t("editStatus")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkStatusEdit"
-              type="button"
-              class="btn btn-dark btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title">{t("editStatus")}</span>
-            </button>
-          )}
+              <hr className="mt-0 mb-0" />
 
-          {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
-            (bpSettings?.bulkBillingCycleEdit &&
-              permission?.bulkBillingCycleEdit &&
-              role === "manager")) && (
-            <button
-              className="bulk_action_button"
-              title={t("editBillingCycle")}
-              data-bs-toggle="modal"
-              data-bs-target="#customerBillingCycle"
-              type="button"
-              class="btn btn-warning btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title">{t("editBillingCycle")}</span>
-            </button>
-          )}
+              {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
+                (bpSettings?.bulkStatusEdit &&
+                  permission?.bulkStatusEdit &&
+                  role === "manager")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkStatusEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                      title={t("editStatus")}
+                    >
+                      <i className="fas fa-edit fa-xs  "></i>
+                      <span className="button_title"> {t("editStatus")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editStatus")}</div>
+                </li>
+              )}
+              <hr className="mt-0 mb-0" />
 
-          {((role === "ispOwner" && bpSettings?.bulkPromiseDateEdit) ||
-            (bpSettings?.bulkPromiseDateEdit &&
-              permission?.bulkPromiseDateEdit &&
-              role === "manager")) && (
-            <button
-              className="bulk_action_button"
-              title={t("editPromiseDate")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkPromiseDateEdit"
-              type="button"
-              class="btn btn-secondary btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title"> {t("editPromiseDate")} </span>
-            </button>
-          )}
+              {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
+                (bpSettings?.bulkBillingCycleEdit &&
+                  permission?.bulkBillingCycleEdit &&
+                  role === "manager")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerBillingCycle"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-secondary"
+                      title={t("editBillingCycle")}
+                    >
+                      <i class="far fa-calendar-alt fa-xs"></i>
+                      <span className="button_title">
+                        {" "}
+                        {t("editBillingCycle")}{" "}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editBillingCycle")}</div>
+                </li>
+              )}
 
-          {((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
-            (bpSettings?.bulkAutoDisableEdit &&
-              permission?.bulkAutoDisableEdit &&
-              role === "manager")) && (
-            <button
-              className="bulk_action_button"
-              title={t("automaticConnectionOff")}
-              data-bs-toggle="modal"
-              data-bs-target="#autoDisableEditModal"
-              type="button"
-              class="btn btn-primary btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title">
-                {t("automaticConnectionOff")}
-              </span>
-            </button>
-          )}
+              <hr className="mt-0 mb-0" />
 
-          {((role === "ispOwner" && bpSettings?.bulkTransferToReseller) ||
-            (bpSettings?.bulkTransferToReseller &&
-              permission?.bulkTransferToReseller &&
-              role !== "collector")) && (
-            <button
-              className="bulk_action_button btn btn-info btn-floating btn-sm"
-              title={t("transferReseller")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkTransferToReseller"
-              type="button"
-            >
-              <i className="fa-solid fa-right-left"></i>
-              <span className="button_title"> {t("transferReseller")} </span>
-            </button>
-          )}
+              {((role === "ispOwner" && bpSettings?.bulkPromiseDateEdit) ||
+                (bpSettings?.bulkPromiseDateEdit &&
+                  permission?.bulkPromiseDateEdit &&
+                  role === "manager")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkPromiseDateEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-success"
+                      title={t("editPromiseDate")}
+                    >
+                      <i class="fas fa-calendar-week fa-xs"></i>
+                      <span className="button_title">
+                        {" "}
+                        {t("editPromiseDate")}{" "}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editPromiseDate")}</div>
+                </li>
+              )}
 
-          {((role === "ispOwner" && bpSettings?.bulkCustomerDelete) ||
-            (bpSettings?.bulkCustomerDelete &&
-              permission?.bulkCustomerDelete &&
-              role !== "collector")) && (
-            <button
-              className="bulk_action_button"
-              title={t("customerDelete")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkDeleteCustomer"
-              type="button"
-              class="btn btn-danger btn-floating btn-sm"
-            >
-              <i class="fas fa-trash-alt"></i>
-              <span className="button_title">{t("customerDelete")}</span>
-            </button>
-          )}
+              <hr className="mt-0 mb-0" />
+
+              {((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
+                (bpSettings?.bulkAutoDisableEdit &&
+                  permission?.bulkAutoDisableEdit &&
+                  role === "manager")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#autoDisableEditModal"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
+                      title={t("autoConnectOnOff")}
+                    >
+                      <i class="fas fa-power-off fa-xs"></i>
+                      <span className="button_title">
+                        {t("automaticConnectionOff")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">
+                    {" "}
+                    {t("automaticConnectionOff")}
+                  </div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {((role === "ispOwner" && bpSettings?.bulkTransferToReseller) ||
+                (bpSettings?.bulkTransferToReseller &&
+                  permission?.bulkTransferToReseller &&
+                  role === "collector")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkTransferToReseller"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                      title={t("transferReseller")}
+                    >
+                      <i className="fa-solid fa-right-left fa-xs "></i>
+                      <span className="button_title">
+                        {" "}
+                        {t("transferReseller")}{" "}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("transferReseller")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {((role === "ispOwner" && bpSettings?.bulkCustomerDelete) ||
+                (bpSettings?.bulkCustomerDelete &&
+                  permission?.bulkCustomerDelete &&
+                  role === "collector")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkDeleteCustomer"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-danger"
+                      title={t("customerDelete")}
+                    >
+                      <i className="fas fa-trash-alt fa-xs "></i>
+                      <span className="button_title">
+                        {" "}
+                        {t("customerDelete")}{" "}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("customerDelete")}</div>
+                </li>
+              )}
+            </ul>
+
+            <div className="setting_icon_wraper2">
+              <div
+                onClick={() => setMenuOpen(!isMenuOpen)}
+                className="client_setting_icon2"
+              >
+                <GearFill />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>
