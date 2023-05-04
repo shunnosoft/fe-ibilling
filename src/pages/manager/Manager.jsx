@@ -31,11 +31,13 @@ import {
   addManager,
   // deleteManager,
   editManager,
+  getArea,
   getManger,
 } from "../../features/apiCalls";
 import Loader from "../../components/common/Loader";
 import { useTranslation } from "react-i18next";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import ManagerAddModal from "./ManagerAddModal";
 
 export default function Manager() {
   const { t } = useTranslation();
@@ -62,6 +64,10 @@ export default function Manager() {
   const [permissions, setPermissions] = useState(
     managerPermission(manager?.permissions)
   );
+
+  useEffect(() => {
+    getArea(dispatch, ispOwnerId, setIsLoading);
+  }, []);
 
   useEffect(() => {
     if (manager)
@@ -149,129 +155,21 @@ export default function Manager() {
                   <h2 className="">
                     {manager?.name} ({t("manager")}) {t("profile")}
                   </h2>
-                  {!manager?.name && (
-                    <div
-                      title={t("addNewManager")}
-                      className="header_icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#managerAddModal"
-                    >
-                      <PersonPlusFill />
-                    </div>
-                  )}
+                  {/* {!manager?.name && ( */}
+                  <div
+                    title={t("addNewManager")}
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#managerAddModal"
+                  >
+                    <PersonPlusFill />
+                  </div>
+                  {/* )} */}
                 </div>
               </FourGround>
               {/* edit manager */}
               <WriteModals manager={manager} />
-              {/* Model */}
-              <div
-                className="modal fade modal-dialog-scrollable "
-                id="managerAddModal"
-                tabIndex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h4 className="modal-title" id="exampleModalLabel">
-                        {t("addManager")}
-                      </h4>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        id="closeAddManagerBtn"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div className="modal-body">
-                      <Formik
-                        initialValues={{
-                          name: "",
-                          mobile: "",
-                          address: "",
-                          email: "",
-                          nid: "",
-                          // photo: "",
-                          salary: "",
-                        }}
-                        validationSchema={managerValidate}
-                        onSubmit={(values) => {
-                          addManagerHandle(values);
-                        }}
-                      >
-                        {(formik) => (
-                          <Form>
-                            <FtextField
-                              type="text"
-                              label={t("managerName")}
-                              name="name"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("managerMobile")}
-                              name="mobile"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("managerAddress")}
-                              name="address"
-                            />
-                            <FtextField
-                              type="email"
-                              label={t("managerEmail")}
-                              name="email"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("managerNID")}
-                              name="nid"
-                            />
-
-                            <div className="autoDisable mb-2">
-                              <input
-                                type="checkBox"
-                                checked={addStaffStatus}
-                                onChange={(e) =>
-                                  setAddStaffStatus(e.target.checked)
-                                }
-                              />
-                              <label className="ps-2"> {t("addStaff")} </label>
-                            </div>
-
-                            {addStaffStatus && (
-                              <FtextField
-                                type="number"
-                                label={t("salary")}
-                                name="salary"
-                              />
-                            )}
-
-                            {/* Button */}
-                            <div className="submitSection">
-                              <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                              >
-                                {t("cancel")}
-                              </button>
-                              <button
-                                type="submit"
-                                className="btn btn-primary marginLeft"
-                              >
-                                {t("save")}
-                              </button>
-                            </div>
-                          </Form>
-                        )}
-                      </Formik>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Model */}
+              <ManagerAddModal />
 
               <FourGround>
                 <div className="collectorWrapper py-2 pb-5 mt-2">
