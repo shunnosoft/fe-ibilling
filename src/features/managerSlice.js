@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isPending: false,
-  manager: {},
+  manager: [],
   error: false,
 };
 
@@ -31,8 +31,7 @@ const managerSlice = createSlice({
 
     managerAddSuccess: (state, action) => {
       state.isPending = false;
-
-      state.manager = action.payload;
+      state.manager.push(action.payload);
     },
 
     managerDeleteSuccess: (state, action) => {

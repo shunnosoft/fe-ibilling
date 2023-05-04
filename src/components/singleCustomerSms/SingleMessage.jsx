@@ -37,6 +37,9 @@ const SingleMessage = ({ single, sendCustomer }) => {
   // get all staff from redux
   const getAllStaffs = useSelector((state) => state?.staff?.staff);
 
+  //get all managers
+  const manager = useSelector((state) => state.manager?.manager);
+
   //initial data variable
   let data;
 
@@ -64,6 +67,11 @@ const SingleMessage = ({ single, sendCustomer }) => {
     // find single reseller
     data = getAllStaffs.find((item) => item.id === single);
   }
+
+  // if (sendCustomer === "manager") {
+  //   // find single manager
+  //   data = manager.find((item) => item.id === single);
+  // }
 
   // loading state
   const [isLoading, setIsloading] = useState(false);

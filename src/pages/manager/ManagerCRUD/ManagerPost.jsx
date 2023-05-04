@@ -1,24 +1,23 @@
 import { Form, Formik } from "formik";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { FtextField } from "../../components/common/FtextField";
+import { FtextField } from "../../../components/common/FtextField";
 import * as Yup from "yup";
 import { useState } from "react";
-import { addManager } from "../../features/apiCalls";
+import { addManager } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { Tab, Tabs } from "react-bootstrap";
-import { managerPermission } from "./managerData";
+import { managerPermission } from "../managerData";
 
-const ManagerAddModal = () => {
+const ManagerPost = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [addStaffStatus, setAddStaffStatus] = useState(false);
-  const [areaIds, setAreaIds] = useState([]);
 
   const [subAreaIds, setSubAreaIds] = useState([]);
   const [permissions, setPermissions] = useState([]);
-  console.log(areaIds, subAreaIds);
+
   const language = localStorage.getItem("netFee:lang");
 
   //fetching ispOwner ID
@@ -54,27 +53,31 @@ const ManagerAddModal = () => {
   });
 
   const addManagerHandle = (data) => {
+    if (subAreaIds.length === 0) {
+      alert("Please Select atleast an Area");
+      return;
+    }
+
     let temp = {};
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;
     });
     data.permissions = temp;
-    console.log(data);
-    // if (addStaffStatus) {
-    //   if (!data.salary) {
-    //     alert(t("incorrectSalary"));
-    //   }
-    // }
-    // if (!addStaffStatus) {
-    //   delete data.salary;
-    // }
-    // addManager(dispatch, addStaffStatus, {
-    //   ...data,
-    //   ispOwner: ispOwnerId,
-    // });
+    data.areas = subAreaIds;
+    data.ispOwner = ispOwnerId;
+
+    if (addStaffStatus) {
+      if (!data.salary) {
+        alert(t("incorrectSalary"));
+      }
+    }
+    if (!addStaffStatus) {
+      delete data.salary;
+    }
+    addManager(dispatch, addStaffStatus, data);
   };
 
-  const setSubAreaHandler = (area) => {
+  const setSubAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
     let IDS_temp = [];
     for (let i = 0; i < temp.length; i++) {
@@ -109,10 +112,6 @@ const ManagerAddModal = () => {
         }
       }
     }
-
-    areaChecked
-      ? setAreaIds([...areaIds, event.target.value])
-      : areaIds.splice(areaIds.indexOf(event.target.value), 1);
 
     setSubAreaIds([...subAreaIds, ...IDS_temp]);
   };
@@ -247,7 +246,7 @@ const ManagerAddModal = () => {
                                   type="checkbox"
                                   className="getValueUsingClass"
                                   value={v.id}
-                                  onChange={() => setSubAreaHandler(val)}
+                                  onChange={setSubAreaHandler}
                                 />
                                 <label htmlFor={v.id + "subAreas"}>
                                   {v.name}
@@ -311,4 +310,4 @@ const ManagerAddModal = () => {
   );
 };
 
-export default ManagerAddModal;
+export default ManagerPost;

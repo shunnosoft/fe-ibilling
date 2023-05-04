@@ -160,7 +160,7 @@ const langMessage = (color, bangla, english) => {
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
   try {
-    const res = await apiLink.get(`/ispOwner/manager/${ispWonerId}`);
+    const res = await apiLink.get(`/ispOwner/managers/${ispWonerId}`);
     dispatch(managerFetchSuccess(res.data));
   } catch (error) {
     dispatch(managerFetchFailure());
@@ -375,12 +375,21 @@ export const addManager = async (dispatch, addStaffStatus, managerData) => {
     .catch((err) => {
       if (err.response) {
         button.style.display = "initial";
-        langMessage("error", err.response?.data?.message);
+        langMessage(
+          "error",
+          err.response?.data?.message,
+          err.response?.data?.message
+        );
       }
     });
 };
 
-export const deleteManager = async (dispatch, ispOwnerId) => {
+export const deleteManager = async (
+  dispatch,
+  setIsLoading,
+  ispOwnerId,
+  managerId
+) => {
   await apiLink({
     url: `/ispOwner/manager/${ispOwnerId}`,
     method: "DELETE",
