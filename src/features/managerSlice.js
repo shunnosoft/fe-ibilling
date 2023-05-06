@@ -26,7 +26,9 @@ const managerSlice = createSlice({
     managerEditSuccess: (state, action) => {
       state.isPending = false;
 
-      state.manager = action.payload;
+      state.manager[
+        state.manager.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
     },
 
     managerAddSuccess: (state, action) => {

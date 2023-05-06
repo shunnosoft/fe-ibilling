@@ -127,6 +127,13 @@ export default function CustomerBillCollect({ single, customerData }) {
     setNote("");
     setNoteCheck(false);
     setSelectedMonth(null);
+    setBillAmount(
+      data?.balance > 0 && data?.balance <= data?.monthlyFee
+        ? data?.monthlyFee - data?.balance
+        : data?.balance > data?.monthlyFee
+        ? 0
+        : data?.monthlyFee
+    );
   };
 
   useEffect(() => {
@@ -179,6 +186,8 @@ export default function CustomerBillCollect({ single, customerData }) {
       medium,
       package: data?.pppoe.profile,
     };
+    console.log(sendingData);
+
     if (note) sendingData.note = note;
 
     if (startDate && endDate) {
@@ -297,6 +306,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                         type="number"
                         name="amount"
                         label={t("amount")}
+                        value={billAmount}
                       />
                     </div>
                     <div className="w-100 me-2">

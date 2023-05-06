@@ -4,21 +4,23 @@ import { useTranslation } from "react-i18next";
 import { FtextField } from "../../../components/common/FtextField";
 import * as Yup from "yup";
 import { useState } from "react";
-import { addManager } from "../../../features/apiCalls";
+import { editManager } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { Tab, Tabs } from "react-bootstrap";
 import { managerPermission } from "../managerData";
 
-const ManagerPost = () => {
+const ManagerEdit = ({ managerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const [addStaffStatus, setAddStaffStatus] = useState(false);
-
   const [subAreaIds, setSubAreaIds] = useState([]);
   const [permissions, setPermissions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const language = localStorage.getItem("netFee:lang");
+
+  const manager = useSelector((state) => state?.manager?.manager);
+  const single = manager?.find((val) => val.id === managerId);
 
   //fetching ispOwner ID
   const ispOwnerId = useSelector(
@@ -28,12 +30,24 @@ const ManagerPost = () => {
   //get area
   const area = useSelector((state) => state?.area?.area);
 
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   //get manager permissions
   useEffect(() => {
-    language === "en"
-      ? setPermissions(managerPermission(null, null, "en"))
-      : setPermissions(managerPermission(null, null, "bn"));
-  }, [language]);
+    if (single) {
+      setSubAreaIds(single.areas);
+      language === "en"
+        ? setPermissions(
+            managerPermission(single.permissions, bpSettings, "en")
+          )
+        : setPermissions(
+            managerPermission(single.permissions, bpSettings, "bn")
+          );
+    }
+  }, [single, manager, language]);
 
   //manager Validate with yup
   const managerValidate = Yup.object({
@@ -62,35 +76,33 @@ const ManagerPost = () => {
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;
     });
-    data.permissions = temp;
-    data.areas = subAreaIds;
-    data.ispOwner = ispOwnerId;
 
-    if (addStaffStatus) {
-      if (!data.salary) {
-        alert(t("incorrectSalary"));
-      }
-    }
-    if (!addStaffStatus) {
-      delete data.salary;
-    }
-    addManager(dispatch, addStaffStatus, data);
+    data = {
+      ...data,
+      ...single,
+      permissions: temp,
+      areas: subAreaIds,
+      ispOwner: ispOwnerId,
+    };
+
+    editManager(dispatch, data, setIsLoading);
   };
 
   const setSubAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass");
+    const temp = document.querySelectorAll(".getEditValueUsingClass");
     let IDS_temp = [];
     for (let i = 0; i < temp.length; i++) {
       if (temp[i].checked === true) {
         IDS_temp.push(temp[i].value);
       }
     }
+
     setSubAreaIds(IDS_temp);
   };
 
   const checkAreaHandler = (event, subAreas) => {
     const areaChecked = event.target.checked;
-    var temp = document.querySelectorAll(".getValueUsingClass");
+    var temp = document.querySelectorAll(".getEditValueUsingClass");
 
     let IDS_temp = [];
 
@@ -124,7 +136,6 @@ const ManagerPost = () => {
 
     setPermissions(temp);
   };
-
   const checkAllPerms = (e) => {
     let temp = [];
     if (e.target.checked) {
@@ -144,7 +155,7 @@ const ManagerPost = () => {
   return (
     <div
       className="modal fade modal-dialog-scrollable "
-      id="managerAddModal"
+      id="managerEditModal"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -153,7 +164,7 @@ const ManagerPost = () => {
         <div className="modal-content">
           <div className="modal-header">
             <h4 className="modal-title" id="exampleModalLabel">
-              {t("addManager")}
+              {t("editManager")}
             </h4>
             <button
               type="button"
@@ -166,27 +177,26 @@ const ManagerPost = () => {
           <div className="modal-body">
             <Formik
               initialValues={{
-                name: "",
-                mobile: "",
-                address: "",
-                email: "",
-                nid: "",
-                // photo: "",
-                salary: "",
+                name: single?.name || "",
+                mobile: single?.mobile || "",
+                address: single?.address || "",
+                email: single?.email || "",
+                nid: single?.nid || "",
               }}
               validationSchema={managerValidate}
               onSubmit={(values) => {
                 addManagerHandle(values);
               }}
+              enableReinitialize
             >
               {(formik) => (
                 <Form>
                   <Tabs
-                    defaultActiveKey={"addManager"}
+                    defaultActiveKey={"editManager"}
                     id="uncontrolled-tab-example"
                     className="mb-3"
                   >
-                    <Tab eventKey="addManager" title={t("details")}>
+                    <Tab eventKey="editManager" title={t("details")}>
                       <div className="d-flex justify-content-center">
                         <div className="col-6">
                           <FtextField
@@ -216,25 +226,6 @@ const ManagerPost = () => {
                             label={t("managerNID")}
                             name="nid"
                           />
-
-                          <div className="autoDisable mb-2">
-                            <input
-                              type="checkBox"
-                              checked={addStaffStatus}
-                              onChange={(e) =>
-                                setAddStaffStatus(e.target.checked)
-                              }
-                            />
-                            <label className="ps-2"> {t("addStaff")} </label>
-                          </div>
-
-                          {addStaffStatus && (
-                            <FtextField
-                              type="number"
-                              label={t("salary")}
-                              name="salary"
-                            />
-                          )}
                         </div>
                       </div>
                     </Tab>
@@ -244,7 +235,7 @@ const ManagerPost = () => {
                         {area?.map((val, key) => (
                           <div key={key}>
                             <input
-                              id={val.id + "Areas"}
+                              id={val.id + "AreasEdit"}
                               type="checkbox"
                               className="me-2"
                               value={val.id}
@@ -252,20 +243,22 @@ const ManagerPost = () => {
                                 checkAreaHandler(e, val.subAreas)
                               }
                             />
-                            <label htmlFor={val.id + "Areas"}>
+                            <label htmlFor={val.id + "AreasEdit"}>
                               <b>{val.name.toUpperCase()}</b>
                             </label>
-
                             {val.subAreas.map((v, k) => (
                               <div key={k} className="displayFlex">
                                 <input
-                                  id={v.id + "subAreas"}
+                                  id={v.id + "subAreasEdit"}
                                   type="checkbox"
-                                  className="getValueUsingClass"
+                                  className="getEditValueUsingClass"
                                   value={v.id}
                                   onChange={setSubAreaHandler}
+                                  checked={
+                                    subAreaIds?.includes(v.id) ? true : false
+                                  }
                                 />
-                                <label htmlFor={v.id + "subAreas"}>
+                                <label htmlFor={v.id + "subAreasEdit"}>
                                   {v.name}
                                 </label>
                               </div>
@@ -283,34 +276,38 @@ const ManagerPost = () => {
                             className="CheckBox"
                             name="allPermissions"
                             onChange={checkAllPerms}
-                            id="selectAllPermissions"
+                            id="editAllPermissions"
                           />
                           <label
-                            htmlFor="selectAllPermissions"
+                            htmlFor="editAllPermissions"
                             className="checkboxLabel text-info fw-bold"
                           >
                             {t("selectAll")}
                           </label>
                         </div>
-
                         {permissions.map((val, key) => (
-                          <div className="CheckboxContainer" key={key}>
-                            <>
-                              <input
-                                type="checkbox"
-                                className="CheckBox"
-                                name={val.value}
-                                checked={val.isChecked}
-                                onChange={handleChange}
-                                id={val.value + key}
-                              />
-                              <label
-                                htmlFor={val.value + key}
-                                className="checkboxLabel"
-                              >
-                                {val.label}
-                              </label>
-                            </>
+                          <div
+                            className={!val?.disabled && "CheckboxContainer"}
+                            key={key}
+                          >
+                            {!val.disabled && (
+                              <>
+                                <input
+                                  type="checkbox"
+                                  className="CheckBox"
+                                  name={val.value}
+                                  checked={val.isChecked}
+                                  onChange={handleChange}
+                                  id={val.value + key + "edit"}
+                                />
+                                <label
+                                  htmlFor={val.value + key + "edit"}
+                                  className="checkboxLabel"
+                                >
+                                  {val.label}
+                                </label>
+                              </>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -343,4 +340,4 @@ const ManagerPost = () => {
   );
 };
 
-export default ManagerPost;
+export default ManagerEdit;

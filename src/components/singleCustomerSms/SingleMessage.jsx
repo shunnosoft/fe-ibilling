@@ -68,10 +68,10 @@ const SingleMessage = ({ single, sendCustomer }) => {
     data = getAllStaffs.find((item) => item.id === single);
   }
 
-  // if (sendCustomer === "manager") {
-  //   // find single manager
-  //   data = manager.find((item) => item.id === single);
-  // }
+  if (sendCustomer === "manager") {
+    // find single manager
+    data = manager.find((item) => item.id === single);
+  }
 
   // loading state
   const [isLoading, setIsloading] = useState(false);

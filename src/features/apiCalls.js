@@ -406,30 +406,41 @@ export const deleteManager = async (
 };
 
 export const editManager = async (dispatch, managerData, setIsLoading) => {
-  setIsLoading(true);
   const button = document.querySelector(".marginLeft");
   button.style.display = "none";
-  try {
-    const res = await apiLink.patch(
-      `/ispOwner/manager/${managerData.ispOwner}`,
-      managerData
-    );
 
-    dispatch(managerEditSuccess(res.data));
-    setIsLoading(false);
-    button.style.display = "initial";
-    hideModal();
-    langMessage(
-      "success",
-      "ম্যানেজার আপডেট সফল হয়েছে",
-      "Manager Updated Successfully"
-    );
-  } catch (error) {
-    setIsLoading(false);
+  await apiLink({
+    url: `/ispOwner/update-manager/${managerData.ispOwner}/${managerData.id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: managerData,
+  })
+    .then((res) => {
+      console.log(res.data);
+      dispatch(managerEditSuccess(res.data));
+      button.style.display = "initial";
+      hideModal();
 
-    button.style.display = "initial";
-    toast.error(error?.response?.data?.message);
-  }
+      langMessage(
+        "success",
+        "ম্যানেজার আপডেট সফল হয়েছে",
+        "Manager Updated Successfully"
+      );
+
+      document.querySelector("#managerEditModal").click();
+    })
+    .catch((err) => {
+      if (err.response) {
+        button.style.display = "initial";
+        langMessage(
+          "error",
+          err.response?.data?.message,
+          err.response?.data?.message
+        );
+      }
+    });
 };
 
 //Areas
