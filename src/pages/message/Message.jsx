@@ -422,12 +422,14 @@ export default function Message() {
       if (checked) {
         let selectArea = area.find((item) => item.id === id);
         let areaSubArea = selectArea.subAreas?.map((sub) => sub.id);
-        console.log(areaSubArea);
 
+        let selectData = [...subAreaIds];
         for (let i = 0; i < areaSubArea.length; i++) {
-          let allData = subAreaIds.push(areaSubArea[i]);
-          setAreaIds(allData);
+          if (!selectData.includes(areaSubArea[i])) {
+            selectData.push(areaSubArea[i]);
+          }
         }
+        setSubAreaIds(selectData);
       } else {
         const areaSelect = area.find((item) => item.id === id);
         const areaSubAreaSelect = areaSelect.subAreas?.map((sub) => sub.id);
