@@ -610,55 +610,57 @@ export default function Message() {
                               {t("allArea")}
                             </label>
                           </div>
-                          <div className="AllAreaClass mb-4">
-                            {area?.map((val, key) => (
-                              <div key={key}>
-                                <div
-                                  style={{
-                                    cursor: "pointer",
-                                  }}
-                                  className="areaParent"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    className="getValueUsingClasses form-check-input"
-                                    name="area"
-                                    id={val.id}
-                                    onChange={areasSubareaHandler}
-                                    isChecked
-                                  />
-                                  <label
-                                    htmlFor={val.id}
-                                    className="ms-2"
+                          <div className=" mb-4">
+                            <div className="row">
+                              {area?.map((val, key) => (
+                                <div className="col-md-3 mt-3" key={key}>
+                                  <div
                                     style={{
-                                      fontSize: "20px",
+                                      cursor: "pointer",
                                     }}
+                                    className="areaParent"
                                   >
-                                    {val.name}
-                                  </label>
-                                </div>
-                                {val.subAreas.map((v, k) => (
-                                  <div key={k} className="displayFlex">
                                     <input
-                                      style={{ cursor: "pointer" }}
                                       type="checkbox"
-                                      className="getValueUsingClass"
-                                      name="subArea"
-                                      value={v.id}
+                                      className="getValueUsingClasses form-check-input"
+                                      name="area"
+                                      id={val.id}
                                       onChange={areasSubareaHandler}
-                                      id={v.id}
-                                      checked={subAreaIds.includes(v.id)}
+                                      isChecked
                                     />
                                     <label
-                                      style={{ cursor: "pointer" }}
-                                      htmlFor={v.id}
+                                      htmlFor={val.id}
+                                      className="ms-2"
+                                      style={{
+                                        fontSize: "20px",
+                                      }}
                                     >
-                                      {v.name}
+                                      {val.name}
                                     </label>
                                   </div>
-                                ))}
-                              </div>
-                            ))}
+                                  {val.subAreas.map((v, k) => (
+                                    <div key={k} className="displayFlex">
+                                      <input
+                                        style={{ cursor: "pointer" }}
+                                        type="checkbox"
+                                        className="getValueUsingClass"
+                                        name="subArea"
+                                        value={v.id}
+                                        onChange={areasSubareaHandler}
+                                        id={v.id}
+                                        checked={subAreaIds.includes(v.id)}
+                                      />
+                                      <label
+                                        style={{ cursor: "pointer" }}
+                                        htmlFor={v.id}
+                                      >
+                                        {v.name}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
                           </div>
                           <div
                             style={{

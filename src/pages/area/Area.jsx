@@ -29,6 +29,7 @@ import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
 
 import { useTranslation } from "react-i18next";
+import SubAreaModal from "./areaModals/SubAreaModal";
 
 export default function Area() {
   const { t } = useTranslation();
@@ -39,6 +40,8 @@ export default function Area() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [editAreaId, setEditAreaId] = useState("");
+
+  const [areaID, setAreaID] = useState("");
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -81,6 +84,10 @@ export default function Area() {
 
   const getSpecificArea = (id) => {
     setEditAreaId(id);
+  };
+
+  const getAreaSubarea = (areaId) => {
+    setAreaID(areaId);
   };
 
   //create column of table
@@ -132,6 +139,7 @@ export default function Area() {
             }}
           >
             <ActionButton
+              getAreaSubarea={getAreaSubarea}
               getSpecificArea={getSpecificArea}
               deleteSingleArea={deleteSingleArea}
               data={original}
@@ -156,6 +164,9 @@ export default function Area() {
               <ResellerPost />
               {/* area edit modal */}
               <AreaEdit areaId={editAreaId} />
+
+              {/* subAreas modal */}
+              <SubAreaModal areaId={areaID} />
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
