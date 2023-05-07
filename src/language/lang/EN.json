@@ -738,5 +738,6 @@
   "customerNumberUpdateOrDelete": "Customers Number Update or Delete",
   "inputYourCustomerNumber": "Input Your Customer Number",
   "doYouWantToDeleteMobileNumber": "Do you want to delete mobile number?",
-  "totalPages": "Total Pages"
+  "totalPages": "Total Pages",
+  "managerDeleteNotify": "Delete This Manager?"
 }

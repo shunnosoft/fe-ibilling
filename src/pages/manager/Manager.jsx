@@ -1,15 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   PersonPlusFill,
   ThreeDots,
-  // ArchiveFill,
   PenFill,
   PersonFill,
   KeyFill,
+  ChatText,
+  ArchiveFill,
 } from "react-bootstrap-icons";
-import { Formik, Form } from "formik";
 import { ToastContainer } from "react-toastify";
-import * as Yup from "yup";
 import { useSelector } from "react-redux";
 
 // internal imports
@@ -18,7 +17,6 @@ import "../collector/collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
-import { FtextField } from "../../components/common/FtextField";
 
 // import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
@@ -27,112 +25,203 @@ import Footer from "../../components/admin/footer/Footer";
 import { managerPermission } from "./managerData";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  addManager,
-  // deleteManager,
-  editManager,
-  getManger,
-} from "../../features/apiCalls";
-import Loader from "../../components/common/Loader";
+import { getArea, getManger } from "../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import ManagerPost from "./ManagerCRUD/ManagerPost";
+import Table from "../../components/table/Table";
+import ManagerDetails from "./ManagerCRUD/ManagerDetails";
+import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import ManagerEdit from "./ManagerCRUD/ManagerEdit";
 
 export default function Manager() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [addStaffStatus, setAddStaffStatus] = useState(false);
 
   const [userId, setUserId] = useState();
+  const [singleManager, setSingleManager] = useState();
+
+  //get all managers
   const manager = useSelector((state) => state.manager?.manager);
 
+  //get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
   );
 
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  //get permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
+  // get role
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  //get specific manager set id
+  const getSpecificManager = (managerId) => {
+    setSingleManager(managerId);
+  };
+
+  //delete manager handler
+  const deleteSingleManager = (managerId) => {
+    const confirm = window.confirm(t("managerDeleteNotify"));
+    if (confirm) {
+      // deleteManager(dispatch, setIsLoading, ispOwnerId, managerId);
+      return;
+    }
+  };
+
+  //get all managers
   useEffect(() => {
     getManger(dispatch, ispOwnerId);
   }, [ispOwnerId]);
 
-  const [permissions, setPermissions] = useState(
-    managerPermission(manager?.permissions)
-  );
-
+  //get all areas
   useEffect(() => {
-    if (manager)
-      setPermissions(managerPermission(manager.permissions, bpSettings));
-  }, [manager]);
+    getArea(dispatch, ispOwnerId, setIsLoading);
+  }, []);
 
-  const managerValidate = Yup.object({
-    name: Yup.string()
-      .min(3, t("minimumContaining3letter"))
-      .required(t("enterManagerName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("enterManagerNumber")),
-    address: Yup.string().required(t("enterManagerAddress")),
-    email: Yup.string()
-      .email(t("incorrectEmail"))
-      .required(t("enterManagerEmail")),
-    nid: Yup.string().required(t("enterManagerNID")),
-    salary: Yup.string(),
-  });
-
-  const addManagerHandle = (data) => {
-    if (addStaffStatus) {
-      if (!data.salary) {
-        alert(t("incorrectSalary"));
-      }
-    }
-    if (!addStaffStatus) {
-      delete data.salary;
-    }
-    addManager(dispatch, addStaffStatus, {
-      ...data,
-      ispOwner: ispOwnerId,
-    });
-  };
-
-  const handleChange = (e) => {
-    const { name, checked } = e.target;
-    let temp = permissions.map((val) =>
-      val.value === name ? { ...val, isChecked: checked } : val
-    );
-
-    setPermissions(temp);
-  };
-
-  const updatePermissionsHandler = () => {
-    setIsLoading(true);
-    let temp = {};
-    permissions.forEach((val) => {
-      temp[val.value] = val.isChecked;
-    });
-    const newP = {
-      ...manager.permissions,
-      ...temp,
-    };
-
-    editManager(
-      dispatch,
+  const columns = React.useMemo(
+    () => [
       {
-        //manager not edited with only permission so (api problem)
-        //so we have to add those extra fields
-        email: manager.email, //required
-        ispOwner: manager.ispOwner,
-        mobile: manager.mobile, // required
-        name: manager.name, // reqired
-        permissions: newP, // can't changed api problem
+        width: "8%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
-      setIsLoading
-    );
-  };
+      {
+        width: "19%",
+        Header: t("name"),
+        accessor: "name",
+      },
+      {
+        width: "19%",
+        Header: t("address"),
+        accessor: "address",
+      },
+      {
+        width: "19%",
+        Header: t("mobile"),
+        accessor: "mobile",
+      },
+      {
+        width: "23%",
+        Header: t("email"),
+        accessor: "email",
+      },
+
+      {
+        width: "12%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#showManagerDetails"
+                  onClick={() => {
+                    getSpecificManager(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">{t("profile")}</p>
+                    </div>
+                  </div>
+                </li>
+                {permission?.collectorEdit || role === "ispOwner" ? (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#managerEditModal"
+                    onClick={() => {
+                      getSpecificManager(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">{t("edit")}</p>
+                      </div>
+                    </div>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      getSpecificManager(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("message")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+
+                {role === "ispOwner" && (
+                  <li
+                    onClick={() => {
+                      deleteSingleManager(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item actionManager">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">{t("delete")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+
+                {role === "ispOwner" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetPassword"
+                    onClick={() => {
+                      setUserId(original.user);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <KeyFill />
+                        <p className="actionP">{t("passwordReset")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
@@ -147,266 +236,36 @@ export default function Manager() {
               <FourGround>
                 <div className="d-flex justify-content-between collectorTitle px-5">
                   <h2 className="">
-                    {manager?.name} ({t("manager")}) {t("profile")}
+                    ({t("manager")}) {t("profile")}
                   </h2>
-                  {!manager?.name && (
-                    <div
-                      title={t("addNewManager")}
-                      className="header_icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#managerAddModal"
-                    >
-                      <PersonPlusFill />
-                    </div>
-                  )}
-                </div>
-              </FourGround>
-              {/* edit manager */}
-              <WriteModals manager={manager} />
-              {/* Model */}
-              <div
-                className="modal fade modal-dialog-scrollable "
-                id="managerAddModal"
-                tabIndex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h4 className="modal-title" id="exampleModalLabel">
-                        {t("addManager")}
-                      </h4>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        id="closeAddManagerBtn"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div className="modal-body">
-                      <Formik
-                        initialValues={{
-                          name: "",
-                          mobile: "",
-                          address: "",
-                          email: "",
-                          nid: "",
-                          // photo: "",
-                          salary: "",
-                        }}
-                        validationSchema={managerValidate}
-                        onSubmit={(values) => {
-                          addManagerHandle(values);
-                        }}
-                      >
-                        {(formik) => (
-                          <Form>
-                            <FtextField
-                              type="text"
-                              label={t("managerName")}
-                              name="name"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("managerMobile")}
-                              name="mobile"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("managerAddress")}
-                              name="address"
-                            />
-                            <FtextField
-                              type="email"
-                              label={t("managerEmail")}
-                              name="email"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("managerNID")}
-                              name="nid"
-                            />
-
-                            <div className="autoDisable mb-2">
-                              <input
-                                type="checkBox"
-                                checked={addStaffStatus}
-                                onChange={(e) =>
-                                  setAddStaffStatus(e.target.checked)
-                                }
-                              />
-                              <label className="ps-2"> {t("addStaff")} </label>
-                            </div>
-
-                            {addStaffStatus && (
-                              <FtextField
-                                type="number"
-                                label={t("salary")}
-                                name="salary"
-                              />
-                            )}
-
-                            {/* Button */}
-                            <div className="submitSection">
-                              <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                              >
-                                {t("cancel")}
-                              </button>
-                              <button
-                                type="submit"
-                                className="btn btn-primary marginLeft"
-                              >
-                                {t("save")}
-                              </button>
-                            </div>
-                          </Form>
-                        )}
-                      </Formik>
-                    </div>
+                  <div
+                    title={t("addNewManager")}
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#managerAddModal"
+                  >
+                    <PersonPlusFill />
                   </div>
                 </div>
-              </div>
-              {/* Model */}
-
+              </FourGround>
+              {/* modal start */}
+              <WriteModals manager={manager} />
+              <ManagerPost />
+              <ManagerDetails managerId={singleManager} />
+              <SingleMessage single={singleManager} sendCustomer="manager" />
+              <PasswordReset resetCustomerId={userId} />
+              <ManagerEdit managerId={singleManager} />
+              {/* modal End */}
               <FourGround>
-                <div className="collectorWrapper py-2 pb-5 mt-2">
+                <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    {manager?.name && (
-                      <div className="managerDetails">
-                        <div className="managerProfile">
-                          <img
-                            src="/assets/img/noAvater.jpg"
-                            alt=""
-                            className="managerProfilePic"
-                          />
-                          <div className="actionsManager">
-                            <div className="dropdown">
-                              <ThreeDots
-                                className="dropdown-toggle ActionDots managerAction"
-                                id="ManagerDropdownMenu"
-                                type="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                              />
-                              <ul
-                                className="dropdown-menu"
-                                aria-labelledby="ManagerDropdownMenu"
-                              >
-                                {/* <li onClick={deleteManagerHandler}>
-                                  <div className="dropdown-item actionManager">
-                                    <div className="ManagerAactionLi">
-                                      <ArchiveFill />
-                                      <p className="actionP">ডিলিট</p>
-                                    </div>
-                                  </div>
-                                </li> */}
-                                <li
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#showDwtailsModel"
-                                >
-                                  <div className="dropdown-item">
-                                    <div className="ManagerAactionLi">
-                                      <PersonFill />
-                                      <p className="actionP"> {t("profile")}</p>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#writeModal"
-                                >
-                                  <div className="dropdown-item">
-                                    <div className="ManagerAactionLi">
-                                      <PenFill />
-                                      <p className="actionP"> {t("edit")}</p>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#resetPassword"
-                                  onClick={() => {
-                                    setUserId(manager.user);
-                                  }}
-                                >
-                                  <div className="dropdown-item">
-                                    <div className="ManagerAactionLi">
-                                      <KeyFill />
-                                      <p className="actionP">
-                                        {t("passwordReset")}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-
-                          <div>
-                            {manager.name ? (
-                              <div className="ManagerData">
-                                <p>
-                                  <b>{manager.name} </b>,{" "}
-                                  <b> {manager.address}</b>
-                                </p>
-                                <p>
-                                  <b>{manager.mobile}</b>
-                                </p>
-                                <p>{manager.email}</p>
-                              </div>
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <h4> {t("changePermission")} </h4>
-                          <hr />
-
-                          {permissions.map((val, key) => (
-                            <div
-                              className={!val?.disabled && "CheckboxContainer"}
-                              key={key}
-                            >
-                              {!val?.disabled && (
-                                <>
-                                  <input
-                                    type="checkbox"
-                                    className="CheckBox"
-                                    name={val.value}
-                                    checked={val.isChecked}
-                                    onChange={handleChange}
-                                    id={val.value + key}
-                                    // disabled={val?.disabled}
-                                  />
-
-                                  <label
-                                    htmlFor={val.value + key}
-                                    className="checkboxLabel"
-                                  >
-                                    {val.label}
-                                  </label>
-                                </>
-                              )}
-                            </div>
-                          ))}
-                          <button
-                            className="btn btn-outline-primary w-140"
-                            onClick={updatePermissionsHandler}
-                            disabled={isLoading}
-                          >
-                            {isLoading ? <Loader /> : t("update")}
-                          </button>
-                        </div>
-                      </div>
-                    )}
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={manager}
+                      ></Table>
+                    </div>
                   </div>
                 </div>
               </FourGround>
@@ -415,7 +274,6 @@ export default function Manager() {
           </div>
         </div>
       </div>
-      <PasswordReset resetCustomerId={userId} />
     </>
   );
 }

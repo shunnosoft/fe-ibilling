@@ -745,5 +745,6 @@
   "customerNumberUpdateOrDelete": "গ্রাহকদের নম্বর আপডেট বা মুছুন",
   "inputYourCustomerNumber": "আপনার গ্রাহক নম্বর ইনপুট করুন",
   "doYouWantToDeleteMobileNumber": "আপনি কি মোবাইল নম্বর ডিলিট করতে চান",
-  "totalPages": "মোট পৃষ্ঠা"
+  "totalPages": "মোট পৃষ্ঠা",
+  "managerDeleteNotify": "এই ম্যানেজারটি ডিলিট করবেন?"
 }
