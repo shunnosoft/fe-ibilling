@@ -1,36 +1,64 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import moment from "moment";
-
-import Footer from "../../components/admin/footer/Footer";
-import "../Customer/customer.css";
-import "./report.css";
-// import { useDispatch } from "react-redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
 import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
+import Footer from "../../components/admin/footer/Footer";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getAllBills,
-  getSubAreas,
   getCollector,
+  getSubAreas,
 } from "../../features/apiCallReseller";
-import FormatNumber from "../../components/common/NumberFormat";
+import moment from "moment";
 import Table from "../../components/table/Table";
-import { useTranslation } from "react-i18next";
+import FormatNumber from "../../components/common/NumberFormat";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./ReportPDF";
-import Loader from "../../components/common/Loader";
 import DatePicker from "react-datepicker";
 
-export default function Report() {
+const Report = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const componentRef = useRef();
 
+  // get user information
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // get reseller, collector collection all bills
+  const allBills = useSelector((state) => state.payment.allBills);
+
+  // get all area subArea
   const subAreas = useSelector((state) => state.area.area);
+
+  // get all bill collector
   const allCollector = useSelector((state) => state.collector.collector);
 
+  // get user role
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // collection all bills state
+  const [mainData, setMainData] = useState(allBills);
+
+  // select area id state
+  const [areaIds, setAreaIds] = useState("");
+
+  // select collector id state
+  const [collectorIds, setCollectorIds] = useState("");
+
+  // date & time find
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -39,55 +67,40 @@ export default function Report() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
-  const allBills = useSelector((state) => state.payment.allBills);
+  // reseller & collector collection bill report filter
+  const collectionReportFilter = () => {
+    let arr = [...allBills];
 
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const [isLoading, setisLoading] = useState(false);
-  const [collectorLoading, setCollectorLoading] = useState(false);
-  const [subAreaIds, setSubArea] = useState([]);
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  const [mainData, setMainData] = useState(allBills);
-  const [mainData2, setMainData2] = useState(allBills);
-  const [collectors, setCollectors] = useState([]);
-  const [collectorIds, setCollectorIds] = useState([]);
-  const [isSorted, setSorted] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+    if (areaIds) {
+      arr = arr.filter((bill) => bill?.customer?.subArea === areaIds);
+    }
 
-  const [customerPerPage, setCustomerPerPage] = useState(50);
-  const lastIndex = currentPage * customerPerPage;
-  const firstIndex = lastIndex - customerPerPage;
-  const dispatch = useDispatch();
+    if (collectorIds) {
+      arr = arr.filter((bill) => bill?.user === collectorIds);
+    }
+
+    arr = arr.filter(
+      (item) =>
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
+    );
+
+    setMainData(arr);
+  };
 
   // reload handler
   const reloadHandler = () => {
-    getAllBills(dispatch, userData.id, setisLoading);
+    getAllBills(dispatch, userData.id, setIsLoading);
   };
 
   useEffect(() => {
-    if (allBills.length === 0) getAllBills(dispatch, userData.id, setisLoading);
-    setSubArea(subAreas.map((i) => i.id));
-
-    if (collectors.length === allCollector.length) {
-      const { user, name, id } = userData;
-      collectors.unshift({ name, user, id });
-    }
-  }, [dispatch, userData, subAreas, allCollector, collectors]);
+    getAllBills(dispatch, userData.id, setIsLoading);
+  }, [userData]);
 
   useEffect(() => {
-    let collectors = [];
-
-    allCollector.map((item) =>
-      collectors.push({ name: item.name, user: item.user, id: item.id })
-    );
-
-    setCollectors(collectors);
-
-    let collectorUserIdsArr = [];
-    collectors.map((item) => collectorUserIdsArr.push(item.user));
-    setCollectorIds(collectorUserIdsArr);
-  }, [allCollector]);
-
-  useEffect(() => {
+    // all bills current month filter data
     var initialToday = new Date();
     var initialFirst = new Date(
       initialToday.getFullYear(),
@@ -104,81 +117,18 @@ export default function Report() {
           Date.parse(item.createdAt) <= Date.parse(initialToday)
       )
     );
-
-    // Temp varialbe for search
-    setMainData2(
-      allBills.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
   }, [allBills]);
 
   useEffect(() => {
-    getCollector(dispatch, userData.id, setCollectorLoading);
-
     getSubAreas(dispatch, userData.id);
+    getCollector(dispatch, userData.id);
   }, []);
 
-  const onChangeCollector = (userId) => {
-    // console.log("collector id", collectorId);
+  // select area & collector find
+  const areaName = subAreas.find((item) => item.id === areaIds);
+  const collector = allCollector.find((item) => item.user === collectorIds);
 
-    if (userId) {
-      setCollectorIds([userId]);
-    } else {
-      let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.user));
-      setCollectorIds(collectorUserIdsArr);
-    }
-  };
-
-  const onChangeSubArea = (id) => {
-    if (!id) {
-      setSubArea(subAreas.map((i) => i.id));
-    } else {
-      setSubArea([id]);
-    }
-  };
-
-  const onClickFilter = () => {
-    let arr = allBills;
-
-    if (subAreaIds.length) {
-      arr = allBills?.filter((bill) =>
-        subAreaIds.includes(bill?.customer?.subArea)
-      );
-    }
-    if (collectorIds.length) {
-      arr = arr.filter((bill) => collectorIds.includes(bill.user));
-    }
-
-    arr = arr.filter(
-      (item) =>
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
-    );
-
-    setMainData(arr);
-    setMainData2(arr);
-  };
-
-  const addAllBills = useCallback(() => {
-    var count = 0;
-    mainData.forEach((item) => {
-      count = count + item.amount;
-    });
-    return FormatNumber(count);
-  }, [mainData]);
-  // console.log(addAllBills())
-
-  const areaName = subAreas.find((item) => item.id === subAreaIds);
-
-  // send filter data to print
-  const collector = collectors.find((item) => item.user === collectorIds);
-
+  // collection bill report print pdf
   const filterData = {
     area: areaName?.name ? areaName.name : t("all"),
     collector: collector?.name ? collector.name : t("all"),
@@ -187,26 +137,36 @@ export default function Report() {
     totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
+  // collection all bill amount count
+  const addAllBills = useCallback(() => {
+    var count = 0;
+    mainData.forEach((item) => {
+      count = count + item.amount;
+    });
+    return FormatNumber(count);
+  }, [mainData]);
+
   const customComponent = (
     <div style={{ fontSize: "18px" }}>
       {t("totalBill")} {addAllBills()} {t("tk")}
     </div>
   );
 
+  //billing data show columns
   const columns = useMemo(
     () => [
       {
-        width: "12%",
+        width: "15%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "22%",
+        width: "25%",
         Header: t("customer"),
         accessor: "customer.name",
       },
       {
-        width: "20%",
+        width: "25%",
         Header: t("PPPoEName"),
         accessor: "customer.pppoe.name",
       },
@@ -217,7 +177,7 @@ export default function Report() {
       },
 
       {
-        width: "25%",
+        width: "20%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -232,7 +192,6 @@ export default function Report() {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
-
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -266,18 +225,13 @@ export default function Report() {
                 />
               </div>
 
-              {/* Model start */}
-
-              {/* Model finish */}
-
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    {/* filter selector */}
                     <div className="selectFilteringg">
                       <select
                         className="form-select"
-                        onChange={(e) => onChangeSubArea(e.target.value)}
+                        onChange={(e) => setAreaIds(e.target.value)}
                       >
                         <option value="" defaultValue>
                           {t("allArea")}
@@ -288,22 +242,21 @@ export default function Report() {
                           </option>
                         ))}
                       </select>
-                      {userRole !== "collector" ? (
+
+                      {userRole !== "collector" && (
                         <select
                           className="form-select mx-3"
-                          onChange={(e) => onChangeCollector(e.target.value)}
+                          onChange={(e) => setCollectorIds(e.target.value)}
                         >
                           <option value="" defaultValue>
                             {t("all collector")}{" "}
                           </option>
-                          {collectors?.map((c, key) => (
-                            <option key={key} value={c.user}>
-                              {c.name}
+                          {allCollector?.map((coll, key) => (
+                            <option key={key} value={coll.user}>
+                              {coll.name}
                             </option>
                           ))}
                         </select>
-                      ) : (
-                        ""
                       )}
 
                       <div>
@@ -328,23 +281,22 @@ export default function Report() {
                       <button
                         className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
                         type="button"
-                        onClick={onClickFilter}
+                        onClick={collectionReportFilter}
                       >
                         {t("filter")}
                       </button>
-                      {/* print report */}
-                      <div style={{ display: "none" }}>
-                        <PrintReport
-                          filterData={filterData}
-                          currentCustomers={mainData}
-                          ref={componentRef}
-                        />
-                      </div>
-                      {/* print report end*/}
                     </div>
-                  </div>
-                  {/* table */}
 
+                    {/* print report */}
+                    <div style={{ display: "none" }}>
+                      <PrintReport
+                        filterData={filterData}
+                        currentCustomers={mainData}
+                        ref={componentRef}
+                      />
+                    </div>
+                    {/* print report end*/}
+                  </div>
                   <Table
                     customComponent={customComponent}
                     isLoading={isLoading}
@@ -360,4 +312,6 @@ export default function Report() {
       </div>
     </>
   );
-}
+};
+
+export default Report;
