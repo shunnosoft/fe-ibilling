@@ -18,6 +18,7 @@ const ManagerPost = () => {
   const [subAreaIds, setSubAreaIds] = useState([]);
   const [permissions, setPermissions] = useState([]);
 
+  //get current language
   const language = localStorage.getItem("netFee:lang");
 
   //fetching ispOwner ID
@@ -52,9 +53,10 @@ const ManagerPost = () => {
     salary: Yup.string(),
   });
 
-  const addManagerHandle = (data) => {
+  //edit manager function handler
+  const editManagerHandle = (data) => {
     if (subAreaIds.length === 0) {
-      alert("Please Select atleast an Area");
+      alert(t("selectArea"));
       return;
     }
 
@@ -77,6 +79,7 @@ const ManagerPost = () => {
     addManager(dispatch, addStaffStatus, data);
   };
 
+  //sub area handler
   const setSubAreaHandler = () => {
     const temp = document.querySelectorAll(".getValueUsingClass");
     let IDS_temp = [];
@@ -88,8 +91,11 @@ const ManagerPost = () => {
     setSubAreaIds(IDS_temp);
   };
 
-  const checkAreaHandler = (event, subAreas) => {
+  //area handler
+  const areaHandler = (event, subAreas) => {
     const areaChecked = event.target.checked;
+
+    //get all subareas by className during event
     var temp = document.querySelectorAll(".getValueUsingClass");
 
     let IDS_temp = [];
@@ -98,6 +104,7 @@ const ManagerPost = () => {
       for (var j = 0; j < subAreas.length; j++) {
         if (temp[i].value === subAreas[j].id) {
           if (!areaChecked) {
+            //logic for unchecking Area checkbox
             if (temp[i].checked) {
               temp[i].checked = false;
               const index = subAreaIds.indexOf(temp[i].value);
@@ -105,6 +112,7 @@ const ManagerPost = () => {
             }
           } else {
             if (!temp[i].checked) {
+              //logic for checking Area checkbox
               temp[i].checked = true;
               IDS_temp.push(temp[i].value);
             }
@@ -116,6 +124,7 @@ const ManagerPost = () => {
     setSubAreaIds([...subAreaIds, ...IDS_temp]);
   };
 
+  //Permissions handler
   const handleChange = (e) => {
     const { name, checked } = e.target;
     let temp = permissions.map((val) =>
@@ -125,6 +134,7 @@ const ManagerPost = () => {
     setPermissions(temp);
   };
 
+  //Check all permissions handler
   const checkAllPerms = (e) => {
     let temp = [];
     if (e.target.checked) {
@@ -176,7 +186,7 @@ const ManagerPost = () => {
               }}
               validationSchema={managerValidate}
               onSubmit={(values) => {
-                addManagerHandle(values);
+                editManagerHandle(values);
               }}
             >
               {(formik) => (
@@ -248,9 +258,7 @@ const ManagerPost = () => {
                               type="checkbox"
                               className="me-2"
                               value={val.id}
-                              onChange={(e) =>
-                                checkAreaHandler(e, val.subAreas)
-                              }
+                              onChange={(e) => areaHandler(e, val.subAreas)}
                             />
                             <label htmlFor={val.id + "Areas"}>
                               <b>{val.name.toUpperCase()}</b>

@@ -4,8 +4,11 @@ import { useSelector } from "react-redux";
 
 export default function ManagerDetails({ managerId }) {
   const { t } = useTranslation();
+
+  //get all manager
   const manager = useSelector((state) => state?.manager?.manager);
-  console.log(manager);
+
+  //get single manager by id
   const single = manager?.find((val) => val.id === managerId);
 
   return (

@@ -9,7 +9,6 @@ import {
   ArchiveFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
-import * as Yup from "yup";
 import { useSelector } from "react-redux";
 
 // internal imports
@@ -26,13 +25,7 @@ import Footer from "../../components/admin/footer/Footer";
 import { managerPermission } from "./managerData";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  addManager,
-  //deleteManager,
-  editManager,
-  getArea,
-  getManger,
-} from "../../features/apiCalls";
+import { getArea, getManger } from "../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import ManagerPost from "./ManagerCRUD/ManagerPost";
@@ -45,11 +38,9 @@ export default function Manager() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [addStaffStatus, setAddStaffStatus] = useState(false);
 
   const [userId, setUserId] = useState();
   const [singleManager, setSingleManager] = useState();
-  const [managerId, setManagerId] = useState();
 
   //get all managers
   const manager = useSelector((state) => state.manager?.manager);
@@ -57,11 +48,6 @@ export default function Manager() {
   //get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
-  );
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   //get permission
@@ -72,14 +58,12 @@ export default function Manager() {
   // get role
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
+  //get specific manager set id
   const getSpecificManager = (managerId) => {
     setSingleManager(managerId);
   };
 
-  const handleSingleMessage = (managerId) => {
-    setManagerId(managerId);
-  };
-
+  //delete manager handler
   const deleteSingleManager = (managerId) => {
     const confirm = window.confirm(t("managerDeleteNotify"));
     if (confirm) {
@@ -88,22 +72,15 @@ export default function Manager() {
     }
   };
 
+  //get all managers
   useEffect(() => {
     getManger(dispatch, ispOwnerId);
   }, [ispOwnerId]);
 
-  const [permissions, setPermissions] = useState(
-    managerPermission(manager?.permissions)
-  );
-
+  //get all areas
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
   }, []);
-
-  useEffect(() => {
-    if (manager)
-      setPermissions(managerPermission(manager.permissions, bpSettings));
-  }, [manager]);
 
   const columns = React.useMemo(
     () => [
@@ -194,7 +171,7 @@ export default function Manager() {
                     data-bs-toggle="modal"
                     data-bs-target="#customerMessageModal"
                     onClick={() => {
-                      handleSingleMessage(original.id);
+                      getSpecificManager(original.id);
                     }}
                   >
                     <div className="dropdown-item">

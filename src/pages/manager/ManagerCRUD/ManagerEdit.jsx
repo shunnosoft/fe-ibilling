@@ -17,9 +17,13 @@ const ManagerEdit = ({ managerId }) => {
   const [permissions, setPermissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  //get current language
   const language = localStorage.getItem("netFee:lang");
 
+  //get all manager
   const manager = useSelector((state) => state?.manager?.manager);
+
+  //get single manager by id
   const single = manager?.find((val) => val.id === managerId);
 
   //fetching ispOwner ID
@@ -30,7 +34,7 @@ const ManagerEdit = ({ managerId }) => {
   //get area
   const area = useSelector((state) => state?.area?.area);
 
-  // get bp settings
+  //get bp settings
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
@@ -66,9 +70,10 @@ const ManagerEdit = ({ managerId }) => {
     salary: Yup.string(),
   });
 
+  //add manager function handler
   const addManagerHandle = (data) => {
     if (subAreaIds.length === 0) {
-      alert("Please Select atleast an Area");
+      alert(t("selectArea"));
       return;
     }
 
@@ -88,7 +93,8 @@ const ManagerEdit = ({ managerId }) => {
     editManager(dispatch, data, setIsLoading);
   };
 
-  const setSubAreaHandler = () => {
+  //sub area handler
+  const subAreaHandler = () => {
     const temp = document.querySelectorAll(".getEditValueUsingClass");
     let IDS_temp = [];
     for (let i = 0; i < temp.length; i++) {
@@ -100,8 +106,11 @@ const ManagerEdit = ({ managerId }) => {
     setSubAreaIds(IDS_temp);
   };
 
-  const checkAreaHandler = (event, subAreas) => {
+  //area handler
+  const areaHandler = (event, subAreas) => {
     const areaChecked = event.target.checked;
+
+    //get all subareas by className during event
     var temp = document.querySelectorAll(".getEditValueUsingClass");
 
     let IDS_temp = [];
@@ -110,6 +119,7 @@ const ManagerEdit = ({ managerId }) => {
       for (var j = 0; j < subAreas.length; j++) {
         if (temp[i].value === subAreas[j].id) {
           if (!areaChecked) {
+            //logic for unchecking Area checkbox
             if (temp[i].checked) {
               temp[i].checked = false;
               const index = subAreaIds.indexOf(temp[i].value);
@@ -117,6 +127,7 @@ const ManagerEdit = ({ managerId }) => {
             }
           } else {
             if (!temp[i].checked) {
+              //logic for checking Area checkbox
               temp[i].checked = true;
               IDS_temp.push(temp[i].value);
             }
@@ -128,7 +139,8 @@ const ManagerEdit = ({ managerId }) => {
     setSubAreaIds([...subAreaIds, ...IDS_temp]);
   };
 
-  const handleChange = (e) => {
+  //Permissions handler
+  const PermissionHandler = (e) => {
     const { name, checked } = e.target;
     let temp = permissions.map((val) =>
       val.value === name ? { ...val, isChecked: checked } : val
@@ -136,6 +148,8 @@ const ManagerEdit = ({ managerId }) => {
 
     setPermissions(temp);
   };
+
+  //Check all permissions handler
   const checkAllPerms = (e) => {
     let temp = [];
     if (e.target.checked) {
@@ -239,9 +253,7 @@ const ManagerEdit = ({ managerId }) => {
                               type="checkbox"
                               className="me-2"
                               value={val.id}
-                              onChange={(e) =>
-                                checkAreaHandler(e, val.subAreas)
-                              }
+                              onChange={(e) => areaHandler(e, val.subAreas)}
                             />
                             <label htmlFor={val.id + "AreasEdit"}>
                               <b>{val.name.toUpperCase()}</b>
@@ -253,7 +265,7 @@ const ManagerEdit = ({ managerId }) => {
                                   type="checkbox"
                                   className="getEditValueUsingClass"
                                   value={v.id}
-                                  onChange={setSubAreaHandler}
+                                  onChange={subAreaHandler}
                                   checked={
                                     subAreaIds?.includes(v.id) ? true : false
                                   }
@@ -297,7 +309,7 @@ const ManagerEdit = ({ managerId }) => {
                                   className="CheckBox"
                                   name={val.value}
                                   checked={val.isChecked}
-                                  onChange={handleChange}
+                                  onChange={PermissionHandler}
                                   id={val.value + key + "edit"}
                                 />
                                 <label
