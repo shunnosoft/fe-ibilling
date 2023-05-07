@@ -1,13 +1,20 @@
 import { Formik, Form } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { editSubArea } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
-const SubAreaEditModal = ({ subAreaName, subAreaID }) => {
+const SubAreaEditModal = ({ isOpen, subAreaName, subAreaID }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -30,75 +37,58 @@ const SubAreaEditModal = ({ subAreaName, subAreaID }) => {
       id: subAreaID,
       name: values.name,
     };
-    editSubArea(dispatch, IDs, setIsLoading);
+    editSubArea(dispatch, IDs, setIsLoading, setShow);
   };
 
-  return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="areaSubAreaEdit"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {t("editSubArea")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div>
-              <Formik
-                initialValues={{
-                  name: subAreaName || "",
-                }}
-                validationSchema={subAreaValidation}
-                onSubmit={(values) => {
-                  subAreaEditHandler(values);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form id="subArea">
-                    <FtextField
-                      type="text"
-                      label={t("subAreaName")}
-                      name="name"
-                    />
+  const [show, setShow] = useState(false);
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        form="subArea"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  const handleClose = () => setShow(false);
+
+  useEffect(() => {
+    setShow(isOpen);
+  }, [isOpen]);
+
+  return (
+    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+      <ModalHeader closeButton>
+        <ModalTitle>
+          <h5 className="modal-title" id="exampleModalLabel">
+            {t("editSubArea")}
+          </h5>
+        </ModalTitle>
+      </ModalHeader>
+      <ModalBody>
+        <Formik
+          initialValues={{
+            name: subAreaName || "",
+          }}
+          validationSchema={subAreaValidation}
+          onSubmit={(values) => {
+            subAreaEditHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="subArea">
+              <FtextField type="text" label={t("subAreaName")} name="name" />
+            </Form>
+          )}
+        </Formik>
+      </ModalBody>
+      <ModalFooter>
+        <button onClick={handleClose} className="btn btn-secondary customBtn">
+          {t("cancel")}
+        </button>
+        <button
+          type="submit"
+          form="subArea"
+          className="btn btn-success customBtn"
+          disabled={isLoading}
+        >
+          {isLoading ? <Loader /> : t("save")}
+        </button>
+      </ModalFooter>
+    </Modal>
   );
 };
 

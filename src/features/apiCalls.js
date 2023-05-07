@@ -506,7 +506,8 @@ export const addSubArea = async (dispatch, data, setIsLoading) => {
 };
 
 // PATCH sub area
-export const editSubArea = async (dispatch, data, setIsLoading) => {
+export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
+  setIsLoading(true);
   const { ispOwnerID, id, ...rest } = data;
   await apiLink({
     url: `/ispOwner/subArea/${ispOwnerID}/${id}`,
@@ -518,7 +519,7 @@ export const editSubArea = async (dispatch, data, setIsLoading) => {
   })
     .then((res) => {
       dispatch(EditSubAreaSuccess(res.data));
-      setIsLoading(false);
+      setShow(false);
       document.querySelector("#subAreaEditModal").click();
       langMessage(
         "success",
@@ -528,10 +529,10 @@ export const editSubArea = async (dispatch, data, setIsLoading) => {
     })
     .catch((err) => {
       if (err.response) {
-        setIsLoading(false);
         toast.error(err.response.data.message);
       }
     });
+  setIsLoading(false);
 };
 
 // DELETE sub area

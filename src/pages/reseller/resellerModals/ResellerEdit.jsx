@@ -293,6 +293,34 @@ export default function ResellerEdit({ resellerId }) {
     setPackageCommission(packageCommissionState);
   };
 
+  // select area all subArea handler
+  const resellerAreaSubAreaHandle = (e) => {
+    const { id, checked } = e.target;
+    if (checked) {
+      let selectArea = area.find((item) => item.id === id);
+      let areaSubArea = selectArea.subAreas?.map((sub) => sub.id);
+
+      let selectData = [...allowedAreas];
+      for (let i = 0; i < areaSubArea.length; i++) {
+        if (!selectData.includes(areaSubArea[i])) {
+          selectData.push(areaSubArea[i]);
+        }
+      }
+      setAllowedAreas(selectData);
+    } else {
+      const areaSelect = area.find((item) => item.id === id);
+      const areaSubAreaSelect = areaSelect.subAreas?.map((sub) => sub.id);
+
+      let data = [...allowedAreas];
+      for (let i = 0; i < areaSubAreaSelect.length; i++) {
+        if (data.includes(areaSubAreaSelect[i])) {
+          data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
+        }
+      }
+      setAllowedAreas(data);
+    }
+  };
+
   return (
     <div>
       <div
@@ -575,13 +603,38 @@ export default function ResellerEdit({ resellerId }) {
                         <div className="AllAreaClass">
                           {area?.map((val, key) => (
                             <div key={key}>
-                              <b>{val.name}</b>
+                              <div
+                                style={{
+                                  cursor: "pointer",
+                                }}
+                                className="areaParent"
+                              >
+                                <input
+                                  type="checkbox"
+                                  className="getValueUsingClasses form-check-input"
+                                  name="area"
+                                  id={val.id}
+                                  onChange={resellerAreaSubAreaHandle}
+                                  isChecked
+                                />
+                                <label
+                                  htmlFor={val.id}
+                                  className="ms-2"
+                                  style={{
+                                    fontSize: "20px",
+                                  }}
+                                >
+                                  {val.name}
+                                </label>
+                              </div>
+
                               {val.subAreas.map((v, k) => (
-                                <div key={k} className="form-check my-1">
+                                <div key={k} className=" my-1">
                                   <input
                                     type="checkbox"
                                     id={v.id}
-                                    className="getValueUsingClass_Edit form-check-input"
+                                    className="getValueUsingClass_Edit me-2"
+                                    name="subArea"
                                     value={v.id}
                                     checked={allowedAreas?.includes(v.id)}
                                     onChange={setAreaHandler}

@@ -43,6 +43,9 @@ export default function Area() {
 
   const [areaID, setAreaID] = useState("");
 
+  //modal open
+  const [isOpen, setIsOpen] = useState(false);
+
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -88,6 +91,7 @@ export default function Area() {
 
   const getAreaSubarea = (areaId) => {
     setAreaID(areaId);
+    setIsOpen({ ...isOpen, [false]: true });
   };
 
   //create column of table
@@ -166,7 +170,7 @@ export default function Area() {
               <AreaEdit areaId={editAreaId} />
 
               {/* subAreas modal */}
-              <SubAreaModal areaId={areaID} />
+              <SubAreaModal areaId={areaID} isOpen={isOpen} />
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">

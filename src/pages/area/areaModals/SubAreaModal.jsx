@@ -7,8 +7,9 @@ import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import { deleteSubArea, fetchMikrotik } from "../../../features/apiCalls";
 import { toast } from "react-toastify";
 import SubAreaEditModal from "./SubAreaEditModal";
+import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 
-const SubAreaModal = ({ areaId }) => {
+const SubAreaModal = ({ areaId, isOpen }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,6 +41,9 @@ const SubAreaModal = ({ areaId }) => {
   // subArea update state
   const [subAreaName, setSubAreaName] = useState("");
   const [subAreaID, setSubAreaID] = useState("");
+
+  // modal state
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
 
   // delete sub area
   const deleteSingleSubArea = (id) => {
@@ -105,10 +109,12 @@ const SubAreaModal = ({ areaId }) => {
                   <>
                     <li
                       data-bs-toggle="modal"
-                      data-bs-target="#areaSubAreaEdit"
+                      data-bs-target="#subAreaEditModal"
                       onClick={() => {
                         setSubAreaID(original.id);
                         setSubAreaName(original.name);
+                        setIsOpenEdit({ ...isOpenEdit, [false]: true });
+                        setShow(false);
                       }}
                     >
                       <div className="dropdown-item">
@@ -144,7 +150,14 @@ const SubAreaModal = ({ areaId }) => {
     [t]
   );
 
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+
   useEffect(() => {
+    if (isOpen) {
+      setShow(isOpen);
+    }
     if (area.length === undefined) {
       navigate("/area");
     } else {
@@ -157,7 +170,7 @@ const SubAreaModal = ({ areaId }) => {
       }
     }
     fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
-  }, [areaId]);
+  }, [isOpen, areaId]);
 
   useEffect(() => {
     const match = mikrotiks.find((item) => item.name == name);
@@ -166,39 +179,37 @@ const SubAreaModal = ({ areaId }) => {
 
   return (
     <>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="subareaModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {name}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <div className="collectorWrapper mt-2 py-2">
-                <Table
-                  isLoading={isLoading}
-                  columns={columns}
-                  data={subAreas}
-                ></Table>
-              </div>
-            </div>
+        <ModalHeader closeButton>
+          <ModalTitle>
+            {" "}
+            <h5 className="modal-title" id="exampleModalLabel">
+              {name}
+            </h5>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <div className="collectorWrapper mt-2 py-2">
+            <Table
+              isLoading={isLoading}
+              columns={columns}
+              data={subAreas}
+            ></Table>
           </div>
-        </div>
-      </div>
-      <SubAreaEditModal subAreaName={subAreaName} subAreaID={subAreaID} />
+        </ModalBody>
+      </Modal>
+
+      <SubAreaEditModal
+        subAreaName={subAreaName}
+        subAreaID={subAreaID}
+        isOpen={isOpenEdit}
+      />
     </>
   );
 };

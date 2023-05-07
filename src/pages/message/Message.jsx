@@ -398,23 +398,6 @@ export default function Message() {
     }
   };
 
-  // const setSubAreaHandler = (e) => {
-  //   const subIds = getSubAreaIds();
-  //   const { value, checked } = e.target;
-  //   if (checked) {
-  //     const newArr = subAreaIds.push(value);
-  //     setAreaIds(newArr);
-  //     // console.log({ subIds, newArr });
-  //     if (subIds.length === newArr) {
-  //       setisAllChecked(true);
-  //     }
-  //   } else {
-  //     const updatedData = subAreaIds.filter((id) => id !== value);
-  //     setSubAreaIds(updatedData);
-  //     setisAllChecked(false);
-  //   }
-  // };
-
   const areasSubareaHandler = (e) => {
     const { id, value, checked, name } = e.target;
 
