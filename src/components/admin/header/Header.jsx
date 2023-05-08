@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ArrowClockwise,
   BoxArrowLeft,
@@ -23,6 +23,7 @@ import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import MessageAlert from "../../../pages/message/MessageAlert";
+import SupportDetails from "./netFeeSupport/SupportDetails";
 
 export default function Header(props) {
   const { t } = useTranslation();
@@ -127,6 +128,10 @@ export default function Header(props) {
             </div>
 
             <div className="headerLinks">
+              <Link to="/netFee/support">
+                <SupportDetails />
+              </Link>
+
               {currentUser && userRole === "ispOwner" ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">
                   <div
@@ -207,7 +212,7 @@ export default function Header(props) {
                   >
                     {t("balance")}
                     <strong className="mainsmsbalance">
-                      {rechargeBalnace?.toFixed()}
+                      {FormatNumber(rechargeBalnace?.toFixed())}
                     </strong>
                   </div>
                   <div
@@ -216,7 +221,7 @@ export default function Header(props) {
                   >
                     {t("message")}
                     <strong className="mainsmsbalance">
-                      {smsBalance?.toFixed()}
+                      {FormatNumber(smsBalance?.toFixed())}
                     </strong>
                   </div>
 

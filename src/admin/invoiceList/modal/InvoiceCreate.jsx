@@ -112,7 +112,7 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
           smsPurchaseType: messageType,
           status: values.status,
         };
-        ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
+        ispOwnerInvoiceCreate(dispatch, setIsLoading, data, setShow);
       }
     }
 
@@ -124,7 +124,7 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
         type: "monthlyServiceCharge",
         monthlyPaymentStatus: values.status,
       };
-      ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
+      ispOwnerInvoiceCreate(dispatch, setIsLoading, data, setShow);
     }
 
     // registration invoice create
@@ -136,7 +136,7 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
         user: ispOwnerData.user,
         type: "registration",
       };
-      ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
+      ispOwnerInvoiceCreate(dispatch, setIsLoading, data, setShow);
     }
 
     // ispOwner package change invoice create
@@ -148,9 +148,8 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
         user: ispOwnerData.user,
         type: "migration",
       };
-      ispOwnerInvoiceCreate(dispatch, setIsLoading, data);
+      ispOwnerInvoiceCreate(dispatch, setIsLoading, data, setShow);
     }
-    setShow(false);
   };
 
   // message type change handler

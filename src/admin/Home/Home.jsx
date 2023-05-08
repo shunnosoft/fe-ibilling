@@ -52,6 +52,7 @@ export default function Home() {
   const { t } = useTranslation();
   // loading
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   // import dispatch
   const dispatch = useDispatch();
@@ -441,11 +442,10 @@ export default function Home() {
                     </div>
                   </li> */}
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#ispOwnerInvoice"
                     onClick={() => {
                       setInvoiceId(original?.id);
                       setCompanyName(original?.company);
+                      setIsOpen({ ...isOpen, [false]: true });
                     }}
                   >
                     <div className="dropdown-item">
@@ -740,7 +740,11 @@ export default function Home() {
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <AddProprietorModal ownerId={ownerId} />
-              <Invoices invoiceId={invoiceId} companyName={companyName} />
+              <Invoices
+                invoiceId={invoiceId}
+                companyName={companyName}
+                isOpen={isOpen}
+              />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
               <DeleteByMobileModal />

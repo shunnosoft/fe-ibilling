@@ -2560,13 +2560,14 @@ export const deleteNetFeeSupportData = async (
 export const ispOwnerInvoiceCreate = async (
   dispatch,
   setIsLoading,
-  invoiceData
+  invoiceData,
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/admin/invoice/create`, invoiceData);
 
-    document.querySelector("#ispOwnerInvoiceCreate").click();
+    setShow(false);
     langMessage("success", "Invoice create success");
   } catch (error) {
     console.log(error.response?.data.message);
