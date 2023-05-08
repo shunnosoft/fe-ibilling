@@ -224,6 +224,29 @@ export const getDashboardCardData = async (
   setIsloading(false);
 };
 
+export const getManagerDashboardCardData = async (
+  dispatch,
+  setIsloading,
+  managerId,
+  filterData = {}
+) => {
+  let year = filterData.year || new Date().getFullYear(),
+    month = filterData.month || new Date().getMonth() + 1;
+
+  console.log(year, month, managerId);
+  try {
+    setIsloading(true);
+    const res = await apiLink(
+      `/dashboard/manager/${managerId}=${year}&month=${month}`
+    );
+    dispatch(getCardDataSuccess(res.data));
+  } catch (err) {
+    console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
 export const getInactiveCustomer = async (
   dispatch,
   ispOwnerId,
