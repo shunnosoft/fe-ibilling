@@ -1921,6 +1921,22 @@ export const getAllBills = async (dispatch, ispOwnerId, setIsLoading) => {
   setIsLoading(false);
 };
 
+export const getAllManagerBills = async (
+  dispatch,
+  ispOwnerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.get(`/bill/get-bill-by-managerId/${ispOwnerId}`);
+    dispatch(getAllBillsSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
 export const editBillReport = async (
   dispatch,
   setIsLoading,

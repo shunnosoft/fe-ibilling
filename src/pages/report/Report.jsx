@@ -22,6 +22,7 @@ import {
 } from "react-bootstrap-icons";
 import {
   getAllBills,
+  getAllManagerBills,
   getArea,
   getCollector,
   getManger,
@@ -72,21 +73,29 @@ export default function Report() {
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const [mainData, setMainData] = useState(allBills);
-
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
   const [collectedBy, setCollectedBy] = useState();
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");
 
-  // reload handler
+  //reload handler
   const reloadHandler = () => {
-    getAllBills(dispatch, ispOwnerId, setIsLoading);
+    if (userRole === "manager") {
+      getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+    } else if (allBills.length === 0) {
+      getAllBills(dispatch, ispOwnerId, setIsLoading);
+    }
   };
 
   useEffect(() => {
     if (allArea.length === 0) getArea(dispatch, ispOwnerId, setAreaLoading);
-    if (allBills.length === 0) getAllBills(dispatch, ispOwnerId, setIsLoading);
+    if (userRole === "manager") {
+      getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+    } else if (allBills.length === 0) {
+      getAllBills(dispatch, ispOwnerId, setIsLoading);
+    }
+
     let collectors = [];
 
     allCollector.map((item) =>
@@ -151,6 +160,8 @@ export default function Report() {
     if (allCollector.length === 0)
       getCollector(dispatch, ispOwnerId, setCollectorLoading);
   }, []);
+
+  useEffect(() => {}, []);
 
   const onChangeCollector = (userId) => {
     if (userId) {

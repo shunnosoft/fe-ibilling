@@ -122,8 +122,6 @@ export default function Report() {
   }, []);
 
   const onChangeCollector = (userId) => {
-    // console.log("collector id", collectorId);
-
     if (userId) {
       setCollectorIds([userId]);
     } else {
@@ -172,7 +170,6 @@ export default function Report() {
     });
     return FormatNumber(count);
   }, [mainData]);
-  // console.log(addAllBills())
 
   const areaName = subAreas.find((item) => item.id === subAreaIds);
 
