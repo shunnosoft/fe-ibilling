@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader } from "react-bootstrap";
-import { PersonFill, Telephone, Whatsapp } from "react-bootstrap-icons";
+import { PersonFill, Telephone } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import "./support.css";
 
@@ -39,7 +39,7 @@ const SupportCall = ({ isOpen }) => {
                 </td>
                 <td>
                   <h5 className="text-secondary">
-                    <Whatsapp className="text-info" /> 01896192222
+                    <Telephone className="text-info" /> 01896192222
                   </h5>
                   <h5 className="text-secondary">
                     <Telephone className="text-info" /> 01321141785
@@ -52,7 +52,7 @@ const SupportCall = ({ isOpen }) => {
                 </td>
                 <td>
                   <h5 className="text-secondary">
-                    <Whatsapp className="text-success" /> 01896192223
+                    <Telephone className="text-info" /> 01896192223
                   </h5>
                 </td>
               </tr>
@@ -62,7 +62,7 @@ const SupportCall = ({ isOpen }) => {
                 </td>
                 <td>
                   <h5 className="text-secondary">
-                    <Whatsapp className="text-success" /> 01896192224
+                    <Telephone className="text-info" /> 01896192224
                   </h5>
                 </td>
               </tr>
@@ -75,7 +75,7 @@ const SupportCall = ({ isOpen }) => {
                     <Telephone className="text-info" /> 01896192225
                   </h5>
                   <h5 className="text-secondary">
-                    <Whatsapp className="text-success" /> 01321141787
+                    <Telephone className="text-info" /> 01321141787
                   </h5>
                 </td>
               </tr>

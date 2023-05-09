@@ -2802,3 +2802,15 @@ export const customerNumberUpdate = async (
   }
   setIsDelete(false);
 };
+
+// Multiple manager api call
+export const getMultipleManager = async (currentUser, setMultipleManager) => {
+  try {
+    const res = await apiLink.get(
+      `collector/get-manager/${currentUser?.collector.id}`
+    );
+    setMultipleManager(res.data);
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};

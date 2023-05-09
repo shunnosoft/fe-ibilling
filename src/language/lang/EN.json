@@ -167,6 +167,7 @@
   "enterManagerAddress": "Enter Manager Address",
   "enterManagerEmail": "Enter Manager Email",
   "enterManagerNID": "Enter Manager NID",
+  "selectManager": "Select Manager",
   "enterName": "Enter Name",
   "enterUserName": "Enter User Name",
   "enterMikrotikIP": "Enter Mikrotik IP",

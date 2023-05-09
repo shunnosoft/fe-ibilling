@@ -237,7 +237,7 @@ const NetFeeSupport = () => {
                   >
                     <div
                       className="addAndSettingIcon"
-                      title={t("fireWallFilterIpDrop")}
+                      title={t("netFeeSupportTeam")}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

@@ -53,6 +53,7 @@ export default function Home() {
   // loading
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [openIs, setOpenIs] = useState(false);
 
   // import dispatch
   const dispatch = useDispatch();
@@ -167,6 +168,7 @@ export default function Home() {
   // permission modal method
   const permissionModal = (permissionId) => {
     setOwnerId(permissionId);
+    setOpenIs({ ...openIs, [false]: true });
   };
 
   // details modal handle
@@ -736,7 +738,7 @@ export default function Home() {
                 data={ispOwners}
               ></Table>
 
-              <Permissions ownerId={ownerId} />
+              <Permissions ownerId={ownerId} openIs={openIs} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <AddProprietorModal ownerId={ownerId} />

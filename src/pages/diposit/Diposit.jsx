@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { ToastContainer } from "react-toastify";
-import { Form, Formik } from "formik";
+import { ToastContainer, toast } from "react-toastify";
+import { Field, Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 
@@ -18,6 +18,7 @@ import {
   getCollector,
   getDeposit,
   getManger,
+  getMultipleManager,
   getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
@@ -99,6 +100,9 @@ export default function Diposit() {
   const [acceptLoading, setAccLoading] = useState(false);
   const [selectedCollector, setSelectedCustomer] = useState("");
 
+  //multiple manager data state
+  const [multipleManager, setMultipleManager] = useState([]);
+
   // add deposit form validation
   const BillValidatoin = Yup.object({
     amount: Yup.string().required("Please insert amount."),
@@ -113,6 +117,13 @@ export default function Diposit() {
       user: currentUser?.user.id,
       ispOwner: ispOwner,
     };
+
+    // if (userRole !== "collector") {
+    //   delete sendingData.manager;
+    // }
+    // if (userRole === "collector") {
+    //   sendingData.manager = data.manager;
+    // }
     addDeposit(dispatch, sendingData, setLoading);
     data.amount = "";
   };
@@ -214,6 +225,10 @@ export default function Diposit() {
           setLoading
         );
     }
+
+    // if (userRole === "collector") {
+    //   getMultipleManager(currentUser, setMultipleManager);
+    // }
   }, []);
 
   useEffect(() => {
@@ -583,29 +598,80 @@ export default function Diposit() {
                             >
                               {() => (
                                 <Form>
-                                  <div className="displayGridForDiposit">
-                                    <FtextField
-                                      type="text"
-                                      name="balance"
-                                      label={t("totalBalance")}
-                                      disabled
-                                    />
-                                    <FtextField
-                                      type="text"
-                                      name="amount"
-                                      label={t("dipositAmount")}
-                                    />
-                                    <button
-                                      type="submit"
-                                      className="btn btn-outline-primary w-140 dipositSubmitBtn"
-                                    >
-                                      {isLoading ? (
-                                        <Loader></Loader>
-                                      ) : (
-                                        t("submit")
-                                      )}
-                                    </button>
-                                  </div>
+                                  {userRole === "collector" ? (
+                                    <div className="row d-flex justify-content-center">
+                                      {/* <div className="col col-md-3">
+                                        <h6 className="text-secondary">
+                                          {t("selectManager")}
+                                        </h6>
+                                        <Field
+                                          className="form-select mt-0 mw-100"
+                                          as="select"
+                                          name="manager"
+                                        >
+                                          <option value="">
+                                            {t("selectManager")}
+                                          </option>
+                                          {multipleManager.map((value) => (
+                                            <option value={value.id}>
+                                              {value.name}
+                                            </option>
+                                          ))}
+                                        </Field>
+                                      </div> */}
+                                      <div className="col col-md-3">
+                                        <FtextField
+                                          type="text"
+                                          name="balance"
+                                          label={t("totalBalance")}
+                                          disabled
+                                        />
+                                      </div>
+                                      <div className="col col-md-3">
+                                        <FtextField
+                                          type="text"
+                                          name="amount"
+                                          label={t("dipositAmount")}
+                                        />
+                                      </div>
+                                      <div className=" col-md-3 ">
+                                        <button
+                                          type="submit"
+                                          className="btn btn-outline-primary w-140 dipositSubmitBtn"
+                                        >
+                                          {isLoading ? (
+                                            <Loader></Loader>
+                                          ) : (
+                                            t("submit")
+                                          )}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="displayGridForDiposit">
+                                      <FtextField
+                                        type="text"
+                                        name="balance"
+                                        label={t("totalBalance")}
+                                        disabled
+                                      />
+                                      <FtextField
+                                        type="text"
+                                        name="amount"
+                                        label={t("dipositAmount")}
+                                      />
+                                      <button
+                                        type="submit"
+                                        className="btn btn-outline-primary w-140 dipositSubmitBtn"
+                                      >
+                                        {isLoading ? (
+                                          <Loader></Loader>
+                                        ) : (
+                                          t("submit")
+                                        )}
+                                      </button>
+                                    </div>
+                                  )}
                                 </Form>
                               )}
                             </Formik>
