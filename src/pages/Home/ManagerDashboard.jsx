@@ -23,6 +23,7 @@ import {
   getArea,
   getIspOwnerData,
   getManagerDashboardCardData,
+  getManagerDashboardCharts,
   getManger,
 } from "../../features/apiCalls";
 import { getCharts, getDashboardCardData } from "../../features/apiCalls";
@@ -64,28 +65,31 @@ export default function Home() {
     (state) => state.persistedReducer.auth.ispOwnerData
   );
 
-  const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
-
-  const area = useSelector((state) => state.area.area);
-
   // get user permission
   const permissions = useSelector(
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
   const manager = useSelector((state) => state.manager.manager);
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const managerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
+
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
   );
-  const ChartsData = useSelector((state) => state.chart.charts);
+  const managerId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.manager.id
+  );
+
+  // const ChartsData = useSelector((state) => state.chart.charts);
   const customerStat = useSelector((state) => state.chart.customerStat);
+
   const invoice = useSelector((state) => state.invoice.invoice);
+
+  const ChartsData = useSelector((state) => state.chart.charts);
+
   const [isLoading, setIsloading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
-  const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
   const dispatch = useDispatch();
@@ -93,16 +97,13 @@ export default function Home() {
   const date = new Date();
 
   const [currentCollector, setCurrentCollector] = useState("");
+
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
-  console.log(filterDate);
-  const componentRef = useRef();
-  const collectorArea = useSelector((state) =>
-    role === "collector"
-      ? state.persistedReducer.auth.currentUser?.collector.areas
-      : []
-  );
+
+  const newYear = date.getFullYear();
+
   const chartsData = {
     labels: collection,
     datasets: [
@@ -127,29 +128,6 @@ export default function Home() {
     ],
   };
 
-  // useEffect(() => {
-  //   if (Object.keys(customerStat).length > 0) {
-  //     setCollectorData(customerStat?.collectorStat);
-  //     setResellerData(customerStat?.resellerStat);
-  //   }
-  // }, [customerStat]);
-
-  // select colloectors
-  // useEffect(() => {
-  //   let collectors = [];
-
-  //   allCollector.map((item) =>
-  //     collectors.push({ name: item.name, user: item.user, id: item.id })
-  //   );
-
-  //   if (collectors.length === allCollector.length) {
-  //     const { user, name, id } = manager;
-  //     collectors.unshift({ name, user, id });
-  //   }
-
-  //   setCollectors(collectors);
-  // }, [allCollector, manager]);
-
   useEffect(() => {
     Object.keys(ispOwner)?.length === 0 &&
       getIspOwnerData(dispatch, ispOwnerId, setIsloading);
@@ -162,13 +140,15 @@ export default function Home() {
       Object.keys(ispOwner)?.length === 0 &&
         getIspOwnerData(dispatch, ispOwnerId, setIsloading);
     }
-    if (role === "ispOwner" || role === "manager" || role === "reseller") {
-      mikrotik.length === 0 &&
-        fetchMikrotik(dispatch, ispOwnerId, setIsloading);
-      area?.length === 0 && getArea(dispatch, ispOwnerId, setIsloading);
-    }
 
-    getCharts(dispatch, ispOwnerId, Year, Month);
+    getManagerDashboardCharts(
+      dispatch,
+      managerId,
+      Year,
+      Month,
+      currentCollector
+    );
+
     Object.keys(customerStat)?.length === 0 &&
       getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
   }, []);
@@ -190,11 +170,13 @@ export default function Home() {
   }, [ChartsData]);
 
   const handleFilterHandler = () => {
-    if (role === "collector") {
-      getCharts(dispatch, ispOwnerId, Year, Month, userData?.user);
-    } else {
-      getCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
-    }
+    getManagerDashboardCharts(
+      dispatch,
+      managerId,
+      Year,
+      Month,
+      currentCollector
+    );
   };
 
   let invoiceFlag;
@@ -222,44 +204,9 @@ export default function Home() {
     totalCount += item.count;
   });
 
-  // const payNowHandler = (invoice) => {
-  //   initiatePayment(invoice);
-  // };
-
   const invoiceType = {
     monthlyServiceCharge: t("monthly"),
     registration: t("register"),
-  };
-
-  const calculationOfBillStat = () => {
-    if (customerStat.collectorStat) {
-      const totalBillCollectionToday = customerStat.collectorStat.reduce(
-        (prev, curr) => prev + curr.todayBillCollection,
-        0
-      );
-      return totalBillCollectionToday;
-    }
-  };
-
-  // const totalReseller = customerStat.resellerStat.length;
-  const calculationCollectBill = () => {
-    if (customerStat.resellerStat) {
-      const totalCullectBill = customerStat.resellerStat.reduce(
-        (prev, curr) => prev + curr.totalBillCollected,
-        0
-      );
-      return totalCullectBill;
-    }
-  };
-
-  const totalCollectorDeposite = () => {
-    if (customerStat.collectorStat) {
-      const totalCollectorDeposite = customerStat.collectorStat.reduce(
-        (prev, curr) => prev + curr.totalDeposit,
-        0
-      );
-      return totalCollectorDeposite;
-    }
   };
 
   //imp
@@ -274,7 +221,7 @@ export default function Home() {
 
   const managerBalanceCalculation = () => {
     const totalCollection =
-      customerStat.totalManagerCollection +
+      customerStat.totalMonthlyBillCollection +
       customerStat.totalDepositByCollectors;
     const totalCost =
       customerStat.managerExpenditure +
@@ -290,25 +237,12 @@ export default function Home() {
       month: filterDate.getMonth() + 1,
     };
 
-    if (role === "collector") {
-      getDashboardCardData(
-        dispatch,
-        setIsloading,
-        ispOwnerId,
-        null,
-        userData?.id,
-        filterData
-      );
-    } else {
-      getDashboardCardData(
-        dispatch,
-        setIsloading,
-        ispOwnerId,
-        null,
-        null,
-        filterData
-      );
-    }
+    getManagerDashboardCardData(
+      dispatch,
+      setLoadingDashboardData,
+      managerId,
+      filterData
+    );
   };
 
   const dashboardFilterController = () => {
@@ -317,25 +251,12 @@ export default function Home() {
       month: filterDate.getMonth() + 1,
     };
 
-    if (role === "collector") {
-      getDashboardCardData(
-        dispatch,
-        setIsloading,
-        ispOwnerId,
-        null,
-        userData?.id,
-        filterData
-      );
-    } else {
-      getDashboardCardData(
-        dispatch,
-        setIsloading,
-        ispOwnerId,
-        null,
-        null,
-        filterData
-      );
-    }
+    getManagerDashboardCardData(
+      dispatch,
+      setLoadingDashboardData,
+      managerId,
+      filterData
+    );
   };
 
   return (
@@ -369,70 +290,67 @@ export default function Home() {
               )}
 
               <div className="col-md-12 mb-3">
-                {(role === "ispOwner" ||
-                  permissions?.dashboardCollectionData) && (
-                  <div className="row">
-                    <div className="col-md-3 d-flex justify-content-end align-items-center">
-                      <h2>
-                        {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
-                        {FormatNumber(
-                          customerStat.totalProbableAmount -
-                            customerStat.totalInactiveAmount
-                        )}{" "}
-                      </h2>
-                    </div>
-                    <div className="col-md-6">
-                      <div
-                        style={{
-                          width: 200,
-                          height: 200,
-                          margin: "0 auto",
-                        }}
+                <div className="row">
+                  <div className="col-md-3 d-flex justify-content-end align-items-center">
+                    <h2>
+                      {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
+                      {FormatNumber(
+                        customerStat.totalProbableAmount -
+                          customerStat.totalInactiveAmount
+                      )}{" "}
+                    </h2>
+                  </div>
+                  <div className="col-md-6">
+                    <div
+                      style={{
+                        width: 200,
+                        height: 200,
+                        margin: "0 auto",
+                      }}
+                    >
+                      <AnimatedProgressProvider
+                        valueStart={0}
+                        valueEnd={Math.round(collectionPercentage)}
+                        duration={1}
+                        easingFunction={easeQuadIn}
                       >
-                        <AnimatedProgressProvider
-                          valueStart={0}
-                          valueEnd={Math.round(collectionPercentage)}
-                          duration={1}
-                          easingFunction={easeQuadIn}
-                        >
-                          {(value) => {
-                            const roundedValue = isNaN(value)
-                              ? collectionPercentage
-                              : Math.round(value);
-                            return (
-                              <CircularProgressbar
-                                value={roundedValue}
-                                text={`${
-                                  isNaN(roundedValue) ? 0 : roundedValue
-                                }%`}
-                                styles={buildStyles({
-                                  athTransition: "none",
-                                })}
-                              />
-                            );
-                          }}
-                        </AnimatedProgressProvider>
-                      </div>
-                    </div>
-                    <div className="col-md-3 d-flex justify-content-start align-items-center">
-                      <h2>
-                        {t("totalCollection")} <br />
-                        <CurrencyDollar />{" "}
-                        {FormatNumber(
-                          customerStat.totalMonthlyBillCollection -
-                            customerStat.totalMonthlyBillDiscount
-                        )}
-                      </h2>
+                        {(value) => {
+                          const roundedValue = isNaN(value)
+                            ? collectionPercentage
+                            : Math.round(value);
+                          return (
+                            <CircularProgressbar
+                              value={roundedValue}
+                              text={`${
+                                isNaN(roundedValue) ? 0 : roundedValue
+                              }%`}
+                              styles={buildStyles({
+                                athTransition: "none",
+                              })}
+                            />
+                          );
+                        }}
+                      </AnimatedProgressProvider>
                     </div>
                   </div>
-                )}
+                  <div className="col-md-3 d-flex justify-content-start align-items-center">
+                    <h2>
+                      {t("totalCollection")} <br />
+                      <CurrencyDollar />{" "}
+                      {FormatNumber(
+                        customerStat.totalMonthlyBillCollection -
+                          customerStat.totalMonthlyBillDiscount
+                      )}
+                    </h2>
+                  </div>
+                </div>
 
                 <div className="d-flex justify-content-between">
                   <div className="d-flex justify-content-between align-items-center">
                     <p
                       className="fw-700 me-3"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#activeCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("active")} &nbsp;
@@ -443,8 +361,8 @@ export default function Home() {
 
                     <p
                       className="fw-700"
-                      data-bs-toggle="modal"
-                      data-bs-target="#expiredCustomer"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#expiredCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("expired")} &nbsp;
@@ -508,7 +426,6 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
-
                 {/* </div> */}
               </div>
 
@@ -541,25 +458,26 @@ export default function Home() {
                   <div className="chartSection">
                     <p
                       className="dashboardActive"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
                     >
                       {t("active")}
                     </p>
                     <h2
                       className="dashboardActive"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#activeCustomer"
                     >
                       {FormatNumber(customerStat.active)}
                     </h2>
+
                     {(role === "ispOwner" ||
                       permissions?.dashboardCollectionData) && (
                       <p
                         className="dashboardActive pb-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#activeCustomer"
+                        // data-bs-toggle="modal"
+                        // data-bs-target="#activeCustomer"
                         style={{ fontSize: "15px" }}
                       >
                         {t("active")}
@@ -571,8 +489,8 @@ export default function Home() {
                     )}
                     <p
                       className="dashboardData pb-1 pt-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#inactiveCustomer"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                     >
                       {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
@@ -586,8 +504,8 @@ export default function Home() {
                     </p>
                     <p
                       className="dashboardData pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#expiredCustomer"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#expiredCustomer"
                       style={{ fontSize: "15px", paddingTop: "0px" }}
                     >
                       {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
@@ -612,23 +530,23 @@ export default function Home() {
                   <div className="chartSection">
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#paid"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
                     >
                       {t("paid")}
                     </p>
                     <h2
                       className="dashboardUnpaid"
-                      data-bs-toggle="modal"
-                      data-bs-target="#paid"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#paid"
                     >
                       {FormatNumber(customerStat.paid)}
                     </h2>
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#unPaid"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#unPaid"
                       style={{ fontSize: "15px", paddingTop: "10px" }}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat.unpaid)}
@@ -636,8 +554,8 @@ export default function Home() {
 
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#freeCustomer"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#freeCustomer"
                       style={{
                         fontSize: "15px",
                         paddingTop: "0px",
@@ -722,20 +640,22 @@ export default function Home() {
                   <h4>{t("collection")}</h4>
                   <div>
                     <input
+                      id="amount1"
                       type="radio"
                       name="graphSelectRadio"
                       checked={showGraphData === "amount" && "checked"}
                       onChange={() => setShowGraphData("amount")}
                     />
-                     <label htmlFor="html">{t("amount")}</label>
+                     <label htmlFor="amount1">{t("amount")}</label>
                   </div>
                   <div>
                     <input
+                      id="bill2"
                       type="radio"
                       name="graphSelectRadio"
                       onChange={() => setShowGraphData("bill")}
                     />
-                      <label htmlFor="css">{t("bill")}</label>
+                      <label htmlFor="bill2">{t("bill")}</label>
                   </div>
                 </div>
 
@@ -748,7 +668,7 @@ export default function Home() {
                       onChange={(e) => setCurrentCollector(e.target.value)}
                     >
                       <option value="">{t("all collector")}</option>
-                      {collectors?.map((c, key) => (
+                      {customerStat?.collectorStat?.map((c, key) => (
                         <option key={key} value={c.user}>
                           {c.name}
                         </option>
@@ -760,8 +680,8 @@ export default function Home() {
                     className="form-select chartFilteritem"
                     onChange={(e) => setYear(e.target.value)}
                   >
-                    <option value={Year}>{Year}</option>
-                    <option value={Year - 1}>{Year - 1}</option>
+                    <option value={newYear}>{newYear}</option>
+                    <option value={newYear - 1}>{newYear - 1}</option>
                   </select>
                   <select
                     className="form-select chartFilteritem"
@@ -806,36 +726,6 @@ export default function Home() {
             {role === "ispOwner" || role === "manager" ? (
               <div className="row">
                 <div className="col-md-3">
-                  <div id="card12" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("customerCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat.totalManagerCollection)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div id="card10" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("connectionFee")}</p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat.totalManagerConnectionFee)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
                   <div id="card14" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
@@ -864,14 +754,14 @@ export default function Home() {
                       <h2>
                         ৳{" "}
                         {FormatNumber(
-                          customerStat.totalManagerCollection +
+                          customerStat.totalMonthlyBillCollection +
                             customerStat.totalDepositByCollectors
                         )}
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalCollectionByManager")}:{" "}
-                        {FormatNumber(customerStat.totalManagerCollectionToday)}
+                        {FormatNumber(customerStat.billCollectionToday)}
                       </p>
                     </div>
                   </div>
@@ -893,7 +783,7 @@ export default function Home() {
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalManagerDeposite")}:{" "}
-                        {FormatNumber(customerStat.totalManagerDepositToday)}
+                        {FormatNumber(customerStat.todayManagerDeposit)}
                       </p>
                     </div>
                   </div>
@@ -908,11 +798,6 @@ export default function Home() {
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("cost")}</p>
                       <h2>৳ {FormatNumber(customerStat.managerExpenditure)}</h2>
-
-                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalExpenditure")}:{" "}
-                        {FormatNumber(customerStat.totalExpenditureToday)}
-                      </p> */}
                     </div>
                   </div>
                 </div>
@@ -927,11 +812,6 @@ export default function Home() {
                       <h2>
                         ৳ {FormatNumber(customerStat.managerStaffSalarySum)}
                       </h2>
-
-                      {/* <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalExpenditure")}:{" "}
-                        {FormatNumber(customerStat.totalExpenditureToday)}
-                      </p> */}
                     </div>
                   </div>
                 </div>
@@ -943,12 +823,7 @@ export default function Home() {
                     </div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>
-                        ৳{" "}
-                        {
-                          customerStat.managerBalance /*managerBalanceCalculation()*/
-                        }
-                      </h2>
+                      <h2>৳ {managerBalanceCalculation()}</h2>
                     </div>
                   </div>
                 </div>
@@ -961,7 +836,7 @@ export default function Home() {
         </FontColor>
       </div>
 
-      <Inactive
+      {/* <Inactive
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
@@ -970,13 +845,13 @@ export default function Home() {
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      />
-      <FreeCustomer
+      /> */}
+      {/* <FreeCustomer
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      />
-      <Paid
+      /> */}
+      {/* <Paid
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
@@ -985,12 +860,12 @@ export default function Home() {
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      />
-      <Active
+      /> */}
+      {/* <Active
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      />
+      /> */}
 
       <AllCollector />
       <Reseller />

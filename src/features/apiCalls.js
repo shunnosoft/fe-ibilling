@@ -167,6 +167,25 @@ export const getManger = async (dispatch, ispWonerId) => {
   }
 };
 
+export const getManagerDashboardCharts = async (
+  dispatch,
+  managerId,
+  year,
+  month,
+  collectorId
+) => {
+  const plusMonth = Number(month) + 1;
+  try {
+    const res = await apiLink(
+      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
+    );
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    console.log("Charts error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+};
+
 export const getCharts = async (dispatch, ispOwnerId, year, month, user) => {
   try {
     let link = `/dashboard/${ispOwnerId}?year=${year}&month=${month}`;
@@ -233,11 +252,10 @@ export const getManagerDashboardCardData = async (
   let year = filterData.year || new Date().getFullYear(),
     month = filterData.month || new Date().getMonth() + 1;
 
-  console.log(year, month, managerId);
   try {
     setIsloading(true);
     const res = await apiLink(
-      `/dashboard/manager/${managerId}=${year}&month=${month}`
+      `/dashboard/manager/${managerId}?year=${year}&month=${month}`
     );
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {

@@ -116,9 +116,11 @@ ul.client_service_list2 li:last-child:hover{
 
 .client_wraper2 {
   position: fixed;
-  right: -112px;
-  z-index: 500; 
-  bottom: 4%; 
+  z-index: 99999;
+  left: 100%;
+  right: 0;
+  bottom: 50%;
+  transform: translate(50%, 50%);
 }
 
 .menu_label2{
