@@ -46,6 +46,10 @@ const DeleteByMobileModal = () => {
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={() => {
+                setCustomer("");
+                setMobile("");
+              }}
             ></button>
           </div>
           <div class="modal-body">
