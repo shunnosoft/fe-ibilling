@@ -708,22 +708,6 @@ export default function Home() {
             {role === "manager" ? (
               <div className="row">
                 <div className="col-md-3">
-                  <div id="card14" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("depositCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.totalDepositByCollectors)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
                   <div id="card5" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
@@ -744,6 +728,28 @@ export default function Home() {
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalCollectionByManager")}:{" "}
                         {FormatNumber(customerStat?.billCollectionToday)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-3">
+                  <div id="card5" className="dataCard">
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <Coin />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>
+                        {t("totalTodayCollection")}
+                      </p>
+                      <h2>
+                        ৳ {FormatNumber(customerStat?.totalOwnCollection)}
+                      </h2>
+
+                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                        {t("todayTotalCollectionByManager")}:{" "}
+                        {FormatNumber(customerStat?.totalOwnCollectionToday)}
                       </p>
                     </div>
                   </div>
@@ -772,19 +778,22 @@ export default function Home() {
                 </div>
 
                 <div className="col-md-3">
-                  <div id="card8" className="dataCard">
+                  <div id="card14" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
                       <Coin />
                     </div>
                     <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("cost")}</p>
+                      <p style={{ fontSize: "16px" }}>
+                        {t("depositCollection")}
+                      </p>
                       <h2>
-                        ৳ {FormatNumber(customerStat?.managerExpenditure)}
+                        ৳ {FormatNumber(customerStat?.totalDepositByCollectors)}
                       </h2>
                     </div>
                   </div>
                 </div>
+
                 <div className="col-md-3">
                   <div id="card11" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
@@ -799,6 +808,22 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
+                <div className="col-md-3">
+                  <div id="card8" className="dataCard">
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <Coin />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>{t("cost")}</p>
+                      <h2>
+                        ৳ {FormatNumber(customerStat?.managerExpenditure)}
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="col-md-3">
                   <div id="card7" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
@@ -807,7 +832,7 @@ export default function Home() {
                     </div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>৳ {managerBalanceCalculation()}</h2>
+                      <h2>৳ {customerStat.balance}</h2>
                     </div>
                   </div>
                 </div>

@@ -485,11 +485,10 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
 };
 
 //Areas
-
 export const getArea = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
-    const res = await apiLink.get(`/ispOwner/area/${ispOwnerId}`);
+    const res = await apiLink.get(`/ispOwner/area/v2/${ispOwnerId}`);
     dispatch(FetchAreaSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -567,7 +566,8 @@ export const addSubArea = async (dispatch, data, setIsLoading) => {
 };
 
 // PATCH sub area
-export const editSubArea = async (dispatch, data, setIsLoading) => {
+export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
+  setIsLoading(true);
   const { ispOwnerID, id, ...rest } = data;
   await apiLink({
     url: `/ispOwner/subArea/${ispOwnerID}/${id}`,
@@ -579,7 +579,7 @@ export const editSubArea = async (dispatch, data, setIsLoading) => {
   })
     .then((res) => {
       dispatch(EditSubAreaSuccess(res.data));
-      setIsLoading(false);
+      setShow(false);
       document.querySelector("#subAreaEditModal").click();
       langMessage(
         "success",
@@ -589,10 +589,10 @@ export const editSubArea = async (dispatch, data, setIsLoading) => {
     })
     .catch((err) => {
       if (err.response) {
-        setIsLoading(false);
         toast.error(err.response.data.message);
       }
     });
+  setIsLoading(false);
 };
 
 // DELETE sub area
@@ -2636,13 +2636,14 @@ export const deleteNetFeeSupportData = async (
 export const ispOwnerInvoiceCreate = async (
   dispatch,
   setIsLoading,
-  invoiceData
+  invoiceData,
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/admin/invoice/create`, invoiceData);
 
-    document.querySelector("#ispOwnerInvoiceCreate").click();
+    setShow(false);
     langMessage("success", "Invoice create success");
   } catch (error) {
     console.log(error.response?.data.message);
@@ -2876,4 +2877,16 @@ export const customerNumberUpdate = async (
     toast.error(error.response?.data?.message);
   }
   setIsDelete(false);
+};
+
+// Multiple manager api call
+export const getMultipleManager = async (currentUser, setMultipleManager) => {
+  try {
+    const res = await apiLink.get(
+      `collector/get-manager/${currentUser?.collector.id}`
+    );
+    setMultipleManager(res.data);
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
 };

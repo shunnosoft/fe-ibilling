@@ -5,7 +5,7 @@ import { customerTransfer, deleteCustomerSuccess } from "../customerSlice";
 
 export const getSubAreasApi = async (dispatch, ispOwnerId) => {
   try {
-    const res = await apiLink.get("ispOwner/subArea/" + ispOwnerId);
+    const res = await apiLink.get("ispOwner/subArea/v2/" + ispOwnerId);
     dispatch(getSubareas(res.data.subAreas));
   } catch (error) {
     console.log(error);

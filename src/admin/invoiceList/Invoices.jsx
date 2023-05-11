@@ -17,8 +17,9 @@ import {
 } from "../../features/apiCallAdmin";
 import InvoiceEditModal from "./modal/InvoiceEditModal";
 import InvoiceCreate from "./modal/InvoiceCreate";
+import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 
-const Invoices = ({ invoiceId, companyName }) => {
+const Invoices = ({ invoiceId, companyName, isOpen }) => {
   // import dispatch
   const dispatch = useDispatch();
 
@@ -85,11 +86,14 @@ const Invoices = ({ invoiceId, companyName }) => {
     };
   }
 
-  //modal handler
-  const modalHandler = () => {
-    document.querySelector("#ispOwnerInvoice").click();
-    setShow(true);
-  };
+  //modal isOpen handler
+  const [isShow, setIsShow] = useState(false);
+
+  const handleClose = () => setIsShow(false);
+
+  useEffect(() => {
+    setIsShow(isOpen);
+  }, [isOpen]);
 
   // table column
   const columns = React.useMemo(
@@ -214,16 +218,16 @@ const Invoices = ({ invoiceId, companyName }) => {
 
   return (
     <>
-      <div
-        className="modal fade"
-        id="ispOwnerInvoice"
-        tabIndex="-1"
-        aria-labelledby="customerModalDetails"
-        aria-hidden="true"
+      <Modal
+        show={isShow}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header px-5">
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <div className="d-flex px-4">
               <h5
                 style={{ color: "#0abb7a" }}
                 className="modal-title"
@@ -234,124 +238,114 @@ const Invoices = ({ invoiceId, companyName }) => {
               <div
                 title="Invoice Create"
                 className="header_icon mx-3"
-                onClick={modalHandler}
+                onClick={() => {
+                  setShow({ ...show, [false]: true });
+                  setIsShow(false);
+                }}
               >
                 <FileEarmarkPlusFill />
               </div>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
             </div>
-            <div className="modal-body">
-              {invoiceeEditId && (
-                <>
-                  <div className="edit-section">
-                    <Formik
-                      initialValues={{
-                        amount: ispOwnerInvoice?.amount,
-                        paymentStatus: ispOwnerInvoice?.status,
-                        dueDate: moment(ispOwnerInvoice?.dueDate).format(
-                          "YYYY-MM-DD"
-                        ),
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          {invoiceeEditId && (
+            <>
+              <div className="edit-section">
+                <Formik
+                  initialValues={{
+                    amount: ispOwnerInvoice?.amount,
+                    paymentStatus: ispOwnerInvoice?.status,
+                    dueDate: moment(ispOwnerInvoice?.dueDate).format(
+                      "YYYY-MM-DD"
+                    ),
 
-                        time: moment(ispOwnerInvoice?.dueDate).format("HH:mm"),
-                      }}
-                      validationSchema={invoiceEditFieldValidator}
-                      enableReinitialize
-                      onSubmit={(values) => {
-                        handleSubmit(values);
-                      }}
-                    >
-                      {() => (
-                        <Form>
-                          <div className="d-flex justify-content-center align-items-center">
-                            {role === "superadmin" && (
-                              <>
-                                <FtextField
-                                  type="number"
-                                  name="amount"
-                                  label="Amount"
-                                />
-                                <div
-                                  className="payment-status mx-2"
-                                  style={{ marginTop: "-16px" }}
-                                >
-                                  <label className="form-control-label changeLabelFontColor">
-                                    Payment Status
-                                  </label>
-                                  <Field
-                                    as="select"
-                                    className="form-select w-200 mt-0"
-                                    aria-label="Default select example"
-                                    name="paymentStatus"
-                                  >
-                                    <option value="paid">Paid</option>
-                                    <option value="unpaid">Unpaid</option>
-                                  </Field>
-                                </div>
-                              </>
-                            )}
-
+                    time: moment(ispOwnerInvoice?.dueDate).format("HH:mm"),
+                  }}
+                  validationSchema={invoiceEditFieldValidator}
+                  enableReinitialize
+                  onSubmit={(values) => {
+                    handleSubmit(values);
+                  }}
+                >
+                  {() => (
+                    <Form>
+                      <div className="d-flex justify-content-center align-items-center">
+                        {role === "superadmin" && (
+                          <>
                             <FtextField
-                              type="date"
-                              name="dueDate"
-                              label="Date"
+                              type="number"
+                              name="amount"
+                              label="Amount"
                             />
-
-                            <div className="mx-2">
-                              <FtextField
-                                type="time"
-                                name="time"
-                                label="Time"
-                              />
+                            <div
+                              className="payment-status mx-2"
+                              style={{ marginTop: "-16px" }}
+                            >
+                              <label className="form-control-label changeLabelFontColor">
+                                Payment Status
+                              </label>
+                              <Field
+                                as="select"
+                                className="form-select w-200 mt-0"
+                                aria-label="Default select example"
+                                name="paymentStatus"
+                              >
+                                <option value="paid">Paid</option>
+                                <option value="unpaid">Unpaid</option>
+                              </Field>
                             </div>
+                          </>
+                        )}
 
-                            <button
-                              type="submit"
-                              className="btn btn-outline-success mt-2 me-1"
-                              disabled={loadingState}
-                            >
-                              {loadingState ? <Loader /> : "Submit"}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-outline-secondary mt-2"
-                              disabled={loadingState}
-                              onClick={cancelHandle}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </Form>
-                      )}
-                    </Formik>
-                  </div>
-                </>
-              )}
-              <div
-                className="dashboardField"
-                style={{
-                  height: "79vh",
-                  overflowY: "auto",
-                }}
-              >
-                <div className="invoice">
-                  {invoiceList.length > 0 && (
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={invoiceList}
-                    />
+                        <FtextField type="date" name="dueDate" label="Date" />
+
+                        <div className="mx-2">
+                          <FtextField type="time" name="time" label="Time" />
+                        </div>
+
+                        <button
+                          type="submit"
+                          className="btn btn-outline-success mt-2 me-1"
+                          disabled={loadingState}
+                        >
+                          {loadingState ? <Loader /> : "Submit"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary mt-2"
+                          disabled={loadingState}
+                          onClick={cancelHandle}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </Form>
                   )}
-                </div>
+                </Formik>
               </div>
+            </>
+          )}
+          <div
+            className="dashboardField"
+            style={{
+              height: "79vh",
+              overflowY: "auto",
+            }}
+          >
+            <div className="invoice">
+              {invoiceList.length > 0 && (
+                <Table
+                  isLoading={isLoading}
+                  columns={columns}
+                  data={invoiceList}
+                />
+              )}
             </div>
           </div>
-        </div>
-      </div>
+        </ModalBody>
+      </Modal>
+
       <InvoiceEditModal invoiceeEditId={invoiceeEditId} />
       <InvoiceCreate ispOwnerId={invoiceId} modal={show} />
     </>

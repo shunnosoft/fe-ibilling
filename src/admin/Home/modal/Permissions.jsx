@@ -6,7 +6,15 @@ import { useState } from "react";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import { useDispatch } from "react-redux";
 
-const Permissions = ({ ownerId }) => {
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
+
+const Permissions = ({ ownerId, openIs }) => {
   const dispatch = useDispatch();
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
@@ -20,12 +28,20 @@ const Permissions = ({ ownerId }) => {
   // permission state
   const [permissions, setPermissions] = useState([]);
 
+  //modal handler
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+
   // set permission in state
   useEffect(() => {
+    if (openIs) {
+      setShow(openIs);
+    }
     if (ownerData) {
       setPermissions(ispOwnerPermission(ownerData?.bpSettings));
     }
-  }, [ownerData, ispOwners]);
+  }, [openIs, ownerData, ispOwners]);
 
   // handle change
   const handleChange = (e) => {
@@ -56,69 +72,45 @@ const Permissions = ({ ownerId }) => {
   };
 
   return (
-    <div
-      className="modal fade"
-      id="clientParmissionModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <div className="modal-title" id="exampleModalLabel">
-              <div className="d-flex">
-                <div className="row">
-                  <h4>Change Permissions</h4>
-                  <hr />
-                  <div className="d-flex">
-                    <div>
-                      <h5>
-                        netFee Id:
-                        <span className="text-success">
-                          {" "}
-                          {ownerData?.netFeeId}{" "}
-                        </span>
-                      </h5>
-                      <h5 className="me-3">
-                        Mobile:
-                        <span className="text-success">
-                          {" "}
-                          {ownerData?.mobile}
-                        </span>
-                      </h5>
-                    </div>
-                    <div>
-                      <h5 className="me-3">
-                        Company:
-                        <span className="text-success">
-                          {" "}
-                          {ownerData?.company}
-                        </span>
-                      </h5>
-                      <h5 className="me-3">
-                        Name:
-                        <span className="text-success"> {ownerData?.name}</span>
-                      </h5>
-                    </div>
-                  </div>
-                </div>
+    <>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
+      >
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <div className="d-flex">
+              <h4 className="text-success me-3">Change Permissions : </h4>
+              <h5 className="text-secondary me-3">
+                NetFee Id:
+                <span className="text-success">{ownerData?.netFeeId}</span>
+              </h5>
+              <h5 className="text-secondary me-3">
+                Mobile:
+                <span className="text-success">{ownerData?.mobile}</span>
+              </h5>
 
-                <button
-                  type="button"
-                  className="btn btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
+              <h5 className="text-secondary me-3">
+                Company:
+                <span className="text-success">{ownerData?.company}</span>
+              </h5>
+              <h5 className="text-secondary me-3">
+                Name:
+                <span className="text-success">{ownerData?.name}</span>
+              </h5>
             </div>
-          </div>
-          <div className="modal-body">
-            {/* model body here */}
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          {/* model body here */}
 
-            <div style={{ display: "inline-block" }}>
+          <div className="container" style={{ display: "inline-block" }}>
+            <div className="row">
               {permissions?.map((val, key) => (
-                <div className="CheckboxContainer" key={key}>
+                <div className="CheckboxContainer col-md-5 ms-4 me-5" key={key}>
                   <input
                     type="checkbox"
                     className="CheckBox"
@@ -127,34 +119,34 @@ const Permissions = ({ ownerId }) => {
                     onChange={handleChange}
                     id={val.value + key}
                   />
-                  <label htmlFor={val.value + key} className="checkboxLabel">
+                  <label htmlFor={val.value + key} className="checkboxLabel ">
                     {val.label}
                   </label>
                 </div>
               ))}
             </div>
           </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              onClick={permissionHandler}
-              className="btn btn-success customBtn"
-              disabled={isLoading}
-            >
-              Save
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={handleClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            onClick={permissionHandler}
+            className="btn btn-success customBtn"
+            disabled={isLoading}
+          >
+            Save
+          </button>
+        </ModalFooter>
+      </Modal>
+    </>
   );
 };
 

@@ -149,6 +149,15 @@
   color: #2666cf;
 }
 
+.supportDetails {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1d9ee3;
+  font-family: sans-serif;
+  margin-left: 5rem;
+  margin-right: 10px;
+}
+
 @media only screen and (max-width: 720px) {
   .headerLinks {
     margin-right: 20px;

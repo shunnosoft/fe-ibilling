@@ -178,7 +178,7 @@ const ManagerEdit = ({ managerId }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h4 className="modal-title" id="exampleModalLabel">
-              {t("editManager")}
+              {t("edit")} {single?.name} {t("manager")}
             </h4>
             <button
               type="button"

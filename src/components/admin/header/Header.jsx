@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ArrowClockwise,
   BoxArrowLeft,
@@ -23,12 +23,15 @@ import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import MessageAlert from "../../../pages/message/MessageAlert";
+import SupportDetails from "./netFeeSupport/SupportDetails";
+import SupportCall from "../../../pages/netFeeSupport/supportOpration/SupportCall";
 
 export default function Header(props) {
   const { t } = useTranslation();
   // const userRole = useSelector(state => state.persistedReducer.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [rechargeBalnace, setRechargeBalance] = useState(0);
   const [smsBalance, setSmsBalance] = useState(0);
   const [ispOwner, setIspOwner] = useState("");
@@ -127,6 +130,23 @@ export default function Header(props) {
             </div>
 
             <div className="headerLinks">
+              {/* <Link to="/netFee/support">
+                <SupportDetails />
+              </Link> */}
+              {userRole !== "admin" && userRole !== "superadmin" ? (
+                <div
+                  style={{ cursor: "pointer", width: "190px" }}
+                  className="fw-bold text-primary me-3"
+                  title={t("netFeeSupportTeam")}
+                >
+                  <p onClick={() => setIsOpen({ ...isOpen, [false]: true })}>
+                    NetFee Support Members
+                  </p>
+                </div>
+              ) : (
+                ""
+              )}
+
               {currentUser && userRole === "ispOwner" ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">
                   <div
@@ -207,7 +227,7 @@ export default function Header(props) {
                   >
                     {t("balance")}
                     <strong className="mainsmsbalance">
-                      {rechargeBalnace?.toFixed()}
+                      {FormatNumber(rechargeBalnace?.toFixed())}
                     </strong>
                   </div>
                   <div
@@ -216,7 +236,7 @@ export default function Header(props) {
                   >
                     {t("message")}
                     <strong className="mainsmsbalance">
-                      {smsBalance?.toFixed()}
+                      {FormatNumber(smsBalance?.toFixed())}
                     </strong>
                   </div>
 
@@ -391,6 +411,7 @@ export default function Header(props) {
         </div>
       </FourGround>
       {/* <MessageAlert ispOwner={ispOwner} /> */}
+      <SupportCall isOpen={isOpen} />
     </div>
   );
 }
