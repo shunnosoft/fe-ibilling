@@ -53,6 +53,7 @@ export default function Home() {
   const { t } = useTranslation();
 
   const role = useSelector((state) => state.persistedReducer.auth.role);
+
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -61,25 +62,26 @@ export default function Home() {
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
 
+  //get ispOwner Info
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
   );
 
   // get user permission
   const permissions = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
+    (state) => state.persistedReducer.auth.currentUser.manager.permissions
   );
 
-  const manager = useSelector((state) => state.manager.manager);
-
+  // get userdata
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
+
+  // get managerId
   const managerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.manager.id
   );
 
-  // const ChartsData = useSelector((state) => state.chart.charts);
   const customerStat = useSelector((state) => state.chart.customerStat);
 
   const invoice = useSelector((state) => state.invoice.invoice);
@@ -132,9 +134,6 @@ export default function Home() {
     Object.keys(ispOwner)?.length === 0 &&
       getIspOwnerData(dispatch, ispOwnerId, setIsloading);
 
-    if (role === "ispOwner") {
-      Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
-    }
     if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
       Object.keys(ispOwner)?.length === 0 &&
@@ -221,12 +220,12 @@ export default function Home() {
 
   const managerBalanceCalculation = () => {
     const totalCollection =
-      customerStat.totalMonthlyBillCollection +
-      customerStat.totalDepositByCollectors;
+      customerStat?.totalMonthlyBillCollection +
+      customerStat?.totalDepositByCollectors;
     const totalCost =
-      customerStat.managerExpenditure +
-      customerStat.totalManagerDeposit +
-      customerStat.managerStaffSalarySum;
+      customerStat?.managerExpenditure +
+      customerStat?.totalManagerDeposit +
+      customerStat?.managerStaffSalarySum;
 
     return FormatNumber(totalCollection - totalCost);
   };
@@ -295,8 +294,8 @@ export default function Home() {
                     <h2>
                       {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
                       {FormatNumber(
-                        customerStat.totalProbableAmount -
-                          customerStat.totalInactiveAmount
+                        customerStat?.totalProbableAmount -
+                          customerStat?.totalInactiveAmount
                       )}{" "}
                     </h2>
                   </div>
@@ -338,8 +337,8 @@ export default function Home() {
                       {t("totalCollection")} <br />
                       <CurrencyDollar />{" "}
                       {FormatNumber(
-                        customerStat.totalMonthlyBillCollection -
-                          customerStat.totalMonthlyBillDiscount
+                        customerStat?.totalMonthlyBillCollection -
+                          customerStat?.totalMonthlyBillDiscount
                       )}
                     </h2>
                   </div>
@@ -355,7 +354,7 @@ export default function Home() {
                     >
                       {t("active")} &nbsp;
                       <span className="text-secondary fw-bold">
-                        ৳{FormatNumber(customerStat.totalActiveAmount)}
+                        ৳{FormatNumber(customerStat?.totalActiveAmount)}
                       </span>
                     </p>
 
@@ -367,7 +366,7 @@ export default function Home() {
                     >
                       {t("expired")} &nbsp;
                       <span className="text-secondary fw-bold">
-                        ৳{FormatNumber(customerStat.totalExpiredAmount)}
+                        ৳{FormatNumber(customerStat?.totalExpiredAmount)}
                       </span>
                     </p>
                   </div>
@@ -437,12 +436,12 @@ export default function Home() {
                   </div>
                   <div className="chartSection">
                     <p style={{ fontSize: "16px" }}>{t("total customer")}</p>
-                    <h2>{FormatNumber(customerStat.customers)}</h2>
+                    <h2>{FormatNumber(customerStat?.customers)}</h2>
 
                     <Link to={"/new/customer"}>
                       <p className="dashboardData">
                         {t("new customer")}{" "}
-                        {FormatNumber(customerStat.newCustomer)}
+                        {FormatNumber(customerStat?.newCustomer)}
                       </p>
                     </Link>
                   </div>
@@ -469,11 +468,10 @@ export default function Home() {
                       // data-bs-toggle="modal"
                       // data-bs-target="#activeCustomer"
                     >
-                      {FormatNumber(customerStat.active)}
+                      {FormatNumber(customerStat?.active)}
                     </h2>
 
-                    {(role === "ispOwner" ||
-                      permissions?.dashboardCollectionData) && (
+                    {permissions?.dashboardCollectionData && (
                       <p
                         className="dashboardActive pb-1"
                         // data-bs-toggle="modal"
@@ -483,7 +481,7 @@ export default function Home() {
                         {t("active")}
                         &nbsp;
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat.totalActiveAmount)}
+                          ৳ {FormatNumber(customerStat?.totalActiveAmount)}
                         </span>
                       </p>
                     )}
@@ -493,12 +491,11 @@ export default function Home() {
                       // data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                     >
-                      {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
+                      {t("in active")}: {FormatNumber(customerStat?.inactive)}{" "}
                       &nbsp;
-                      {(role === "ispOwner" ||
-                        permissions?.dashboardCollectionData) && (
+                      {permissions?.dashboardCollectionData && (
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat.totalInactiveAmount)}
+                          ৳ {FormatNumber(customerStat?.totalInactiveAmount)}
                         </span>
                       )}
                     </p>
@@ -508,12 +505,11 @@ export default function Home() {
                       // data-bs-target="#expiredCustomer"
                       style={{ fontSize: "15px", paddingTop: "0px" }}
                     >
-                      {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
+                      {t("expired")}: {FormatNumber(customerStat?.expired)}{" "}
                       &nbsp;
-                      {(role === "ispOwner" ||
-                        permissions?.dashboardCollectionData) && (
+                      {permissions?.dashboardCollectionData && (
                         <span className="text-info">
-                          ৳{FormatNumber(customerStat.totalExpiredAmount)}
+                          ৳{FormatNumber(customerStat?.totalExpiredAmount)}
                         </span>
                       )}
                     </p>
@@ -541,7 +537,7 @@ export default function Home() {
                       // data-bs-toggle="modal"
                       // data-bs-target="#paid"
                     >
-                      {FormatNumber(customerStat.paid)}
+                      {FormatNumber(customerStat?.paid)}
                     </h2>
                     <p
                       className="dashboardUnpaid pb-1"
@@ -549,7 +545,7 @@ export default function Home() {
                       // data-bs-target="#unPaid"
                       style={{ fontSize: "15px", paddingTop: "10px" }}
                     >
-                      {t("unpaid")}: {FormatNumber(customerStat.unpaid)}
+                      {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
                     </p>
 
                     <p
@@ -562,7 +558,7 @@ export default function Home() {
                       }}
                     >
                       {t("freeCustomer")}:
-                      {FormatNumber(customerStat.freeCustomer)}
+                      {FormatNumber(customerStat?.freeCustomer)}
                     </p>
                   </div>
                 </div>
@@ -575,8 +571,7 @@ export default function Home() {
                     <Coin />
                   </div>
                   <div className="chartSection">
-                    {(role === "ispOwner" ||
-                      permissions?.dashboardCollectionData) && (
+                    {permissions?.dashboardCollectionData && (
                       <>
                         <p style={{ fontSize: "16px" }}>
                           {t("total collection")}
@@ -584,50 +579,37 @@ export default function Home() {
                         <h2>
                           ৳{" "}
                           {FormatNumber(
-                            customerStat.totalMonthlyBillCollection -
-                              customerStat.totalMonthlyBillDiscount
+                            customerStat?.totalMonthlyBillCollection -
+                              customerStat?.totalMonthlyBillDiscount
                           )}
                         </h2>
                       </>
                     )}
 
-                    {role !== "collector" && (
+                    {permissions?.dashboardCollectionData && (
                       <>
-                        {(role === "ispOwner" ||
-                          permissions?.dashboardCollectionData) && (
-                          <>
-                            <p
-                              style={{ fontSize: "15px", marginBottom: "0px" }}
-                            >
-                              {t("discount")}:{" "}
-                              {FormatNumber(
-                                customerStat.totalMonthlyBillDiscount
-                              )}
-                            </p>
+                        <p style={{ fontSize: "15px", marginBottom: "0px" }}>
+                          {t("discount")}:{" "}
+                          {FormatNumber(customerStat?.totalMonthlyBillDiscount)}
+                        </p>
 
-                            <p
-                              style={{ fontSize: "13px", marginBottom: "0px" }}
-                            >
-                              {t("withoutDiscount")}:{" "}
-                              {FormatNumber(
-                                customerStat.totalMonthlyBillCollection
-                              )}
-                            </p>
-                          </>
-                        )}
-
-                        <p
-                          className={
-                            !permissions?.dashboardCollectionData
-                              ? "fs-6"
-                              : "fs-13"
-                          }
-                        >
-                          {t("today collection")}{" "}
-                          {FormatNumber(customerStat.billCollectionToday)}
+                        <p style={{ fontSize: "13px", marginBottom: "0px" }}>
+                          {t("withoutDiscount")}:{" "}
+                          {FormatNumber(
+                            customerStat?.totalMonthlyBillCollection
+                          )}
                         </p>
                       </>
                     )}
+
+                    <p
+                      className={
+                        !permissions?.dashboardCollectionData ? "fs-6" : "fs-13"
+                      }
+                    >
+                      {t("today collection")}{" "}
+                      {FormatNumber(customerStat?.billCollectionToday)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -723,7 +705,7 @@ export default function Home() {
               </div>
             </FourGround>
 
-            {role === "ispOwner" || role === "manager" ? (
+            {role === "manager" ? (
               <div className="row">
                 <div className="col-md-3">
                   <div id="card14" className="dataCard">
@@ -736,7 +718,7 @@ export default function Home() {
                         {t("depositCollection")}
                       </p>
                       <h2>
-                        ৳ {FormatNumber(customerStat.totalDepositByCollectors)}
+                        ৳ {FormatNumber(customerStat?.totalDepositByCollectors)}
                       </h2>
                     </div>
                   </div>
@@ -754,14 +736,14 @@ export default function Home() {
                       <h2>
                         ৳{" "}
                         {FormatNumber(
-                          customerStat.totalMonthlyBillCollection +
-                            customerStat.totalDepositByCollectors
+                          customerStat?.totalMonthlyBillCollection +
+                            customerStat?.totalDepositByCollectors
                         )}
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalCollectionByManager")}:{" "}
-                        {FormatNumber(customerStat.billCollectionToday)}
+                        {FormatNumber(customerStat?.billCollectionToday)}
                       </p>
                     </div>
                   </div>
@@ -778,12 +760,12 @@ export default function Home() {
                         {t("totalManagerDeposite")}
                       </p>
                       <h2>
-                        ৳ {FormatNumber(customerStat.totalManagerDeposit)}
+                        ৳ {FormatNumber(customerStat?.totalManagerDeposit)}
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                         {t("todayTotalManagerDeposite")}:{" "}
-                        {FormatNumber(customerStat.todayManagerDeposit)}
+                        {FormatNumber(customerStat?.todayManagerDeposit)}
                       </p>
                     </div>
                   </div>
@@ -797,7 +779,9 @@ export default function Home() {
                     </div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("cost")}</p>
-                      <h2>৳ {FormatNumber(customerStat.managerExpenditure)}</h2>
+                      <h2>
+                        ৳ {FormatNumber(customerStat?.managerExpenditure)}
+                      </h2>
                     </div>
                   </div>
                 </div>
@@ -810,7 +794,7 @@ export default function Home() {
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("staffSalary")}</p>
                       <h2>
-                        ৳ {FormatNumber(customerStat.managerStaffSalarySum)}
+                        ৳ {FormatNumber(customerStat?.managerStaffSalarySum)}
                       </h2>
                     </div>
                   </div>

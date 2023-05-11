@@ -22,7 +22,6 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
 import Footer from "../../components/admin/footer/Footer";
-import { managerPermission } from "./managerData";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getArea, getManger } from "../../features/apiCalls";
@@ -48,11 +47,6 @@ export default function Manager() {
   //get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
-  );
-
-  //get permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
   // get role
@@ -148,24 +142,21 @@ export default function Manager() {
                     </div>
                   </div>
                 </li>
-                {permission?.collectorEdit || role === "ispOwner" ? (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#managerEditModal"
-                    onClick={() => {
-                      getSpecificManager(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <PenFill />
-                        <p className="actionP">{t("edit")}</p>
-                      </div>
+
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#managerEditModal"
+                  onClick={() => {
+                    getSpecificManager(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
                     </div>
-                  </li>
-                ) : (
-                  ""
-                )}
+                  </div>
+                </li>
                 {original.mobile && (
                   <li
                     data-bs-toggle="modal"
@@ -183,37 +174,33 @@ export default function Manager() {
                   </li>
                 )}
 
-                {role === "ispOwner" && (
-                  <li
-                    onClick={() => {
-                      deleteSingleManager(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item actionManager">
-                      <div className="customerAction">
-                        <ArchiveFill />
-                        <p className="actionP">{t("delete")}</p>
-                      </div>
+                <li
+                  onClick={() => {
+                    deleteSingleManager(original.id);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">{t("delete")}</p>
                     </div>
-                  </li>
-                )}
+                  </div>
+                </li>
 
-                {role === "ispOwner" && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#resetPassword"
-                    onClick={() => {
-                      setUserId(original.user);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <KeyFill />
-                        <p className="actionP">{t("passwordReset")}</p>
-                      </div>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resetPassword"
+                  onClick={() => {
+                    setUserId(original.user);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <KeyFill />
+                      <p className="actionP">{t("passwordReset")}</p>
                     </div>
-                  </li>
-                )}
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
