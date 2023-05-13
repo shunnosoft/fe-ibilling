@@ -53,7 +53,10 @@ export default function Report() {
   const allArea = useSelector((state) => state?.area?.area);
 
   const allCollector = useSelector((state) => state?.collector?.collector);
-  const manager = useSelector((state) => state?.manager?.manager);
+  const manager = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser?.manager
+  );
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );

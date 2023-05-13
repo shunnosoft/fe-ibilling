@@ -222,9 +222,7 @@ export default function Manager() {
             <FontColor>
               <FourGround>
                 <div className="d-flex justify-content-between collectorTitle px-5">
-                  <h2 className="">
-                    ({t("manager")}) {t("profile")}
-                  </h2>
+                  <h2 className="">{t("manager")}</h2>
                   <div
                     title={t("addNewManager")}
                     className="header_icon"

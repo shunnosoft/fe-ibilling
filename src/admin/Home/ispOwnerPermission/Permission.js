@@ -120,6 +120,12 @@ export const ispOwnerPermission = (perm) => {
       label: "In-Active Customer Delete",
       isChecked: perm?.inActiveCustomerDelete,
     },
+    {
+      id: 21,
+      value: "hasReseller",
+      label: "Reseller Add",
+      isChecked: perm?.hasReseller,
+    },
   ];
   return permission;
 };

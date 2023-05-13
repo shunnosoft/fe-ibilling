@@ -87,15 +87,13 @@ export const getCharts = async (dispatch, resellerId, Year, Month, User) => {
 // };
 
 // Collector
-export const getCollector = async (dispatch, resellerId, setIsLoading) => {
+export const getCollector = async (dispatch, resellerId) => {
   try {
-    setIsLoading(true);
     const res = await apiLink.get(`/reseller/collector/${resellerId}`);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }
-  setIsLoading(false);
 };
 
 export const addCollector = async (dispatch, data, setIsLoading) => {

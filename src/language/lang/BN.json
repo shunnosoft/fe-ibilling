@@ -746,5 +746,17 @@
   "inputYourCustomerNumber": "আপনার গ্রাহক নম্বর ইনপুট করুন",
   "doYouWantToDeleteMobileNumber": "আপনি কি মোবাইল নম্বর ডিলিট করতে চান",
   "totalPages": "মোট পৃষ্ঠা",
-  "managerDeleteNotify": "এই ম্যানেজারটি ডিলিট করবেন?"
+  "managerDeleteNotify": "এই ম্যানেজারটি ডিলিট করবেন?",
+  "selectUserType": "সিলেক্ট ইউজার টাইপ",
+  "selectUserInformation": "সিলেক্ট ইউজার ইনফরমেশন",
+  "netFeeSupportTeam": "নেটফি সাপোর্ট টিম",
+  "netFeeSupportContact": "নেটফি সাপোর্ট টিম সর্বদা সর্বোচ্চ গ্রাহক সেবায় নিয়োজিত আছেন । নেটফি সাপোর্টের সাথে যোগাযোগ করুন -",
+  "Towkir Hossain": "তৌকির হোসেন",
+  "Farabi Farhad": "ফারাবী ফরহাদ",
+  "Rasel Ali": "রাসেল আলী",
+  "Abdur Razzaq": "আব্দুর রাজ্জাক",
+  "Ashim Kumar": "অসীম কুমার দিপু",
+  "Marof": "মারুফ",
+  "thankYou": "ধন্যবাদ ।",
+  "totalTodayCollection": "মোট আজকের সংগ্রহ"
 }
