@@ -64,8 +64,8 @@ const AddCustomer = () => {
   // get area
   const area = useSelector((state) => state?.area?.area);
 
-  // get all subarea
-  const subAreas = useSelector((state) => state.area?.subArea);
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
 
   // bill date state
   const [billDate, setBillDate] = useState(new Date());
@@ -118,9 +118,11 @@ const AddCustomer = () => {
 
   // subarea handler
   const selectArea = (areaId) => {
-    if (area) {
-      const filterSubarea = area.find((val) => val.id === areaId);
+    if (areaId) {
+      const filterSubarea = storeSubArea?.filter((val) => val.area === areaId);
       setSubArea(filterSubarea);
+      setSubAreaId(filterSubarea[0].id);
+      setAreaId(areaId);
     }
   };
 
@@ -144,6 +146,7 @@ const AddCustomer = () => {
     const sendingData = {
       address: data?.address,
       paymentStatus: "unpaid",
+      area: areaId,
       subArea: subareaId,
       ispOwner: ispOwnerId,
       mikrotik: mikrotikId,
@@ -165,7 +168,6 @@ const AddCustomer = () => {
         profile: packageRate?.name,
       },
     };
-    console.log(sendingData);
     addHotspotCustomer(dispatch, sendingData, setIsLoading);
   };
 
@@ -340,12 +342,15 @@ const AddCustomer = () => {
                           disabled={!packageId}
                         >
                           <option value="">...</option>
-                          {subArea?.subAreas &&
-                            subArea.subAreas.map((val, key) => (
-                              <option key={key} value={val.id}>
-                                {val.name}
-                              </option>
-                            ))}
+                          {subArea?.map((val, key) => (
+                            <option
+                              key={key}
+                              value={val.id}
+                              selected={val.id === subareaId || ""}
+                            >
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
 

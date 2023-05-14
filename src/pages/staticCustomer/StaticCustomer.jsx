@@ -105,6 +105,9 @@ export default function Customer() {
       : []
   );
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   //declare local state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
@@ -302,10 +305,12 @@ export default function Customer() {
 
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
+  const [subAreas, setSubAreas] = useState([]);
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
-
+    const allSub = storeSubArea.filter((val) => val.area === area.id);
+    setSubAreas(allSub);
     setArea(area);
     if (
       area &&
@@ -316,7 +321,7 @@ export default function Customer() {
     } else {
       let subAreaIds = [];
 
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+      area?.subAreas.map((sub) => subAreaIds.push(sub));
 
       setSubArea(subAreaIds);
     }
@@ -1159,7 +1164,7 @@ export default function Customer() {
                             >
                               {t("subArea")}
                             </option>
-                            {singleArea?.subAreas?.map((sub, key) => (
+                            {subAreas?.map((sub, key) => (
                               <option
                                 selected={filterOptions.subArea === sub.id}
                                 key={key}

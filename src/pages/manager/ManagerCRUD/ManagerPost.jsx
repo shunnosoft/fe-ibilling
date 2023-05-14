@@ -28,6 +28,7 @@ const ManagerPost = () => {
 
   //get area
   const area = useSelector((state) => state?.area?.area);
+  console.log(area);
 
   //get manager permissions
   useEffect(() => {

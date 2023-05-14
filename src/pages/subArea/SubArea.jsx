@@ -31,12 +31,14 @@ import {
 
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function SubArea() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { areaId } = useParams();
   const area = useSelector((state) => state.area.area);
+  const storeSubArea = useSelector((state) => state.area?.subArea);
   const [subAreas, setSubAreas] = useState([]);
   const [subAreaName, setSubAreaName] = useState("");
   const [ispId, setIspId] = useState("");
@@ -63,6 +65,7 @@ export default function SubArea() {
 
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
+    getSubAreasApi(dispatch, ispOwnerId);
   }, [dispatch, ispOwnerId]);
 
   // go back to area
@@ -92,7 +95,8 @@ export default function SubArea() {
       if (oneArea) {
         setName(oneArea.name);
         setId(oneArea.id);
-        setSubAreas(oneArea.subAreas);
+        const sub = storeSubArea.filter((val) => val.area === areaId);
+        setSubAreas(sub);
       }
     }
     fetchMikrotik(dispatch, ispOwnerId, setIsLoading);

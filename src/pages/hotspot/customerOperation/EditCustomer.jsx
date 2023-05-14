@@ -63,6 +63,9 @@ const EditCustomer = ({ customerId }) => {
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get hotspot package
@@ -97,6 +100,8 @@ const EditCustomer = ({ customerId }) => {
 
   // subarea state
   const [subArea, setSubArea] = useState();
+
+  const [slectSubArea, setSelectSubArea] = useState([]);
 
   // loading state
   const [hotspotPackageLoading, setHotspotPackageLoading] = useState(false);
@@ -136,7 +141,7 @@ const EditCustomer = ({ customerId }) => {
   useEffect(() => {
     area.map((item) => {
       item.subAreas.map((subarea) => {
-        if (subarea.id === editCustomer?.subArea) {
+        if (subarea === editCustomer?.subArea) {
           setAreaId(item.id);
           selectArea(item.id);
         }
@@ -158,6 +163,9 @@ const EditCustomer = ({ customerId }) => {
     if (area) {
       const filterSubarea = area.find((val) => val.id === areaId);
       setSubArea(filterSubarea);
+      const allSub = storeSubArea.filter((val) => val.area === areaId);
+      setSelectSubArea(allSub);
+      setSubAreaId(allSub[0].id);
     }
   };
 
@@ -181,6 +189,7 @@ const EditCustomer = ({ customerId }) => {
     const sendingData = {
       address: data?.address,
       paymentStatus: "unpaid",
+      area: slectSubArea[0]?.area,
       subArea: subareaId,
       ispOwner: ispOwnerId,
       mikrotik: mikrotikId,
@@ -385,21 +394,20 @@ const EditCustomer = ({ customerId }) => {
                           className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           name="subArea"
-                          id="subAreaId"
+                          id="subAreaIdHotspot"
                           onChange={(event) => setSubAreaId(event.target.value)}
                           disabled={!packageId}
                         >
-                          <option value="">...</option>
-                          {subArea?.subAreas &&
-                            subArea.subAreas.map((val, key) => (
-                              <option
-                                key={key}
-                                value={val.id}
-                                selected={val.id === editCustomer.subArea}
-                              >
-                                {val.name}
-                              </option>
-                            ))}
+                          <option value="">Select Sub Area</option>
+                          {slectSubArea?.map((val, key) => (
+                            <option
+                              key={key}
+                              value={val.id}
+                              selected={val.id === subareaId || ""}
+                            >
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
 

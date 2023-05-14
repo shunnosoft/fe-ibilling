@@ -19,8 +19,6 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
-  fetchMikrotik,
-  getArea,
   getIspOwnerData,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
@@ -94,6 +92,7 @@ export default function Home() {
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
+  const [status, setStatus] = useState(false);
   const dispatch = useDispatch();
 
   const date = new Date();
@@ -348,8 +347,8 @@ export default function Home() {
                   <div className="d-flex justify-content-between align-items-center">
                     <p
                       className="fw-700 me-3"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#activeCustomer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#activeCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("active")} &nbsp;
@@ -360,8 +359,8 @@ export default function Home() {
 
                     <p
                       className="fw-700"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#expiredCustomer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#expiredCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("expired")} &nbsp;
@@ -457,16 +456,16 @@ export default function Home() {
                   <div className="chartSection">
                     <p
                       className="dashboardActive"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#activeCustomer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
                     >
                       {t("active")}
                     </p>
                     <h2
                       className="dashboardActive"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#activeCustomer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#activeCustomer"
                     >
                       {FormatNumber(customerStat?.active)}
                     </h2>
@@ -474,9 +473,10 @@ export default function Home() {
                     {permissions?.dashboardCollectionData && (
                       <p
                         className="dashboardActive pb-1"
-                        // data-bs-toggle="modal"
-                        // data-bs-target="#activeCustomer"
+                        data-bs-toggle="modal"
+                        data-bs-target="#activeCustomer"
                         style={{ fontSize: "15px" }}
+                        onClick={() => setStatus(true)}
                       >
                         {t("active")}
                         &nbsp;
@@ -487,8 +487,8 @@ export default function Home() {
                     )}
                     <p
                       className="dashboardData pb-1 pt-0"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#inactiveCustomer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                     >
                       {t("in active")}: {FormatNumber(customerStat?.inactive)}{" "}
@@ -501,8 +501,8 @@ export default function Home() {
                     </p>
                     <p
                       className="dashboardData pb-1"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#expiredCustomer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#expiredCustomer"
                       style={{ fontSize: "15px", paddingTop: "0px" }}
                     >
                       {t("expired")}: {FormatNumber(customerStat?.expired)}{" "}
@@ -526,23 +526,23 @@ export default function Home() {
                   <div className="chartSection">
                     <p
                       className="dashboardUnpaid pb-1"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#paid"
+                      data-bs-toggle="modal"
+                      data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
                     >
                       {t("paid")}
                     </p>
                     <h2
                       className="dashboardUnpaid"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#paid"
+                      data-bs-toggle="modal"
+                      data-bs-target="#paid"
                     >
                       {FormatNumber(customerStat?.paid)}
                     </h2>
                     <p
                       className="dashboardUnpaid pb-1"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#unPaid"
+                      data-bs-toggle="modal"
+                      data-bs-target="#unPaid"
                       style={{ fontSize: "15px", paddingTop: "10px" }}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
@@ -550,8 +550,8 @@ export default function Home() {
 
                     <p
                       className="dashboardUnpaid pb-1"
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#freeCustomer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#freeCustomer"
                       style={{
                         fontSize: "15px",
                         paddingTop: "0px",
@@ -741,7 +741,7 @@ export default function Home() {
                     </div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>
-                        {t("totalTodayCollection")}
+                        {t("totalOwnCollection")}
                       </p>
                       <h2>
                         ৳ {FormatNumber(customerStat?.totalOwnCollection)}
@@ -845,36 +845,42 @@ export default function Home() {
         </FontColor>
       </div>
 
-      {/* <Inactive
+      <Inactive
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
       />
       <Expired
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      /> */}
-      {/* <FreeCustomer
+      />
+      <FreeCustomer
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      /> */}
-      {/* <Paid
+      />
+      <Paid
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
       />
       <Unpaid
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      /> */}
-      {/* <Active
+      />
+      <Active
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      /> */}
+      />
 
       <AllCollector />
       <Reseller />

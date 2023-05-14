@@ -13,7 +13,7 @@ import Table from "../../../components/table/Table";
 import { getInactiveCustomer } from "../../../features/apiCalls";
 import CustomerPdf from "../homePdf/CustomerPdf";
 
-const Inactive = ({ ispOwnerId, year, month }) => {
+const Inactive = ({ ispOwnerId, year, month, status }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -97,8 +97,9 @@ const Inactive = ({ ispOwnerId, year, month }) => {
   );
 
   useEffect(() => {
-    getInactiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month]);
+    status &&
+      getInactiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

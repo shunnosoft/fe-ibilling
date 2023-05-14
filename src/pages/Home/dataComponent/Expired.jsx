@@ -16,7 +16,7 @@ import Table from "../../../components/table/Table";
 import { getExpiredCustomer } from "../../../features/apiCalls";
 import CustomerPdf from "../homePdf/CustomerPdf";
 
-const Expired = ({ ispOwnerId, year, month }) => {
+const Expired = ({ ispOwnerId, year, month, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
@@ -99,8 +99,9 @@ const Expired = ({ ispOwnerId, year, month }) => {
   );
 
   useEffect(() => {
-    getExpiredCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month]);
+    status &&
+      getExpiredCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status]);
 
   // all balance count
   const allBill = useCallback(() => {

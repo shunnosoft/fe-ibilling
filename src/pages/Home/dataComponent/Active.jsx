@@ -16,7 +16,7 @@ import Table from "../../../components/table/Table";
 import { getActiveCustomer } from "../../../features/apiCalls";
 import CustomerPdf from "../homePdf/CustomerPdf";
 
-const Active = ({ ispOwnerId, month, year }) => {
+const Active = ({ ispOwnerId, month, year, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
@@ -99,8 +99,9 @@ const Active = ({ ispOwnerId, month, year }) => {
   );
 
   useEffect(() => {
-    getActiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month]);
+    if (status)
+      getActiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

@@ -51,6 +51,9 @@ export default function CustomerEdit(props) {
   // get all area
   const area = useSelector((state) => state?.area?.area);
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   // get mikrotiks
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
@@ -160,16 +163,19 @@ export default function CustomerEdit(props) {
   useEffect(() => {
     area.map((a) => {
       a.subAreas.map((sub) => {
-        if (sub.id === data?.subArea) {
-          setAreaID(a);
+        if (sub === data?.subArea) {
+          setAreaID(a.id);
           setSubAreaId(sub);
-          setSubArea(a.subAreas);
         }
         return sub;
       });
       return a;
     });
-  }, [area, data]);
+    const initialSubAreas = storeSubArea.filter(
+      (val) => val.area === data?.area
+    );
+    setSubArea(initialSubAreas);
+  }, [area, data, storeSubArea]);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -214,11 +220,13 @@ export default function CustomerEdit(props) {
   const selectSubArea = (data) => {
     const areaId = data.target.value;
 
-    const temp = area.find((val) => {
-      return val.id === areaId;
-    });
-    setAreaID(temp);
-    setSubArea(temp.subAreas);
+    if (areaId) {
+      const temp = storeSubArea.filter((val) => {
+        return val.area === areaId;
+      });
+      setAreaID(areaId);
+      setSubArea(temp);
+    }
   };
 
   // sending data to backed
@@ -253,6 +261,7 @@ export default function CustomerEdit(props) {
     }
     const mainData = {
       singleCustomerID: data?.id,
+      area: areaID,
       subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotikPackage: packageId,
@@ -295,17 +304,15 @@ export default function CustomerEdit(props) {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
-
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
     var subArea = e.target.value;
     area.map((a) => {
       a.subAreas.map((sub) => {
-        if (sub.id === subArea) {
-          setAreaID(a);
-          setSubAreaId(sub);
-          setSubArea(a.subAreas);
+        if (sub === subArea) {
+          setAreaID(a.id);
+          setSubAreaId(subArea);
         }
         return sub;
       });
@@ -507,7 +514,7 @@ export default function CustomerEdit(props) {
                             ? ""
                             : area.map((val, key) => (
                                 <option
-                                  selected={areaID?.id === val.id}
+                                  selected={areaID === val.id}
                                   key={key}
                                   value={val.id || ""}
                                 >
@@ -529,9 +536,10 @@ export default function CustomerEdit(props) {
                           id="subAreaIdFromEdit"
                           onChange={selectedSubArea}
                         >
+                          <option value="">Select Sub Area</option>
                           {subArea?.map((val, key) => (
                             <option
-                              selected={val?.id === subAreaId?.id}
+                              selected={val?.id === subAreaId}
                               key={key}
                               value={val?.id || ""}
                             >

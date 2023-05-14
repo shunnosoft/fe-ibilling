@@ -16,7 +16,7 @@ import Table from "../../../components/table/Table";
 import { getUnpaidCustomer } from "../../../features/apiCalls";
 import CustomerPdf from "../homePdf/CustomerPdf";
 
-const Unpaid = ({ ispOwnerId, month, year }) => {
+const Unpaid = ({ ispOwnerId, month, year, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
@@ -99,8 +99,9 @@ const Unpaid = ({ ispOwnerId, month, year }) => {
   );
 
   useEffect(() => {
-    getUnpaidCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month]);
+    status &&
+      getUnpaidCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

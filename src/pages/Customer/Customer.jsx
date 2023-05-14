@@ -322,16 +322,18 @@ const PPPOECustomer = () => {
       ).getTime();
 
       let getArea = [];
+      // get all subarea
+
+      var allSub = [];
       if (area) {
+        allSub = subAreas.filter((val) => val.area === area);
         getArea = areas.find((item) => item.id === area);
       }
 
       // make possible conditions objects if the filter value not selected thats return true
       //if filter value exist then compare
       const conditions = {
-        area: area
-          ? getArea.subAreas.some((item) => item.id === c.subArea)
-          : true,
+        area: area ? allSub.some((item) => item.id === c.subArea) : true,
         subArea: subArea ? c.subArea === subArea : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,
@@ -953,7 +955,7 @@ const PPPOECustomer = () => {
           subArea: e.target.value,
         });
       },
-      options: subAreas.filter((item) => item.area?.id === areaId),
+      options: subAreas.filter((item) => item?.area === areaId),
       firstOptions: t("subArea"),
       textAccessor: "name",
       valueAccessor: "id",
