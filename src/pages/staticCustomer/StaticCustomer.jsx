@@ -409,9 +409,7 @@ export default function Customer() {
       // make possible conditions objects if the filter value not selected thats return true
       //if filter value exist then compare
       const conditions = {
-        area: area
-          ? getArea.subAreas.some((item) => item.id === c.subArea)
-          : true,
+        area: area ? getArea.subAreas.some((item) => item === c.subArea) : true,
         subArea: subArea ? c.subArea === subArea : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,

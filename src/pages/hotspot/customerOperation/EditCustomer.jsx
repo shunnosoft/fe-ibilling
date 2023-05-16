@@ -139,15 +139,30 @@ const EditCustomer = ({ customerId }) => {
   }, [editCustomer]);
 
   useEffect(() => {
-    area.map((item) => {
-      item.subAreas.map((subarea) => {
-        if (subarea === editCustomer?.subArea) {
-          setAreaId(item.id);
-          selectArea(item.id);
+    // area.map((item) => {
+    //   item.subAreas.map((subarea) => {
+    //     if (subarea === editCustomer?.subArea) {
+    //       setAreaId(item.id);
+    //       selectArea(item.id);
+    //     }
+    //   });
+    // });
+
+    let temp;
+    area.map((a) => {
+      a.subAreas.map((sub) => {
+        if (sub === editCustomer?.subArea) {
+          temp = a.id;
         }
+        return sub;
       });
+      return a;
     });
-  }, [area, editCustomer]);
+    setAreaId(temp);
+
+    const initialSubAreas = storeSubArea.filter((val) => val.area === temp);
+    setSelectSubArea(initialSubAreas);
+  }, [area, editCustomer, storeSubArea]);
 
   // package handler
   const selectPackage = (event) => {

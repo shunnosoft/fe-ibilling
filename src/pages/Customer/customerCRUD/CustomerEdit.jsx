@@ -89,7 +89,7 @@ export default function CustomerEdit(props) {
   const [activeStatus, setActiveStatus] = useState(data?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
-  const [subAreaId, setSubAreaId] = useState({});
+  const [subAreaId, setSubAreaId] = useState("");
   const [connectionDate, setConnectionDate] = useState("");
   const [billDate, setBillDate] = useState();
   const [status, setStatus] = useState("");
@@ -161,19 +161,19 @@ export default function CustomerEdit(props) {
   }, [ispOwnerId]);
 
   useEffect(() => {
+    let temp;
     area.map((a) => {
       a.subAreas.map((sub) => {
         if (sub === data?.subArea) {
           setAreaID(a.id);
-          setSubAreaId(sub);
+          temp = a.id;
         }
         return sub;
       });
       return a;
     });
-    const initialSubAreas = storeSubArea.filter(
-      (val) => val.area === data?.area
-    );
+    setSubAreaId(data?.subArea);
+    const initialSubAreas = storeSubArea.filter((val) => val.area === temp);
     setSubArea(initialSubAreas);
   }, [area, data, storeSubArea]);
 

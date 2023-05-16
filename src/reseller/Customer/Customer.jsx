@@ -131,7 +131,6 @@ export default function Customer() {
   );
 
   const [paymentStatus, setPaymentStatus] = useState("");
-  const [mikrotik, setMikrotik] = useState("");
   const [status, setStatus] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
 

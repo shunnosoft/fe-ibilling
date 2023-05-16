@@ -30,6 +30,7 @@ export default function ResellerEdit({ resellerId }) {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const area = useSelector((state) => state.area.area);
+  const storeSubArea = useSelector((state) => state.area?.subArea);
   const allReseller = useSelector((state) => state?.reseller?.reseller);
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
@@ -628,25 +629,28 @@ export default function ResellerEdit({ resellerId }) {
                                 </label>
                               </div>
 
-                              {val.subAreas.map((v, k) => (
-                                <div key={k} className=" my-1">
-                                  <input
-                                    type="checkbox"
-                                    id={v.id}
-                                    className="getValueUsingClass_Edit me-2"
-                                    name="subArea"
-                                    value={v.id}
-                                    checked={allowedAreas?.includes(v.id)}
-                                    onChange={setAreaHandler}
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    htmlFor={v.id}
-                                  >
-                                    {v.name}
-                                  </label>
-                                </div>
-                              ))}
+                              {storeSubArea?.map(
+                                (v, k) =>
+                                  v.area === val.id && (
+                                    <div key={k} className=" my-1">
+                                      <input
+                                        type="checkbox"
+                                        id={v.id}
+                                        className="getValueUsingClass_Edit me-2"
+                                        name="subArea"
+                                        value={v.id}
+                                        checked={allowedAreas?.includes(v.id)}
+                                        onChange={setAreaHandler}
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={v.id}
+                                      >
+                                        {v.name}
+                                      </label>
+                                    </div>
+                                  )
+                              )}
                             </div>
                           ))}
                         </div>

@@ -112,13 +112,21 @@ export default function StaticCustomerEdit({ single }) {
       setDownMaxLimit(customer?.queue?.maxLimit?.split("/")[1]);
     }
     setQdisable(customer?.queue.disabled);
-    areas?.forEach((item) => {
-      item.subAreas?.forEach((sub) => {
-        if (sub.id === customer?.subArea) {
-          return setArea(item);
+
+    let temp;
+    areas.map((a) => {
+      a.subAreas.map((sub) => {
+        if (sub === customer?.subArea) {
+          temp = a.id;
         }
+        return sub;
       });
+      return a;
     });
+    setAreaID(temp);
+
+    const initialSubAreas = storeSubArea.filter((val) => val.area === temp);
+    setSubArea(initialSubAreas);
 
     const divisionalInfo = {};
     if (customer?.division) {
@@ -475,7 +483,7 @@ export default function StaticCustomerEdit({ single }) {
                             ? ""
                             : areas.map((val, key) => (
                                 <option
-                                  selected={val.id === area?.id}
+                                  selected={val.id === areaID}
                                   key={key}
                                   value={val.id}
                                 >

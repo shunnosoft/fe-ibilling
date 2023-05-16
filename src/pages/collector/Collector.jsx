@@ -32,6 +32,7 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -55,7 +56,6 @@ export default function Collector() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
-  console.log(permission);
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // reload handler
@@ -67,6 +67,7 @@ export default function Collector() {
     if (collector.length === 0)
       getCollector(dispatch, ispOwnerId, setIsLoading);
     getArea(dispatch, ispOwnerId, setIsLoading);
+    getSubAreasApi(dispatch, ispOwnerId);
   }, []);
 
   const [singleCollector, setSingleCollector] = useState();

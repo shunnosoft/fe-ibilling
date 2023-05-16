@@ -22,6 +22,7 @@ import { getArea } from "../../features/apiCalls";
 import { Button } from "react-bootstrap";
 import SMSPurchase from "./SMSPurchase";
 import MessageAlert from "./MessageAlert";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -87,10 +88,9 @@ export default function Message() {
 
   const [isRefrsh, setIsrefresh] = useState(false);
   const area = useSelector((state) => state.area.area);
-
+  const storeSubArea = useSelector((state) => state.area?.subArea);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
-  console.log(subAreaIds);
   const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
@@ -127,6 +127,7 @@ export default function Message() {
     if (userRole === "ispOwner" || userRole === "manager") {
       getIspownerwitSMS();
       if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
+      getSubAreasApi(dispatch, ispOwnerId);
     }
   }, [userRole, getIspownerwitSMS]);
 
@@ -161,13 +162,7 @@ export default function Message() {
   const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
-    let messageTemplate;
-    if (upperText !== "") {
-      messageTemplate = title + upperText + "\n" + bottomText;
-    } else {
-      toast.error(t("selectUserInformation"));
-    }
-
+    let messageTemplate = title + upperText + "\n" + bottomText;
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
@@ -387,6 +382,23 @@ export default function Message() {
     setTemplet(smsTemplet);
   };
 
+  const setSubAreaHandler = (e) => {
+    const subIds = getSubAreaIds();
+    const { value, checked } = e.target;
+    if (checked) {
+      const newArr = subAreaIds.push(value);
+      setAreaIds(newArr);
+      // console.log({ subIds, newArr });
+      if (subIds.length === newArr) {
+        setisAllChecked(true);
+      }
+    } else {
+      const updatedData = subAreaIds.filter((id) => id !== value);
+      setSubAreaIds(updatedData);
+      setisAllChecked(false);
+    }
+  };
+
   const selectAllHandler = (e) => {
     if (e.target.checked) {
       const newArray = getSubAreaIds();
@@ -395,47 +407,6 @@ export default function Message() {
     } else {
       setSubAreaIds([]);
       setisAllChecked(false);
-    }
-  };
-
-  const areasSubareaHandler = (e) => {
-    const { id, value, checked, name } = e.target;
-
-    if (name === "area") {
-      if (checked) {
-        let selectArea = area.find((item) => item.id === id);
-        let areaSubArea = selectArea.subAreas?.map((sub) => sub.id);
-
-        let selectData = [...subAreaIds];
-        for (let i = 0; i < areaSubArea.length; i++) {
-          if (!selectData.includes(areaSubArea[i])) {
-            selectData.push(areaSubArea[i]);
-          }
-        }
-        setSubAreaIds(selectData);
-      } else {
-        const areaSelect = area.find((item) => item.id === id);
-        const areaSubAreaSelect = areaSelect.subAreas?.map((sub) => sub.id);
-
-        let data = [...subAreaIds];
-        for (let i = 0; i < areaSubAreaSelect.length; i++) {
-          if (data.includes(areaSubAreaSelect[i])) {
-            data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
-          }
-        }
-        setSubAreaIds(data);
-      }
-    }
-
-    if (name === "subArea") {
-      if (checked) {
-        const currentSubArea = subAreaIds.push(value);
-        setAreaIds(currentSubArea);
-      } else {
-        const updatedData = subAreaIds.filter((id) => id !== value);
-
-        setSubAreaIds(updatedData);
-      }
     }
   };
 
@@ -593,57 +564,42 @@ export default function Message() {
                               {t("allArea")}
                             </label>
                           </div>
-                          <div className=" mb-4">
-                            <div className="row">
-                              {area?.map((val, key) => (
-                                <div className="col-md-3 mt-3" key={key}>
-                                  <div
-                                    style={{
-                                      cursor: "pointer",
-                                    }}
-                                    className="areaParent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      className="getValueUsingClasses form-check-input"
-                                      name="area"
-                                      id={val.id}
-                                      onChange={areasSubareaHandler}
-                                      isChecked
-                                    />
-                                    <label
-                                      htmlFor={val.id}
-                                      className="ms-2"
-                                      style={{
-                                        fontSize: "20px",
-                                      }}
-                                    >
-                                      {val.name}
-                                    </label>
-                                  </div>
-                                  {val.subAreas.map((v, k) => (
-                                    <div key={k} className="displayFlex">
-                                      <input
-                                        style={{ cursor: "pointer" }}
-                                        type="checkbox"
-                                        className="getValueUsingClass"
-                                        name="subArea"
-                                        value={v.id}
-                                        onChange={areasSubareaHandler}
-                                        id={v.id}
-                                        checked={subAreaIds.includes(v.id)}
-                                      />
-                                      <label
-                                        style={{ cursor: "pointer" }}
-                                        htmlFor={v.id}
-                                      >
-                                        {v.name}
-                                      </label>
-                                    </div>
-                                  ))}
+                          <div className="AllAreaClass mb-4">
+                            {area?.map((val, key) => (
+                              <div key={key}>
+                                <div
+                                  style={{
+                                    cursor: "pointer",
+                                    marginLeft: "5px",
+                                  }}
+                                  className="areaParent"
+                                >
+                                  {val.name}
                                 </div>
-                              ))}
-                            </div>
+                                {storeSubArea?.map(
+                                  (v, k) =>
+                                    v.area === val.id && (
+                                      <div key={k} className="displayFlex">
+                                        <input
+                                          style={{ cursor: "pointer" }}
+                                          type="checkbox"
+                                          className="getValueUsingClass"
+                                          value={v.id}
+                                          onChange={setSubAreaHandler}
+                                          id={v.id}
+                                          checked={subAreaIds.includes(v.id)}
+                                        />
+                                        <label
+                                          style={{ cursor: "pointer" }}
+                                          htmlFor={v.id}
+                                        >
+                                          {v.name}
+                                        </label>
+                                      </div>
+                                    )
+                                )}
+                              </div>
+                            ))}
                           </div>
                           <div
                             style={{
@@ -653,9 +609,6 @@ export default function Message() {
                             }}
                           >
                             <div className="radio-buttons">
-                              <h6 className="text-dark">
-                                {t("selectUserType")}
-                              </h6>
                               <div>
                                 <input
                                   id="bilDateEnd"
@@ -853,10 +806,7 @@ export default function Message() {
                               </div>
                             </div>
                             <div>
-                              <h6 className="mt-3 text-dark">
-                                {t("selectUserInformation")}
-                              </h6>
-                              <div className="mt-0">
+                              <div className="mt-3">
                                 <input
                                   value={title}
                                   onChange={(event) =>

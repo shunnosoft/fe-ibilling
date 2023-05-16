@@ -32,6 +32,7 @@ import Table from "../../components/table/Table";
 import ManagerDetails from "./ManagerCRUD/ManagerDetails";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import ManagerEdit from "./ManagerCRUD/ManagerEdit";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function Manager() {
   const { t } = useTranslation();
@@ -74,6 +75,7 @@ export default function Manager() {
   //get all areas
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
+    getSubAreasApi(dispatch, ispOwnerId);
   }, []);
 
   const columns = React.useMemo(
