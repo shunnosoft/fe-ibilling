@@ -55,15 +55,14 @@ export default function Report() {
 
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
-
+  console.log(storeSubArea);
   // get isp owner id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
   const allCollector = useSelector((state) => state?.collector?.collector);
-  const manager = useSelector((state) => state.manager?.manager);
-
+  const manager = useSelector((state) => state?.manager?.manager);
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -80,10 +79,11 @@ export default function Report() {
   const [areaLoading, setAreaLoading] = useState(false);
   const [collectorLoading, setCollectorLoading] = useState(false);
   const [singleArea, setArea] = useState({});
-  const [subAreas, setSubArea] = useState([]);
-  const [subAreaId, setSubAreaId] = useState("");
+  const [subareas, setSubAreas] = useState([]);
+  const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const [mainData, setMainData] = useState(allBills);
+
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
   const [collectedBy, setCollectedBy] = useState();
@@ -108,7 +108,6 @@ export default function Report() {
     } else if (allBills.length === 0) {
       getAllBills(dispatch, ispOwnerId, setIsLoading);
     }
-
     let collectors = [];
 
     allCollector.map((item) =>
@@ -186,38 +185,44 @@ export default function Report() {
       getCollector(dispatch, ispOwnerId, setCollectorLoading);
   }, []);
 
-  useEffect(() => {}, []);
-
-  const onChangeCollector = (userId) => {
-    if (userId) {
-      setCollectorIds([userId]);
-    } else {
-      let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.user));
-      setCollectorIds(collectorUserIdsArr);
-    }
-  };
+  // const onChangeCollector = (userId) => {
+  //   if (userId) {
+  //     setCollectorIds([userId]);
+  //   } else {
+  //     let collectorUserIdsArr = [];
+  //     collectors.map((item) => collectorUserIdsArr.push(item.user));
+  //     setCollectorIds(collectorUserIdsArr);
+  //   }
+  // };
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
     setArea(area);
-
-    const subAreas = storeSubArea.filter((sub) => sub.area === area?.id);
-    setSubArea(subAreas);
+    const temp = storeSubArea.filter((val) => val.area === area?.id);
+    setSubAreas(temp);
+    if (
+      area &&
+      Object.keys(area).length === 0 &&
+      Object.getPrototypeOf(area) === Object.prototype
+    ) {
+      setSubArea([]);
+    } else {
+      let subAreaIds = [];
+      area?.subAreas.map((sub) => subAreaIds.push(sub));
+      setSubArea(subAreaIds);
+    }
   };
 
   const onChangeSubArea = (id) => {
-    if (id) {
-      setSubAreaId(id);
-    }
-    // if (!id) {
-    //   let subAreaIds = [];
-    //   singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
+    if (!id) {
+      let subAreaIds = [];
 
-    //   setSubArea(subAreaIds);
-    // } else {
-    //   setSubArea([id]);
-    // }
+      singleArea?.subAreas.map((sub) => subAreaIds.push(sub));
+
+      setSubArea(subAreaIds);
+    } else {
+      setSubArea([id]);
+    }
   };
 
   // set Report id
@@ -236,8 +241,11 @@ export default function Report() {
   const onClickFilter = () => {
     let arr = [...allBills];
 
-    if (subArea) {
-      arr = allBills.filter((bill) => bill.customer?.subArea === subArea);
+    console.log(subAreaIds);
+    if (subAreaIds.length) {
+      arr = allBills.filter((bill) =>
+        subAreaIds.includes(bill.customer?.subArea)
+      );
     }
 
     if (collectedBy && collectedBy !== "other") {
@@ -286,8 +294,8 @@ export default function Report() {
   }, [mainData]);
 
   let subArea, collector;
-  if (singleArea && subAreaId) {
-    subArea = storeSubArea.find((sub) => sub.id === subAreaId);
+  if (singleArea && subAreaIds.length === 1) {
+    subArea = storeSubArea?.find((item) => item.id === subAreaIds[0]);
   }
 
   if (collectorIds.length === 1 && collectors.length > 0) {
@@ -557,7 +565,7 @@ export default function Report() {
                         <option value="" defaultValue>
                           {t("subArea")}
                         </option>
-                        {subAreas?.map((sub, key) => (
+                        {subareas?.map((sub, key) => (
                           <option key={key} value={sub.id}>
                             {sub.name}
                           </option>

@@ -1,4 +1,5 @@
 export const ispOwnerPermission = (perm) => {
+  console.log(perm);
   const permission = [
     {
       id: 1,
@@ -125,6 +126,12 @@ export const ispOwnerPermission = (perm) => {
       value: "hasReseller",
       label: "Reseller Add",
       isChecked: perm?.hasReseller,
+    },
+    {
+      id: 22,
+      value: "multipleManager",
+      label: "Multiple Manager",
+      isChecked: perm?.multipleManager,
     },
   ];
   return permission;

@@ -45,6 +45,11 @@ export default function Manager() {
   //get all managers
   const manager = useSelector((state) => state.manager?.manager);
 
+  // get bp setting
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   //get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
@@ -211,7 +216,6 @@ export default function Manager() {
     ],
     [t]
   );
-
   return (
     <>
       <Sidebar />
@@ -225,14 +229,27 @@ export default function Manager() {
               <FourGround>
                 <div className="d-flex justify-content-between collectorTitle px-5">
                   <h2 className="">{t("manager")}</h2>
-                  <div
-                    title={t("addNewManager")}
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#managerAddModal"
-                  >
-                    <PersonPlusFill />
-                  </div>
+                  {bpSettings?.multipleManager ? (
+                    <div
+                      title={t("addNewManager")}
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#managerAddModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  ) : manager.length === 0 ? (
+                    <div
+                      title={t("addNewManager")}
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#managerAddModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </FourGround>
               {/* modal start */}

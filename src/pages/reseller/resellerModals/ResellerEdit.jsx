@@ -295,32 +295,32 @@ export default function ResellerEdit({ resellerId }) {
   };
 
   // select area all subArea handler
-  const resellerAreaSubAreaHandle = (e) => {
-    const { id, checked } = e.target;
-    if (checked) {
-      let selectArea = area.find((item) => item.id === id);
-      let areaSubArea = selectArea.subAreas?.map((sub) => sub.id);
+  // const resellerAreaSubAreaHandle = (e) => {
+  //   const { id, checked } = e.target;
+  //   if (checked) {
+  //     let selectArea = area.find((item) => item.id === id);
+  //     let areaSubArea = selectArea.subAreas?.map((sub) => sub.id);
 
-      let selectData = [...allowedAreas];
-      for (let i = 0; i < areaSubArea.length; i++) {
-        if (!selectData.includes(areaSubArea[i])) {
-          selectData.push(areaSubArea[i]);
-        }
-      }
-      setAllowedAreas(selectData);
-    } else {
-      const areaSelect = area.find((item) => item.id === id);
-      const areaSubAreaSelect = areaSelect.subAreas?.map((sub) => sub.id);
+  //     let selectData = [...allowedAreas];
+  //     for (let i = 0; i < areaSubArea.length; i++) {
+  //       if (!selectData.includes(areaSubArea[i])) {
+  //         selectData.push(areaSubArea[i]);
+  //       }
+  //     }
+  //     setAllowedAreas(selectData);
+  //   } else {
+  //     const areaSelect = area.find((item) => item.id === id);
+  //     const areaSubAreaSelect = areaSelect.subAreas?.map((sub) => sub.id);
 
-      let data = [...allowedAreas];
-      for (let i = 0; i < areaSubAreaSelect.length; i++) {
-        if (data.includes(areaSubAreaSelect[i])) {
-          data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
-        }
-      }
-      setAllowedAreas(data);
-    }
-  };
+  //     let data = [...allowedAreas];
+  //     for (let i = 0; i < areaSubAreaSelect.length; i++) {
+  //       if (data.includes(areaSubAreaSelect[i])) {
+  //         data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
+  //       }
+  //     }
+  //     setAllowedAreas(data);
+  //   }
+  // };
 
   return (
     <div>
@@ -610,14 +610,14 @@ export default function ResellerEdit({ resellerId }) {
                                 }}
                                 className="areaParent"
                               >
-                                <input
+                                {/* <input
                                   type="checkbox"
                                   className="getValueUsingClasses form-check-input"
                                   name="area"
                                   id={val.id}
                                   onChange={resellerAreaSubAreaHandle}
                                   isChecked
-                                />
+                                /> */}
                                 <label
                                   htmlFor={val.id}
                                   className="ms-2"
