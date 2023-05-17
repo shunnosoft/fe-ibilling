@@ -413,16 +413,17 @@ const EditCustomer = ({ customerId }) => {
                           onChange={(event) => setSubAreaId(event.target.value)}
                           disabled={!packageId}
                         >
-                          <option value="">Select Sub Area</option>
-                          {slectSubArea?.map((val, key) => (
-                            <option
-                              key={key}
-                              value={val.id}
-                              selected={val.id === subareaId || ""}
-                            >
-                              {val.name}
-                            </option>
-                          ))}
+                          <option value="">...</option>
+                          {subArea?.subAreas &&
+                            subArea.subAreas.map((val, key) => (
+                              <option
+                                key={key}
+                                value={val.id}
+                                selected={val.id === editCustomer?.subArea}
+                              >
+                                {val.name}
+                              </option>
+                            ))}
                         </select>
                       </div>
 
