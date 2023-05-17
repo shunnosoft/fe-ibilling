@@ -395,7 +395,7 @@ const EditCustomer = ({ customerId }) => {
                               <option
                                 key={key}
                                 value={val.id}
-                                selected={val.id === editCustomer.subArea}
+                                selected={val.id === editCustomer?.subArea}
                               >
                                 {val.name}
                               </option>

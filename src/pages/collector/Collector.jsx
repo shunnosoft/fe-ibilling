@@ -55,7 +55,6 @@ export default function Collector() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
-  console.log(permission);
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // reload handler
