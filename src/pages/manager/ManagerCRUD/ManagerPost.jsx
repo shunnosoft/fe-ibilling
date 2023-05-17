@@ -29,6 +29,9 @@ const ManagerPost = () => {
   //get area
   const area = useSelector((state) => state?.area?.area);
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   //get manager permissions
   useEffect(() => {
     language === "en"
@@ -253,31 +256,34 @@ const ManagerPost = () => {
                       <div className="AllAreaClass">
                         {area?.map((val, key) => (
                           <div key={key}>
-                            <input
+                            {/* <input
                               id={val.id + "Areas"}
                               type="checkbox"
                               className="me-2"
                               value={val.id}
                               onChange={(e) => areaHandler(e, val.subAreas)}
-                            />
+                            /> */}
                             <label htmlFor={val.id + "Areas"}>
                               <b>{val.name.toUpperCase()}</b>
                             </label>
 
-                            {val.subAreas.map((v, k) => (
-                              <div key={k} className="displayFlex">
-                                <input
-                                  id={v.id + "subAreas"}
-                                  type="checkbox"
-                                  className="getValueUsingClass"
-                                  value={v.id}
-                                  onChange={setSubAreaHandler}
-                                />
-                                <label htmlFor={v.id + "subAreas"}>
-                                  {v.name}
-                                </label>
-                              </div>
-                            ))}
+                            {storeSubArea?.map(
+                              (v, k) =>
+                                v.area === val.id && (
+                                  <div key={k} className="displayFlex">
+                                    <input
+                                      id={v.id + "subAreas"}
+                                      type="checkbox"
+                                      className="getValueUsingClass"
+                                      value={v.id}
+                                      onChange={setSubAreaHandler}
+                                    />
+                                    <label htmlFor={v.id + "subAreas"}>
+                                      {v.name}
+                                    </label>
+                                  </div>
+                                )
+                            )}
                           </div>
                         ))}
                       </div>

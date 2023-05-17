@@ -177,9 +177,6 @@ const PPPOECustomer = () => {
   // Single area state
   const [areaId, setAreaId] = useState("");
 
-  // sub area state
-  const [subAreaId, setSubAreaId] = useState("");
-
   // mikrotik package state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
@@ -258,7 +255,7 @@ const PPPOECustomer = () => {
       //loop over areas
       const tempCollectorAreas = areas.filter((item) => {
         return collectorSubAreas.some((subArea) => {
-          return item.subAreas.some((s) => s.id === subArea.id);
+          return item.subAreas.some((s) => s === subArea.id);
         });
       });
       //update the collector area state
@@ -322,16 +319,18 @@ const PPPOECustomer = () => {
       ).getTime();
 
       let getArea = [];
+      // get all subarea
+
+      var allSub = [];
       if (area) {
+        allSub = subAreas.filter((val) => val.area === area);
         getArea = areas.find((item) => item.id === area);
       }
 
       // make possible conditions objects if the filter value not selected thats return true
       //if filter value exist then compare
       const conditions = {
-        area: area
-          ? getArea.subAreas.some((item) => item.id === c.subArea)
-          : true,
+        area: area ? allSub.some((item) => item.id === c.subArea) : true,
         subArea: subArea ? c.subArea === subArea : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,
@@ -953,7 +952,7 @@ const PPPOECustomer = () => {
           subArea: e.target.value,
         });
       },
-      options: subAreas.filter((item) => item.area?.id === areaId),
+      options: subAreas.filter((item) => item?.area === areaId),
       firstOptions: t("subArea"),
       textAccessor: "name",
       valueAccessor: "id",
@@ -1377,10 +1376,10 @@ const PPPOECustomer = () => {
       />
       <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
       <BulkRecharge bulkCustomer={bulkCustomers} modalId="bulkRecharge" />
-      <BulkCustomerTransfer
+      {/* <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
-      />
+      /> */}
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}

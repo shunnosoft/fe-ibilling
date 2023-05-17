@@ -136,11 +136,11 @@ export default function Header(props) {
               {userRole !== "admin" && userRole !== "superadmin" ? (
                 <div
                   style={{ cursor: "pointer", width: "190px" }}
-                  className="fw-bold text-primary me-3"
+                  className="fw-bold text-primary me-1"
                   title={t("netFeeSupportTeam")}
                 >
                   <p onClick={() => setIsOpen({ ...isOpen, [false]: true })}>
-                    NetFee Support Members
+                    {t("netfeeSupportNumbers")}
                   </p>
                 </div>
               ) : (

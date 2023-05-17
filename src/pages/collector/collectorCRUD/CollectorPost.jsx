@@ -15,6 +15,8 @@ export default function CollectorPost() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const area = useSelector((state) => state?.area?.area);
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
   const auth = useSelector((state) => state.persistedReducer.auth?.currentUser);
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -183,20 +185,23 @@ export default function CollectorPost() {
                       {area?.map((val, key) => (
                         <div key={key}>
                           <h6 className="areaParent">{val.name}</h6>
-                          {val.subAreas.map((v, k) => (
-                            <div key={k} className="displayFlex">
-                              <input
-                                id={v.id + "subAreas"}
-                                type="checkbox"
-                                className="getValueUsingClass"
-                                value={v.id}
-                                onChange={setAreaHandler}
-                              />
-                              <label htmlFor={v.id + "subAreas"}>
-                                {v.name}
-                              </label>
-                            </div>
-                          ))}
+                          {storeSubArea?.map(
+                            (v, k) =>
+                              v.area === val.id && (
+                                <div key={k} className="displayFlex">
+                                  <input
+                                    id={v.id + "subAreas"}
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={v.id}
+                                    onChange={setAreaHandler}
+                                  />
+                                  <label htmlFor={v.id + "subAreas"}>
+                                    {v.name}
+                                  </label>
+                                </div>
+                              )
+                          )}
                         </div>
                       ))}
                     </div>

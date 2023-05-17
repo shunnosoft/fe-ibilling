@@ -52,6 +52,9 @@ export default function AddStaticCustomer() {
   // get all area
   const area = useSelector((state) => state?.area?.area);
 
+  // get all SubArea
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   // get all mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
@@ -67,6 +70,8 @@ export default function AddStaticCustomer() {
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
+  const [areaID, setAreaID] = useState("");
+
   const [billDate, setBillDate] = useState(new Date());
   const [connectionDate, setConnectionDate] = useState(new Date());
   const [maxUpLimit, setUpMaxLimit] = useState("");
@@ -119,11 +124,12 @@ export default function AddStaticCustomer() {
   // select subArea
   const selectSubArea = (data) => {
     const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
+    if (areaId) {
+      const temp = storeSubArea.filter((val) => {
+        return val.area === areaId;
       });
       setSubArea(temp);
+      setAreaID(areaId);
     }
   };
 
@@ -203,6 +209,7 @@ export default function AddStaticCustomer() {
     }
     const mainData = {
       paymentStatus: "unpaid",
+      area: areaID,
       subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
@@ -263,6 +270,7 @@ export default function AddStaticCustomer() {
       if (districtName) sendingData.district = districtName;
       if (thanaName) sendingData.thana = thanaName;
     }
+
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
   };
 
@@ -396,7 +404,6 @@ export default function AddStaticCustomer() {
 
                       <div className="col-lg-4 col-md-4 col-xs-6">
                         <label className="form-control-label changeLabelFontColor">
-                          {subArea ? subArea.name + " এর - " : ""}{" "}
                           {t("selectSubArea")}{" "}
                         </label>
                         <select
@@ -406,8 +413,8 @@ export default function AddStaticCustomer() {
                           id="subAreaId"
                         >
                           <option value="">...</option>
-                          {subArea?.subAreas
-                            ? subArea.subAreas.map((val, key) => (
+                          {subArea
+                            ? subArea.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>

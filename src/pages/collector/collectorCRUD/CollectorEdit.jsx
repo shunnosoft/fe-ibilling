@@ -43,6 +43,9 @@ export default function CollectorEdit({ collectorId }) {
   const single = collector.find((val) => val.id === collectorId);
 
   const area = useSelector((state) => state?.area?.area);
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   const [allowedAreas, setAllowedAreas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);
@@ -206,21 +209,26 @@ export default function CollectorEdit({ collectorId }) {
                       {area?.map((val, key) => (
                         <div key={key}>
                           <h6 className="areaParent">{val.name}</h6>
-                          {val.subAreas.map((v, k) => (
-                            <div key={k} className="displayFlex">
-                              <input
-                                id={v.id}
-                                type="checkbox"
-                                className="getValueUsingClass_Edit"
-                                value={v.id}
-                                checked={
-                                  allowedAreas?.includes(v.id) ? true : false
-                                }
-                                onChange={setAreaHandler}
-                              />
-                              <label htmlFor={v.id}>{v.name}</label>
-                            </div>
-                          ))}
+                          {storeSubArea?.map(
+                            (v, k) =>
+                              v.area === val.id && (
+                                <div key={k} className="displayFlex">
+                                  <input
+                                    id={v.id}
+                                    type="checkbox"
+                                    className="getValueUsingClass_Edit"
+                                    value={v.id}
+                                    checked={
+                                      allowedAreas?.includes(v.id)
+                                        ? true
+                                        : false
+                                    }
+                                    onChange={setAreaHandler}
+                                  />
+                                  <label htmlFor={v.id}>{v.name}</label>
+                                </div>
+                              )
+                          )}
                         </div>
                       ))}
                     </div>

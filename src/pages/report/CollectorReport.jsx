@@ -38,7 +38,6 @@ export default function CollectorReport() {
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
   const [mainData, setMainData] = useState(allBills);
-  console.log(mainData);
   const [mainData2, setMainData2] = useState(allBills);
 
   const dispatch = useDispatch();
@@ -71,6 +70,7 @@ export default function CollectorReport() {
         return areas.push(area);
       }
     });
+
     setAreas(areas);
   }, [collectorArea]);
 
@@ -105,6 +105,7 @@ export default function CollectorReport() {
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
     setArea(area);
+    console.log(area);
 
     if (
       area &&
@@ -124,7 +125,7 @@ export default function CollectorReport() {
   const onChangeSubArea = (id) => {
     if (!id) {
       let subAreaIds = [];
-      singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
+      singleArea?.subAreas.map((sub) => subAreaIds.push(sub?.id));
 
       setSubArea(subAreaIds);
     } else {
@@ -137,7 +138,7 @@ export default function CollectorReport() {
 
     if (subAreaIds.length) {
       arr = allBills?.filter((bill) =>
-        subAreaIds.includes(bill.customer.subArea)
+        subAreaIds?.includes(bill?.customer?.subArea)
       );
     }
 

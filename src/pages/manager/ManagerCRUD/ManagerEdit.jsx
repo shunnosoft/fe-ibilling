@@ -34,6 +34,9 @@ const ManagerEdit = ({ managerId }) => {
   //get area
   const area = useSelector((state) => state?.area?.area);
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   //get bp settings
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
@@ -248,33 +251,38 @@ const ManagerEdit = ({ managerId }) => {
                       <div className="AllAreaClass">
                         {area?.map((val, key) => (
                           <div key={key}>
-                            <input
+                            {/* <input
                               id={val.id + "AreasEdit"}
                               type="checkbox"
                               className="me-2"
                               value={val.id}
                               onChange={(e) => areaHandler(e, val.subAreas)}
-                            />
+                            /> */}
                             <label htmlFor={val.id + "AreasEdit"}>
                               <b>{val.name.toUpperCase()}</b>
                             </label>
-                            {val.subAreas.map((v, k) => (
-                              <div key={k} className="displayFlex">
-                                <input
-                                  id={v.id + "subAreasEdit"}
-                                  type="checkbox"
-                                  className="getEditValueUsingClass"
-                                  value={v.id}
-                                  onChange={subAreaHandler}
-                                  checked={
-                                    subAreaIds?.includes(v.id) ? true : false
-                                  }
-                                />
-                                <label htmlFor={v.id + "subAreasEdit"}>
-                                  {v.name}
-                                </label>
-                              </div>
-                            ))}
+                            {storeSubArea?.map(
+                              (v, k) =>
+                                v.area === val.id && (
+                                  <div key={k} className="displayFlex">
+                                    <input
+                                      id={v.id + "subAreasEdit"}
+                                      type="checkbox"
+                                      className="getEditValueUsingClass"
+                                      value={v.id}
+                                      onChange={subAreaHandler}
+                                      checked={
+                                        subAreaIds?.includes(v.id)
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                    <label htmlFor={v.id + "subAreasEdit"}>
+                                      {v.name}
+                                    </label>
+                                  </div>
+                                )
+                            )}
                           </div>
                         ))}
                       </div>

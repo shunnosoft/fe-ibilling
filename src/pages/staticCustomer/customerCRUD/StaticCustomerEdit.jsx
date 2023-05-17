@@ -54,6 +54,9 @@ export default function StaticCustomerEdit({ single }) {
   // get all area
   const areas = useSelector((state) => state?.area?.area);
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   // get all mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
@@ -71,6 +74,9 @@ export default function StaticCustomerEdit({ single }) {
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState();
   const [area, setArea] = useState("");
+  const [subArea, setSubArea] = useState("");
+  const [areaID, setAreaID] = useState("");
+
   const [billDate, setBillDate] = useState(null);
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
@@ -106,13 +112,21 @@ export default function StaticCustomerEdit({ single }) {
       setDownMaxLimit(customer?.queue?.maxLimit?.split("/")[1]);
     }
     setQdisable(customer?.queue.disabled);
-    areas?.forEach((item) => {
-      item.subAreas?.forEach((sub) => {
-        if (sub.id === customer?.subArea) {
-          return setArea(item);
+
+    let temp;
+    areas.map((a) => {
+      a.subAreas.map((sub) => {
+        if (sub === customer?.subArea) {
+          temp = a.id;
         }
+        return sub;
       });
+      return a;
     });
+    setAreaID(temp);
+
+    const initialSubAreas = storeSubArea.filter((val) => val.area === temp);
+    setSubArea(initialSubAreas);
 
     const divisionalInfo = {};
     if (customer?.division) {
@@ -196,11 +210,13 @@ export default function StaticCustomerEdit({ single }) {
   // select subArea
   const selectSubArea = (data) => {
     const areaId = data.target.value;
-    if (areas) {
-      const temp = areas.find((val) => {
-        return val.id === areaId;
+
+    if (areaId) {
+      const temp = storeSubArea.filter((val) => {
+        return val.area === areaId;
       });
-      setArea(temp);
+      setSubArea(temp);
+      setAreaID(areaId);
     }
   };
 
@@ -297,7 +313,14 @@ export default function StaticCustomerEdit({ single }) {
       setIsloading(false);
       return alert(t("selectDownloadPackage"));
     }
+    const subArea2 = document.getElementById("subAreaIdEditStatic").value;
+    if (subArea2 === "") {
+      setIsloading(false);
+      return alert(t("selectSubArea"));
+    }
     const mainData = {
+      area: areaID,
+      subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
@@ -464,7 +487,7 @@ export default function StaticCustomerEdit({ single }) {
                             ? ""
                             : areas.map((val, key) => (
                                 <option
-                                  selected={val.id === area?.id}
+                                  selected={val.id === areaID}
                                   key={key}
                                   value={val.id}
                                 >
@@ -475,18 +498,17 @@ export default function StaticCustomerEdit({ single }) {
                       </div>
                       <div className="static_edit_item">
                         <label className="form-control-label changeLabelFontColor">
-                          {area ? area.name + " এর - " : ""}{" "}
                           {t("selectSubArea")}
                         </label>
                         <select
                           className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           name="subArea"
-                          id="subAreaId"
+                          id="subAreaIdEditStatic"
                         >
                           <option value="">...</option>
-                          {area?.subAreas
-                            ? area.subAreas.map((val, key) => {
+                          {subArea
+                            ? subArea.map((val, key) => {
                                 return (
                                   <option
                                     selected={val.id === customer?.subArea}

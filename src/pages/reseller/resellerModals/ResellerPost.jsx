@@ -28,6 +28,8 @@ export default function ResellerPost() {
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
   const area = useSelector((state) => state.area.area);
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
   // const mikrotik = useSelector((state) => state.mikrotik.mikrotik);
   const mikrotikpakages = useSelector(
     (state) => state.reseller.allMikrotikPakages
@@ -556,17 +558,20 @@ export default function ResellerPost() {
                       {area?.map((val, key) => (
                         <div key={key}>
                           <h6 className="areaParent">{val.name}</h6>
-                          {val.subAreas.map((v, k) => (
-                            <div key={k} className="displayFlex">
-                              <input
-                                type="checkbox"
-                                className="getValueUsingClass"
-                                value={v.id}
-                                onChange={setAreaHandler}
-                              />
-                              <label>{v.name}</label>
-                            </div>
-                          ))}
+                          {storeSubArea?.map(
+                            (v, k) =>
+                              v.area === val.id && (
+                                <div key={k} className="displayFlex">
+                                  <input
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={v.id}
+                                    onChange={setAreaHandler}
+                                  />
+                                  <label>{v.name}</label>
+                                </div>
+                              )
+                          )}
                         </div>
                       ))}
                     </div>

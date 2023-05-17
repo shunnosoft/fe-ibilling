@@ -19,10 +19,9 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
+  getCollectorDashboardCardData,
+  getCollectorDashboardCharts,
   getIspOwnerData,
-  getManagerDashboardCardData,
-  getManagerDashboardCharts,
-  getManger,
 } from "../../features/apiCalls";
 import { getCharts, getDashboardCardData } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,7 +34,6 @@ import AnimatedProgressProvider from "../../components/common/AnimationProgressP
 import { easeQuadIn } from "d3-ease";
 import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
-import { Accordion } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
 import Inactive from "./dataComponent/Inactive";
@@ -47,10 +45,8 @@ import Active from "./dataComponent/Active";
 import AllCollector from "./dataComponent/AllCollector";
 import Reseller from "./dataComponent/Reseller";
 
-export default function ManagerDashboard() {
+export default function CollectorDashboard() {
   const { t } = useTranslation();
-
-  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -67,17 +63,12 @@ export default function ManagerDashboard() {
 
   // get user permission
   const permissions = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.manager.permissions
+    (state) => state.persistedReducer.auth.currentUser.collector.permissions
   );
 
-  // get userdata
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser
-  );
-
-  // get managerId
-  const managerId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.manager.id
+  // get collectorId
+  const collectorId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.collector.id
   );
 
   const customerStat = useSelector((state) => state.chart.customerStat);
@@ -85,7 +76,6 @@ export default function ManagerDashboard() {
   const invoice = useSelector((state) => state.invoice.invoice);
 
   const ChartsData = useSelector((state) => state.chart.charts);
-
   const [isLoading, setIsloading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
@@ -96,8 +86,6 @@ export default function ManagerDashboard() {
   const dispatch = useDispatch();
 
   const date = new Date();
-
-  const [currentCollector, setCurrentCollector] = useState("");
 
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
@@ -133,21 +121,15 @@ export default function ManagerDashboard() {
     Object.keys(ispOwner)?.length === 0 &&
       getIspOwnerData(dispatch, ispOwnerId, setIsloading);
 
-    if (role === "manager") {
-      dispatch(managerFetchSuccess(userData));
-    }
-
     ChartsData.length === 0 &&
-      getManagerDashboardCharts(
-        dispatch,
-        managerId,
-        Year,
-        Month,
-        currentCollector
-      );
+      getCollectorDashboardCharts(dispatch, collectorId, Year, Month);
 
     Object.keys(customerStat)?.length === 0 &&
-      getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
+      getCollectorDashboardCardData(
+        dispatch,
+        setLoadingDashboardData,
+        collectorId
+      );
   }, []);
 
   useEffect(() => {
@@ -167,13 +149,7 @@ export default function ManagerDashboard() {
   }, [ChartsData]);
 
   const handleFilterHandler = () => {
-    getManagerDashboardCharts(
-      dispatch,
-      managerId,
-      Year,
-      Month,
-      currentCollector
-    );
+    getCollectorDashboardCharts(dispatch, collectorId, Year, Month);
   };
 
   let invoiceFlag;
@@ -209,24 +185,12 @@ export default function ManagerDashboard() {
   //imp
   const collectionPercentage = customerStat
     ? Math.round(
-        (customerStat.totalMonthlyBillCollection /
+        (customerStat.totalOwnCollection /
           (customerStat.totalProbableAmount -
             customerStat.totalInactiveAmount)) *
           100
       )
     : 0;
-
-  const managerBalanceCalculation = () => {
-    const totalCollection =
-      customerStat?.totalMonthlyBillCollection +
-      customerStat?.totalDepositByCollectors;
-    const totalCost =
-      customerStat?.managerExpenditure +
-      customerStat?.totalManagerDeposit +
-      customerStat?.managerStaffSalarySum;
-
-    return FormatNumber(totalCollection - totalCost);
-  };
 
   const dashboardReloadHandler = () => {
     const filterData = {
@@ -234,10 +198,10 @@ export default function ManagerDashboard() {
       month: filterDate.getMonth() + 1,
     };
 
-    getManagerDashboardCardData(
+    getCollectorDashboardCardData(
       dispatch,
       setLoadingDashboardData,
-      managerId,
+      collectorId,
       filterData
     );
   };
@@ -248,10 +212,10 @@ export default function ManagerDashboard() {
       month: filterDate.getMonth() + 1,
     };
 
-    getManagerDashboardCardData(
+    getCollectorDashboardCardData(
       dispatch,
       setLoadingDashboardData,
-      managerId,
+      collectorId,
       filterData
     );
   };
@@ -309,6 +273,7 @@ export default function ManagerDashboard() {
                         valueStart={0}
                         valueEnd={Math.round(collectionPercentage)}
                         duration={1}
+                        s
                         easingFunction={easeQuadIn}
                       >
                         {(value) => {
@@ -334,10 +299,7 @@ export default function ManagerDashboard() {
                     <h2>
                       {t("totalCollection")} <br />
                       <CurrencyDollar />{" "}
-                      {FormatNumber(
-                        customerStat?.totalMonthlyBillCollection -
-                          customerStat?.totalMonthlyBillDiscount
-                      )}
+                      {FormatNumber(customerStat?.totalOwnCollection)}
                     </h2>
                   </div>
                 </div>
@@ -349,6 +311,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("active")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -361,6 +324,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("expired")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -489,6 +453,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("in active")}: {FormatNumber(customerStat?.inactive)}{" "}
                       &nbsp;
@@ -503,6 +468,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
                       style={{ fontSize: "15px", paddingTop: "0px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("expired")}: {FormatNumber(customerStat?.expired)}{" "}
                       &nbsp;
@@ -528,6 +494,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("paid")}
                     </p>
@@ -535,6 +502,7 @@ export default function ManagerDashboard() {
                       className="dashboardUnpaid"
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
+                      onClick={() => setStatus(true)}
                     >
                       {FormatNumber(customerStat?.paid)}
                     </h2>
@@ -543,6 +511,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#unPaid"
                       style={{ fontSize: "15px", paddingTop: "10px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
                     </p>
@@ -555,6 +524,7 @@ export default function ManagerDashboard() {
                         fontSize: "15px",
                         paddingTop: "0px",
                       }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("freeCustomer")}:
                       {FormatNumber(customerStat?.freeCustomer)}
@@ -576,28 +546,8 @@ export default function ManagerDashboard() {
                           {t("total collection")}
                         </p>
                         <h2>
-                          ৳{" "}
-                          {FormatNumber(
-                            customerStat?.totalMonthlyBillCollection -
-                              customerStat?.totalMonthlyBillDiscount
-                          )}
+                          ৳ {FormatNumber(customerStat?.totalOwnCollection)}
                         </h2>
-                      </>
-                    )}
-
-                    {permissions?.dashboardCollectionData && (
-                      <>
-                        <p style={{ fontSize: "15px", marginBottom: "0px" }}>
-                          {t("discount")}:{" "}
-                          {FormatNumber(customerStat?.totalMonthlyBillDiscount)}
-                        </p>
-
-                        <p style={{ fontSize: "13px", marginBottom: "0px" }}>
-                          {t("withoutDiscount")}:{" "}
-                          {FormatNumber(
-                            customerStat?.totalMonthlyBillCollection
-                          )}
-                        </p>
                       </>
                     )}
 
@@ -607,7 +557,7 @@ export default function ManagerDashboard() {
                       }
                     >
                       {t("today collection")}{" "}
-                      {FormatNumber(customerStat?.billCollectionToday)}
+                      {FormatNumber(customerStat?.totalOwnCollectionToday)}
                     </p>
                   </div>
                 </div>
@@ -641,22 +591,6 @@ export default function ManagerDashboard() {
                 </div>
 
                 <div className="ChartsFilternew">
-                  {role === "collector" ? (
-                    ""
-                  ) : (
-                    <select
-                      className="form-select chartFilteritem"
-                      onChange={(e) => setCurrentCollector(e.target.value)}
-                    >
-                      <option value="">{t("all collector")}</option>
-                      {customerStat?.collectorStat?.map((c, key) => (
-                        <option key={key} value={c.user}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-
                   <select
                     className="form-select chartFilteritem"
                     onChange={(e) => setYear(e.target.value)}
@@ -703,142 +637,6 @@ export default function ManagerDashboard() {
                 />
               </div>
             </FourGround>
-
-            {role === "manager" ? (
-              <div className="row">
-                <div className="col-md-3">
-                  <div id="card5" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalMonthlyCollection")}
-                      </p>
-                      <h2>
-                        ৳{" "}
-                        {FormatNumber(
-                          customerStat?.totalMonthlyBillCollection +
-                            customerStat?.totalDepositByCollectors
-                        )}
-                      </h2>
-
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:{" "}
-                        {FormatNumber(customerStat?.billCollectionToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card5" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalOwnCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.totalOwnCollection)}
-                      </h2>
-
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:{" "}
-                        {FormatNumber(customerStat?.totalOwnCollectionToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3" key={3}>
-                  <div id="card6" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <BarChartFill />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalManagerDeposite")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.totalManagerDeposit)}
-                      </h2>
-
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalManagerDeposite")}:{" "}
-                        {FormatNumber(customerStat?.todayManagerDeposit)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card14" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("depositCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.totalDepositByCollectors)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card11" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("staffSalary")}</p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.managerStaffSalarySum)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card8" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("cost")}</p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.managerExpenditure)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card7" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>৳ {customerStat.balance}</h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
           </div>
           <Footer />
         </FontColor>

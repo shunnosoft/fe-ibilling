@@ -40,6 +40,9 @@ const Reseller = () => {
         width: "23%",
         Header: t("balance"),
         accessor: "currentBalance",
+        Cell: ({ cell: { value } }) => {
+          return Math.floor(value);
+        },
       },
       {
         width: "23%",
