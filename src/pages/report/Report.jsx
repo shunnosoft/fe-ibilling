@@ -22,6 +22,7 @@ import {
 } from "react-bootstrap-icons";
 import {
   getAllBills,
+  getAllManagerBills,
   getArea,
   getCollector,
   getManger,
@@ -34,6 +35,8 @@ import ReportView from "./modal/ReportView";
 import { CSVLink } from "react-csv";
 import FormatNumber from "../../components/common/NumberFormat";
 import DatePicker from "react-datepicker";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { managerFetchSuccess } from "../../features/managerSlice";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -51,8 +54,22 @@ export default function Report() {
   const dispatch = useDispatch();
   const allArea = useSelector((state) => state?.area?.area);
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
+  // get userdata
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
+
   const allCollector = useSelector((state) => state?.collector?.collector);
   const manager = useSelector((state) => state?.manager?.manager);
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -69,6 +86,7 @@ export default function Report() {
   const [areaLoading, setAreaLoading] = useState(false);
   const [collectorLoading, setCollectorLoading] = useState(false);
   const [singleArea, setArea] = useState({});
+  const [subareas, setSubAreas] = useState([]);
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const [mainData, setMainData] = useState(allBills);
@@ -79,14 +97,25 @@ export default function Report() {
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");
 
-  // reload handler
+  //reload handler
   const reloadHandler = () => {
-    getAllBills(dispatch, ispOwnerId, setIsLoading);
+    if (userRole === "manager") {
+      getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+      dispatch(managerFetchSuccess(userData));
+    } else if (allBills.length === 0) {
+      getAllBills(dispatch, ispOwnerId, setIsLoading);
+    }
   };
 
   useEffect(() => {
     if (allArea.length === 0) getArea(dispatch, ispOwnerId, setAreaLoading);
-    if (allBills.length === 0) getAllBills(dispatch, ispOwnerId, setIsLoading);
+    if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwner);
+
+    if (userRole === "manager") {
+      getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+    } else if (allBills.length === 0) {
+      getAllBills(dispatch, ispOwnerId, setIsLoading);
+    }
     let collectors = [];
 
     allCollector.map((item) =>
@@ -95,25 +124,31 @@ export default function Report() {
     if (collectors.length === allCollector.length) {
       if (userRole === "ispOwner") {
         // const { user, name, id } = manager;
-        const manager1 = {
-          user: manager.user,
-          name: manager.name + " (ম্যানেজার)",
-          id: manager.id,
-        };
+        let allManager = [];
+        let manager1 = {};
+        manager?.forEach((man) => {
+          manager1 = {
+            user: man.user,
+            name: man.name + " (ম্যানেজার)",
+            id: man.id,
+          };
+          allManager.push(manager1);
+        });
+
         const isp = {
           user: currentUser.user.id,
           name: currentUser.ispOwner.name + " (এডমিন)",
           id: currentUser.ispOwner.id,
         };
 
-        collectors.unshift(manager1);
+        collectors.unshift(...allManager);
         collectors.unshift(isp);
       } else {
         // const { user, name, id } = manager;
         const manager1 = {
-          user: manager.user,
-          name: manager.name + "(Manager)",
-          id: manager.id,
+          user: manager?.manager?.user,
+          name: manager?.manager?.name + "(Manager)",
+          id: manager?.manager?.id,
         };
 
         collectors.unshift(manager1);
@@ -147,25 +182,29 @@ export default function Report() {
   }, [allBills]);
 
   useEffect(() => {
-    getManger(dispatch, ispOwnerId);
+    if (userRole === "manager") {
+      dispatch(managerFetchSuccess(userData));
+    }
+    if (userRole === "ispOwner") getManger(dispatch, ispOwnerId);
     if (allCollector.length === 0)
       getCollector(dispatch, ispOwnerId, setCollectorLoading);
   }, []);
 
-  const onChangeCollector = (userId) => {
-    if (userId) {
-      setCollectorIds([userId]);
-    } else {
-      let collectorUserIdsArr = [];
-      collectors.map((item) => collectorUserIdsArr.push(item.user));
-      setCollectorIds(collectorUserIdsArr);
-    }
-  };
+  // const onChangeCollector = (userId) => {
+  //   if (userId) {
+  //     setCollectorIds([userId]);
+  //   } else {
+  //     let collectorUserIdsArr = [];
+  //     collectors.map((item) => collectorUserIdsArr.push(item.user));
+  //     setCollectorIds(collectorUserIdsArr);
+  //   }
+  // };
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
     setArea(area);
-
+    const temp = storeSubArea.filter((val) => val.area === area?.id);
+    setSubAreas(temp);
     if (
       area &&
       Object.keys(area).length === 0 &&
@@ -174,9 +213,7 @@ export default function Report() {
       setSubArea([]);
     } else {
       let subAreaIds = [];
-
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
-
+      area?.subAreas.map((sub) => subAreaIds.push(sub));
       setSubArea(subAreaIds);
     }
   };
@@ -184,7 +221,8 @@ export default function Report() {
   const onChangeSubArea = (id) => {
     if (!id) {
       let subAreaIds = [];
-      singleArea?.subAreas.map((sub) => subAreaIds.push(sub.id));
+
+      singleArea?.subAreas.map((sub) => subAreaIds.push(sub));
 
       setSubArea(subAreaIds);
     } else {
@@ -261,7 +299,7 @@ export default function Report() {
 
   let subArea, collector;
   if (singleArea && subAreaIds.length === 1) {
-    subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
+    subArea = storeSubArea?.find((item) => item.id === subAreaIds[0]);
   }
 
   if (collectorIds.length === 1 && collectors.length > 0) {
@@ -531,7 +569,7 @@ export default function Report() {
                         <option value="" defaultValue>
                           {t("subArea")}
                         </option>
-                        {singleArea?.subAreas?.map((sub, key) => (
+                        {subareas?.map((sub, key) => (
                           <option key={key} value={sub.id}>
                             {sub.name}
                           </option>

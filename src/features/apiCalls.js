@@ -160,10 +160,47 @@ const langMessage = (color, bangla, english) => {
 export const getManger = async (dispatch, ispWonerId) => {
   dispatch(managerFetchStart());
   try {
-    const res = await apiLink.get(`/ispOwner/manager/${ispWonerId}`);
+    const res = await apiLink.get(`/ispOwner/managers/${ispWonerId}`);
     dispatch(managerFetchSuccess(res.data));
   } catch (error) {
     dispatch(managerFetchFailure());
+  }
+};
+
+export const getManagerDashboardCharts = async (
+  dispatch,
+  managerId,
+  year,
+  month,
+  collectorId
+) => {
+  const plusMonth = Number(month) + 1;
+  try {
+    const res = await apiLink(
+      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
+    );
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    console.log("Charts error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+};
+
+export const getCollectorDashboardCharts = async (
+  dispatch,
+  collectorId,
+  year,
+  month
+) => {
+  const plusMonth = Number(month) + 1;
+  try {
+    const res = await apiLink(
+      `dashboard/collector/chart-data/${collectorId}?year=${year}&month=${plusMonth}&user=""`
+    );
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    console.log("Charts error: ", err);
+    toast.error(err.response?.data?.message);
   }
 };
 
@@ -216,6 +253,49 @@ export const getDashboardCardData = async (
     setIsloading(true);
     const res = await apiLink(link);
 
+    dispatch(getCardDataSuccess(res.data));
+  } catch (err) {
+    console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+export const getManagerDashboardCardData = async (
+  dispatch,
+  setIsloading,
+  managerId,
+  filterData = {}
+) => {
+  let year = filterData.year || new Date().getFullYear(),
+    month = filterData.month || new Date().getMonth() + 1;
+
+  try {
+    setIsloading(true);
+    const res = await apiLink(
+      `/dashboard/manager/${managerId}?year=${year}&month=${month}`
+    );
+    dispatch(getCardDataSuccess(res.data));
+  } catch (err) {
+    console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+export const getCollectorDashboardCardData = async (
+  dispatch,
+  setIsloading,
+  collectorId,
+  filterData = {}
+) => {
+  let year = filterData.year || new Date().getFullYear(),
+    month = filterData.month || new Date().getMonth() + 1;
+  try {
+    setIsloading(true);
+    const res = await apiLink(
+      `/dashboard/collector/${collectorId}?year=${year}&month=${month}`
+    );
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {
     console.log("Card data error: ", err);
@@ -375,12 +455,21 @@ export const addManager = async (dispatch, addStaffStatus, managerData) => {
     .catch((err) => {
       if (err.response) {
         button.style.display = "initial";
-        langMessage("error", err.response?.data?.message);
+        langMessage(
+          "error",
+          err.response?.data?.message,
+          err.response?.data?.message
+        );
       }
     });
 };
 
-export const deleteManager = async (dispatch, ispOwnerId) => {
+export const deleteManager = async (
+  dispatch,
+  setIsLoading,
+  ispOwnerId,
+  managerId
+) => {
   await apiLink({
     url: `/ispOwner/manager/${ispOwnerId}`,
     method: "DELETE",
@@ -397,38 +486,48 @@ export const deleteManager = async (dispatch, ispOwnerId) => {
 };
 
 export const editManager = async (dispatch, managerData, setIsLoading) => {
-  setIsLoading(true);
   const button = document.querySelector(".marginLeft");
   button.style.display = "none";
-  try {
-    const res = await apiLink.patch(
-      `/ispOwner/manager/${managerData.ispOwner}`,
-      managerData
-    );
 
-    dispatch(managerEditSuccess(res.data));
-    setIsLoading(false);
-    button.style.display = "initial";
-    hideModal();
-    langMessage(
-      "success",
-      "ম্যানেজার আপডেট সফল হয়েছে",
-      "Manager Updated Successfully"
-    );
-  } catch (error) {
-    setIsLoading(false);
+  await apiLink({
+    url: `/ispOwner/update-manager/${managerData.ispOwner}/${managerData.id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: managerData,
+  })
+    .then((res) => {
+      console.log(res.data);
+      dispatch(managerEditSuccess(res.data));
+      button.style.display = "initial";
+      hideModal();
 
-    button.style.display = "initial";
-    toast.error(error?.response?.data?.message);
-  }
+      langMessage(
+        "success",
+        "ম্যানেজার আপডেট সফল হয়েছে",
+        "Manager Updated Successfully"
+      );
+
+      document.querySelector("#managerEditModal").click();
+    })
+    .catch((err) => {
+      if (err.response) {
+        button.style.display = "initial";
+        langMessage(
+          "error",
+          err.response?.data?.message,
+          err.response?.data?.message
+        );
+      }
+    });
 };
 
 //Areas
-
 export const getArea = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
-    const res = await apiLink.get(`/ispOwner/area/${ispOwnerId}`);
+    const res = await apiLink.get(`/ispOwner/area/v2/${ispOwnerId}`);
     dispatch(FetchAreaSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -570,6 +669,7 @@ export const getCollector = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
+    console.log(res.data);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -1895,6 +1995,22 @@ export const getAllBills = async (dispatch, ispOwnerId, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(`/bill/${ispOwnerId}`);
+    dispatch(getAllBillsSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+export const getAllManagerBills = async (
+  dispatch,
+  ispOwnerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.get(`/bill/get-bill-by-managerId/${ispOwnerId}`);
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);

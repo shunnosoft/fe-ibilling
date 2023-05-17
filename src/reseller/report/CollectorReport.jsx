@@ -39,6 +39,7 @@ export default function CollectorReport() {
   const collectorArea = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.collector.areas
   );
+  console.log(collectorArea);
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);

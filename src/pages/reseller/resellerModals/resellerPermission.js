@@ -101,6 +101,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.instantRechargeBillPrint,
       disabled: !bpSettings?.instantRechargeBillPrint,
     },
+    {
+      id: 15,
+      label: "Daily Reseller Balance Customer",
+      value: "dailyResellerBalanceCustomer",
+      isChecked: permission?.dailyResellerBalanceCustomer,
+      disabled: false,
+    },
   ];
 
   const permissionBn = [
@@ -205,6 +212,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "instantRechargeBillPrint",
       isChecked: permission?.instantRechargeBillPrint,
       disabled: !bpSettings?.instantRechargeBillPrint,
+    },
+    {
+      id: 15,
+      label: "দৈনিক রিসেলার ব্যালেন্স গ্রাহক",
+      value: "dailyResellerBalanceCustomer",
+      isChecked: permission?.dailyResellerBalanceCustomer,
+      disabled: false,
     },
   ];
 

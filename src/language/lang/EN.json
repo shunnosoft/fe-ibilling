@@ -740,6 +740,7 @@
   "inputYourCustomerNumber": "Input Your Customer Number",
   "doYouWantToDeleteMobileNumber": "Do you want to delete mobile number?",
   "totalPages": "Total Pages",
+  "managerDeleteNotify": "Delete This Manager?",
   "selectUserType": "Select User Type",
   "selectUserInformation": "Select User Information's",
   "netFeeSupportTeam": "NetFee Support Team's",
@@ -751,5 +752,8 @@
   "Ashim Kumar Dipu": "Ashim Kumar Dipu",
   "Marof": "Marof",
   "thankYou": "Thank You.",
-  "selectYourManager": "Select Your Manager."
+  "selectYourManager": "Select Your Manager.",
+  "totalOwnCollection": "Total Own Collection",
+  "netfeeSupportNumbers": "Netfee Support Numbers",
+  "editSubArea": "Edit Subarea"
 }

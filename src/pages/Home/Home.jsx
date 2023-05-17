@@ -97,6 +97,7 @@ export default function Home() {
   const date = new Date();
 
   const [currentCollector, setCurrentCollector] = useState("");
+
   const [collectorData, setCollectorData] = useState([]);
   const [resellerData, setResellerData] = useState([]);
   const [Year, setYear] = useState(date.getFullYear());

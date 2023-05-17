@@ -49,7 +49,6 @@ export default function ConfigMikrotik() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
-  console.log(bpSettings);
 
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);

@@ -50,6 +50,7 @@ import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import RechargeReport from "./resellerModals/RechargeReport";
 import MonthlyReport from "./resellerModals/MonthlyReport";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function Reseller() {
   const { t } = useTranslation();
@@ -117,6 +118,7 @@ export default function Reseller() {
       if (reseller.length == 0)
         fetchReseller(dispatch, auth.ispOwner.id, setDataLoader);
       getArea(dispatch, auth.ispOwner.id, setIsLoading);
+      getSubAreasApi(dispatch, ispOwnerId);
     }
   }, [dispatch, auth.ispOwner]);
 

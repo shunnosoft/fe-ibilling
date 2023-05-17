@@ -745,6 +745,7 @@
   "inputYourCustomerNumber": "আপনার গ্রাহক নম্বর ইনপুট করুন",
   "doYouWantToDeleteMobileNumber": "আপনি কি মোবাইল নম্বর ডিলিট করতে চান",
   "totalPages": "মোট পৃষ্ঠা",
+  "managerDeleteNotify": "এই ম্যানেজারটি ডিলিট করবেন?",
   "selectUserType": "সিলেক্ট ইউজার টাইপ",
   "selectUserInformation": "সিলেক্ট ইউজার ইনফরমেশন",
   "netFeeSupportTeam": "নেটফি সাপোর্ট টিম",
@@ -756,5 +757,7 @@
   "Ashim Kumar": "অসীম কুমার দিপু",
   "Marof": "মারুফ",
   "thankYou": "ধন্যবাদ ।",
-  "selectYourManager": "আপনার ম্যানেজার নির্বাচন করুন"
+  "selectYourManager": "আপনার ম্যানেজার নির্বাচন করুন",
+  "totalOwnCollection": "মোট নিজের সংগ্রহ",
+  "netfeeSupportNumbers": "নেটফি সাপোর্ট নম্বর"
 }

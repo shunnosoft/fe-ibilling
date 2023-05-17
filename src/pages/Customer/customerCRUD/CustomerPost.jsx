@@ -45,6 +45,7 @@ export default function CustomerModal() {
   //   (state) => state.persistedReducer.auth?.ispOwnerId
   // );
   const area = useSelector((state) => state?.area?.area);
+  const storeSubArea = useSelector((state) => state.area?.subArea);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   const ppPackage = useSelector((state) =>
@@ -61,6 +62,7 @@ export default function CustomerModal() {
     bpSettings.customerAutoConnection
   );
   const [subArea, setSubArea] = useState("");
+  const [sendArea, setSendArea] = useState("");
   const dispatch = useDispatch();
 
   const [billDate, setBillDate] = useState(new Date());
@@ -121,11 +123,13 @@ export default function CustomerModal() {
   // select subArea
   const selectSubArea = (data) => {
     const areaId = data.target.value;
-    if (area) {
-      const temp = area.find((val) => {
-        return val.id === areaId;
+
+    if (areaId) {
+      const temp = storeSubArea.filter((val) => {
+        return val.area === areaId;
       });
       setSubArea(temp);
+      setSendArea(areaId);
     }
   };
 
@@ -183,6 +187,7 @@ export default function CustomerModal() {
 
     const mainData = {
       paymentStatus: "unpaid",
+      area: sendArea,
       subArea: subArea2,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
@@ -424,7 +429,6 @@ export default function CustomerModal() {
 
                       <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {subArea ? subArea.name + " এর - " : ""}{" "}
                           {t("selectSubArea")}{" "}
                           <span className="text-danger">*</span>
                         </label>
@@ -436,8 +440,8 @@ export default function CustomerModal() {
                           disabled={!mikrotikPackage}
                         >
                           <option value="">...</option>
-                          {subArea?.subAreas
-                            ? subArea.subAreas.map((val, key) => (
+                          {subArea
+                            ? subArea.map((val, key) => (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>

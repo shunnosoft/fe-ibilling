@@ -105,6 +105,9 @@ export default function Customer() {
       : []
   );
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   //declare local state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
@@ -302,10 +305,12 @@ export default function Customer() {
 
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
+  const [subAreas, setSubAreas] = useState([]);
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
-
+    const allSub = storeSubArea.filter((val) => val.area === area.id);
+    setSubAreas(allSub);
     setArea(area);
     if (
       area &&
@@ -316,7 +321,7 @@ export default function Customer() {
     } else {
       let subAreaIds = [];
 
-      area?.subAreas.map((sub) => subAreaIds.push(sub.id));
+      area?.subAreas.map((sub) => subAreaIds.push(sub));
 
       setSubArea(subAreaIds);
     }
@@ -328,7 +333,7 @@ export default function Customer() {
       let areaFound = false;
       allareas.map((area) => {
         area.subAreas.map((sub) => {
-          if (customer.subArea === sub.id) {
+          if (customer.subArea === sub) {
             areaFound = true;
             // if (!temp.find((item) => item.id === customer.id)) {
             temp.push({
@@ -404,9 +409,7 @@ export default function Customer() {
       // make possible conditions objects if the filter value not selected thats return true
       //if filter value exist then compare
       const conditions = {
-        area: area
-          ? getArea.subAreas.some((item) => item.id === c.subArea)
-          : true,
+        area: area ? getArea.subAreas.some((item) => item === c.subArea) : true,
         subArea: subArea ? c.subArea === subArea : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,
@@ -1159,7 +1162,7 @@ export default function Customer() {
                             >
                               {t("subArea")}
                             </option>
-                            {singleArea?.subAreas?.map((sub, key) => (
+                            {subAreas?.map((sub, key) => (
                               <option
                                 selected={filterOptions.subArea === sub.id}
                                 key={key}

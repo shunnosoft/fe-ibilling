@@ -30,6 +30,7 @@ export default function ResellerEdit({ resellerId }) {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const area = useSelector((state) => state.area.area);
+  const storeSubArea = useSelector((state) => state.area?.subArea);
   const allReseller = useSelector((state) => state?.reseller?.reseller);
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
@@ -294,32 +295,32 @@ export default function ResellerEdit({ resellerId }) {
   };
 
   // select area all subArea handler
-  const resellerAreaSubAreaHandle = (e) => {
-    const { id, checked } = e.target;
-    if (checked) {
-      let selectArea = area.find((item) => item.id === id);
-      let areaSubArea = selectArea.subAreas?.map((sub) => sub.id);
+  // const resellerAreaSubAreaHandle = (e) => {
+  //   const { id, checked } = e.target;
+  //   if (checked) {
+  //     let selectArea = area.find((item) => item.id === id);
+  //     let areaSubArea = selectArea.subAreas?.map((sub) => sub.id);
 
-      let selectData = [...allowedAreas];
-      for (let i = 0; i < areaSubArea.length; i++) {
-        if (!selectData.includes(areaSubArea[i])) {
-          selectData.push(areaSubArea[i]);
-        }
-      }
-      setAllowedAreas(selectData);
-    } else {
-      const areaSelect = area.find((item) => item.id === id);
-      const areaSubAreaSelect = areaSelect.subAreas?.map((sub) => sub.id);
+  //     let selectData = [...allowedAreas];
+  //     for (let i = 0; i < areaSubArea.length; i++) {
+  //       if (!selectData.includes(areaSubArea[i])) {
+  //         selectData.push(areaSubArea[i]);
+  //       }
+  //     }
+  //     setAllowedAreas(selectData);
+  //   } else {
+  //     const areaSelect = area.find((item) => item.id === id);
+  //     const areaSubAreaSelect = areaSelect.subAreas?.map((sub) => sub.id);
 
-      let data = [...allowedAreas];
-      for (let i = 0; i < areaSubAreaSelect.length; i++) {
-        if (data.includes(areaSubAreaSelect[i])) {
-          data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
-        }
-      }
-      setAllowedAreas(data);
-    }
-  };
+  //     let data = [...allowedAreas];
+  //     for (let i = 0; i < areaSubAreaSelect.length; i++) {
+  //       if (data.includes(areaSubAreaSelect[i])) {
+  //         data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
+  //       }
+  //     }
+  //     setAllowedAreas(data);
+  //   }
+  // };
 
   return (
     <div>
@@ -609,14 +610,14 @@ export default function ResellerEdit({ resellerId }) {
                                 }}
                                 className="areaParent"
                               >
-                                <input
+                                {/* <input
                                   type="checkbox"
                                   className="getValueUsingClasses form-check-input"
                                   name="area"
                                   id={val.id}
                                   onChange={resellerAreaSubAreaHandle}
                                   isChecked
-                                />
+                                /> */}
                                 <label
                                   htmlFor={val.id}
                                   className="ms-2"
@@ -628,25 +629,28 @@ export default function ResellerEdit({ resellerId }) {
                                 </label>
                               </div>
 
-                              {val.subAreas.map((v, k) => (
-                                <div key={k} className=" my-1">
-                                  <input
-                                    type="checkbox"
-                                    id={v.id}
-                                    className="getValueUsingClass_Edit me-2"
-                                    name="subArea"
-                                    value={v.id}
-                                    checked={allowedAreas?.includes(v.id)}
-                                    onChange={setAreaHandler}
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    htmlFor={v.id}
-                                  >
-                                    {v.name}
-                                  </label>
-                                </div>
-                              ))}
+                              {storeSubArea?.map(
+                                (v, k) =>
+                                  v.area === val.id && (
+                                    <div key={k} className=" my-1">
+                                      <input
+                                        type="checkbox"
+                                        id={v.id}
+                                        className="getValueUsingClass_Edit me-2"
+                                        name="subArea"
+                                        value={v.id}
+                                        checked={allowedAreas?.includes(v.id)}
+                                        onChange={setAreaHandler}
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={v.id}
+                                      >
+                                        {v.name}
+                                      </label>
+                                    </div>
+                                  )
+                              )}
                             </div>
                           ))}
                         </div>
