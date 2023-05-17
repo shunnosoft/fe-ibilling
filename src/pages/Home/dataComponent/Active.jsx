@@ -99,8 +99,7 @@ const Active = ({ ispOwnerId, month, year, status }) => {
   );
 
   useEffect(() => {
-    if (status)
-      getActiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+    getActiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
   }, [month, status]);
 
   // all monthlyFee count

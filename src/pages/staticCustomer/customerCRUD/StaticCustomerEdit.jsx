@@ -314,6 +314,10 @@ export default function StaticCustomerEdit({ single }) {
       return alert(t("selectDownloadPackage"));
     }
     const subArea2 = document.getElementById("subAreaIdEditStatic").value;
+    if (subArea2 === "") {
+      setIsloading(false);
+      return alert(t("selectSubArea"));
+    }
     const mainData = {
       area: areaID,
       subArea: subArea2,

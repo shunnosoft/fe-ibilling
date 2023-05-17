@@ -333,7 +333,7 @@ export default function Customer() {
       let areaFound = false;
       allareas.map((area) => {
         area.subAreas.map((sub) => {
-          if (customer.subArea === sub.id) {
+          if (customer.subArea === sub) {
             areaFound = true;
             // if (!temp.find((item) => item.id === customer.id)) {
             temp.push({

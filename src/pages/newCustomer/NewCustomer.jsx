@@ -43,7 +43,8 @@ const NewCustomer = () => {
   const [staticData, setStaticData] = useState([]);
 
   // loading state
-  const [isLoading, setIsloading] = useState(false);
+  const [staticLoading, setStaticLoading] = useState(false);
+  const [pppoeLoading, setPppoeLoading] = useState(false);
 
   // start date state
   const [startDate, setStartDate] = useState(firstDay);
@@ -98,15 +99,15 @@ const NewCustomer = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getCustomer(dispatch, ispOwner, setIsloading);
-    getStaticCustomer(dispatch, ispOwner, setIsloading);
+    getCustomer(dispatch, ispOwner, setPppoeLoading);
+    getStaticCustomer(dispatch, ispOwner, setStaticLoading);
   };
 
   // get customer api call
   useEffect(() => {
-    if (mainData.length === 0) getCustomer(dispatch, ispOwner, setIsloading);
+    if (mainData.length === 0) getCustomer(dispatch, ispOwner, setPppoeLoading);
     if (staticData.length === 0)
-      getStaticCustomer(dispatch, ispOwner, setIsloading);
+      getStaticCustomer(dispatch, ispOwner, setStaticLoading);
   }, []);
 
   // set customer data on maindata state
@@ -386,7 +387,7 @@ const NewCustomer = () => {
                   <div className="d-flex">
                     <h2>{t("customer")}</h2>
                     <div className="reloadBtn">
-                      {isLoading ? (
+                      {pppoeLoading && staticLoading ? (
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
@@ -503,7 +504,7 @@ const NewCustomer = () => {
 
                         <div className="table-section">
                           <Table
-                            isLoading={isLoading}
+                            isLoading={pppoeLoading}
                             columns={pppoeColumns}
                             data={mainData}
                           ></Table>
@@ -543,7 +544,7 @@ const NewCustomer = () => {
 
                         <div className="table-section">
                           <Table
-                            isLoading={isLoading}
+                            isLoading={staticLoading}
                             columns={staticColumns}
                             data={staticData}
                           ></Table>

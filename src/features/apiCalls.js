@@ -186,6 +186,24 @@ export const getManagerDashboardCharts = async (
   }
 };
 
+export const getCollectorDashboardCharts = async (
+  dispatch,
+  collectorId,
+  year,
+  month
+) => {
+  const plusMonth = Number(month) + 1;
+  try {
+    const res = await apiLink(
+      `dashboard/collector/chart-data/${collectorId}?year=${year}&month=${plusMonth}&user=""`
+    );
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    console.log("Charts error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+};
+
 export const getCharts = async (dispatch, ispOwnerId, year, month, user) => {
   try {
     let link = `/dashboard/${ispOwnerId}?year=${year}&month=${month}`;
@@ -256,6 +274,27 @@ export const getManagerDashboardCardData = async (
     setIsloading(true);
     const res = await apiLink(
       `/dashboard/manager/${managerId}?year=${year}&month=${month}`
+    );
+    dispatch(getCardDataSuccess(res.data));
+  } catch (err) {
+    console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+export const getCollectorDashboardCardData = async (
+  dispatch,
+  setIsloading,
+  collectorId,
+  filterData = {}
+) => {
+  let year = filterData.year || new Date().getFullYear(),
+    month = filterData.month || new Date().getMonth() + 1;
+  try {
+    setIsloading(true);
+    const res = await apiLink(
+      `/dashboard/collector/${collectorId}?year=${year}&month=${month}`
     );
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {
@@ -630,6 +669,7 @@ export const getCollector = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
+    console.log(res.data);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);

@@ -196,7 +196,7 @@ const EditCustomer = ({ customerId }) => {
       return alert(t("selectPackage"));
     }
 
-    if (!subArea) {
+    if (!subareaId) {
       setIsLoading(false);
       return alert(t("selectSubarea"));
     }

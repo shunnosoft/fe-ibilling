@@ -138,7 +138,7 @@ const AddCustomer = () => {
       return alert(t("selectPackage"));
     }
 
-    if (!subArea) {
+    if (!areaId || !subareaId) {
       setIsLoading(false);
       return alert(t("selectSubarea"));
     }
@@ -168,6 +168,7 @@ const AddCustomer = () => {
         profile: packageRate?.name,
       },
     };
+
     addHotspotCustomer(dispatch, sendingData, setIsLoading);
   };
 

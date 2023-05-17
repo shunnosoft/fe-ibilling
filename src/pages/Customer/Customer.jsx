@@ -177,9 +177,6 @@ const PPPOECustomer = () => {
   // Single area state
   const [areaId, setAreaId] = useState("");
 
-  // sub area state
-  const [subAreaId, setSubAreaId] = useState("");
-
   // mikrotik package state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
@@ -258,7 +255,7 @@ const PPPOECustomer = () => {
       //loop over areas
       const tempCollectorAreas = areas.filter((item) => {
         return collectorSubAreas.some((subArea) => {
-          return item.subAreas.some((s) => s.id === subArea.id);
+          return item.subAreas.some((s) => s === subArea.id);
         });
       });
       //update the collector area state
@@ -1379,10 +1376,10 @@ const PPPOECustomer = () => {
       />
       <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
       <BulkRecharge bulkCustomer={bulkCustomers} modalId="bulkRecharge" />
-      <BulkCustomerTransfer
+      {/* <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
-      />
+      /> */}
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}

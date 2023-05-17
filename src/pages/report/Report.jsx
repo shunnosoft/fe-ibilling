@@ -36,6 +36,7 @@ import { CSVLink } from "react-csv";
 import FormatNumber from "../../components/common/NumberFormat";
 import DatePicker from "react-datepicker";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { managerFetchSuccess } from "../../features/managerSlice";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -55,14 +56,20 @@ export default function Report() {
 
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
-  console.log(storeSubArea);
+
   // get isp owner id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // get userdata
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
+
   const allCollector = useSelector((state) => state?.collector?.collector);
   const manager = useSelector((state) => state?.manager?.manager);
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -94,6 +101,7 @@ export default function Report() {
   const reloadHandler = () => {
     if (userRole === "manager") {
       getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+      dispatch(managerFetchSuccess(userData));
     } else if (allBills.length === 0) {
       getAllBills(dispatch, ispOwnerId, setIsLoading);
     }
@@ -137,17 +145,11 @@ export default function Report() {
         collectors.unshift(isp);
       } else {
         // const { user, name, id } = manager;
-
-        let allManager = [];
-        let manager1 = {};
-        manager?.forEach((man) => {
-          manager1 = {
-            user: man.user,
-            name: man.name + " (ম্যানেজার)",
-            id: man.id,
-          };
-          allManager.push(manager1);
-        });
+        const manager1 = {
+          user: manager?.manager?.user,
+          name: manager?.manager?.name + "(Manager)",
+          id: manager?.manager?.id,
+        };
 
         collectors.unshift(manager1);
       }
@@ -180,7 +182,10 @@ export default function Report() {
   }, [allBills]);
 
   useEffect(() => {
-    getManger(dispatch, ispOwnerId);
+    if (userRole === "manager") {
+      dispatch(managerFetchSuccess(userData));
+    }
+    if (userRole === "ispOwner") getManger(dispatch, ispOwnerId);
     if (allCollector.length === 0)
       getCollector(dispatch, ispOwnerId, setCollectorLoading);
   }, []);
@@ -241,7 +246,6 @@ export default function Report() {
   const onClickFilter = () => {
     let arr = [...allBills];
 
-    console.log(subAreaIds);
     if (subAreaIds.length) {
       arr = allBills.filter((bill) =>
         subAreaIds.includes(bill.customer?.subArea)
