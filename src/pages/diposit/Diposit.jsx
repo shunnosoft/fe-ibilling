@@ -102,35 +102,51 @@ export default function Diposit() {
 
   //multiple manager data state
   const [multipleManager, setMultipleManager] = useState([]);
+  const [selectManager, setSelectManager] = useState("");
 
   // add deposit form validation
-  const BillValidatoin = Yup.object({
+  const BillValidatoin = Yup.object().shape({
     amount: Yup.string().required("Please insert amount."),
   });
-
   // add bill deposit
   const billDipositHandler = (data) => {
-    const sendingData = {
-      depositBy: currentUser?.user.role,
-      amount: data.amount,
-      balance: data.balance,
-      user: currentUser?.user.id,
-      ispOwner: ispOwner,
-    };
-
-    // if (userRole !== "collector") {
-    //   delete sendingData.manager;
-    // }
-    // if (userRole === "collector") {
-    //   sendingData.manager = data.manager;
-    // }
-    addDeposit(dispatch, sendingData, setLoading);
-    data.amount = "";
+    if (userRole !== "collector") {
+      const sendingData = {
+        depositBy: currentUser?.user.role,
+        amount: data.amount,
+        balance: data.balance,
+        user: currentUser?.user.id,
+        ispOwner: ispOwner,
+      };
+      addDeposit(dispatch, sendingData, setLoading);
+      data.amount = "";
+    }
+    if (userRole === "collector") {
+      if (!selectManager) {
+        toast.error(t("selectYourManager"));
+      } else {
+        const sendingData = {
+          depositBy: currentUser?.user.role,
+          amount: data.amount,
+          balance: data.balance,
+          user: currentUser?.user.id,
+          ispOwner: ispOwner,
+          manager: selectManager,
+        };
+        addDeposit(dispatch, sendingData, setLoading);
+        data.amount = "";
+      }
+    }
   };
 
   // bill report accept & reject handler
   const depositAcceptRejectHandler = (status, id) => {
     depositAcceptReject(dispatch, status, id, setAccLoading);
+  };
+
+  // manager select deposit handler
+  const managerSelectHandler = (e) => {
+    setSelectManager(e.target.value);
   };
 
   // reload handler
@@ -226,9 +242,9 @@ export default function Diposit() {
         );
     }
 
-    // if (userRole === "collector") {
-    //   getMultipleManager(currentUser, setMultipleManager);
-    // }
+    if (userRole === "collector") {
+      getMultipleManager(currentUser, setMultipleManager);
+    }
   }, []);
 
   useEffect(() => {
@@ -599,15 +615,14 @@ export default function Diposit() {
                               {() => (
                                 <Form>
                                   {userRole === "collector" ? (
-                                    <div className="row d-flex justify-content-center">
-                                      {/* <div className="col col-md-3">
-                                        <h6 className="text-secondary">
+                                    <div className="row d-flex justify-content-around">
+                                      <div className="col col-md-3">
+                                        <label className="form-control-label changeLabelFontColor">
                                           {t("selectManager")}
-                                        </h6>
-                                        <Field
+                                        </label>
+                                        <select
                                           className="form-select mt-0 mw-100"
-                                          as="select"
-                                          name="manager"
+                                          onChange={managerSelectHandler}
                                         >
                                           <option value="">
                                             {t("selectManager")}
@@ -617,8 +632,8 @@ export default function Diposit() {
                                               {value.name}
                                             </option>
                                           ))}
-                                        </Field>
-                                      </div> */}
+                                        </select>
+                                      </div>
                                       <div className="col col-md-3">
                                         <FtextField
                                           type="text"
