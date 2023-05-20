@@ -1423,31 +1423,37 @@ export default function Home() {
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+        status={"inactiveAdmin"}
       />
       <Expired
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+        status={"expiredAdmin"}
       />
       <FreeCustomer
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+        status={"freeCustomerAdmin"}
       />
       <Paid
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+        status={"paidAdmin"}
       />
       <Unpaid
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+        status={"unPaidAdmin"}
       />
       <Active
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+        status={"activeAdmin"}
       />
 
       <AllCollector />
