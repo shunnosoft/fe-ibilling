@@ -68,7 +68,7 @@ const Permissions = ({ ownerId, openIs }) => {
       bpSettings: updatePermission,
     };
 
-    updateOwner(ownerId, sendingData, setIsLoading, dispatch);
+    updateOwner(ownerId, sendingData, setIsLoading, dispatch, setShow);
   };
 
   return (
@@ -108,9 +108,9 @@ const Permissions = ({ ownerId, openIs }) => {
           {/* model body here */}
 
           <div className="container" style={{ display: "inline-block" }}>
-            <div className="row">
+            <div className="displayGrid3">
               {permissions?.map((val, key) => (
-                <div className="CheckboxContainer col-md-5 ms-4 me-5" key={key}>
+                <div className="CheckboxContainer" key={key}>
                   <input
                     type="checkbox"
                     className="CheckBox"

@@ -124,11 +124,7 @@ export default function ConfigMikrotik() {
               </FourGround>
 
               <FourGround>
-                <Tabs
-                  defaultActiveKey={"pppoe"}
-                  id="uncontrolled-tab-example"
-                  className="mb-3"
-                >
+                <Tabs id="uncontrolled-tab-example" className="mb-3">
                   {bpSettings?.customerType &&
                     bpSettings?.customerType.map(
                       (type) =>

@@ -669,7 +669,6 @@ export const getCollector = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
-    console.log(res.data);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);

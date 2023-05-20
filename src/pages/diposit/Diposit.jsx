@@ -341,7 +341,7 @@ export default function Diposit() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "31%",
+        width: "21%",
         Header: t("collector"),
         accessor: "user",
         Cell: ({ cell: { value } }) => {
@@ -362,6 +362,11 @@ export default function Diposit() {
         Cell: ({ row: { original } }) => (
           <div>৳ {FormatNumber(original.amount)}</div>
         ),
+      },
+      {
+        width: "10%",
+        Header: t("depositBy"),
+        accessor: "manager.name",
       },
       {
         width: "22%",
