@@ -216,18 +216,6 @@ export default function ManagerDashboard() {
       )
     : 0;
 
-  const managerBalanceCalculation = () => {
-    const totalCollection =
-      customerStat?.totalMonthlyBillCollection +
-      customerStat?.totalDepositByCollectors;
-    const totalCost =
-      customerStat?.managerExpenditure +
-      customerStat?.totalManagerDeposit +
-      customerStat?.managerStaffSalarySum;
-
-    return FormatNumber(totalCollection - totalCost);
-  };
-
   const dashboardReloadHandler = () => {
     const filterData = {
       year: filterDate.getFullYear(),
@@ -719,8 +707,8 @@ export default function ManagerDashboard() {
                       <h2>
                         ৳{" "}
                         {FormatNumber(
-                          customerStat?.totalMonthlyBillCollection +
-                            customerStat?.totalDepositByCollectors
+                          customerStat?.totalMonthlyBillCollection -
+                            customerStat?.totalMonthlyBillDiscount
                         )}
                       </h2>
 
@@ -769,7 +757,7 @@ export default function ManagerDashboard() {
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalManagerDeposite")}:{" "}
+                        {t("todayTotalManagerDeposit")}:{" "}
                         {FormatNumber(customerStat?.todayManagerDeposit)}
                       </p>
                     </div>
@@ -787,7 +775,7 @@ export default function ManagerDashboard() {
                         {t("depositCollection")}
                       </p>
                       <h2>
-                        ৳ {FormatNumber(customerStat?.totalDepositByCollectors)}
+                        ৳ {FormatNumber(customerStat?.depositsByCollectors)}
                       </h2>
                     </div>
                   </div>

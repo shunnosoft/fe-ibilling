@@ -102,7 +102,8 @@ export default function Report() {
     if (userRole === "manager") {
       getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
       dispatch(managerFetchSuccess(userData));
-    } else if (allBills.length === 0) {
+    }
+    if (allBills.length === 0) {
       getAllBills(dispatch, ispOwnerId, setIsLoading);
     }
   };
@@ -113,7 +114,8 @@ export default function Report() {
 
     if (userRole === "manager") {
       getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
-    } else if (allBills.length === 0) {
+    }
+    if (allBills.length === 0) {
       getAllBills(dispatch, ispOwnerId, setIsLoading);
     }
     let collectors = [];
@@ -189,16 +191,6 @@ export default function Report() {
     if (allCollector.length === 0)
       getCollector(dispatch, ispOwnerId, setCollectorLoading);
   }, []);
-
-  // const onChangeCollector = (userId) => {
-  //   if (userId) {
-  //     setCollectorIds([userId]);
-  //   } else {
-  //     let collectorUserIdsArr = [];
-  //     collectors.map((item) => collectorUserIdsArr.push(item.user));
-  //     setCollectorIds(collectorUserIdsArr);
-  //   }
-  // };
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);

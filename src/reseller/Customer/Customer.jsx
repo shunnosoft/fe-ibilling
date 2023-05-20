@@ -460,7 +460,7 @@ export default function Customer() {
                   </div>
                 </li>
                 {(role === "reseller" || collectorPermission?.billPosting) &&
-                  permission.dailyResellerBalanceCustomer && (
+                  !permission.dailyResellerBalanceCustomer && (
                     <li
                       data-bs-toggle="modal"
                       data-bs-target="#collectCustomerBillModal"
@@ -479,7 +479,7 @@ export default function Customer() {
                   )}
                 {(permission?.customerEdit ||
                   collectorPermission?.customerEdit) &&
-                  permission.dailyResellerBalanceCustomer && (
+                  !permission.dailyResellerBalanceCustomer && (
                     <li
                       data-bs-toggle="modal"
                       data-bs-target="#customerEditModal"
