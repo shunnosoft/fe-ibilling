@@ -103,20 +103,21 @@ export default function Report() {
       getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
       dispatch(managerFetchSuccess(userData));
     }
-    if (allBills.length === 0) {
-      getAllBills(dispatch, ispOwnerId, setIsLoading);
-    }
+
+    userRole === "ispOwner" && getAllBills(dispatch, ispOwnerId, setIsLoading);
   };
 
   useEffect(() => {
-    if (allArea.length === 0) getArea(dispatch, ispOwnerId, setAreaLoading);
-    if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwner);
+    allArea.length === 0 && getArea(dispatch, ispOwnerId, setAreaLoading);
+    storeSubArea.length === 0 && getSubAreasApi(dispatch, ispOwner);
 
     if (userRole === "manager") {
-      getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+      allBills.length === 0 &&
+        getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
     }
-    if (allBills.length === 0) {
-      getAllBills(dispatch, ispOwnerId, setIsLoading);
+
+    if (userRole === "ispOwner") {
+      allBills.length === 0 && getAllBills(dispatch, ispOwnerId, setIsLoading);
     }
     let collectors = [];
 

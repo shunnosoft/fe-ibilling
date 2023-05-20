@@ -22,9 +22,7 @@ import {
   getIspOwnerData,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
-  getManger,
 } from "../../features/apiCalls";
-import { getCharts, getDashboardCardData } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import { showModal } from "../../features/uiSlice";
@@ -35,7 +33,6 @@ import AnimatedProgressProvider from "../../components/common/AnimationProgressP
 import { easeQuadIn } from "d3-ease";
 import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
-import { Accordion } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
 import Inactive from "./dataComponent/Inactive";
@@ -336,6 +333,7 @@ export default function ManagerDashboard() {
                       className="fw-700 me-3"
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
+                      onClick={() => setStatus(true)}
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("active")} &nbsp;
@@ -348,6 +346,7 @@ export default function ManagerDashboard() {
                       className="fw-700"
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
+                      onClick={() => setStatus(true)}
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("expired")} &nbsp;
@@ -446,6 +445,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("active")}
                     </p>
@@ -476,6 +476,7 @@ export default function ManagerDashboard() {
                       className="dashboardData pb-1 pt-0"
                       data-bs-toggle="modal"
                       data-bs-target="#inactiveCustomer"
+                      onClick={() => setStatus(true)}
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                     >
                       {t("in active")}: {FormatNumber(customerStat?.inactive)}{" "}
@@ -490,6 +491,7 @@ export default function ManagerDashboard() {
                       className="dashboardData pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
+                      onClick={() => setStatus(true)}
                       style={{ fontSize: "15px", paddingTop: "0px" }}
                     >
                       {t("expired")}: {FormatNumber(customerStat?.expired)}{" "}
@@ -514,6 +516,7 @@ export default function ManagerDashboard() {
                     <p
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
+                      onClick={() => setStatus(true)}
                       data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
                     >
@@ -523,6 +526,7 @@ export default function ManagerDashboard() {
                       className="dashboardUnpaid"
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
+                      onClick={() => setStatus(true)}
                     >
                       {FormatNumber(customerStat?.paid)}
                     </h2>
@@ -530,6 +534,7 @@ export default function ManagerDashboard() {
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#unPaid"
+                      onClick={() => setStatus(true)}
                       style={{ fontSize: "15px", paddingTop: "10px" }}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
@@ -539,6 +544,7 @@ export default function ManagerDashboard() {
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#freeCustomer"
+                      onClick={() => setStatus(true)}
                       style={{
                         fontSize: "15px",
                         paddingTop: "0px",

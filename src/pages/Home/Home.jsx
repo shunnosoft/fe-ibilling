@@ -1,5 +1,5 @@
 // external imports
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -13,7 +13,6 @@ import {
   Coin,
   CurrencyDollar,
   ChatSquareDots,
-  ArrowClockwise,
 } from "react-bootstrap-icons";
 import moment from "moment";
 // internal imports
@@ -38,7 +37,6 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import { easeQuadIn } from "d3-ease";
-import Table from "../../components/table/Table";
 import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
@@ -92,6 +90,7 @@ export default function Home() {
   const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
+  const [status, setStatus] = useState(false);
   const dispatch = useDispatch();
 
   const date = new Date();
@@ -103,7 +102,6 @@ export default function Home() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
-  const componentRef = useRef();
   const collectorArea = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth.currentUser?.collector.areas
@@ -277,10 +275,6 @@ export default function Home() {
     totalCount += item.count;
   });
 
-  // const payNowHandler = (invoice) => {
-  //   initiatePayment(invoice);
-  // };
-
   const invoiceType = {
     monthlyServiceCharge: t("monthly"),
     registration: t("register"),
@@ -325,29 +319,6 @@ export default function Home() {
           100
       )
     : 0;
-
-  const managerBalanceCalculation = () => {
-    const totalCollection =
-      customerStat.totalManagerCollection +
-      customerStat.totalDepositByCollectors;
-    const totalCost =
-      customerStat.managerExpenditure +
-      customerStat.totalManagerDeposit +
-      customerStat.managerStaffSalarySum;
-
-    return FormatNumber(totalCollection - totalCost);
-  };
-
-  // const todayCollectorDepositeCalculation = () => {
-  //   if (customerStat.collectorStat) {
-  //     const todayTotalCollectorDeposite = customerStat.collectorStat.reduce(
-  //       (prev, curr) => prev + curr.totalDeposit,
-  //       0
-  //     );
-  //     return FormatNumber(todayTotalCollectorDeposite);
-  //   }
-  //   return 0;
-  // };
 
   const dashboardReloadHandler = () => {
     const filterData = {
@@ -499,6 +470,7 @@ export default function Home() {
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("active")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -511,6 +483,7 @@ export default function Home() {
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("expired")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -609,6 +582,7 @@ export default function Home() {
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("active")}
                     </p>
@@ -616,6 +590,7 @@ export default function Home() {
                       className="dashboardActive"
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
+                      onClick={() => setStatus(true)}
                     >
                       {FormatNumber(customerStat.active)}
                     </h2>
@@ -626,6 +601,7 @@ export default function Home() {
                         data-bs-toggle="modal"
                         data-bs-target="#activeCustomer"
                         style={{ fontSize: "15px" }}
+                        onClick={() => setStatus(true)}
                       >
                         {t("active")}
                         &nbsp;
@@ -639,6 +615,7 @@ export default function Home() {
                       data-bs-toggle="modal"
                       data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
                       &nbsp;
@@ -654,6 +631,7 @@ export default function Home() {
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
                       style={{ fontSize: "15px", paddingTop: "0px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
                       &nbsp;
@@ -680,6 +658,7 @@ export default function Home() {
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("paid")}
                     </p>
@@ -687,6 +666,7 @@ export default function Home() {
                       className="dashboardUnpaid"
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
+                      onClick={() => setStatus(true)}
                     >
                       {FormatNumber(customerStat.paid)}
                     </h2>
@@ -695,6 +675,7 @@ export default function Home() {
                       data-bs-toggle="modal"
                       data-bs-target="#unPaid"
                       style={{ fontSize: "15px", paddingTop: "10px" }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat.unpaid)}
                     </p>
@@ -707,6 +688,7 @@ export default function Home() {
                         fontSize: "15px",
                         paddingTop: "0px",
                       }}
+                      onClick={() => setStatus(true)}
                     >
                       {t("freeCustomer")}:
                       {FormatNumber(customerStat.freeCustomer)}
@@ -1420,40 +1402,40 @@ export default function Home() {
       </div>
 
       <Inactive
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-        status={"inactiveAdmin"}
       />
       <Expired
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-        status={"expiredAdmin"}
       />
       <FreeCustomer
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-        status={"freeCustomerAdmin"}
       />
       <Paid
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-        status={"paidAdmin"}
       />
       <Unpaid
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-        status={"unPaidAdmin"}
       />
       <Active
+        status={status}
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-        status={"activeAdmin"}
       />
 
       <AllCollector />
