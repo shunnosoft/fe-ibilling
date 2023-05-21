@@ -231,7 +231,7 @@ const PPPOECustomer = () => {
     if (role !== "collector") {
       if (collectors.length === 0)
         getCollector(dispatch, ispOwner, setCollectorLoading);
-      getManger(dispatch, ispOwner);
+      role === "ispOwner" && getManger(dispatch, ispOwner);
     }
 
     // set initial state for print oprions
@@ -1376,10 +1376,10 @@ const PPPOECustomer = () => {
       />
       <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
       <BulkRecharge bulkCustomer={bulkCustomers} modalId="bulkRecharge" />
-      {/* <BulkCustomerTransfer
+      <BulkCustomerTransfer
         bulkCustomer={bulkCustomers}
         modalId="bulkTransferToReseller"
-      /> */}
+      />
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}

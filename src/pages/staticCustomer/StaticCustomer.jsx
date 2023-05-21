@@ -376,7 +376,8 @@ export default function Customer() {
     if (role !== "collector") {
       if (collectors.length === 0)
         getCollector(dispatch, ispOwner, setIsloading);
-      getManger(dispatch, ispOwner);
+
+      role === "ispOwner" && getManger(dispatch, ispOwner);
     }
   }, []);
 
