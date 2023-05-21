@@ -459,42 +459,40 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-                {(role === "reseller" || collectorPermission?.billPosting) &&
-                  !permission.dailyResellerBalanceCustomer && (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#collectCustomerBillModal"
-                      onClick={() => {
-                        getSpecificCustomer(original.id);
-                        getSpecificCustomerReport(original);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <CurrencyDollar />
-                          <p className="actionP">{t("useMemoRecharge")}</p>
-                        </div>
+                {(role === "reseller" || collectorPermission?.billPosting) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectCustomerBillModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                      getSpecificCustomerReport(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">{t("useMemoRecharge")}</p>
                       </div>
-                    </li>
-                  )}
+                    </div>
+                  </li>
+                )}
                 {(permission?.customerEdit ||
-                  collectorPermission?.customerEdit) &&
-                  !permission.dailyResellerBalanceCustomer && (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#customerEditModal"
-                      onClick={() => {
-                        getSpecificCustomer(original.id);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <PenFill />
-                          <p className="actionP">{t("edit")}</p>
-                        </div>
+                  collectorPermission?.customerEdit) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerEditModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">{t("edit")}</p>
                       </div>
-                    </li>
-                  )}
+                    </div>
+                  </li>
+                )}
                 {role !== "collector" && (
                   <li
                     data-bs-toggle="modal"
