@@ -398,6 +398,9 @@ const DetailsForm = ({ ispOwner }) => {
                 >
                   Deleted
                 </option>
+                <option value="trial" selected={ispOwner?.status === "trial"}>
+                  Trial
+                </option>
               </Field>
             </div>
 

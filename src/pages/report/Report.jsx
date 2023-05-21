@@ -90,6 +90,7 @@ export default function Report() {
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const [mainData, setMainData] = useState(allBills);
+  console.log(mainData);
 
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
@@ -342,12 +343,12 @@ export default function Report() {
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "7%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("name"),
         accessor: "customer.name",
       },
@@ -357,14 +358,19 @@ export default function Report() {
         accessor: "customer.pppoe.name",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("package"),
         accessor: "package",
       },
       {
-        width: "7%",
+        width: "8%",
         Header: t("bill"),
         accessor: "amount",
+      },
+      {
+        width: "9%",
+        Header: t("discount"),
+        accessor: "discount",
       },
       {
         width: "8%",
@@ -377,12 +383,12 @@ export default function Report() {
         accessor: "medium",
       },
       {
-        width: "11%",
+        width: "8%",
         Header: t("collector"),
         accessor: "name",
       },
       {
-        width: "14%",
+        width: "10%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -428,7 +434,7 @@ export default function Report() {
       },
 
       {
-        width: "12%",
+        width: "10%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {

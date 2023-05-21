@@ -18,7 +18,10 @@ import { toast } from "react-toastify";
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import Table from "../../../components/table/Table";
-import { getSubAreasApi } from "../../../features/actions/customerApiCall";
+import {
+  getSubAreas,
+  getSubAreasApi,
+} from "../../../features/actions/customerApiCall";
 import { getIspOwnersStaffs } from "../../../features/apiCallAdmin";
 import {
   deleteSingleMikrotik,
@@ -102,7 +105,7 @@ const DetailsModal = ({ ownerId }) => {
   useEffect(() => {
     if (ownerId) {
       getIspOwnersStaffs(ownerId, dispatch, setIsLoading);
-      getSubAreasApi(dispatch, ownerId);
+      getSubAreas(dispatch, ownerId);
       fetchMikrotik(dispatch, ownerId, setIsLoading);
     }
   }, [ownerId]);
@@ -645,8 +648,70 @@ const DetailsModal = ({ ownerId }) => {
                           )}
                           {staffs.collectors?.length > 0 ? (
                             <div className="collector">
-                              <h5 className="text-primary">Collectors</h5>
+                              <h5 className="text-primary">
+                                IspOwner Collectors
+                              </h5>
                               {staffs.collectors?.map((item, key) => (
+                                <>
+                                  <h6 key={key} className="mt-3">
+                                    <Person /> {item?.name}
+                                  </h6>
+                                  <h6>
+                                    {" "}
+                                    <Telephone /> {item?.mobile}
+                                    {"  "}
+                                    <PenFill
+                                      className="text-primary"
+                                      onClick={() => editHandler(item?.id)}
+                                    />
+                                    {"  "}
+                                    <KeyFill
+                                      className="text-danger"
+                                      size={25}
+                                      onClick={() =>
+                                        resetPassHandler(item.user)
+                                      }
+                                    />
+                                  </h6>
+
+                                  {editToggle === item?.id && (
+                                    <>
+                                      <h6>
+                                        <input
+                                          type="number"
+                                          className="w-75 me-2"
+                                          onChange={(e) =>
+                                            setEditNumber(e.target.value)
+                                          }
+                                        />
+                                      </h6>
+                                      <h6>
+                                        <button
+                                          onClick={() =>
+                                            editNumberHandler(
+                                              item.id,
+                                              "collector"
+                                            )
+                                          }
+                                          class="btn btn-primary btn-sm py-0 me-3"
+                                        >
+                                          Submit
+                                        </button>
+                                        <button
+                                          class="btn btn-primary btn-sm py-0"
+                                          onClick={() => setEditToggle("")}
+                                        >
+                                          Cancel
+                                        </button>
+                                      </h6>
+                                    </>
+                                  )}
+                                </>
+                              ))}
+                              <h5 className="text-primary mt-4">
+                                Resellers Collector
+                              </h5>
+                              {staffs.resellerCollectors?.map((item, key) => (
                                 <>
                                   <h6 key={key} className="mt-3">
                                     <Person /> {item?.name}

@@ -32,3 +32,12 @@ export const transferToResellerApi = async (
   }
   setIsLoading(false);
 };
+
+export const getSubAreas = async (dispatch, ispOwnerId) => {
+  try {
+    const res = await apiLink.get("ispOwner/subArea/" + ispOwnerId);
+    dispatch(getSubareas(res.data.subAreas));
+  } catch (error) {
+    console.log(error);
+  }
+};
