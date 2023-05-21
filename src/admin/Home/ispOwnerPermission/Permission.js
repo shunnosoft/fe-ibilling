@@ -1,5 +1,4 @@
 export const ispOwnerPermission = (perm) => {
-  console.log(perm);
   const permission = [
     {
       id: 1,

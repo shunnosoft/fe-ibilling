@@ -53,13 +53,14 @@ export default function Home() {
   // loading
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [openIs, setOpenIs] = useState(false);
+  const [isPermission, setIsPermission] = useState(false);
 
   // import dispatch
   const dispatch = useDispatch();
 
   // set owner at local state
   const [ownerId, setOwnerId] = useState();
+  const [permissionId, setPermissionId] = useState("");
 
   // invoice id state
   const [invoiceId, setInvoiceId] = useState();
@@ -167,8 +168,8 @@ export default function Home() {
 
   // permission modal method
   const permissionModal = (permissionId) => {
-    setOwnerId(permissionId);
-    setOpenIs({ ...openIs, [false]: true });
+    setPermissionId(permissionId);
+    setIsPermission({ ...isPermission, [false]: true });
   };
 
   // details modal handle
@@ -398,8 +399,6 @@ export default function Home() {
                   </li>
 
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#clientParmissionModal"
                     onClick={() => {
                       permissionModal(original.id);
                     }}
@@ -654,6 +653,7 @@ export default function Home() {
                   <option value="inactive">Inactive</option>
                   <option value="banned">Banned</option>
                   <option value="deleted">Deleted</option>
+                  <option value="trial">Trial</option>
                 </select>
               </div>
               <div className="col col-md-2 mb-3">
@@ -738,7 +738,7 @@ export default function Home() {
                 data={ispOwners}
               ></Table>
 
-              <Permissions ownerId={ownerId} openIs={openIs} />
+              <Permissions ownerId={permissionId} openIs={isPermission} />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <AddProprietorModal ownerId={ownerId} />

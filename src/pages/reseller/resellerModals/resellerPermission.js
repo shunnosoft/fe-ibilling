@@ -213,13 +213,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.instantRechargeBillPrint,
       disabled: !bpSettings?.instantRechargeBillPrint,
     },
-    {
-      id: 15,
-      label: "দৈনিক রিসেলার ব্যালেন্স গ্রাহক",
-      value: "dailyResellerBalanceCustomer",
-      isChecked: permission?.dailyResellerBalanceCustomer,
-      disabled: false,
-    },
+    // {
+    //   id: 15,
+    //   label: "দৈনিক রিসেলার ব্যালেন্স গ্রাহক",
+    //   value: "dailyResellerBalanceCustomer",
+    //   isChecked: permission?.dailyResellerBalanceCustomer,
+    //   disabled: false,
+    // },
   ];
 
   if (localStorage.getItem("netFee:lang") === "bn") return permissionBn;

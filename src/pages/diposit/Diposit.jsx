@@ -123,7 +123,7 @@ export default function Diposit() {
     }
     if (userRole === "collector") {
       if (!selectManager) {
-        toast.error(t("selectYourManager"));
+        toast.error(t("selectManager"));
       } else {
         const sendingData = {
           depositBy: currentUser?.user.role,
@@ -341,7 +341,7 @@ export default function Diposit() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "21%",
+        width: "20%",
         Header: t("collector"),
         accessor: "user",
         Cell: ({ cell: { value } }) => {
@@ -369,7 +369,7 @@ export default function Diposit() {
         accessor: "manager.name",
       },
       {
-        width: "22%",
+        width: "20%",
         Header: t("action"),
 
         Cell: ({ row: { original } }) => (

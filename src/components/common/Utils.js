@@ -39,6 +39,7 @@ const addClass = {
 
   drop: "primary",
   delete: "danger",
+  trial: "secondary",
 };
 
 export const badge = (item) => {
