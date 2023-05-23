@@ -99,9 +99,9 @@ const Expired = ({ ispOwnerId, year, month, status }) => {
   );
 
   useEffect(() => {
-    status &&
+    status === "expired" &&
       getExpiredCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month, status]);
+  }, [month, status, year]);
 
   // all balance count
   const allBill = useCallback(() => {

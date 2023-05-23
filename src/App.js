@@ -133,7 +133,11 @@ function App() {
   const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
 
   useEffect(() => {
-    if (userRole === "ispOwner" || userRole === "manager")
+    if (
+      userRole === "ispOwner" ||
+      userRole === "manager" ||
+      userRole === "collector"
+    )
       getUnpaidInvoice(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch, userRole]);
   const pathName = useLocation().pathname;

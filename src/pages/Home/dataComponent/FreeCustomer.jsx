@@ -91,8 +91,9 @@ const FreeCustomer = ({ ispOwnerId, year, month, status }) => {
   );
 
   useEffect(() => {
-    status && getFreeCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month, status]);
+    status === "freeCustomer" &&
+      getFreeCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status, year]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

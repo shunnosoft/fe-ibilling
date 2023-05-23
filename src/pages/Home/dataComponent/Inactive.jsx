@@ -97,9 +97,9 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
   );
 
   useEffect(() => {
-    status &&
+    status === "inactive" &&
       getInactiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month, status]);
+  }, [month, status, year]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

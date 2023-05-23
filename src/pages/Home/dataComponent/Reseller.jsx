@@ -1,23 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ReactToPrint from "react-to-print";
 import Table from "../../../components/table/Table";
 import ResellerCollectionPdf from "../homePdf/ResellerCollectionPdf";
+import { getIspOwnerReseller } from "../../../features/apiCalls";
 
-const Reseller = () => {
+const Reseller = ({ ispOwnerId, month, year, status }) => {
   const { t } = useTranslation();
   const componentRef = useRef();
+  const dispatch = useDispatch();
 
-  // get reseller data
-  const customerStat = useSelector((state) => state.chart.customerStat);
-
-  // ispOwner role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // reseller data state
-  const [resellerData, setResellerData] = useState([]);
+  // get active customer data
+  const resellerData = useSelector(
+    (state) => state.dashboardInformation?.ispOwnerReseller
+  );
 
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -59,10 +57,9 @@ const Reseller = () => {
   );
 
   useEffect(() => {
-    if (customerStat) {
-      setResellerData(customerStat?.resellerStat);
-    }
-  }, [customerStat]);
+    status === "reseller" &&
+      getIspOwnerReseller(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [status, year, month]);
 
   return (
     <div
@@ -85,9 +82,6 @@ const Reseller = () => {
                 style={{
                   marginLeft: ".5rem",
                   textAlign: "end",
-                  // paddingTop: "1rem",
-                  // paddingBottom: "1rem",
-                  // background: "green",
                 }}
               >
                 <ReactToPrint
@@ -112,25 +106,19 @@ const Reseller = () => {
             ></button>
           </div>
           <div className="modal-body">
-            {role === "ispOwner" && resellerData && resellerData.length > 0 && (
-              <>
-                <div className="table-section">
-                  <Table
-                    isLoading={isLoading}
-                    columns={column}
-                    data={resellerData}
-                  ></Table>
-                </div>
-                <div className="d-none">
-                  <ResellerCollectionPdf
-                    resellerCollectionData={customerStat}
-                    //customerStat
-                    // currentCustomers={Customers}
-                    ref={componentRef}
-                  />
-                </div>
-              </>
-            )}
+            <div className="table-section">
+              <Table
+                isLoading={isLoading}
+                columns={column}
+                data={resellerData}
+              ></Table>
+            </div>
+            <div className="d-none">
+              <ResellerCollectionPdf
+                resellerCollectionData={resellerData}
+                ref={componentRef}
+              />
+            </div>
           </div>
         </div>
       </div>

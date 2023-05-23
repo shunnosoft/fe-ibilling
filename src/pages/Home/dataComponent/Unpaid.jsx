@@ -99,9 +99,9 @@ const Unpaid = ({ ispOwnerId, month, year, status }) => {
   );
 
   useEffect(() => {
-    status &&
+    status === "unpaid" &&
       getUnpaidCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month, status]);
+  }, [month, status, year]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

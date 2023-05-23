@@ -99,8 +99,9 @@ const Active = ({ ispOwnerId, month, year, status }) => {
   );
 
   useEffect(() => {
-    getActiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month, status]);
+    status === "active" &&
+      getActiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status, year]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

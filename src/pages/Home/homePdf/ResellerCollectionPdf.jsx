@@ -40,15 +40,14 @@ const ResellerCollectionPdf = forwardRef((props, ref) => {
           </tr>
         </thead>
         <tbody className="text-center">
-          {resellerCollectionData.resellerStat &&
-            resellerCollectionData.resellerStat.map((val, key) => (
-              <tr key={key} id={val.id}>
-                <td className="prin_td">{val.name}</td>
-                <td className="prin_td">{val.currentBalance}</td>
-                <td className="prin_td">{val.totalBillCollected}</td>
-                <td className="prin_td">{val.totalBillCollected}</td>
-              </tr>
-            ))}
+          {resellerCollectionData?.map((val, key) => (
+            <tr key={key} id={val.id}>
+              <td className="prin_td">{val.name}</td>
+              <td className="prin_td">{Math.floor(val.currentBalance)}</td>
+              <td className="prin_td">{val.totalBillCollected}</td>
+              <td className="prin_td">{val.totalDueAmount}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
