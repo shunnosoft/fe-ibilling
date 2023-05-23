@@ -131,6 +131,8 @@ import {
   getExpiredCustomerSuccess,
   getFreeCustomerSuccess,
   getInactiveCustomerSuccess,
+  getIspOwnerCollectorSuccess,
+  getIspOwnerResellerSuccess,
   getPaidCustomerSuccess,
   getUnpaidCustomerSuccess,
 } from "./dashboardInformationSlice";
@@ -216,6 +218,25 @@ export const getCharts = async (dispatch, ispOwnerId, year, month, user) => {
   }
 };
 
+export const getIspOwnerCharts = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  collectorId
+) => {
+  const plusMonth = Number(month) + 1;
+  try {
+    const res = await apiLink(
+      `dashboard/ispOwner/chart-data/${ispOwnerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
+    );
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    console.log("Charts error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+};
+
 export const getChartsReseller = async (
   dispatch,
   resellerId,
@@ -253,6 +274,28 @@ export const getDashboardCardData = async (
     setIsloading(true);
     const res = await apiLink(link);
 
+    dispatch(getCardDataSuccess(res.data));
+  } catch (err) {
+    console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+export const getIspOwnerDashboardCardData = async (
+  dispatch,
+  setIsloading,
+  ispOwnerId,
+  filterData = {}
+) => {
+  let year = filterData.year || new Date().getFullYear(),
+    month = filterData.month || new Date().getMonth() + 1;
+
+  try {
+    setIsloading(true);
+    const res = await apiLink(
+      `/dashboard/ispOwner/${ispOwnerId}?year=${year}&month=${month}`
+    );
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {
     console.log("Card data error: ", err);
@@ -425,6 +468,44 @@ export const getActiveCustomer = async (
     console.log(error.response.data.message);
   }
 
+  setIsLoading(false);
+};
+
+export const getIspOwnerReseller = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `dashboard/reseller/state/${ispOwnerId}?year=${year}&month=${month}`
+  );
+  dispatch(getIspOwnerResellerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+  setIsLoading(false);
+};
+
+export const getIspOwnerCollector = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `dashboard/collector/state/${ispOwnerId}?year=${year}&month=${month}`
+  );
+  dispatch(getIspOwnerCollectorSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
   setIsLoading(false);
 };
 

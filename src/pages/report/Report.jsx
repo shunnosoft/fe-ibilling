@@ -90,7 +90,6 @@ export default function Report() {
   const [subAreaIds, setSubArea] = useState([]);
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const [mainData, setMainData] = useState(allBills);
-  console.log(mainData);
 
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);

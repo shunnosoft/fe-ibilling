@@ -42,7 +42,6 @@ import Paid from "./dataComponent/Paid";
 import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
 import AllCollector from "./dataComponent/AllCollector";
-import Reseller from "./dataComponent/Reseller";
 
 export default function ManagerDashboard() {
   const { t } = useTranslation();
@@ -89,7 +88,7 @@ export default function ManagerDashboard() {
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
-  const [status, setStatus] = useState(false);
+  const [status, setStatus] = useState("");
   const dispatch = useDispatch();
 
   const date = new Date();
@@ -134,17 +133,15 @@ export default function ManagerDashboard() {
       dispatch(managerFetchSuccess(userData));
     }
 
-    ChartsData.length === 0 &&
-      getManagerDashboardCharts(
-        dispatch,
-        managerId,
-        Year,
-        Month,
-        currentCollector
-      );
+    getManagerDashboardCharts(
+      dispatch,
+      managerId,
+      Year,
+      Month,
+      currentCollector
+    );
 
-    Object.keys(customerStat)?.length === 0 &&
-      getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
+    getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
   }, []);
 
   useEffect(() => {
@@ -190,13 +187,6 @@ export default function ManagerDashboard() {
       }
     }
   }
-
-  let totalCollection = 0,
-    totalCount = 0;
-  ChartsData.map((item) => {
-    totalCollection += item.total;
-    totalCount += item.count;
-  });
 
   const invoiceType = {
     monthlyServiceCharge: t("monthly"),
@@ -333,7 +323,7 @@ export default function ManagerDashboard() {
                       className="fw-700 me-3"
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("active")}
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("active")} &nbsp;
@@ -346,7 +336,7 @@ export default function ManagerDashboard() {
                       className="fw-700"
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("expired")}
                       style={{ fontSize: "20px", cursor: "pointer" }}
                     >
                       {t("expired")} &nbsp;
@@ -445,7 +435,7 @@ export default function ManagerDashboard() {
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("active")}
                     >
                       {t("active")}
                     </p>
@@ -463,7 +453,7 @@ export default function ManagerDashboard() {
                         data-bs-toggle="modal"
                         data-bs-target="#activeCustomer"
                         style={{ fontSize: "15px" }}
-                        onClick={() => setStatus(true)}
+                        onClick={() => setStatus("active")}
                       >
                         {t("active")}
                         &nbsp;
@@ -476,7 +466,7 @@ export default function ManagerDashboard() {
                       className="dashboardData pb-1 pt-0"
                       data-bs-toggle="modal"
                       data-bs-target="#inactiveCustomer"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("inactive")}
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                     >
                       {t("in active")}: {FormatNumber(customerStat?.inactive)}{" "}
@@ -491,7 +481,7 @@ export default function ManagerDashboard() {
                       className="dashboardData pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("expired")}
                       style={{ fontSize: "15px", paddingTop: "0px" }}
                     >
                       {t("expired")}: {FormatNumber(customerStat?.expired)}{" "}
@@ -516,7 +506,7 @@ export default function ManagerDashboard() {
                     <p
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("paid")}
                       data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
                     >
@@ -526,7 +516,7 @@ export default function ManagerDashboard() {
                       className="dashboardUnpaid"
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("paid")}
                     >
                       {FormatNumber(customerStat?.paid)}
                     </h2>
@@ -534,7 +524,7 @@ export default function ManagerDashboard() {
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#unPaid"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("unpaid")}
                       style={{ fontSize: "15px", paddingTop: "10px" }}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
@@ -544,7 +534,7 @@ export default function ManagerDashboard() {
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#freeCustomer"
-                      onClick={() => setStatus(true)}
+                      onClick={() => setStatus("freeCustomer")}
                       style={{
                         fontSize: "15px",
                         paddingTop: "0px",
@@ -763,7 +753,7 @@ export default function ManagerDashboard() {
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalManagerDeposit")}:{" "}
+                        {t("todayTotalCollectionByManager")}:{" "}
                         {FormatNumber(customerStat?.todayManagerDeposit)}
                       </p>
                     </div>
@@ -781,7 +771,7 @@ export default function ManagerDashboard() {
                         {t("depositCollection")}
                       </p>
                       <h2>
-                        ৳ {FormatNumber(customerStat?.depositsByCollectors)}
+                        ৳ {FormatNumber(customerStat?.totalDepositByCollectors)}
                       </h2>
                     </div>
                   </div>
@@ -825,7 +815,32 @@ export default function ManagerDashboard() {
                     </div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>৳ {customerStat.balance}</h2>
+                      <h2>৳ {FormatNumber(customerStat.balance)}</h2>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-3">
+                  <div
+                    id="card5"
+                    className="dataCard"
+                    data-bs-toggle="modal"
+                    data-bs-target="#allCollector"
+                    onClick={() => setStatus("collector")}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <ThreeDotsVertical className="ThreeDots" />
+                    <div className="cardIcon">
+                      <Coin />
+                    </div>
+                    <div className="chartSection">
+                      <p style={{ fontSize: "16px" }}>{t("collector")}</p>
+                      <h2>{customerStat?.collectorStat?.length}</h2>
+
+                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                        {t("totalCollection")}:{" "}
+                        {FormatNumber(customerStat?.collectorsBillCollection)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -874,9 +889,12 @@ export default function ManagerDashboard() {
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
       />
-
-      <AllCollector />
-      <Reseller />
+      <AllCollector
+        status={status}
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+      />
     </>
   );
 }

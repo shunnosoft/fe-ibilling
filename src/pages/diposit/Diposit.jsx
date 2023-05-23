@@ -33,6 +33,7 @@ import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
+import AllCollector from "../Home/dataComponent/AllCollector";
 
 export default function Diposit() {
   const { t } = useTranslation();
@@ -717,11 +718,12 @@ export default function Diposit() {
                                     {c.name}
                                   </option>
                                 ))}
-                                {userRole === "ispOwner" && (
-                                  <option value={manager?.user}>
-                                    {manager?.name}
-                                  </option>
-                                )}
+                                {userRole === "ispOwner" &&
+                                  manager.map((val) => (
+                                    <option value={val?.user}>
+                                      {val?.name} Manager
+                                    </option>
+                                  ))}
                               </select>
 
                               {/* {userRole === "manager" && (

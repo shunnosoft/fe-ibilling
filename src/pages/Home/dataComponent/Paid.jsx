@@ -99,8 +99,9 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
   );
 
   useEffect(() => {
-    status && getPaidCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month, status]);
+    status === "paid" &&
+      getPaidCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status, year]);
 
   // all monthlyFee count
   const allBill = useCallback(() => {

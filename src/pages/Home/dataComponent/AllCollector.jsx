@@ -1,23 +1,22 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ReactToPrint from "react-to-print";
 import Table from "../../../components/table/Table";
 import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
+import { getIspOwnerCollector } from "../../../features/apiCalls";
 
-const AllCollector = () => {
+const AllCollector = ({ ispOwnerId, month, year, status }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   // useRef
   const componentRef = useRef();
 
-  // ispOwner role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
   // get customerStat
   const collectorData = useSelector(
-    (state) => state.chart.customerStat.collectorStat
+    (state) => state.dashboardInformation?.ispOwnerCollector
   );
 
   // is Loading state
@@ -71,6 +70,11 @@ const AllCollector = () => {
     [t]
   );
 
+  useEffect(() => {
+    status === "collector" &&
+      getIspOwnerCollector(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [status, year, month]);
+
   return (
     <div
       className="modal fade"
@@ -116,25 +120,19 @@ const AllCollector = () => {
             ></button>
           </div>
           <div className="modal-body">
-            {role === "ispOwner" &&
-              collectorData &&
-              collectorData.length > 0 && (
-                <>
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      columns={column}
-                      data={collectorData}
-                    ></Table>
-                  </div>
-                  <div className="d-none">
-                    <CollectionOverviewPdf
-                      allCollectionData={collectorData}
-                      ref={componentRef}
-                    />
-                  </div>
-                </>
-              )}
+            <div className="table-section">
+              <Table
+                isLoading={isLoading}
+                columns={column}
+                data={collectorData}
+              ></Table>
+            </div>
+            <div className="d-none">
+              <CollectionOverviewPdf
+                allCollectionData={collectorData}
+                ref={componentRef}
+              />
+            </div>
           </div>
         </div>
       </div>
