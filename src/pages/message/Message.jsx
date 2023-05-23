@@ -382,23 +382,6 @@ export default function Message() {
     setTemplet(smsTemplet);
   };
 
-  const setSubAreaHandler = (e) => {
-    const subIds = getSubAreaIds();
-    const { value, checked } = e.target;
-    if (checked) {
-      const newArr = subAreaIds.push(value);
-      setAreaIds(newArr);
-      // console.log({ subIds, newArr });
-      if (subIds.length === newArr) {
-        setisAllChecked(true);
-      }
-    } else {
-      const updatedData = subAreaIds.filter((id) => id !== value);
-      setSubAreaIds(updatedData);
-      setisAllChecked(false);
-    }
-  };
-
   const selectAllHandler = (e) => {
     if (e.target.checked) {
       const newArray = getSubAreaIds();
@@ -407,6 +390,44 @@ export default function Message() {
     } else {
       setSubAreaIds([]);
       setisAllChecked(false);
+    }
+  };
+
+  const areasSubareaHandler = (e) => {
+    const { id, value, checked, name } = e.target;
+
+    if (name === "area") {
+      if (checked) {
+        let selectArea = storeSubArea.filter((item) => item.area === id);
+        let areaSubArea = selectArea?.map((sub) => sub.id);
+
+        for (let i = 0; i < areaSubArea.length; i++) {
+          let allData = subAreaIds.push(areaSubArea[i]);
+          setAreaIds(allData);
+        }
+      } else {
+        let selectArea = storeSubArea.filter((item) => item.area === id);
+        let areaSubAreaSelect = selectArea?.map((sub) => sub.id);
+
+        let data = [...subAreaIds];
+        for (let i = 0; i < areaSubAreaSelect.length; i++) {
+          if (data.includes(areaSubAreaSelect[i])) {
+            data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
+          }
+        }
+        setSubAreaIds(data);
+      }
+    }
+
+    if (name === "subArea") {
+      if (checked) {
+        const currentSubArea = subAreaIds.push(value);
+        setAreaIds(currentSubArea);
+      } else {
+        const updatedData = subAreaIds.filter((id) => id !== value);
+
+        setSubAreaIds(updatedData);
+      }
     }
   };
 
@@ -570,11 +591,26 @@ export default function Message() {
                                 <div
                                   style={{
                                     cursor: "pointer",
-                                    marginLeft: "5px",
                                   }}
                                   className="areaParent"
                                 >
-                                  {val.name}
+                                  <input
+                                    type="checkbox"
+                                    className="getValueUsingClasses form-check-input"
+                                    name="area"
+                                    id={val.id}
+                                    onChange={areasSubareaHandler}
+                                    isChecked
+                                  />
+                                  <label
+                                    htmlFor={val.id}
+                                    className="ms-2"
+                                    style={{
+                                      fontSize: "20px",
+                                    }}
+                                  >
+                                    {val.name}
+                                  </label>
                                 </div>
                                 {storeSubArea?.map(
                                   (v, k) =>
@@ -584,10 +620,11 @@ export default function Message() {
                                           style={{ cursor: "pointer" }}
                                           type="checkbox"
                                           className="getValueUsingClass"
+                                          name="subArea"
                                           value={v.id}
-                                          onChange={setSubAreaHandler}
+                                          onChange={areasSubareaHandler}
                                           id={v.id}
-                                          checked={subAreaIds.includes(v.id)}
+                                          checked={subAreaIds?.includes(v.id)}
                                         />
                                         <label
                                           style={{ cursor: "pointer" }}

@@ -364,7 +364,7 @@ export default function Diposit() {
         ),
       },
       {
-        width: "10%",
+        width: "15%",
         Header: t("depositBy"),
         accessor: "manager.name",
       },
@@ -438,7 +438,7 @@ export default function Diposit() {
         ),
       },
       {
-        width: "22%",
+        width: "20%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
