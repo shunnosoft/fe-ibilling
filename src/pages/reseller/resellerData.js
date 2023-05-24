@@ -88,6 +88,14 @@ export const resellerPermissionEng = [
     isChecked: false,
     disable: false,
   },
+  {
+    id: 15,
+    type: "text",
+    label: "Billing Cycle Edit",
+    value: "billingCycleEdit",
+    isChecked: false,
+    disabled: false,
+  },
 ];
 
 export const resellerPermissionBan = [

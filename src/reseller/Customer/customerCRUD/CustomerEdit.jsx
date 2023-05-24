@@ -70,6 +70,7 @@ export default function CustomerEdit({ single }) {
   //   (state) => state.persistedReducer.auth?.userData.areas
   // );
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  console.log(Getmikrotik);
 
   const collectorResellerInfo = useSelector(
     (state) => state.resellerProfile.reseller
@@ -85,6 +86,7 @@ export default function CustomerEdit({ single }) {
   const dispatch = useDispatch();
   const [activeStatus, setActiveStatus] = useState(data?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
+  console.log(mikrotikName);
   const [areaID, setAreaID] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
@@ -111,6 +113,7 @@ export default function CustomerEdit({ single }) {
     setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
     setBilltime(moment(data?.billingCycle).format("HH:mm"));
     const temp = Getmikrotik?.find((val) => val.id === data?.mikrotik);
+    console.log(temp);
     setmikrotikName(temp);
     if (!bpSetting) {
       setppPackage(withOutMtkPackage);
@@ -613,12 +616,14 @@ export default function CustomerEdit({ single }) {
                                   onChange={(e) => setBillDate(e.target.value)}
                                   type="date"
                                   min={moment().format("YYYY-MM-DD")}
+                                  disabled={!permission?.billingCycleEdit}
                                 />
                                 <input
                                   className="billTime"
                                   value={billTime}
                                   onChange={(e) => setBilltime(e.target.value)}
                                   type="time"
+                                  disabled={!permission?.billingCycleEdit}
                                 />
                               </div>
                             )}

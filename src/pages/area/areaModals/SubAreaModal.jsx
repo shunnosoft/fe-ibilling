@@ -17,6 +17,9 @@ const SubAreaModal = ({ areaId, isOpen }) => {
   //get all subareas
   const area = useSelector((state) => state.area.area);
 
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
   // get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -166,9 +169,11 @@ const SubAreaModal = ({ areaId, isOpen }) => {
       });
       if (oneArea) {
         setName(oneArea.name);
-        setSubAreas(oneArea.subAreas);
+        const sub = storeSubArea.filter((val) => val.area === areaId);
+        setSubAreas(sub);
       }
     }
+
     fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   }, [isOpen, areaId]);
 

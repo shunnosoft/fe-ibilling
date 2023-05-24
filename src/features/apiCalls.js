@@ -761,8 +761,8 @@ export const deleteSubArea = async (dispatch, data, setIsLoading) => {
 // Collector
 
 export const getCollector = async (dispatch, ispOwnerId, setIsLoading) => {
+  setIsLoading(true);
   try {
-    setIsLoading(true);
     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
     dispatch(getCollectorSuccess(res.data));
   } catch (error) {
@@ -2002,11 +2002,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
     const res = await apiLink.post(`/deposit`, data);
     dispatch(addDepositSucces(res.data));
     setLoading(false);
-    langMessage(
-      "success",
-      "এডমিন একসেপ্ট এর জন্য অপেক্ষা করেন",
-      "Wait for Admin Accept"
-    );
+    langMessage("success", "একসেপ্ট এর জন্য অপেক্ষা করেন", "Wait for Accept");
   } catch (error) {
     setLoading(false);
     toast.error(error.response?.data.message);
@@ -2133,8 +2129,8 @@ export const editBillReport = async (
 //my deposit
 
 export const getMyDeposit = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
   try {
-    setIsLoading(true);
     const res = await apiLink.get("/deposit");
     dispatch(getmyDepositSucces(res.data));
   } catch (error) {

@@ -108,6 +108,13 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   isChecked: permission?.dailyResellerBalanceCustomer,
     //   disabled: false,
     // },
+    {
+      id: 16,
+      label: "Billing Cycle Edit",
+      value: "billingCycleEdit",
+      isChecked: permission?.billingCycleEdit,
+      disabled: false,
+    },
   ];
 
   const permissionBn = [
@@ -220,6 +227,13 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   isChecked: permission?.dailyResellerBalanceCustomer,
     //   disabled: false,
     // },
+    {
+      id: 16,
+      label: "বিলিং সাইকেল এডিট",
+      value: "billingCycleEdit",
+      isChecked: permission?.billingCycleEdit,
+      disabled: false,
+    },
   ];
 
   if (localStorage.getItem("netFee:lang") === "bn") return permissionBn;

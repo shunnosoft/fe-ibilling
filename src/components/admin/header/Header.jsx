@@ -49,6 +49,7 @@ export default function Header(props) {
   const previousBalancee = useSelector(
     (state) => state?.payment?.previousBalance
   );
+
   const dispatch = useDispatch();
   // const navigate = useNavigate();
   const pathName = useLocation().pathname;
@@ -72,7 +73,7 @@ export default function Header(props) {
         setIsrefresh
       );
     }
-    if (userRole === "manager") {
+    if (userRole === "manager" || userRole === "collector") {
       getTotalbal(dispatch, setLoading);
     }
   }, [userRole, userData]);
@@ -265,7 +266,8 @@ export default function Header(props) {
                 ""
               )}
 
-              {currentUser && userRole === "manager" ? (
+              {currentUser &&
+              (userRole === "manager" || userRole === "collector") ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">
                   <div
                     style={{ backgroundColor: "inherit" }}
