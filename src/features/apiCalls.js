@@ -566,12 +566,15 @@ export const deleteManager = async (
     });
 };
 
-export const editManager = async (dispatch, managerData, setIsLoading) => {
-  const button = document.querySelector(".marginLeft");
-  button.style.display = "none";
-
+export const editManager = async (
+  dispatch,
+  managerData,
+  managerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
   await apiLink({
-    url: `/ispOwner/update-manager/${managerData.ispOwner}/${managerData.id}`,
+    url: `/ispOwner/update-manager/${managerData.ispOwner}/${managerId}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -581,7 +584,6 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
     .then((res) => {
       console.log(res.data);
       dispatch(managerEditSuccess(res.data));
-      button.style.display = "initial";
       hideModal();
 
       langMessage(
@@ -594,7 +596,6 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
     })
     .catch((err) => {
       if (err.response) {
-        button.style.display = "initial";
         langMessage(
           "error",
           err.response?.data?.message,
@@ -602,6 +603,7 @@ export const editManager = async (dispatch, managerData, setIsLoading) => {
         );
       }
     });
+  setIsLoading(false);
 };
 
 //Areas
