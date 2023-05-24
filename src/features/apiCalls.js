@@ -672,7 +672,7 @@ export const deleteArea = async (dispatch, data, setIsLoading) => {
     );
   } catch (error) {
     setIsLoading(false);
-    langMessage("error", "এরিয়া ডিলিট সফল হয়নি", "Area Delete Failed");
+    toast.error(error.response.data.message);
   }
 };
 

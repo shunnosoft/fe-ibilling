@@ -63,14 +63,14 @@ export default function Manager() {
     setSingleManager(managerId);
   };
 
-  //delete manager handler
-  const deleteSingleManager = (managerId) => {
-    const confirm = window.confirm(t("managerDeleteNotify"));
-    if (confirm) {
-      // deleteManager(dispatch, setIsLoading, ispOwnerId, managerId);
-      return;
-    }
-  };
+  // //delete manager handler
+  // const deleteSingleManager = (managerId) => {
+  //   const confirm = window.confirm(t("managerDeleteNotify"));
+  //   if (confirm) {
+  //     // deleteManager(dispatch, setIsLoading, ispOwnerId, managerId);
+  //     return;
+  //   }
+  // };
 
   //get all managers
   useEffect(() => {
@@ -181,7 +181,7 @@ export default function Manager() {
                   </li>
                 )}
 
-                <li
+                {/* <li
                   onClick={() => {
                     deleteSingleManager(original.id);
                   }}
@@ -192,7 +192,7 @@ export default function Manager() {
                       <p className="actionP">{t("delete")}</p>
                     </div>
                   </div>
-                </li>
+                </li> */}
 
                 <li
                   data-bs-toggle="modal"
