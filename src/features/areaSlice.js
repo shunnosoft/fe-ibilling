@@ -28,27 +28,18 @@ export const areaSlice = createSlice({
       state.area = [];
     },
     AddSubAreaSuccess: (state, action) => {
-      // state.area[0].subAreas.push(action.payload)
-      state.area
-        .find((item) => item.id === action.payload.area)
-        .subAreas.push(action.payload);
+      state.subArea.push(action.payload);
     },
     EditSubAreaSuccess: (state, action) => {
-      state.area.find((item) => item.id === action.payload.area).subAreas[
-        state.area
-          .find((item) => item.id === action.payload.area)
-          .subAreas.findIndex((item) => item.id === action.payload.id)
+      state.subArea[
+        state.subArea.findIndex((item) => item.id === action.payload.id)
       ] = action.payload;
     },
     DeleteSubAreaSuccess: (state, action) => {
-      state.area
-        .find((item) => item.id === action.payload.areaId)
-        .subAreas.splice(
-          state.area
-            .find((item) => item.id === action.payload.areaId)
-            .subAreas.findIndex((item) => item.id === action.payload.subAreaId),
-          1
-        );
+      state.subArea.splice(
+        state.subArea.findIndex((item) => item.id === action.payload.subAreaId),
+        1
+      );
     },
     getSubareas: (state, action) => {
       state.subArea = action.payload;

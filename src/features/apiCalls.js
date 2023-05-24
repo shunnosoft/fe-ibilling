@@ -170,6 +170,7 @@ export const getManger = async (dispatch, ispWonerId) => {
 };
 
 export const getManagerDashboardCharts = async (
+  setLoading,
   dispatch,
   managerId,
   year,
@@ -178,6 +179,7 @@ export const getManagerDashboardCharts = async (
 ) => {
   const plusMonth = Number(month) + 1;
   try {
+    setLoading(true);
     const res = await apiLink(
       `dashboard/manager/chart-data/${managerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
     );
@@ -186,9 +188,11 @@ export const getManagerDashboardCharts = async (
     console.log("Charts error: ", err);
     toast.error(err.response?.data?.message);
   }
+  setLoading(false);
 };
 
 export const getCollectorDashboardCharts = async (
+  setLoading,
   dispatch,
   collectorId,
   year,
@@ -196,6 +200,7 @@ export const getCollectorDashboardCharts = async (
 ) => {
   const plusMonth = Number(month) + 1;
   try {
+    setLoading(true);
     const res = await apiLink(
       `dashboard/collector/chart-data/${collectorId}?year=${year}&month=${plusMonth}&user=""`
     );
@@ -204,6 +209,7 @@ export const getCollectorDashboardCharts = async (
     console.log("Charts error: ", err);
     toast.error(err.response?.data?.message);
   }
+  setLoading(false);
 };
 
 export const getCharts = async (dispatch, ispOwnerId, year, month, user) => {
@@ -219,6 +225,7 @@ export const getCharts = async (dispatch, ispOwnerId, year, month, user) => {
 };
 
 export const getIspOwnerCharts = async (
+  setIsloading,
   dispatch,
   ispOwnerId,
   year,
@@ -226,15 +233,20 @@ export const getIspOwnerCharts = async (
   collectorId
 ) => {
   const plusMonth = Number(month) + 1;
+  console.log(ispOwnerId, year, plusMonth, collectorId);
+
   try {
+    setIsloading(true);
     const res = await apiLink(
       `dashboard/ispOwner/chart-data/${ispOwnerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
     );
+    console.log(res.data);
     dispatch(getChartSuccess(res.data));
   } catch (err) {
     console.log("Charts error: ", err);
     toast.error(err.response?.data?.message);
   }
+  setIsloading(false);
 };
 
 export const getChartsReseller = async (
@@ -699,7 +711,7 @@ export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
   })
     .then((res) => {
       dispatch(EditSubAreaSuccess(res.data));
-      setShow(false);
+      // setShow(false);
       document.querySelector("#subAreaEditModal").click();
       langMessage(
         "success",

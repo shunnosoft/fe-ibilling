@@ -1,5 +1,5 @@
 // external imports
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -24,7 +24,6 @@ import {
   getIspOwnerData,
 } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
-import { managerFetchSuccess } from "../../features/managerSlice";
 import { showModal } from "../../features/uiSlice";
 import FormatNumber from "../../components/common/NumberFormat";
 // the hook
@@ -41,16 +40,17 @@ import FreeCustomer from "./dataComponent/FreeCustomer";
 import Paid from "./dataComponent/Paid";
 import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
-import AllCollector from "./dataComponent/AllCollector";
-import Reseller from "./dataComponent/Reseller";
 
 export default function CollectorDashboard() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
+  //get ispOwnerId
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  //get ispOwner data when logged in
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
@@ -70,28 +70,66 @@ export default function CollectorDashboard() {
     (state) => state.persistedReducer.auth.currentUser.collector.id
   );
 
+  //get dashboard different cards data
   const customerStat = useSelector((state) => state.chart.customerStat);
 
+  //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
 
+  //get graph data
   const ChartsData = useSelector((state) => state.chart.charts);
+
+  //all internal states
   const [isLoading, setIsloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
   const [status, setStatus] = useState("");
-  const dispatch = useDispatch();
 
+  //all dates states
   const date = new Date();
-
+  const newYear = date.getFullYear();
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
 
-  const newYear = date.getFullYear();
+  //api calls
+  useEffect(() => {
+    Object.keys(ispOwner)?.length === 0 &&
+      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
 
+    //get graph chart data
+    getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
+
+    //get card data
+    getCollectorDashboardCardData(
+      dispatch,
+      setLoadingDashboardData,
+      collectorId
+    );
+  }, []);
+
+  //graph data calculation
+  useEffect(() => {
+    let tempArr = [],
+      tempCollection = [],
+      tempCount = [];
+
+    ChartsData?.forEach((val) => {
+      tempArr.push(val.total);
+      tempCollection.push(val._id);
+      tempCount.push(val.count);
+    });
+
+    setLabel(tempArr);
+    setCollection(tempCollection);
+    setCount(tempCount);
+  }, [ChartsData]);
+
+  //chartsData for graph
   const chartsData = {
     labels: collection,
     datasets: [
@@ -116,41 +154,13 @@ export default function CollectorDashboard() {
     ],
   };
 
-  useEffect(() => {
-    Object.keys(ispOwner)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
-
-    getCollectorDashboardCharts(dispatch, collectorId, Year, Month);
-
-    getCollectorDashboardCardData(
-      dispatch,
-      setLoadingDashboardData,
-      collectorId
-    );
-  }, []);
-
-  useEffect(() => {
-    let tempArr = [],
-      tempCollection = [],
-      tempCount = [];
-
-    ChartsData?.forEach((val) => {
-      tempArr.push(val.total);
-      tempCollection.push(val._id);
-      tempCount.push(val.count);
-    });
-
-    setLabel(tempArr);
-    setCollection(tempCollection);
-    setCount(tempCount);
-  }, [ChartsData]);
-
+  //filter for graph chart
   const handleFilterHandler = () => {
-    getCollectorDashboardCharts(dispatch, collectorId, Year, Month);
+    getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
   };
 
+  //expiration date calculation for pop-up modal
   let invoiceFlag;
-
   if (invoice) {
     if (new Date(invoice?.dueDate).getTime() < new Date().getTime()) {
       invoiceFlag = "EXPIRED";
@@ -172,7 +182,7 @@ export default function CollectorDashboard() {
     registration: t("register"),
   };
 
-  //imp
+  //percantage calculation
   const collectionPercentage = customerStat
     ? Math.round(
         (customerStat.totalOwnCollection /
@@ -182,6 +192,7 @@ export default function CollectorDashboard() {
       )
     : 0;
 
+  //reload cards handler
   const dashboardReloadHandler = () => {
     const filterData = {
       year: filterDate.getFullYear(),
@@ -196,6 +207,7 @@ export default function CollectorDashboard() {
     );
   };
 
+  //filter card information
   const dashboardFilterController = () => {
     const filterData = {
       year: filterDate.getFullYear(),
@@ -608,7 +620,7 @@ export default function CollectorDashboard() {
                     type="button"
                     onClick={handleFilterHandler}
                   >
-                    {t("filter")}
+                    {loading ? <Loader /> : t("filter")}
                   </button>
                 </div>
               </div>
