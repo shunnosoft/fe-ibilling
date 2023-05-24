@@ -233,7 +233,6 @@ export const getIspOwnerCharts = async (
   collectorId
 ) => {
   const plusMonth = Number(month) + 1;
-  console.log(ispOwnerId, year, plusMonth, collectorId);
 
   try {
     setIsloading(true);

@@ -91,7 +91,7 @@ export default function Area() {
 
   const getAreaSubarea = (areaId) => {
     setAreaID(areaId);
-    setIsOpen({ ...isOpen, [false]: true });
+    setIsOpen(true);
   };
 
   //create column of table
@@ -143,7 +143,7 @@ export default function Area() {
             }}
           >
             <ActionButton
-              getAreaSubarea={getAreaSubarea}
+              // getAreaSubarea={getAreaSubarea}
               getSpecificArea={getSpecificArea}
               deleteSingleArea={deleteSingleArea}
               data={original}
@@ -170,7 +170,11 @@ export default function Area() {
               <AreaEdit areaId={editAreaId} />
 
               {/* subAreas modal */}
-              <SubAreaModal areaId={areaID} isOpen={isOpen} />
+              <SubAreaModal
+                areaId={areaID}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+              />
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">

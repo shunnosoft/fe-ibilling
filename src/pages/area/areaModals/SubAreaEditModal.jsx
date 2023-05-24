@@ -26,6 +26,8 @@ const SubAreaEditModal = ({ isOpen, subAreaName, subAreaID }) => {
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  const [show, setShow] = useState(false);
+
   const subAreaValidation = Yup.object({
     name: Yup.string().required(t("enterName")),
   });
@@ -39,8 +41,6 @@ const SubAreaEditModal = ({ isOpen, subAreaName, subAreaID }) => {
     };
     editSubArea(dispatch, IDs, setIsLoading, setShow);
   };
-
-  const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
 
