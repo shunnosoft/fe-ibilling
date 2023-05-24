@@ -66,7 +66,7 @@ export default function SubArea() {
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
     getSubAreasApi(dispatch, ispOwnerId);
-  }, [dispatch, ispOwnerId]);
+  }, [areaId]);
 
   // go back to area
   const gotoAllArea = () => {
@@ -86,21 +86,18 @@ export default function SubArea() {
   };
 
   useEffect(() => {
-    if (area.length === undefined) {
-      navigate("/area");
-    } else {
-      const oneArea = area.find((val) => {
-        return val.id === areaId;
-      });
-      if (oneArea) {
-        setName(oneArea.name);
-        setId(oneArea.id);
-        const sub = storeSubArea.filter((val) => val.area === areaId);
-        setSubAreas(sub);
-      }
+    const oneArea = area.find((val) => {
+      return val.id === areaId;
+    });
+    if (oneArea) {
+      setName(oneArea.name);
+      setId(oneArea.id);
+      const sub = storeSubArea.filter((val) => val.area === areaId);
+      setSubAreas(sub);
     }
+
     fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
-  }, [area, areaId]);
+  }, [area, storeSubArea]);
 
   useEffect(() => {
     const match = mikrotiks.find((item) => item.name == name);

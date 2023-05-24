@@ -52,16 +52,22 @@ import Reseller from "./dataComponent/Reseller";
 
 export default function IspOwnerDashboard() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
+  //get login user role
   const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  //get ispOwnerId
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  //get ispOwner data when logged in
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner
   );
 
+  //get ispOwner data from any component
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
   );
@@ -71,14 +77,27 @@ export default function IspOwnerDashboard() {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
+  //get reseller data
   const reseller = useSelector((state) => state.reseller);
+
+  //get all Collectors
   const allCollector = useSelector((state) => state.collector.collector);
+
+  //get all manager
   const manager = useSelector((state) => state.manager.manager);
+
+  //get graph data
   const ChartsData = useSelector((state) => state.chart.charts);
+
+  //get dashboard different cards data
   const customerStat = useSelector((state) => state.chart.customerStat);
 
+  //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
+
+  //all internal states
   const [isLoading, setIsloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
@@ -86,15 +105,70 @@ export default function IspOwnerDashboard() {
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
   const [status, setStatus] = useState("");
-  const dispatch = useDispatch();
-
-  const date = new Date();
-
   const [currentCollector, setCurrentCollector] = useState("");
 
+  //all dates states
+  const date = new Date();
+  const newYear = date.getFullYear();
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
+
+  // collectors and managers for graph filter
+  useEffect(() => {
+    let collectors = [];
+
+    allCollector.map((item) =>
+      collectors.push({ name: item.name, user: item.user, id: item.id })
+    );
+
+    if (collectors.length === allCollector.length) {
+      manager?.map((man) => {
+        const { user, name, id } = man;
+        collectors.unshift({ name: name + " Manager", user, id }); //pushing managers into array of all collectors
+      });
+    }
+
+    setCollectors(collectors);
+  }, [allCollector, manager]);
+
+  //api calls
+  useEffect(() => {
+    Object.keys(ispOwner)?.length === 0 &&
+      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
+
+    Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
+    reseller?.reseller.length === 0 &&
+      fetchReseller(dispatch, ispOwnerId, setIsloading);
+
+    allCollector?.length === 0 &&
+      getCollector(dispatch, ispOwnerId, setIsloading);
+
+    //get graph chart data
+    getIspOwnerCharts(setLoading, dispatch, ispOwnerId, Year, Month);
+
+    //get card data
+    getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
+  }, []);
+
+  //graph data calculation
+  useEffect(() => {
+    let tempArr = [],
+      tempCollection = [],
+      tempCount = [];
+
+    ChartsData?.forEach((val) => {
+      tempArr.push(val.total);
+      tempCollection.push(val._id);
+      tempCount.push(val.count);
+    });
+
+    setLabel(tempArr);
+    setCollection(tempCollection);
+    setCount(tempCount);
+  }, [ChartsData]);
+
+  //chartsData for graph
   const chartsData = {
     labels: collection,
     datasets: [
@@ -119,65 +193,20 @@ export default function IspOwnerDashboard() {
     ],
   };
 
-  // select colloectors
-  useEffect(() => {
-    let collectors = [];
-
-    allCollector.map((item) =>
-      collectors.push({ name: item.name, user: item.user, id: item.id })
-    );
-
-    if (collectors.length === allCollector.length) {
-      manager?.map((man) => {
-        const { user, name, id } = man;
-        collectors.unshift({ name: name + " Manager", user, id });
-      });
-    }
-
-    setCollectors(collectors);
-  }, [allCollector, manager]);
-
-  //api calls
-  useEffect(() => {
-    Object.keys(ispOwner)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
-
-    Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
-    reseller?.reseller.length === 0 &&
-      fetchReseller(dispatch, ispOwnerId, setIsloading);
-
-    allCollector?.length === 0 &&
-      getCollector(dispatch, ispOwnerId, setIsloading);
-
-    getIspOwnerCharts(dispatch, ispOwnerId, Year, Month);
-
-    getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
-  }, []);
-
-  //graph data
-  useEffect(() => {
-    let tempArr = [],
-      tempCollection = [],
-      tempCount = [];
-
-    ChartsData?.forEach((val) => {
-      tempArr.push(val.total);
-      tempCollection.push(val._id);
-      tempCount.push(val.count);
-    });
-
-    setLabel(tempArr);
-    setCollection(tempCollection);
-    setCount(tempCount);
-  }, [ChartsData]);
-
-  //filter
+  //filter for graph chart
   const handleFilterHandler = () => {
-    getIspOwnerCharts(dispatch, ispOwnerId, Year, Month, currentCollector);
+    getIspOwnerCharts(
+      setLoading,
+      dispatch,
+      ispOwnerId,
+      Year,
+      Month,
+      currentCollector
+    );
   };
 
+  //expiration date calculation for pop-up modal
   let invoiceFlag;
-
   if (invoice) {
     if (new Date(invoice?.dueDate).getTime() < new Date().getTime()) {
       invoiceFlag = "EXPIRED";
@@ -193,21 +222,22 @@ export default function IspOwnerDashboard() {
       }
     }
   }
-
   const invoiceType = {
     monthlyServiceCharge: t("monthly"),
     registration: t("register"),
   };
 
+  //percantage calculation
   const collectionPercentage = customerStat
     ? Math.round(
-        (customerStat.totalMonthlyConnectionFee /
+        (customerStat.totalBillCollection /
           (customerStat.totalProbableAmount -
             customerStat.totalInactiveAmount)) *
           100
       )
     : 0;
 
+  //reload cards handler
   const dashboardReloadHandler = () => {
     const filterData = {
       year: filterDate.getFullYear(),
@@ -222,6 +252,7 @@ export default function IspOwnerDashboard() {
     );
   };
 
+  //filter card information
   const dashboardFilterController = () => {
     const filterData = {
       year: filterDate.getFullYear(),
@@ -287,6 +318,7 @@ export default function IspOwnerDashboard() {
                           margin: "0 auto",
                         }}
                       >
+                        {/* Percantage circular bar part*/}
                         <AnimatedProgressProvider
                           valueStart={0}
                           valueEnd={Math.round(collectionPercentage)}
@@ -664,8 +696,8 @@ export default function IspOwnerDashboard() {
                     className="form-select chartFilteritem"
                     onChange={(e) => setYear(e.target.value)}
                   >
-                    <option value={Year}>{Year}</option>
-                    <option value={Year - 1}>{Year - 1}</option>
+                    <option value={newYear}>{newYear}</option>
+                    <option value={newYear - 1}>{newYear - 1}</option>
                   </select>
                   <select
                     className="form-select chartFilteritem"
@@ -687,7 +719,7 @@ export default function IspOwnerDashboard() {
                     type="button"
                     onClick={handleFilterHandler}
                   >
-                    {t("filter")}
+                    {loading ? <Loader /> : t("filter")}
                   </button>
                 </div>
               </div>

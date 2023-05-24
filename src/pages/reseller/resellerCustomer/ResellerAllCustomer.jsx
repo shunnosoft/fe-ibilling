@@ -39,6 +39,7 @@ import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { useNavigate } from "react-router-dom";
+import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -658,20 +659,52 @@ const AllResellerCustomer = () => {
         bulkCustomer={bulkCustomer}
         isAllCustomer={true}
       />
+      <BulkPromiseDateEdit
+        bulkCustomer={bulkCustomer}
+        modalId="bulkPromiseDateEdit"
+      />
       {bulkCustomer.length > 0 && (
-        <div className="bulkActionButton">
-          <button
-            className="bulk_action_button"
-            title={t("returnCustomer")}
-            data-bs-toggle="modal"
-            data-bs-target="#returnCustomer"
-            type="button"
-            class="btn btn-dark btn-floating btn-sm"
-          >
-            <i class="fa-solid fa-right-left"></i>
-            <span className="button_title"> {t("returnCustomer")} </span>
-          </button>
-        </div>
+        <>
+          <div className="bulkActionButton">
+            <button
+              className="bulk_action_button"
+              title={t("returnCustomer")}
+              data-bs-toggle="modal"
+              data-bs-target="#returnCustomer"
+              type="button"
+              class="btn btn-dark btn-floating btn-sm"
+            >
+              <i class="fa-solid fa-right-left"></i>
+              <span className="button_title"> {t("returnCustomer")} </span>
+            </button>
+          </div>
+
+          <div className="bulkActionButton">
+            <button
+              className="bulk_action_button"
+              title={t("returnCustomer")}
+              data-bs-toggle="modal"
+              data-bs-target="#returnCustomer"
+              type="button"
+              class="btn btn-dark btn-floating btn-sm"
+            >
+              <i class="fa-solid fa-right-left"></i>
+              <span className="button_title"> {t("returnCustomer")} </span>
+            </button>
+
+            <button
+              className="bulk_action_button"
+              title={t("editPromiseDate")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkPromiseDateEdit"
+              type="button"
+              class="btn btn-dark btn-floating btn-sm"
+            >
+              <i class="fas fa-calendar-week"></i>
+              <span className="button_title"> {t("editPromiseDate")} </span>
+            </button>
+          </div>
+        </>
       )}
     </>
   );
