@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import SubAreaEditModal from "./SubAreaEditModal";
 import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 
-const SubAreaModal = ({ areaId, isOpen }) => {
+const SubAreaModal = ({ areaId, isOpen, setIsOpen }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -117,7 +117,7 @@ const SubAreaModal = ({ areaId, isOpen }) => {
                         setSubAreaID(original.id);
                         setSubAreaName(original.name);
                         setIsOpenEdit({ ...isOpenEdit, [false]: true });
-                        setShow(false);
+                        setIsOpen(false);
                       }}
                     >
                       <div className="dropdown-item">
@@ -155,12 +155,9 @@ const SubAreaModal = ({ areaId, isOpen }) => {
 
   const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => setIsOpen(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setShow(isOpen);
-    }
     if (area.length === undefined) {
       navigate("/area");
     } else {
@@ -185,7 +182,7 @@ const SubAreaModal = ({ areaId, isOpen }) => {
   return (
     <>
       <Modal
-        show={show}
+        show={isOpen}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}

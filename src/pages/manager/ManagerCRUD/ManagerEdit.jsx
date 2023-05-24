@@ -8,6 +8,7 @@ import { editManager } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { Tab, Tabs } from "react-bootstrap";
 import { managerPermission } from "../managerData";
+import Loader from "../../../components/common/Loader";
 
 const ManagerEdit = ({ managerId }) => {
   const { t } = useTranslation();
@@ -74,7 +75,7 @@ const ManagerEdit = ({ managerId }) => {
   });
 
   //add manager function handler
-  const addManagerHandle = (data) => {
+  const editManagerHandle = (data) => {
     if (subAreaIds.length === 0) {
       alert(t("selectArea"));
       return;
@@ -85,15 +86,14 @@ const ManagerEdit = ({ managerId }) => {
       temp[val.value] = val.isChecked;
     });
 
-    data = {
+    const sendingData = {
       ...data,
-      ...single,
       permissions: temp,
       areas: subAreaIds,
       ispOwner: ispOwnerId,
     };
 
-    editManager(dispatch, data, setIsLoading);
+    editManager(dispatch, sendingData, single?.id, setIsLoading);
   };
 
   //sub area handler
@@ -202,7 +202,7 @@ const ManagerEdit = ({ managerId }) => {
               }}
               validationSchema={managerValidate}
               onSubmit={(values) => {
-                addManagerHandle(values);
+                editManagerHandle(values);
               }}
               enableReinitialize
             >
@@ -335,7 +335,7 @@ const ManagerEdit = ({ managerId }) => {
                   </Tabs>
 
                   {/* Button */}
-                  <div className="submitSection">
+                  {/* <div className="submitSection">
                     <button
                       type="button"
                       className="btn btn-secondary"
@@ -343,11 +343,26 @@ const ManagerEdit = ({ managerId }) => {
                     >
                       {t("cancel")}
                     </button>
+                    <button type="submit" className="btn btn-success">
+                      {t("save")}
+                    </button>
+                  </div> */}
+
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                      disabled={isLoading}
+                    >
+                      {t("cancel")}
+                    </button>
                     <button
                       type="submit"
-                      className="btn btn-primary marginLeft"
+                      className="btn btn-success customBtn"
+                      disabled={isLoading}
                     >
-                      {t("save")}
+                      {isLoading ? <Loader /> : t("save")}
                     </button>
                   </div>
                 </Form>

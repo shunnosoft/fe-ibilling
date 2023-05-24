@@ -20,7 +20,7 @@ export default function ActionButton({
           aria-expanded="false"
         />
         <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-          <li
+          {/* <li
             data-bs-toggle="modal"
             data-bs-target="#subareaModal"
             onClick={() => getAreaSubarea(data.id)}
@@ -31,7 +31,7 @@ export default function ActionButton({
                 <p className="actionP"> {t("subArea")}</p>
               </div>
             </div>
-          </li>
+          </li> */}
 
           <li
             data-bs-toggle="modal"
