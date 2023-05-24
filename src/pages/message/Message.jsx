@@ -91,6 +91,7 @@ export default function Message() {
   const storeSubArea = useSelector((state) => state.area?.subArea);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
+  console.log(subAreaIds);
   const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
@@ -134,9 +135,8 @@ export default function Message() {
   //get all subArea ids
 
   const getSubAreaIds = () => {
-    const subAreaAllId = area.map((item) => {
-      return item.subAreas?.map((sub) => sub.id);
-    });
+    const subAreaAllId = storeSubArea?.map((sub) => sub.id);
+
     return subAreaAllId.flat(Infinity);
   };
 
@@ -346,6 +346,7 @@ export default function Message() {
       } else {
         toast.error(t("unseccessAlertSMS"));
       }
+      // console.log(items);
     } catch (error) {
       console.log(error);
     }
@@ -402,8 +403,10 @@ export default function Message() {
         let areaSubArea = selectArea?.map((sub) => sub.id);
 
         for (let i = 0; i < areaSubArea.length; i++) {
-          let allData = subAreaIds.push(areaSubArea[i]);
-          setAreaIds(allData);
+          if (!subAreaIds.includes(areaSubArea[i])) {
+            let allData = subAreaIds.push(areaSubArea[i]);
+            setAreaIds(allData);
+          }
         }
       } else {
         let selectArea = storeSubArea.filter((item) => item.area === id);
@@ -568,7 +571,7 @@ export default function Message() {
                             <input
                               style={{ cursor: "pointer" }}
                               type="checkbox"
-                              className="getValueUsingClass"
+                              className="getValueUsingClasses form-check-input"
                               value={"selectAll"}
                               onClick={selectAllHandler}
                               id={"selectAll"}
@@ -594,14 +597,14 @@ export default function Message() {
                                   }}
                                   className="areaParent"
                                 >
-                                  <input
+                                  {/* <input
                                     type="checkbox"
                                     className="getValueUsingClasses form-check-input"
                                     name="area"
                                     id={val.id}
                                     onChange={areasSubareaHandler}
                                     isChecked
-                                  />
+                                  /> */}
                                   <label
                                     htmlFor={val.id}
                                     className="ms-2"
@@ -623,8 +626,7 @@ export default function Message() {
                                           name="subArea"
                                           value={v.id}
                                           onChange={areasSubareaHandler}
-                                          id={v.id}
-                                          checked={subAreaIds?.includes(v.id)}
+                                          checked={subAreaIds.includes(v.id)}
                                         />
                                         <label
                                           style={{ cursor: "pointer" }}

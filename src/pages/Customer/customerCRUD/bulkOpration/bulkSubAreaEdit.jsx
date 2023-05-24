@@ -8,8 +8,12 @@ import { useTranslation } from "react-i18next";
 const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   const { t } = useTranslation();
   const areas = useSelector((state) => state?.area?.area);
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+  console.log(storeSubArea);
   const [isLoading, setIsLoading] = useState(false);
   const [subArea, setSubArea] = useState("");
+  const [areaName, setAreaName] = useState("");
+  console.log(subArea);
   const dispatch = useDispatch();
   //state for selected value
   const [selectedValue, setSelectedValue] = useState({
@@ -25,11 +29,15 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   // select subArea
   const selectArea = (data) => {
     const areaId = data.target.value;
-    if (areas) {
-      const temp = areas.find((val) => {
+    if (storeSubArea) {
+      const temp = storeSubArea.filter((val) => {
+        return val.area === areaId;
+      });
+      const areaFind = areas.find((val) => {
         return val.id === areaId;
       });
       setSubArea(temp);
+      setAreaName(areaFind.name);
     }
     setSelectedValue({
       ...selectedValue,
@@ -118,7 +126,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
 
         <div>
           <p>
-            {subArea ? subArea.name + " এর - " : ""} {t("selectSubArea")}
+            {areaName ? areaName + " এর - " : ""} {t("selectSubArea")}
           </p>
           <select
             className="form-select mw-100"
@@ -128,8 +136,8 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
             onChange={subAreaEditHandler}
           >
             <option value="">{t("selectSubArea")}</option>
-            {subArea?.subAreas &&
-              subArea.subAreas.map((val, key) => (
+            {subArea &&
+              subArea?.map((val, key) => (
                 <option key={key} value={val.id}>
                   {val.name}
                 </option>
