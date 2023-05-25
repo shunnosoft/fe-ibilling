@@ -30,6 +30,7 @@ import Table from "../../components/table/Table";
 
 import { useTranslation } from "react-i18next";
 import SubAreaModal from "./areaModals/SubAreaModal";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function Area() {
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ export default function Area() {
   const [loading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   const cus = useSelector((state) => state?.customer?.customer);
+  const storeSubArea = useSelector((state) => state.area?.subArea);
 
   const [isLoading, setIsLoading] = useState(false);
   const [editAreaId, setEditAreaId] = useState("");
@@ -55,6 +57,7 @@ export default function Area() {
   };
   useEffect(() => {
     if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
+    if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwnerId);
     if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setIsloading);
     fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   }, [dispatch, ispOwnerId]);
@@ -143,7 +146,7 @@ export default function Area() {
             }}
           >
             <ActionButton
-              // getAreaSubarea={getAreaSubarea}
+              getAreaSubarea={getAreaSubarea}
               getSpecificArea={getSpecificArea}
               deleteSingleArea={deleteSingleArea}
               data={original}
@@ -170,11 +173,7 @@ export default function Area() {
               <AreaEdit areaId={editAreaId} />
 
               {/* subAreas modal */}
-              <SubAreaModal
-                areaId={areaID}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-              />
+              <SubAreaModal areaId={areaID} />
 
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">

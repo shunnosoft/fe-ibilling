@@ -775,7 +775,6 @@ export const addCollector = async (
   setIsLoading,
   addStaffStatus
 ) => {
-  console.log(addStaffStatus);
   try {
     const res = await apiLink.post(
       `ispOwner/collector?addStaff=${addStaffStatus}`,
