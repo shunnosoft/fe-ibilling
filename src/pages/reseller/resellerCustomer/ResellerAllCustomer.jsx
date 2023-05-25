@@ -40,6 +40,8 @@ import PrintCustomer from "./customerPDF";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { useNavigate } from "react-router-dom";
 import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
+import BulkBillingCycleEdit from "../../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
+import BulkStatusEdit from "../../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -66,6 +68,11 @@ const AllResellerCustomer = () => {
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
+  );
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // customer state
@@ -663,6 +670,11 @@ const AllResellerCustomer = () => {
         bulkCustomer={bulkCustomer}
         modalId="bulkPromiseDateEdit"
       />
+      <BulkBillingCycleEdit
+        bulkCustomer={bulkCustomer}
+        modalId="customerBillingCycle"
+      />
+      <BulkStatusEdit bulkCustomer={bulkCustomer} modalId="bulkStatusEdit" />
       {bulkCustomer.length > 0 && (
         <>
           <div className="bulkActionButton">
@@ -692,17 +704,46 @@ const AllResellerCustomer = () => {
               <span className="button_title"> {t("returnCustomer")} </span>
             </button>
 
-            <button
-              className="bulk_action_button"
-              title={t("editPromiseDate")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkPromiseDateEdit"
-              type="button"
-              class="btn btn-dark btn-floating btn-sm"
-            >
-              <i class="fas fa-calendar-week"></i>
-              <span className="button_title"> {t("editPromiseDate")} </span>
-            </button>
+            {bpSettings.resellerCustomerBulkPromiseDateEdit && (
+              <button
+                className="bulk_action_button"
+                title={t("editPromiseDate")}
+                data-bs-toggle="modal"
+                data-bs-target="#bulkPromiseDateEdit"
+                type="button"
+                class="btn btn-dark btn-floating btn-sm"
+              >
+                <i class="fas fa-calendar-week"></i>
+                <span className="button_title"> {t("editPromiseDate")} </span>
+              </button>
+            )}
+
+            {bpSettings.resellerCustomerBulkBillingCycleEdit && (
+              <button
+                className="bulk_action_button"
+                title={t("editBillingCycle")}
+                data-bs-toggle="modal"
+                data-bs-target="#customerBillingCycle"
+                type="button"
+                class="btn btn-warning btn-floating btn-sm"
+              >
+                <i class="fas fa-edit"></i>
+                <span className="button_title"> {t("editBillingCycle")} </span>
+              </button>
+            )}
+
+            {bpSettings.resellerCustomerBulkStatusEdit && (
+              <button
+                className="bulk_action_button btn btn-info btn-floating btn-sm"
+                title={t("editStatus")}
+                data-bs-toggle="modal"
+                data-bs-target="#bulkStatusEdit"
+                type="button"
+              >
+                <i className="fas fa-edit"></i>
+                <span className="button_title"> {t("editStatus")}</span>
+              </button>
+            )}
           </div>
         </>
       )}

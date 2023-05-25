@@ -36,6 +36,7 @@ import FormatNumber from "../../../components/common/NumberFormat";
 import { fetchMikrotik } from "../../../features/apiCalls";
 import BulkStatusEdit from "../resellerModals/bulkStatusEdit";
 import BulkCustomerTransfer from "../resellerModals/bulkCustomerTransfer";
+import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
 
 // get specific customer
 
@@ -68,6 +69,11 @@ const ResellerCustomer = () => {
   // get all data from redux state
   let resellerCustomer = useSelector(
     (state) => state?.resellerCustomer?.resellerCustomer
+  );
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // customer state
@@ -642,6 +648,10 @@ const ResellerCustomer = () => {
         modalId="customerBillingCycle"
       />
       <BulkStatusEdit bulkCustomer={bulkCustomer} modalId="bulkStatusEdit" />
+      <BulkPromiseDateEdit
+        bulkCustomer={bulkCustomer}
+        modalId="bulkPromiseDateEdit"
+      />
       <BulkCustomerTransfer
         bulkCustomer={bulkCustomer}
         modalId="bulkTransferToReseller"
@@ -659,27 +669,46 @@ const ResellerCustomer = () => {
             <i class="fa-solid fa-right-left"></i>
             <span className="button_title"> {t("returnCustomer")} </span>
           </button>
-          <button
-            className="bulk_action_button"
-            title={t("editBillingCycle")}
-            data-bs-toggle="modal"
-            data-bs-target="#customerBillingCycle"
-            type="button"
-            class="btn btn-warning btn-floating btn-sm"
-          >
-            <i class="fas fa-edit"></i>
-            <span className="button_title"> {t("editBillingCycle")} </span>
-          </button>
-          <button
-            className="bulk_action_button btn btn-info btn-floating btn-sm"
-            title={t("editStatus")}
-            data-bs-toggle="modal"
-            data-bs-target="#bulkStatusEdit"
-            type="button"
-          >
-            <i className="fas fa-edit"></i>
-            <span className="button_title"> {t("editStatus")}</span>
-          </button>
+          {bpSettings.resellerCustomerBulkBillingCycleEdit && (
+            <button
+              className="bulk_action_button"
+              title={t("editBillingCycle")}
+              data-bs-toggle="modal"
+              data-bs-target="#customerBillingCycle"
+              type="button"
+              class="btn btn-warning btn-floating btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+              <span className="button_title"> {t("editBillingCycle")} </span>
+            </button>
+          )}
+
+          {bpSettings.resellerCustomerBulkStatusEdit && (
+            <button
+              className="bulk_action_button btn btn-info btn-floating btn-sm"
+              title={t("editStatus")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkStatusEdit"
+              type="button"
+            >
+              <i className="fas fa-edit"></i>
+              <span className="button_title"> {t("editStatus")}</span>
+            </button>
+          )}
+
+          {bpSettings.resellerCustomerBulkPromiseDateEdit && (
+            <button
+              className="bulk_action_button"
+              title={t("editPromiseDate")}
+              data-bs-toggle="modal"
+              data-bs-target="#bulkPromiseDateEdit"
+              type="button"
+              class="btn btn-dark btn-floating btn-sm"
+            >
+              <i class="fas fa-calendar-week"></i>
+              <span className="button_title"> {t("editPromiseDate")} </span>
+            </button>
+          )}
 
           <button
             className="bulk_action_button btn btn-primary btn-floating btn-sm"
