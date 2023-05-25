@@ -132,6 +132,24 @@ export const ispOwnerPermission = (perm) => {
       label: "Multiple Manager",
       isChecked: perm?.multipleManager,
     },
+    {
+      id: 22,
+      value: "Reseller Customer Bulk Status Edit",
+      label: "Reseller Customer Bulk Status Edit",
+      isChecked: perm?.resellerCustomerBulkStatusEdit,
+    },
+    {
+      id: 22,
+      value: "Reseller Customer Bulk Promise Date Edit",
+      label: "Reseller Customer Bulk Promise Date Edit",
+      isChecked: perm?.resellerCustomerBulkPromiseDateEdit,
+    },
+    {
+      id: 23,
+      value: "Reseller Customer Bulk Billing Cycle Edit",
+      label: "Reseller Customer Bulk Billing Cycle Edit",
+      isChecked: perm?.resellerCustomerBulkBillingCycleEdit,
+    },
   ];
   return permission;
 };
