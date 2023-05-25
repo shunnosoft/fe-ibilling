@@ -34,6 +34,10 @@ export default function AddStaticCustomer() {
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.permission
+  );
+
   // get role from redux
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -550,7 +554,8 @@ export default function AddStaticCustomer() {
                               onChange={(data) => setBillDate(data)}
                               showTimeSelect
                               dateFormat="dd/MM/yyyy:hh:mm"
-                              maxDate={billDate}
+                              minDate={billDate}
+                              disabled={permission?.billingCycleEdit === false}
                             />
                             {/* <input
                               value={billDate}

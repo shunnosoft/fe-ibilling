@@ -574,6 +574,7 @@ export default function CustomerModal() {
                             showTimeSelect
                             maxDate={billDate}
                             placeholderText={t("selectBillDate")}
+                            disabled={permission?.billingCycleEdit === false}
                           />
                         </div>
                       )}

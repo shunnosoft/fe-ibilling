@@ -35,7 +35,7 @@ export default function CustomerEdit({ single }) {
 
   // get user permission
   const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
+    (state) => state.persistedReducer.auth?.userData?.permission
   );
 
   // get role from redux
@@ -698,6 +698,7 @@ export default function CustomerEdit({ single }) {
                           onChange={(date) => setBillDate(date)}
                           dateFormat="MMM dd yyyy hh:mm a"
                           showTimeSelect
+                          disabled={permission?.billingCycleEdit === false}
                         />
                       </div>
                       <div className="static_edit_item">
