@@ -279,7 +279,7 @@ export default function ManagerDashboard() {
                 <div className="row">
                   <div className="col-md-3 d-flex justify-content-end align-items-center">
                     <h2>
-                      {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
+                      {t("possibleCollection")} <br /> ৳ &nbsp;
                       {FormatNumber(
                         customerStat?.totalProbableAmount -
                           customerStat?.totalInactiveAmount
@@ -322,8 +322,7 @@ export default function ManagerDashboard() {
                   </div>
                   <div className="col-md-3 d-flex justify-content-start align-items-center">
                     <h2>
-                      {t("totalCollection")} <br />
-                      <CurrencyDollar />{" "}
+                      {t("totalCollection")} <br /> ৳ &nbsp;
                       {FormatNumber(
                         customerStat?.totalMonthlyBillCollection -
                           customerStat?.totalMonthlyBillDiscount
@@ -565,9 +564,7 @@ export default function ManagerDashboard() {
               <div className="col-md-3">
                 <div id="card4" className="dataCard">
                   <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <Coin />
-                  </div>
+                  <div className="cardIcon">৳</div>
                   <div className="chartSection">
                     {permissions?.dashboardCollectionData && (
                       <>
@@ -708,9 +705,7 @@ export default function ManagerDashboard() {
                 <div className="col-md-3">
                   <div id="card5" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
+                    <div className="cardIcon">৳</div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>
                         {t("totalMonthlyCollection")}
@@ -734,9 +729,7 @@ export default function ManagerDashboard() {
                 <div className="col-md-3">
                   <div id="card5" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
+                    <div className="cardIcon">৳</div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>
                         {t("totalOwnCollection")}
@@ -778,9 +771,7 @@ export default function ManagerDashboard() {
                 <div className="col-md-3">
                   <div id="card14" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
+                    <div className="cardIcon">৳</div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>
                         {t("depositCollection")}
@@ -795,9 +786,7 @@ export default function ManagerDashboard() {
                 <div className="col-md-3">
                   <div id="card11" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
+                    <div className="cardIcon">৳</div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("staffSalary")}</p>
                       <h2>
@@ -810,9 +799,7 @@ export default function ManagerDashboard() {
                 <div className="col-md-3">
                   <div id="card8" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
+                    <div className="cardIcon">৳</div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("cost")}</p>
                       <h2>
@@ -825,9 +812,7 @@ export default function ManagerDashboard() {
                 <div className="col-md-3">
                   <div id="card7" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <CurrencyDollar />
-                    </div>
+                    <div className="cardIcon">৳</div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
                       <h2>৳ {FormatNumber(customerStat.balance)}</h2>
@@ -845,9 +830,7 @@ export default function ManagerDashboard() {
                     style={{ cursor: "pointer" }}
                   >
                     <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <Coin />
-                    </div>
+                    <div className="cardIcon">৳</div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("collector")}</p>
                       <h2>{customerStat?.collectorStat?.length}</h2>

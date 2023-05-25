@@ -9,8 +9,6 @@ import {
   ThreeDotsVertical,
   BarChartFill,
   PersonCheckFill,
-  Coin,
-  CurrencyDollar,
 } from "react-bootstrap-icons";
 // internal imports
 // import "./home.css";
@@ -246,7 +244,7 @@ export default function Home() {
                   <div className="row">
                     <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <h2>
-                        {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
+                        {t("possibleCollection")} <br /> ৳ &nbsp;{" "}
                         {FormatNumber(customerStat.totalProbableAmount)}{" "}
                       </h2>
                     </div>
@@ -281,8 +279,7 @@ export default function Home() {
                     </div>
                     <div className="col-md-3 d-flex justify-content-start align-items-center">
                       <h2>
-                        {t("totalCollection")} <br />
-                        <CurrencyDollar />{" "}
+                        {t("totalCollection")} <br />৳ &nbsp;{" "}
                         {FormatNumber(customerStat.totalMonthlyCollection)}
                       </h2>
                     </div>
@@ -367,9 +364,7 @@ export default function Home() {
             <div className="col-md-3" key={4}>
               <div id="card4" className="dataCard">
                 <ThreeDotsVertical className="ThreeDots" />
-                <div className="cardIcon">
-                  <Coin />
-                </div>
+                <div className="cardIcon">৳</div>
                 <div className="chartSection">
                   <p style={{ fontSize: "18px" }}> {t("total collection")} </p>
                   <h2>৳ {FormatNumber(customerStat.totalMonthlyCollection)}</h2>
@@ -400,9 +395,7 @@ export default function Home() {
                     <div className="col-md-3">
                       <div id="card9" className="dataCard">
                         <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">
-                          <CurrencyDollar />
-                        </div>
+                        <div className="cardIcon">৳</div>
                         <div className="chartSection">
                           <p style={{ fontSize: "16px" }}>
                             {t("totalCollection")}
@@ -450,9 +443,7 @@ export default function Home() {
                     <div className="col-md-3">
                       <div id="card13" className="dataCard">
                         <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">
-                          <CurrencyDollar />
-                        </div>
+                        <div className="cardIcon">৳</div>
                         <div className="chartSection">
                           <p style={{ fontSize: "16px" }}>
                             {t("managersBalance")}
@@ -465,7 +456,7 @@ export default function Home() {
                   <div id="card13" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
-                      <CurrencyDollar />
+                      ৳
                     </div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("totalProfit")}</p>
@@ -483,7 +474,7 @@ export default function Home() {
                   <div id="card12" className="dataCard">
                     <ThreeDotsVertical className="ThreeDots" />
                     <div className="cardIcon">
-                      <CurrencyDollar />
+                      ৳
                     </div>
                     <div className="chartSection">
                       <p style={{ fontSize: "16px" }}>{t("totalDue")}</p>

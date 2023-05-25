@@ -598,7 +598,9 @@ export default function CustomerEdit({ single }) {
                                   showTimeSelect
                                   dateFormat="dd/MM/yyyy:hh:mm"
                                   minDate={new Date()}
-                                  disabled={!permission?.billingCycleEdit}
+                                  disabled={
+                                    permission?.billingCycleEdit === false
+                                  }
                                 />
                                 {/* <input
                                   value={billDate}
@@ -624,7 +626,9 @@ export default function CustomerEdit({ single }) {
                                   showTimeSelect
                                   dateFormat="dd/MM/yyyy:hh:mm"
                                   minDate={new Date()}
-                                  disabled={!permission?.billingCycleEdit}
+                                  disabled={
+                                    permission?.billingCycleEdit === false
+                                  }
                                 />
                                 {/* <input
                                   value={billDate}

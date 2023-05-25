@@ -9,6 +9,7 @@ import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
 
 //divisional location
 import divisionsJSON from "../../../bdAddress/bd-divisions.json";
@@ -69,7 +70,7 @@ export default function AddStaticCustomer() {
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
-  const [billDate, setBillDate] = useState();
+  const [billDate, setBillDate] = useState(new Date());
   const [billTime, setBilltime] = useState();
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
@@ -165,7 +166,7 @@ export default function AddStaticCustomer() {
       mikrotikPackage: mikrotikPackage,
       billPayType: "prepaid",
       autoDisable: autoDisable,
-      billingCycle: moment(billDate + " " + billTime)
+      billingCycle: moment(billDate)
         .subtract({ hours: 6 })
         .format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
       balance: -balance,
@@ -246,11 +247,6 @@ export default function AddStaticCustomer() {
       [name]: value,
     });
   };
-
-  useEffect(() => {
-    setBillDate(moment().endOf("day").format("YYYY-MM-DD"));
-    setBilltime(moment().endOf("day").format("HH:mm"));
-  }, [bpSettings, role]);
 
   //traget ad ip queue-{name ,target-ip,max-limit,}
   return (
@@ -548,7 +544,15 @@ export default function AddStaticCustomer() {
                           </p>
 
                           <div className="timeDate">
-                            <input
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={billDate}
+                              onChange={(data) => setBillDate(data)}
+                              showTimeSelect
+                              dateFormat="dd/MM/yyyy:hh:mm"
+                              maxDate={billDate}
+                            />
+                            {/* <input
                               value={billDate}
                               onChange={(e) => setBillDate(e.target.value)}
                               type="date"
@@ -558,7 +562,7 @@ export default function AddStaticCustomer() {
                               value={billTime}
                               onChange={(e) => setBilltime(e.target.value)}
                               type="time"
-                            />
+                            /> */}
                           </div>
                         </div>
 
