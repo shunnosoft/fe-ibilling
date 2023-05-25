@@ -239,7 +239,6 @@ export const getIspOwnerCharts = async (
     const res = await apiLink(
       `dashboard/ispOwner/chart-data/${ispOwnerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
     );
-    console.log(res.data);
     dispatch(getChartSuccess(res.data));
   } catch (err) {
     console.log("Charts error: ", err);
@@ -776,7 +775,6 @@ export const addCollector = async (
   setIsLoading,
   addStaffStatus
 ) => {
-  console.log(addStaffStatus);
   try {
     const res = await apiLink.post(
       `ispOwner/collector?addStaff=${addStaffStatus}`,

@@ -9,11 +9,9 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   const { t } = useTranslation();
   const areas = useSelector((state) => state?.area?.area);
   const storeSubArea = useSelector((state) => state.area?.subArea);
-  console.log(storeSubArea);
   const [isLoading, setIsLoading] = useState(false);
   const [subArea, setSubArea] = useState("");
   const [areaName, setAreaName] = useState("");
-  console.log(subArea);
   const dispatch = useDispatch();
   //state for selected value
   const [selectedValue, setSelectedValue] = useState({

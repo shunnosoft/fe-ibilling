@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +12,7 @@ import ReactToPrint from "react-to-print";
 import Table from "../../../components/table/Table";
 import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
 import { getIspOwnerCollector } from "../../../features/apiCalls";
+import FormatNumber from "../../../components/common/NumberFormat";
 
 const AllCollector = ({ ispOwnerId, month, year, status }) => {
   const { t } = useTranslation();
@@ -18,6 +25,9 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
   const collectorData = useSelector(
     (state) => state.dashboardInformation?.ispOwnerCollector
   );
+
+  //get dashboard different cards data
+  const customerStat = useSelector((state) => state.chart.customerStat);
 
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -75,6 +85,18 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
       getIspOwnerCollector(dispatch, ispOwnerId, year, month, setIsLoading);
   }, [status, year, month]);
 
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("todayCollection")}&nbsp;{" "}
+      {FormatNumber(customerStat?.collector?.billCollection)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
+      {FormatNumber(customerStat?.collector?.todayBillCollection)} &nbsp;
+      {t("tk")} &nbsp;
+    </div>
+  );
+
   return (
     <div
       className="modal fade"
@@ -125,6 +147,7 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
                 isLoading={isLoading}
                 columns={column}
                 data={collectorData}
+                customComponent={customComponent}
               ></Table>
             </div>
             <div className="d-none">
