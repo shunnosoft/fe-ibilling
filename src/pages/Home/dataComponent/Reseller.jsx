@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,25 +66,33 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
     [t]
   );
 
-  //total monthly fee and due calculation
-  const dueMonthlyFee = useCallback(() => {
-    let balance = 0;
+  //summary Calculation function
+  const summaryCalculation = useMemo(() => {
+    const initialValue = {
+      totalBalance: 0,
+      totalCollection: 0,
+    };
 
-    resellerData?.map((item) => {
-      balance += Math.floor(item.currentBalance);
-    });
+    const calculatedValue = resellerData.reduce((previous, current) => {
+      // sum of all balance
+      previous.totalBalance += Math.floor(current.currentBalance);
 
-    return { balance };
+      // sum of all bill collection
+      previous.totalCollection += current.totalBillCollected;
+
+      return previous;
+    }, initialValue);
+    return calculatedValue;
   }, [resellerData]);
 
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("totalBalance")}&nbsp; {FormatNumber(dueMonthlyFee().balance)}
+      {t("totalBalance")}&nbsp; {FormatNumber(summaryCalculation?.totalBalance)}
       &nbsp;
       {t("tk")} &nbsp;&nbsp;
       {t("totalCollection")}&nbsp;
-      {FormatNumber(customerStat?.reseller?.billCollection)} &nbsp;
+      {FormatNumber(summaryCalculation?.totalCollection)} &nbsp;
       {t("tk")} &nbsp;
     </div>
   );

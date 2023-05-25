@@ -26,9 +26,6 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
     (state) => state.dashboardInformation?.ispOwnerCollector
   );
 
-  //get dashboard different cards data
-  const customerStat = useSelector((state) => state.chart.customerStat);
-
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,14 +82,34 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
       getIspOwnerCollector(dispatch, ispOwnerId, year, month, setIsLoading);
   }, [status, year, month]);
 
+  //summary Calculation function
+  const summaryCalculation = useMemo(() => {
+    const initialValue = {
+      totalTodayCollection: 0,
+      totalCollection: 0,
+    };
+
+    const calculatedValue = collectorData.reduce((previous, current) => {
+      // sum of today collection
+      previous.totalTodayCollection += current.todayBillCollection;
+
+      // sum of all bill collection
+      previous.totalCollection += current.totalBillCollected;
+
+      return previous;
+    }, initialValue);
+
+    return calculatedValue;
+  }, [collectorData]);
+
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
       {t("todayCollection")}&nbsp;{" "}
-      {FormatNumber(customerStat?.collector?.billCollection)}
+      {FormatNumber(summaryCalculation?.totalTodayCollection)}
       &nbsp;
       {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
-      {FormatNumber(customerStat?.collector?.todayBillCollection)} &nbsp;
+      {FormatNumber(summaryCalculation?.totalCollection)} &nbsp;
       {t("tk")} &nbsp;
     </div>
   );
