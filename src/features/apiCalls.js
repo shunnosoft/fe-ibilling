@@ -239,7 +239,6 @@ export const getIspOwnerCharts = async (
     const res = await apiLink(
       `dashboard/ispOwner/chart-data/${ispOwnerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
     );
-    console.log(res.data);
     dispatch(getChartSuccess(res.data));
   } catch (err) {
     console.log("Charts error: ", err);

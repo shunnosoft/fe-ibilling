@@ -6,6 +6,8 @@ import ReactToPrint from "react-to-print";
 import Table from "../../../components/table/Table";
 import ResellerCollectionPdf from "../homePdf/ResellerCollectionPdf";
 import { getIspOwnerReseller } from "../../../features/apiCalls";
+import FormatNumber from "../../../components/common/NumberFormat";
+import { useCallback } from "react";
 
 const Reseller = ({ ispOwnerId, month, year, status }) => {
   const { t } = useTranslation();
@@ -17,8 +19,16 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
     (state) => state.dashboardInformation?.ispOwnerReseller
   );
 
+  //get dashboard different cards data
+  const customerStat = useSelector((state) => state.chart.customerStat);
+
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    status === "reseller" &&
+      getIspOwnerReseller(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [status, year, month]);
 
   const column = React.useMemo(
     () => [
@@ -56,10 +66,28 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
     [t]
   );
 
-  useEffect(() => {
-    status === "reseller" &&
-      getIspOwnerReseller(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [status, year, month]);
+  //total monthly fee and due calculation
+  const dueMonthlyFee = useCallback(() => {
+    let balance = 0;
+
+    resellerData?.map((item) => {
+      balance += Math.floor(item.currentBalance);
+    });
+
+    return { balance };
+  }, [resellerData]);
+
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("totalBalance")}&nbsp; {FormatNumber(dueMonthlyFee().balance)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp;
+      {t("totalCollection")}&nbsp;
+      {FormatNumber(customerStat?.reseller?.billCollection)} &nbsp;
+      {t("tk")} &nbsp;
+    </div>
+  );
 
   return (
     <div
@@ -111,6 +139,7 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
                 isLoading={isLoading}
                 columns={column}
                 data={resellerData}
+                customComponent={customComponent}
               ></Table>
             </div>
             <div className="d-none">
