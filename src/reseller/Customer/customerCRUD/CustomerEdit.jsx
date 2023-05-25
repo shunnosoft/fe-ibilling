@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import apiLink from "../../../api/apiLink";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
 
 import getName from "../../../utils/getLocationName";
 import useISPowner from "../../../hooks/useISPOwner";
@@ -70,7 +71,6 @@ export default function CustomerEdit({ single }) {
   //   (state) => state.persistedReducer.auth?.userData.areas
   // );
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  console.log(Getmikrotik);
 
   const collectorResellerInfo = useSelector(
     (state) => state.resellerProfile.reseller
@@ -86,7 +86,6 @@ export default function CustomerEdit({ single }) {
   const dispatch = useDispatch();
   const [activeStatus, setActiveStatus] = useState(data?.pppoe?.disabled);
   const [mikrotikName, setmikrotikName] = useState("");
-  console.log(mikrotikName);
   const [areaID, setAreaID] = useState("");
   const [billDate, setBillDate] = useState();
   const [billTime, setBilltime] = useState();
@@ -108,12 +107,12 @@ export default function CustomerEdit({ single }) {
     setStatus(data?.status);
     setAutoDisable(data?.autoDisable);
     setDataPackageRate(data?.mikrotikPackage);
-
     setSubArea(data?.subArea);
-    setBillDate(moment(data?.billingCycle).format("YYYY-MM-DD"));
-    setBilltime(moment(data?.billingCycle).format("HH:mm"));
+
+    if (data) setBillDate(new Date(data?.billingCycle));
+
+    // setBilltime(moment(data?.billingCycle).format("HH:mm"));
     const temp = Getmikrotik?.find((val) => val.id === data?.mikrotik);
-    console.log(temp);
     setmikrotikName(temp);
     if (!bpSetting) {
       setppPackage(withOutMtkPackage);
@@ -254,9 +253,7 @@ export default function CustomerEdit({ single }) {
       mikrotikPackage: packageRate?.id,
       monthlyFee,
       reseller: resellerId,
-      billingCycle: moment(billDate + " " + billTime).format(
-        "YYYY-MM-DDTHH:mm:ss.ms[Z]"
-      ),
+      billingCycle: moment(billDate).format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -594,7 +591,16 @@ export default function CustomerEdit({ single }) {
 
                             {role === "collector" ? (
                               <div className="timeDate">
-                                <input
+                                <DatePicker
+                                  className="form-control mw-100"
+                                  selected={billDate}
+                                  onChange={(data) => setBillDate(data)}
+                                  showTimeSelect
+                                  dateFormat="dd/MM/yyyy:hh:mm"
+                                  minDate={new Date()}
+                                  disabled={!permission?.billingCycleEdit}
+                                />
+                                {/* <input
                                   value={billDate}
                                   onChange={(e) => setBillDate(e.target.value)}
                                   type="date"
@@ -607,11 +613,20 @@ export default function CustomerEdit({ single }) {
                                   onChange={(e) => setBilltime(e.target.value)}
                                   type="time"
                                   disabled
-                                />
+                                /> */}
                               </div>
                             ) : (
                               <div className="timeDate">
-                                <input
+                                <DatePicker
+                                  className="form-control mw-100"
+                                  selected={billDate}
+                                  onChange={(data) => setBillDate(data)}
+                                  showTimeSelect
+                                  dateFormat="dd/MM/yyyy:hh:mm"
+                                  minDate={new Date()}
+                                  disabled={!permission?.billingCycleEdit}
+                                />
+                                {/* <input
                                   value={billDate}
                                   onChange={(e) => setBillDate(e.target.value)}
                                   type="date"
@@ -624,7 +639,7 @@ export default function CustomerEdit({ single }) {
                                   onChange={(e) => setBilltime(e.target.value)}
                                   type="time"
                                   disabled={!permission?.billingCycleEdit}
-                                />
+                                /> */}
                               </div>
                             )}
                           </div>
