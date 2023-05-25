@@ -112,6 +112,7 @@ export const updateOwner = async (
   try {
     const res = await apiLink.patch("/ispOwner/" + ispOwnerId, data);
     dispatch(editOwner(res.data));
+    document.querySelector("#clientEditModal").click();
     setShow(false);
     toast.success(`${data.company} IspOwner update success`);
   } catch (err) {

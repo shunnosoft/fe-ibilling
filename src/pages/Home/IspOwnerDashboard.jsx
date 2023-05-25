@@ -1047,7 +1047,7 @@ export default function IspOwnerDashboard() {
                                 {t("allCollector")}
                               </p>
                               <h2>
-                                ৳{" "}
+                                {" "}
                                 {FormatNumber(
                                   customerStat?.collector?.collectors
                                 )}

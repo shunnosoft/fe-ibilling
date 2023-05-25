@@ -41,6 +41,8 @@ export default function Area() {
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const [mikrotikLoading, setMikrotikLoading] = useState(false);
   const [editAreaId, setEditAreaId] = useState("");
 
   const [areaID, setAreaID] = useState("");
@@ -58,8 +60,8 @@ export default function Area() {
   useEffect(() => {
     if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwnerId);
-    if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setIsloading);
-    fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+    if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setCustomerLoading);
+    fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
   }, [dispatch, ispOwnerId]);
 
   const deleteSingleArea = async (id, ispOwner) => {
@@ -167,14 +169,6 @@ export default function Area() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              {/* modals */}
-              <ResellerPost />
-              {/* area edit modal */}
-              <AreaEdit areaId={editAreaId} />
-
-              {/* subAreas modal */}
-              <SubAreaModal areaId={areaID} />
-
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div className="d-flex">
@@ -214,6 +208,13 @@ export default function Area() {
           </div>
         </div>
       </div>
+      {/* modals */}
+      <ResellerPost />
+      {/* area edit modal */}
+      <AreaEdit areaId={editAreaId} />
+
+      {/* subAreas modal */}
+      <SubAreaModal areaId={areaID} />
     </>
   );
 }

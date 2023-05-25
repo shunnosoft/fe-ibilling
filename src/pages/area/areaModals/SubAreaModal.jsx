@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Table from "../../../components/table/Table";
 
 const SubAreaModal = ({ areaId }) => {
@@ -21,7 +21,7 @@ const SubAreaModal = ({ areaId }) => {
       }
     });
     setSubArea(sub);
-  }, [storeSubArea, areaId]);
+  }, [areaId]);
 
   const column = React.useMemo(
     () => [
