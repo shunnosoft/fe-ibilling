@@ -134,19 +134,19 @@ export const ispOwnerPermission = (perm) => {
     },
     {
       id: 22,
-      value: "Reseller Customer Bulk Status Edit",
+      value: "resellerCustomerBulkStatusEdit",
       label: "Reseller Customer Bulk Status Edit",
       isChecked: perm?.resellerCustomerBulkStatusEdit,
     },
     {
       id: 22,
-      value: "Reseller Customer Bulk Promise Date Edit",
+      value: "resellerCustomerBulkPromiseDateEdit",
       label: "Reseller Customer Bulk Promise Date Edit",
       isChecked: perm?.resellerCustomerBulkPromiseDateEdit,
     },
     {
       id: 23,
-      value: "Reseller Customer Bulk Billing Cycle Edit",
+      value: "resellerCustomerBulkBillingCycleEdit",
       label: "Reseller Customer Bulk Billing Cycle Edit",
       isChecked: perm?.resellerCustomerBulkBillingCycleEdit,
     },

@@ -13,6 +13,7 @@ import {
   ModalHeader,
   ModalTitle,
 } from "react-bootstrap";
+import Loader from "../../../components/common/Loader";
 
 const Permissions = ({ ownerId, openIs }) => {
   const dispatch = useDispatch();
@@ -140,9 +141,8 @@ const Permissions = ({ ownerId, openIs }) => {
             type="submit"
             onClick={permissionHandler}
             className="btn btn-success customBtn"
-            disabled={isLoading}
           >
-            Save
+            {isLoading ? <Loader /> : "Save"}
           </button>
         </ModalFooter>
       </Modal>
