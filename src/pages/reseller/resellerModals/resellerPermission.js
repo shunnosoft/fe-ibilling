@@ -109,10 +109,17 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   disabled: false,
     // },
     {
-      id: 16,
+      id: 15,
       label: "Billing Cycle Edit",
       value: "billingCycleEdit",
       isChecked: permission?.billingCycleEdit,
+      disabled: false,
+    },
+    {
+      id: 16,
+      label: "Customer Automatic Connection OnOff",
+      value: "customerAutomaticConnectionOnOff",
+      isChecked: permission?.customerAutomaticConnectionOnOff,
       disabled: false,
     },
   ];
@@ -228,10 +235,17 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   disabled: false,
     // },
     {
-      id: 16,
+      id: 15,
       label: "বিলিং সাইকেল এডিট",
       value: "billingCycleEdit",
       isChecked: permission?.billingCycleEdit,
+      disabled: false,
+    },
+    {
+      id: 16,
+      label: "গ্রাহক অটোমেটিক সংযোগ অনঅফ",
+      value: "customerAutomaticConnectionOnOff",
+      isChecked: permission?.customerAutomaticConnectionOnOff,
       disabled: false,
     },
   ];

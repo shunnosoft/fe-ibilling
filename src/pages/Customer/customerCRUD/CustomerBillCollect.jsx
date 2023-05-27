@@ -186,7 +186,6 @@ export default function CustomerBillCollect({ single, customerData }) {
       medium,
       package: data?.pppoe.profile,
     };
-    console.log(sendingData);
 
     if (note) sendingData.note = note;
 

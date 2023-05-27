@@ -519,7 +519,13 @@ export const getIspOwnerCollector = async (
   setIsLoading(false);
 };
 
-export const addManager = async (dispatch, addStaffStatus, managerData) => {
+export const addManager = async (
+  dispatch,
+  addStaffStatus,
+  managerData,
+  setIsLoading
+) => {
+  setIsLoading(true);
   const button = document.querySelector(".marginLeft");
   button.style.display = "none";
 
@@ -553,6 +559,7 @@ export const addManager = async (dispatch, addStaffStatus, managerData) => {
         );
       }
     });
+  setIsLoading(false);
 };
 
 export const deleteManager = async (
@@ -592,7 +599,6 @@ export const editManager = async (
     data: managerData,
   })
     .then((res) => {
-      console.log(res.data);
       dispatch(managerEditSuccess(res.data));
       hideModal();
 

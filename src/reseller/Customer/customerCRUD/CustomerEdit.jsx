@@ -650,17 +650,18 @@ export default function CustomerEdit({ single }) {
                         </>
                       )}
 
-                      {Getmikrotik.length > 0 && (
-                        <div className="autoDisable">
-                          <label> {t("automaticConnectionOff")} </label>
-                          <input
-                            type="checkBox"
-                            checked={autoDisable}
-                            onChange={(e) => setAutoDisable(e.target.checked)}
-                            disabled={!permission?.customerAutoDisableEdit}
-                          />
-                        </div>
-                      )}
+                      {Getmikrotik.length > 0 &&
+                        permission.customerAutomaticConnectionOnOff && (
+                          <div className="autoDisable">
+                            <label> {t("automaticConnectionOff")} </label>
+                            <input
+                              type="checkBox"
+                              checked={autoDisable}
+                              onChange={(e) => setAutoDisable(e.target.checked)}
+                              disabled={!permission?.customerAutoDisableEdit}
+                            />
+                          </div>
+                        )}
                       {status !== "expired" && (
                         <div className="pppoeStatus">
                           <p className="p-0 mt-2">{t("status")}</p>

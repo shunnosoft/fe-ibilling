@@ -8,6 +8,7 @@ import {
   ThreeDots,
   ArchiveFill,
   Server,
+  GearFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -26,6 +27,8 @@ import { useTranslation } from "react-i18next";
 import BandwidthModal from "../Customer/BandwidthModal";
 import moment from "moment";
 import CustomerDelete from "../Customer/customerCRUD/CustomerDelete";
+import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
+import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -42,6 +45,9 @@ export default function ConfigMikrotik() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // bulk customer state
+  const [bulkCustomers, setBulkCustomer] = useState([]);
+
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
@@ -53,9 +59,6 @@ export default function ConfigMikrotik() {
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
 
-  // customer id state
-  const [customerId, setCustomerId] = useState("");
-
   // customer loading state
   const [mtkLoading, setMtkLoading] = useState(false);
 
@@ -64,6 +67,9 @@ export default function ConfigMikrotik() {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+
+  //set status for inactive offline customer
+  let [status, setStatus] = useState(false);
 
   // customer id state
   const [customerDeleteId, setCustomerDeleteId] = useState("");
@@ -107,6 +113,7 @@ export default function ConfigMikrotik() {
       setCustomerIt("offline");
     }
     setCustomerItData(temp);
+    setStatus(false);
   };
 
   // customer online offline filter handler
@@ -114,12 +121,15 @@ export default function ConfigMikrotik() {
     let customer;
     if (e.target.value === "All") {
       setAllUsers(customerItData);
+      setStatus(false);
     } else if (e.target.value === "activeOffline") {
       customer = customerItData.filter((item) => item.status == "active");
       setAllUsers(customer);
+      setStatus(false);
     } else if (e.target.value === "inactiveOffline") {
       customer = customerItData.filter((item) => item.status === "inactive");
       setAllUsers(customer);
+      setStatus(true);
     }
   };
 
@@ -164,6 +174,21 @@ export default function ConfigMikrotik() {
   // table column
   const columns = React.useMemo(
     () => [
+      {
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: "2%",
+      },
       {
         width: "5%",
         Header: "#",
@@ -397,6 +422,9 @@ export default function ConfigMikrotik() {
                       isLoading={mtkLoading}
                       columns={columns}
                       data={allUsers}
+                      bulkState={{
+                        setBulkCustomer,
+                      }}
                     ></Table>
                   </div>
                 </div>
@@ -406,6 +434,33 @@ export default function ConfigMikrotik() {
           </div>
         </div>
       </div>
+
+      {bulkCustomers.length > 0 && (
+        <>
+          <div className="bulkActionButton">
+            {bpSettings?.inActiveCustomerDelete && status && (
+              <button
+                className="bulk_action_button"
+                title={t("bulkDeleteCustomer")}
+                data-bs-toggle="modal"
+                data-bs-target="#bulkDeleteCustomer"
+                type="button"
+                class="btn btn-danger btn-floating btn-sm"
+              >
+                <ArchiveFill />
+                <span className="button_title"> {t("customerDelete")} </span>
+              </button>
+            )}
+          </div>
+        </>
+      )}
+
+      {/*bulk customer delete modal  */}
+      <BulkCustomerDelete
+        bulkCustomer={bulkCustomers}
+        modalId="bulkDeleteCustomer"
+      />
+
       <CustomerDelete
         single={customerDeleteId}
         mikrotikCheck={checkMikrotik}
