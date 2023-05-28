@@ -47,7 +47,7 @@ const BulkMikrotikEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateCustomerMikrotik")}>
+    <RootBulkModal modalId={modalId} header={t("changeMikrotik")}>
       <form onSubmit={changeMikrotik}>
         <div className="mikrotikSection">
           {bpSettings?.hasMikrotik && (

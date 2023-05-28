@@ -101,13 +101,6 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.instantRechargeBillPrint,
       disabled: !bpSettings?.instantRechargeBillPrint,
     },
-    // {
-    //   id: 15,
-    //   label: "Daily Reseller Balance Customer",
-    //   value: "dailyResellerBalanceCustomer",
-    //   isChecked: permission?.dailyResellerBalanceCustomer,
-    //   disabled: false,
-    // },
     {
       id: 15,
       label: "Billing Cycle Edit",
@@ -121,6 +114,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "customerAutomaticConnectionOnOff",
       isChecked: permission?.customerAutomaticConnectionOnOff,
       disabled: false,
+    },
+    {
+      id: 17,
+      label: "Daily Recharge Feature",
+      value: "dailyRechargeFeature",
+      isChecked: permission?.dailyRechargeFeature,
+      disabled: !bpSettings?.dailyRechargeFeature,
     },
   ];
 
@@ -227,13 +227,6 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.instantRechargeBillPrint,
       disabled: !bpSettings?.instantRechargeBillPrint,
     },
-    // {
-    //   id: 15,
-    //   label: "দৈনিক রিসেলার ব্যালেন্স গ্রাহক",
-    //   value: "dailyResellerBalanceCustomer",
-    //   isChecked: permission?.dailyResellerBalanceCustomer,
-    //   disabled: false,
-    // },
     {
       id: 15,
       label: "বিলিং সাইকেল এডিট",
@@ -247,6 +240,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "customerAutomaticConnectionOnOff",
       isChecked: permission?.customerAutomaticConnectionOnOff,
       disabled: false,
+    },
+    {
+      id: 17,
+      label: "দৈনিক রিচার্জ ফিচার",
+      value: "dailyRechargeFeature",
+      isChecked: permission?.dailyRechargeFeature,
+      disabled: !bpSettings?.dailyRechargeFeature,
     },
   ];
 

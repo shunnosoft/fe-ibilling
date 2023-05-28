@@ -763,5 +763,6 @@
   "netfeeSupportNumbers": "নেটফি সাপোর্ট নম্বর",
   "updateBalance": "ব্যালেন্স আপডেট করুন",
   "selectManager": "ম্যানেজার নির্বাচন করুন",
-  "depositBy": "ডিপোজিট করেছে"
+  "depositBy": "ডিপোজিট করেছে",
+  "bulkMessage": "বাল্ক মেসেজ"
 }

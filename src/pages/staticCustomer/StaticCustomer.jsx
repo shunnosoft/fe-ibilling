@@ -70,6 +70,10 @@ import TransferToReseller from "./customerCRUD/TransferToReseller";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import FireWallFilterIpDropControl from "./FireWallFilterIpDropControl";
 import CustomersNumber from "../Customer/CustomersNumber";
+import BulkMikrotikEdit from "../Customer/customerCRUD/bulkOpration/bulkMikrotikEdit";
+import BulkBalanceEdit from "../Customer/customerCRUD/bulkOpration/BulkBalanceEdit";
+import BulkPackageEdit from "../Customer/customerCRUD/bulkOpration/bulkPackageEdit";
+import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
 
 export default function Customer() {
   //call hooks
@@ -1055,10 +1059,35 @@ export default function Customer() {
                 modalId="bulkPromiseDateEdit"
               />
 
-              <BulkStatusEdit
+              {bpSettings.hasMikrotik && (
+                <>
+                  <BulkStatusEdit
+                    bulkCustomer={bulkCustomer}
+                    modalId="bulkStatusEdit"
+                  />
+
+                  <BulkMikrotikEdit
+                    bulkCustomer={bulkCustomer}
+                    modalId="bulkMikrotikEdit"
+                  />
+                </>
+              )}
+
+              <BulkPackageEdit
                 bulkCustomer={bulkCustomer}
-                modalId="bulkStatusEdit"
+                modalId="bulkPackageEdit"
               />
+
+              <BulkRecharge
+                bulkCustomer={bulkCustomer}
+                modalId="bulkRecharge"
+              />
+
+              <BulkBalanceEdit
+                bulkCustomer={bulkCustomer}
+                modalId="customerBalanceEdit"
+              />
+
               <BulkCustomerDelete
                 bulkCustomer={bulkCustomer}
                 modalId="bulkDeleteCustomer"
@@ -1551,6 +1580,112 @@ export default function Customer() {
                   <div className="menu_label2">{t("editPromiseDate")}</div>
                 </li>
               )}
+
+              <hr className="mt-0 mb-0" />
+              {((role === "ispOwner" && bpSettings?.updateCustomerBalance) ||
+                (bpSettings?.updateCustomerBalance &&
+                  permission?.updateCustomerBalance &&
+                  role === "manager")) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerBalanceEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-warning"
+                      title={t("editBalance")}
+                    >
+                      <i className="fas fa-dollar fa-xs "></i>
+                      <span className="button_title">{t("editBalance")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editBalance")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+              {bpSettings.hasMikrotik &&
+                ((role === "ispOwner" &&
+                  bpSettings?.bulkCustomerMikrotikUpdate) ||
+                  (bpSettings?.bulkCustomerMikrotikUpdate &&
+                    permission?.bulkCustomerMikrotikUpdate &&
+                    role === "manager")) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#bulkMikrotikEdit"
+                    type="button"
+                    className="p-1"
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-danger"
+                        title={t("package")}
+                      >
+                        <i class="fas fa-server fa-xs"></i>
+                        <span className="button_title">
+                          {t("changeMikrotik")}
+                        </span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">{t("changeMikrotik")}</div>
+                  </li>
+                )}
+
+              <hr className="mt-0 mb-0" />
+              {bpSettings.hasMikrotik &&
+                ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
+                  (bpSettings?.bulkPackageEdit &&
+                    permission?.bulkPackageEdit &&
+                    role === "manager")) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#bulkPackageEdit"
+                    type="button"
+                    className="p-1"
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                        title={t("package")}
+                      >
+                        <i class="fas fa-wifi fa-xs"></i>
+                        <span className="button_title">
+                          {t("updatePackage")}
+                        </span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">{t("updatePackage")}</div>
+                  </li>
+                )}
+
+              <hr className="mt-0 mb-0" />
+              {bpSettings.hasMikrotik &&
+                ((role === "ispOwner" && bpSettings?.bulkCustomerRecharge) ||
+                  (bpSettings?.bulkCustomerRecharge &&
+                    permission?.bulkCustomerRecharge &&
+                    role === "manager")) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#bulkRecharge"
+                    type="button"
+                    className="p-1"
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-warning"
+                        title={t("package")}
+                      >
+                        <i className="fas fa-dollar fa-xs "></i>
+                        <span className="button_title">
+                          {t("bulkRecharge")}
+                        </span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">{t("bulkRecharge")}</div>
+                  </li>
+                )}
 
               <hr className="mt-0 mb-0" />
 

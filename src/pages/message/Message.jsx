@@ -91,7 +91,6 @@ export default function Message() {
   const storeSubArea = useSelector((state) => state.area?.subArea);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
-  console.log(subAreaIds);
   const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
