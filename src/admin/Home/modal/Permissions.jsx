@@ -69,7 +69,7 @@ const Permissions = ({ ownerId, openIs }) => {
       bpSettings: updatePermission,
     };
 
-    updateOwner(ownerId, sendingData, setIsLoading, dispatch, setShow);
+    updateOwner(ownerId, sendingData, setIsLoading, dispatch);
   };
 
   return (

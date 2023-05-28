@@ -72,7 +72,7 @@ export const PackageBasedEdit = ({
                 checked={allowedMikrotik?.includes(item.id)}
                 disabled={reseller?.mikrotiks.includes(item.id)}
                 type="checkbox"
-                className="getValueUsingClasses form-check-input"
+                className="getValueUsingClassesforMikrotik form-check-input"
                 value={item.id}
                 id={item.id + "008"}
                 onChange={(e) => mikroHandler(e.target.value)}

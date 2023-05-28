@@ -166,12 +166,6 @@ export default function Home() {
     setOwnerId(ispOwnerId);
   };
 
-  // permission modal method
-  const permissionModal = (permissionId) => {
-    setPermissionId(permissionId);
-    setIsPermission({ ...isPermission, [false]: true });
-  };
-
   // details modal handle
   const detailsModal = (showDetailsId) => {
     setOwnerId(showDetailsId);
@@ -400,7 +394,8 @@ export default function Home() {
 
                   <li
                     onClick={() => {
-                      permissionModal(original.id);
+                      setPermissionId(original?.id);
+                      setIsPermission({ ...isPermission, [false]: true });
                     }}
                   >
                     <div className="dropdown-item">

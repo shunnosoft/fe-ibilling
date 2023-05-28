@@ -115,6 +115,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.billingCycleEdit,
       disabled: false,
     },
+    {
+      id: 17,
+      label: "Single Customer Number Edit",
+      value: "singleCustomerNumberEdit",
+      isChecked: permission?.singleCustomerNumberEdit,
+      disabled: false,
+    },
   ];
 
   const permissionBn = [
@@ -232,6 +239,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       label: "বিলিং সাইকেল এডিট",
       value: "billingCycleEdit",
       isChecked: permission?.billingCycleEdit,
+      disabled: false,
+    },
+    {
+      id: 17,
+      label: "সিঙ্গেল কাস্টমার নম্বর এডিট",
+      value: "singleCustomerNumberEdit",
+      isChecked: permission?.singleCustomerNumberEdit,
       disabled: false,
     },
   ];

@@ -284,10 +284,12 @@ export default function Report() {
 
   const addAllBills = useCallback(() => {
     var count = 0;
+    let discount = 0;
     mainData.forEach((item) => {
       count = count + item.amount;
+      discount = discount + item.discount;
     });
-    return FormatNumber(count);
+    return { count, discount };
   }, [mainData]);
 
   let subArea, collector;
@@ -487,7 +489,8 @@ export default function Report() {
 
   const customComponent = (
     <div style={{ fontSize: "18px" }}>
-      {t("totalBill")} {addAllBills()} {t("tk")}
+      {t("totalBill")} {addAllBills().count} {t("tk")} &nbsp;&nbsp;
+      {t("discount")}: {addAllBills().discount} {t("tk")}
     </div>
   );
 
