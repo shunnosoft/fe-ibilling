@@ -96,6 +96,20 @@ export const resellerPermissionEng = [
     isChecked: false,
     disabled: false,
   },
+  {
+    id: 16,
+    label: "Billing Cycle Edit",
+    value: "billingCycleEdit",
+    isChecked: false,
+    disabled: false,
+  },
+  {
+    id: 16,
+    label: "Single Customer Number Edit",
+    value: "singleCustomerNumberEdit",
+    isChecked: false,
+    disabled: false,
+  },
 ];
 
 export const resellerPermissionBan = [
@@ -163,6 +177,20 @@ export const resellerPermissionBan = [
     value: "instantRechargeBillPrint",
     isChecked: false,
     disable: false,
+  },
+  {
+    id: 16,
+    label: "বিলিং সাইকেল এডিট",
+    value: "billingCycleEdit",
+    isChecked: false,
+    disabled: false,
+  },
+  {
+    id: 16,
+    label: "সিঙ্গেল কাস্টমার নম্বর এডিট",
+    value: "singleCustomerNumberEdit",
+    isChecked: false,
+    disabled: false,
   },
 
   // { id: 3, label: "কাস্টমার ডিলিট", value: "customerDelete", isChecked: false },

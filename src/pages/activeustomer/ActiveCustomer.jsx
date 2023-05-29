@@ -8,8 +8,7 @@ import {
   ThreeDots,
   ArchiveFill,
   Server,
-  GearFill,
-  EnvelopePlus,
+  Envelope,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -472,7 +471,7 @@ export default function ConfigMikrotik() {
                   type="button"
                   class="btn btn-primary btn-floating btn-sm"
                 >
-                  <EnvelopePlus />
+                  <Envelope />
                   <span className="button_title"> {t("bulkMessage")} </span>
                 </button>
               )}

@@ -22,6 +22,7 @@ import ReactToPrint from "react-to-print";
 import PPPoECustomerPrint from "./customerPrint/PPPoECustomerPrint";
 import StaticCustomerPrint from "./customerPrint/StaticCustomerPrint";
 import { CSVLink } from "react-csv";
+import FormatNumber from "../../components/common/NumberFormat";
 
 const NewCustomer = () => {
   const { t } = useTranslation();
@@ -301,6 +302,61 @@ const NewCustomer = () => {
     [t]
   );
 
+  //total monthly fee collection in pppoe
+  const customerBalance = useMemo(() => {
+    let totalBalance = 0;
+
+    let totalMonthlyFee = 0;
+
+    mainData.map((item) => {
+      // filter due ammount
+      totalBalance += item.balance;
+
+      // sum of all monthly fee
+      totalMonthlyFee += item.monthlyFee;
+    });
+
+    return { totalBalance, totalMonthlyFee };
+  }, [mainData]);
+
+  //custom table header component
+  const customComponent = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp; {FormatNumber(customerBalance.totalMonthlyFee)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
+      {FormatNumber(customerBalance.totalBalance)} &nbsp;{t("tk")} &nbsp;
+    </div>
+  );
+
+  //total monthly fee collection static
+  const staticCustomerBalance = useMemo(() => {
+    let totalBalance = 0;
+
+    let totalMonthlyFee = 0;
+
+    staticData.map((item) => {
+      // filter due ammount
+      totalBalance += item.balance;
+
+      // sum of all monthly fee
+      totalMonthlyFee += item.monthlyFee;
+    });
+
+    return { totalBalance, totalMonthlyFee };
+  }, [staticData]);
+
+  //custom table header component
+  const customComponentStatic = (
+    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {t("monthlyFee")}&nbsp;{" "}
+      {FormatNumber(staticCustomerBalance.totalMonthlyFee)}
+      &nbsp;
+      {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
+      {FormatNumber(staticCustomerBalance.totalBalance)} &nbsp;{t("tk")} &nbsp;
+    </div>
+  );
+
   // csv table header
   const PPPoECustomerForCsVTableInfoHeader = [
     { label: "name_of_client", key: "name" },
@@ -504,6 +560,7 @@ const NewCustomer = () => {
 
                         <div className="table-section">
                           <Table
+                            customComponent={customComponent}
                             isLoading={pppoeLoading}
                             columns={pppoeColumns}
                             data={mainData}
@@ -544,6 +601,7 @@ const NewCustomer = () => {
 
                         <div className="table-section">
                           <Table
+                            customComponent={customComponentStatic}
                             isLoading={staticLoading}
                             columns={staticColumns}
                             data={staticData}

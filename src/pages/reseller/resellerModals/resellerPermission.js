@@ -110,13 +110,20 @@ export const resellerPermissions = (permission, bpSettings) => {
     },
     {
       id: 16,
+      label: "Single Customer Number Edit",
+      value: "singleCustomerNumberEdit",
+      isChecked: permission?.singleCustomerNumberEdit,
+      disabled: false,
+    },
+    {
+      id: 17,
       label: "Customer Automatic Connection OnOff",
       value: "customerAutomaticConnectionOnOff",
       isChecked: permission?.customerAutomaticConnectionOnOff,
       disabled: false,
     },
     {
-      id: 17,
+      id: 18,
       label: "Daily Recharge Feature",
       value: "dailyRechargeFeature",
       isChecked: permission?.dailyRechargeFeature,
@@ -236,13 +243,20 @@ export const resellerPermissions = (permission, bpSettings) => {
     },
     {
       id: 16,
+      label: "সিঙ্গেল কাস্টমার নম্বর এডিট",
+      value: "singleCustomerNumberEdit",
+      isChecked: permission?.singleCustomerNumberEdit,
+      disabled: false,
+    },
+    {
+      id: 17,
       label: "গ্রাহক অটোমেটিক সংযোগ অনঅফ",
       value: "customerAutomaticConnectionOnOff",
       isChecked: permission?.customerAutomaticConnectionOnOff,
       disabled: false,
     },
     {
-      id: 17,
+      id: 18,
       label: "দৈনিক রিচার্জ ফিচার",
       value: "dailyRechargeFeature",
       isChecked: permission?.dailyRechargeFeature,

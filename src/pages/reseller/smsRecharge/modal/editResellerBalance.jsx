@@ -59,7 +59,7 @@ const EditResellerBalance = ({ resellerId }) => {
               <input
                 className="form-control w-100"
                 type="number"
-                value={resellerBalanceState}
+                value={Math.floor(resellerBalanceState)}
                 onChange={(e) => setResellerBalance(e.target.value)}
                 min={0}
                 placeholder={t("enterAmount")}

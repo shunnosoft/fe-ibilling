@@ -167,7 +167,6 @@
   "enterManagerAddress": "Enter Manager Address",
   "enterManagerEmail": "Enter Manager Email",
   "enterManagerNID": "Enter Manager NID",
-  "selectManager": "Select Manager",
   "enterName": "Enter Name",
   "enterUserName": "Enter User Name",
   "enterMikrotikIP": "Enter Mikrotik IP",
@@ -749,7 +748,7 @@
   "Farabi Farhad": "Farabi Farhad",
   "Rasel Ali": "Rasel Ali",
   "Abdur Razzaq": "Abdur Razzaq",
-  "Ashim Kumar Dipu": "Ashim Kumar Dipu",
+  "Ashim Kumar": "Dipu",
   "Marof": "Marof",
   "thankYou": "Thank You.",
   "selectYourManager": "Select Your Manager.",
@@ -757,5 +756,7 @@
   "netfeeSupportNumbers": "Netfee Support Numbers",
   "editSubArea": "Edit Subarea",
   "depositBy": "Deposit By",
+  "selectManager": "Select Manager",
+
   "bulkMessage": "Bulk Message"
 }
