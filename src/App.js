@@ -106,6 +106,7 @@ import QRCodePay from "./pages/public-pages/QRCodePay";
 import ActiveStaticCustomer from "./reseller/activeStaticCustomer/ActiveStaticCustomer";
 import InactiveCustomer from "./pages/inactiveCustomer/InactiveCustomer";
 import ResellerCollection from "./pages/reseller/resellerCollection/ResellerCollection";
+import SupportNumbers from "./pages/netFeeSupport/SupportNumbers";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -558,6 +559,20 @@ function App() {
               element={
                 user && (userRole === "ispOwner" || userRole === "manager") ? (
                   <NetFeeSupport />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            <Route
+              path="/netFee/supportNumber"
+              element={
+                user &&
+                (userRole === "ispOwner" ||
+                  userRole === "manager" ||
+                  userRole === "collector") ? (
+                  <SupportNumbers />
                 ) : (
                   <Navigate to={"/home"} />
                 )
