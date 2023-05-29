@@ -689,20 +689,6 @@ const AllResellerCustomer = () => {
               <i class="fa-solid fa-right-left"></i>
               <span className="button_title"> {t("returnCustomer")} </span>
             </button>
-          </div>
-
-          <div className="bulkActionButton">
-            <button
-              className="bulk_action_button"
-              title={t("returnCustomer")}
-              data-bs-toggle="modal"
-              data-bs-target="#returnCustomer"
-              type="button"
-              class="btn btn-dark btn-floating btn-sm"
-            >
-              <i class="fa-solid fa-right-left"></i>
-              <span className="button_title"> {t("returnCustomer")} </span>
-            </button>
 
             {bpSettings.resellerCustomerBulkPromiseDateEdit && (
               <button

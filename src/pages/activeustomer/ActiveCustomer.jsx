@@ -8,6 +8,7 @@ import {
   ThreeDots,
   ArchiveFill,
   Server,
+  Envelope,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -26,6 +27,9 @@ import { useTranslation } from "react-i18next";
 import BandwidthModal from "../Customer/BandwidthModal";
 import moment from "moment";
 import CustomerDelete from "../Customer/customerCRUD/CustomerDelete";
+import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
+import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
+import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -42,6 +46,9 @@ export default function ConfigMikrotik() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // bulk customer state
+  const [bulkCustomers, setBulkCustomer] = useState([]);
+
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
@@ -53,9 +60,6 @@ export default function ConfigMikrotik() {
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
 
-  // customer id state
-  const [customerId, setCustomerId] = useState("");
-
   // customer loading state
   const [mtkLoading, setMtkLoading] = useState(false);
 
@@ -64,6 +68,12 @@ export default function ConfigMikrotik() {
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+
+  //set status for inactive offline customer
+  let [status, setStatus] = useState(false);
+
+  //set status  offline customer
+  let [offlineStatus, setOfflineStatus] = useState(false);
 
   // customer id state
   const [customerDeleteId, setCustomerDeleteId] = useState("");
@@ -94,6 +104,7 @@ export default function ConfigMikrotik() {
   // customer filter state
   const filterIt = (e) => {
     let temp;
+    setOfflineStatus(false);
     if (e.target.value === "allCustomer") {
       setAllUsers(allMikrotikUsers);
       setCustomerIt("");
@@ -105,13 +116,17 @@ export default function ConfigMikrotik() {
       temp = allMikrotikUsers.filter((item) => item.running != true);
       setAllUsers(temp);
       setCustomerIt("offline");
+      setOfflineStatus(true);
     }
+
     setCustomerItData(temp);
+    setStatus(false);
   };
 
   // customer online offline filter handler
   const customerItFilter = (e) => {
     let customer;
+    setStatus(false);
     if (e.target.value === "All") {
       setAllUsers(customerItData);
     } else if (e.target.value === "activeOffline") {
@@ -120,6 +135,7 @@ export default function ConfigMikrotik() {
     } else if (e.target.value === "inactiveOffline") {
       customer = customerItData.filter((item) => item.status === "inactive");
       setAllUsers(customer);
+      setStatus(true);
     }
   };
 
@@ -164,6 +180,21 @@ export default function ConfigMikrotik() {
   // table column
   const columns = React.useMemo(
     () => [
+      {
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: "2%",
+      },
       {
         width: "5%",
         Header: "#",
@@ -397,6 +428,9 @@ export default function ConfigMikrotik() {
                       isLoading={mtkLoading}
                       columns={columns}
                       data={allUsers}
+                      bulkState={{
+                        setBulkCustomer,
+                      }}
                     ></Table>
                   </div>
                 </div>
@@ -406,6 +440,51 @@ export default function ConfigMikrotik() {
           </div>
         </div>
       </div>
+
+      {bulkCustomers.length > 0 && (
+        <>
+          <div className="bulkActionButton">
+            {bpSettings?.inActiveCustomerDelete &&
+              status &&
+              (role === "ispOwner" || role === "manager") && (
+                <button
+                  className="bulk_action_button"
+                  title={t("bulkDeleteCustomer")}
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkDeleteCustomer"
+                  type="button"
+                  class="btn btn-danger btn-floating btn-sm"
+                >
+                  <ArchiveFill />
+                  <span className="button_title"> {t("customerDelete")} </span>
+                </button>
+              )}
+
+            {bpSettings?.unpaidCustomerBulkSms &&
+              offlineStatus &&
+              (role === "ispOwner" || role === "manager") && (
+                <button
+                  className="bulk_action_button"
+                  title={t("bulkMessage")}
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkCustomerMessage"
+                  type="button"
+                  class="btn btn-primary btn-floating btn-sm"
+                >
+                  <Envelope />
+                  <span className="button_title"> {t("bulkMessage")} </span>
+                </button>
+              )}
+          </div>
+        </>
+      )}
+
+      {/*bulk customer delete modal  */}
+      <BulkCustomerDelete
+        bulkCustomer={bulkCustomers}
+        modalId="bulkDeleteCustomer"
+      />
+
       <CustomerDelete
         single={customerDeleteId}
         mikrotikCheck={checkMikrotik}
@@ -417,6 +496,11 @@ export default function ConfigMikrotik() {
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
         customerId={bandWidthCustomerId}
+      />
+
+      <BulkCustomerMessage
+        bulkCustomer={bulkCustomers}
+        modalId="bulkCustomerMessage"
       />
     </>
   );

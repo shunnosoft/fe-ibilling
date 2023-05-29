@@ -591,16 +591,17 @@ export default function CustomerModal() {
                         <option value="postpaid">{t("postPaid")}</option>
                       </SelectField>
 
-                      {Getmikrotik.length > 0 && (
-                        <div className="autoDisable">
-                          <label> {t("automaticConnectionOff")} </label>
-                          <input
-                            type="checkBox"
-                            checked={autoDisable}
-                            onChange={(e) => setAutoDisable(e.target.checked)}
-                          />
-                        </div>
-                      )}
+                      {Getmikrotik.length > 0 &&
+                        permission.customerAutomaticConnectionOnOff && (
+                          <div className="autoDisable">
+                            <label> {t("automaticConnectionOff")} </label>
+                            <input
+                              type="checkBox"
+                              checked={autoDisable}
+                              onChange={(e) => setAutoDisable(e.target.checked)}
+                            />
+                          </div>
+                        )}
                     </div>
 
                     <div className="modal-footer" style={{ border: "none" }}>

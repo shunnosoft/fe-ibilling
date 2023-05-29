@@ -167,7 +167,6 @@
   "enterManagerAddress": "Enter Manager Address",
   "enterManagerEmail": "Enter Manager Email",
   "enterManagerNID": "Enter Manager NID",
-  "selectManager": "Select Manager",
   "enterName": "Enter Name",
   "enterUserName": "Enter User Name",
   "enterMikrotikIP": "Enter Mikrotik IP",
@@ -757,5 +756,7 @@
   "netfeeSupportNumbers": "Netfee Support Numbers",
   "editSubArea": "Edit Subarea",
   "depositBy": "Deposit By",
-  "selectManager": "Select Manager"
+  "selectManager": "Select Manager",
+
+  "bulkMessage": "Bulk Message"
 }

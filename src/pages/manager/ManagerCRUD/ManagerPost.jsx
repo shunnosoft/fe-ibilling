@@ -8,6 +8,7 @@ import { addManager } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { Tab, Tabs } from "react-bootstrap";
 import { managerPermission } from "../managerData";
+import Loader from "../../../components/common/Loader";
 
 const ManagerPost = () => {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ const ManagerPost = () => {
 
   const [subAreaIds, setSubAreaIds] = useState([]);
   const [permissions, setPermissions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   //get current language
   const language = localStorage.getItem("netFee:lang");
@@ -79,7 +81,7 @@ const ManagerPost = () => {
     if (!addStaffStatus) {
       delete data.salary;
     }
-    addManager(dispatch, addStaffStatus, data);
+    addManager(dispatch, addStaffStatus, data, setIsLoading);
   };
 
   //sub area handler
@@ -344,7 +346,7 @@ const ManagerPost = () => {
                       type="submit"
                       className="btn btn-primary marginLeft"
                     >
-                      {t("save")}
+                      {isLoading ? <Loader /> : t("save")}
                     </button>
                   </div>
                 </Form>
