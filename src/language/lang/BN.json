@@ -764,5 +764,12 @@
   "updateBalance": "ব্যালেন্স আপডেট করুন",
   "selectManager": "ম্যানেজার নির্বাচন করুন",
   "depositBy": "ডিপোজিট করেছে",
-  "bulkMessage": "বাল্ক মেসেজ"
+  "bulkMessage": "বাল্ক মেসেজ",
+  "supportNumbers": "সাপোর্ট নাম্বার'স",
+  "startTime": "সময় শুরু",
+  "endTime": "সময় শেষ",
+  "selectStartTime": "সাপোর্ট শুরুর সময় নির্বাচন করুন",
+  "selectEndTime": "সাপোর্ট শেষ সময় নির্বাচন করুন",
+  "writeSupportName": "সাপোর্টারের নাম লিখুন",
+  "createCustomersSupporter": "গ্রাহক সাপোর্টার তৈরি করুন"
 }

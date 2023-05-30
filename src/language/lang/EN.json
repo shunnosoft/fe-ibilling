@@ -757,6 +757,12 @@
   "editSubArea": "Edit Subarea",
   "depositBy": "Deposit By",
   "selectManager": "Select Manager",
-
-  "bulkMessage": "Bulk Message"
+  "supportNumbers": "Support Numbers",
+  "bulkMessage": "Bulk Message",
+  "startTime": "Start Time",
+  "endTime": "End Time",
+  "selectStartTime": "Select Support Start Time",
+  "selectEndTime": "Select Support End Time",
+  "writeSupportName": "Write Supporter Name",
+  "createCustomersSupporter": "Create Customers Supporter"
 }
