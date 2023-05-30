@@ -5,6 +5,7 @@ export const areaSlice = createSlice({
   initialState: {
     area: [],
     subArea: [],
+    poleBox: [],
   },
   reducers: {
     FetchAreaSuccess: (state, action) => {
@@ -44,6 +45,24 @@ export const areaSlice = createSlice({
     getSubareas: (state, action) => {
       state.subArea = action.payload;
     },
+
+    AddPoleBoxSuccess: (state, action) => {
+      state.poleBox.push(action.payload);
+    },
+    EditPoleBoxSuccess: (state, action) => {
+      state.poleBox[
+        state.poleBox.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
+    },
+    // DeletePoleBoxSuccess: (state, action) => {
+    //   state.poleBox.splice(
+    //     state.poleBox.findIndex((item) => item.id === action.payload.id),
+    //     1
+    //   );
+    // },
+    getPoleBoxSuccess: (state, action) => {
+      state.poleBox = action.payload;
+    },
   },
 });
 
@@ -57,5 +76,8 @@ export const {
   clearArea,
   AddSubAreaSuccess,
   getSubareas,
+  AddPoleBoxSuccess,
+  EditPoleBoxSuccess,
+  getPoleBoxSuccess,
 } = areaSlice.actions;
 export default areaSlice.reducer;

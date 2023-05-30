@@ -13,10 +13,12 @@ import {
 import { hideModal } from "./actions/managerHandle";
 import {
   AddAreaSuccess,
+  AddPoleBoxSuccess,
   AddSubAreaSuccess,
   DeleteAreaSuccess,
   DeleteSubAreaSuccess,
   EditAreaSuccess,
+  EditPoleBoxSuccess,
   EditSubAreaSuccess,
   FetchAreaSuccess,
 } from "./areaSlice";
@@ -703,6 +705,27 @@ export const addSubArea = async (dispatch, data, setIsLoading) => {
   }
 };
 
+//Pole Box Post
+
+export const addPoleBox = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post("/ispOwner/poleBox/post", data);
+
+    dispatch(AddPoleBoxSuccess(res.data));
+    document.querySelector("#poleBoxPostModal").click();
+    langMessage(
+      "success",
+      "পোল বক্স সংযুক্ত সফল হয়েছে",
+      "Pole Box Added Successfully"
+    );
+  } catch (error) {
+    document.querySelector("#poleBoxPostModal").click();
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
 // PATCH sub area
 export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
@@ -723,6 +746,40 @@ export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
         "success",
         "সাব-এরিয়া আপডেট সফল হয়েছে",
         "Sub-Area Updated Successfully"
+      );
+    })
+    .catch((err) => {
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
+    });
+  setIsLoading(false);
+};
+
+// PATCH Pole Box
+export const editPoleBox = async (
+  dispatch,
+  sendingData,
+  ispOwnerId,
+  poleId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  await apiLink({
+    url: `/ispOwner/poleBox/update/${ispOwnerId}/${poleId}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: sendingData,
+  })
+    .then((res) => {
+      dispatch(EditPoleBoxSuccess(res.data));
+      document.querySelector("#poleBoxEditModal").click();
+      langMessage(
+        "success",
+        "পোল বক্স আপডেট সফল হয়েছে",
+        "Pole Box Updated Successfully"
       );
     })
     .catch((err) => {

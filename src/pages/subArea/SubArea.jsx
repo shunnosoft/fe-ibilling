@@ -8,9 +8,10 @@ import {
   ArchiveFill,
   ArrowLeftShort,
   PlusCircle,
+  ArrowRightShort,
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -131,19 +132,39 @@ export default function SubArea() {
   const columns = React.useMemo(
     () => [
       {
-        width: "30%",
+        width: "25%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "40%",
+        width: "25%",
         Header: t("subArea"),
         accessor: "name",
       },
       {
-        width: "30%",
+        width: "25%",
+        Header: <div className="text-center">{t("poleBox")}</div>,
+        id: "option1",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Link to={`/poleBox/${original.id}`} className="gotoSubAreaBtn">
+              {t("poleBox")}
+              <ArrowRightShort style={{ fontSize: "19px" }} />
+            </Link>
+          </div>
+        ),
+      },
+      {
+        width: "25%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
