@@ -107,6 +107,7 @@ import ActiveStaticCustomer from "./reseller/activeStaticCustomer/ActiveStaticCu
 import InactiveCustomer from "./pages/inactiveCustomer/InactiveCustomer";
 import ResellerCollection from "./pages/reseller/resellerCollection/ResellerCollection";
 import SupportNumbers from "./pages/netFeeSupport/SupportNumbers";
+import PoleBox from "./pages/subArea/PoleBox";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -698,6 +699,15 @@ function App() {
               element={
                 <PrivateRoute user={user}>
                   <SubArea />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/poleBox/:subAreaId"
+              element={
+                <PrivateRoute user={user}>
+                  <PoleBox />
                 </PrivateRoute>
               }
             />

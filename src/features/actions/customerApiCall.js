@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import apiLink from "../../api/apiLink";
-import { getSubareas } from "../areaSlice";
-import { customerTransfer, deleteCustomerSuccess } from "../customerSlice";
+import { getPoleBoxSuccess, getSubareas } from "../areaSlice";
+import { deleteCustomerSuccess } from "../customerSlice";
 
 export const getSubAreasApi = async (dispatch, ispOwnerId) => {
   try {
@@ -10,6 +10,24 @@ export const getSubAreasApi = async (dispatch, ispOwnerId) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const getPoleBoxApi = async (
+  dispatch,
+  ispOwnerId,
+  subAreaId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/poleBox/${ispOwnerId}/${subAreaId}`
+    );
+    dispatch(getPoleBoxSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
 };
 
 export const transferToResellerApi = async (
