@@ -764,5 +764,8 @@
   "updateBalance": "ব্যালেন্স আপডেট করুন",
   "selectManager": "ম্যানেজার নির্বাচন করুন",
   "depositBy": "ডিপোজিট করেছে",
-  "bulkMessage": "বাল্ক মেসেজ"
+  "bulkMessage": "বাল্ক মেসেজ",
+  "poleBox": "পোল বক্স",
+  "addPoleBox": "পোল বক্স যোগ করুন",
+  "editPoleBox": "পোল বক্স এডিট করুন"
 }

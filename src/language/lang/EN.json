@@ -757,6 +757,8 @@
   "editSubArea": "Edit Subarea",
   "depositBy": "Deposit By",
   "selectManager": "Select Manager",
-
-  "bulkMessage": "Bulk Message"
+  "bulkMessage": "Bulk Message",
+  "poleBox": "Pole Box",
+  "addPoleBox": "Add Pole Box",
+  "editPoleBox": "Edit Pole Box"
 }

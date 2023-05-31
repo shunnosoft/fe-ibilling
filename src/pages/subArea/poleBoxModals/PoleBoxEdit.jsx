@@ -32,8 +32,8 @@ const PoleBoxEdit = ({ poleId, subAreaId }) => {
     const sendingData = {
       name: data.name,
       description: data.description,
-      //   subArea: subAreaId,
-      //   ispOwner: ispOwnerId,
+      // subArea: subAreaId,
+      // ispOwner: ispOwnerId,
     };
     editPoleBox(dispatch, sendingData, ispOwnerId, poleId, setIsLoading);
   };
@@ -50,7 +50,7 @@ const PoleBoxEdit = ({ poleId, subAreaId }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              {t("editSubArea")}
+              {t("editPoleBox")}
             </h5>
             <button
               type="button"
@@ -76,6 +76,13 @@ const PoleBoxEdit = ({ poleId, subAreaId }) => {
                   <div>
                     <div>
                       <FtextField type="text" label={t("name")} name="name" />
+
+                      <label
+                        className="changeLabelFontColor"
+                        htmlFor="description"
+                      >
+                        {t("description")}
+                      </label>
                       <Field
                         style={{
                           height: "100px",
@@ -85,7 +92,6 @@ const PoleBoxEdit = ({ poleId, subAreaId }) => {
                         className="form-control shadow-none"
                         component="textarea"
                         name="description"
-                        placeholder={t("description")}
                       />
                     </div>
                   </div>

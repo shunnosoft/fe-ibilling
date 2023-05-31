@@ -75,16 +75,22 @@ export default function PoleBoxPost({ subAreaId }) {
                     <div>
                       <div>
                         <FtextField type="text" label={t("name")} name="name" />
+
+                        <label
+                          className="changeLabelFontColor"
+                          htmlFor="description"
+                        >
+                          {t("description")}
+                        </label>
                         <Field
+                          className="form-control shadow-none"
                           style={{
                             height: "100px",
                             width: "100%",
                             padding: "10px",
                           }}
-                          className="form-control shadow-none"
                           component="textarea"
                           name="description"
-                          placeholder={t("description")}
                         />
                       </div>
                     </div>
