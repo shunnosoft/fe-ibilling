@@ -24,6 +24,11 @@ export default function CollectorReport() {
     (state) => state.persistedReducer.auth.currentUser?.collector.areas
   );
 
+  // get user permission
+  const permissions = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.collector.permissions
+  );
+
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   firstDay.setHours(0, 0, 0, 0);
@@ -162,9 +167,11 @@ export default function CollectorReport() {
 
   const customComponent = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      <div>
-        {t("collectorReportBill")} {addAllBills()} {t("tk")}
-      </div>
+      {permissions?.dashboardCollectionData && (
+        <div>
+          {t("collectorReportBill")} {addAllBills()} {t("tk")}
+        </div>
+      )}
     </div>
   );
 

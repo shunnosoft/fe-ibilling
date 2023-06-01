@@ -12,17 +12,10 @@ export const getSubAreasApi = async (dispatch, ispOwnerId) => {
   }
 };
 
-export const getPoleBoxApi = async (
-  dispatch,
-  ispOwnerId,
-  subAreaId,
-  setIsLoading
-) => {
+export const getPoleBoxApi = async (dispatch, ispOwnerId, setIsLoading) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(
-      `ispOwner/poleBox/${ispOwnerId}/${subAreaId}`
-    );
+    const res = await apiLink.get(`ispOwner/poleBox/${ispOwnerId}`);
     dispatch(getPoleBoxSuccess(res.data));
   } catch (error) {
     console.log(error);

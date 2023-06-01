@@ -67,7 +67,10 @@ import CustomerNote from "./customerCRUD/CustomerNote";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 import BulkCustomerTransfer from "../Customer/customerCRUD/bulkOpration/bulkCustomerTransfer";
 import TransferToReseller from "./customerCRUD/TransferToReseller";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import {
+  getPoleBoxApi,
+  getSubAreasApi,
+} from "../../features/actions/customerApiCall";
 import FireWallFilterIpDropControl from "./FireWallFilterIpDropControl";
 import CustomersNumber from "../Customer/CustomersNumber";
 import BulkMikrotikEdit from "../Customer/customerCRUD/bulkOpration/bulkMikrotikEdit";
@@ -377,6 +380,8 @@ export default function Customer() {
     if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
     // get sub area api
     getSubAreasApi(dispatch, ispOwner);
+    getPoleBoxApi(dispatch, ispOwner, setIsloading);
+
     if (role !== "collector") {
       if (collectors.length === 0)
         getCollector(dispatch, ispOwner, setIsloading);

@@ -253,87 +253,91 @@ export default function CollectorDashboard() {
               )}
 
               <div className="col-md-12 mb-3">
-                <div className="row">
-                  <div className="col-md-3 d-flex justify-content-end align-items-center">
-                    <h2>
-                      {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
-                      {FormatNumber(
-                        customerStat?.totalProbableAmount -
-                          customerStat?.totalInactiveAmount
-                      )}{" "}
-                    </h2>
-                  </div>
-                  <div className="col-md-6">
-                    <div
-                      style={{
-                        width: 200,
-                        height: 200,
-                        margin: "0 auto",
-                      }}
-                    >
-                      <AnimatedProgressProvider
-                        valueStart={0}
-                        valueEnd={Math.round(collectionPercentage)}
-                        duration={1}
-                        s
-                        easingFunction={easeQuadIn}
-                      >
-                        {(value) => {
-                          const roundedValue = isNaN(value)
-                            ? collectionPercentage
-                            : Math.round(value);
-                          return (
-                            <CircularProgressbar
-                              value={roundedValue}
-                              text={`${
-                                isNaN(roundedValue) ? 0 : roundedValue
-                              }%`}
-                              styles={buildStyles({
-                                athTransition: "none",
-                              })}
-                            />
-                          );
+                {permissions?.dashboardCollectionData && (
+                  <div className="row">
+                    <div className="col-md-3 d-flex justify-content-end align-items-center">
+                      <h2>
+                        {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
+                        {FormatNumber(
+                          customerStat?.totalProbableAmount -
+                            customerStat?.totalInactiveAmount
+                        )}{" "}
+                      </h2>
+                    </div>
+                    <div className="col-md-6">
+                      <div
+                        style={{
+                          width: 200,
+                          height: 200,
+                          margin: "0 auto",
                         }}
-                      </AnimatedProgressProvider>
+                      >
+                        <AnimatedProgressProvider
+                          valueStart={0}
+                          valueEnd={Math.round(collectionPercentage)}
+                          duration={1}
+                          s
+                          easingFunction={easeQuadIn}
+                        >
+                          {(value) => {
+                            const roundedValue = isNaN(value)
+                              ? collectionPercentage
+                              : Math.round(value);
+                            return (
+                              <CircularProgressbar
+                                value={roundedValue}
+                                text={`${
+                                  isNaN(roundedValue) ? 0 : roundedValue
+                                }%`}
+                                styles={buildStyles({
+                                  athTransition: "none",
+                                })}
+                              />
+                            );
+                          }}
+                        </AnimatedProgressProvider>
+                      </div>
+                    </div>
+                    <div className="col-md-3 d-flex justify-content-start align-items-center">
+                      <h2>
+                        {t("totalCollection")} <br />
+                        <CurrencyDollar />{" "}
+                        {FormatNumber(customerStat?.totalOwnCollection)}
+                      </h2>
                     </div>
                   </div>
-                  <div className="col-md-3 d-flex justify-content-start align-items-center">
-                    <h2>
-                      {t("totalCollection")} <br />
-                      <CurrencyDollar />{" "}
-                      {FormatNumber(customerStat?.totalOwnCollection)}
-                    </h2>
-                  </div>
-                </div>
+                )}
 
                 <div className="d-flex justify-content-between">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <p
-                      className="fw-700 me-3"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
-                      style={{ fontSize: "20px", cursor: "pointer" }}
-                      onClick={() => setStatus("active")}
-                    >
-                      {t("active")} &nbsp;
-                      <span className="text-secondary fw-bold">
-                        ৳{FormatNumber(customerStat?.totalActiveAmount)}
-                      </span>
-                    </p>
+                  {permissions?.dashboardCollectionData && (
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p
+                        className="fw-700 me-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#activeCustomer"
+                        style={{ fontSize: "20px", cursor: "pointer" }}
+                        onClick={() => setStatus("active")}
+                      >
+                        {t("active")} &nbsp;
+                        <span className="text-secondary fw-bold">
+                          ৳{FormatNumber(customerStat?.totalActiveAmount)}
+                        </span>
+                      </p>
 
-                    <p
-                      className="fw-700"
-                      data-bs-toggle="modal"
-                      data-bs-target="#expiredCustomer"
-                      style={{ fontSize: "20px", cursor: "pointer" }}
-                      onClick={() => setStatus("expired")}
-                    >
-                      {t("expired")} &nbsp;
-                      <span className="text-secondary fw-bold">
-                        ৳{FormatNumber(customerStat?.totalExpiredAmount)}
-                      </span>
-                    </p>
-                  </div>
+                      <p
+                        className="fw-700"
+                        data-bs-toggle="modal"
+                        data-bs-target="#expiredCustomer"
+                        style={{ fontSize: "20px", cursor: "pointer" }}
+                        onClick={() => setStatus("expired")}
+                      >
+                        {t("expired")} &nbsp;
+                        <span className="text-secondary fw-bold">
+                          ৳{FormatNumber(customerStat?.totalExpiredAmount)}
+                        </span>
+                      </p>
+                    </div>
+                  )}
 
                   <div className="d-flex justify-content-end">
                     <div
@@ -389,7 +393,6 @@ export default function CollectorDashboard() {
                     </button>
                   </div>
                 </div>
-                {/* </div> */}
               </div>
 
               <div className="col-md-3">
@@ -565,80 +568,83 @@ export default function CollectorDashboard() {
                 </div>
               </div>
             </div>
+
             <hr />
 
-            <FourGround>
-              <div className="ChartsHeadernew">
-                <div className="selectGraph">
-                  <h4>{t("collection")}</h4>
-                  <div>
-                    <input
-                      id="amount1"
-                      type="radio"
-                      name="graphSelectRadio"
-                      checked={showGraphData === "amount" && "checked"}
-                      onChange={() => setShowGraphData("amount")}
-                    />
-                     <label htmlFor="amount1">{t("amount")}</label>
+            {permissions?.dashboardCollectionData && (
+              <FourGround>
+                <div className="ChartsHeadernew">
+                  <div className="selectGraph">
+                    <h4>{t("collection")}</h4>
+                    <div>
+                      <input
+                        id="amount1"
+                        type="radio"
+                        name="graphSelectRadio"
+                        checked={showGraphData === "amount" && "checked"}
+                        onChange={() => setShowGraphData("amount")}
+                      />
+                       <label htmlFor="amount1">{t("amount")}</label>
+                    </div>
+                    <div>
+                      <input
+                        id="bill2"
+                        type="radio"
+                        name="graphSelectRadio"
+                        onChange={() => setShowGraphData("bill")}
+                      />
+                        <label htmlFor="bill2">{t("bill")}</label>
+                    </div>
                   </div>
-                  <div>
-                    <input
-                      id="bill2"
-                      type="radio"
-                      name="graphSelectRadio"
-                      onChange={() => setShowGraphData("bill")}
-                    />
-                      <label htmlFor="bill2">{t("bill")}</label>
+
+                  <div className="ChartsFilternew">
+                    <select
+                      className="form-select chartFilteritem"
+                      onChange={(e) => setYear(e.target.value)}
+                    >
+                      <option value={newYear}>{newYear}</option>
+                      <option value={newYear - 1}>{newYear - 1}</option>
+                    </select>
+                    <select
+                      className="form-select chartFilteritem"
+                      value={Month}
+                      onChange={(e) => setMonth(e.target.value)}
+                    >
+                      {monthsName.map((val, index) => (
+                        <option
+                          // selected={index === Month ? true : false}
+                          value={index}
+                          key={index}
+                        >
+                          {val}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
+                      type="button"
+                      onClick={handleFilterHandler}
+                    >
+                      {loading ? <Loader /> : t("filter")}
+                    </button>
                   </div>
                 </div>
 
-                <div className="ChartsFilternew">
-                  <select
-                    className="form-select chartFilteritem"
-                    onChange={(e) => setYear(e.target.value)}
-                  >
-                    <option value={newYear}>{newYear}</option>
-                    <option value={newYear - 1}>{newYear - 1}</option>
-                  </select>
-                  <select
-                    className="form-select chartFilteritem"
-                    value={Month}
-                    onChange={(e) => setMonth(e.target.value)}
-                  >
-                    {monthsName.map((val, index) => (
-                      <option
-                        // selected={index === Month ? true : false}
-                        value={index}
-                        key={index}
-                      >
-                        {val}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
-                    type="button"
-                    onClick={handleFilterHandler}
-                  >
-                    {loading ? <Loader /> : t("filter")}
-                  </button>
+                {/* select graph */}
+
+                <div className="lineChart">
+                  <Line
+                    data={chartsData}
+                    height={400}
+                    width={600}
+                    options={{
+                      tension: 0.4,
+                      maintainAspectRatio: false,
+                    }}
+                  />
                 </div>
-              </div>
-
-              {/* select graph */}
-
-              <div className="lineChart">
-                <Line
-                  data={chartsData}
-                  height={400}
-                  width={600}
-                  options={{
-                    tension: 0.4,
-                    maintainAspectRatio: false,
-                  }}
-                />
-              </div>
-            </FourGround>
+              </FourGround>
+            )}
           </div>
           <Footer />
         </FontColor>

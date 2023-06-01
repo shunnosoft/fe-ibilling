@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,6 +23,7 @@ import getName from "../../../utils/getLocationName";
 //custom hooks
 import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
+import apiLink from "../../../api/apiLink";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -37,14 +39,7 @@ export default function AddStaticCustomer() {
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
 
-  // get role from redux
-  // const role = useSelector((state) => state.persistedReducer.auth?.role);
-
-  // get Isp owner id
-  // const ispOwnerId = useSelector(
-  //   (state) => state.persistedReducer.auth?.ispOwnerId
-  // );
-
+  //get user type
   const userType = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
   );
@@ -54,6 +49,9 @@ export default function AddStaticCustomer() {
 
   // get all SubArea
   const storeSubArea = useSelector((state) => state.area?.subArea);
+
+  //get all pole Box
+  const storePoleBox = useSelector((state) => state.area?.poleBox);
 
   // get all mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -70,6 +68,7 @@ export default function AddStaticCustomer() {
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
+  const [poleBox, setPoleBox] = useState([]);
   const [areaID, setAreaID] = useState("");
 
   const [billDate, setBillDate] = useState(new Date());
@@ -123,6 +122,7 @@ export default function AddStaticCustomer() {
 
   // select subArea
   const selectSubArea = (data) => {
+    setPoleBox([]);
     const areaId = data.target.value;
     if (areaId) {
       const temp = storeSubArea.filter((val) => {
@@ -130,6 +130,14 @@ export default function AddStaticCustomer() {
       });
       setSubArea(temp);
       setAreaID(areaId);
+    }
+  };
+
+  // select pole box Handler
+  const poleHandler = (subAreaID) => {
+    if (subAreaID) {
+      const temp = storePoleBox.filter((pole) => pole.subArea === subAreaID);
+      setPoleBox(temp);
     }
   };
 
@@ -185,6 +193,7 @@ export default function AddStaticCustomer() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
+    const poleBoxId = document.getElementById("poleBoxId").value;
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
@@ -211,6 +220,7 @@ export default function AddStaticCustomer() {
       paymentStatus: "unpaid",
       area: areaID,
       subArea: subArea2,
+      poleBox: poleBoxId,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
@@ -411,6 +421,9 @@ export default function AddStaticCustomer() {
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaId"
+                          onChange={(e) => {
+                            poleHandler(e.target.value);
+                          }}
                         >
                           <option value="">...</option>
                           {subArea
@@ -420,6 +433,25 @@ export default function AddStaticCustomer() {
                                 </option>
                               ))
                             : ""}
+                        </select>
+                      </div>
+
+                      <div className="col-lg-4 col-md-4 col-xs-6">
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPoleBox")}{" "}
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          name="poleBox"
+                          id="poleBoxId"
+                        >
+                          <option value="">...</option>
+                          {poleBox?.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
 

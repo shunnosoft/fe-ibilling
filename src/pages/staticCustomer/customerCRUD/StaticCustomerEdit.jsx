@@ -57,6 +57,9 @@ export default function StaticCustomerEdit({ single }) {
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
+  //get all pole Box
+  const storePoleBox = useSelector((state) => state.area?.poleBox);
+
   // get all mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
@@ -76,6 +79,7 @@ export default function StaticCustomerEdit({ single }) {
   const [area, setArea] = useState("");
   const [subArea, setSubArea] = useState("");
   const [areaID, setAreaID] = useState("");
+  const [poleBox, setPoleBox] = useState([]);
 
   const [billDate, setBillDate] = useState(null);
   const [maxUpLimit, setUpMaxLimit] = useState("");
@@ -127,6 +131,12 @@ export default function StaticCustomerEdit({ single }) {
 
     const initialSubAreas = storeSubArea.filter((val) => val.area === temp);
     setSubArea(initialSubAreas);
+
+    //Polebox initial set
+    const tempu = storePoleBox?.filter(
+      (pole) => pole.subArea === customer?.subArea
+    );
+    setPoleBox(tempu);
 
     const divisionalInfo = {};
     if (customer?.division) {
@@ -217,6 +227,14 @@ export default function StaticCustomerEdit({ single }) {
       });
       setSubArea(temp);
       setAreaID(areaId);
+    }
+  };
+
+  // select pole box Handler
+  const poleHandler = (subAreaID) => {
+    if (subAreaID) {
+      const temp = storePoleBox.filter((pole) => pole.subArea === subAreaID);
+      setPoleBox(temp);
     }
   };
 
@@ -314,6 +332,7 @@ export default function StaticCustomerEdit({ single }) {
       return alert(t("selectDownloadPackage"));
     }
     const subArea2 = document.getElementById("subAreaIdEditStatic").value;
+    const poleBoxId = document.getElementById("poleBoxEdit").value;
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
@@ -321,6 +340,7 @@ export default function StaticCustomerEdit({ single }) {
     const mainData = {
       area: areaID,
       subArea: subArea2,
+      poleBox: poleBoxId,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
@@ -496,6 +516,7 @@ export default function StaticCustomerEdit({ single }) {
                               ))}
                         </select>
                       </div>
+
                       <div className="static_edit_item">
                         <label className="form-control-label changeLabelFontColor">
                           {t("selectSubArea")}
@@ -505,6 +526,9 @@ export default function StaticCustomerEdit({ single }) {
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaIdEditStatic"
+                          onChange={(e) => {
+                            poleHandler(e.target.value);
+                          }}
                         >
                           <option value="">...</option>
                           {subArea
@@ -520,6 +544,31 @@ export default function StaticCustomerEdit({ single }) {
                                 );
                               })
                             : ""}
+                        </select>
+                      </div>
+
+                      <div className="static_edit_item">
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPoleBox")}
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          name="poleBox"
+                          id="poleBoxEdit"
+                        >
+                          <option value="">...</option>
+                          {poleBox?.map((val, key) => {
+                            return (
+                              <option
+                                selected={val.id === customer?.poleBox}
+                                key={key}
+                                value={val.id}
+                              >
+                                {val.name}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
 

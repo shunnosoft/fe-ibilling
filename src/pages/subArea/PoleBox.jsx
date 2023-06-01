@@ -38,6 +38,7 @@ export default function PoleBox() {
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
+
   // get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -53,7 +54,7 @@ export default function PoleBox() {
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
     getSubAreasApi(dispatch, ispOwnerId);
-    getPoleBoxApi(dispatch, ispOwnerId, subAreaId, setIsLoadingPole);
+    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
   }, [subAreaId]);
 
   //filtering all poleBox under selected subarea
