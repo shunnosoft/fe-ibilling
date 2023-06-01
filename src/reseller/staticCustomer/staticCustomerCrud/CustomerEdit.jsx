@@ -84,7 +84,7 @@ export default function CustomerEdit({ single }) {
   const [status, setStatus] = useState("");
   const [promiseDate, setPromiseDate] = useState(null);
   const [connectionDate, setConnectionDate] = useState("");
-
+  const [currentRate, setCurrentRate] = useState("");
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
     district: "",
@@ -148,6 +148,11 @@ export default function CustomerEdit({ single }) {
       fetchPackagefromDatabase(dispatch, IDs, setIsloading);
     }
   }, [customer?.mikrotik]);
+
+  useEffect(() => {
+    const pac = ppPackage?.find((pac) => pac.id === customer?.mikrotikPackage);
+    setCurrentRate(pac?.rate);
+  }, [customer, ppPackage]);
 
   useEffect(() => {
     if (customer) {
@@ -540,6 +545,9 @@ export default function CustomerEdit({ single }) {
                                     (val, key) =>
                                       val.packageType === "queue" && (
                                         <option
+                                          disabled={
+                                            val.rate < Number(currentRate)
+                                          }
                                           selected={
                                             val.id === customer?.mikrotikPackage
                                           }
@@ -573,6 +581,9 @@ export default function CustomerEdit({ single }) {
                                   (val, key) =>
                                     val.packageType === "queue" && (
                                       <option
+                                        disabled={
+                                          val.rate < Number(currentRate)
+                                        }
                                         selected={
                                           val.id === customer?.mikrotikPackage
                                         }

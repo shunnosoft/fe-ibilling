@@ -1064,7 +1064,7 @@ export default function Customer() {
                 modalId="bulkPromiseDateEdit"
               />
 
-              {bpSettings.hasMikrotik && (
+              {bpSettings?.hasMikrotik && (
                 <>
                   <BulkStatusEdit
                     bulkCustomer={bulkCustomer}

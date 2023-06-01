@@ -34,6 +34,7 @@ import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import AllCollector from "../Home/dataComponent/AllCollector";
+import NoteDetailsModal from "./NoteDetailsModal";
 
 export default function Diposit() {
   const { t } = useTranslation();
@@ -104,6 +105,7 @@ export default function Diposit() {
   //multiple manager data state
   const [multipleManager, setMultipleManager] = useState([]);
   const [selectManager, setSelectManager] = useState("");
+  const [message, setMessage] = useState("");
 
   // add deposit form validation
   const BillValidatoin = Yup.object().shape({
@@ -118,6 +120,7 @@ export default function Diposit() {
         balance: data.balance,
         user: currentUser?.user.id,
         ispOwner: ispOwner,
+        note: data.note,
       };
       addDeposit(dispatch, sendingData, setLoading);
       data.amount = "";
@@ -133,6 +136,7 @@ export default function Diposit() {
           user: currentUser?.user.id,
           ispOwner: ispOwner,
           manager: selectManager,
+          note: data.note,
         };
         addDeposit(dispatch, sendingData, setLoading);
         data.amount = "";
@@ -461,12 +465,12 @@ export default function Diposit() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "27%",
+        width: "25%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
-        width: "27%",
+        width: "25%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ row: { original } }) => (
@@ -495,9 +499,28 @@ export default function Diposit() {
           </div>
         ),
       },
-
       {
-        width: "27%",
+        width: "25%",
+        Header: t("note"),
+        accessor: "note",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original?.note && original?.note?.slice(0, 70)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#dipositNoteDetailsModal"
+                onClick={() => setMessage(original?.note)}
+              >
+                {original?.note?.length > 70 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        width: "25%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -609,8 +632,9 @@ export default function Diposit() {
                           <div className="managerDipositToIsp">
                             <Formik
                               initialValues={{
-                                amount: "",
+                                amount: balancee,
                                 balance: balancee, //put the value from api
+                                note: "",
                               }}
                               validationSchema={BillValidatoin}
                               onSubmit={(values) => {
@@ -655,6 +679,14 @@ export default function Diposit() {
                                           label={t("dipositAmount")}
                                         />
                                       </div>
+                                      <div className="col col-md-3">
+                                        <FtextField
+                                          type="text"
+                                          name="note"
+                                          label={t("note")}
+                                        />
+                                      </div>
+
                                       <div className=" col-md-3 ">
                                         <button
                                           type="submit"
@@ -680,6 +712,11 @@ export default function Diposit() {
                                         type="text"
                                         name="amount"
                                         label={t("dipositAmount")}
+                                      />
+                                      <FtextField
+                                        type="text"
+                                        name="note"
+                                        label={t("note")}
                                       />
                                       <button
                                         type="submit"
@@ -858,6 +895,9 @@ export default function Diposit() {
           </div>
         </div>
       </div>
+
+      {/* modals */}
+      <NoteDetailsModal message={message} />
     </>
   );
 }
