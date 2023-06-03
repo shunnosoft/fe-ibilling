@@ -125,7 +125,9 @@ import { createNote, getNotesSuccess } from "./customerNoteSlice";
 import {
   AddNetFeeSupport,
   deleteNetFeeSupport,
+  getIspOwnerSupports,
   getNetFeeSupport,
+  postIspOwnerSupports,
   updateNetFeeSupport,
 } from "./netFeeSupportSlice";
 import {
@@ -3079,4 +3081,68 @@ export const getMultipleManager = async (currentUser, setMultipleManager) => {
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
+};
+
+// ispOwner number support
+export const getIspOwnerSupportNumbers = async (
+  dispatch,
+  ispOwner,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`ispOwner/customer-support/${ispOwner}`);
+    console.log(res.data);
+    dispatch(getIspOwnerSupports(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// create ispOwner customr supporter
+export const postIspOwnerSupporterNumber = async (
+  dispatch,
+  supporter,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`ispOwner/customer-support/post`, supporter);
+    dispatch(postIspOwnerSupports(res.data));
+    setShow(false);
+    langMessage(
+      "success",
+      "সাপর্ট নম্বর অ্যাড সফল হয়েছে",
+      "Support Number Add successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// create ispOwner customr supporter
+export const deleteIspOwnerSupporterNumber = async (
+  dispatch,
+  ispOwnerId,
+  supportId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(
+      ` ispOwner/customer/support/delete/:ispOwnerId/:supportId`
+    );
+    console.log(res.data);
+    langMessage(
+      "success",
+      "সাপর্ট নম্বর ডিলিট সফল হয়েছে",
+      "Support Number Delete successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
 };

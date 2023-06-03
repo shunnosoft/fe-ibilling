@@ -4,6 +4,7 @@ export const netFeeSupportSlice = createSlice({
   name: "netFeeSupport",
   initialState: {
     netFeeSupport: [],
+    ispOwnerSupport: [],
   },
   reducers: {
     AddNetFeeSupport: (state, action) => {
@@ -23,6 +24,14 @@ export const netFeeSupportSlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+
+    // ispOwner support number
+    getIspOwnerSupports: (state, action) => {
+      state.ispOwnerSupport = action.payload;
+    },
+    postIspOwnerSupports: (state, action) => {
+      state.ispOwnerSupport.push(action.payload);
+    },
   },
 });
 
@@ -31,5 +40,7 @@ export const {
   getNetFeeSupport,
   updateNetFeeSupport,
   deleteNetFeeSupport,
+  getIspOwnerSupports,
+  postIspOwnerSupports,
 } = netFeeSupportSlice.actions;
 export default netFeeSupportSlice.reducer;

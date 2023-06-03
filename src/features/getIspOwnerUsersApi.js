@@ -92,3 +92,34 @@ export const createSupportTicketApi = async (
   }
   setLoading(false);
 };
+
+export const resellerRecharge = async (data, setLoading) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.post(`reseller/bkash-create-recharge`, data);
+    console.log(res);
+    window.location.href = res.data.bkashURL;
+  } catch (error) {
+    toast.error("Failed to payment");
+    console.log(error);
+  }
+  setLoading(false);
+};
+
+// ispOwner support numbers
+export const ispOwnerSupportNumbers = async (
+  dispatch,
+  ispOwner,
+  setLoading,
+  setSupport
+) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.get(`customer/customer/support/${ispOwner}`);
+    setSupport(res.data);
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
+    console.log(error);
+  }
+  setLoading(false);
+};

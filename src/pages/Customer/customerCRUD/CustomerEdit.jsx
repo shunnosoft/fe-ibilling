@@ -26,6 +26,7 @@ import getName from "../../../utils/getLocationName";
 //custom hook
 import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
+import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -77,8 +78,12 @@ export default function CustomerEdit(props) {
       : state?.package?.packages
   );
 
+  // get subarea poleBox
+  const poleBox = useSelector((state) => state.area?.poleBox);
+
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
+  const [isLoadingPole, setIsLoadingPole] = useState(false);
   const [mikrotikPackage, setMikrotikPackage] = useState("");
 
   const [autoDisable, setAutoDisable] = useState(data?.autoDisable);
@@ -94,6 +99,9 @@ export default function CustomerEdit(props) {
   const [billDate, setBillDate] = useState();
   const [status, setStatus] = useState("");
   const [promiseDate, setPromiseDate] = useState(null);
+  const [subAreasPoleBox, setSubAreasPoleBox] = useState([]);
+  const [poleBoxIds, setPoleBoxIds] = useState("");
+  const [poleBoxId, setPoleBoxId] = useState("");
 
   const [packageId, setPackageId] = useState("");
   //component states
@@ -173,9 +181,20 @@ export default function CustomerEdit(props) {
       return a;
     });
     setSubAreaId(data?.subArea);
+    setPoleBoxId(data?.poleBox);
     const initialSubAreas = storeSubArea.filter((val) => val.area === temp);
     setSubArea(initialSubAreas);
+
+    const subPoleBox = poleBox.filter((val) => {
+      return val.subArea === data?.subArea;
+    });
+    setSubAreasPoleBox(subPoleBox);
   }, [area, data, storeSubArea]);
+
+  // get subarea poleBox
+  useEffect(() => {
+    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
+  }, []);
 
   // customer validator
   const customerValidator = Yup.object({
@@ -263,6 +282,7 @@ export default function CustomerEdit(props) {
       singleCustomerID: data?.id,
       area: areaID,
       subArea: subArea2,
+      poleBox: poleBoxIds,
       ispOwner: ispOwnerId,
       mikrotikPackage: packageId,
       autoDisable: autoDisable,
@@ -318,6 +338,12 @@ export default function CustomerEdit(props) {
       });
       return a;
     });
+
+    // subArea poleBox
+    const subAreaPoleBox = poleBox.filter((val) => {
+      return val.subArea === subArea;
+    });
+    setSubAreasPoleBox(subAreaPoleBox);
   };
 
   //divisional area formula
@@ -549,10 +575,36 @@ export default function CustomerEdit(props) {
                         </select>
                       </div>
 
-                      <FtextField type="text" label={t("NIDno")} name="nid" />
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPoleBox")}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          name="poleBox"
+                          onChange={(e) => setPoleBoxIds(e.target.value)}
+                        >
+                          <option value="">...</option>
+                          {subAreasPoleBox
+                            ? subAreasPoleBox?.map((val, key) => (
+                                <option
+                                  key={key}
+                                  value={val?.id}
+                                  selected={val.id === poleBoxId}
+                                >
+                                  {val.name}
+                                </option>
+                              ))
+                            : ""}
+                        </select>
+                      </div>
                     </div>
 
-                    <div className="displayGrid3">
+                    <div className="displayGrid3 mt-3">
+                      <FtextField type="text" label={t("NIDno")} name="nid" />
+
                       <FtextField
                         type="text"
                         label={t("name")}
@@ -568,11 +620,6 @@ export default function CustomerEdit(props) {
                           !permission?.customerMobileEdit &&
                           role === "collector"
                         }
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("address")}
-                        name="address"
                       />
                     </div>
 
@@ -602,6 +649,11 @@ export default function CustomerEdit(props) {
                     </div>
 
                     <div className="newDisplay">
+                      <FtextField
+                        type="text"
+                        label={t("address")}
+                        name="address"
+                      />
                       <FtextField type="text" label={t("email")} name="email" />
 
                       <div className="billCycle">
@@ -620,6 +672,8 @@ export default function CustomerEdit(props) {
                           />
                         </div>
                       </div>
+                    </div>
+                    <div className="newDisplay">
                       {bpSettings.promiseDate &&
                         (role === "manager" || role === "ispOwner") && (
                           <div>
@@ -638,8 +692,6 @@ export default function CustomerEdit(props) {
                             />
                           </div>
                         )}
-                    </div>
-                    <div className="newDisplay">
                       <div>
                         <label className="form-control-label changeLabelFontColor mt-0">
                           {t("connectionDate")}
