@@ -31,12 +31,12 @@ const SupportNumberPost = ({ show, setShow }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // start & end date state
-  const [startTime, setStartTime] = useState();
-  const [endTime, setEndTime] = useState();
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   // supports validation
   const customerValidator = Yup.object({
-    name: Yup.string().required(t("writeSupportName")),
+    name: Yup.string().min(3).required(t("writeSupportName")),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
       .min(11, t("write11DigitMobileNumber"))
@@ -56,32 +56,63 @@ const SupportNumberPost = ({ show, setShow }) => {
       return toast.error(t("writeMobileNumber"));
     }
 
-    // time validation
-    const current = new Date();
-    const time = current.toLocaleTimeString("en-bn", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    if (moment(startTime).format("hh:mm A") === time) {
+    if (startTime === "") {
       setIsLoading(false);
       return toast.error(t("selectStartTime"));
     }
 
-    if (moment(endTime).format("hh:mm A") === time) {
+    if (endTime === "") {
       setIsLoading(false);
       return toast.error(t("selectEndTime"));
     }
 
+    let currStartTime = "";
+    if (startTime) {
+      var [hours, minutes, meridian] = startTime.split(":");
+
+      if (hours > 12) {
+        meridian = "PM";
+        hours -= 12;
+      } else if (hours < 12) {
+        meridian = "AM";
+        if (hours == 0) {
+          hours = 12;
+        }
+      } else {
+        meridian = "PM";
+      }
+      currStartTime = hours + ":" + minutes + " " + meridian;
+    }
+
+    let currEndTime = "";
+    if (startTime) {
+      var [hours, minutes, meridian] = endTime.split(":");
+
+      if (hours > 12) {
+        meridian = "PM";
+        hours -= 12;
+      } else if (hours < 12) {
+        meridian = "AM";
+        if (hours == 0) {
+          hours = 12;
+        }
+      } else {
+        meridian = "PM";
+      }
+      currEndTime = hours + ":" + minutes + " " + meridian;
+    }
+
     const sendingData = {
       name: name,
-      start: moment(startTime).format("hh:mm a"),
-      end: moment(endTime).format("hh:mm a"),
+      start: currStartTime,
+      end: currEndTime,
       ispOwner: ispOwner,
       ...res,
     };
 
-    postIspOwnerSupporterNumber(dispatch, sendingData, setIsLoading);
+    postIspOwnerSupporterNumber(dispatch, sendingData, setIsLoading, setShow);
+    setStartTime("");
+    setEndTime("");
   };
 
   return (
@@ -111,7 +142,6 @@ const SupportNumberPost = ({ show, setShow }) => {
                 type="text"
                 label={t("name")}
                 name="name"
-                min={3}
                 validation={"true"}
               />
 
@@ -128,13 +158,10 @@ const SupportNumberPost = ({ show, setShow }) => {
                   <span className="text-danger ms-1">*</span>
                 </label>
 
-                <DatePicker
+                <input
+                  type="time"
                   className="form-control mw-100"
-                  selected={startTime}
-                  onChange={(date) => setStartTime(date)}
-                  dateFormat="hh:mm a"
-                  showTimeSelect
-                  placeholderText={t("startTime")}
+                  onChange={(e) => setStartTime(e.target.value)}
                 />
               </div>
 
@@ -143,14 +170,10 @@ const SupportNumberPost = ({ show, setShow }) => {
                   {t("selectEndTime")}
                   <span className="text-danger ms-1">*</span>
                 </label>
-
-                <DatePicker
+                <input
+                  type="time"
                   className="form-control mw-100"
-                  selected={endTime}
-                  onChange={(date) => setEndTime(date)}
-                  dateFormat="hh:mm a"
-                  showTimeSelect
-                  placeholderText={t("endTime")}
+                  onChange={(e) => setEndTime(e.target.value)}
                 />
               </div>
             </Form>

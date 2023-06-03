@@ -771,5 +771,10 @@
   "selectStartTime": "সাপোর্ট শুরুর সময় নির্বাচন করুন",
   "selectEndTime": "সাপোর্ট শেষ সময় নির্বাচন করুন",
   "writeSupportName": "সাপোর্টারের নাম লিখুন",
-  "createCustomersSupporter": "গ্রাহক সাপোর্টার তৈরি করুন"
+  "createCustomersSupporter": "গ্রাহক সাপোর্টার তৈরি করুন",
+  "selectPoleBox": "পোলবক্স নির্বাচন করুন",
+  "paymentAmount": "পেমেন্ট এমাউন্ট",
+  "doYouAgreeOurTermsAndConditions": "আপনি আমাদের শর্তাবলী একমত?",
+  "pay": "পে",
+  "enterYourAmount": "আপনার এমাউন্ট লিখুন"
 }

@@ -11,6 +11,7 @@ import {
   GearFill,
   KeyFill,
   BoxArrowLeft,
+  SortAlphaUp,
 } from "react-bootstrap-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -22,6 +23,7 @@ import PasswordReset from "./PasswordReset";
 import Payment from "./Payment";
 import PaymentHistory from "./PaymentHistory";
 import SupportTicket from "./SupportTicket";
+import OwnerSupportNumbers from "./OwnerSupportNumbers";
 
 const Client = () => {
   const [renderText, setRenderText] = useState("profile");
@@ -114,6 +116,16 @@ const Client = () => {
             </li>
             <hr className="mt-0 mb-0" />
             <li
+              className={renderText === "supportNumbers" ? "pageActive" : ""}
+              onClick={() => renderPageController("supportNumbers")}
+            >
+              <div className="menu_icon">
+                <SortAlphaUp />
+              </div>
+              <div className="menu_label">Support Numbers</div>
+            </li>
+            <hr className="mt-0 mb-0" />
+            <li
               className={renderText === "supportPage" ? "pageActive" : ""}
               onClick={() => renderPageController("supportPage")}
             >
@@ -200,6 +212,11 @@ const Client = () => {
                 <Nav.Link onClick={() => renderPageController("packages")}>
                   Package
                 </Nav.Link>
+                <Nav.Link
+                  onClick={() => renderPageController("supportNumbers")}
+                >
+                  Support Numbers
+                </Nav.Link>
                 <Nav.Link onClick={() => renderPageController("supportPage")}>
                   Support Ticket
                 </Nav.Link>
@@ -254,6 +271,7 @@ const Client = () => {
             {renderText === "payBill" && <Payment />}
             {renderText === "paymentHistory" && <PaymentHistory />}
             {renderText === "supportPage" && <SupportTicket />}
+            {renderText === "supportNumbers" && <OwnerSupportNumbers />}
           </div>
         </section>
         {renderText === "profile" && (

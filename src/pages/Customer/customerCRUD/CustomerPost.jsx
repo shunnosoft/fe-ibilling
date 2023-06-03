@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,6 +26,7 @@ import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import SelectField from "../../../components/common/SelectField";
 import useCurrentUser from "../../../hooks/useCurrentUser";
 import { useId } from "react";
+import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -38,6 +39,11 @@ export default function CustomerModal() {
 
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
   );
 
   // const packages= useSelector(state=>state.package.packages)
@@ -54,6 +60,12 @@ export default function CustomerModal() {
       : state?.package?.packages
   );
 
+  // get all poleBox
+  const poleBox = useSelector((state) => state.area?.poleBox);
+
+  // Loading state
+  const [isLoadingPole, setIsLoadingPole] = useState(false);
+
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -69,6 +81,9 @@ export default function CustomerModal() {
   const [connectionDate, setConnectionDate] = useState(new Date());
   const [connectionFee, setConnectionFee] = useState(false);
   const [medium, setMedium] = useState("cash");
+
+  // pole get subarea state
+  const [subAreasPoleBox, setSubAreasPoleBox] = useState([]);
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
@@ -104,6 +119,11 @@ export default function CustomerModal() {
       .integer(t("decimalNumberNotAcceptable")),
   });
 
+  // get subarea poleBox
+  useEffect(() => {
+    getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
+  }, []);
+
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -133,6 +153,14 @@ export default function CustomerModal() {
     }
   };
 
+  //
+  const subAreaPoleBoxHandler = (e) => {
+    const subAreaPoleBox = poleBox.filter((val) => {
+      return val.subArea === e.target.value;
+    });
+    setSubAreasPoleBox(subAreaPoleBox);
+  };
+
   // select Mikrotik Package
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
@@ -150,6 +178,7 @@ export default function CustomerModal() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
+    const poleBoxId = document.getElementById("poleBox").value;
 
     if (subArea2 === "") {
       setIsloading(false);
@@ -189,6 +218,7 @@ export default function CustomerModal() {
       paymentStatus: "unpaid",
       area: sendArea,
       subArea: subArea2,
+      poleBox: poleBoxId,
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
@@ -437,6 +467,7 @@ export default function CustomerModal() {
                           aria-label="Default select example"
                           name="subArea"
                           id="subAreaId"
+                          onChange={subAreaPoleBoxHandler}
                           disabled={!mikrotikPackage}
                         >
                           <option value="">...</option>
@@ -449,6 +480,32 @@ export default function CustomerModal() {
                             : ""}
                         </select>
                       </div>
+
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPoleBox")}{" "}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          name="poleBox"
+                          id="poleBox"
+                          disabled={!mikrotikPackage}
+                        >
+                          <option value="">...</option>
+                          {subAreasPoleBox
+                            ? subAreasPoleBox?.map((val, key) => (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              ))
+                            : ""}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="displayGrid3 mt-3">
                       <FtextField
                         type="text"
                         label={t("name")}
@@ -456,9 +513,6 @@ export default function CustomerModal() {
                         disabled={!mikrotikPackage}
                         validation={"true"}
                       />
-                    </div>
-
-                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("mobile")}
@@ -470,13 +524,6 @@ export default function CustomerModal() {
                         type="text"
                         label={t("email")}
                         name="email"
-                        disabled={!mikrotikPackage}
-                      />
-
-                      <FtextField
-                        type="text"
-                        label={t("NIDno")}
-                        name="nid"
                         disabled={!mikrotikPackage}
                       />
                     </div>
@@ -506,6 +553,12 @@ export default function CustomerModal() {
                     <div className="displayGrid3">
                       <FtextField
                         type="text"
+                        label={t("NIDno")}
+                        name="nid"
+                        disabled={!mikrotikPackage}
+                      />
+                      <FtextField
+                        type="text"
                         label={t("address")}
                         name="address"
                         disabled={!mikrotikPackage}
@@ -522,6 +575,9 @@ export default function CustomerModal() {
                         <option value="prepaid">{t("prepaid")}</option>
                         <option value="postpaid">{t("postPaid")}</option>
                       </SelectField>
+                    </div>
+
+                    <div className="displayGrid3">
                       <div className="billCycle">
                         <label className="form-control-label changeLabelFontColor">
                           {t("billingCycle")}{" "}
@@ -540,9 +596,6 @@ export default function CustomerModal() {
                           }
                         />
                       </div>
-                    </div>
-
-                    <div className="displayGrid3">
                       <div className="billCycle">
                         <div>
                           <label className="form-control-label changeLabelFontColor">
@@ -565,14 +618,14 @@ export default function CustomerModal() {
                         name="referenceName"
                         disabled={!mikrotikPackage}
                       />
+                    </div>
+                    <div className="displayGrid3 mb-3">
                       <FtextField
                         type="text"
                         label={t("referenceMobile")}
                         name="referenceMobile"
                         disabled={!mikrotikPackage}
                       />
-                    </div>
-                    <div className="displayGrid3 mb-3">
                       {!bpSettings.genCustomerId && (
                         <FtextField
                           type="text"

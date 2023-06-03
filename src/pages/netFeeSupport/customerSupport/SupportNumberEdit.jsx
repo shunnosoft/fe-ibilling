@@ -4,6 +4,11 @@ import { FtextField } from "../../../components/common/FtextField";
 import DatePicker from "react-datepicker";
 
 const SupportNumberEdit = () => {
+  // netFee support data
+  const ispOwnerSupportNumbers = useSelector(
+    (state) => state.netFeeSupport?.ispOwnerSupport
+  );
+
   // start & end date state
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
@@ -35,7 +40,6 @@ const SupportNumberEdit = () => {
                 type="text"
                 label={t("name")}
                 name="name"
-                min={3}
                 validation={"true"}
               />
 
@@ -56,7 +60,7 @@ const SupportNumberEdit = () => {
                   className="form-control mw-100"
                   selected={startTime}
                   onChange={(date) => setStartTime(date)}
-                  dateFormat="hh:mm a"
+                  dateFormat="dd/MM/yyyy:hh:mm a"
                   showTimeSelect
                   placeholderText={t("startTime")}
                 />
@@ -72,7 +76,7 @@ const SupportNumberEdit = () => {
                   className="form-control mw-100"
                   selected={endTime}
                   onChange={(date) => setEndTime(date)}
-                  dateFormat="hh:mm a"
+                  dateFormat="dd/MM/yyyy:hh:mm a"
                   showTimeSelect
                   placeholderText={t("endTime")}
                 />
