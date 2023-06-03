@@ -84,7 +84,7 @@ const ResellerOnlinePayment = ({ show, setShow }) => {
             const { data } = await URL.baseURL.post(URL.create, request);
             if (data?.statusCode === "0000") {
               localStorage.setItem("paymentAmount", paymentAmount);
-              sessionStorage.setItem("qrispid", userData.ispOwner.id);
+              sessionStorage.setItem("qrispid", userData.ispOwner);
               window.location.href = data?.bkashURL;
             }
 
@@ -102,7 +102,7 @@ const ResellerOnlinePayment = ({ show, setShow }) => {
           }
         },
         executeRequestOnAuthorization: async function () {
-          const billData = {
+          const resellerRechargeData = {
             amount: paymentAmount,
             reseller: userData.id,
             ispOwner: userData.ispOwner,
@@ -110,9 +110,9 @@ const ResellerOnlinePayment = ({ show, setShow }) => {
           try {
             const { data } = await URL.baseURL.post(
               `${URL.execute}?paymentID=${paymentID}reseller=${userData.id}`,
-              billData
+              resellerRechargeData
             );
-            if (data.bill.paymentStatus === "paid") {
+            if (data.resellerRecharge.paymentStatus === "paid") {
               window.location.href = "/payment/success";
             } else {
               window.location.href = "/payment/failed";
@@ -174,7 +174,7 @@ const ResellerOnlinePayment = ({ show, setShow }) => {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={resellerPaymentHandler}
+          id={"bKash_button"}
           disabled={!agreement}
         >
           {isLoading ? <Loader /> : t("pay")}

@@ -14,12 +14,23 @@ export default function Execute() {
     (state) => state.persistedReducer.auth?.currentUser?.customer
   );
 
+  // reseller data
+  const resellerData = useSelector(
+    (state) => state.persistedReducer.auth?.userData
+  );
+
   const paymentExecute = async () => {
     let URL = {
       execute: "bkash/executePayment",
       baseURL: apiLink,
     };
-    if (!userData) {
+
+    if (resellerData.id) {
+      URL = {
+        execute: "reseller/bkash-execute-recharge",
+        baseURL: apiLink,
+      };
+    } else if (!userData) {
       URL = {
         execute: "bkash/executePublicPayment",
         baseURL: publicRequest,
@@ -31,7 +42,7 @@ export default function Execute() {
       : sessionStorage.getItem("qrispid");
 
     return await URL.baseURL.post(
-      `${URL.execute}?paymentID=${paymentID}&status=${status}`,
+      `${URL.execute}?paymentID=${paymentID}&status=${status}&reseller=${resellerData.id}`,
       {
         ispOwner: ispOwnerId,
       }
@@ -41,7 +52,10 @@ export default function Execute() {
   useEffect(() => {
     paymentExecute()
       .then((response) => {
-        if (response.data.bill.paymentStatus === "paid") {
+        if (response?.data?.bill?.paymentStatus === "paid") {
+          sessionStorage.removeItem("qrispid");
+          window.location.href = "/payment/success";
+        } else if (response?.data?.resellerRecharge?.paymentStatus === "paid") {
           sessionStorage.removeItem("qrispid");
           window.location.href = "/payment/success";
         } else {

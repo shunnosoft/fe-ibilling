@@ -275,6 +275,10 @@ function App() {
 
               <Route path="*" element={<NotFound />} />
             </Route>
+            <Route path="/payment/execute" element={<Execute />} />
+            <Route path="/payment/success" element={<Success />} />
+            <Route path="/payment/cancel" element={<Cancel />} />
+            <Route path="/payment/failed" element={<Failed />} />
           </Routes>
         ) : userRole === "admin" || userRole === "superadmin" ? (
           <Routes>
