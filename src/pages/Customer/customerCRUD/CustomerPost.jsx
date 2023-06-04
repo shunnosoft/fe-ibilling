@@ -178,7 +178,10 @@ export default function CustomerModal() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
-    const poleBoxId = document.getElementById("poleBox").value;
+    let poleBoxId;
+    if (bpSettings?.poleBox) {
+      poleBoxId = document.getElementById("poleBox").value;
+    }
 
     if (subArea2 === "") {
       setIsloading(false);
@@ -256,6 +259,11 @@ export default function CustomerModal() {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
+
+    if (!poleBoxId) {
+      delete mainData.poleBox;
+    }
+
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -481,28 +489,29 @@ export default function CustomerModal() {
                         </select>
                       </div>
 
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPoleBox")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="poleBox"
-                          id="poleBox"
-                          disabled={!mikrotikPackage}
-                        >
-                          <option value="">...</option>
-                          {subAreasPoleBox
-                            ? subAreasPoleBox?.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))
-                            : ""}
-                        </select>
-                      </div>
+                      {bpSettings?.poleBox && (
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectPoleBox")}{" "}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name="poleBox"
+                            id="poleBox"
+                            disabled={!mikrotikPackage}
+                          >
+                            <option value="">...</option>
+                            {subAreasPoleBox
+                              ? subAreasPoleBox?.map((val, key) => (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                ))
+                              : ""}
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="displayGrid3 mt-3">

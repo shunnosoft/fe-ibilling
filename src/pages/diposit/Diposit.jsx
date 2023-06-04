@@ -138,6 +138,7 @@ export default function Diposit() {
           manager: selectManager,
           note: data.note,
         };
+        console.log(sendingData);
         addDeposit(dispatch, sendingData, setLoading);
         data.amount = "";
       }

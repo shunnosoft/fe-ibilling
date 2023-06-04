@@ -9,6 +9,7 @@ import {
   ArrowLeftShort,
   PlusCircle,
   ArrowRightShort,
+  AlignBottom,
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -59,6 +60,11 @@ export default function SubArea() {
   // get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // get mikrotik
@@ -132,7 +138,7 @@ export default function SubArea() {
   const columns = React.useMemo(
     () => [
       {
-        width: "25%",
+        width: "30%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -143,26 +149,26 @@ export default function SubArea() {
         Header: t("subArea"),
         accessor: "name",
       },
-      {
-        width: "25%",
-        Header: <div className="text-center">{t("poleBox")}</div>,
-        id: "option1",
+      // {
+      //   width: "25%",
+      //   Header: <div className="text-center">{t("poleBox")}</div>,
+      //   id: "option1",
 
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Link to={`/poleBox/${original.id}`} className="gotoSubAreaBtn">
-              {t("poleBox")}
-              <ArrowRightShort style={{ fontSize: "19px" }} />
-            </Link>
-          </div>
-        ),
-      },
+      //   Cell: ({ row: { original } }) => (
+      //     <div
+      //       style={{
+      //         display: "flex",
+      //         alignItems: "center",
+      //         justifyContent: "center",
+      //       }}
+      //     >
+      //       <Link to={`/poleBox/${original.id}`} className="gotoSubAreaBtn">
+      //         {t("poleBox")}
+      //         <ArrowRightShort style={{ fontSize: "19px" }} />
+      //       </Link>
+      //     </div>
+      //   ),
+      // },
       {
         width: "25%",
         Header: () => <div className="text-center">{t("action")}</div>,
@@ -187,6 +193,19 @@ export default function SubArea() {
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                 {checkMikrotikName?.name !== name ? (
                   <>
+                    {bpSettings?.poleBox && (
+                      <li>
+                        <Link to={`/poleBox/${original.id}`}>
+                          <div className="dropdown-item">
+                            <div className="customerAction">
+                              <AlignBottom />
+                              <p className="actionP">{t("poleBox")}</p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                    )}
+
                     <li
                       data-bs-toggle="modal"
                       data-bs-target="#subAreaEditModal"

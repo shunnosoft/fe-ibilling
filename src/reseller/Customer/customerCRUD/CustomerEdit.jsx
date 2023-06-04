@@ -651,7 +651,9 @@ export default function CustomerEdit({ single }) {
                       )}
 
                       {Getmikrotik.length > 0 &&
-                        permission.customerAutomaticConnectionOnOff && (
+                        (permission?.customerAutomaticConnectionOnOff ||
+                          collectorResellerInfo.permission
+                            ?.customerAutomaticConnectionOnOff) && (
                           <div className="autoDisable">
                             <label> {t("automaticConnectionOff")} </label>
                             <input

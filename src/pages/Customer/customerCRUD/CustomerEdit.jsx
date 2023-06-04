@@ -324,6 +324,11 @@ export default function CustomerEdit(props) {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
+
+    if (!poleBoxIds) {
+      delete mainData.poleBox;
+    }
+
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -575,31 +580,32 @@ export default function CustomerEdit(props) {
                         </select>
                       </div>
 
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPoleBox")}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="poleBox"
-                          onChange={(e) => setPoleBoxIds(e.target.value)}
-                        >
-                          <option value="">...</option>
-                          {subAreasPoleBox
-                            ? subAreasPoleBox?.map((val, key) => (
-                                <option
-                                  key={key}
-                                  value={val?.id}
-                                  selected={val.id === poleBoxId}
-                                >
-                                  {val.name}
-                                </option>
-                              ))
-                            : ""}
-                        </select>
-                      </div>
+                      {bpSettings?.poleBox && (
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectPoleBox")}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name="poleBox"
+                            onChange={(e) => setPoleBoxIds(e.target.value)}
+                          >
+                            <option value="">...</option>
+                            {subAreasPoleBox
+                              ? subAreasPoleBox?.map((val, key) => (
+                                  <option
+                                    key={key}
+                                    value={val?.id}
+                                    selected={val.id === poleBoxId}
+                                  >
+                                    {val.name}
+                                  </option>
+                                ))
+                              : ""}
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="displayGrid3 mt-3">

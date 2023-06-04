@@ -332,7 +332,12 @@ export default function StaticCustomerEdit({ single }) {
       return alert(t("selectDownloadPackage"));
     }
     const subArea2 = document.getElementById("subAreaIdEditStatic").value;
-    const poleBoxId = document.getElementById("poleBoxEdit").value;
+
+    let poleBoxId;
+    if (bpSettings?.poleBox) {
+      poleBoxId = document.getElementById("poleBoxEdit").value;
+    }
+
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
@@ -415,6 +420,10 @@ export default function StaticCustomerEdit({ single }) {
       if (divisionName) sendingData.division = divisionName;
       if (districtName) sendingData.district = districtName;
       if (thanaName) sendingData.thana = thanaName;
+    }
+
+    if (!poleBoxId) {
+      delete mainData.poleBox;
     }
 
     // return;
@@ -503,7 +512,7 @@ export default function StaticCustomerEdit({ single }) {
                           onChange={selectSubArea}
                         >
                           <option value="">...</option>
-                          {areas.length === undefined
+                          {areas?.length === undefined
                             ? ""
                             : areas.map((val, key) => (
                                 <option
@@ -547,30 +556,32 @@ export default function StaticCustomerEdit({ single }) {
                         </select>
                       </div>
 
-                      <div className="static_edit_item">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPoleBox")}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="poleBox"
-                          id="poleBoxEdit"
-                        >
-                          <option value="">...</option>
-                          {poleBox?.map((val, key) => {
-                            return (
-                              <option
-                                selected={val.id === customer?.poleBox}
-                                key={key}
-                                value={val.id}
-                              >
-                                {val.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
+                      {bpSettings?.poleBox && (
+                        <div className="static_edit_item">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectPoleBox")}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name="poleBox"
+                            id="poleBoxEdit"
+                          >
+                            <option value="">...</option>
+                            {poleBox?.map((val, key) => {
+                              return (
+                                <option
+                                  selected={val.id === customer?.poleBox}
+                                  key={key}
+                                  value={val.id}
+                                >
+                                  {val.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      )}
 
                       {userType === "core-queue" && (
                         <div className="static_edit_item">

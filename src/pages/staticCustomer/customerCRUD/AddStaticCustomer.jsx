@@ -193,7 +193,12 @@ export default function AddStaticCustomer() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
-    const poleBoxId = document.getElementById("poleBoxId").value;
+
+    let poleBoxId;
+    if (bpSettings?.poleBox) {
+      poleBoxId = document.getElementById("poleBoxId").value;
+    }
+
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
@@ -279,6 +284,10 @@ export default function AddStaticCustomer() {
       if (divisionName) sendingData.division = divisionName;
       if (districtName) sendingData.district = districtName;
       if (thanaName) sendingData.thana = thanaName;
+    }
+
+    if (!poleBoxId) {
+      delete mainData.poleBox;
     }
 
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
@@ -436,24 +445,26 @@ export default function AddStaticCustomer() {
                         </select>
                       </div>
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPoleBox")}{" "}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="poleBox"
-                          id="poleBoxId"
-                        >
-                          <option value="">...</option>
-                          {poleBox?.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      {bpSettings?.poleBox && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectPoleBox")}{" "}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name="poleBox"
+                            id="poleBoxId"
+                          >
+                            <option value="">...</option>
+                            {poleBox?.map((val, key) => (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
 
                       {userType === "simple-queue" && (
                         <div className="col-lg-4 col-md-4 col-xs-6">

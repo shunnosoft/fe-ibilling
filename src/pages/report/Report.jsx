@@ -70,6 +70,11 @@ export default function Report() {
   const allCollector = useSelector((state) => state?.collector?.collector);
   const manager = useSelector((state) => state?.manager?.manager);
 
+  // get user permission
+  const permissions = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.manager?.permissions
+  );
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -167,11 +172,10 @@ export default function Report() {
 
   useEffect(() => {
     var initialToday = new Date();
-    var initialFirst = new Date(
-      initialToday.getFullYear(),
-      initialToday.getMonth(),
-      1
-    );
+    var initialFirst =
+      userRole === "ispOwner" || permissions?.dashboardCollectionData
+        ? new Date(initialToday.getFullYear(), initialToday.getMonth(), 1)
+        : new Date();
 
     initialFirst.setHours(0, 0, 0, 0);
     initialToday.setHours(23, 59, 59, 999);
@@ -488,8 +492,12 @@ export default function Report() {
   );
 
   const customComponent = (
-    <div style={{ fontSize: "18px" }}>
-      {t("totalBill")} {addAllBills().count} {t("tk")} &nbsp;&nbsp;
+    <div style={{ fontSize: "18px", display: "flex" }}>
+      {(userRole === "ispOwner" || permissions?.dashboardCollectionData) && (
+        <div>
+          {t("totalBill")} {addAllBills().count} {t("tk")} &nbsp;&nbsp;
+        </div>
+      )}
       {t("discount")}: {addAllBills().discount} {t("tk")}
     </div>
   );
@@ -625,24 +633,30 @@ export default function Report() {
                         <option value="others"> {t("others")} </option>
                       </select>
 
-                      <div className="ms-2">
-                        <DatePicker
-                          className="form-control w-140 mt-2"
-                          selected={dateStart}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
-                      <div className="mx-2">
-                        <DatePicker
-                          className="form-control w-140 mt-2"
-                          selected={dateEnd}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
+                      {(userRole === "ispOwner" ||
+                        permissions?.dashboardCollectionData) && (
+                        <>
+                          <div className="ms-2">
+                            <DatePicker
+                              className="form-control w-140 mt-2"
+                              selected={dateStart}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+
+                          <div className="mx-2">
+                            <DatePicker
+                              className="form-control w-140 mt-2"
+                              selected={dateEnd}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+                        </>
+                      )}
 
                       <div>
                         <button
