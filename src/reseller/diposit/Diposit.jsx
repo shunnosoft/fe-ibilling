@@ -176,7 +176,7 @@ export default function Diposit() {
 
     // for -- Collector
     if (userRole === "collector") {
-      getDeposit(dispatch);
+      getDeposit(dispatch, setResellerPageLoader);
     }
   };
 
@@ -214,7 +214,7 @@ export default function Diposit() {
   useEffect(() => {
     if (userRole === "collector") {
       getTotalbal(dispatch, setIsLoading);
-      getDeposit(dispatch);
+      getDeposit(dispatch, setResellerPageLoader);
     }
   }, []);
 
@@ -243,13 +243,18 @@ export default function Diposit() {
 
   // calculate own deposit -- Collector
   const getTotalOwnDeposit = useCallback(() => {
-    const initialValue = 0;
-    const sumWithInitial = ownDeposits.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-    return FormatNumber(sumWithInitial);
-  }, [ownDeposits]);
+    let initialValue = 0;
+    const collectorDeposit = collectorData.map((val) => {
+      if (val.status === "accepted") {
+        return (initialValue += val.amount);
+      }
+    });
+    // const sumWithInitial = collectorData.reduce(
+    //   (previousValue, currentValue) => previousValue + currentValue.amount,
+    //   initialValue
+    // );
+    return FormatNumber(initialValue);
+  }, [collectorData]);
 
   // sending table header data
   const customComponent = (
@@ -503,7 +508,7 @@ export default function Diposit() {
                     <div className="managerDipositToIsp">
                       <Formik
                         initialValues={{
-                          amount: "",
+                          amount: balancee,
                           balance: balancee, //put the value from api
                         }}
                         validationSchema={BillValidatoin}

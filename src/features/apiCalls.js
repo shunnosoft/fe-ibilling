@@ -124,10 +124,12 @@ import { userLogout } from "./actions/authAsyncAction";
 import { createNote, getNotesSuccess } from "./customerNoteSlice";
 import {
   AddNetFeeSupport,
+  deleteIspOwnerSupports,
   deleteNetFeeSupport,
   getIspOwnerSupports,
   getNetFeeSupport,
   postIspOwnerSupports,
+  updateIspOwnerSupports,
   updateNetFeeSupport,
 } from "./netFeeSupportSlice";
 import {
@@ -3092,7 +3094,6 @@ export const getIspOwnerSupportNumbers = async (
   setIsLoading(true);
   try {
     const res = await apiLink.get(`ispOwner/customer-support/${ispOwner}`);
-    console.log(res.data);
     dispatch(getIspOwnerSupports(res.data));
   } catch (error) {
     toast.error(error.response?.data?.message);
@@ -3124,18 +3125,45 @@ export const postIspOwnerSupporterNumber = async (
 };
 
 // create ispOwner customr supporter
-export const deleteIspOwnerSupporterNumber = async (
+export const updateIspOwnerSupporterNumber = async (
   dispatch,
+  sendingData,
   ispOwnerId,
   supportId,
-  setIsLoading
+  setIsLoading,
+  setEditShow
 ) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.post(
-      ` ispOwner/customer/support/delete/:ispOwnerId/:supportId`
+    const res = await apiLink.patch(
+      `ispOwner/customer-support/update/${ispOwnerId}/${supportId}`,
+      sendingData
     );
-    console.log(res.data);
+
+    dispatch(updateIspOwnerSupports(res.data));
+    setEditShow(false);
+    langMessage(
+      "success",
+      "সাপর্ট নম্বর আপডেট সফল হয়েছে",
+      "Support Number Update successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// create ispOwner customr supporter
+export const deleteIspOwnerSupporterNumber = async (
+  dispatch,
+  ispOwnerId,
+  supportId
+) => {
+  try {
+    const res = await apiLink.delete(
+      `ispOwner/customer-support/delete/${ispOwnerId}/${supportId}`
+    );
+    dispatch(deleteIspOwnerSupports(res.data));
     langMessage(
       "success",
       "সাপর্ট নম্বর ডিলিট সফল হয়েছে",
@@ -3144,5 +3172,4 @@ export const deleteIspOwnerSupporterNumber = async (
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
-  setIsLoading(false);
 };

@@ -779,5 +779,6 @@
   "enterYourAmount": "আপনার এমাউন্ট লিখুন",
   "poleBox": "পোল বক্স",
   "addPoleBox": "পোল বক্স যোগ করুন",
-  "editPoleBox": "পোল বক্স এডিট করুন"
+  "editPoleBox": "পোল বক্স এডিট করুন",
+  "antToDeleteSupport": "সাপোর্ট নম্বর ডিলিট করতে চান?"
 }

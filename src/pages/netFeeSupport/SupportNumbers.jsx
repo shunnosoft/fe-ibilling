@@ -18,7 +18,7 @@ import {
   deleteIspOwnerSupporterNumber,
   getIspOwnerSupportNumbers,
 } from "../../features/apiCalls";
-import moment from "moment";
+import SupportNumberEdit from "./customerSupport/SupportNumberEdit";
 
 const SupportNumbers = () => {
   const { t } = useTranslation();
@@ -37,53 +37,57 @@ const SupportNumbers = () => {
   //Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
+
+  // support number edit id state
+  const [supportId, setSupportId] = useState("");
 
   // support number update handler
   const numberEditHandler = (id) => {
-    console.log(id);
+    setSupportId(id);
+    setEditShow(true);
   };
 
   // support number delete handler
   const supportDeleteHandler = (supportId) => {
-    let confirm = window.confirm("ok");
+    let confirm = window.confirm(t("antToDeleteSupport"));
     if (confirm) {
-      deleteIspOwnerSupporterNumber(
-        dispatch,
-        ispOwner,
-        supportId,
-        setIsLoading
-      );
+      deleteIspOwnerSupporterNumber(dispatch, ispOwner, supportId);
     }
   };
 
   const columns = React.useMemo(
     () => [
       {
-        width: "20%",
+        width: "16%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
-
       {
         Header: t("name"),
-        width: "20%",
+        width: "16%",
         accessor: "name",
       },
       {
+        Header: t("mobile"),
         width: "20%",
+        accessor: "mobile",
+      },
+      {
+        width: "16%",
         Header: t("startTime"),
         accessor: "start",
       },
       {
-        width: "20%",
+        width: "16%",
         Header: t("endTime"),
         accessor: "end",
       },
 
       {
-        width: "20%",
+        width: "16%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -98,7 +102,7 @@ const SupportNumbers = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
+                {/* <li
                   data-bs-toggle="modal"
                   data-bs-target="#supportEdit"
                   onClick={() => numberEditHandler(original.id)}
@@ -109,7 +113,7 @@ const SupportNumbers = () => {
                       <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
-                </li>
+                </li> */}
 
                 <li
                   data-bs-toggle="modal"
@@ -180,6 +184,11 @@ const SupportNumbers = () => {
       </div>
 
       <SupportNumberPost show={show} setShow={setShow} />
+      <SupportNumberEdit
+        supportId={supportId}
+        editShow={editShow}
+        setEditShow={setEditShow}
+      />
     </>
   );
 };

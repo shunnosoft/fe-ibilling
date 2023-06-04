@@ -770,8 +770,8 @@
   "doYouAgreeOurTermsAndConditions": "Do you agree our terms and conditions?",
   "pay": "Pay",
   "enterYourAmount": "Enter Your Amount",
-  "bulkMessage": "Bulk Message",
   "poleBox": "Pole Box",
   "addPoleBox": "Add Pole Box",
-  "editPoleBox": "Edit Pole Box"
+  "editPoleBox": "Edit Pole Box",
+  "antToDeleteSupport": "Want to Delete Support Number?"
 }

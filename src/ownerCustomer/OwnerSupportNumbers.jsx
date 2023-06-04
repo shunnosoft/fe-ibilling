@@ -23,7 +23,7 @@ const OwnerSupportNumbers = () => {
 
   return (
     <div>
-      <h3 style={{ color: "#3e6e07" }} className="text-center">
+      <h3 style={{ color: "#13ad23" }} className="text-center">
         Support Number's
       </h3>
       {isLoading ? (
@@ -31,11 +31,11 @@ const OwnerSupportNumbers = () => {
           <Loader />
         </div>
       ) : (
-        <table class="table table-hover table-striped">
+        <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Mobile</th>
+              <th scope="col">Supporter Name</th>
+              <th scope="col">Supporter Mobile</th>
               <th scope="col">Start Time</th>
               <th scope="col">End Time</th>
             </tr>
