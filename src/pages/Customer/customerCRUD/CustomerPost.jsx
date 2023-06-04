@@ -256,6 +256,11 @@ export default function CustomerModal() {
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
+
+    if (!poleBoxId) {
+      delete mainData.poleBox;
+    }
+
     addCustomer(dispatch, mainData, setIsloading, resetForm);
   };
 
@@ -481,28 +486,29 @@ export default function CustomerModal() {
                         </select>
                       </div>
 
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPoleBox")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="poleBox"
-                          id="poleBox"
-                          disabled={!mikrotikPackage}
-                        >
-                          <option value="">...</option>
-                          {subAreasPoleBox
-                            ? subAreasPoleBox?.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))
-                            : ""}
-                        </select>
-                      </div>
+                      {bpSettings?.poleBox && (
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectPoleBox")}{" "}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name="poleBox"
+                            id="poleBox"
+                            disabled={!mikrotikPackage}
+                          >
+                            <option value="">...</option>
+                            {subAreasPoleBox
+                              ? subAreasPoleBox?.map((val, key) => (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                ))
+                              : ""}
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="displayGrid3 mt-3">

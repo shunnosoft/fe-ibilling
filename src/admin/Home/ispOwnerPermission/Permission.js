@@ -157,10 +157,16 @@ export const ispOwnerPermission = (perm) => {
       isChecked: perm?.dailyRechargeFeature,
     },
     {
-      id: 26,
+      id: 27,
       value: "unpaidCustomerBulkSms",
       label: "Unpaid Customer Bulk SMS",
       isChecked: perm?.unpaidCustomerBulkSms,
+    },
+    {
+      id: 28,
+      value: "poleBox",
+      label: "Pole Box",
+      isChecked: perm?.poleBox,
     },
   ];
   return permission;
