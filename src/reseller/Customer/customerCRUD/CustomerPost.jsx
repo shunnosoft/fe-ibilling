@@ -592,7 +592,9 @@ export default function CustomerModal() {
                       </SelectField>
 
                       {Getmikrotik.length > 0 &&
-                        permission.customerAutomaticConnectionOnOff && (
+                        (permission?.customerAutomaticConnectionOnOff ||
+                          collectorResellerInfo.permission
+                            ?.customerAutomaticConnectionOnOff) && (
                           <div className="autoDisable">
                             <label> {t("automaticConnectionOff")} </label>
                             <input
