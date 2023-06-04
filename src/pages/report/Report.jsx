@@ -493,7 +493,7 @@ export default function Report() {
 
   const customComponent = (
     <div style={{ fontSize: "18px", display: "flex" }}>
-      {permissions?.dashboardCollectionData && (
+      {(userRole === "ispOwner" || permissions?.dashboardCollectionData) && (
         <div>
           {t("totalBill")} {addAllBills().count} {t("tk")} &nbsp;&nbsp;
         </div>
@@ -633,30 +633,30 @@ export default function Report() {
                         <option value="others"> {t("others")} </option>
                       </select>
 
-                      {userRole === "ispOwner" ||
-                        (permissions?.dashboardCollectionData && (
-                          <>
-                            <div className="ms-2">
-                              <DatePicker
-                                className="form-control w-140 mt-2"
-                                selected={dateStart}
-                                onChange={(date) => setStartDate(date)}
-                                dateFormat="MMM dd yyyy"
-                                placeholderText={t("selectBillDate")}
-                              />
-                            </div>
+                      {(userRole === "ispOwner" ||
+                        permissions?.dashboardCollectionData) && (
+                        <>
+                          <div className="ms-2">
+                            <DatePicker
+                              className="form-control w-140 mt-2"
+                              selected={dateStart}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
 
-                            <div className="mx-2">
-                              <DatePicker
-                                className="form-control w-140 mt-2"
-                                selected={dateEnd}
-                                onChange={(date) => setEndDate(date)}
-                                dateFormat="MMM dd yyyy"
-                                placeholderText={t("selectBillDate")}
-                              />
-                            </div>
-                          </>
-                        ))}
+                          <div className="mx-2">
+                            <DatePicker
+                              className="form-control w-140 mt-2"
+                              selected={dateEnd}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+                        </>
+                      )}
 
                       <div>
                         <button
