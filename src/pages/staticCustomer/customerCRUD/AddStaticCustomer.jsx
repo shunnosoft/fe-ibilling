@@ -193,7 +193,12 @@ export default function AddStaticCustomer() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
-    const poleBoxId = document.getElementById("poleBoxId").value;
+
+    let poleBoxId;
+    if (bpSettings?.poleBox) {
+      poleBoxId = document.getElementById("poleBoxId").value;
+    }
+
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));

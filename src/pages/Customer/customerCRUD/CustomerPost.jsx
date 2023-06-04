@@ -178,7 +178,10 @@ export default function CustomerModal() {
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     const subArea2 = document.getElementById("subAreaId").value;
-    const poleBoxId = document.getElementById("poleBox").value;
+    let poleBoxId;
+    if (bpSettings?.poleBox) {
+      poleBoxId = document.getElementById("poleBox").value;
+    }
 
     if (subArea2 === "") {
       setIsloading(false);

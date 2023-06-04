@@ -332,7 +332,12 @@ export default function StaticCustomerEdit({ single }) {
       return alert(t("selectDownloadPackage"));
     }
     const subArea2 = document.getElementById("subAreaIdEditStatic").value;
-    const poleBoxId = document.getElementById("poleBoxEdit").value;
+
+    let poleBoxId;
+    if (bpSettings?.poleBox) {
+      poleBoxId = document.getElementById("poleBoxEdit").value;
+    }
+
     if (subArea2 === "") {
       setIsloading(false);
       return alert(t("selectSubArea"));
