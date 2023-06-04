@@ -66,6 +66,7 @@ export default function Report() {
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
+  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
 
   const allCollector = useSelector((state) => state?.collector?.collector);
   const manager = useSelector((state) => state?.manager?.manager);
@@ -79,7 +80,10 @@ export default function Report() {
     (state) => state.persistedReducer.auth?.currentUser
   );
   var today = new Date();
-  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  var firstDay =
+    userRole === "ispOwner" || permissions?.dashboardCollectionData
+      ? new Date(today.getFullYear(), today.getMonth(), 1)
+      : new Date();
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
@@ -93,7 +97,7 @@ export default function Report() {
   const [singleArea, setArea] = useState({});
   const [subareas, setSubAreas] = useState([]);
   const [subAreaIds, setSubArea] = useState([]);
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+
   const [mainData, setMainData] = useState(allBills);
 
   const [collectors, setCollectors] = useState([]);

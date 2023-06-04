@@ -29,7 +29,9 @@ export default function CollectorReport() {
   );
 
   var today = new Date();
-  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  var firstDay = permissions?.dashboardCollectionData
+    ? new Date(today.getFullYear(), today.getMonth(), 1)
+    : new Date();
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);

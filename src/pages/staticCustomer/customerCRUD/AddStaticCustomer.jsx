@@ -287,7 +287,7 @@ export default function AddStaticCustomer() {
     }
 
     if (!poleBoxId) {
-      delete mainData.poleBox;
+      delete sendingData.poleBox;
     }
 
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);

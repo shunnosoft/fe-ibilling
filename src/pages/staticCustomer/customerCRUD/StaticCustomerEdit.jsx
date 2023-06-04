@@ -423,7 +423,7 @@ export default function StaticCustomerEdit({ single }) {
     }
 
     if (!poleBoxId) {
-      delete mainData.poleBox;
+      delete sendingData.poleBox;
     }
 
     // return;
