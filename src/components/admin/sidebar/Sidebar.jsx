@@ -1266,24 +1266,30 @@ export default function Sidebar() {
                             </NavLink>
                           )}
 
-                          {userRole !== "reseller" && (
-                            <NavLink
-                              key={12}
-                              to="/netFee/supportNumber"
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li className="sidebarItems" id="supportNumber">
-                                  <div className="sidebarIcon">{<Award />}</div>
-                                  <span className="sidebarLinksName">
-                                    {t("supportNumbers")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          )}
+                          {userRole !== "reseller" &&
+                            !user?.collector?.reseller && (
+                              <NavLink
+                                key={12}
+                                to="/netFee/supportNumber"
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
+                                }
+                              >
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id="supportNumber"
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<Award />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("supportNumbers")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            )}
                         </Accordion.Body>
                       </Accordion.Item>
                     </>

@@ -10,7 +10,6 @@ import "../Customer/customer.css";
 import "./report.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import arraySort from "array-sort";
 import { getCollectorBill } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
@@ -31,6 +30,7 @@ export default function CollectorReport() {
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
@@ -81,11 +81,9 @@ export default function CollectorReport() {
 
   useEffect(() => {
     var initialToday = new Date();
-    var initialFirst = new Date(
-      initialToday.getFullYear(),
-      initialToday.getMonth(),
-      1
-    );
+    var initialFirst = permissions?.dashboardCollectionData
+      ? new Date(initialToday.getFullYear(), initialToday.getMonth(), 1)
+      : new Date();
 
     initialFirst.setHours(0, 0, 0, 0);
     initialToday.setHours(23, 59, 59, 999);
@@ -261,26 +259,31 @@ export default function CollectorReport() {
                         ))}
                       </select>
 
-                      <input
-                        className="form-select"
-                        type="date"
-                        id="start"
-                        name="trip-start"
-                        value={moment(dateStart).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setStartDate(e.target.value);
-                        }}
-                      />
-                      <input
-                        className="form-select mx-3"
-                        type="date"
-                        id="end"
-                        name="trip-start"
-                        value={moment(dateEnd).format("YYYY-MM-DD")}
-                        onChange={(e) => {
-                          setEndDate(e.target.value);
-                        }}
-                      />
+                      {permissions?.dashboardCollectionData && (
+                        <input
+                          className="form-select"
+                          type="date"
+                          id="start"
+                          name="trip-start"
+                          value={moment(dateStart).format("YYYY-MM-DD")}
+                          onChange={(e) => {
+                            setStartDate(e.target.value);
+                          }}
+                        />
+                      )}
+
+                      {permissions?.dashboardCollectionData && (
+                        <input
+                          className="form-select mx-3"
+                          type="date"
+                          id="end"
+                          name="trip-start"
+                          value={moment(dateEnd).format("YYYY-MM-DD")}
+                          onChange={(e) => {
+                            setEndDate(e.target.value);
+                          }}
+                        />
+                      )}
 
                       <button
                         className="btn btn-outline-primary w-140 mt-2"

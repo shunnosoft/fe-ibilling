@@ -281,6 +281,10 @@ export default function AddStaticCustomer() {
       if (thanaName) sendingData.thana = thanaName;
     }
 
+    if (!poleBoxId) {
+      delete mainData.poleBox;
+    }
+
     addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
   };
 
@@ -436,24 +440,26 @@ export default function AddStaticCustomer() {
                         </select>
                       </div>
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPoleBox")}{" "}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="poleBox"
-                          id="poleBoxId"
-                        >
-                          <option value="">...</option>
-                          {poleBox?.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      {bpSettings?.poleBox && (
+                        <div className="col-lg-4 col-md-4 col-xs-6">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectPoleBox")}{" "}
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            name="poleBox"
+                            id="poleBoxId"
+                          >
+                            <option value="">...</option>
+                            {poleBox?.map((val, key) => (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
 
                       {userType === "simple-queue" && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
