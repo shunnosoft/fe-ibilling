@@ -34,7 +34,7 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
 
   // get user permission
   const permissions = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.manager.permissions
+    (state) => state.persistedReducer.auth?.currentUser?.manager?.permissions
   );
 
   const column = useMemo(
@@ -116,14 +116,13 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
       {t("todayCollection")}&nbsp;{" "}
       {FormatNumber(summaryCalculation?.totalTodayCollection)}
       &nbsp;
-      {role === "ispOwner" ||
-        (permissions?.dashboardCollectionData && (
-          <>
-            {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
-            {FormatNumber(summaryCalculation?.totalCollection)} &nbsp;
-            {t("tk")} &nbsp;
-          </>
-        ))}
+      {(role === "ispOwner" || permissions?.dashboardCollectionData) && (
+        <>
+          {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
+          {FormatNumber(summaryCalculation?.totalCollection)} &nbsp;
+          {t("tk")} &nbsp;
+        </>
+      )}
     </div>
   );
 
