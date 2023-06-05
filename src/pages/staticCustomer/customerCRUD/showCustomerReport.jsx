@@ -22,6 +22,7 @@ export default function CustomerReport({ single }) {
   const billRefStaticWithOutNote = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [printVal, setPrintVal] = useState({});
+  const [status, setStatus] = useState("");
 
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
@@ -91,10 +92,13 @@ export default function CustomerReport({ single }) {
   };
 
   //delaying the print click for 100 ms time
-  const handlePrint = (val) => {
+  const handlePrint = (val, stat) => {
+    setStatus(stat);
     setPrintVal(val);
     setTimeout(function () {
-      document.getElementById("pressPrintCustomerStatic").click();
+      if (val.note || val.startDate || val.endDate)
+        document.getElementById("PrintWithNote").click();
+      else document.getElementById("PrintWithoutNote").click();
     }, 100);
   };
 
@@ -277,6 +281,7 @@ export default function CustomerReport({ single }) {
                                         printVal?.prevState?.billingCycle,
                                       promiseDate:
                                         printVal?.prevState?.promiseDate,
+                                      status: status,
                                     }}
                                     ispOwnerData={ispOwnerData}
                                     paymentDate={printVal.createdAt}
@@ -285,12 +290,28 @@ export default function CustomerReport({ single }) {
                                 {permission?.billPrint ||
                                 role !== "collector" ? (
                                   <div>
-                                    <PrinterFill
+                                    <div
                                       style={{ cursor: "pointer" }}
                                       onClick={() => {
-                                        handlePrint(val);
+                                        handlePrint(val, "both"); //button for printing
                                       }}
-                                    />
+                                      className="d-flex"
+                                    >
+                                      <PrinterFill className="me-1 mt-1" />
+                                      <span>{t("office&customer")}</span>
+                                    </div>
+
+                                    <div
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        handlePrint(val, "customer"); //button for printing
+                                      }}
+                                      className="d-flex"
+                                    >
+                                      <PrinterFill className="me-1 mt-1" />
+                                      <span>{t("customer")}</span>
+                                    </div>
+
                                     <ReactToPrint
                                       documentTitle={t("billIvoice")}
                                       trigger={() => (
@@ -299,7 +320,7 @@ export default function CustomerReport({ single }) {
                                           title={t("printInvoiceBill")}
                                           style={{ cursor: "pointer" }}
                                         >
-                                          <button id="pressPrintCustomerStatic">
+                                          <button id="PrintWithNote">
                                             btn
                                           </button>
                                         </div>
@@ -346,6 +367,7 @@ export default function CustomerReport({ single }) {
                                         printVal?.prevState?.billingCycle,
                                       promiseDate:
                                         printVal?.prevState?.promiseDate,
+                                      status: status,
                                     }}
                                     ispOwnerData={ispOwnerData}
                                     paymentDate={printVal.createdAt}
@@ -354,12 +376,28 @@ export default function CustomerReport({ single }) {
                                 {permission?.billPrint ||
                                 role !== "collector" ? (
                                   <div>
-                                    <PrinterFill //button for printing
+                                    <div
                                       style={{ cursor: "pointer" }}
                                       onClick={() => {
-                                        handlePrint(val);
+                                        handlePrint(val, "both"); //button for printing
                                       }}
-                                    />
+                                      className="d-flex"
+                                    >
+                                      <PrinterFill className="me-1 mt-1" />
+                                      <span>{t("office&customer")}</span>
+                                    </div>
+
+                                    <div
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        handlePrint(val, "customer"); //button for printing
+                                      }}
+                                      className="d-flex"
+                                    >
+                                      <PrinterFill className="me-1 mt-1" />
+                                      <span>{t("customer")}</span>
+                                    </div>
+
                                     <ReactToPrint
                                       documentTitle={t("billIvoice")}
                                       trigger={() => (
@@ -368,7 +406,7 @@ export default function CustomerReport({ single }) {
                                           title={t("printInvoiceBill")}
                                           style={{ cursor: "pointer" }}
                                         >
-                                          <button id="pressPrintCustomerStatic">
+                                          <button id="PrintWithoutNote">
                                             btn
                                           </button>
                                         </div>

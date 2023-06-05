@@ -21,6 +21,8 @@ export default function CustomerReport(props) {
   const billRefwithNote = useRef();
   const billRefwithOutNote = useRef();
   const [printVal, setPrintVal] = useState({});
+  const [status, setStatus] = useState("");
+
   const [customerReport, setCustomerReport] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -78,11 +80,23 @@ export default function CustomerReport(props) {
   };
 
   //delaying the print click for 100 ms time
-  const handlePrint = (val) => {
+  const handlePrint = (val, stat) => {
+    setStatus(stat);
     setPrintVal(val);
     setTimeout(function () {
-      document.getElementById("pressPrintCustomer").click();
+      if (val.note || val.startDate || val.startDate)
+        document.getElementById("PrintWithNote").click();
+      else document.getElementById("PrintWithoutNote").click();
     }, 100);
+  };
+
+  const statusHandler = (e) => {
+    if (e.target.checked) {
+      setStatus([...status, e.target.value]);
+    } else {
+      const temp = status.filter((val) => val !== e.target.value);
+      setStatus(temp);
+    }
   };
 
   return (
@@ -277,6 +291,7 @@ export default function CustomerReport(props) {
                                         printVal?.prevState?.billingCycle,
                                       promiseDate:
                                         printVal?.prevState?.promiseDate,
+                                      status: status,
                                     }}
                                     ispOwnerData={ispOwnerData}
                                     paymentDate={printVal.createdAt}
@@ -284,13 +299,29 @@ export default function CustomerReport(props) {
                                 </div>
                                 {permission?.billPrint ||
                                 role !== "collector" ? (
-                                  <div>
-                                    <PrinterFill
+                                  <>
+                                    <div
                                       style={{ cursor: "pointer" }}
                                       onClick={() => {
-                                        handlePrint(val);
+                                        handlePrint(val, "both"); //button for printing
                                       }}
-                                    />
+                                      className="d-flex"
+                                    >
+                                      <PrinterFill className="me-1 mt-1" />
+                                      <span>{t("office&customer")}</span>
+                                    </div>
+
+                                    <div
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        handlePrint(val, "customer"); //button for printing
+                                      }}
+                                      className="d-flex"
+                                    >
+                                      <PrinterFill className="me-1 mt-1" />
+                                      <span>{t("customer")}</span>
+                                    </div>
+
                                     <ReactToPrint
                                       documentTitle={t("billIvoice")}
                                       trigger={() => (
@@ -299,14 +330,14 @@ export default function CustomerReport(props) {
                                           title={t("printInvoiceBill")}
                                           style={{ cursor: "pointer" }}
                                         >
-                                          <button id="pressPrintCustomer">
+                                          <button id="PrintWithNote">
                                             btn
                                           </button>
                                         </div>
                                       )}
                                       content={() => billRefwithNote.current}
                                     />
-                                  </div>
+                                  </>
                                 ) : (
                                   ""
                                 )}
@@ -346,21 +377,38 @@ export default function CustomerReport(props) {
                                       promiseDate:
                                         printVal?.prevState?.promiseDate,
                                       medium: printVal.medium,
+                                      status: status,
                                     }}
                                     ispOwnerData={ispOwnerData}
                                     paymentDate={printVal.createdAt}
                                   />
                                 </div>
-                                <div className="d-flex">
+                                <div>
                                   {permission?.billPrint ||
                                   role !== "collector" ? (
-                                    <div className="mx-2">
-                                      <PrinterFill //button for printing
+                                    <>
+                                      <div
                                         style={{ cursor: "pointer" }}
                                         onClick={() => {
-                                          handlePrint(val);
+                                          handlePrint(val, "both"); //button for printing
                                         }}
-                                      />
+                                        className="d-flex"
+                                      >
+                                        <PrinterFill className="me-1 mt-1" />
+                                        <span>{t("office&customer")}</span>
+                                      </div>
+
+                                      <div
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => {
+                                          handlePrint(val, "customer"); //button for printing
+                                        }}
+                                        className="d-flex"
+                                      >
+                                        <PrinterFill className="me-1 mt-1" />
+                                        <span>{t("customer")}</span>
+                                      </div>
+
                                       <ReactToPrint
                                         documentTitle={t("billIvoice")}
                                         trigger={() => (
@@ -369,7 +417,7 @@ export default function CustomerReport(props) {
                                             title={t("printInvoiceBill")}
                                             style={{ cursor: "pointer" }}
                                           >
-                                            <button id="pressPrintCustomer">
+                                            <button id="PrintWithoutNote">
                                               btn
                                             </button>
                                           </div>
@@ -378,7 +426,7 @@ export default function CustomerReport(props) {
                                           billRefwithOutNote.current
                                         }
                                       />
-                                    </div>
+                                    </>
                                   ) : (
                                     ""
                                   )}
@@ -389,18 +437,16 @@ export default function CustomerReport(props) {
                                   (role === "collector" &&
                                     bpSettings?.reportDelete &&
                                     permission?.billDelete) ? (
-                                    <div title={t("deleteReport")}>
-                                      <button
-                                        className="border-0 bg-transparent"
-                                        onClick={() => deletReport(val.id)}
-                                        disabled={props?.hideReportDelete}
-                                      >
-                                        <TrashFill
-                                          color="#dc3545"
-                                          style={{ cursor: "pointer" }}
-                                        />
-                                      </button>
-                                    </div>
+                                    <button
+                                      className="border-0 bg-transparent"
+                                      onClick={() => deletReport(val.id)}
+                                      disabled={props?.hideReportDelete}
+                                    >
+                                      <TrashFill
+                                        color="#dc3545"
+                                        style={{ cursor: "pointer" }}
+                                      />
+                                    </button>
                                   ) : (
                                     ""
                                   )}
