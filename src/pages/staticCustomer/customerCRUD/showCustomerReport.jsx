@@ -95,10 +95,13 @@ export default function CustomerReport({ single }) {
   const handlePrint = (val, stat) => {
     setStatus(stat);
     setPrintVal(val);
+    console.log(val);
     setTimeout(function () {
-      if (val.note || val.startDate || val.endDate)
+      if (val.note || val.start || val.end || val.month) {
         document.getElementById("PrintWithNote").click();
-      else document.getElementById("PrintWithoutNote").click();
+      } else {
+        document.getElementById("PrintWithoutNote").click();
+      }
     }, 100);
   };
 
@@ -260,7 +263,7 @@ export default function CustomerReport({ single }) {
                               )}
                             </td>
                             {/* conditional rendering because print component doesnot perform with conditon  */}
-                            {val.start && val.end ? (
+                            {val.note || val.start || val.end || val.month ? (
                               <td className="text-center">
                                 <div style={{ display: "none" }}>
                                   <BillCollectInvoiceWithNote

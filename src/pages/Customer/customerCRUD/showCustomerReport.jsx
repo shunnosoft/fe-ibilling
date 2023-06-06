@@ -83,20 +83,14 @@ export default function CustomerReport(props) {
   const handlePrint = (val, stat) => {
     setStatus(stat);
     setPrintVal(val);
+    console.log(val);
     setTimeout(function () {
-      if (val.note || val.startDate || val.startDate)
-        document.getElementById("PrintWithNote").click();
-      else document.getElementById("PrintWithoutNote").click();
+      if (val.note || val.start || val.end || val.month) {
+        document.getElementById("PrintPppoeWithNote").click();
+      } else {
+        document.getElementById("PrintPppoeWithoutNote").click();
+      }
     }, 100);
-  };
-
-  const statusHandler = (e) => {
-    if (e.target.checked) {
-      setStatus([...status, e.target.value]);
-    } else {
-      const temp = status.filter((val) => val !== e.target.value);
-      setStatus(temp);
-    }
   };
 
   return (
@@ -270,7 +264,7 @@ export default function CustomerReport(props) {
                             </td>
                             {/* conditional rendering because print component doesnot perform with conditon  */}
 
-                            {val.start && val.end ? (
+                            {val.note || val.start || val.end || val.month ? (
                               <td className="text-center">
                                 <div style={{ display: "none" }}>
                                   <BillCollectInvoiceWithNote
@@ -330,7 +324,7 @@ export default function CustomerReport(props) {
                                           title={t("printInvoiceBill")}
                                           style={{ cursor: "pointer" }}
                                         >
-                                          <button id="PrintWithNote">
+                                          <button id="PrintPppoeWithNote">
                                             btn
                                           </button>
                                         </div>
@@ -417,7 +411,7 @@ export default function CustomerReport(props) {
                                             title={t("printInvoiceBill")}
                                             style={{ cursor: "pointer" }}
                                           >
-                                            <button id="PrintWithoutNote">
+                                            <button id="PrintPppoeWithoutNote">
                                               btn
                                             </button>
                                           </div>
