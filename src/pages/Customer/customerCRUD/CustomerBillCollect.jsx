@@ -97,8 +97,15 @@ export default function CustomerBillCollect({ single, customerData }) {
   //print button is clicked after successful response
   useEffect(() => {
     if (test) {
-      document.getElementById("printButton").click();
-      setTest(!test);
+      if (
+        (role === "ispOwner" && bpSettings?.instantRechargeBillPrint) ||
+        ((role === "manager" || role === "collector") &&
+          permission?.instantRechargeBillPrint &&
+          bpSettings?.instantRechargeBillPrint)
+      ) {
+        document.getElementById("printButton").click();
+        setTest(!test);
+      }
     }
   }, [test]);
 

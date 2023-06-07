@@ -20,6 +20,7 @@ import {
   getStaticCustomerActiveSuccess,
   getStaticCustomerSuccess,
   updateBalance,
+  updateBalanceStaticCustomer,
 } from "./customerSlice";
 
 import { updateProfile } from "./authSlice";
@@ -378,29 +379,34 @@ export const billCollect = async (
   setLoading,
   resetForm,
   setResponseData,
-  setTest
+  setTest,
+  status
 ) => {
   setLoading(true);
   try {
     const res = await apiLink.post("/reseller/monthlyBill", billData);
-    dispatch(updateBalance(res.data));
+
+    if (status === "pppoe") {
+      dispatch(updateBalance(res.data));
+    } else if (status === "static") {
+      dispatch(updateBalanceStaticCustomer(res.data));
+    }
     setResponseData(res.data);
     setTest(true);
-    // document.getElementById("printButtonReseller").click();
-    setLoading(false);
+
+    document.querySelector("#collectCustomerBillModal").click();
     langMessage(
       "success",
       "রিচার্জ সফল হয়েছে",
       "Bill Acceptance is Successful."
     );
 
-    document.querySelector("#collectCustomerBillModal").click();
     resetForm();
   } catch (error) {
-    setLoading(false);
-    document.querySelector("#collectCustomerBillModal").click();
+    //document.querySelector("#collectCustomerBillModal").click();
     toast.error(error.response?.data.message);
   }
+  setLoading(false);
 };
 
 export const addDeposit = async (dispatch, data, setLoading) => {

@@ -128,8 +128,15 @@ export default function CustomerBillCollect({ single, customerData }) {
   //print button is clicked after successful response
   useEffect(() => {
     if (test) {
-      document.getElementById("printButtonReseller").click();
-      setTest(!test);
+      if (
+        (role === "reseller" && resellerPermission?.instantRechargeBillPrint) ||
+        (role === "collector" &&
+          collectorPermission?.instantRechargeBillPrint &&
+          collectorResellerInfo?.permission?.instantRechargeBillPrint)
+      ) {
+        document.getElementById("printButtonReseller").click();
+        setTest(!test);
+      }
     }
   }, [test]);
 
@@ -210,7 +217,8 @@ export default function CustomerBillCollect({ single, customerData }) {
       setLoading,
       resetForm,
       setResponseData,
-      setTest //to verify successful response
+      setTest, //to verify successful response
+      "pppoe"
     );
   };
 

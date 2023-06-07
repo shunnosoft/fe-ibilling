@@ -47,6 +47,7 @@ const customerSliec = createSlice({
       const customer = state.customer.find(
         (item) => item.id === action.payload.customer
       );
+
       if (action.payload.billType !== "connectionFee") {
         customer.balance += action.payload.amount;
       }
@@ -56,7 +57,7 @@ const customerSliec = createSlice({
       ) {
         customer.paymentStatus = "paid";
         customer.status = "active";
-        customer.billingCycle = action.payload.billingCycle;
+        customer.billingCycle = action.payload.prevState.billingCycle;
       }
 
       state.customer[
@@ -77,7 +78,7 @@ const customerSliec = createSlice({
       ) {
         customer.paymentStatus = "paid";
         customer.status = "active";
-        customer.billingCycle = action.payload.billingCycle;
+        customer.billingCycle = action.payload.prevState.billingCycle;
       }
 
       state.staticCustomer[
