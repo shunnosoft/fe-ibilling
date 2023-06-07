@@ -164,21 +164,23 @@ const ResellerOnlinePayment = ({ show, setShow }) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={handleClose}
-        >
-          {t("cancel")}
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          id={"bKash_button"}
-          disabled={!agreement}
-        >
-          {isLoading ? <Loader /> : t("pay")}
-        </button>
+        <div>
+          <button
+            type="button"
+            className="btn btn-secondary me-3"
+            onClick={handleClose}
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            id={"bKash_button"}
+            disabled={!agreement}
+          >
+            {isLoading ? <Loader /> : t("pay")}
+          </button>
+        </div>
       </ModalFooter>
     </Modal>
   );

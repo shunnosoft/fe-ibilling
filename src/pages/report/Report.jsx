@@ -499,10 +499,11 @@ export default function Report() {
     <div style={{ fontSize: "18px", display: "flex" }}>
       {(userRole === "ispOwner" || permissions?.dashboardCollectionData) && (
         <div>
-          {t("totalBill")} {addAllBills().count} {t("tk")} &nbsp;&nbsp;
+          {t("totalBill")} {FormatNumber(addAllBills().count)} {t("tk")}{" "}
+          &nbsp;&nbsp;
         </div>
       )}
-      {t("discount")}: {addAllBills().discount} {t("tk")}
+      {t("discount")}: {FormatNumber(addAllBills().discount)} {t("tk")}
     </div>
   );
 

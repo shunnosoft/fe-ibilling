@@ -58,11 +58,8 @@ const CustomersNumber = ({ showModal }) => {
 
   //customer number search handler
   const customerNumberSearch = (e) => {
-    if (e.key === "Enter") {
-      customerNumber(dispatch, setIsLoading, ispOwner, mobile);
-    } else {
-      customerNumber(dispatch, setIsLoading, ispOwner, mobile);
-    }
+    e.preventDefault();
+    customerNumber(dispatch, setIsLoading, ispOwner, mobile);
   };
 
   // customer mobile number search handler
@@ -140,7 +137,6 @@ const CustomersNumber = ({ showModal }) => {
                   className="form-control me-2"
                   type="text"
                   onChange={customerNumberHandler}
-                  onKeyPress={customerNumberSearch}
                 ></input>
                 <button
                   type="button"

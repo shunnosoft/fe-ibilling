@@ -40,7 +40,6 @@ const DetailsModal = ({ ownerId }) => {
 
   // get ispOwner staffs
   const staffs = useSelector((state) => state.admin?.staffs);
-  console.log(staffs);
 
   // get all subareas
   const subAreas = useSelector((state) => state.area?.subArea);
