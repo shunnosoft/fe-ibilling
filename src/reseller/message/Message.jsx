@@ -21,6 +21,8 @@ import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { getSubAreas } from "../../features/apiCallReseller";
 import { useTranslation } from "react-i18next";
 import FormatNumber from "../../components/common/NumberFormat";
+import RechargeModal from "../../pages/reseller/smsRecharge/modal/RechargeModal";
+import { getParchaseHistory } from "../../features/resellerParchaseSmsApi";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -66,9 +68,20 @@ export default function RMessage() {
   const { t } = useTranslation();
   const reset = useForceUpdate();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get data
+  const data = useSelector((state) => state?.smsHistory?.smsParchase);
+
+  // get accept status
+  const acceptStatus = data.filter((item) => item.status === "pending");
+
   const [sms, setSms] = useState("");
+
+  // Loading state
   const [isChecked, setisChecked] = useState(false);
   const [isAllChecked, setisAllChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [status, setStatus] = useState("");
   const [payment, setPayment] = useState("");
   const [smsTemplet, setTemplet] = useState([]);
@@ -116,6 +129,7 @@ export default function RMessage() {
     if (userRole === "reseller") {
       getResellerNow();
       getSubAreas(dispatch, resellerId);
+      getParchaseHistory(resellerId, dispatch, setIsLoading);
     }
   }, [userRole, getResellerNow, getSubAreas]);
 
@@ -401,7 +415,28 @@ export default function RMessage() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">{t("SMSboard")}</h2>
+                <div className="collectorTitle d-flex justify-content-between px-5">
+                  <div>
+                    <div>{t("SMSboard")}</div>
+                  </div>
+                  <div
+                    className="header_icon"
+                    data-bs-toggle="modal"
+                    data-bs-target="#smsRechargeModal"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-envelope-plus"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2H2Zm3.708 6.208L1 11.105V5.383l4.708 2.825ZM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2-7-4.2Z" />
+                      <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z" />
+                    </svg>
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
@@ -873,6 +908,7 @@ export default function RMessage() {
           </div>
         </div>
       </div>
+      <RechargeModal status={acceptStatus} />
     </>
   );
 }

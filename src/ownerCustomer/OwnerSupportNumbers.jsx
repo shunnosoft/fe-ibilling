@@ -23,34 +23,52 @@ const OwnerSupportNumbers = () => {
 
   return (
     <div>
-      <h3 style={{ color: "#13ad23" }} className="text-center">
-        Support Number's
-      </h3>
-      {isLoading ? (
-        <div className="text-center mt-5">
-          <Loader />
-        </div>
+      {support && support.length > 0 ? (
+        <>
+          <h3
+            style={{ color: "#13ad23", fontFamily: "italic" }}
+            className="text-center"
+          >
+            Support Contact Number
+            <hr />
+          </h3>
+          {isLoading ? (
+            <div className="text-center mt-5">
+              <Loader />
+            </div>
+          ) : (
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Supporter Name</th>
+                  <th scope="col">Supporter Mobile</th>
+                  <th scope="col">Start Time</th>
+                  <th scope="col">End Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {support?.map((val) => (
+                  <tr key={val.id} className="forum-item">
+                    <td scope="row">{val?.name}</td>
+                    <td>{val?.mobile}</td>
+                    <td>
+                      <span className="badge bg-secondary fs-6">
+                        <small>{val?.start}</small>
+                      </span>
+                    </td>
+                    <td>
+                      <span className="badge bg-info fs-6">
+                        <small className="text-danger">{val?.end}</small>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       ) : (
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Supporter Name</th>
-              <th scope="col">Supporter Mobile</th>
-              <th scope="col">Start Time</th>
-              <th scope="col">End Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {support?.map((val) => (
-              <tr key={val.id}>
-                <td scope="row">{val?.name}</td>
-                <td>{val?.mobile}</td>
-                <td>{val?.start}</td>
-                <td>{val?.end}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        ""
       )}
     </div>
   );

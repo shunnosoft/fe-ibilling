@@ -118,7 +118,7 @@ const ResellerCollection = () => {
         accessor: "customer.name",
       },
       {
-        width: "10%",
+        width: "12%",
         Header: t("PPPoEName"),
         accessor: "customer.pppoe.name",
       },
@@ -133,9 +133,9 @@ const ResellerCollection = () => {
         accessor: "amount",
       },
       {
-        width: "8%",
-        Header: t("due"),
-        accessor: "due",
+        width: "9%",
+        Header: t("discount"),
+        accessor: "discount",
       },
       {
         width: "8%",
@@ -143,12 +143,12 @@ const ResellerCollection = () => {
         accessor: "medium",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("collector"),
         accessor: "name",
       },
       {
-        width: "14%",
+        width: "12%",
         Header: t("note"),
         accessor: (data) => {
           return {

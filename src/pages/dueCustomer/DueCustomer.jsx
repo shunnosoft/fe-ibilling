@@ -416,45 +416,48 @@ const DueCustomer = () => {
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    <Tabs
-                      defaultActiveKey={"pppoe"}
-                      id="uncontrolled-tab-example"
-                      className="mb-3"
-                    >
-                      <Tab eventKey="pppoe" title={t("PPPoE")}>
-                        {hasCustomerType.includes("pppoe") ? (
-                          <>
-                            <div className="table-section">
-                              <Table
-                                isLoading={isLoading}
-                                columns={pppoeColumns}
-                                data={dueCustomer}
-                              ></Table>
-                            </div>
-                          </>
-                        ) : (
-                          <h5 className="text-center">
-                            {t("youHaveNoPPPoECustomerType")}
-                          </h5>
-                        )}
-                      </Tab>
-                      <Tab eventKey="static" title={t("static")}>
-                        {hasCustomerType.includes("static") ? (
-                          <>
-                            <div className="table-section">
-                              <Table
-                                isLoading={staticLoading}
-                                columns={staticColumns}
-                                data={staticDueCustomer}
-                              ></Table>
-                            </div>
-                          </>
-                        ) : (
-                          <h5 className="text-center">
-                            {t("youHaveNoStaticCustomerType")}
-                          </h5>
-                        )}
-                      </Tab>
+                    <Tabs id="uncontrolled-tab-example" className="mb-3">
+                      {bpSettings?.customerType?.map(
+                        (type) =>
+                          (type === "pppoe" && (
+                            <Tab eventKey="pppoe" title={t("PPPoE")}>
+                              {hasCustomerType.includes("pppoe") ? (
+                                <>
+                                  <div className="table-section">
+                                    <Table
+                                      isLoading={isLoading}
+                                      columns={pppoeColumns}
+                                      data={dueCustomer}
+                                    ></Table>
+                                  </div>
+                                </>
+                              ) : (
+                                <h5 className="text-center">
+                                  {t("youHaveNoPPPoECustomerType")}
+                                </h5>
+                              )}
+                            </Tab>
+                          )) ||
+                          (type === "static" && (
+                            <Tab eventKey="static" title={t("static")}>
+                              {hasCustomerType.includes("static") ? (
+                                <>
+                                  <div className="table-section">
+                                    <Table
+                                      isLoading={staticLoading}
+                                      columns={staticColumns}
+                                      data={staticDueCustomer}
+                                    ></Table>
+                                  </div>
+                                </>
+                              ) : (
+                                <h5 className="text-center">
+                                  {t("youHaveNoStaticCustomerType")}
+                                </h5>
+                              )}
+                            </Tab>
+                          ))
+                      )}
                     </Tabs>
                   </div>
                 </div>
