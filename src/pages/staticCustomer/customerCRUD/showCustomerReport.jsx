@@ -300,7 +300,7 @@ export default function CustomerReport({ single }) {
                                       }}
                                       className="d-flex"
                                     >
-                                      <PrinterFill className="me-1 mt-1" />
+                                      <PrinterFill className="me-1 mt-1 text-success" />
                                       <span>{t("office&customer")}</span>
                                     </div>
 
@@ -311,7 +311,7 @@ export default function CustomerReport({ single }) {
                                       }}
                                       className="d-flex"
                                     >
-                                      <PrinterFill className="me-1 mt-1" />
+                                      <PrinterFill className="me-1 mt-1 text-primary" />
                                       <span>{t("customer")}</span>
                                     </div>
 
@@ -340,13 +340,14 @@ export default function CustomerReport({ single }) {
                                   permission?.reportDelete) ? (
                                   <div title={t("deleteReport")}>
                                     <button
-                                      className="border-0 bg-transparent"
+                                      className="border-0 bg-transparent me-4"
                                       onClick={() => deletReport(val.id)}
                                     >
                                       <TrashFill
                                         color="#dc3545"
                                         style={{ cursor: "pointer" }}
                                       />
+                                      <span> {t("deleteReport")}</span>
                                     </button>
                                   </div>
                                 ) : (
@@ -386,7 +387,7 @@ export default function CustomerReport({ single }) {
                                       }}
                                       className="d-flex"
                                     >
-                                      <PrinterFill className="me-1 mt-1" />
+                                      <PrinterFill className="me-1 mt-1 text-success" />
                                       <span>{t("office&customer")}</span>
                                     </div>
 
@@ -397,7 +398,7 @@ export default function CustomerReport({ single }) {
                                       }}
                                       className="d-flex"
                                     >
-                                      <PrinterFill className="me-1 mt-1" />
+                                      <PrinterFill className="me-1 mt-1 text-primary" />
                                       <span>{t("customer")}</span>
                                     </div>
 
@@ -428,13 +429,14 @@ export default function CustomerReport({ single }) {
                                   permission?.reportDelete) ? (
                                   <div title={t("deleteReport")}>
                                     <button
-                                      className="border-0 bg-transparent"
+                                      className="border-0 bg-transparent me-4"
                                       onClick={() => deletReport(val.id)}
                                     >
                                       <TrashFill
                                         color="#dc3545"
                                         style={{ cursor: "pointer" }}
                                       />
+                                      <span> {t("deleteReport")}</span>
                                     </button>
                                   </div>
                                 ) : (

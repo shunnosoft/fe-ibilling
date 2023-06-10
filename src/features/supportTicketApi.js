@@ -2,10 +2,13 @@ import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
 import {
   createSupportTicket,
+  createTicketCategory,
   deleteSupportTickets,
   editSupportTickets,
+  editTicketCategory,
   getCollectorSupportTickets,
   getSupportTickets,
+  getTicketCategory,
 } from "./supportTicketSlice";
 
 //create supportTickets api
@@ -38,7 +41,6 @@ export const getAllSupportTickets = async (
     } else {
       response = await apiLink.get(`customer/supportTickets/${id}`);
     }
-    // console.log(response.data.supportTickets);
     dispatch(getSupportTickets(response.data.supportTickets));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -46,8 +48,60 @@ export const getAllSupportTickets = async (
   setIsLoading(false);
 };
 
-//get collector api
+//get ticket Category api
+export const getTicketCategoryApi = async (
+  dispatch,
+  ispOwnerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`ispOwner/get/ticket/category/${ispOwnerId}`);
+    dispatch(getTicketCategory(res.data));
+  } catch (error) {
+    toast.error(error.res?.data.message);
+  }
+  setIsLoading(false);
+};
 
+//add ticket Category api
+export const addTicketCategoryApi = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`ispOwner/create/ticket/category`, data);
+    dispatch(createTicketCategory(res.data));
+    toast.success("Ticket Category Created Successfully");
+    document.getElementById("addCategoryModal").click();
+  } catch (error) {
+    toast.error(error.res?.data.message);
+  }
+  setIsLoading(false);
+};
+
+//edit ticket Category api
+export const editTicketCategoryApi = async (
+  dispatch,
+  data,
+  categoryId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(
+      `ispOwner/update/ticket/category/${categoryId}`,
+      data
+    );
+    dispatch(editTicketCategory(res.data));
+
+    toast.success("Ticket Category Edited successfull");
+    document.getElementById("editCategoryModal").click();
+  } catch (error) {
+    toast.error(error.res?.data.message);
+  }
+  setIsLoading(false);
+};
+
+//get collector api
 export const getCollectorApi = async (
   dispatch,
   ispOwnerId,
@@ -59,7 +113,6 @@ export const getCollectorApi = async (
     const res = await apiLink.get(
       `customer/supportTickets/${ispOwnerId}/${collectorId}`
     );
-    // console.log(res.data);
     dispatch(getCollectorSupportTickets(res.data.supportTickets));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -78,7 +131,6 @@ export const getResellerCollectorSupportTicket = async (
     const res = await apiLink.get(
       `customer/reseller/supportTickets/${resellerId}/${collectorId}`
     );
-    // console.log(res.data);
     dispatch(getCollectorSupportTickets(res.data.supportTickets));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -93,7 +145,6 @@ export const supportTicketsEditApi = async (dispatch, data, ticketId) => {
       `customer/supportTicket/${ticketId}`,
       data
     );
-    console.log(response.data);
     dispatch(editSupportTickets(response.data.supportTicket));
     toast.success("Support Ticket Edit Success");
   } catch (error) {
