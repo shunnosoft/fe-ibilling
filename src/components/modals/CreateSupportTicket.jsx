@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { createSupportTicketApi } from "../../features/supportTicketApi";
+import {
+  createSupportTicketApi,
+  getTicketCategoryApi,
+} from "../../features/supportTicketApi";
 import Loader from "../common/Loader";
 
 const CreateSupportTicket = ({
@@ -16,13 +19,28 @@ const CreateSupportTicket = ({
   const dispatch = useDispatch();
   const role = useSelector((state) => state.persistedReducer.auth?.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  //get ticket category
+  const allTicketCategory = useSelector(
+    (state) => state.supportTicket.ticketCategory
+  );
+
   const [supportTicket, setSupportTicket] = useState({
     message: "",
     assignPerson: "",
     ticketType: "",
     ticketCategory: "",
   });
+
+  // Loading state
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // ticket category api call
+  useEffect(() => {
+    getTicketCategoryApi(dispatch, ispOwner, setIsLoading);
+  }, [ispOwner]);
+
   const onChangeHandler = ({ target: { name, value } }) => {
     setSupportTicket({ ...supportTicket, [name]: value });
   };
@@ -138,7 +156,10 @@ const CreateSupportTicket = ({
                   className="form-select mt-0 mw-100"
                 >
                   <option value="">...</option>
-                  <option value="net">net</option>
+                  {allTicketCategory &&
+                    allTicketCategory.map((item) => (
+                      <option value={item?.id}>{item.name}</option>
+                    ))}
                 </select>
               </div>
 

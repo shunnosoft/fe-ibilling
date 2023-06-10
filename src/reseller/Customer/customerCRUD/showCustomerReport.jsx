@@ -215,7 +215,7 @@ export default function CustomerReport({ single }) {
                                     }}
                                     className="d-flex"
                                   >
-                                    <PrinterFill className="me-1 mt-1" />
+                                    <PrinterFill className="me-1 mt-1 text-success" />
                                     <span>{t("office&customer")}</span>
                                   </div>
 
@@ -226,7 +226,7 @@ export default function CustomerReport({ single }) {
                                     }}
                                     className="d-flex"
                                   >
-                                    <PrinterFill className="me-1 mt-1" />
+                                    <PrinterFill className="me-1 mt-1 text-primary" />
                                     <span>{t("customer")}</span>
                                   </div>
 
@@ -268,31 +268,6 @@ export default function CustomerReport({ single }) {
                                     paymentDate={printVal.createdAt}
                                   />
                                 </div>
-                                {/* <div className="d-flex">
-                                  <div className="mx-2">
-                                    <PrinterFill
-                                      style={{ cursor: "pointer" }}
-                                      onClick={() => {
-                                        handlePrint(val);
-                                      }}
-                                    />
-                                    <ReactToPrint
-                                      documentTitle={t("billIvoice")}
-                                      trigger={() => (
-                                        <div
-                                          className="d-none"
-                                          title={t("printInvoiceBill")}
-                                          style={{ cursor: "pointer" }}
-                                        >
-                                          <button id="pressPrintReseller">
-                                            btn
-                                          </button>
-                                        </div>
-                                      )}
-                                      content={() => billRefwithOutNote.current}
-                                    />
-                                  </div>
-                                </div> */}
                                 <div>
                                   <div
                                     style={{ cursor: "pointer" }}
@@ -301,7 +276,7 @@ export default function CustomerReport({ single }) {
                                     }}
                                     className="d-flex"
                                   >
-                                    <PrinterFill className="me-1 mt-1" />
+                                    <PrinterFill className="me-1 mt-1 text-success" />
                                     <span>{t("office&customer")}</span>
                                   </div>
 
@@ -312,7 +287,7 @@ export default function CustomerReport({ single }) {
                                     }}
                                     className="d-flex"
                                   >
-                                    <PrinterFill className="me-1 mt-1" />
+                                    <PrinterFill className="me-1 mt-1 text-primary" />
                                     <span>{t("customer")}</span>
                                   </div>
 

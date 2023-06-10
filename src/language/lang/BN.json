@@ -785,5 +785,8 @@
   "selectTicketType": "টিকিটের ধরণ নির্বাচন করুন",
   "selectStaff": "কর্মচারি নির্বাচন করুন",
   "enterSupportText": "সাহায্যের বিষয়বস্তু লিখুন",
-  "selectTicketCategory": "টিকিটের বিভাগ নির্বাচন করুন"
+  "selectTicketCategory": "টিকিটের বিভাগ নির্বাচন করুন",
+  "ticketCategory": "টিকেট ক্যাটাগরি",
+  "addCategory": "ক্যাটাগরি যোগ করুন",
+  "ticketType": "টিকিটের ধরন"
 }

@@ -4,6 +4,7 @@ export const supportTicketSlice = createSlice({
   name: "supportTicket",
   initialState: {
     supportTickets: [],
+    ticketCategory: [],
   },
   reducers: {
     getSupportTickets: (state, action) => {
@@ -27,7 +28,6 @@ export const supportTicketSlice = createSlice({
       // ] = action.payload;
     },
     editCollectorSupportTickets: (state, action) => {
-      console.log(action.payload);
       let index = state.supportTickets.findIndex(
         (singleTicket) => singleTicket.id === action.payload.id
       );
@@ -48,6 +48,21 @@ export const supportTicketSlice = createSlice({
     getCollectorSupportTickets: (state, action) => {
       state.supportTickets = action.payload;
     },
+
+    getTicketCategory: (state, action) => {
+      state.ticketCategory = action.payload;
+    },
+
+    createTicketCategory: (state, { payload }) => {
+      state.ticketCategory = [payload, ...state.ticketCategory];
+    },
+
+    editTicketCategory: (state, action) => {
+      let index = state.ticketCategory.findIndex(
+        (singleCat) => singleCat.id === action.payload.id
+      );
+      state.ticketCategory[index] = action.payload;
+    },
   },
 });
 
@@ -61,6 +76,9 @@ export const {
   getCollectorSupportTickets,
   editCollectorSupportTickets,
   deleteCollectorSupportTicket,
+  getTicketCategory,
+  createTicketCategory,
+  editTicketCategory,
 } = supportTicketSlice.actions;
 
 export default supportTicketSlice.reducer;

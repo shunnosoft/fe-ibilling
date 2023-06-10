@@ -778,5 +778,8 @@
   "selectTicketType": "Select Ticket Type",
   "selectStaff": "Select Staff",
   "enterSupportText": "Enter Support Text",
-  "selectTicketCategory": "Select Ticket Category"
+  "selectTicketCategory": "Select Ticket Category",
+  "ticketCategory": "Ticket Category",
+  "addCategory": "Add Category",
+  "ticketType": "Ticket Type"
 }
