@@ -27,8 +27,6 @@ const Ticket = () => {
     (state) => state.supportTicket.supportTickets
   );
 
-  console.log(supportTickets);
-
   //get ispOwner id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -47,6 +45,7 @@ const Ticket = () => {
   const [mainData, setMainData] = useState(supportTickets);
   const [status, setStatus] = useState("");
   const [ticketType, setTicketType] = useState("");
+  const [category, setCategory] = useState("");
 
   //get all support ticket
   useEffect(() => {
@@ -74,11 +73,20 @@ const Ticket = () => {
     setDeleteTicketId(ticketId);
   };
 
+  //Category Name finding function
+  const CategoryNameCalculation = (val) => {
+    if (val) {
+      const temp = ticketCategory?.find((cat) => cat?.id === val);
+
+      return temp?.name || "";
+    } else return "";
+  };
+
   //table columns
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "6%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -86,17 +94,17 @@ const Ticket = () => {
       },
 
       {
-        width: "8%",
+        width: "10%",
         Header: t("customerId"),
         accessor: "customer.customerId",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("name"),
         accessor: "customer.name",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("supportMessage"),
         accessor: "message",
       },
@@ -111,10 +119,20 @@ const Ticket = () => {
       },
 
       {
-        width: "11%",
+        width: "10%",
         Header: t("ticketType"),
         accessor: "ticketType",
       },
+
+      {
+        width: "13%",
+        Header: t("ticketCategory"),
+        accessor: "ticketCategory",
+        Cell: ({ cell: { value } }) => {
+          return CategoryNameCalculation(value);
+        },
+      },
+
       {
         width: "12%",
         Header: t("createdAt"),
@@ -179,7 +197,7 @@ const Ticket = () => {
         ),
       },
     ],
-    [t]
+    [t, ticketCategory]
   );
 
   //filter handler
@@ -193,6 +211,11 @@ const Ticket = () => {
     if (ticketType) {
       filterData = filterData.filter((temp) => temp.ticketType === ticketType);
     }
+    if (category) {
+      filterData = filterData.filter(
+        (temp) => temp?.ticketCategory === category
+      );
+    }
 
     setMainData(filterData);
   };
@@ -202,13 +225,14 @@ const Ticket = () => {
       <div className="selectFilteringg">
         <select
           className="form-select"
-          //onChange={(e) => setCollectedBy(e.target.value)}
+          onChange={(e) => setCategory(e.target.value)}
         >
           <option value="" defaultValue>
-            {t("all collector")}
+            {t("ticketCategory")}
           </option>
-
-          <option value="other">Other</option>
+          {ticketCategory.map((cat) => (
+            <option value={cat?.id}>{cat?.name}</option>
+          ))}
         </select>
 
         <select
@@ -233,6 +257,7 @@ const Ticket = () => {
 
           <option value="processing">{t("Processing")}</option>
           <option value="completed">{t("Completed")}</option>
+          <option value="pending">{t("Pending")}</option>
         </select>
 
         <div>
