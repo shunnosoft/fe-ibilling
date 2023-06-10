@@ -18,11 +18,17 @@ const Category = () => {
   const ticketCategory = useSelector(
     (state) => state.supportTicket.ticketCategory
   );
-  console.log(ticketCategory);
 
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
+  const managerPermission = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser?.manager?.permissions
+  );
+
+  // get role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState("");
@@ -75,18 +81,21 @@ const Category = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editCategoryModal"
-                  onClick={() => setCategory(original)}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
+                {(role === "ispOwner" ||
+                  managerPermission?.supportTicketCategory) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#editCategoryModal"
+                    onClick={() => setCategory(original)}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PenFill />
+                        <p className="actionP">{t("edit")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -99,14 +108,16 @@ const Category = () => {
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      <div
-        title={t("addCategory")}
-        className="header_icon bg-success text-white"
-        data-bs-toggle="modal"
-        data-bs-target="#addCategoryModal"
-      >
-        <PlusCircle />
-      </div>
+      {(role === "ispOwner" || managerPermission?.supportTicketCategory) && (
+        <div
+          title={t("addCategory")}
+          className="header_icon bg-success text-white"
+          data-bs-toggle="modal"
+          data-bs-target="#addCategoryModal"
+        >
+          <PlusCircle />
+        </div>
+      )}
     </div>
   );
   return (

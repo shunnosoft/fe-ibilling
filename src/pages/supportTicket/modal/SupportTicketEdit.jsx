@@ -8,7 +8,6 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   const dispatch = useDispatch();
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
   const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
-  console.log(supportTicketStatusValue);
 
   // storing data form redux
   const supportTickets = useSelector(

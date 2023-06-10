@@ -1,4 +1,5 @@
 export const managerPermission = (permission, bpSettings, lang) => {
+  console.log(bpSettings);
   const permissionEng = [
     {
       id: 1,
@@ -201,6 +202,13 @@ export const managerPermission = (permission, bpSettings, lang) => {
       label: "Instant Recharge Bill Print",
       isChecked: permission?.instantRechargeBillPrint || false,
       disabled: !bpSettings?.instantRechargeBillPrint,
+    },
+    {
+      id: 30,
+      value: "supportTicketCategory",
+      label: "Support Ticket Category",
+      isChecked: permission?.supportTicketCategory || false,
+      disabled: false,
     },
   ];
 
@@ -407,6 +415,13 @@ export const managerPermission = (permission, bpSettings, lang) => {
       label: "ইনস্ট্যান্ট রিচার্জ বিল প্রিন্ট",
       isChecked: permission?.instantRechargeBillPrint || false,
       disabled: !bpSettings?.instantRechargeBillPrint,
+    },
+    {
+      id: 30,
+      value: "supportTicketCategory",
+      label: "সাপোর্ট টিকেট ক্যাটাগরি",
+      isChecked: permission?.supportTicketCategory || false,
+      disabled: false,
     },
   ];
 
