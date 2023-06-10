@@ -58,6 +58,15 @@ const CreateSupportTicket = ({
       customer: customer.id,
       ...(role === "collector" && { collector: userData.id }),
     };
+
+    if (!supportTicket.ticketCategory) {
+      delete data.ticketCategory;
+    }
+
+    if (!supportTicket.ticketType) {
+      delete data.ticketType;
+    }
+
     createSupportTicketApi(dispatch, data, setLoading);
   };
 
@@ -137,31 +146,31 @@ const CreateSupportTicket = ({
                       className="form-select mt-0 mw-100"
                     >
                       <option value="">...</option>
-                      <option value="high">{t("high")}</option>
-                      <option value="medium">{t("medium")}</option>
-                      <option value="low">{t("low")}</option>
+                      <option value="high">{t("High")}</option>
+                      <option value="medium">{t("Medium")}</option>
+                      <option value="low">{t("Low")}</option>
+                    </select>
+                  </div>
+
+                  <div className="w-100 mt-3">
+                    <label className="text-secondary" htmlFor="ticketCategory">
+                      {t("selectTicketCategory")}
+                    </label>
+                    <select
+                      name="ticketCategory"
+                      id="ticketCategory"
+                      onChange={onChangeHandler}
+                      className="form-select mt-0 mw-100"
+                    >
+                      <option value="">...</option>
+                      {allTicketCategory &&
+                        allTicketCategory.map((item) => (
+                          <option value={item?.id}>{item.name}</option>
+                        ))}
                     </select>
                   </div>
                 </>
               )}
-
-              <div className="w-100 mt-3">
-                <label className="text-secondary" htmlFor="ticketCategory">
-                  {t("selectTicketCategory")}
-                </label>
-                <select
-                  name="ticketCategory"
-                  id="ticketCategory"
-                  onChange={onChangeHandler}
-                  className="form-select mt-0 mw-100"
-                >
-                  <option value="">...</option>
-                  {allTicketCategory &&
-                    allTicketCategory.map((item) => (
-                      <option value={item?.id}>{item.name}</option>
-                    ))}
-                </select>
-              </div>
 
               <button
                 className="btn btn-success ms-auto shadow-none mt-3"

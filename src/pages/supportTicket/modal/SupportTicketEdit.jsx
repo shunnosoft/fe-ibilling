@@ -3,19 +3,28 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { supportTicketsEditApi } from "../../../features/supportTicketApi";
+import { t } from "i18next";
 
 const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   const dispatch = useDispatch();
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
   const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
+  const [ticketType, setTicketType] = useState("");
+  const [ticketCategory, setTicketCategory] = useState("");
 
   // storing data form redux
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
 
+  //get single ticket
   const singleTicket = supportTickets.find(
     (ticket) => ticket.id === ticketEditId
+  );
+
+  //get ticket Catagory
+  const ticketCategoryStore = useSelector(
+    (state) => state.supportTicket.ticketCategory
   );
 
   // all handler here
@@ -34,12 +43,25 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
     const data = {
       status: supportTicketStatusValue,
       collector: supportTicketCollectorId,
+      ticketType,
+      ticketCategory,
     };
+    if (!ticketCategory) {
+      delete data.ticketCategory;
+    }
+
+    if (!ticketType) {
+      delete data.ticketType;
+    }
+
     supportTicketsEditApi(dispatch, data, ticketEditId);
   };
   useEffect(() => {
     if (singleTicket) {
       setSupportTicketStatusValue(singleTicket.status);
+      setTicketCategory(singleTicket.ticketCategory);
+      setTicketType(singleTicket.ticketType);
+      setSupportTicketCollectorId(singleTicket.collector);
     }
   }, [singleTicket]);
   return (
@@ -90,7 +112,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
                 Completed
               </option>
             </select>
-            <div style={{ margin: "2.5rem" }}></div>
+            <div style={{ margin: "1.2rem" }}></div>
             <label>Assign Collector</label>
             <select
               class="form-select mw-100"
@@ -98,10 +120,69 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
               onChange={handleCollectorId}
             >
               <option>Select Collector</option>
-              {allCollector.map((collector) => {
-                return <option value={collector.id}>{collector.name}</option>;
+              {allCollector?.map((collector) => {
+                return (
+                  <option
+                    value={collector.id}
+                    selected={singleTicket?.collector === collector?.id}
+                  >
+                    {collector?.name}
+                  </option>
+                );
               })}
             </select>
+
+            <div className="w-100 mt-3">
+              <label htmlFor="ticketType">{t("selectTicketType")}</label>
+              <select
+                name="ticketType"
+                id="ticketType"
+                onChange={(e) => setTicketType(e.target.value)}
+                className="form-select mt-0 mw-100"
+              >
+                <option value="">...</option>
+                <option
+                  selected={singleTicket?.ticketType === "high"}
+                  value="high"
+                >
+                  {t("High")}
+                </option>
+                <option
+                  selected={singleTicket?.ticketType === "medium"}
+                  value="medium"
+                >
+                  {t("Medium")}
+                </option>
+                <option
+                  selected={singleTicket?.ticketType === "low"}
+                  value="low"
+                >
+                  {t("Low")}
+                </option>
+              </select>
+            </div>
+
+            <div className="w-100 mt-3">
+              <label htmlFor="ticketCategory">
+                {t("selectTicketCategory")}
+              </label>
+              <select
+                name="ticketCategory"
+                id="ticketCategory"
+                onChange={(e) => setTicketCategory(e.target.value)}
+                className="form-select mt-0 mw-100"
+              >
+                <option value="">...</option>
+                {ticketCategoryStore?.map((item) => (
+                  <option
+                    value={item?.id}
+                    selected={singleTicket?.ticketCategory === item?.id}
+                  >
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div class="modal-footer">
             <button

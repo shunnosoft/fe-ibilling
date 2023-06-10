@@ -15,28 +15,33 @@ const Category = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  //get ticket Cartagory
   const ticketCategory = useSelector(
-    (state) => state.supportTicket.ticketCategory
+    (state) => state.supportTicket?.ticketCategory
   );
 
+  //get ispOwner Id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  //get manager permission
   const managerPermission = useSelector(
     (state) => state.persistedReducer.auth?.currentUser?.manager?.permissions
   );
 
   // get role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  const role = useSelector((state) => state.persistedReducer?.auth?.role);
 
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState("");
 
+  //api call
   useEffect(() => {
     getTicketCategoryApi(dispatch, ispOwner, setIsLoading);
   }, []);
 
+  //table column
   const columns2 = useMemo(
     () => [
       {
@@ -120,6 +125,7 @@ const Category = () => {
       )}
     </div>
   );
+
   return (
     <>
       <Table
@@ -131,6 +137,7 @@ const Category = () => {
       {/* Modal Section */}
       <CategoryPost ispOwner={ispOwner} />
       <CategoryEdit category={category} />
+      {/* Modal Section */}
     </>
   );
 };
